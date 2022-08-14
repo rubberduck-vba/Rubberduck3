@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32319.34
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Main", "Rubberduck.Main\Rubberduck.Main.csproj", "{EA66AB03-FEDA-4148-964D-797603F3A6C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.VBEditor", "Rubberduck.VBEditor\Rubberduck.VBEditor.csproj", "{030FDE59-C347-4B81-AB80-5B4B80B757A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.VBEditor.VBA", "Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj", "{4CCD023C-A503-4BC7-9E9A-A509B4A16D41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.VBEditor.VB6", "Rubberduck.VBEditor.VB6\Rubberduck.VBEditor.VB6.csproj", "{F4B320F8-391D-4580-9AEF-C70D9AEA04D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.InternalApi", "Rubberduck.InternalApi\Rubberduck.InternalApi.csproj", "{5E2588A5-2EF2-4267-952D-53AEC8F5F173}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Resources", "Rubberduck.Resources\Rubberduck.Resources.csproj", "{ED65BAAD-743D-4144-AEE2-8D956E6DA599}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA66AB03-FEDA-4148-964D-797603F3A6C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA66AB03-FEDA-4148-964D-797603F3A6C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA66AB03-FEDA-4148-964D-797603F3A6C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA66AB03-FEDA-4148-964D-797603F3A6C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{030FDE59-C347-4B81-AB80-5B4B80B757A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{030FDE59-C347-4B81-AB80-5B4B80B757A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{030FDE59-C347-4B81-AB80-5B4B80B757A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{030FDE59-C347-4B81-AB80-5B4B80B757A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CCD023C-A503-4BC7-9E9A-A509B4A16D41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CCD023C-A503-4BC7-9E9A-A509B4A16D41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CCD023C-A503-4BC7-9E9A-A509B4A16D41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CCD023C-A503-4BC7-9E9A-A509B4A16D41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4B320F8-391D-4580-9AEF-C70D9AEA04D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4B320F8-391D-4580-9AEF-C70D9AEA04D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4B320F8-391D-4580-9AEF-C70D9AEA04D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4B320F8-391D-4580-9AEF-C70D9AEA04D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E2588A5-2EF2-4267-952D-53AEC8F5F173}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E2588A5-2EF2-4267-952D-53AEC8F5F173}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E2588A5-2EF2-4267-952D-53AEC8F5F173}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E2588A5-2EF2-4267-952D-53AEC8F5F173}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED65BAAD-743D-4144-AEE2-8D956E6DA599}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED65BAAD-743D-4144-AEE2-8D956E6DA599}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED65BAAD-743D-4144-AEE2-8D956E6DA599}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED65BAAD-743D-4144-AEE2-8D956E6DA599}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {17B5E48B-DCFD-45F2-A672-3505C8225149}
+	EndGlobalSection
+EndGlobal
