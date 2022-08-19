@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.UI", "Rubberduck
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Interaction", "Rubberduck.Interaction\Rubberduck.Interaction.csproj", "{3EE4CCB7-42FC-49D2-8221-88A2FEF2F762}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.UI.Xaml", "Rubberduck.UI.Xaml\Rubberduck.UI.Xaml.csproj", "{1192FA78-B73F-46BC-B98C-FD887A062A2C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{3EE4CCB7-42FC-49D2-8221-88A2FEF2F762}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EE4CCB7-42FC-49D2-8221-88A2FEF2F762}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EE4CCB7-42FC-49D2-8221-88A2FEF2F762}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1192FA78-B73F-46BC-B98C-FD887A062A2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1192FA78-B73F-46BC-B98C-FD887A062A2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1192FA78-B73F-46BC-B98C-FD887A062A2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1192FA78-B73F-46BC-B98C-FD887A062A2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

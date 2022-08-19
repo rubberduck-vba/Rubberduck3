@@ -1,4 +1,4 @@
-﻿using Rubberduck.UI.Command;
+﻿using System.Windows.Input;
 
 namespace Rubberduck.UI.About
 {
@@ -11,7 +11,7 @@ namespace Rubberduck.UI.About
         string HostExecutable { get; }
         string AboutCopyright { get; }
 
-        CommandBase UriCommand { get; }
-        CommandBase ViewLogCommand { get; }
+        ICommand UriCommand { get; }
+        ICommand ViewLogCommand { get; }
     }
 }

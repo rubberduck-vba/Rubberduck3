@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using Rubberduck.Resources.About;
 
-namespace Rubberduck.UI.About
+namespace Rubberduck.UI.Xaml.Controls
 {
     /// <summary>
     /// Interaction logic for AboutControl.xaml

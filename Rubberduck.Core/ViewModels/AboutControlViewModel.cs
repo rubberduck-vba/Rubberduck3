@@ -7,6 +7,7 @@ using Rubberduck.UI.Command;
 using Application = System.Windows.Forms.Application;
 using Rubberduck.VersionCheck;
 using Rubberduck.Resources.About;
+using System.Windows.Input;
 
 namespace Rubberduck.UI.About
 {
@@ -40,9 +41,9 @@ namespace Rubberduck.UI.About
         public string AboutCopyright =>
             string.Format(AboutUI.AboutWindow_Copyright, DateTime.Now.Year);
 
-        public CommandBase UriCommand { get; }
+        public ICommand UriCommand { get; }
 
-        public CommandBase ViewLogCommand { get; }
+        public ICommand ViewLogCommand { get; }
 
         private void ExecuteUri(object parameter) => _web.Navigate(((Uri)parameter));
 
