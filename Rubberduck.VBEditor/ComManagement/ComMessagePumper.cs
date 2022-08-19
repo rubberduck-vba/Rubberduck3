@@ -1,5 +1,5 @@
 ﻿using System;
-using Rubberduck.VBEditor.Utility;
+using Rubberduck.InternalApi.UIContext;
 using Rubberduck.VBEditor.VbeRuntime;
 
 namespace Rubberduck.VBEditor.ComManagement

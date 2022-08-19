@@ -131,7 +131,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 // "too many line continuations" is one possible cause for a COMException here.
                 // deleting the only line in a module is another.
                 // we can log the exception, but really we're just intentionally swallowing it.
-                //_logger.Warn(e, $"{nameof(InsertLines)} failed.");
+                _logger.Warn(e, $"{nameof(InsertLines)} failed.");
             }
         }
 
@@ -148,7 +148,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 // "too many line continuations" is one possible cause for a COMException here.
                 // deleting the only line in a module is another.
                 // we can log the exception, but really we're just intentionally swallowing it.
-                //_logger.Warn(e, $"{nameof(DeleteLines)} failed.");
+                _logger.Warn(e, $"{nameof(DeleteLines)} failed.");
             }
         }
 
@@ -169,7 +169,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 // "too many line continuations" is one possible cause for a COMException here.
                 // deleting the only line in a module is another.
                 // we can log the exception, but really we're just intentionally swallowing it.
-                //_logger.Warn(e, $"{nameof(ReplaceLine)} failed.");
+                _logger.Warn(e, $"{nameof(ReplaceLine)} failed.");
             }
         }
 

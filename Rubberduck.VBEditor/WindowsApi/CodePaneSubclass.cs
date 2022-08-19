@@ -1,4 +1,5 @@
 ﻿using System;
+using Rubberduck.InternalApi.WindowsApi;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 

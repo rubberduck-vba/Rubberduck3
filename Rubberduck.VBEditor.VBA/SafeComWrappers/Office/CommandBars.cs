@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Office;
 using MSO = Microsoft.Office.Core;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities

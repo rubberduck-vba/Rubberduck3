@@ -1,6 +1,6 @@
 ﻿using IOException = System.IO.IOException;
 using System.Runtime.InteropServices;
-//using NLog;
+using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.Extensions
@@ -21,7 +21,7 @@ namespace Rubberduck.VBEditor.Extensions
             }
             catch (COMException e)
             {
-                //LogManager.GetLogger(typeof(IVBProject).FullName).Warn(e);
+                LogManager.GetLogger(typeof(IVBProject).FullName).Warn(e);
                 fullPath = null;
                 return false;
             }

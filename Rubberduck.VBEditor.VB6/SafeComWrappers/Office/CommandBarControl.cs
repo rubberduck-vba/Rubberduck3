@@ -1,5 +1,6 @@
 ﻿extern alias Office_v8;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Office;
 using System;
 using MSO = Office_v8::Office;
 

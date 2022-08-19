@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.VBEditor.SafeComWrappers
+﻿namespace Rubberduck.VBEditor.SafeComWrappers.Office
 {
     // Abstraction of the MsoBarType enum in the interop assemblies for Office.v8 and Office.v12
     public enum CommandBarType

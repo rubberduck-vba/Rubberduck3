@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-//using NLog;
+using NLog;
 using Rubberduck.VBEditor.ComManagement.NonDisposalDecorators;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Extensions;
@@ -20,7 +20,7 @@ namespace Rubberduck.VBEditor.ComManagement
 
         private readonly ReaderWriterLockSlim _refreshProtectionLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
 
-        //private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
 
         public ProjectsRepository(IVBE vbe)

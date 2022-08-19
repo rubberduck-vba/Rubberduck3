@@ -1,9 +1,9 @@
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Office;
 using MSO = Microsoft.Office.Core;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -103,9 +103,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
             {
                 using (var image = CreateTransparentImage(Picture))
                 {
-                    Clipboard.SetImage(image);
+                    System.Windows.Forms.Clipboard.SetImage(image);
                     Button.PasteFace();
-                    Clipboard.Clear();
+                    System.Windows.Forms.Clipboard.Clear();
                 }
                 return;
             }

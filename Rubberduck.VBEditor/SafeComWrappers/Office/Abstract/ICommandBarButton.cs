@@ -1,3 +1,4 @@
+using Rubberduck.VBEditor.SafeComWrappers.Office;
 using System;
 using System.Drawing;
 

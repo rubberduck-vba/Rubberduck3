@@ -15,6 +15,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.InternalApi", "R
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Resources", "Rubberduck.Resources\Rubberduck.Resources.csproj", "{ED65BAAD-743D-4144-AEE2-8D956E6DA599}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{29672418-530B-44AF-B95E-76EA20E96F44}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.txt = LICENSE.txt
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.SettingsProvider", "Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj", "{E794CFC3-3D9F-400F-88D9-69E929D8E8AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Core", "Rubberduck.Core\Rubberduck.Core.csproj", "{7B04E66C-DD08-437F-8D43-EDDAC732DC53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.UI", "Rubberduck.UI\Rubberduck.UI.csproj", "{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Interaction", "Rubberduck.Interaction\Rubberduck.Interaction.csproj", "{3EE4CCB7-42FC-49D2-8221-88A2FEF2F762}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +59,22 @@ Global
 		{ED65BAAD-743D-4144-AEE2-8D956E6DA599}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED65BAAD-743D-4144-AEE2-8D956E6DA599}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED65BAAD-743D-4144-AEE2-8D956E6DA599}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E794CFC3-3D9F-400F-88D9-69E929D8E8AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E794CFC3-3D9F-400F-88D9-69E929D8E8AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E794CFC3-3D9F-400F-88D9-69E929D8E8AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E794CFC3-3D9F-400F-88D9-69E929D8E8AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B04E66C-DD08-437F-8D43-EDDAC732DC53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B04E66C-DD08-437F-8D43-EDDAC732DC53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B04E66C-DD08-437F-8D43-EDDAC732DC53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B04E66C-DD08-437F-8D43-EDDAC732DC53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EE4CCB7-42FC-49D2-8221-88A2FEF2F762}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EE4CCB7-42FC-49D2-8221-88A2FEF2F762}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EE4CCB7-42FC-49D2-8221-88A2FEF2F762}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EE4CCB7-42FC-49D2-8221-88A2FEF2F762}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

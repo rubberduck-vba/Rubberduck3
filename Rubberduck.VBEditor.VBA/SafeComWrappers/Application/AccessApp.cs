@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Office.Interop.Access;
-//using NLog;
+using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -57,7 +57,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             catch(Exception ex)
             {
                 //Log and ignore
-                //_logger.Log(LogLevel.Info, ex, $"Failed to get host document {moduleName.ToString()}");
+                _logger.Log(LogLevel.Info, ex, $"Failed to get host document {moduleName.ToString()}");
             }
 
             return null;
@@ -152,7 +152,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
             catch (Exception ex)
             {
-                //_logger.Log(LogLevel.Info, ex, $"Unable to open the document in design view for {moduleName.ToString()}");
+                _logger.Log(LogLevel.Info, ex, $"Unable to open the document in design view for {moduleName.ToString()}");
             }
 
             return false;

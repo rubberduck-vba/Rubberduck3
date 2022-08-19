@@ -1,4 +1,5 @@
 ﻿using System;
+using Rubberduck.InternalApi.WindowsApi;
 using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.VBEditor.WindowsApi

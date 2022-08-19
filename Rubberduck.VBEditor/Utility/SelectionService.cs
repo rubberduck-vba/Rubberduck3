@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-//using NLog;
+using NLog;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -12,7 +12,7 @@ namespace Rubberduck.VBEditor.Utility
         private readonly IProjectsProvider _projectsProvider;
         private readonly IVBE _vbe;
 
-        //private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public SelectionService(IVBE vbe, IProjectsProvider projectsProvider)
         {
@@ -61,7 +61,7 @@ namespace Rubberduck.VBEditor.Utility
                             //For some reason, we sometimes get a COM Exception for 'invalid callee' here. So, we swallow it to avoid rendering rewrites unusable in that case.
                             //See issue #5242 at https://github.com/rubberduck-vba/Rubberduck/issues/5242
                             //TODO: Find the root cause of the sporadic exception and deal with it.
-                            //_logger.Warn(ex, "Encountered an exception while getting the qualified module name of all open code panes. The current code pane will be skipped.");
+                            _logger.Warn(ex, "Encountered an exception while getting the qualified module name of all open code panes. The current code pane will be skipped.");
                         }
                     }
                 }
@@ -105,7 +105,7 @@ namespace Rubberduck.VBEditor.Utility
             }
             catch (Exception exception)
             {
-                //_logger.Debug(exception, $"Failed to activate the code pane of module {module}.");
+                _logger.Debug(exception, $"Failed to activate the code pane of module {module}.");
                 return false;
             }
         }
@@ -153,7 +153,7 @@ namespace Rubberduck.VBEditor.Utility
             }
             catch (Exception exception)
             {
-                //_logger.Debug(exception, $"Failed to set the selection of module {module} to {selection}.");
+                _logger.Debug(exception, $"Failed to set the selection of module {module} to {selection}.");
                 return false;
             }
         }

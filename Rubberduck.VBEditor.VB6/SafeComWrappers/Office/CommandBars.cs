@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Office;
 using MSO = Office_v8::Office;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities

@@ -28,19 +28,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
             }
             catch (COMException exception)
             {
-                //_logger.Error(exception, $"Unexpected COM exception while acquiring the host application object for application {applicationName} via COM reflection.");
+                _logger.Error(exception, $"Unexpected COM exception while acquiring the host application object for application {applicationName} via COM reflection.");
                 application = null; 
             }
             catch (InvalidCastException exception)
             {
                 //TODO: Find out why this ever happens.
-                //_logger.Error(exception, $"Unable to cast the host application object for application {applicationName} acquired via COM reflection to its PIA type.");
+                _logger.Error(exception, $"Unable to cast the host application object for application {applicationName} acquired via COM reflection to its PIA type.");
                 application = null; 
             }
             catch (Exception exception)
             {
                 //note: We catch all exceptions because we currently really do not need application object and there can be exceptions for unexpected system setups.
-                //_logger.Error(exception, $"Unexpected exception while acquiring the host application object for application {applicationName} from a document module.");
+                _logger.Error(exception, $"Unexpected exception while acquiring the host application object for application {applicationName} from a document module.");
                 application = null; 
             }
 
@@ -67,18 +67,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
             }
             catch (COMException exception)
             {
-                //_logger.Error(exception, $"Unexpected COM exception while acquiring the host application object for application {applicationName} from a document module.");
+                _logger.Error(exception, $"Unexpected COM exception while acquiring the host application object for application {applicationName} from a document module.");
                 application = null;
             }
             catch (InvalidCastException exception)
             {
-                //_logger.Error(exception, $"Unable to cast the host application object for application {applicationName} acquiered from a document module to its PIA type.");
+                _logger.Error(exception, $"Unable to cast the host application object for application {applicationName} acquiered from a document module to its PIA type.");
                 application = null;
             }
             catch (Exception exception)
             {
                 //note: We catch all exceptions because we currently really do not need application object and there can be exceptions for unexpected system setups.
-                //_logger.Error(exception, $"Unexpected exception while acquiring the host application object for application {applicationName} from a document module.");
+                _logger.Error(exception, $"Unexpected exception while acquiring the host application object for application {applicationName} from a document module.");
                 application = null;
             }
             return application;
@@ -198,7 +198,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
             }
             catch (Exception ex)
             {
-                //_logger.Trace(ex, "Handled an expection with accessing VBComponent.Properties.");
+                _logger.Trace(ex, "Handled an expection with accessing VBComponent.Properties.");
             }
 
             if (string.IsNullOrWhiteSpace(name))

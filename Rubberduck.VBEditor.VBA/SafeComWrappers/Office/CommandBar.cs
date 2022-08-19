@@ -1,4 +1,5 @@
 ﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Office;
 using System;
 using MSO = Microsoft.Office.Core;
 

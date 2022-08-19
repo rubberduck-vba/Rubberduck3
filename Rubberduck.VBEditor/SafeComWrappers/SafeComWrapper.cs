@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-//using NLog;
+using NLog;
 using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.VBEditor.SafeComWrappers
@@ -10,7 +10,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
     public abstract class SafeComWrapper<T> : ISafeComWrapper<T>
         where T : class
     {
-        //protected static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        protected static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private IComSafe _comSafe;
         private bool _rewrapping;
@@ -32,20 +32,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         {
             if (HasBeenReleased)
             {
-                //_logger.Warn($"Tried to release already released COM wrapper of type {this.GetType()}.");
+                _logger.Warn($"Tried to release already released COM wrapper of type {this.GetType()}.");
                 return;
             }
             if (IsWrappingNullReference)
             {
                 _rcwReferenceCount = 0;
-                //_logger.Warn($"Tried to release a COM wrapper of type {this.GetType()} wrapping a null reference.");
+                _logger.Warn($"Tried to release a COM wrapper of type {this.GetType()} wrapping a null reference.");
                 return;
             }
 
             if (!Marshal.IsComObject(Target))
             {
                 _rcwReferenceCount = 0;
-                //_logger.Warn($"Tried to release a COM wrapper of type {this.GetType()} whose target is not a COM object.");
+                _logger.Warn($"Tried to release a COM wrapper of type {this.GetType()} whose target is not a COM object.");
                 return;
             }
 
@@ -56,11 +56,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                     _rcwReferenceCount = Marshal.FinalReleaseComObject(Target);
                     if (HasBeenReleased)
                     {
-                        //_logger.Trace($"Final released COM wrapper of type {this.GetType()}.");
+                        _logger.Trace($"Final released COM wrapper of type {this.GetType()}.");
                     }
                     else
                     {
-                        //_logger.Warn($"Final released COM wrapper of type {this.GetType()} did not release the wrapper: remaining reference count is {_rcwReferenceCount}.");
+                        _logger.Warn($"Final released COM wrapper of type {this.GetType()} did not release the wrapper: remaining reference count is {_rcwReferenceCount}.");
                     }
                 }
                 else
@@ -68,7 +68,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                     _rcwReferenceCount = Marshal.ReleaseComObject(Target);
                     if (_rcwReferenceCount < 0)
                     {
-                        //_logger.Warn($"Released COM wrapper of type {this.GetType()} whose underlying RCW has already been released from outside the SafeComWrapper. New reference count is {_rcwReferenceCount}.");
+                        _logger.Warn($"Released COM wrapper of type {this.GetType()} whose underlying RCW has already been released from outside the SafeComWrapper. New reference count is {_rcwReferenceCount}.");
                     }
                     else
                     {
@@ -76,7 +76,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                     }
                 }
             }
-            catch(COMException exception)
+            catch (COMException exception)
             {
                 var logMessage = $"Failed to release COM wrapper of type {this.GetType()}.";
                 if (_rcwReferenceCount.HasValue)
@@ -88,7 +88,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                     logMessage = logMessage + "There has not yet been an attempt to release the COM wrapper.";
                 }
 
-                //_logger.Warn(exception, logMessage);
+                _logger.Warn(exception, logMessage);
             }
         }
 
@@ -160,7 +160,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         [Conditional("LOG_COM_RELEASE")]
         private void LogComRelease()
         {
-            //_logger.Trace($"Released COM wrapper of type {this.GetType()} with remaining reference count {_rcwReferenceCount}.");
+            _logger.Trace($"Released COM wrapper of type {this.GetType()} with remaining reference count {_rcwReferenceCount}.");
         }
     }
 }

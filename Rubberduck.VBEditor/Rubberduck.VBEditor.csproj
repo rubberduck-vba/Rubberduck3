@@ -37,15 +37,20 @@
     <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.5.0.2\lib\net46\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Abstractions, Version=17.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.Abstractions.17.0.24\lib\net461\System.IO.Abstractions.dll</HintPath>
     </Reference>
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
@@ -238,7 +243,6 @@
     <Compile Include="SourceCodeHandling\SourceFileHandlerComponentSourceCodeHandlerAdapter.cs" />
     <Compile Include="Utility\AddComponentService.cs" />
     <Compile Include="Utility\DisposalActionContainer.cs" />
-    <Compile Include="Utility\EnumHelper.cs" />
     <Compile Include="Utility\IAddComponentService.cs" />
     <Compile Include="Utility\IRequiredBinaryFilesFromFileNameExtractor.cs" />
     <Compile Include="Utility\ISelectionProvider.cs" />
@@ -246,7 +250,6 @@
     <Compile Include="Utility\ModuleNameFromFileExtractor.cs" />
     <Compile Include="Utility\RegistryWrapper.cs" />
     <Compile Include="Utility\SelectionService.cs" />
-    <Compile Include="Utility\UiContext.cs" />
     <Compile Include="Utility\UserFormRequiredBinaryFileNameExtractor.cs" />
     <Compile Include="VbeCommandBarMenuNames.cs" />
     <Compile Include="VBERuntime\BeepInterceptor.cs" />
@@ -263,17 +266,12 @@
     <Compile Include="WindowsApi\FocusSource.cs" />
     <Compile Include="WindowsApi\IFocusProvider.cs" />
     <Compile Include="WindowsApi\IWindowEventProvider.cs" />
-    <Compile Include="WindowsApi\NativeMethods.cs" />
     <Compile Include="WindowsApi\SubclassingWindow.cs" />
     <Compile Include="WindowsApi\SubclassManager.cs" />
-    <Compile Include="WindowsApi\User32.cs" />
     <Compile Include="WindowsApi\VbeAttachableSubclass.cs" />
     <Compile Include="WindowsApi\WindowLocator.cs" />
     <Compile Include="WindowsApi\WindowsHook.cs" />
     <Compile Include="WindowsApi\WindowType.cs" />
-    <Compile Include="WindowsApi\WinEvent.cs" />
-    <Compile Include="WindowsApi\WinEventFlags.cs" />
-    <Compile Include="WindowsApi\WM.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

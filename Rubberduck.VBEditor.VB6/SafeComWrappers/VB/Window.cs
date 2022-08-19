@@ -1,4 +1,5 @@
 ﻿using System;
+using Rubberduck.InternalApi.WindowsApi;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.WindowsApi;
 using VB = Microsoft.Vbe.Interop.VB6;

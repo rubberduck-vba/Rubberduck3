@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-//using NLog;
+using NLog;
 using Rubberduck.VBEditor.VBERuntime;
 
 namespace Rubberduck.VBEditor.VbeRuntime
 {
     public class VbeNativeApiAccessor : IVbeNativeApi
     {
-        //private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private IVbeNativeApi _runtime;        
         
         private static readonly List<(string Name, Type ApiType, DllVersion Version)> VbeApis =new List<(string Dll, Type ApiType, DllVersion Version)>
@@ -44,7 +44,7 @@ namespace Rubberduck.VBEditor.VbeRuntime
             }
             catch (Exception ex)
             {
-                //Logger.Warn(ex, "Exception during location of the VBE dll version. Resolution deferred.");
+                Logger.Warn(ex, "Exception during location of the VBE dll version. Resolution deferred.");
             }
 
             return null;

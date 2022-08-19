@@ -1,3 +1,5 @@
+using Rubberduck.VBEditor.SafeComWrappers.Office;
+
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
     // Abstraction of the CommandBars coclass interface in the interop assemblies for Office.v8 and Office.v12

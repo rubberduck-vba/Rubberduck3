@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Office;
 
 namespace Rubberduck.VBEditor.ComManagement.NonDisposalDecorators
 {

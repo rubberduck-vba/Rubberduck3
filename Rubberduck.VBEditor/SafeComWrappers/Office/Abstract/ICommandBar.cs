@@ -1,5 +1,6 @@
 using System;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Office;
 
 namespace Rubberduck.VBEditor.SafeComWrappers
 {

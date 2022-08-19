@@ -2,13 +2,15 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
-//using NLog;
+using NLog;
+using Rubberduck.InternalApi.WindowsApi;
 
 namespace Rubberduck.VBEditor.WindowsApi
 {
     public abstract class SubclassingWindow : IDisposable
     {
-        //protected static readonly Logger SubclassLogger = LogManager.GetCurrentClassLogger();
+        protected static readonly Logger SubclassLogger = LogManager.GetCurrentClassLogger();
+
         public event EventHandler ReleasingHandle;
         private readonly IntPtr _subclassId;
         private readonly SubClassCallback _wndProc;
@@ -51,7 +53,7 @@ namespace Rubberduck.VBEditor.WindowsApi
                 var result = SetWindowSubclass(Hwnd, _wndProc, _subclassId, IntPtr.Zero);
                 if (result != 1)
                 {
-                    throw new Exception("SetWindowSubClass Failed");
+                    throw new InvalidOperationException("SetWindowSubClass Failed");
                 }
 
                 _listening = true;
@@ -70,7 +72,7 @@ namespace Rubberduck.VBEditor.WindowsApi
                 var result = RemoveWindowSubclass(Hwnd, _wndProc, _subclassId);
                 if (result != 1)
                 {
-                    throw new Exception("RemoveWindowSubclass Failed");
+                    throw new InvalidOperationException("RemoveWindowSubclass Failed");
                 }
                 ReleasingHandle?.Invoke(this, null);
                 ReleasingHandle = delegate { };
@@ -125,7 +127,14 @@ namespace Rubberduck.VBEditor.WindowsApi
 
             if (disposing)
             {
-                ReleaseHandle();
+                try
+                {
+                    ReleaseHandle();
+                }
+                catch (Exception e)
+                {
+                    SubclassLogger.Error(e);
+                }
             }
 
             _disposed = true;

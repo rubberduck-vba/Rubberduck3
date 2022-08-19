@@ -2,14 +2,14 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-//using NLog;
+using NLog;
 using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.VBEditor.WindowsApi
 {
     internal class SubclassManager : IDisposable
     {
-        //private static readonly Logger SubclassLogger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger SubclassLogger = LogManager.GetCurrentClassLogger();
         private static readonly object ThreadLock = new object();
         private readonly ConcurrentDictionary<IntPtr, SubclassingWindow> _subclasses = new ConcurrentDictionary<IntPtr, SubclassingWindow>();
 
@@ -66,13 +66,13 @@ namespace Rubberduck.VBEditor.WindowsApi
                 {
                     codePane.ReleasingHandle += SubclassRemoved;
                     codePane.CaptionChanged += AssociateCodePane;
-                    //SubclassLogger.Trace($"Subclassed hWnd 0x{hwnd.ToInt64():X8} as CodePane.");
+                    SubclassLogger.Trace($"Subclassed hWnd 0x{hwnd.ToInt64():X8} as CodePane.");
                     return codePane;
                 }
             }
             catch (Exception ex)
             {
-                //SubclassLogger.Error(ex);
+                SubclassLogger.Error(ex);
             }
             codePane.Dispose();
             return null;
@@ -86,13 +86,13 @@ namespace Rubberduck.VBEditor.WindowsApi
                 if (_subclasses.TryAdd(hwnd, designer))
                 {
                     designer.ReleasingHandle += SubclassRemoved;
-                    //SubclassLogger.Trace($"Subclassed hWnd 0x{hwnd.ToInt64():X8} as DesignerWindow.");
+                    SubclassLogger.Trace($"Subclassed hWnd 0x{hwnd.ToInt64():X8} as DesignerWindow.");
                     return designer;
                 }                
             }
             catch (Exception ex)
             {
-                //SubclassLogger.Error(ex);
+                SubclassLogger.Error(ex);
             }
             designer.Dispose();
             return null;
@@ -104,11 +104,11 @@ namespace Rubberduck.VBEditor.WindowsApi
 
             if (_subclasses.TryRemove(subclass.Hwnd, out _))
             {
-                //SubclassLogger.Trace($"Releasing subclass for hWnd 0x{subclass.Hwnd.ToInt64():X8}.");
+                SubclassLogger.Trace($"Releasing subclass for hWnd 0x{subclass.Hwnd.ToInt64():X8}.");
             }
             else
             {
-                //SubclassLogger.Warn($"Untracked subclass with hWnd 0x{subclass.Hwnd.ToInt64():X8} released itself.");
+                SubclassLogger.Warn($"Untracked subclass with hWnd 0x{subclass.Hwnd.ToInt64():X8} released itself.");
             }
         }
 
@@ -116,7 +116,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         {
             var subclass = (CodePaneSubclass)sender;
             subclass.VbeObject = VbeNativeServices.GetCodePaneFromHwnd(subclass.Hwnd);
-            //SubclassLogger.Trace($"CodePane subclass for hWnd 0x{subclass.Hwnd.ToInt64():X8} associated itself with its VBE object.");
+            SubclassLogger.Trace($"CodePane subclass for hWnd 0x{subclass.Hwnd.ToInt64():X8} associated itself with its VBE object.");
         }
 
         public void Dispose()

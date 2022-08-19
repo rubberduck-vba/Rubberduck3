@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rubberduck.InternalApi.WindowsApi;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
