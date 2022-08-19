@@ -17,7 +17,7 @@ using Rubberduck.UI.OfficeMenus;
 using Rubberduck.VersionCheck;
 using Application = System.Windows.Forms.Application;
 
-namespace Rubberduck
+namespace Rubberduck.Core
 {
     public sealed class App : IDisposable
     {

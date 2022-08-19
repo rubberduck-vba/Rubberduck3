@@ -1,5 +1,6 @@
-﻿//using Castle.Windsor;
+﻿using Castle.Windsor;
 using Extensibility;
+using NLog;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -10,7 +11,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
 using System.Windows.Forms;
-using NLog;
+using Rubberduck.Core;
 using Rubberduck.Core.Splash;
 using Rubberduck.Resources;
 using Rubberduck.Resources.Registration;
@@ -24,7 +25,6 @@ using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.VbeRuntime;
 using Rubberduck.VersionCheck;
-using Castle.Windsor;
 using Rubberduck.InternalApi.WindowsApi;
 
 namespace Rubberduck
