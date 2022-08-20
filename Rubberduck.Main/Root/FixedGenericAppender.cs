@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Rubberduck.Root
 {
-    class FixedGenericAppender : IGenericImplementationMatchingStrategy
+    internal class FixedGenericAppender : IGenericImplementationMatchingStrategy
     {
         private readonly Type[] closingGenerics;
 

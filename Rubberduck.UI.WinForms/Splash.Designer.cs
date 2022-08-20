@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.UI.Splash
+﻿namespace Rubberduck.UI.WinForms
 {
     partial class Splash
     {
@@ -34,6 +34,7 @@
             this.StatusLabel = new System.Windows.Forms.Label();
             this.ContainerBox = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.ContainerBox)).BeginInit();
+            this.ContainerBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // VersionLabel
@@ -42,15 +43,15 @@
             this.VersionLabel.AccessibleName = "VersionLabel";
             this.VersionLabel.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
             this.VersionLabel.AutoSize = true;
+            this.VersionLabel.BackColor = System.Drawing.Color.Transparent;
             this.VersionLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.VersionLabel.Location = new System.Drawing.Point(13, 9);
             this.VersionLabel.Name = "VersionLabel";
-            this.VersionLabel.Size = new System.Drawing.Size(114, 21);
+            this.VersionLabel.Size = new System.Drawing.Size(143, 28);
             this.VersionLabel.TabIndex = 2;
             this.VersionLabel.Text = "v3.0.x (debug)";
             this.VersionLabel.UseMnemonic = false;
             this.VersionLabel.UseWaitCursor = true;
-            this.VersionLabel.BackColor = System.Drawing.Color.Transparent;
             // 
             // TitleLabel
             // 
@@ -79,6 +80,7 @@
             this.StatusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.StatusLabel.AutoEllipsis = true;
+            this.StatusLabel.BackColor = System.Drawing.Color.Transparent;
             this.StatusLabel.Font = new System.Drawing.Font("Segoe UI Light", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.StatusLabel.Location = new System.Drawing.Point(12, 332);
             this.StatusLabel.Name = "StatusLabel";
@@ -87,13 +89,15 @@
             this.StatusLabel.Text = "initializing...";
             this.StatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.StatusLabel.UseWaitCursor = true;
-            this.StatusLabel.BackColor = System.Drawing.Color.Transparent;
             // 
             // ContainerBox
             // 
             this.ContainerBox.AccessibleDescription = "Splash artwork";
             this.ContainerBox.AccessibleName = "ContainerBox";
             this.ContainerBox.AccessibleRole = System.Windows.Forms.AccessibleRole.Graphic;
+            this.ContainerBox.Controls.Add(this.StatusLabel);
+            this.ContainerBox.Controls.Add(this.TitleLabel);
+            this.ContainerBox.Controls.Add(this.VersionLabel);
             this.ContainerBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ContainerBox.Image = ((System.Drawing.Image)(resources.GetObject("ContainerBox.Image")));
             this.ContainerBox.InitialImage = null;
@@ -102,16 +106,14 @@
             this.ContainerBox.Size = new System.Drawing.Size(320, 360);
             this.ContainerBox.TabIndex = 0;
             this.ContainerBox.TabStop = false;
-            this.ContainerBox.Controls.Add(this.StatusLabel);
-            this.ContainerBox.Controls.Add(this.TitleLabel);
-            this.ContainerBox.Controls.Add(this.VersionLabel);
+            this.ContainerBox.UseWaitCursor = true;
             // 
             // Splash
             // 
             this.AccessibleDescription = "Splash/startup screen";
             this.AccessibleName = "Splash";
             this.AccessibleRole = System.Windows.Forms.AccessibleRole.Window;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
             this.BackColor = System.Drawing.SystemColors.Control;
@@ -130,13 +132,14 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Rubberduck";
             this.TopMost = true;
             this.UseWaitCursor = true;
             ((System.ComponentModel.ISupportInitialize)(this.ContainerBox)).EndInit();
+            this.ContainerBox.ResumeLayout(false);
+            this.ContainerBox.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

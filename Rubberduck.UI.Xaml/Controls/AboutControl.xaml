@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Rubberduck.UI.Xaml.Controls"
-             xmlns:vm="clr-namespace:Rubberduck.UI.About;assembly=Rubberduck.UI"
+             xmlns:vm="clr-namespace:Rubberduck.UI.Abstract;assembly=Rubberduck.UI"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type vm:IAboutControlViewModel}, IsDesignTimeCreatable=False}"
              KeyDown="OnKeyDownHandler">

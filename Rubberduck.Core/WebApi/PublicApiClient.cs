@@ -7,9 +7,9 @@ namespace Rubberduck.Core.WebApi
 {
     public class PublicApiClient : ApiClientBase, IPublicApiClient
     {
-        private static readonly string FeatureEndpoint = "Public/Feature";
-        private static readonly string FeatureItemEndpoint = "Public/FeatureItem";
-        private static readonly string TagsEndpoint = "Public/Tags";
+        private static readonly string FeatureEndpoint = "Feature";
+        private static readonly string FeatureItemEndpoint = "FeatureItem";
+        private static readonly string TagsEndpoint = "Tags";
 
         public async Task<IEnumerable<Tag>> GetLatestTagsAsync()
         {

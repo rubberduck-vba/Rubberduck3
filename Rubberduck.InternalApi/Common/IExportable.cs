@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.Common
+﻿namespace Rubberduck.InternalApi.Common
 {
     /// <summary>
     /// Allows exporting to a variety of formats

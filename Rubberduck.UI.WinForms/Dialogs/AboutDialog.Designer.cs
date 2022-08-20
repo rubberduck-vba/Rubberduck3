@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.UI.About
+﻿namespace Rubberduck.UI.WinForms.Dialogs
 {
     partial class AboutDialog
     {
@@ -29,25 +29,13 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutDialog));
-            this.AboutControlHost = new System.Windows.Forms.Integration.ElementHost();
             this.SuspendLayout();
-            // 
-            // AboutControlHost
-            // 
-            this.AboutControlHost.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.AboutControlHost.Location = new System.Drawing.Point(0, 0);
-            this.AboutControlHost.Name = "AboutControlHost";
-            this.AboutControlHost.Size = new System.Drawing.Size(504, 441);
-            this.AboutControlHost.TabIndex = 2;
-            this.AboutControlHost.TabStop = false;
-            this.AboutControlHost.Child = null;
             // 
             // AboutDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(504, 441);
-            this.Controls.Add(this.AboutControlHost);
+            this.ClientSize = new System.Drawing.Size(584, 473);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -62,7 +50,5 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Integration.ElementHost AboutControlHost;
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Rubberduck.UI;
-using Rubberduck.UI.Splash;
+using Rubberduck.UI.Abstract;
 using Rubberduck.VersionCheck;
 namespace Rubberduck.Core.Splash
 {
@@ -7,13 +7,13 @@ namespace Rubberduck.Core.Splash
     {
         public SplashViewModel(IVersionCheckService versionCheck)
         {
-            Version = $"v{versionCheck.CurrentVersion}";
+            Version = $"v{versionCheck.VersionString}";
         }
 
         public string Version { get; }
 
         private string _status = "Initializing..."; // TODO move to .resx
-        public string InitializationStatus 
+        public string CurrentStatus 
         {
             get => _status;
             private set 
@@ -26,9 +26,9 @@ namespace Rubberduck.Core.Splash
             }
         }
 
-        public void UpdateInitializationStatus(string status)
+        public void UpdateStatus(string status)
         {
-            InitializationStatus = status;
+            CurrentStatus = status;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace Rubberduck.UI.About
+namespace Rubberduck.UI.Abstract
 {
     public interface IAboutControlViewModel
     {
@@ -13,5 +13,7 @@ namespace Rubberduck.UI.About
 
         ICommand UriCommand { get; }
         ICommand ViewLogCommand { get; }
+
+        void CopyVersionInfo();
     }
 }

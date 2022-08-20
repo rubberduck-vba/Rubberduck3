@@ -8,16 +8,23 @@ using Application = System.Windows.Forms.Application;
 using Rubberduck.VersionCheck;
 using Rubberduck.Resources.About;
 using System.Windows.Input;
+using System.Windows;
+using Rubberduck.Interaction.MessageBox;
+using Rubberduck.UI.Abstract;
+using Rubberduck.UI;
 
-namespace Rubberduck.UI.About
+namespace Rubberduck.Core.About
 {
     public class AboutControlViewModel : ViewModelBase, IAboutControlViewModel
     {
+        private readonly IMessageBox _messageBox;
         private readonly IVersionCheckService _version;
         private readonly IWebNavigator _web;
 
-        public AboutControlViewModel(IVersionCheckService version, IWebNavigator web)
+        public AboutControlViewModel(IVersionCheckService version, IWebNavigator web, IMessageBox messageBox)
         {
+            _messageBox = messageBox;
+
             _version = version;
             _web = web;
 
@@ -44,6 +51,19 @@ namespace Rubberduck.UI.About
         public ICommand UriCommand { get; }
 
         public ICommand ViewLogCommand { get; }
+
+        public void CopyVersionInfo()
+        {
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine(Version);
+            sb.AppendLine(OperatingSystem);
+            sb.AppendLine(HostProduct);
+            sb.AppendLine(HostVersion);
+            sb.AppendLine(HostExecutable);
+
+            Clipboard.SetText(sb.ToString());
+            _messageBox.Message(AboutUI.AboutWindow_CopyVersionMessage);
+        }
 
         private void ExecuteUri(object parameter) => _web.Navigate(((Uri)parameter));
 

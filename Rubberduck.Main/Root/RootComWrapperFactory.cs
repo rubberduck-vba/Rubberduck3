@@ -9,7 +9,7 @@ namespace Rubberduck.Root
     // Resolves SafeComWrapper providers from raw COM vbe and addin objects.
     // We need these so early that IoC hasn't been set up yet.
     // Using the Provider pattern to avoid outgoing dependencies to COM interop assemblies.
-    public static class RootComWrapperFactory
+    internal static class RootComWrapperFactory
     {
         public static IVBE GetVbeWrapper(object vbeComObject)
         {

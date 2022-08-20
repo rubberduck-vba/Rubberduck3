@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common.Hotkeys;
-using Rubberduck.InternalApi.Extensions;
 
 namespace Rubberduck.Settings
 {
@@ -68,7 +67,7 @@ namespace Rubberduck.Settings
         public HotkeySettings(IEnumerable<HotkeySetting> defaultSettings)
         {
             _defaultSettings = defaultSettings;
-            _settings = defaultSettings.ToHashSet();
+            _settings = defaultSettings?.ToHashSet();
         }
 
         public bool Equals(HotkeySettings other)

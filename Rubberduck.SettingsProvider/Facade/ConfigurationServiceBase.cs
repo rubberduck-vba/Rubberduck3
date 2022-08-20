@@ -47,7 +47,7 @@ namespace Rubberduck.SettingsProvider
 
         public virtual T ReadDefaults()
         {
-            return Defaults.Default;
+            return Defaults?.Default;
         }
 
         protected void PersistValue(T settings)

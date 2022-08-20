@@ -45,18 +45,21 @@ namespace Rubberduck.Common
             _hooks.Clear();
 
             var config = _config.Read();
-            var settings = config.UserSettings.HotkeySettings;
+            var settings = config.UserSettings.HotkeySettings.Settings;
 
-            foreach (var hotkeySetting in settings.Settings.Where(hotkeySetting => hotkeySetting.IsEnabled))
+            if (settings != null)
             {
-                var hotkey = _hotkeyFactory.Create(hotkeySetting, Hwnd);
-                if (hotkey != null)
+                foreach (var hotkeySetting in settings.Where(hotkeySetting => hotkeySetting.IsEnabled))
                 {
-                    AddHook(hotkey);
+                    var hotkey = _hotkeyFactory.Create(hotkeySetting, Hwnd);
+                    if (hotkey != null)
+                    {
+                        AddHook(hotkey);
+                    }
                 }
-            }
 
-            Attach();
+                Attach();
+            }
         }
 
         public IEnumerable<IAttachable> Hooks => _hooks;

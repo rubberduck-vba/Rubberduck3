@@ -18,7 +18,6 @@ using Rubberduck.Resources.Registration;
 using Rubberduck.Root;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
-using Rubberduck.UI.Splash;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.Events;
@@ -26,6 +25,8 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.VbeRuntime;
 using Rubberduck.VersionCheck;
 using Rubberduck.InternalApi.WindowsApi;
+using Rubberduck.UI.Abstract;
+using Rubberduck.UI.WinForms;
 
 namespace Rubberduck
 {
@@ -40,7 +41,6 @@ namespace Rubberduck
         ComDefaultInterface(typeof(IDTExtensibility2)),
         EditorBrowsable(EditorBrowsableState.Never)
     ]
-    // ReSharper disable once InconsistentNaming // note: underscore prefix hides class from COM API
     public class Extension : IDTExtensibility2
     {
         private IVBE _vbe;
@@ -60,7 +60,6 @@ namespace Rubberduck
 
         public void OnAddInsUpdate(ref Array custom) { }
 
-        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public void OnConnection(object Application, ext_ConnectMode ConnectMode, object AddInInst, ref Array custom)
         {
             try
@@ -126,7 +125,6 @@ namespace Rubberduck
             ShutdownAddIn();
         }
 
-        // ReSharper disable InconsistentNaming
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)
         {
             switch (RemoveMode)
@@ -199,12 +197,13 @@ namespace Rubberduck
 
                 if (_initialSettings?.CanShowSplash ?? false)
                 {
-                    var currentVersion = typeof(Splash).Assembly.GetName().Version;
+                    var currentVersion = GetType().Assembly.GetName().Version;
                     var versionCheckService = new VersionCheckService(null, currentVersion);
 
                     splashModel = new SplashViewModel(versionCheckService);
-                    splash = new Splash(splashModel);
+                    splashModel.UpdateStatus("Open-Source VBIDE Add-In");
 
+                    splash = new Splash(splashModel);
                     splash.Show();
                     splash.Refresh();
                 }
@@ -244,16 +243,16 @@ namespace Rubberduck
                 currentDomain.UnhandledException += HandleAppDomainException;
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
 
-                model.UpdateInitializationStatus("Initializing IoC container...");
+                model?.UpdateStatus("Initializing IoC container...");
                 _container = new WindsorContainer().Install(new RubberduckIoCInstaller(_vbe, _addin, _initialSettings, _vbeNativeApi, _beepInterceptor));
 
-                model.UpdateInitializationStatus("Resolving dependencies...");
+                model?.UpdateStatus("Resolving dependencies...");
                 _app = _container.Resolve<App>();
 
-                model.UpdateInitializationStatus("Starting add-in...");
+                model?.UpdateStatus("Starting add-in...");
                 _app.Startup();
 
-                model.UpdateInitializationStatus("Ready.");
+                model?.UpdateStatus("Rubberduck is ready");
                 _isInitialized = true;
             }
             catch (Exception e)
@@ -281,28 +280,58 @@ namespace Rubberduck
 
         private void ShutdownAddIn()
         {
+            _logger.Info("Rubberduck is shutting down.");
+
             var currentDomain = AppDomain.CurrentDomain;
             try
             {
-                _logger.Info("Rubberduck is shutting down.");
                 _logger.Trace("Unhooking VBENativeServices events...");
                 VbeNativeServices.UnhookEvents();
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+            }
+
+            try
+            {
+                _logger.Trace("Terminating VbeProvier...");
                 VbeProvider.Terminate();
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+            }
 
+            try
+            {
                 _logger.Trace("Releasing dockable hosts...");
-
                 using (var windows = _vbe.Windows)
                 {
                     windows.ReleaseDockableHosts();
                 }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+            }
 
+            try
+            {
                 if (_app != null)
                 {
                     _logger.Trace("Initiating App.Shutdown...");
                     _app.Shutdown();
                     _app = null;
                 }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+            }
 
+            try
+            {
                 if (_container != null)
                 {
                     _logger.Trace("Disposing IoC container...");

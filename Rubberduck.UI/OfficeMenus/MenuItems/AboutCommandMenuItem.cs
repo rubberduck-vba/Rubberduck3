@@ -1,6 +1,5 @@
 ﻿using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.UI.OfficeMenus;
-using System.Windows.Input;
 
 namespace Rubberduck.UI.Command.MenuItems
 {

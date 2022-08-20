@@ -16,7 +16,7 @@ namespace Rubberduck.Settings
     [XmlType(AnonymousType = true)]
     public class ToDoListSettings : ViewModelBase, IToDoListSettings, IEquatable<ToDoListSettings>
     {
-        private IEnumerable<ToDoMarker> _markers;
+        private IEnumerable<ToDoMarker> _markers = Enumerable.Empty<ToDoMarker>();
 
         [XmlArrayItem("ToDoMarker", IsNullable = false)]
         public ToDoMarker[] ToDoMarkers

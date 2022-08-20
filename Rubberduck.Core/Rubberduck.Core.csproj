@@ -32,6 +32,42 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Infralution.Localization.Wpf">
       <HintPath>..\libs\Infralution.Localization.Wpf.dll</HintPath>
@@ -92,8 +128,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
-    <Compile Include="ViewModels\AboutCommand.cs" />
-    <Compile Include="ViewModels\AboutControlViewModel.cs" />
+    <Compile Include="About\AboutCommand.cs" />
+    <Compile Include="VersionCheck\VersionCheckCommand.cs" />
+    <Compile Include="About\AboutControlViewModel.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />
     <Compile Include="Common\DeclarationIconCache.cs" />
     <Compile Include="Common\ExportFormatter.cs" />
@@ -153,7 +190,7 @@
     <Compile Include="WebApi\Model\IEntity.cs" />
     <Compile Include="WebApi\Model\Tag.cs" />
     <Compile Include="WebApi\Model\TagAsset.cs" />
-    <Compile Include="VersionCheck\VersionCheck.cs" />
+    <Compile Include="VersionCheck\VersionCheckService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj">
@@ -171,6 +208,10 @@
     <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
       <Project>{E794CFC3-3D9F-400F-88D9-69E929D8E8AF}</Project>
       <Name>Rubberduck.SettingsProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.UI.WinForms\Rubberduck.UI.WinForms.csproj">
+      <Project>{A1F54935-FE6D-4013-B618-5251DE4466CF}</Project>
+      <Name>Rubberduck.UI.WinForms</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.UI\Rubberduck.UI.csproj">
       <Project>{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}</Project>

@@ -83,7 +83,7 @@ namespace Rubberduck.Settings
 
             var oldAutoCompleteSettings = _autoCompleteProvider.Read();
             var newAutoCompleteSettings = toSerialize.UserSettings.AutoCompleteSettings;
-            var autoCompletesChanged = oldAutoCompleteSettings.Equals(newAutoCompleteSettings);
+            var autoCompletesChanged = oldAutoCompleteSettings?.Equals(newAutoCompleteSettings) ?? false;
 
             _generalProvider.Save(toSerialize.UserSettings.GeneralSettings);
             _hotkeyProvider.Save(toSerialize.UserSettings.HotkeySettings);

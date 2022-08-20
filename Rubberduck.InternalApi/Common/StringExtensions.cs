@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Rubberduck.Common
+namespace Rubberduck.InternalApi.Common
 {
     public static class StringExtensions
     {
