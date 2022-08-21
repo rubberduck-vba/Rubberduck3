@@ -14,6 +14,12 @@ namespace Rubberduck.UI.Xaml.Controls
             InitializeComponent();
         }
 
+        public AboutControl(IAboutControlViewModel viewModel)
+        {
+            DataContext = viewModel;
+            InitializeComponent();
+        }
+
         private IAboutControlViewModel ViewModel => DataContext as IAboutControlViewModel;
 
         private void OnKeyDownHandler(object sender, KeyEventArgs e)

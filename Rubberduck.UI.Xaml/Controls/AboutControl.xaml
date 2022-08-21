@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Rubberduck.UI.Xaml.Controls"
              xmlns:vm="clr-namespace:Rubberduck.UI.Abstract;assembly=Rubberduck.UI"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type vm:IAboutControlViewModel}, IsDesignTimeCreatable=False}"
+             d:Height="450" d:Width="600"
              KeyDown="OnKeyDownHandler">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -79,6 +79,7 @@
 
         <Border Grid.Row="0"  Grid.Column="0" Grid.ColumnSpan="3" Margin="10">
             <!--Image Source="{StaticResource RD}" Stretch="Uniform" /-->
+            <TextBlock Text="About Rubberduck" FontSize="20"></TextBlock>
         </Border>
         <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource SectionBorder}">
             <StackPanel Grid.Column="0" Grid.Row="1"
@@ -225,7 +226,7 @@ Ross Knudsen
 Simon Forsberg
 Stephen Bullen (Smart Indenter)
 @tommy9
-Wayne Phillips (vbWatchdog)
+Wayne Phillips (vbWatchdog, twinBASIC)
                         </TextBlock>
 
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_GeneralThanks}"
