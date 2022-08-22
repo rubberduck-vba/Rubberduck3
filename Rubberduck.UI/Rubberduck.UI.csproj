@@ -97,10 +97,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\IAboutControlViewModel.cs" />
+    <Compile Include="Abstract\IEditorControlViewModel.cs" />
     <Compile Include="Abstract\IStatusUpdate.cs" />
+    <Compile Include="Command\ComCommandBase.cs" />
     <Compile Include="Command\CommandBase.cs" />
     <Compile Include="Command\DelegateCommand.cs" />
     <Compile Include="Command\IMenuCommand.cs" />
+    <Compile Include="OfficeMenus\MenuItems\ShowEditorCommandMenuItem.cs" />
     <Compile Include="WPF\Converters\AccessibilityToIconConverter.cs" />
     <Compile Include="WPF\Converters\AnnotateDeclarationCommandCEVisibilityConverter.cs" />
     <Compile Include="WPF\Converters\AnnotateDeclarationCommandParameterToTupleConverter.cs" />

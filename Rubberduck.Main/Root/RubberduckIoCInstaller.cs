@@ -41,6 +41,8 @@ using Rubberduck.UI.Command;
 using System.Windows.Input;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.Core.About;
+using Rubberduck.UI.Xaml.Controls;
+using Rubberduck.Core.Editor;
 
 namespace Rubberduck.Root
 {
@@ -482,6 +484,7 @@ namespace Rubberduck.Root
         {
             return new Type[]
             {
+                typeof(ShowEditorShellCommandMenuItem),
                 //typeof(RefreshCommandMenuItem),
                 typeof(AboutCommandMenuItem),
                 //typeof(SettingsCommandMenuItem),
@@ -916,7 +919,7 @@ namespace Rubberduck.Root
         
         private void RegisterDockableUserControls(IWindsorContainer container)
         {
-            container.Register(Classes.FromAssemblyContaining<IDockableUserControl>()
+            container.Register(Classes.FromAssemblyContaining<EditorControl>()
                 .IncludeNonPublicTypes()
                 .BasedOn<IDockableUserControl>()
                 .LifestyleSingleton());
@@ -924,7 +927,7 @@ namespace Rubberduck.Root
 
         private void RegisterDockablePresenters(IWindsorContainer container)
         {
-            container.Register(Classes.FromAssemblyContaining<IDockablePresenter>()
+            container.Register(Classes.FromAssemblyContaining<EditorShellDockablePresenter>()
                 .IncludeNonPublicTypes()
                 .BasedOn<IDockablePresenter>()
                 .WithServiceSelf()

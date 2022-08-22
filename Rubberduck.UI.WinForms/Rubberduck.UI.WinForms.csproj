@@ -94,6 +94,12 @@
     <Compile Include="Dialogs\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="EditorShellWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EditorShellWindow.Designer.cs">
+      <DependentUpon>EditorShellWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Splash.cs">
       <SubType>Form</SubType>
@@ -105,6 +111,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Dialogs\AboutDialog.resx">
       <DependentUpon>AboutDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditorShellWindow.resx">
+      <DependentUpon>EditorShellWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Splash.resx">
       <DependentUpon>Splash.cs</DependentUpon>

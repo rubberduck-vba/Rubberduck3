@@ -27,18 +27,13 @@ namespace Rubberduck.UI
         private readonly IAddIn _addin;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IWindow _window;
-        //private readonly WindowSettings _settings;  //Storing this really doesn't matter - it's only checked on startup and never persisted.
 
-        protected DockableToolwindowPresenter(IVBE vbe, IAddIn addin, IDockableUserControl view /*IConfigurationService<WindowSettings> settingsProvider*/)
+        protected DockableToolwindowPresenter(IVBE vbe, IAddIn addin, IDockableUserControl view)
         {
             _vbe = vbe;
             _addin = addin;
             Logger.Trace($"Initializing Dockable Panel ({GetType().Name})");
             UserControl = view as UserControl;
-            //if (settingsProvider != null)
-            //{
-            //    _settings = settingsProvider.Read();
-            //}
             _window = CreateToolWindow(view);
         }
 

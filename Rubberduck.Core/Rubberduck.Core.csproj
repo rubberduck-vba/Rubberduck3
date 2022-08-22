@@ -129,6 +129,8 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="About\AboutCommand.cs" />
+    <Compile Include="Editor\EditorShellDockablePresenter.cs" />
+    <Compile Include="Editor\ShowEditorShellCommand.cs" />
     <Compile Include="VersionCheck\VersionCheckCommand.cs" />
     <Compile Include="About\AboutControlViewModel.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />
