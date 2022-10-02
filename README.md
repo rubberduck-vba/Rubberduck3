@@ -11,3 +11,7 @@ Because Rubberduck is using IoC and DI, it could have been technically possible 
 We start with a bare-bones VBIDE add-in that spawns a splash screen, proceeds to initialize things, and starts up the `Application`, creates a menu with commands - showing the About dialog, and the _Rubberduck Editor_, which spawns a dockable toolwindow that contains a (bare-bones) XAML document (AvalonEdit).
 
 We have the Rubberduck.VBEditor assemblies, but by implementing our own editor we get to finally be in charge and ignore every single limitation of the VBE; we get to just _make_ Rubberduck into the tool we always wanted it to be.
+
+---
+
+Project started from scratch with VS2022, successfully tested with a Microsoft Excel 365 host on Windows 11.
