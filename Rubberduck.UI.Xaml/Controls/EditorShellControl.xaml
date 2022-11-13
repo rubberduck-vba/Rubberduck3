@@ -78,7 +78,7 @@
 
                                     <ui:BindableTextEditor x:Name="EditorPane"
                                         Grid.Row="1" Grid.ColumnSpan="2"
-                                        FontFamily="{Binding FontFamily}" 
+                                        FontFamily="Consolas" 
                                         FontSize="{Binding FontSize}" 
                                         ShowLineNumbers="{Binding ShowLineNumbers}"
                                         Text="{Binding ModuleContent}"

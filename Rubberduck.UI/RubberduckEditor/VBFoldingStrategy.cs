@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Folding;
-using NLog.LayoutRenderers;
 
 namespace Rubberduck.UI.RubberduckEditor
 {
@@ -17,35 +16,55 @@ namespace Rubberduck.UI.RubberduckEditor
         public string Ending { get; set; }
     }
 
+    public class CodeBlockInfo
+    {
+        public CodeBlockInfo(string startToken, string endToken, string startLineCompletion = null)
+        {
+            StartToken = startToken;
+            EndToken = endToken;
+            StartLineCompletion = startLineCompletion;
+        }
+
+        public string StartLineCompletion { get; }
+        public string StartToken { get; }
+        public string EndToken { get; }
+    }
+
     public class VBFoldingStrategy : IFoldingStrategy
     {
-        private static readonly string[] _keywords = new[] 
+        public static IDictionary<string,CodeBlockInfo> BlockInfo { get; } = new[] 
         { 
-            "Sub",
-            "Public Sub",
-            "Private Sub",
-            "Friend Sub",
-            "Function",
-            "Public Function",
-            "Private Function",
-            "Friend Function",
-            "Property",
-            "Public Property",
-            "Private Property",
-            "Friend Property",
-            "Type",
-            "Public Type",
-            "Private Type",
-            "Friend Type",
-            "Enum",
-            "Public Enum",
-            "Private Enum",
-            "Friend Enum",
-        };
+            new CodeBlockInfo("Sub", "End Sub", "()"),
+            new CodeBlockInfo("Public Sub", "End Sub", "()"),
+            new CodeBlockInfo("Private Sub", "End Sub", "()"),
+            new CodeBlockInfo("Friend Sub", "End Sub", "()"),
+            new CodeBlockInfo("Function", "End Function", "()"),
+            new CodeBlockInfo("Public Function", "End Function", "()"),
+            new CodeBlockInfo("Private Function", "End Function", "()"),
+            new CodeBlockInfo("Friend Function", "End Function", "()"),
+            new CodeBlockInfo("Property", "End Property", "()"),
+            new CodeBlockInfo("Public Property", "End Property", "()"),
+            new CodeBlockInfo("Private Property", "End Property", "()"),
+            new CodeBlockInfo("Friend Property", "End Property", "()"),
+            new CodeBlockInfo("Type", "End Type"),
+            new CodeBlockInfo("Public Type", "End Type"),
+            new CodeBlockInfo("Private Type", "End Type"),
+            new CodeBlockInfo("Friend Type", "End Type"),
+            new CodeBlockInfo("Enum", "End Enum"),
+            new CodeBlockInfo("Public Enum", "End Enum"),
+            new CodeBlockInfo("Private Enum", "End Enum"),
+            new CodeBlockInfo("Friend Enum", "End Enum"),
+            new CodeBlockInfo("With", "End With"),
+            new CodeBlockInfo("If", "End If", "Then"),
+            new CodeBlockInfo("For", "Next"),
+            new CodeBlockInfo("While", "Wend"),
+            new CodeBlockInfo("Do", "Loop"),
+            new CodeBlockInfo("Select Case", "End Select")
+        }.ToDictionary(e => e.StartToken);
 
         public void UpdateFoldings(FoldingManager manager, TextDocument document)
         {
-            var foldings = CreateNewFoldings(document, out var firstErrorOffset);
+            var foldings = CreateNewFoldings(document, out var firstErrorOffset).OrderBy(e => e.StartOffset);
             manager.UpdateFoldings(foldings, firstErrorOffset);
         }
 
@@ -72,40 +91,42 @@ namespace Rubberduck.UI.RubberduckEditor
 
             var line = reader.ReadLine();
             var lineNumber = 1;
-            while (line != null)
+            while (line != null && lineNumber < document.LineCount)
             {
                 var trimmed = line.TrimStart();
-                var keyword = _keywords.SingleOrDefault(k => trimmed.StartsWith(k + " ", StringComparison.InvariantCultureIgnoreCase));
-                if (keyword != null)
+                if (trimmed.Length > 0)
                 {
-                    var ending = "End " + keyword.Split(' ').Last();
-                    var offset = document.GetOffset(lineNumber, 0);
+                    var blockInfo = BlockInfo.Values.SingleOrDefault(k => trimmed.StartsWith(k.StartToken + " ", StringComparison.InvariantCultureIgnoreCase));
+                    if (blockInfo != null)
+                    {
+                        var ending = blockInfo.EndToken;
+                        var offset = document.GetOffset(lineNumber, 0);
 
-                    var start = new FoldStart
-                    {
-                        StartLine = lineNumber,
-                        StartOffset = offset,
-                        Ending = ending,
-                        Name = trimmed,
-                    };
-                    stack.Push(start);
-                }
-                else if(stack.Any())
-                {
-                    if (trimmed.StartsWith(stack.Peek().Ending))
-                    {
-                        var start = stack.Pop();
-                        var offset = document.GetOffset(lineNumber, line.Length + 1);
-                        var folding = new NewFolding(start.StartOffset, offset)
+                        var start = new FoldStart
                         {
-                            Name = start.Name,
-                            IsDefinition = true,
-                            DefaultClosed = false,
+                            StartLine = lineNumber,
+                            StartOffset = offset,
+                            Ending = ending,
+                            Name = trimmed,
                         };
-                        markers.Add(folding);
+                        stack.Push(start);
+                    }
+                    else if (stack.Any())
+                    {
+                        if (trimmed.StartsWith(stack.Peek().Ending))
+                        {
+                            var start = stack.Pop();
+                            var offset = document.GetOffset(lineNumber, line.Length + 1);
+                            var folding = new NewFolding(start.StartOffset, offset)
+                            {
+                                Name = start.Name,
+                                IsDefinition = true,
+                                DefaultClosed = false,
+                            };
+                            markers.Add(folding);
+                        }
                     }
                 }
-
                 line = reader.ReadLine();
                 lineNumber++;
             }
