@@ -919,7 +919,7 @@ namespace Rubberduck.Root
         
         private void RegisterDockableUserControls(IWindsorContainer container)
         {
-            container.Register(Classes.FromAssemblyContaining<EditorControl>()
+            container.Register(Classes.FromAssemblyContaining<EditorShellControl>()
                 .IncludeNonPublicTypes()
                 .BasedOn<IDockableUserControl>()
                 .LifestyleSingleton());

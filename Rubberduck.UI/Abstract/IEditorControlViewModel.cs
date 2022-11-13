@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.UI.Abstract
 {
-    public interface IEditorControlViewModel : INotifyPropertyChanged
+    public interface IEditorControlViewModel : INotifyPropertyChanged, IStatusUpdate
     {
-        string FontFamily { get; }
-        string FontSize { get; }
-        bool ShowLineNumbers { get; }
+        string FontFamily { get; set; }
+        string FontSize { get; set; }
+        bool ShowLineNumbers { get; set; }
+        string ModuleContent { get; set; }
     }
 }

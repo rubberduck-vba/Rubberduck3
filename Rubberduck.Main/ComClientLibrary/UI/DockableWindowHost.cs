@@ -528,7 +528,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI
                     case (uint)WM.CONTEXTMENU:
                         if (_windowState == ToolWindowState.Undockable)
                         {
-                            DisplayUndockableContextMenu(hWnd, lParam);
+                            //DisplayUndockableContextMenu(hWnd, lParam);
                         }
                         break;
                     case (uint)WM.COMMAND:

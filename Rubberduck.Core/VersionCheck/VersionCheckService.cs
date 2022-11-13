@@ -45,7 +45,7 @@ namespace Rubberduck.VersionCheck
                     .OrderByDescending(tag => tag.Version)
                     .FirstOrDefault();
 
-                return _latestTag.Version;
+                return _latestTag?.Version;
             }
             catch
             {

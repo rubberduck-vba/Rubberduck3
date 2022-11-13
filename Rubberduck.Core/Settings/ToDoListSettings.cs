@@ -25,7 +25,8 @@ namespace Rubberduck.Settings
             set
             {
                 //Only take the first marker if there are duplicates.
-                _markers = value.GroupBy(m => m.Text).Select(marker => marker.First()).ToArray();
+                _markers = value?.GroupBy(m => m.Text).Select(marker => marker.First()).ToArray() 
+                    ?? Enumerable.Empty<ToDoMarker>();
             }
         }
 

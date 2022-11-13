@@ -18,16 +18,11 @@ namespace Rubberduck.UI.Xaml.Controls
     /// <summary>
     /// Interaction logic for EditorControl.xaml
     /// </summary>
-    public partial class EditorControl : UserControl
+    public partial class EditorShellControl : UserControl
     {
-        public EditorControl()
+        public EditorShellControl()
         {
             InitializeComponent();
-        }
-
-        private void TextEditor_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-
         }
     }
 }
