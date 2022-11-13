@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using ICSharpCode.AvalonEdit.Folding;
+using Rubberduck.UI.RubberduckEditor;
+using System;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Rubberduck.UI.Xaml.Controls
 {
@@ -20,9 +10,21 @@ namespace Rubberduck.UI.Xaml.Controls
     /// </summary>
     public partial class EditorShellControl : UserControl
     {
+        public IFoldingStrategy FoldingStrategy { get; } = new VBFoldingStrategy();
+
+        private readonly FoldingManager _foldingManager;
+
         public EditorShellControl()
         {
             InitializeComponent();
+
+            EditorPane.TextChanged += EditorPane_TextChanged;
+            _foldingManager = FoldingManager.Install(EditorPane.TextArea);
+        }
+
+        private void EditorPane_TextChanged(object sender, EventArgs e)
+        {
+            FoldingStrategy?.UpdateFoldings(_foldingManager, EditorPane.Document);
         }
     }
 }
