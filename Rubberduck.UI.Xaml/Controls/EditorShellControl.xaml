@@ -80,11 +80,11 @@
                                         Grid.Row="1" Grid.ColumnSpan="2"
                                         FontFamily="Consolas" 
                                         FontSize="{Binding FontSize}" 
-                                        ShowLineNumbers="{Binding ShowLineNumbers}"
+                                        ShowLineNumbers="True"
                                         Text="{Binding ModuleContent}"
                                         SyntaxHighlighting="VB"
                                         HorizontalScrollBarVisibility="Auto"
-                                        VerticalScrollBarVisibility="Auto"
+                                        VerticalScrollBarVisibility="Visible"
                                         IsReadOnly="False"
                                         Padding="8"
                                         WordWrap="False">

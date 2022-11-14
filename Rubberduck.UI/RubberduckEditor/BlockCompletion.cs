@@ -6,11 +6,11 @@ using System.Linq;
 
 namespace Rubberduck.UI.RubberduckEditor
 {
-    public class BlockCompletion
+    public class BlockCompletionService
     {
         private readonly IEnumerable<IBlockCompletionStrategy> _strategies;
 
-        public BlockCompletion(IEnumerable<IBlockCompletionStrategy> strategies)
+        public BlockCompletionService(IEnumerable<IBlockCompletionStrategy> strategies)
         {
             _strategies = strategies ?? Enumerable.Empty<IBlockCompletionStrategy>();
         }
