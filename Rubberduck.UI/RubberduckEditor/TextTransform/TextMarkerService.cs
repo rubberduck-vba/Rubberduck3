@@ -30,6 +30,7 @@ namespace Rubberduck.UI.RubberduckEditor.TextTransform
     public class TextMarkerService : DocumentColorizingTransformer, IBackgroundRenderer, ITextMarkerService, ITextViewConnect
     {
         private readonly TextSegmentCollection<TextMarker> _markers = new TextSegmentCollection<TextMarker>();
+        private readonly HashSet<(int startOffset, int length)> _markerPositions = new HashSet<(int startOffset, int length)>();
         private readonly List<TextView> _textViews = new List<TextView>();
         private readonly TextDocument _document;
 
@@ -53,10 +54,15 @@ namespace Rubberduck.UI.RubberduckEditor.TextTransform
                 throw new ArgumentOutOfRangeException(nameof(length), "Length must not be negative and start offset + length cannot exceed the document length.");
             }
 
-            var marker = new TextMarker(this, startOffset, length);
-            _markers.Add(marker);
+            if (_markerPositions.Add((startOffset, length)))
+            {
+                var marker = new TextMarker(this, startOffset, length);
+                _markers.Add(marker);
 
-            return marker;
+                return marker;
+            }
+
+            return null;
         }
 
         public IEnumerable<ITextMarker> GetMarkersAtOffset(int offset)
@@ -77,6 +83,7 @@ namespace Rubberduck.UI.RubberduckEditor.TextTransform
                 if (predicate.Invoke(marker))
                 {
                     Remove(marker);
+                    _markerPositions.Remove((marker.StartOffset, marker.Length));
                 }
             }
         }
@@ -199,20 +206,20 @@ namespace Rubberduck.UI.RubberduckEditor.TextTransform
                             }
                             geometry.Freeze();
 
-                            var markerPen = new Pen(markerBrush, 1);
+                            var markerPen = new Pen(markerBrush, 0.5);
                             markerPen.Freeze();
 
                             drawingContext.DrawGeometry(Brushes.Transparent, markerPen, geometry);
                         }
                         if ((marker.MarkerTypes & TextMarkerTypes.NormalUnderline) != 0)
                         {
-                            var markerPen = new Pen(markerBrush, 1);
+                            var markerPen = new Pen(markerBrush, 0.5);
                             markerPen.Freeze();
                             drawingContext.DrawLine(markerPen, startPoint, endPoint);
                         }
                         if ((marker.MarkerTypes & TextMarkerTypes.DottedUnderline) != 0)
                         {
-                            var markerPen = new Pen(markerBrush, 1);
+                            var markerPen = new Pen(markerBrush, 0.5);
                             markerPen.DashStyle = DashStyles.Dot;
                             markerPen.Freeze();
                             drawingContext.DrawLine(markerPen, startPoint, endPoint);

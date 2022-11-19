@@ -69,6 +69,9 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

@@ -3,146 +3,72 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:avalonDock="https://github.com/Dirkster99/AvalonDock"
              xmlns:vm="clr-namespace:Rubberduck.UI.Abstract;assembly=Rubberduck.UI"
-             xmlns:ui="clr-namespace:Rubberduck.UI.WPF;assembly=Rubberduck.UI"
-             mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance {x:Type vm:IEditorControlViewModel}, IsDesignTimeCreatable=False}"
+             xmlns:local="clr-namespace:Rubberduck.UI.Xaml.Controls" 
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance {x:Type vm:IEditorShellViewModel}, IsDesignTimeCreatable=False}"
              d:DesignHeight="600" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Styles/ComboBoxTemplate.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <BitmapImage x:Key="CloseIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-button.png" />
         </ResourceDictionary>
     </UserControl.Resources>
     
-    <Grid>
+    <!-- TODO Dragablz -->
+    <Grid Margin="2">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" /> <!-- document panel -->
+            <RowDefinition Height="Auto" /> <!-- bottom panel -->
+            <RowDefinition Height="Auto" /> <!-- status bar -->
         </Grid.RowDefinitions>
 
-        <DockingManager x:Name="DockManager" Grid.Row="0">
-            
-            <DockingManager.DocumentHeaderTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <!-- TODO add icon -->
-                        <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" />
-                    </StackPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" /> <!-- left panel -->
+            <ColumnDefinition Width="Auto" /> <!-- left panel grip -->
+            <ColumnDefinition Width="*" /> <!-- document panel -->
+            <ColumnDefinition Width="Auto" /> <!-- right panel -->
+        </Grid.ColumnDefinitions>
+
+        <TabControl TabStripPlacement="Bottom">
+            <TabItem Header="Code Explorer">
+                <Grid MinWidth="220">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                </Grid>
+                <!-- TODO CodeExplorerControl -->
+            </TabItem>
+            <TabItem Header="Properties">
+                <!-- TODO PropertyGridControl -->
+            </TabItem>
+        </TabControl>
+
+        <GridSplitter Grid.Column="1" Width="5" />
+
+        <TabControl Grid.Column="2" ItemsSource="{Binding Documents}">
+            <TabControl.ItemTemplate>
+                <DataTemplate DataType="vm:IEditorTabViewModel">
+                    <DockPanel MinWidth="72">
+                        <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
+                        <Image Source="{DynamicResource CloseIcon}" DockPanel.Dock="Right" Height="16" Width="16" Margin="0,0,-24,0" />
+                    </DockPanel>
                 </DataTemplate>
-            </DockingManager.DocumentHeaderTemplate>
-
-            <LayoutRoot>
-                <LayoutPanel Orientation="Horizontal">
-
-                    <LayoutAnchorablePaneGroup DockWidth="300">
-                        <LayoutAnchorablePane>
-                            <LayoutAnchorable ContentId="CodeExplorer" Title="Code Explorer">
-                                <!-- TODO add code explorer here -->
-                            </LayoutAnchorable>
-                            <LayoutAnchorable ContentId="Properties" Title="Properties">
-                                <!-- TODO add properties explorer here -->
-                            </LayoutAnchorable>
-                            <LayoutAnchorable ContentId="TestExplorer" Title="Test Explorer">
-                                <!-- TODO add test explorer here -->
-                            </LayoutAnchorable>
-                        </LayoutAnchorablePane>
-                    </LayoutAnchorablePaneGroup>
-
-                    <LayoutDocumentPaneGroup>
-                        <LayoutDocumentPane>
-                            <LayoutDocument>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <!-- TODO: bind available interfaces & event providers -->
-                                    <ComboBox Style="{DynamicResource CodePaneComboBoxStyle}" Grid.Row="0" Grid.Column="0" Height="24" Margin="4" VerticalContentAlignment="Center">
-                                        <ComboBoxItem Content="(General)" />
-                                    </ComboBox>
-
-                                    <!-- TODO: bind available members -->
-                                    <ComboBox Style="{DynamicResource CodePaneComboBoxStyle}" Grid.Row="0" Grid.Column="1" Height="24" Margin="4" VerticalContentAlignment="Center">
-                                        <ComboBoxItem Content="(Declarations)" />
-                                        <ComboBoxItem Content="DoSomething" />
-                                        <!-- TODO make an ItemTemplate with an icon for the members -->
-                                    </ComboBox>
-
-                                    <ui:BindableTextEditor x:Name="EditorPane"
-                                        Grid.Row="1" Grid.ColumnSpan="2"
-                                        FontFamily="Consolas" 
-                                        FontSize="{Binding FontSize}" 
-                                        ShowLineNumbers="True"
-                                        Text="{Binding ModuleContent}"
-                                        SyntaxHighlighting="VB"
-                                        HorizontalScrollBarVisibility="Auto"
-                                        VerticalScrollBarVisibility="Visible"
-                                        IsReadOnly="False"
-                                        Padding="8"
-                                        WordWrap="False">
-
-                                        <!-- TODO bind commands -->
-                                        <ui:BindableTextEditor.ContextMenu>
-                                            <ContextMenu>
-                                                <MenuItem Header="Cut"/>
-                                                <MenuItem Header="Copy"/>
-                                                <MenuItem Header="Paste"/>
-                                                <Separator />
-                                                <MenuItem Header="List Properties/Methods"/>
-                                                <MenuItem Header="List Constants"/>
-                                                <MenuItem Header="Quick Info"/>
-                                                <MenuItem Header="Parameter Info"/>
-                                                <MenuItem Header="Complete Word"/>
-                                                <Separator />
-                                                <!--MenuItem Header="Toggle"/-->
-                                                <!-- debugger: breakpoints, bookmarks -->
-                                                <MenuItem Header="Object Browser"/>
-                                                <Separator />
-                                                <!-- MenuItem Header="Add Watch"/-->
-                                                <!-- debugger: watches -->
-                                                <MenuItem Header="Peek Definition"/>
-                                                <MenuItem Header="Go To Definition"/>
-                                                <Separator />
-                                                <MenuItem Header="Hide"/>
-                                            </ContextMenu>
-                                        </ui:BindableTextEditor.ContextMenu>
-
-                                    </ui:BindableTextEditor>
-
-                                </Grid>
-                            </LayoutDocument>
-                        </LayoutDocumentPane>
-                    </LayoutDocumentPaneGroup>
-
-                    <LayoutAnchorablePaneGroup DockWidth="300">
-                        <LayoutAnchorablePane>
-                            <LayoutAnchorable ContentId="InspectionResults" Title="Inspection Results">
-                                <!-- TODO add inspection results here -->
-                            </LayoutAnchorable>
-                            <LayoutAnchorable ContentId="CodeMetrics" Title="CodeMetrics">
-                                <!-- TODO add code metrics here -->
-                            </LayoutAnchorable>
-                            <LayoutAnchorable ContentId="TodoItems" Title="TODO Items">
-                                <!-- TODO add todo items here -->
-                            </LayoutAnchorable>
-                        </LayoutAnchorablePane>
-                    </LayoutAnchorablePaneGroup>
-
-                </LayoutPanel>
-            </LayoutRoot>
-            
-        </DockingManager>
-
-        <StatusBar Grid.Row="1" Padding="2">
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <local:RubberduckEditorControl />
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+        
+        <!-- TODO StatusBarControl -->
+        <StatusBar Grid.Row="2" Grid.ColumnSpan="3" Padding="2">
             <TextBlock Text="Ready"></TextBlock>
         </StatusBar>
     </Grid>
+    
 </UserControl>

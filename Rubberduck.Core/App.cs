@@ -1,5 +1,4 @@
-﻿using Infralution.Localization.Wpf;
-using NLog;
+﻿using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,6 +16,7 @@ using Rubberduck.VersionCheck;
 using Application = System.Windows.Forms.Application;
 using System.Windows.Input;
 using Rubberduck.UI.OfficeMenus.MenuItems;
+using Infralution.Localization.Wpf;
 
 namespace Rubberduck.Core
 {
