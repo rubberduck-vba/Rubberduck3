@@ -15,7 +15,9 @@ namespace Rubberduck.Core.Editor
 {
     public class MemberInfoViewModel
     {
-        public string IconSource { get; set; }
+        private static readonly ImageSource MethodIcon = new BitmapImage(new Uri("pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ObjectMethod.png"));
+
+        public ImageSource IconSource { get; set; } = MethodIcon;
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public string DocString { get; set; }
@@ -26,31 +28,46 @@ namespace Rubberduck.Core.Editor
 
     public class EditorTabViewModel : ViewModelBase, IEditorTabViewModel
     {
+        private string _currentStatus;
+
+        public EditorShellViewModel Shell { get; set; }
+
         public string Title { get; set; }
         public string ModuleContent { get; set; }
         public IEditorSettings EditorSettings { get; set; }
 
-        public IEnumerable<MemberInfoViewModel> MemberList { get; set; } = new MemberInfoViewModel[] 
+        public IEnumerable<MemberInfoViewModel> MemberList { get; set; } = new MemberInfoViewModel[]
         {
             new MemberInfoViewModel
             {
                 DisplayName = "(declarations)",
                 Offset = 1,
+                IconSource = null
             },
             new MemberInfoViewModel
             {
                 Name = "DoSomething",
                 DisplayName = "DoSomething()",
                 DocString = "Does something, surely",
-                IconSource = "MethodIcon"
             }
         };
 
-        public string CurrentStatus { get; set; }
+        public string CurrentStatus 
+        { 
+            get => _currentStatus;
+            set
+            {
+                if (_currentStatus != value)
+                {
+                    _currentStatus = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public void UpdateStatus(string status)
         {
-            throw new System.NotImplementedException();
+            Shell.UpdateStatus(status);
         }
     }
 
@@ -60,6 +77,7 @@ namespace Rubberduck.Core.Editor
         {
             var module = new EditorTabViewModel
             {
+                Shell = this,
                 Title = "Module1",
                 ModuleContent = "Option Explicit\n",
                 EditorSettings = new EditorSettings() // TODO inject from actual settings
@@ -69,11 +87,23 @@ namespace Rubberduck.Core.Editor
 
         public ObservableCollection<IEditorTabViewModel> Documents { get; } = new ObservableCollection<IEditorTabViewModel>();
 
-        public string CurrentStatus { get; set; } = "Ready";
+        private string _currentStatus;
+        public string CurrentStatus
+        {
+            get => _currentStatus;
+            set
+            {
+                if (_currentStatus != value)
+                {
+                    _currentStatus = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public void UpdateStatus(string status)
         {
-            throw new System.NotImplementedException();
+            CurrentStatus = status;
         }
     }
 

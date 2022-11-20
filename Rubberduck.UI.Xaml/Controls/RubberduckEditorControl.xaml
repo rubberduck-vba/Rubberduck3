@@ -47,7 +47,7 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <!-- TODO bind icon -->
-                        <Image Grid.Column="0" Source="{StaticResource MethodIcon}" Width="16" Height="16" />
+                        <Image Grid.Column="0" Source="{Binding IconSource}" Width="16" Height="16" />
                         <TextBlock Grid.Column="1" Text="{Binding DisplayName}" VerticalAlignment="Center" />
                     </Grid>
                 </DataTemplate>
@@ -62,7 +62,7 @@
             Text="{Binding ModuleContent}"
             SyntaxHighlighting="VB"
             HorizontalScrollBarVisibility="Auto"
-            VerticalScrollBarVisibility="Visible"
+            VerticalScrollBarVisibility="Auto"
             IsReadOnly="False"
             Padding="8"
             WordWrap="False">

@@ -18,6 +18,7 @@ using System.Windows.Shapes;
 using System.ComponentModel.Design;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
+using Rubberduck.UI.Abstract;
 
 namespace Rubberduck.UI.Xaml.Controls
 {
@@ -89,13 +90,15 @@ namespace Rubberduck.UI.Xaml.Controls
         private readonly BlockCompletionService _blockCompletion;
         private readonly ITextMarkerService _textMarkerService;
 
+        public IEditorTabViewModel ViewModel => DataContext as IEditorTabViewModel;
+
         public RubberduckEditorControl()
         {
             InitializeComponent();
             EditorPane.PreviewKeyDown += EditorPane_PreviewKeyDown;
             EditorPane.TextChanged += EditorPane_TextChanged;
             EditorPane.MouseHover += EditorPane_MouseHover;
-            EditorPane.TextArea.SelectionChanged += TextArea_SelectionChanged;
+            EditorPane.TextArea.Caret.PositionChanged += Caret_PositionChanged;
 
             EditorPane.Document.LineTrackers.Add(new LineTracker());
             _foldingManager = FoldingManager.Install(EditorPane.TextArea);
@@ -107,11 +110,14 @@ namespace Rubberduck.UI.Xaml.Controls
             _textMarkerService = markerService;
         }
 
-        private void TextArea_SelectionChanged(object sender, EventArgs e)
+        private void Caret_PositionChanged(object sender, EventArgs e)
         {
-            var offset = EditorPane.CaretOffset;
-            var markers = _textMarkerService.GetMarkersAtOffset(offset);
-            if (markers.Any())
+            var markers = _textMarkerService.GetMarkersAtOffset(EditorPane.CaretOffset);
+            if (!markers.Any())
+            {
+                HideEditorPaneToolTip();
+            }
+            else
             {
                 var markerRect = EditorPane.TextArea.Caret.CalculateCaretRectangle();
                 markerRect.Offset(-5, 0);
@@ -119,9 +125,10 @@ namespace Rubberduck.UI.Xaml.Controls
                 DuckyMenu.PlacementTarget = EditorPane;
                 DuckyMenu.PlacementRectangle = markerRect;
                 DuckyMenu.IsOpen = true;
-
-                return;
             }
+
+            var position = EditorPane.Document.GetLocation(EditorPane.CaretOffset);
+            ViewModel.UpdateStatus($"L{position.Line} C{position.Column}");
         }
 
         private void EditorPane_MouseHover(object sender, MouseEventArgs e)
@@ -241,7 +248,7 @@ namespace Rubberduck.UI.Xaml.Controls
                 marker.MarkerTypes = TextMarkerTypes.SquigglyUnderline;
                 marker.MarkerColor = Colors.Red;
                 // TODO use IInspectionResult.Description
-                marker.ToolTip = CreateTooltip("Option Explicit", "Error-level inspection result");
+                marker.ToolTip = CreateTooltip("Option Explicit", "'Option Explicit' is not specified in 'Module1'.");
             }
         }
 

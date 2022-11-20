@@ -206,7 +206,7 @@ namespace Rubberduck.UI.RubberduckEditor.TextTransform
                             }
                             geometry.Freeze();
 
-                            var markerPen = new Pen(markerBrush, 0.5);
+                            var markerPen = new Pen(markerBrush, 1);
                             markerPen.Freeze();
 
                             drawingContext.DrawGeometry(Brushes.Transparent, markerPen, geometry);

@@ -67,7 +67,7 @@
         
         <!-- TODO StatusBarControl -->
         <StatusBar Grid.Row="2" Grid.ColumnSpan="3" Padding="2">
-            <TextBlock Text="Ready"></TextBlock>
+            <TextBlock Text="{Binding CurrentStatus}" />
         </StatusBar>
     </Grid>
     
