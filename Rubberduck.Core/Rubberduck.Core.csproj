@@ -133,6 +133,7 @@
     <Compile Include="About\AboutCommand.cs" />
     <Compile Include="Editor\EditorShellDockablePresenter.cs" />
     <Compile Include="Editor\ShowEditorShellCommand.cs" />
+    <Compile Include="Settings\EditorSettings.cs" />
     <Compile Include="VersionCheck\VersionCheckCommand.cs" />
     <Compile Include="About\AboutControlViewModel.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />

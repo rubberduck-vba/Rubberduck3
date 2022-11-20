@@ -221,7 +221,7 @@
     <Content Include="Icons\Custom\PNG\ObjectInterface.png" />
     <Content Include="Icons\Custom\PNG\ObjectLibrary.png" />
     <Content Include="Icons\Custom\PNG\ObjectLibraryFunction.png" />
-    <Content Include="Icons\Custom\PNG\ObjectMethod.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectMethod.png" />
     <Content Include="Icons\Custom\PNG\ObjectMethodFriend.png" />
     <Content Include="Icons\Custom\PNG\ObjectMethodPrivate.png" />
     <Content Include="Icons\Custom\PNG\ObjectMethodProtected.png" />

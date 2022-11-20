@@ -95,6 +95,7 @@ namespace Rubberduck.UI.Xaml.Controls
             EditorPane.PreviewKeyDown += EditorPane_PreviewKeyDown;
             EditorPane.TextChanged += EditorPane_TextChanged;
             EditorPane.MouseHover += EditorPane_MouseHover;
+            EditorPane.TextArea.SelectionChanged += TextArea_SelectionChanged;
 
             EditorPane.Document.LineTrackers.Add(new LineTracker());
             _foldingManager = FoldingManager.Install(EditorPane.TextArea);
@@ -104,6 +105,23 @@ namespace Rubberduck.UI.Xaml.Controls
             Initialize(markerService);
             
             _textMarkerService = markerService;
+        }
+
+        private void TextArea_SelectionChanged(object sender, EventArgs e)
+        {
+            var offset = EditorPane.CaretOffset;
+            var markers = _textMarkerService.GetMarkersAtOffset(offset);
+            if (markers.Any())
+            {
+                var markerRect = EditorPane.TextArea.Caret.CalculateCaretRectangle();
+                markerRect.Offset(-5, 0);
+
+                DuckyMenu.PlacementTarget = EditorPane;
+                DuckyMenu.PlacementRectangle = markerRect;
+                DuckyMenu.IsOpen = true;
+
+                return;
+            }
         }
 
         private void EditorPane_MouseHover(object sender, MouseEventArgs e)
@@ -118,7 +136,7 @@ namespace Rubberduck.UI.Xaml.Controls
                     var marker = markers.First() as TextMarker;
                     var markerRect = BackgroundGeometryBuilder.GetRectsForSegment(EditorPane.TextArea.TextView, marker).First();
                     var tooltip = (ToolTip)marker.ToolTip;
-                    markerRect.Offset(2d, 5d);
+                    markerRect.Offset(2d, 1d);
                     tooltip.PlacementRectangle = markerRect;
                     tooltip.IsOpen = true;
                     EditorPane.ToolTip = tooltip;
@@ -136,6 +154,8 @@ namespace Rubberduck.UI.Xaml.Controls
                 toolTip.IsOpen = false;
                 EditorPane.ToolTip = null;
             }
+
+            DuckyMenu.IsOpen = false;
         }
 
         private void EditorPane_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -188,7 +208,7 @@ namespace Rubberduck.UI.Xaml.Controls
                 && !_textMarkerService.TextMarkers.Any(marker => marker.StartOffset == 0)
                 && !EditorPane.Text.Contains("Public"))
             {
-                AddInspectionSuggestionMarker(17, 3);
+                AddInspectionHintMarker(17, 3);
             }
             else
             {
@@ -202,11 +222,12 @@ namespace Rubberduck.UI.Xaml.Controls
 
         //}
 
-        private ToolTip CreateTooltip(string text)
+        private ToolTip CreateTooltip(string title, string text)
         {
-            var tooltip = new ToolTip
+            var vm = new { TipTitle = title, TipText = text }; // TODO extract class
+            var tooltip = new TextMarkerToolTip
             {
-                Content = new TextBlock { Text = text },
+                DataContext = vm,
                 PlacementTarget = EditorPane
             };
             return tooltip;
@@ -220,7 +241,7 @@ namespace Rubberduck.UI.Xaml.Controls
                 marker.MarkerTypes = TextMarkerTypes.SquigglyUnderline;
                 marker.MarkerColor = Colors.Red;
                 // TODO use IInspectionResult.Description
-                marker.ToolTip = CreateTooltip("Error-level inspection result");
+                marker.ToolTip = CreateTooltip("Option Explicit", "Error-level inspection result");
             }
         }
 
@@ -232,7 +253,7 @@ namespace Rubberduck.UI.Xaml.Controls
                 marker.MarkerTypes = TextMarkerTypes.SquigglyUnderline;
                 marker.MarkerColor = Colors.Blue;
                 // TODO use IInspectionResult.Description
-                marker.ToolTip = CreateTooltip("Warning-level inspection result");
+                marker.ToolTip = CreateTooltip("Inspection name here", "Warning-level inspection result");
             }
         }
 
@@ -244,7 +265,7 @@ namespace Rubberduck.UI.Xaml.Controls
                 marker.MarkerTypes = TextMarkerTypes.SquigglyUnderline;
                 marker.MarkerColor = Colors.Green;
                 // TODO use IInspectionResult.Description
-                marker.ToolTip = CreateTooltip("Suggestion-level inspection result");
+                marker.ToolTip = CreateTooltip("Implicit Public Member", "Member 'DoSomething' is implicitly public.");
             }
         }
 
@@ -256,7 +277,7 @@ namespace Rubberduck.UI.Xaml.Controls
                 marker.MarkerTypes = TextMarkerTypes.DottedUnderline;
                 marker.MarkerColor = Colors.Black;
                 // TODO use IInspectionResult.Description
-                marker.ToolTip = CreateTooltip("Hint-level inspection result");
+                marker.ToolTip = CreateTooltip("Implicit Public Member", "Member 'DoSomething' is implicitly public.");
             }
         }
     }

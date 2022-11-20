@@ -100,11 +100,20 @@
     <Compile Include="Controls\AboutControl.xaml.cs">
       <DependentUpon>AboutControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\BusyIndicator.xaml.cs">
+      <DependentUpon>BusyIndicator.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\EditorShellControl.xaml.cs">
       <DependentUpon>EditorShellControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\RubberduckEditorControl.xaml.cs">
       <DependentUpon>RubberduckEditorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TextMarkerToolTip.xaml.cs">
+      <DependentUpon>TextMarkerToolTip.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DuckyButton.xaml.cs">
+      <DependentUpon>DuckyButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -113,11 +122,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\BusyIndicator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\EditorShellControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\RubberduckEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TextMarkerToolTip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DuckyButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
