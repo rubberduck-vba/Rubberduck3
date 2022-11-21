@@ -100,7 +100,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\IAboutControlViewModel.cs" />
+    <Compile Include="Abstract\ICodePaneViewModel.cs" />
     <Compile Include="Abstract\IEditorControlViewModel.cs" />
+    <Compile Include="Abstract\IEditorSettings.cs" />
     <Compile Include="Abstract\IStatusUpdate.cs" />
     <Compile Include="Command\ComCommandBase.cs" />
     <Compile Include="Command\CommandBase.cs" />
@@ -140,7 +142,9 @@
     <Compile Include="WPF\Converters\ImageSourceConverter.cs" />
     <Compile Include="WPF\Converters\InspectionToLocalizedNameConverter.cs" />
     <Compile Include="WPF\Converters\InvertBoolValueConverter.cs" />
+    <Compile Include="WPF\Converters\MemberTypeToIconConverter.cs" />
     <Compile Include="WPF\Converters\MillisecondToTimeMagnitudeConverter.cs" />
+    <Compile Include="WPF\Converters\ModuleTypeToIconConverter.cs" />
     <Compile Include="WPF\Converters\NonZeroToBooleanConverter.cs" />
     <Compile Include="WPF\Converters\NonZeroToVisibilityConverter.cs" />
     <Compile Include="WPF\Converters\SearchImageSourceConverter.cs" />

@@ -5,16 +5,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.UI.Xaml.Controls" 
              xmlns:ui="clr-namespace:Rubberduck.UI.WPF;assembly=Rubberduck.UI"
-             xmlns:vm="clr-namespace:Rubberduck.UI.Abstract;assembly=Rubberduck.UI"
+             xmlns:vm="clr-namespace:Rubberduck.UI.Abstract;assembly=Rubberduck.UI" 
+             xmlns:converters="clr-namespace:Rubberduck.UI.WPF.Converters;assembly=Rubberduck.UI"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance {x:Type vm:IEditorTabViewModel}, IsDesignTimeCreatable=False}">
+             d:DataContext="{d:DesignInstance {x:Type vm:ICodePaneViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Styles/ComboBoxTemplate.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <BitmapImage x:Key="MethodIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ObjectMethod.png" />
+            <converters:ModuleTypeToIconConverter x:Key="ModuleTypeToIconConverter" />
+            <converters:MemberTypeToIconConverter x:Key="MemberTypeToIconConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -27,29 +29,32 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <!-- TODO: bind available interfaces & event providers -->
         <ComboBox x:Name="MemberProviderSelect" Grid.Row="0" Grid.Column="0"
-                  Style="{DynamicResource CodePaneComboBoxStyle}" VerticalContentAlignment="Center"
-                  Height="24" MinWidth="96" Margin="4">
-            <ComboBoxItem Content="(General)" />
-        </ComboBox>
-
-        <!-- TODO: bind available members -->
-        <ComboBox x:Name="MemberSelect" Grid.Row="0" Grid.Column="1" 
-                  ItemsSource="{Binding MemberList}"
+                  ItemsSource="{Binding MemberProviders}"
+                  SelectedItem="{Binding SelectedMemberProvider}"
                   Style="{DynamicResource CodePaneComboBoxStyle}" VerticalContentAlignment="Center"
                   Height="24" MinWidth="96" Margin="4">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <!-- TODO bind icon -->
-                        <Image Grid.Column="0" Source="{Binding IconSource}" Width="16" Height="16" />
-                        <TextBlock Grid.Column="1" Text="{Binding DisplayName}" VerticalAlignment="Center" />
-                    </Grid>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding ModuleType, Converter={StaticResource ModuleTypeToIconConverter}}" Width="16" Height="16" Margin="0,0,5,0"/>
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                    </StackPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <ComboBox x:Name="MemberSelect" Grid.Row="0" Grid.Column="1" 
+                  ItemsSource="{Binding SelectedMemberProvider.Members}"
+                  SelectedItem="{Binding SelectedMemberProvider.CurrentMember}"
+                  Style="{DynamicResource CodePaneComboBoxStyle}" VerticalContentAlignment="Center"
+                  Height="24" MinWidth="96" Margin="4">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding MemberType, Converter={StaticResource MemberTypeToIconConverter}}" Width="16" Height="16" Margin="0,0,5,0" />
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                    </StackPanel>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>

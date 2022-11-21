@@ -28,15 +28,147 @@ namespace Rubberduck.UI.Xaml.Controls
         bool HandleEvent(TextDocument document, ref int caretOffset);
     }
 
+    public class MemberEditor
+    {
+        public static MemberType GetMemberType(string line)
+        {
+            if (line.StartsWith("Private", StringComparison.InvariantCultureIgnoreCase))
+            {
+                switch (line.Substring(8, 4).ToLowerInvariant())
+                {
+                    case "cons":
+                        return MemberType.ConstPrivate;
+                    case "enum":
+                        return MemberType.EnumPrivate;
+                    case "even":
+                        return MemberType.EventPrivate;
+                    case "func":
+                        return MemberType.FunctionPrivate;
+                    case "sub ":
+                        return MemberType.ProcedurePrivate;
+                    case "type":
+                        return MemberType.UserDefinedTypePrivate;
+                    case "prop":
+                        switch (line.Substring(17, 3).ToLowerInvariant())
+                        {
+                            case "get":
+                                return MemberType.PropertyGetPrivate;
+                            case "let":
+                                return MemberType.PropertyLetPrivate;
+                            case "set":
+                                return MemberType.PropertySetPrivate;
+                            default:
+                                return MemberType.None;
+                        }
+                    default:
+                        return MemberType.FieldPrivate;
+                }
+            }
+            else if (line.StartsWith("Friend", StringComparison.InvariantCultureIgnoreCase))
+            {
+                switch (line.Substring(7, 4).ToLowerInvariant())
+                {
+                    case "cons":
+                        return MemberType.ConstFriend;
+                    case "enum":
+                        return MemberType.EnumFriend;
+                    case "even":
+                        return MemberType.EventFriend;
+                    case "func":
+                        return MemberType.FunctionFriend;
+                    case "sub ":
+                        return MemberType.ProcedureFriend;
+                    case "type":
+                        return MemberType.UserDefinedTypeFriend;
+                    case "prop":
+                        switch (line.Substring(16, 3).ToLowerInvariant())
+                        {
+                            case "get":
+                                return MemberType.PropertyGetFriend;
+                            case "let":
+                                return MemberType.PropertyLetFriend;
+                            case "set":
+                                return MemberType.PropertySetFriend;
+                            default:
+                                return MemberType.None;
+                        }
+                    default:
+                        return MemberType.FieldFriend;
+                }
+            }
+            else
+            {
+                switch (line.Substring(0, 4).ToLowerInvariant())
+                {
+                    case "cons":
+                        return MemberType.Const;
+                    case "enum":
+                        return MemberType.Enum;
+                    case "even":
+                        return MemberType.Event;
+                    case "func":
+                        return MemberType.Function;
+                    case "sub ":
+                        return MemberType.Procedure;
+                    case "type":
+                        return MemberType.UserDefinedType;
+                    case "prop":
+                        switch (line.Substring(16, 3).ToLowerInvariant())
+                        {
+                            case "get":
+                                return MemberType.PropertyGet;
+                            case "let":
+                                return MemberType.PropertyLet;
+                            case "set":
+                                return MemberType.PropertySet;
+                            default:
+                                return MemberType.None;
+                        }
+                    case "dim ":
+                        return MemberType.Field;
+
+                    default:
+                        return MemberType.None;
+                }
+            }
+        }
+    }
+
     public class KeepCurrentLineTogetherEnterKeyStrategy : IEnterKeyStrategy
     {
         public bool IsActive { get; set; } = true; // TODO make it configurable
 
+        private static HashSet<MemberType> ApplicableMemberTypes = new HashSet<MemberType>(new []
+        {
+            MemberType.Procedure,
+            MemberType.ProcedurePrivate,
+            MemberType.ProcedureFriend,
+            MemberType.Function,
+            MemberType.FunctionPrivate,
+            MemberType.FunctionFriend,
+            MemberType.PropertyGet,
+            MemberType.PropertyGetPrivate,
+            MemberType.PropertyGetFriend,
+            MemberType.PropertyLet,
+            MemberType.PropertyLetPrivate,
+            MemberType.PropertyLetFriend,
+            MemberType.PropertySet,
+            MemberType.PropertySetPrivate,
+            MemberType.PropertySetFriend,
+        });
+
         public bool HandleEvent(TextDocument document, ref int caretOffset)
         {
             var offset = caretOffset;
-            var nextChar = document.GetCharAt(offset);
-            if (nextChar == '(')
+            var line = document.GetText(document.GetLineByOffset(offset));
+            if (string.IsNullOrWhiteSpace(line))
+            {
+                return false;
+            }
+            var type = MemberEditor.GetMemberType(line);
+
+            var nextChar = document.GetCharAt(offset); 
+            if (nextChar == '(' && ApplicableMemberTypes.Contains(type))
             {
                 var currentLine = document.GetLineByOffset(offset);
                 var nextLineOffset = currentLine.NextLine.Offset; // TODO account for indentation
@@ -80,7 +212,7 @@ namespace Rubberduck.UI.Xaml.Controls
         { 
             new KeepCurrentLineTogetherEnterKeyStrategy() 
         };
-        public IFoldingStrategy FoldingStrategy { get; } = new VBFoldingStrategy();
+        public IFoldingStrategy FoldingStrategy { get; }
         public IEnumerable<IBlockCompletionStrategy> BlockCompletionStrategies { get; }
             = VBFoldingStrategy.BlockInfo.Values.Select(e => new BlockCompletionStrategy(e)).ToList();
 
@@ -90,15 +222,20 @@ namespace Rubberduck.UI.Xaml.Controls
         private readonly BlockCompletionService _blockCompletion;
         private readonly ITextMarkerService _textMarkerService;
 
-        public IEditorTabViewModel ViewModel => DataContext as IEditorTabViewModel;
+        public ICodePaneViewModel ViewModel => DataContext as ICodePaneViewModel;
 
         public RubberduckEditorControl()
         {
+            var foldingStrategy = new VBFoldingStrategy();
+            foldingStrategy.ScopeCreated += OnScopeCreated;
+            foldingStrategy.ScopeRemoved += OnScopeRemoved;
+            FoldingStrategy = foldingStrategy;
+
             InitializeComponent();
             EditorPane.PreviewKeyDown += EditorPane_PreviewKeyDown;
             EditorPane.TextChanged += EditorPane_TextChanged;
-            EditorPane.MouseHover += EditorPane_MouseHover;
-            EditorPane.TextArea.Caret.PositionChanged += Caret_PositionChanged;
+            EditorPane.MouseHover += OnMouseHover;
+            EditorPane.TextArea.Caret.PositionChanged += OnCaretPositionChanged;
 
             EditorPane.Document.LineTrackers.Add(new LineTracker());
             _foldingManager = FoldingManager.Install(EditorPane.TextArea);
@@ -110,7 +247,32 @@ namespace Rubberduck.UI.Xaml.Controls
             _textMarkerService = markerService;
         }
 
-        private void Caret_PositionChanged(object sender, EventArgs e)
+        private void OnScopeRemoved(object sender, ScopeEventArgs e)
+        {
+            var existing = ViewModel?.SelectedMemberProvider.Members.SingleOrDefault(m => m.StartLine == e.StartAnchor.Line);
+            if (existing != null)
+            {
+                ViewModel?.SelectedMemberProvider.Members.Remove(existing);
+            }
+        }
+
+        private void OnScopeCreated(object sender, ScopeEventArgs e)
+        {
+            var existing = ViewModel?.SelectedMemberProvider.Members.SingleOrDefault(m => m.StartLine == e.StartAnchor.Line);
+            if (existing is null)
+            {
+                ViewModel?.SelectedMemberProvider.AddMember(e.Name, e.MemberType, (e.StartAnchor, e.EndAnchor));
+            }
+            else
+            {
+                existing.Name = e.Name;
+                existing.MemberType = e.MemberType;
+                existing.HasImplementation = true;
+                // TODO update other metadata
+            }
+        }
+
+        private void OnCaretPositionChanged(object sender, EventArgs e)
         {
             var markers = _textMarkerService.GetMarkersAtOffset(EditorPane.CaretOffset);
             if (!markers.Any())
@@ -128,10 +290,23 @@ namespace Rubberduck.UI.Xaml.Controls
             }
 
             var position = EditorPane.Document.GetLocation(EditorPane.CaretOffset);
+            ViewModel.SelectedMemberProvider.SetCurrentMember(position.Line);
             ViewModel.UpdateStatus($"L{position.Line} C{position.Column}");
         }
 
-        private void EditorPane_MouseHover(object sender, MouseEventArgs e)
+        private void OnMemberSelected(object sender, NavigateToMemberEventArgs e)
+        {
+            if (EditorPane.TextArea.Caret.Line != e.MemberInfo.StartLine)
+            {
+                var offset = EditorPane.Document.GetLineByNumber(e.MemberInfo.StartLine).Offset;
+                EditorPane.CaretOffset = offset;
+                EditorPane.ScrollTo(e.MemberInfo.StartLine, 1);
+                EditorPane.TextArea.Focus();
+            }
+            EditorPane.TextArea.Focus();
+        }
+
+        private void OnMouseHover(object sender, MouseEventArgs e)
         {
             var textPosition = EditorPane.GetPositionFromPoint(e.GetPosition(EditorPane));
             if (textPosition.HasValue)
@@ -199,6 +374,7 @@ namespace Rubberduck.UI.Xaml.Controls
         private void EditorPane_TextChanged(object sender, EventArgs e)
         {
             FoldingStrategy?.UpdateFoldings(_foldingManager, EditorPane.Document);
+
             if (_blockCompletion.CanComplete(EditorPane.TextArea.Caret, EditorPane.Document, _foldingManager, out var completionStrategy, out var text))
             {
                 completionStrategy.Complete(EditorPane.TextArea.Caret, text, EditorPane.Document);
@@ -223,11 +399,6 @@ namespace Rubberduck.UI.Xaml.Controls
             }
             // <<<<<<<<<<<<<<<<<<<<<<<<< PoC code
         }
-
-        //public void AddInspectionMarker(IInspectionResult inspectionResult)
-        //{
-
-        //}
 
         private ToolTip CreateTooltip(string title, string text)
         {

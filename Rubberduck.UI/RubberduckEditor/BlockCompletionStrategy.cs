@@ -6,12 +6,12 @@ namespace Rubberduck.UI.RubberduckEditor
 {
     public class BlockCompletionStrategy : IBlockCompletionStrategy
     {
-        public BlockCompletionStrategy(CodeBlockInfo blockInfo)
+        public BlockCompletionStrategy(FoldingCodeBlockInfo blockInfo)
         {
             Info = blockInfo;
         }
 
-        protected CodeBlockInfo Info { get; }
+        protected FoldingCodeBlockInfo Info { get; }
 
         public bool CanComplete(string text)
         {

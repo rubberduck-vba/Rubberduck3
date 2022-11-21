@@ -195,7 +195,7 @@ namespace Rubberduck.UI.RubberduckEditor.TextTransform
 
                         if ((marker.MarkerTypes & TextMarkerTypes.SquigglyUnderline) != 0)
                         {
-                            var offset = 2.5d;
+                            var offset = 2.25d;
                             var count = Math.Max((int)((endPoint.X - startPoint.X) / offset) + 1, 4);
                             
                             var geometry = new StreamGeometry();
@@ -220,7 +220,7 @@ namespace Rubberduck.UI.RubberduckEditor.TextTransform
                         if ((marker.MarkerTypes & TextMarkerTypes.DottedUnderline) != 0)
                         {
                             var markerPen = new Pen(markerBrush, 0.5);
-                            markerPen.DashStyle = DashStyles.Dot;
+                            markerPen.DashStyle = DashStyles.Dash;
                             markerPen.Freeze();
                             drawingContext.DrawLine(markerPen, startPoint, endPoint);
                         }

@@ -5,7 +5,7 @@
 <!-- https://github.com/icsharpcode/AvalonEdit -->
 <SyntaxDefinition name="VBA" extensions=".vb" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
   <Color name="Comment" foreground="Green" exampleText="' comment" />
-  <Color name="String" exampleText="text = &quot;Hello, World!&quot;" />
+  <Color name="String" foreground="DarkRed" exampleText="text = &quot;Hello, World!&quot;" />
   <Color name="DateLiteral" foreground="Black" exampleText="endOfWorld = #2012-12-21#" />
   <Color name="Preprocessor" foreground="DarkBlue" exampleText="#If WIN32 Then" />
   <Color name="DataTypes" foreground="DarkBlue" exampleText="Dim foo As Boolean" />
