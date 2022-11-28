@@ -89,6 +89,7 @@
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -135,6 +136,7 @@
     <Compile Include="Editor\CodePaneViewModel.cs" />
     <Compile Include="Editor\EditorShellDockablePresenter.cs" />
     <Compile Include="Editor\EditorShellViewModel.cs" />
+    <Compile Include="Editor\MemberProviderViewModel.cs" />
     <Compile Include="Editor\ShowEditorShellCommand.cs" />
     <Compile Include="Settings\EditorSettings.cs" />
     <Compile Include="VersionCheck\VersionCheckCommand.cs" />

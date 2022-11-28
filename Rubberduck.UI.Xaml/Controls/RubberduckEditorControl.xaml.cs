@@ -222,19 +222,35 @@ namespace Rubberduck.UI.Xaml.Controls
         private readonly BlockCompletionService _blockCompletion;
         private readonly ITextMarkerService _textMarkerService;
 
-        public ICodePaneViewModel ViewModel => DataContext as ICodePaneViewModel;
+        public ICodePaneViewModel ViewModel
+        {
+            get => DataContext as ICodePaneViewModel;
+            set
+            {
+                DataContext = value;
+                if (DataContext is ICodePaneViewModel context)
+                {
+                    context.SelectedMemberProviderChanged += OnSelectedMemberProviderChanged;
+                    context.SelectedMemberProvider = context.MemberProviders.FirstOrDefault();
+                }
+            }
+        }
+
+        private void OnSelectedMemberProviderChanged(object sender, EventArgs e)
+        {
+            ViewModel.SelectedMemberProvider.MemberSelected += OnMemberSelected;
+        }
 
         public RubberduckEditorControl()
         {
             var foldingStrategy = new VBFoldingStrategy();
-            foldingStrategy.ScopeCreated += OnScopeCreated;
-            foldingStrategy.ScopeRemoved += OnScopeRemoved;
             FoldingStrategy = foldingStrategy;
 
             InitializeComponent();
-            EditorPane.PreviewKeyDown += EditorPane_PreviewKeyDown;
-            EditorPane.TextChanged += EditorPane_TextChanged;
+            EditorPane.PreviewKeyDown += OnPreviewKeyDown;
+            EditorPane.TextChanged += OnTextChanged;
             EditorPane.MouseHover += OnMouseHover;
+            
             EditorPane.TextArea.Caret.PositionChanged += OnCaretPositionChanged;
 
             EditorPane.Document.LineTrackers.Add(new LineTracker());
@@ -245,31 +261,6 @@ namespace Rubberduck.UI.Xaml.Controls
             Initialize(markerService);
             
             _textMarkerService = markerService;
-        }
-
-        private void OnScopeRemoved(object sender, ScopeEventArgs e)
-        {
-            var existing = ViewModel?.SelectedMemberProvider.Members.SingleOrDefault(m => m.StartLine == e.StartAnchor.Line);
-            if (existing != null)
-            {
-                ViewModel?.SelectedMemberProvider.Members.Remove(existing);
-            }
-        }
-
-        private void OnScopeCreated(object sender, ScopeEventArgs e)
-        {
-            var existing = ViewModel?.SelectedMemberProvider.Members.SingleOrDefault(m => m.StartLine == e.StartAnchor.Line);
-            if (existing is null)
-            {
-                ViewModel?.SelectedMemberProvider.AddMember(e.Name, e.MemberType, (e.StartAnchor, e.EndAnchor));
-            }
-            else
-            {
-                existing.Name = e.Name;
-                existing.MemberType = e.MemberType;
-                existing.HasImplementation = true;
-                // TODO update other metadata
-            }
         }
 
         private void OnCaretPositionChanged(object sender, EventArgs e)
@@ -290,7 +281,31 @@ namespace Rubberduck.UI.Xaml.Controls
             }
 
             var position = EditorPane.Document.GetLocation(EditorPane.CaretOffset);
-            ViewModel.SelectedMemberProvider.SetCurrentMember(position.Line);
+            CaretLocation = position;
+
+            var maxOffset = EditorPane.Document.TextLength;
+            foreach (var provider in ViewModel.MemberProviders)
+            {
+                foreach (var member in provider.Members.Where(m => m.HasImplementation))
+                {
+                    try
+                    {
+                        var startLine = EditorPane.Document.GetLineByOffset(Math.Min(maxOffset, member.StartOffset));
+                        var endLine = EditorPane.Document.GetLineByOffset(Math.Min(maxOffset, member.EndOffset));
+
+                        if (startLine.LineNumber <= position.Line && endLine.LineNumber >= position.Line)
+                        {
+                            ViewModel.SelectedMemberProvider = provider;
+                            provider.CurrentMember = member;
+                            break;
+                        }
+                    }
+                    catch 
+                    { 
+                    }
+                }
+            }
+
             ViewModel.UpdateStatus($"L{position.Line} C{position.Column}");
         }
 
@@ -298,12 +313,16 @@ namespace Rubberduck.UI.Xaml.Controls
         {
             if (EditorPane.TextArea.Caret.Line != e.MemberInfo.StartLine)
             {
-                var offset = EditorPane.Document.GetLineByNumber(e.MemberInfo.StartLine).Offset;
-                EditorPane.CaretOffset = offset;
+                EditorPane.CaretOffset = e.MemberInfo.StartOffset;
                 EditorPane.ScrollTo(e.MemberInfo.StartLine, 1);
-                EditorPane.TextArea.Focus();
             }
-            EditorPane.TextArea.Focus();
+
+            EditorPane.Focus();
+
+            if (!EditorPane.TextArea.Focus())
+            {
+                return;
+            }
         }
 
         private void OnMouseHover(object sender, MouseEventArgs e)
@@ -312,21 +331,38 @@ namespace Rubberduck.UI.Xaml.Controls
             if (textPosition.HasValue)
             {
                 var offset = EditorPane.Document.GetOffset(textPosition.Value.Location);
-                var markers = _textMarkerService.GetMarkersAtOffset(offset);
-                if (markers.Any())
-                {
-                    var marker = markers.First() as TextMarker;
-                    var markerRect = BackgroundGeometryBuilder.GetRectsForSegment(EditorPane.TextArea.TextView, marker).First();
-                    var tooltip = (ToolTip)marker.ToolTip;
-                    markerRect.Offset(2d, 1d);
-                    tooltip.PlacementRectangle = markerRect;
-                    tooltip.IsOpen = true;
-                    EditorPane.ToolTip = tooltip;
-                    return;
-                }
+                ShowMarkerToolTip(offset);
+                return;
             }
 
             HideEditorPaneToolTip();
+        }
+
+        private bool ShowMarkerToolTip(int offset)
+        {
+            var result = false;
+
+            var marker = _textMarkerService
+                .GetMarkersAtOffset(offset)
+                .OfType<TextMarker>()
+                .FirstOrDefault();
+
+            if (!(marker is null))
+            {
+                var tooltip = (ToolTip)marker.ToolTip;
+
+                var markerRect = BackgroundGeometryBuilder.GetRectsForSegment(EditorPane.TextArea.TextView, marker).First();
+                markerRect.Offset(2d, 1d);
+
+                tooltip.PlacementRectangle = markerRect;
+
+                tooltip.IsOpen = true;
+                EditorPane.ToolTip = tooltip;
+
+                result = true;
+            }
+
+            return result;
         }
 
         private void HideEditorPaneToolTip()
@@ -340,7 +376,7 @@ namespace Rubberduck.UI.Xaml.Controls
             DuckyMenu.IsOpen = false;
         }
 
-        private void EditorPane_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (EnterKeyStrategies.Any() && e.Key == Key.Enter)
             {
@@ -371,14 +407,15 @@ namespace Rubberduck.UI.Xaml.Controls
             }
         }
 
-        private void EditorPane_TextChanged(object sender, EventArgs e)
+        private void OnTextChanged(object sender, EventArgs e)
         {
-            FoldingStrategy?.UpdateFoldings(_foldingManager, EditorPane.Document);
-
-            if (_blockCompletion.CanComplete(EditorPane.TextArea.Caret, EditorPane.Document, _foldingManager, out var completionStrategy, out var text))
+            if (!_foldingManager.AllFoldings.Any(f => EditorPane.Document.GetLineByOffset(f.StartOffset).LineNumber == EditorPane.TextArea.Caret.Line) && _blockCompletion.CanComplete(EditorPane.TextArea.Caret, EditorPane.Document, ViewModel.SelectedMemberProvider.CurrentMember, out var completionStrategy, out var text))
             {
                 completionStrategy.Complete(EditorPane.TextArea.Caret, text, EditorPane.Document);
             }
+
+            var infos = FoldingStrategy?.UpdateFoldings(_foldingManager, EditorPane.Document);
+            UpdateMembers(infos);
 
             // PoC code >>>>>>>>>>>>>>>>>>>>>>>>>
             if (EditorPane.Text.Length > 20
@@ -388,8 +425,8 @@ namespace Rubberduck.UI.Xaml.Controls
                 AddInspectionErrorMarker(0, 1);
             }
             else if (EditorPane.Text.Length > 30
-                && !_textMarkerService.TextMarkers.Any(marker => marker.StartOffset == 0)
-                && !EditorPane.Text.Contains("Public"))
+                && !_textMarkerService.TextMarkers.Any(marker => marker.StartOffset == 17)
+                && !EditorPane.Text.Contains("Public Sub "))
             {
                 AddInspectionHintMarker(17, 3);
             }
@@ -398,6 +435,35 @@ namespace Rubberduck.UI.Xaml.Controls
                 _textMarkerService.RemoveAll(marker => true);
             }
             // <<<<<<<<<<<<<<<<<<<<<<<<< PoC code
+        }
+
+        private void UpdateMembers(IEnumerable<(int StartOffset, int EndOffset, MemberType MemberType, string Name)> infos)
+        {
+            var allNames = infos.Select(i => i.Name).ToHashSet();
+            var existingNames = ViewModel.SelectedMemberProvider.Members.Where(m => m.HasImplementation).Select(m => m.Name).ToHashSet();
+
+            var deletedNames = existingNames.Except(allNames);
+            foreach (var name in deletedNames)
+            {
+                var member = ViewModel.SelectedMemberProvider.Members.SingleOrDefault(m => m.HasImplementation && m.Name == name);
+                if (member != null)
+                {
+                    ViewModel.SelectedMemberProvider.Members.Remove(member);
+                    break;
+                }
+            }
+
+            var newNames = allNames.Except(existingNames);
+            foreach (var name in newNames)
+            {
+                var candidates = infos.Where(i => i.Name == name).ToArray();
+                if (candidates.Length == 1)
+                {
+                    var info = candidates[0];
+                    ViewModel.SelectedMemberProvider.AddMember(name, info.MemberType, info.StartOffset, info.EndOffset);
+                    break;
+                }
+            }
         }
 
         private ToolTip CreateTooltip(string title, string text)
@@ -411,6 +477,7 @@ namespace Rubberduck.UI.Xaml.Controls
             return tooltip;
         }
 
+        #region TODO move to view-layer service?
         public void AddInspectionErrorMarker(int startOffset, int length)
         {
             var marker = _textMarkerService.Create(startOffset, length);
@@ -458,5 +525,6 @@ namespace Rubberduck.UI.Xaml.Controls
                 marker.ToolTip = CreateTooltip("Implicit Public Member", "Member 'DoSomething' is implicitly public.");
             }
         }
+        #endregion
     }
 }

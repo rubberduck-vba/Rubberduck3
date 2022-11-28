@@ -1,6 +1,8 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Folding;
+using Rubberduck.UI.Abstract;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -11,8 +13,6 @@ namespace Rubberduck.UI.RubberduckEditor
 {
     public interface IFoldingStrategy
     {
-        void UpdateFoldings(FoldingManager manager, TextDocument document);
-        event EventHandler<ScopeEventArgs> ScopeCreated;
-        event EventHandler<ScopeEventArgs> ScopeRemoved;
+        IEnumerable<(int StartOffset, int EndOffset, MemberType MemberType, string Name)> UpdateFoldings(FoldingManager manager, TextDocument document);
     }
 }

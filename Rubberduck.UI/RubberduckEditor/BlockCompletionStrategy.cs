@@ -1,6 +1,7 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using System;
+using System.Linq;
 
 namespace Rubberduck.UI.RubberduckEditor
 {
@@ -21,8 +22,13 @@ namespace Rubberduck.UI.RubberduckEditor
         public void Complete(Caret caret, string text, TextDocument document)
         {
             // TODO implement indentation strategy / use indenter settings
+            var indent = text.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+            var newIndent = new string(' ', 4);
+
             var position = caret.Offset;
-            var autocomplete = Info.StartLineCompletion + Environment.NewLine + "    " + Environment.NewLine + Info.EndToken + Environment.NewLine;
+            var autocomplete = Info.StartLineCompletion + Environment.NewLine + new string(' ', indent) + newIndent + Environment.NewLine + Info.EndToken + Environment.NewLine;
+
+            document.Replace(document.GetLineByOffset(caret.Offset).Offset, Info.StartToken.Length, Info.StartToken);
             document.Insert(position, autocomplete);
             caret.Offset = position;
         }

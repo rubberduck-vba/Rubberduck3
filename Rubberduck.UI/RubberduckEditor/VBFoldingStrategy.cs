@@ -17,6 +17,7 @@ namespace Rubberduck.UI.RubberduckEditor
     {
         public int StartLine { get; set; }
         public string Ending { get; set; }
+        public MemberType MemberType { get; set; }
     }
 
     public class FoldingCodeBlockInfo
@@ -33,28 +34,6 @@ namespace Rubberduck.UI.RubberduckEditor
         public string StartLineCompletion { get; }
         public string StartToken { get; }
         public string EndToken { get; }
-    }
-
-    public class ScopeEventArgs : EventArgs
-    {
-        public ScopeEventArgs(int startOffset)
-        {
-            StartOffset = startOffset;
-        }
-        public ScopeEventArgs(string name, MemberType memberType, TextAnchor start, TextAnchor end)
-        {
-            Name = name;
-            MemberType = memberType;
-            StartAnchor = start;
-            EndAnchor = end;
-        }
-
-        public int StartOffset { get; }
-
-        public string Name { get; }
-        public MemberType MemberType { get; }
-        public TextAnchor StartAnchor { get; }
-        public TextAnchor EndAnchor { get; }
     }
 
     public class VBFoldingStrategy : IFoldingStrategy
@@ -100,87 +79,94 @@ namespace Rubberduck.UI.RubberduckEditor
 
         }.ToDictionary(e => e.StartToken);
 
-        public event EventHandler<ScopeEventArgs> ScopeCreated;
-        public event EventHandler<ScopeEventArgs> ScopeRemoved;
-
-        public void UpdateFoldings(FoldingManager manager, TextDocument document)
+        public IEnumerable<(int StartOffset, int EndOffset, MemberType MemberType, string Name)> UpdateFoldings(FoldingManager manager, TextDocument document)
         {
-            var foldings = CreateNewFoldings(manager, document, out var firstErrorOffset).OrderBy(e => e.StartOffset);            
-            manager.UpdateFoldings(foldings, firstErrorOffset);
+            var foldingInfo = CreateNewFoldings(manager, document, out var firstErrorOffset).OrderBy(e => e.Fold.StartOffset);
+            manager.UpdateFoldings(foldingInfo.Select(e => e.Fold), firstErrorOffset);
+
+            return foldingInfo.Select(e => (e.Fold.StartOffset, e.Fold.EndOffset, e.MemberType, e.Name));
         }
 
-        private IEnumerable<NewFolding> CreateNewFoldings(FoldingManager manager, TextDocument document, out int firstErrorOffset)
+        private IEnumerable<(NewFolding Fold, MemberType MemberType, string Name)> CreateNewFoldings(FoldingManager manager, TextDocument document, out int firstErrorOffset)
         {
             try
             {
                 using (var reader = document.CreateReader())
                 {
-                    return CreateNewFoldings(manager, document, reader, out firstErrorOffset);
+                    var newFoldings = CreateNewFoldings(document, reader, out firstErrorOffset);
+                    return newFoldings;
                 }
             }
             catch
             {
                 firstErrorOffset = 0;
-                return Enumerable.Empty<NewFolding>();
+                return Enumerable.Empty<(NewFolding, MemberType, string)>();
             }
         }
 
-        private IEnumerable<NewFolding> CreateNewFoldings(FoldingManager manager, TextDocument document, TextReader reader, out int firstErrorOffset)
+        private IEnumerable<(NewFolding, MemberType, string)> CreateNewFoldings(TextDocument document, TextReader reader, out int firstErrorOffset)
         {
-            var blocks = new Stack<FoldingCodeBlockInfo>();
-            var stack = new Stack<(FoldStart Fold, string Name)>();
-            var markers = new List<NewFolding>();
+            var stack = new Stack<FoldStart>();
+            var markers = new List<(NewFolding, MemberType, string)>();
 
             var line = reader.ReadLine();
             var lineNumber = 1;
             while (line != null && lineNumber < document.LineCount)
             {
+                var startOffset = document.GetOffset(lineNumber, 0);
                 var trimmed = line.TrimStart();
+
                 if (trimmed.Length > 0)
                 {
                     var blockInfo = BlockInfo.Values.SingleOrDefault(k => trimmed.StartsWith(k.StartToken + " ", StringComparison.InvariantCultureIgnoreCase));
                     if (blockInfo != null)
                     {
                         var ending = blockInfo.EndToken;
-                        var offset = document.GetOffset(lineNumber, 0);
 
                         var start = new FoldStart
                         {
                             StartLine = lineNumber,
-                            StartOffset = offset,
+                            StartOffset = startOffset,
                             Ending = ending,
                             Name = trimmed,
                             IsDefinition = blockInfo.MemberType != MemberType.None,
                         };
 
-                        var name = Regex.Match(trimmed.Substring(blockInfo.StartToken.Length), @"\w+").Value;
+                        var match = Regex.Match(trimmed.Substring(blockInfo.StartToken.Length), @"\w+");
+                        if (match.Success)
+                        {
+                            start.Name = match.Value;
+                            start.MemberType = blockInfo.MemberType;
+                        }
 
-                        stack.Push((start, name));
-                        blocks.Push(blockInfo);
+                        if (!start.IsDefinition || start.Name?.Length > 1)
+                        {
+                            stack.Push(start);
+                        }
                     }
                     else if (stack.Any())
                     {
-                        if (trimmed.StartsWith(stack.Peek().Fold.Ending))
+                        if (trimmed.StartsWith(stack.Peek().Ending))
                         {
                             var start = stack.Pop();
-                            var block = blocks.Pop();
-                            var offset = document.GetOffset(lineNumber, line.Length + 1);
-                            var folding = new NewFolding(start.Fold.StartOffset, offset)
+                            var endOffset = document.GetOffset(lineNumber, line.Length + 1);
+                            var folding = new NewFolding(start.StartOffset, endOffset)
                             {
                                 Name = start.Name,
-                                IsDefinition = block.MemberType != MemberType.None,
-                                DefaultClosed = false,
+                                IsDefinition = start.MemberType != MemberType.None,
+                                DefaultClosed = false
                             };
-                            
-                            TextAnchor startAnchor = null;
-                            TextAnchor endAnchor = null;
-                            if (block.MemberType != MemberType.None)
+
+                            if (start.MemberType != MemberType.None)
                             {
-                                startAnchor = document.CreateAnchor(start.Fold.StartOffset);
-                                endAnchor = document.CreateAnchor(offset);
-                                ScopeCreated?.Invoke(this, new ScopeEventArgs(start.Name, block.MemberType, startAnchor, endAnchor));
+                                var startAnchor = document.CreateAnchor(start.StartOffset);
+                                startAnchor.MovementType = AnchorMovementType.BeforeInsertion;
+
+                                var endAnchor = document.CreateAnchor(endOffset);
+                                endAnchor.MovementType = AnchorMovementType.AfterInsertion;
                             }
-                            markers.Add(folding);
+
+                            markers.Add((folding, start.MemberType, start.Name));
                         }
                     }
                 }

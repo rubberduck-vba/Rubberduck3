@@ -95,7 +95,6 @@ namespace Rubberduck.UI.RubberduckEditor.TextTransform
         /// <summary>
         /// Gets/Sets an object that will be displayed as tooltip in the text editor.
         /// </summary>
-        /// <remarks>Not supported in this sample!</remarks>
         object ToolTip { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Rubberduck.UI.Abstract
 {
@@ -21,37 +22,67 @@ namespace Rubberduck.UI.Abstract
     public enum MemberType
     {
         None,
+        [Display(Name = "Public Const")]
         Const,
+        [Display(Name = "Private Const")]
         ConstPrivate,
+        [Display(Name = "Friend Const")]
         ConstFriend,
+        [Display(Name = "Public Enum")]
         Enum,
+        [Display(Name = "Private Enum")]
         EnumPrivate,
+        [Display(Name = "Friend Enum")]
         EnumFriend,
         EnumMember,
+        [Display(Name = "Public Event")]
         Event,
+        [Display(Name = "Private Event")]
         EventPrivate,
+        [Display(Name = "Friend Event")]
         EventFriend,
+        [Display(Name = "Public")]
         Field,
+        [Display(Name = "Private")]
         FieldPrivate,
+        [Display(Name = "Friend")]
         FieldFriend,
+        [Display(Name = "Public Function")]
         Function,
+        [Display(Name = "Private Function")]
         FunctionPrivate,
+        [Display(Name = "Friend Function")]
         FunctionFriend,
+        [Display(Name = "Public Sub")]
         Procedure,
+        [Display(Name = "Private Sub")]
         ProcedurePrivate,
+        [Display(Name = "Friend Sub")]
         ProcedureFriend,
+        [Display(Name = "Public Property Get")]
         PropertyGet,
+        [Display(Name = "Private Property Get")]
         PropertyGetPrivate,
+        [Display(Name = "Friend Property Get")]
         PropertyGetFriend,
+        [Display(Name = "Public Property Let")]
         PropertyLet,
+        [Display(Name = "Private Property Let")]
         PropertyLetPrivate,
+        [Display(Name = "Friend Property Let")]
         PropertyLetFriend,
+        [Display(Name = "Public Property Set")]
         PropertySet,
+        [Display(Name = "Private Property Set")]
         PropertySetPrivate,
+        [Display(Name = "Friend Property Set")]
         PropertySetFriend,
         TestMethod,
+        [Display(Name = "Public Type")]
         UserDefinedType,
+        [Display(Name = "Private Type")]
         UserDefinedTypePrivate,
+        [Display(Name = "Friend Type")]
         UserDefinedTypeFriend,
         UserDefinedTypeMember,
     }
@@ -73,6 +104,7 @@ namespace Rubberduck.UI.Abstract
         IModuleInfoViewModel ModuleInfo { get; set; }
         ObservableCollection<IMemberProviderViewModel> MemberProviders { get; set; }
         IMemberProviderViewModel SelectedMemberProvider { get; set; }
+        event EventHandler SelectedMemberProviderChanged;
         IEditorSettings EditorSettings { get; set; }
     }
 
@@ -82,10 +114,8 @@ namespace Rubberduck.UI.Abstract
 
         ObservableCollection<IMemberInfoViewModel> Members { get; }
         IMemberInfoViewModel CurrentMember { get; set; }
-
-        void SetCurrentMember(int line);
-
-        void AddMember(string name, MemberType memberType, (ITextAnchor start, ITextAnchor end) anchors);
+        void ClearMemberSelectedHandlers();
+        void AddMember(string name, MemberType memberType, int startOffset, int endOffset);
     }
 
     public interface IModuleInfoViewModel : IMemberProviderViewModel
@@ -105,6 +135,10 @@ namespace Rubberduck.UI.Abstract
         /// True if the module contains an implementation for this member.
         /// </summary>
         bool HasImplementation { get; set; }
+        /// <summary>
+        /// True if the member is user-defined (and thus can be modified or removed).
+        /// </summary>
+        bool IsUserDefined { get; set; }
         MemberType MemberType { get; set; }
         /// <summary>
         /// The identifier name.
@@ -114,9 +148,12 @@ namespace Rubberduck.UI.Abstract
         /// The name and parameters.
         /// </summary>
         string Signature { get; }
+        IParameterInfoViewModel CurrentParameter { get; set; }
         ObservableCollection<IParameterInfoViewModel> Parameters { get; }
-        int StartLine { get; }
-        int EndLine { get; }
+        int StartOffset { get; set; }
+        int StartLine { get; set; }
+        int EndOffset { get; set; }
+        int EndLine { get; set; }
     }
 
     public interface IParameterInfoViewModel : INotifyPropertyChanged

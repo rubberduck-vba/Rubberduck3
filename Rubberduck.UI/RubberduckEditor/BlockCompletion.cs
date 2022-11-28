@@ -1,8 +1,12 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Folding;
+using Rubberduck.UI.Abstract;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Rubberduck.UI.RubberduckEditor
 {
@@ -15,22 +19,34 @@ namespace Rubberduck.UI.RubberduckEditor
             _strategies = strategies ?? Enumerable.Empty<IBlockCompletionStrategy>();
         }
 
-        public bool CanComplete(Caret caret, TextDocument document, FoldingManager foldingManager, out IBlockCompletionStrategy completionStrategy, out string text)
+        public bool CanComplete(Caret caret, TextDocument document, IMemberInfoViewModel memberInfo, out IBlockCompletionStrategy completionStrategy, out string text)
         {
             completionStrategy = null;
 
+            if (memberInfo is null)
+            {
+                text = null;
+                return false;
+            }
+
             var line = document.Lines[caret.Line - 1];
+            if (memberInfo.HasImplementation && memberInfo.StartLine == caret.Line)
+            {
+                completionStrategy = null;
+                text = null;
+                return false;
+            }
+
             text = document.GetText(line.Offset, line.Length);
 
-            // we've already traversed the document to find completed blocks;
-            // if there's a fold at line.Offset, the block is already completed.
-            var folds = foldingManager.GetFoldingsAt(line.Offset);
-
-            if (!folds.Any())
+            var match = Regex.Match(text, @"\w+");
+            if (!match.Success || string.IsNullOrWhiteSpace(match.Value.Substring(memberInfo.MemberType.GetType().GetCustomAttribute<DisplayAttribute>()?.Name.Length ?? 0)))
             {
-                var lineText = text;
-                completionStrategy = _strategies.FirstOrDefault(e => e.CanComplete(lineText));
+                return false;
             }
+
+            var lineText = text;
+            completionStrategy = _strategies.FirstOrDefault(e => e.CanComplete(lineText));
 
             return completionStrategy != null;
         }

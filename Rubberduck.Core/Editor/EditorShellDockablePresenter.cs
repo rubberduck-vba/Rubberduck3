@@ -9,34 +9,67 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Rubberduck.Core.Editor
 {
-    public class MemberInfoViewModel : ViewModelBase, IMemberInfoViewModel
+    public class MemberInfoViewModel : ViewModelBase, IMemberInfoViewModel, IEquatable<MemberInfoViewModel>
     {
-        private readonly ITextAnchor _start = null;
-        private readonly ITextAnchor _end = null;
+        private static readonly IDictionary<string, string> _displayNamesByMemberType =
+            Enum.GetValues(typeof(MemberType)).Cast<MemberType>().ToDictionary(m => m.ToString(), m => m.GetType().GetCustomAttribute<DisplayAttribute>()?.Name);
 
-        private readonly Selection? _span = null;
+        public MemberInfoViewModel(int offset) : this()
+        {
+            _startOffset = offset;
+        }
 
         public MemberInfoViewModel()
         {
+            Parameters.CollectionChanged += OnParametersCollectionChanged;
         }
 
-        public MemberInfoViewModel(Selection span)
+        public override int GetHashCode()
         {
-            _span = span;
+            return HashCode.Combine(Name, _startOffset);
         }
 
-        public MemberInfoViewModel(ITextAnchor start, ITextAnchor end)
+        public override bool Equals(object obj)
         {
-            _start = start;
-            _start.MovementType = AnchorMovementType.BeforeInsertion;
-            _end = end;
-            _end.MovementType = AnchorMovementType.BeforeInsertion;
+            if (obj is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return Equals((MemberInfoViewModel)obj);
+        }
+
+        private void OnParametersCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            Console.WriteLine("OnParametersCollectionChanged:TODO");
+        }
+
+        public bool Equals(MemberInfoViewModel other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            return other.Name == Name && other._startOffset == _startOffset;
         }
 
         private string _name;
@@ -54,12 +87,83 @@ namespace Rubberduck.Core.Editor
             }
         }
 
+        public bool IsUserDefined { get; set; }
+
+        private int _endOffset;
+        public int EndOffset
+        {
+            get => _endOffset;
+            set
+            {
+                if (_endOffset != value)
+                {
+                    _endOffset = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _startOffset;
+        public int StartOffset
+        {
+            get => _startOffset;
+            set
+            {
+                if (_startOffset != value)
+                {
+                    _startOffset = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _startLine;
+        public int StartLine 
+        {
+            get => _startLine;
+            set
+            {
+                if (_startLine != value)
+                {
+                    _startLine = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _endLine;
+        public int EndLine 
+        {
+            get => _endLine;
+            set
+            {
+                if (_endLine != value)
+                {
+                    _endLine = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private IParameterInfoViewModel _currentParameter;
+        public IParameterInfoViewModel CurrentParameter
+        {
+            get => _currentParameter;
+            set
+            {
+                if (_currentParameter != value)
+                {
+                    _currentParameter = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(Signature));
+                }
+            }
+        }
+
         public string Signature => MemberType == MemberType.None
             ? _name
-            : $"{_name}({string.Join(", ", Parameters.Select(p => $"{p.Name} As {p.AsType}"))})";
+            : $"{_displayNamesByMemberType[_memberType.ToString()]} {_name}({string.Join(", ", Parameters.Select(p => $"{p.Name} As {p.AsType}"))})";
 
-        public int StartLine => !(_start?.IsDeleted ?? true) ? _start?.Line ?? _span?.StartLine ?? 1 : 1;
-        public int EndLine => !(_end?.IsDeleted ?? true) ? _end?.Line ?? _span?.EndLine ?? 1 : 1;
 
         private bool _hasImplementation;
         public bool HasImplementation 
@@ -85,6 +189,7 @@ namespace Rubberduck.Core.Editor
                 {
                     _memberType = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(Signature));
                 }
             }
         }
