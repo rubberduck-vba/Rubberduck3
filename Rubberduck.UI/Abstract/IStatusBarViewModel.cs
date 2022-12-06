@@ -45,8 +45,6 @@ namespace Rubberduck.UI.Abstract
         /// </summary>
         int ProgressMaxValue { get; set; }
 
-        bool CapsOn { get; set; }
-        bool NumLockOn { get; set; }
-        bool InsModeOn { get; set; }
+        bool ShowDocumentStatusItems { get; set; }
     }
 }

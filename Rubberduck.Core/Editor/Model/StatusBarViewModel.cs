@@ -21,7 +21,7 @@ namespace Rubberduck.Core.Editor
                 }
             }
         }
-
+        
         private int _documentLength;
         public int DocumentLength 
         { 
@@ -121,8 +121,19 @@ namespace Rubberduck.Core.Editor
         }
         public int ProgressValue { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public int ProgressMaxValue { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool CapsOn { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool NumLockOn { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool InsModeOn { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        private bool _showDocumentStatusItems;
+        public bool ShowDocumentStatusItems 
+        {
+            get => _showDocumentStatusItems;
+            set
+            {
+                if (_showDocumentStatusItems != value) 
+                {
+                    _showDocumentStatusItems = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
     }
 }
