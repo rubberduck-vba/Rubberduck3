@@ -5,15 +5,42 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.UI.Xaml.Controls"
              mc:Ignorable="d" 
-             Padding="0" 
+             Padding="0" HasDropShadow="True"
              d:DesignHeight="24" d:DesignWidth="800">
+    <ToolTip.Resources>
+        <BitmapImage x:Key="ErrorIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
+        <BitmapImage x:Key="InsightIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/light-bulb-code.png" />
+    </ToolTip.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <!-- TODO get colors & font sizes from config -->
-        <TextBlock Grid.Row="0" Margin="5,5,5,0" Padding="1,1,1,0" FontSize="12" FontWeight="Bold" Text="{Binding TipTitle}" />
-        <TextBlock Grid.Row="1" Margin="5,0,5,5" Padding="1,0,1,1" FontSize="10" Text="{Binding TipText}" />
+        <Border Grid.Row="0" Background="White" />
+        <StackPanel Orientation="Horizontal" Margin="5,2">
+            <Image Height="16" Width="16" Visibility="Visible">
+                <Image.Style>
+                    <Style TargetType="Image">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsError}" Value="true">
+                                <Setter Property="Source" Value="{StaticResource ErrorIcon}" />
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsInsight}" Value="true">
+                                <Setter Property="Source" Value="{StaticResource InsightIcon}" />
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+            <TextBlock Margin="5,2" Padding="1,1,1,0" FontSize="12" FontWeight="Bold" Text="{Binding TipTitle}" />
+        </StackPanel>
+        
+        <TextBlock Grid.Row="1" Margin="5" Padding="1,0,1,1" FontSize="10" FontWeight="SemiBold" Text="{Binding TipText}" />
+
+        <TextBlock Grid.Row="2" Margin="5,2,5,5" Padding="1,0,1,1" FontSize="9" Text="{Binding LocationText}" />
     </Grid>
 </ToolTip>

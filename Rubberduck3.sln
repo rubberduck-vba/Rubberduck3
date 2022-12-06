@@ -33,7 +33,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.UI.Xaml", "Rubbe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.UI.WinForms", "Rubberduck.UI.WinForms\Rubberduck.UI.WinForms.csproj", "{A1F54935-FE6D-4013-B618-5251DE4466CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Tests", "Rubberduck.Tests\Rubberduck.Tests.csproj", "{561B2738-7BFE-4974-B1CE-E5D910C770B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Tests", "Rubberduck.Tests\Rubberduck.Tests.csproj", "{561B2738-7BFE-4974-B1CE-E5D910C770B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Parsing", "Rubberduck.Parsing\Rubberduck.Parsing.csproj", "{86502725-A9D2-47A8-B26A-5E7BC8A85D47}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -201,6 +203,18 @@ Global
 		{561B2738-7BFE-4974-B1CE-E5D910C770B3}.Release|x64.Build.0 = Release|Any CPU
 		{561B2738-7BFE-4974-B1CE-E5D910C770B3}.Release|x86.ActiveCfg = Release|Any CPU
 		{561B2738-7BFE-4974-B1CE-E5D910C770B3}.Release|x86.Build.0 = Release|Any CPU
+		{86502725-A9D2-47A8-B26A-5E7BC8A85D47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86502725-A9D2-47A8-B26A-5E7BC8A85D47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86502725-A9D2-47A8-B26A-5E7BC8A85D47}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{86502725-A9D2-47A8-B26A-5E7BC8A85D47}.Debug|x64.Build.0 = Debug|Any CPU
+		{86502725-A9D2-47A8-B26A-5E7BC8A85D47}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{86502725-A9D2-47A8-B26A-5E7BC8A85D47}.Debug|x86.Build.0 = Debug|Any CPU
+		{86502725-A9D2-47A8-B26A-5E7BC8A85D47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86502725-A9D2-47A8-B26A-5E7BC8A85D47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86502725-A9D2-47A8-B26A-5E7BC8A85D47}.Release|x64.ActiveCfg = Release|Any CPU
+		{86502725-A9D2-47A8-B26A-5E7BC8A85D47}.Release|x64.Build.0 = Release|Any CPU
+		{86502725-A9D2-47A8-B26A-5E7BC8A85D47}.Release|x86.ActiveCfg = Release|Any CPU
+		{86502725-A9D2-47A8-B26A-5E7BC8A85D47}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -14,14 +14,22 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
     }
 
     /// <summary>
-    /// An object that can manipulate the code in a CodePane.
+    /// An object that can manipulate the code in the AvalonEdit editor.
     /// </summary>
-    public interface ICodePaneHandler : ISourceCodeHandler
+    public interface IEditorSourceCodeHandler : ISourceCodeHandler 
     {
         /// <summary>
         /// Replaces one or more specific line(s) in the specified module.
         /// </summary>
         void SubstituteCode(QualifiedModuleName module, CodeString newCode);
+        /// <summary>
+    }
+
+    /// <summary>
+    /// An object that can manipulate the code in a CodePane.
+    /// </summary>
+    public interface ICodePaneHandler : ISourceCodeHandler
+    {
         /// <summary>
         /// Replaces one or more specific line(s) in the specified module.
         /// </summary>

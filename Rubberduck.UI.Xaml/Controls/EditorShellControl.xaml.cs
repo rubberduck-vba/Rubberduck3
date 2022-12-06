@@ -1,6 +1,7 @@
 ﻿using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Folding;
+using Rubberduck.UI.Abstract;
 using Rubberduck.UI.RubberduckEditor;
 using Rubberduck.UI.RubberduckEditor.TextTransform;
 using System;
@@ -24,6 +25,21 @@ namespace Rubberduck.UI.Xaml.Controls
         public EditorShellControl()
         {
             InitializeComponent();
+        }
+
+        private void FilterLeftPanelItems(object sender, System.Windows.Data.FilterEventArgs e)
+        {
+            e.Accepted = (e.Item as IShellToolTab)?.Settings.TabPanelLocation == ToolTabLocation.LeftPanel;
+        }
+
+        private void FilterRightPanelItems(object sender, System.Windows.Data.FilterEventArgs e)
+        {
+            e.Accepted = (e.Item as IShellToolTab)?.Settings.TabPanelLocation == ToolTabLocation.RightPanel;
+        }
+
+        private void FilterBottomPanelItems(object sender, System.Windows.Data.FilterEventArgs e)
+        {
+            e.Accepted = (e.Item as IShellToolTab)?.Settings.TabPanelLocation == ToolTabLocation.BottomPanel;
         }
     }
 }

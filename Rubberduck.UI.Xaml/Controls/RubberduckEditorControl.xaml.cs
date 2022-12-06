@@ -19,6 +19,10 @@ using System.ComponentModel.Design;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
 using Rubberduck.UI.Abstract;
+using System.Threading;
+using System.Runtime;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Model;
 
 namespace Rubberduck.UI.Xaml.Controls
 {
@@ -180,47 +184,35 @@ namespace Rubberduck.UI.Xaml.Controls
         }
     }
 
-    public class LineTracker : ILineTracker
-    {
-        public void BeforeRemoveLine(DocumentLine line)
-        {
-        }
-
-        public void ChangeComplete(DocumentChangeEventArgs e)
-        {
-        }
-
-        public void LineInserted(DocumentLine insertionPos, DocumentLine newLine)
-        {
-        }
-
-        public void RebuildDocument()
-        {
-        }
-
-        public void SetLineLength(DocumentLine line, int newTotalLength)
-        {
-        }
-    }
-
     /// <summary>
     /// Interaction logic for RubberduckEditorControl.xaml
     /// </summary>
     public partial class RubberduckEditorControl : UserControl
     {
-        public IEnterKeyStrategy[] EnterKeyStrategies { get; } = new[] 
-        { 
-            new KeepCurrentLineTogetherEnterKeyStrategy() 
-        };
-        public IFoldingStrategy FoldingStrategy { get; }
-        public IEnumerable<IBlockCompletionStrategy> BlockCompletionStrategies { get; }
-            = VBFoldingStrategy.BlockInfo.Values.Select(e => new BlockCompletionStrategy(e)).ToList();
-
-        public TextLocation CaretLocation { get; private set; }
-
+        private readonly Timer _timer;
         private readonly FoldingManager _foldingManager;
-        private readonly BlockCompletionService _blockCompletion;
         private readonly ITextMarkerService _textMarkerService;
+
+        public RubberduckEditorControl()
+        {
+            InitializeComponent();
+            EditorPane.PreviewKeyDown += OnPreviewKeyDown;
+            EditorPane.MouseHover += OnMouseHover;
+
+            EditorPane.TextChanged += OnTextChanged;
+            EditorPane.TextArea.Caret.PositionChanged += OnCaretPositionChanged;
+
+            _foldingManager = FoldingManager.Install(EditorPane.TextArea);
+            //_blockCompletion = new BlockCompletionService(BlockCompletionStrategies);
+
+            var markerService = new TextMarkerService(EditorPane.Document);
+            Initialize(markerService);
+
+            _textMarkerService = markerService;
+            _timer = new Timer(OnIdle, null, Timeout.Infinite, Timeout.Infinite);
+
+            DataContextChanged += OnDataContextChanged;
+        }
 
         public ICodePaneViewModel ViewModel
         {
@@ -228,12 +220,45 @@ namespace Rubberduck.UI.Xaml.Controls
             set
             {
                 DataContext = value;
-                if (DataContext is ICodePaneViewModel context)
+            }
+        }
+
+        public IEnterKeyStrategy[] EnterKeyStrategies { get; } = new[] 
+        { 
+            new KeepCurrentLineTogetherEnterKeyStrategy() 
+        };
+
+        private TextLocation _caretLocation;
+        public TextLocation CaretLocation 
+        {
+            get => _caretLocation;
+            private set
+            {
+                if (_caretLocation != value)
                 {
-                    context.SelectedMemberProviderChanged += OnSelectedMemberProviderChanged;
-                    context.SelectedMemberProvider = context.MemberProviders.FirstOrDefault();
+                    _caretLocation = value;
+                    ViewModel.Status.CaretColumn = value.Column;
+                    ViewModel.Status.CaretLine = value.Line;
+                    ViewModel.Status.CaretOffset = EditorPane.CaretOffset;
                 }
             }
+        }
+
+
+        private void OnParseTreeChanged(object sender, ParseTreeEventArgs e)
+        {
+            var foldingInfo = e.BlockFoldingInfo.Select(i => new NewFolding { Name = i.Name, StartOffset = i.Offset.Start, EndOffset = i.Offset.End, IsDefinition = i.IsDefinition });
+            _foldingManager.UpdateFoldings(foldingInfo, -1); // TODO pass first parse error offset
+
+            UpdateMembers(e.MemberInfo);
+
+            _textMarkerService.RemoveAll(m => true);
+            foreach (var error in ViewModel.SyntaxErrors)
+            {
+                AddSyntaxErrorMarker(error);
+            }
+
+            AddInspectionErrorMarker(0, 1);
         }
 
         private void OnSelectedMemberProviderChanged(object sender, EventArgs e)
@@ -241,27 +266,35 @@ namespace Rubberduck.UI.Xaml.Controls
             ViewModel.SelectedMemberProvider.MemberSelected += OnMemberSelected;
         }
 
-        public RubberduckEditorControl()
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var foldingStrategy = new VBFoldingStrategy();
-            FoldingStrategy = foldingStrategy;
-
-            InitializeComponent();
-            EditorPane.PreviewKeyDown += OnPreviewKeyDown;
-            EditorPane.TextChanged += OnTextChanged;
-            EditorPane.MouseHover += OnMouseHover;
-            
-            EditorPane.TextArea.Caret.PositionChanged += OnCaretPositionChanged;
-
-            EditorPane.Document.LineTrackers.Add(new LineTracker());
-            _foldingManager = FoldingManager.Install(EditorPane.TextArea);
-            _blockCompletion = new BlockCompletionService(BlockCompletionStrategies);
-
-            var markerService = new TextMarkerService(EditorPane.Document);
-            Initialize(markerService);
-            
-            _textMarkerService = markerService;
+            if (DataContext is ICodePaneViewModel context)
+            {
+                context.Document = EditorPane.Document;
+                context.SelectedMemberProviderChanged += OnSelectedMemberProviderChanged;
+                context.SelectedMemberProvider = context.MemberProviders.FirstOrDefault();
+                if (context.SelectedMemberProvider != null)
+                {
+                    context.SelectedMemberProvider.CurrentMember = context.SelectedMemberProvider?.Members.FirstOrDefault();
+                }
+                context.ParseTreeChanged += OnParseTreeChanged;
+            }
         }
+
+        private async void OnIdle(object obj)
+        {
+            await Dispatcher.InvokeAsync(ParseDocumentAsync);
+        }
+
+        private async Task ParseDocumentAsync()
+        {
+            using (var reader = EditorPane.Document.CreateReader())
+            {
+                await ViewModel.ParseAsync(reader);
+            }
+        }
+
+        private void ResetIdleTimer() => _timer.Change((int)((ViewModel?.EditorSettings?.IdleTimeoutSeconds * 1000) ?? Timeout.Infinite), Timeout.Infinite);
 
         private void OnCaretPositionChanged(object sender, EventArgs e)
         {
@@ -290,8 +323,8 @@ namespace Rubberduck.UI.Xaml.Controls
                 {
                     try
                     {
-                        var startLine = EditorPane.Document.GetLineByOffset(Math.Min(maxOffset, member.StartOffset));
-                        var endLine = EditorPane.Document.GetLineByOffset(Math.Min(maxOffset, member.EndOffset));
+                        var startLine = EditorPane.Document.GetLineByOffset(Math.Min(maxOffset, member.Offset.Start));
+                        var endLine = EditorPane.Document.GetLineByOffset(Math.Min(maxOffset, member.Offset.End));
 
                         if (startLine.LineNumber <= position.Line && endLine.LineNumber >= position.Line)
                         {
@@ -305,19 +338,15 @@ namespace Rubberduck.UI.Xaml.Controls
                     }
                 }
             }
-
-            ViewModel.UpdateStatus($"L{position.Line} C{position.Column}");
         }
 
         private void OnMemberSelected(object sender, NavigateToMemberEventArgs e)
         {
-            if (EditorPane.TextArea.Caret.Line != e.MemberInfo.StartLine)
+            if (e.MemberInfo != null && EditorPane.TextArea.Caret.Line != e.MemberInfo.StartLine)
             {
-                EditorPane.CaretOffset = e.MemberInfo.StartOffset;
+                EditorPane.CaretOffset = e.MemberInfo.Offset.Start; // FIXME need MemberBodyOffset
                 EditorPane.ScrollTo(e.MemberInfo.StartLine, 1);
             }
-
-            EditorPane.Focus();
 
             if (!EditorPane.TextArea.Focus())
             {
@@ -409,35 +438,12 @@ namespace Rubberduck.UI.Xaml.Controls
 
         private void OnTextChanged(object sender, EventArgs e)
         {
-            if (!_foldingManager.AllFoldings.Any(f => EditorPane.Document.GetLineByOffset(f.StartOffset).LineNumber == EditorPane.TextArea.Caret.Line) && _blockCompletion.CanComplete(EditorPane.TextArea.Caret, EditorPane.Document, ViewModel.SelectedMemberProvider.CurrentMember, out var completionStrategy, out var text))
-            {
-                completionStrategy.Complete(EditorPane.TextArea.Caret, text, EditorPane.Document);
-            }
-
-            var infos = FoldingStrategy?.UpdateFoldings(_foldingManager, EditorPane.Document);
-            UpdateMembers(infos);
-
-            // PoC code >>>>>>>>>>>>>>>>>>>>>>>>>
-            if (EditorPane.Text.Length > 20
-                && !_textMarkerService.TextMarkers.Any(marker => marker.StartOffset == 0)
-                && !EditorPane.Text.Contains("Option Explicit"))
-            {
-                AddInspectionErrorMarker(0, 1);
-            }
-            else if (EditorPane.Text.Length > 30
-                && !_textMarkerService.TextMarkers.Any(marker => marker.StartOffset == 17)
-                && !EditorPane.Text.Contains("Public Sub "))
-            {
-                AddInspectionHintMarker(17, 3);
-            }
-            else
-            {
-                _textMarkerService.RemoveAll(marker => true);
-            }
-            // <<<<<<<<<<<<<<<<<<<<<<<<< PoC code
+            ResetIdleTimer();
+            ViewModel.Status.DocumentLines = EditorPane.Document.LineCount;
+            ViewModel.Status.DocumentLength = EditorPane.Document.TextLength;
         }
 
-        private void UpdateMembers(IEnumerable<(int StartOffset, int EndOffset, MemberType MemberType, string Name)> infos)
+        private void UpdateMembers(IEnumerable<MemberInfo> infos)
         {
             var allNames = infos.Select(i => i.Name).ToHashSet();
             var existingNames = ViewModel.SelectedMemberProvider.Members.Where(m => m.HasImplementation).Select(m => m.Name).ToHashSet();
@@ -460,15 +466,26 @@ namespace Rubberduck.UI.Xaml.Controls
                 if (candidates.Length == 1)
                 {
                     var info = candidates[0];
-                    ViewModel.SelectedMemberProvider.AddMember(name, info.MemberType, info.StartOffset, info.EndOffset);
+                    ViewModel.SelectedMemberProvider.AddMember(name, info.MemberType, info.Offset);
                     break;
                 }
             }
         }
 
+        private ToolTip CreateTooltip(string title, string text, string location)
+        {
+            var vm = new { TipTitle = title, TipText = text, LocationText = location, IsError = true }; // TODO extract class
+            var tooltip = new TextMarkerToolTip
+            {
+                DataContext = vm,
+                PlacementTarget = EditorPane
+            };
+            return tooltip;
+        }
+
         private ToolTip CreateTooltip(string title, string text)
         {
-            var vm = new { TipTitle = title, TipText = text }; // TODO extract class
+            var vm = new { TipTitle = title, TipText = text, IsInsight = true }; // TODO extract class
             var tooltip = new TextMarkerToolTip
             {
                 DataContext = vm,
@@ -478,6 +495,18 @@ namespace Rubberduck.UI.Xaml.Controls
         }
 
         #region TODO move to view-layer service?
+        public void AddSyntaxErrorMarker(ISyntaxErrorViewModel vm)
+        {
+            var marker = _textMarkerService.Create(vm.StartOffset, vm.Length);
+            if (marker != null)
+            {
+                marker.MarkerTypes = TextMarkerTypes.SquigglyUnderline;
+                marker.MarkerColor = Colors.DarkRed;
+                
+                marker.ToolTip = CreateTooltip("Syntax Error", vm.Message, vm.LocationMessage);
+            }
+        }
+
         public void AddInspectionErrorMarker(int startOffset, int length)
         {
             var marker = _textMarkerService.Create(startOffset, length);

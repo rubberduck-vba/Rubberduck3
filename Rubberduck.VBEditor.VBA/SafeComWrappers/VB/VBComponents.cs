@@ -132,18 +132,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                         component = Import(path);
                     }
 
-                    var codeString =
-                        _fileSystem.File.ReadAllText(path,
-                            Encoding
-                                .Default); //The VBE uses the current ANSI codepage from the windows settings to export and import.
+                    //The VBE uses the current ANSI codepage from the windows settings to export and import.
+                    var codeString = _fileSystem.File.ReadAllText(path, Encoding.Default); 
                     var codeLines = codeString.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
 
-                    var nonAttributeLines = codeLines.TakeWhile(line => !line.StartsWith("Attribute")).Count();
+                    var nonAttributeLines = codeLines
+                            .TakeWhile(line => !line.StartsWith("Attribute")).Count();
                     var attributeLines = codeLines.Skip(nonAttributeLines)
-                        .TakeWhile(line => line.StartsWith("Attribute")).Count();
+                            .TakeWhile(line => line.StartsWith("Attribute")).Count();
                     var declarationsStartLine = nonAttributeLines + attributeLines + 1;
+                    
                     var correctCodeString = string.Join(Environment.NewLine,
-                        codeLines.Skip(declarationsStartLine - 1).ToArray());
+                    codeLines.Skip(declarationsStartLine - 1).ToArray());
 
                     using (var codeModule = component.CodeModule)
                     {

@@ -1,4 +1,6 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.WinForms;
@@ -22,9 +24,9 @@ namespace Rubberduck.Core.Editor
         private static readonly IDictionary<string, string> _displayNamesByMemberType =
             Enum.GetValues(typeof(MemberType)).Cast<MemberType>().ToDictionary(m => m.ToString(), m => m.GetType().GetCustomAttribute<DisplayAttribute>()?.Name);
 
-        public MemberInfoViewModel(int offset) : this()
+        public MemberInfoViewModel(DocumentOffset offset) : this()
         {
-            _startOffset = offset;
+            _offset = offset;
         }
 
         public MemberInfoViewModel()
@@ -34,7 +36,7 @@ namespace Rubberduck.Core.Editor
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Name, _startOffset);
+            return HashCode.Combine(Name, _offset.Start);
         }
 
         public override bool Equals(object obj)
@@ -69,7 +71,7 @@ namespace Rubberduck.Core.Editor
                 return false;
             }
 
-            return other.Name == Name && other._startOffset == _startOffset;
+            return other.Name == Name && other.Offset.Start == Offset.Start;
         }
 
         private string _name;
@@ -89,29 +91,15 @@ namespace Rubberduck.Core.Editor
 
         public bool IsUserDefined { get; set; }
 
-        private int _endOffset;
-        public int EndOffset
+        private DocumentOffset _offset;
+        public DocumentOffset Offset
         {
-            get => _endOffset;
+            get => _offset;
             set
             {
-                if (_endOffset != value)
+                if (_offset.Equals(value))
                 {
-                    _endOffset = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private int _startOffset;
-        public int StartOffset
-        {
-            get => _startOffset;
-            set
-            {
-                if (_startOffset != value)
-                {
-                    _startOffset = value;
+                    _offset = value;
                     OnPropertyChanged();
                 }
             }
@@ -162,7 +150,7 @@ namespace Rubberduck.Core.Editor
 
         public string Signature => MemberType == MemberType.None
             ? _name
-            : $"{_displayNamesByMemberType[_memberType.ToString()]} {_name}({string.Join(", ", Parameters.Select(p => $"{p.Name} As {p.AsType}"))})";
+            : $"{_displayNamesByMemberType[_memberType.ToString()]} {_name}({string.Join(", ", Parameters.Select(p => $"{p.IsOptional} {p.Name} As {p.AsType}"))})";
 
 
         private bool _hasImplementation;
@@ -260,8 +248,8 @@ namespace Rubberduck.Core.Editor
 
     public class EditorShellDockablePresenter : DockableToolwindowPresenter
     {
-        public EditorShellDockablePresenter(IVBE vbe, IAddIn addin, EditorShellWindow view) 
-            : base(vbe, addin, view)
+        public EditorShellDockablePresenter(IVBE vbe, IAddIn addin, IEditorShellWindowProvider viewFactory) 
+            : base(vbe, addin, viewFactory.Create())
         {
         }
     }

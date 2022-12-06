@@ -102,8 +102,12 @@
     <Compile Include="Registration\WellKnownDispIds.cs" />
     <Compile Include="RubberduckUI.cs.Designer.cs" />
     <Compile Include="RubberduckUI.de.Designer.cs" />
-    <Compile Include="RubberduckUI.Designer.cs" />
     <Compile Include="RubberduckUI.fr.Designer.cs" />
+    <Compile Include="RubberduckUI1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RubberduckUI.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="About\AboutUI.cs.resx" />
@@ -129,6 +133,8 @@
     <EmbeddedResource Include="RubberduckUI.it.resx" />
     <EmbeddedResource Include="RubberduckUI.resx">
       <SubType>Designer</SubType>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUI1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -400,6 +406,15 @@
     <Resource Include="Icons\Fugue\todo-completed.png" />
     <Resource Include="Icons\Fugue\ui-scroll-pane-form.png" />
     <Resource Include="Icons\Fugue\ui-tab-content.png" />
+    <Resource Include="Icons\Fugue\document-broken.png" />
+    <Resource Include="Icons\Fugue\document-convert.png" />
+    <Resource Include="Icons\Fugue\document--exclamation.png" />
+    <Resource Include="Icons\Fugue\document--minus.png" />
+    <Resource Include="Icons\Fugue\document--pencil.png" />
+    <Resource Include="Icons\Fugue\document--plus.png" />
+    <Resource Include="Icons\Fugue\selection-input.png" />
+    <Resource Include="Icons\Fugue\document-code.png" />
+    <Resource Include="Icons\faint-ducky.png" />
     <Content Include="Splash.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

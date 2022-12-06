@@ -1,5 +1,6 @@
-﻿using Rubberduck.Resources;
-using Rubberduck.UI.Abstract;
+﻿using Rubberduck.Parsing;
+using Rubberduck.Parsing.Model;
+using Rubberduck.Resources;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

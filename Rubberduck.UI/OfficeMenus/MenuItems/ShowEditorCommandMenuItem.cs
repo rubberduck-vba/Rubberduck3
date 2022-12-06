@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key => "Rubberduck_Editor";
+        public override string Key => "RubberduckMenu_ShowEditor";
         public override bool BeginGroup => false;
         public override int DisplayOrder => (int)RubberduckParentMenu.ItemDisplayOrder.ShowEditor;
 

@@ -43,6 +43,11 @@ using Rubberduck.InternalApi.Common;
 using Rubberduck.Core.About;
 using Rubberduck.UI.Xaml.Controls;
 using Rubberduck.Core.Editor;
+using Rubberduck.UI.Abstract;
+using Rubberduck.Core.Editor.Tools;
+using Rubberduck.Parsing.Abstract;
+using System.IO;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Root
 {
@@ -82,6 +87,9 @@ namespace Rubberduck.Root
             RegisterInstances(container);
             RegisterAppWithSpecialDependencies(container);
             RegisterUnitTestingComSide(container);
+
+            container.Register(Component.For<IParser<TextReader>>().ImplementedBy<TextReaderParser>().LifestyleSingleton());
+            container.Register(Component.For<ICommonTokenStreamProvider<TextReader>>().ImplementedBy<TextReaderCommonTokenStreamProvider>().LifestyleSingleton());
 
             container.Register(Component.For<Version>()
                      .UsingFactoryMethod(() => Assembly.GetExecutingAssembly().GetName().Version)

@@ -97,9 +97,7 @@
     <Compile Include="Dialogs\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="EditorShellWindow.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="EditorShellWindow.cs" />
     <Compile Include="EditorShellWindow.Designer.cs">
       <DependentUpon>EditorShellWindow.cs</DependentUpon>
     </Compile>

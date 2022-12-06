@@ -13,7 +13,11 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Styles/ComboBoxTemplate.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <BitmapImage x:Key="FaintDucky" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/faint-ducky.png" />
             <BitmapImage x:Key="CloseIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-button.png" />
+            <CollectionViewSource x:Key="LeftPanelItems" Source="{Binding ToolTabs}" Filter="FilterLeftPanelItems" />
+            <CollectionViewSource x:Key="RightPanelItems" Source="{Binding ToolTabs}" Filter="FilterRightPanelItems" />
+            <CollectionViewSource x:Key="BottomPanelItems" Source="{Binding ToolTabs}" Filter="FilterBottomPanelItems" />
         </ResourceDictionary>
     </UserControl.Resources>
     
@@ -29,27 +33,30 @@
             <ColumnDefinition Width="Auto" /> <!-- left panel -->
             <ColumnDefinition Width="Auto" /> <!-- left panel grip -->
             <ColumnDefinition Width="*" /> <!-- document panel -->
+            <ColumnDefinition Width="Auto" /> <!-- right panel grip -->
             <ColumnDefinition Width="Auto" /> <!-- right panel -->
         </Grid.ColumnDefinitions>
 
-        <TabControl TabStripPlacement="Bottom">
-            <TabItem Header="Code Explorer">
-                <Grid MinWidth="220">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                </Grid>
-                <!-- TODO CodeExplorerControl -->
-            </TabItem>
-            <TabItem Header="Properties">
-                <!-- TODO PropertyGridControl -->
-            </TabItem>
+        <TabControl TabStripPlacement="Bottom" ItemsSource="{Binding ToolTabs}">
+            <TabControl.ItemTemplate>
+                <DataTemplate DataType="vm:IShellToolTab">
+                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <!-- TODO template selector -->
+                <DataTemplate>
+                    <local:SyncPanelToolControl DataContext="{Binding ViewModel}" />
+                </DataTemplate>
+            </TabControl.ContentTemplate>
         </TabControl>
 
-        <GridSplitter Grid.Column="1" Width="5" />
+        <GridSplitter Grid.Column="1" Width="3" />
 
-        <TabControl Grid.Column="2" ItemsSource="{Binding Documents}">
+        <TabControl Grid.Column="2" ItemsSource="{Binding LoadedModules}">
+            <TabControl.Background>
+                <ImageBrush ImageSource="{StaticResource FaintDucky}" Stretch="UniformToFill" TileMode="None" />
+            </TabControl.Background>
             <TabControl.ItemTemplate>
                 <DataTemplate DataType="vm:IEditorTabViewModel">
                     <DockPanel MinWidth="72">
@@ -64,11 +71,12 @@
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>
-        
-        <!-- TODO StatusBarControl -->
-        <StatusBar Grid.Row="2" Grid.ColumnSpan="3" Padding="2">
-            <TextBlock Text="{Binding CurrentStatus}" />
-        </StatusBar>
+
+        <GridSplitter Grid.Column="3" Width="5" />
+
+        <TabControl Grid.Column="4" TabStripPlacement="Bottom" ItemsSource="{DynamicResource {DynamicResource RightPanelItems}}" />
+
+        <local:StatusBarControl DataContext="{Binding Status}" Grid.Row="3" Grid.ColumnSpan="5" />
     </Grid>
     
 </UserControl>

@@ -12,6 +12,27 @@ using System.Windows.Forms;
 
 namespace Rubberduck.UI.WinForms
 {
+    public interface IEditorShellWindowProvider
+    {
+        EditorShellWindow Create();
+    }
+
+    public class EditorShellWindowProvider : IEditorShellWindowProvider
+    {
+        private readonly IEditorShellViewModel _viewModel;
+
+        public EditorShellWindowProvider(IEditorShellViewModel viewModel)
+        {
+            _viewModel = viewModel;
+        }
+
+        public EditorShellWindow Create()
+        {
+            return new EditorShellWindow(_viewModel);
+        }
+    }
+
+
     public partial class EditorShellWindow : UserControl, IDockableUserControl
     {
         public EditorShellWindow()

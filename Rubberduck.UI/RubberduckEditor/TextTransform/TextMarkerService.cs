@@ -51,7 +51,7 @@ namespace Rubberduck.UI.RubberduckEditor.TextTransform
             }
             if (length < 0 || startOffset + length > textLength)
             {
-                throw new ArgumentOutOfRangeException(nameof(length), "Length must not be negative and start offset + length cannot exceed the document length.");
+                startOffset = textLength - length;
             }
 
             if (_markerPositions.Add((startOffset, length)))
