@@ -23,7 +23,7 @@ namespace Rubberduck.Core.Editor.Commands
             var component = _projectsProvider.Component(param.QualifiedModuleName);
             using (var collection = component.Collection)
             {
-                var vm = shell.LoadedModules.SingleOrDefault(e => e.ModuleInfo.QualifiedModuleName.Equals(param.QualifiedModuleName));
+                var vm = shell.ModuleDocumentTabs.SingleOrDefault(e => e.ModuleInfo.QualifiedModuleName.Equals(param.QualifiedModuleName));
                 if (vm != null)
                 {
                     try

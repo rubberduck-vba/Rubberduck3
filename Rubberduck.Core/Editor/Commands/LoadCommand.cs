@@ -1,12 +1,10 @@
-﻿using Rubberduck.UI.Abstract;
+﻿using Rubberduck.Parsing.Model;
+using Rubberduck.UI.Abstract;
 using Rubberduck.UI.Command.SyncPanel;
 using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
-using static Rubberduck.UI.WPF.Converters.DeclarationToMemberSignatureConverter;
 
 namespace Rubberduck.Core.Editor.Commands
 {
@@ -14,26 +12,39 @@ namespace Rubberduck.Core.Editor.Commands
     {
         private readonly ITempSourceFileHandler _tempFile;
         private readonly IProjectsProvider _projectsProvider;
-        private readonly ICodePaneViewModelProvider _vmProvider;
 
-        public LoadCommand(ITempSourceFileHandler tempFile, IProjectsProvider projectsProvider, ICodePaneViewModelProvider vmProvider)
+        public LoadCommand(ITempSourceFileHandler tempFile, IProjectsProvider projectsProvider)
         {
             _tempFile = tempFile;
             _projectsProvider = projectsProvider;
-            _vmProvider = vmProvider;
-            
-            AddToCanExecuteEvaluation(p => ((ISyncPanelModuleViewModel)p).ModuleType != Parsing.Model.ModuleType.None);
+
+            AddToCanExecuteEvaluation(p => p != null && ((ISyncPanelModuleViewModel)p).ModuleType != Parsing.Model.ModuleType.None);
         }
+
+        private static IDictionary<ComponentType, ModuleType> _moduleTypeByComponentType = new Dictionary<ComponentType, ModuleType>
+        {
+            [ComponentType.Document] = ModuleType.DocumentModule,
+            [ComponentType.StandardModule] = ModuleType.StandardModule,
+            [ComponentType.UserForm] = ModuleType.UserFormModule,
+            [ComponentType.ClassModule] = ModuleType.ClassModule,
+        };
 
         protected override void ExecuteInternal(IEditorShellViewModel shell, ISyncPanelModuleViewModel param)
         {
             try
             {
                 var component = _projectsProvider.Component(param.QualifiedModuleName);
+                if (!_moduleTypeByComponentType.TryGetValue(component.Type, out var moduleType))
+                {
+                    // component type isn't supported. throw?
+                    return;
+                }
+
                 var content = _tempFile.Read(component);
 
-                var vm = _vmProvider.GetViewModel(shell, component.QualifiedModuleName, content);
-                shell.LoadedModules.Add(vm);
+                var vm = MemberProviderViewModel.Default(param.QualifiedModuleName, moduleType);
+                shell.LoadModule(param.QualifiedModuleName, content, vm);
+                shell.ActivateModuleDocumentTab(param.QualifiedModuleName);
 
                 param.State = ModuleSyncState.OK;
             }

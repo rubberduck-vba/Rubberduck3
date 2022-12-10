@@ -7,15 +7,19 @@ using Rubberduck.Parsing.Listeners;
 using Rubberduck.Parsing.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
+using Rubberduck.UI.Command;
+using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Annotations;
+using System.Windows.Input;
 
 namespace Rubberduck.Core.Editor
 {
@@ -26,104 +30,77 @@ namespace Rubberduck.Core.Editor
 
         private IParseTree _parseTree;
 
-        public CodePaneViewModel(ICodeParserService parser, IEditorSettings settings)
+        public CodePaneViewModel(ICodeParserService parser, IEditorSettings settings, IEnumerable<IMemberProviderViewModel> memberProviders)
         {
             _parser = parser;
             _settings = settings;
 
-            MemberProviders = new ObservableCollection<IMemberProviderViewModel>(
-                new[]
-                {
-                    new MemberProviderViewModel
-                    {
-                        Name = "(General)",
-                        ModuleType = ModuleType.StandardModule,
-                        Members = new ObservableCollection<IMemberInfoViewModel>(new MemberInfoViewModel[]
-                        {
-                            new MemberInfoViewModel()
-                            {
-                                Name = "(Declarations)",
-                                MemberType = MemberType.None,
-                            },
-                        })
-                    }
-                });
+            MemberProviders = new ObservableCollection<IMemberProviderViewModel>(memberProviders);
+            CloseCommand = new DelegateCommand(null, p => EditorShellContext.Current.Shell.UnloadModule((QualifiedModuleName)p)); // TODO handle sync to VBE when dirty
         }
-
-        public IEditorShellViewModel Shell { get; internal set; }
 
         private MemberListener _memberListener;
         private VBFoldingListener _foldingListener;
         private TokenStreamRewriter _rewriter;
+
+        public ICommand CloseCommand { get; }
+
         public IEnumerable<BlockFoldingInfo> Foldings => _foldingListener?.Foldings ?? Enumerable.Empty<BlockFoldingInfo>();
-        public IStatusBarViewModel Status => Shell.Status;
+        public IStatusBarViewModel Status => EditorShellContext.Current.Shell.Status;
 
         public async Task ParseAsync(TextReader reader)
         {
             try
             {
                 _memberListener = new MemberListener();
-                _foldingListener = new VBFoldingListener();
+                _foldingListener = new VBFoldingListener(_settings.BlockFoldingSettings);
                 var listeners = new VBAParserBaseListener[]
                 { 
                     _memberListener,
                     _foldingListener,
                 };
 
-                Shell.Status.ParserState = "Parsing...";
-
-                var result = await _parser.ParseAsync(Title, reader, listeners);
-
-                Shell.Status.ParserState = "Processing...";
+                EditorShellContext.Current.Shell.Status.ParserState = "Parsing...";
+                
+                var sw = Stopwatch.StartNew();
+                var result = await _parser.ParseAsync(ModuleInfo.Name, reader, listeners);
+                sw.Stop();
 
                 _parseTree = result.ParseTree;
                 _rewriter = result.Rewriter;
 
                 SyntaxErrors = result.Errors.Select(e => new SyntaxErrorViewModel(e));
 
+                EditorShellContext.Current.Shell.Status.ParserState = $"Parse completed: {sw.ElapsedMilliseconds:N0}ms";
                 OnParseTreeChanged();
-                
-                Shell.Status.ParserState = "Ready";
             }
             catch
             {
-                Shell.Status.ParserState = "Unexpected error";
+                EditorShellContext.Current.Shell.Status.ParserState = "Unexpected error";
             }
         }
+
         private void OnParseTreeChanged()
         {
-            ParseTreeChanged?.Invoke(this, new ParseTreeEventArgs(_parseTree, _memberListener.Members, _foldingListener.Foldings));
+            ParseTreeChanged?.Invoke(this, new ParseTreeEventArgs(_parseTree, _memberListener.Members, _foldingListener.Foldings, SyntaxErrors));
         }
 
-        private bool _isTabOpen;
-        public bool IsTabOpen
+        private IModuleInfoViewModel _moduleInfo;
+        public IModuleInfoViewModel ModuleInfo
         {
-            get => _isTabOpen;
+            get => _moduleInfo;
             set
             {
-                if (_isTabOpen != value) 
+                if (_moduleInfo != value)
                 {
-                    _isTabOpen = value;
+                    _moduleInfo = value;
                     OnPropertyChanged();
                 }
             }
         }
+
 
         public TextDocument Document { get; set; }
-
-        private string _title;
-        public string Title 
-        {
-            get => _title;
-            set
-            {
-                if (_title != value)
-                {
-                    _title = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
 
         private string _content;
         public string Content 
@@ -161,9 +138,6 @@ namespace Rubberduck.Core.Editor
         public event EventHandler<ParseTreeEventArgs> ParseTreeChanged;
 
         public ObservableCollection<IMemberProviderViewModel> MemberProviders { get; set; } 
-
-        public IModuleInfoViewModel ModuleInfo { get; set; }
-        public ObservableCollection<IMemberInfoViewModel> Members { get; }
 
         private IEnumerable<ISyntaxErrorViewModel> _syntaxErrors;
         public IEnumerable<ISyntaxErrorViewModel> SyntaxErrors 

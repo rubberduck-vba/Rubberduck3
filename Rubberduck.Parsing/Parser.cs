@@ -38,9 +38,7 @@ namespace Rubberduck.Parsing
                 parser.AddParseListener(listener);
             }
 
-            parser.Interpreter.PredictionMode = mode == ParserMode.Ll
-                ? PredictionMode.Ll
-                : PredictionMode.Sll;
+            parser.Interpreter.PredictionMode = PredictionMode.Sll;
 
             var tree = startRule.Invoke(parser);
             return new ParserResult(tree, errors.SyntaxErrors, new TokenStreamRewriter(stream));

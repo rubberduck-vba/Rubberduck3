@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.UI.Abstract;
 using System;
+using System.Linq;
 
 namespace Rubberduck.Core.Editor
 {
@@ -11,6 +12,7 @@ namespace Rubberduck.Core.Editor
         private static readonly string ExpectedIdentifierError = "An identifier name is expected.";
         private static readonly string ExpectedProcedureError = "A Sub, Function, or Property procedure declaration is expected.";
         private static readonly string ExpectedTokenError = "'{0}' is expected.";
+        private static readonly string TypeCannotBeEmptyError = "User-defined type cannot be empty.";
         #endregion
 
         public SyntaxErrorViewModel(SyntaxError error)
@@ -21,6 +23,12 @@ namespace Rubberduck.Core.Editor
 
             switch (error.Context)
             {
+                case VBAParser.UdtMemberListContext udtMemberList when !udtMemberList.udtMember()?.Any() ?? false:
+                    var parentTypeToken = ((VBAParser.UdtDeclarationContext)udtMemberList.Parent).TYPE();
+                    StartOffset = parentTypeToken.Symbol.StartIndex;
+                    Length = parentTypeToken.Symbol.StopIndex + 1 - StartOffset;
+                    Message = TypeCannotBeEmptyError;
+                    break;
                 case VBAParser.IdentifierContext id when id.Parent.Parent is VBAParser.SubStmtContext parentSubStmt:
                     var parentSubToken = parentSubStmt.SUB();
                     StartOffset = parentSubToken.Symbol.StartIndex;

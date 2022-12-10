@@ -22,15 +22,20 @@ namespace Rubberduck.UI.WPF
         {
             WordWrap = false;
 
-            var highlighter = LoadHighlighter("Rubberduck.UI.WPF.vba.xshd");
+            var highlighter = LoadHighlighter("Rubberduck.UI.RubberduckEditor.vba.xshd");
             SyntaxHighlighting = highlighter;
 
             ////Style hyperlinks so they look like comments. Note - this needs to move if used for user code.
             //TextArea.TextView.LinkTextUnderline = false;
             //TextArea.TextView.LinkTextForegroundBrush = new SolidColorBrush(Colors.Green);
-            Options.RequireControlModifierForHyperlinkClick = false;
+            Options.RequireControlModifierForHyperlinkClick = true;
             Options.EnableHyperlinks = true;
             Options.EnableEmailHyperlinks = false;
+            Options.AllowScrollBelowDocument = true; // should be false if folding is disabled
+            Options.ConvertTabsToSpaces = true;
+            Options.HighlightCurrentLine = true;
+            Options.HideCursorWhileTyping = true;
+            Options.ShowColumnRuler = true;
         }
 
         public new string Text

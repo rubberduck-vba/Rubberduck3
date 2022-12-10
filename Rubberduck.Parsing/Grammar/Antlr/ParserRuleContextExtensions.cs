@@ -60,12 +60,7 @@ namespace Rubberduck.Parsing
                 return default;
             }
 
-            var results = context.children
-                .Where(child => child is TContext)
-                .ToList();
-            return results.Any() 
-                ? (TContext)results.First() 
-                : default;
+            return context.children.OfType<TContext>().FirstOrDefault();
         }
 
         /// <summary>

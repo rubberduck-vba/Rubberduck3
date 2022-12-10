@@ -23,9 +23,35 @@ using System.Threading;
 using System.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Model;
+using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.AvalonEdit.Editing;
 
 namespace Rubberduck.UI.Xaml.Controls
 {
+    public class CompletionInfo : ICompletionData
+    {
+        public CompletionInfo(IMemberInfoViewModel memberInfo)
+        {
+            Text = memberInfo.Name;
+            Content = memberInfo.Name; // TODO make a nice XAML control for this
+        }
+
+        public ImageSource Image { get; }
+
+        public string Text { get; }
+
+        public object Content { get; }
+
+        public object Description { get; }
+
+        public double Priority { get; }
+
+        public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
+        {
+            textArea.Document.Replace(completionSegment, Text);
+        }
+    }
+
     public interface IEnterKeyStrategy
     {
         bool IsActive { get; set; }
@@ -193,6 +219,8 @@ namespace Rubberduck.UI.Xaml.Controls
         private readonly FoldingManager _foldingManager;
         private readonly ITextMarkerService _textMarkerService;
 
+        private CompletionWindow _completionWindow = null;
+
         public RubberduckEditorControl()
         {
             InitializeComponent();
@@ -202,8 +230,10 @@ namespace Rubberduck.UI.Xaml.Controls
             EditorPane.TextChanged += OnTextChanged;
             EditorPane.TextArea.Caret.PositionChanged += OnCaretPositionChanged;
 
+            EditorPane.TextArea.TextEntering += TextArea_TextEntering;
+            EditorPane.TextArea.TextEntered += TextArea_TextEntered;
+
             _foldingManager = FoldingManager.Install(EditorPane.TextArea);
-            //_blockCompletion = new BlockCompletionService(BlockCompletionStrategies);
 
             var markerService = new TextMarkerService(EditorPane.Document);
             Initialize(markerService);
@@ -212,6 +242,26 @@ namespace Rubberduck.UI.Xaml.Controls
             _timer = new Timer(OnIdle, null, Timeout.Infinite, Timeout.Infinite);
 
             DataContextChanged += OnDataContextChanged;
+        }
+
+        private void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
+        {
+            if (e.Text == ".")
+            {
+                ShowCompletionList(ViewModel.SelectedMemberProvider.Members); // TODO be smarter than that
+            }
+            e.Handled = true;
+        }
+
+        private void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
+        {
+            if (e.Text.Length > 0 && _completionWindow != null)
+            {
+                if (!char.IsLetterOrDigit(e.Text[0]))
+                {
+                    _completionWindow.CompletionList.RequestInsertion(e);
+                }
+            }
         }
 
         public ICodePaneViewModel ViewModel
@@ -244,21 +294,36 @@ namespace Rubberduck.UI.Xaml.Controls
             }
         }
 
-
         private void OnParseTreeChanged(object sender, ParseTreeEventArgs e)
         {
             var foldingInfo = e.BlockFoldingInfo.Select(i => new NewFolding { Name = i.Name, StartOffset = i.Offset.Start, EndOffset = i.Offset.End, IsDefinition = i.IsDefinition });
-            _foldingManager.UpdateFoldings(foldingInfo, -1); // TODO pass first parse error offset
+            _foldingManager.UpdateFoldings(foldingInfo, e.SyntaxErrors.OrderBy(i => i.StartOffset).FirstOrDefault()?.StartOffset ?? -1);
 
             UpdateMembers(e.MemberInfo);
 
             _textMarkerService.RemoveAll(m => true);
-            foreach (var error in ViewModel.SyntaxErrors)
+            foreach (var error in e.SyntaxErrors)
             {
                 AddSyntaxErrorMarker(error);
             }
 
             AddInspectionErrorMarker(0, 1);
+        }
+
+        private void OnTriggerBlockCompletion(object sender, ParseTreeEventArgs e)
+        {
+            
+        }
+
+        private void ShowCompletionList(IEnumerable<IMemberInfoViewModel> members)
+        {
+            _completionWindow = new CompletionWindow(EditorPane.TextArea);
+            foreach (var member in members)
+            {
+                _completionWindow.CompletionList.CompletionData.Add(new CompletionInfo(member));
+            }
+            _completionWindow.Show();
+            _completionWindow.Closed += (o, e) => _completionWindow = null;
         }
 
         private void OnSelectedMemberProviderChanged(object sender, EventArgs e)
@@ -342,11 +407,11 @@ namespace Rubberduck.UI.Xaml.Controls
 
         private void OnMemberSelected(object sender, NavigateToMemberEventArgs e)
         {
-            if (e.MemberInfo != null && EditorPane.TextArea.Caret.Line != e.MemberInfo.StartLine)
-            {
-                EditorPane.CaretOffset = e.MemberInfo.Offset.Start; // FIXME need MemberBodyOffset
-                EditorPane.ScrollTo(e.MemberInfo.StartLine, 1);
-            }
+            //if (e.MemberInfo != null && EditorPane.TextArea.Caret.Line != e.MemberInfo.StartLine)
+            //{
+            //    EditorPane.CaretOffset = e.MemberInfo.Offset.Start; // FIXME need MemberBodyOffset
+            //    EditorPane.ScrollTo(e.MemberInfo.StartLine, 1);
+            //}
 
             if (!EditorPane.TextArea.Focus())
             {
@@ -439,8 +504,11 @@ namespace Rubberduck.UI.Xaml.Controls
         private void OnTextChanged(object sender, EventArgs e)
         {
             ResetIdleTimer();
-            ViewModel.Status.DocumentLines = EditorPane.Document.LineCount;
-            ViewModel.Status.DocumentLength = EditorPane.Document.TextLength;
+            if (ViewModel != null)
+            {
+                ViewModel.Status.DocumentLines = EditorPane.Document.LineCount;
+                ViewModel.Status.DocumentLength = EditorPane.Document.TextLength;
+            }
         }
 
         private void UpdateMembers(IEnumerable<MemberInfo> infos)

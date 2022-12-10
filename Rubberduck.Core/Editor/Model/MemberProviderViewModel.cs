@@ -3,6 +3,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
+using Rubberduck.VBEditor;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -12,6 +13,28 @@ namespace Rubberduck.Core.Editor
 {
     public class MemberProviderViewModel : ViewModelBase, IMemberProviderViewModel
     {
+        public static MemberProviderViewModel Default(QualifiedModuleName module, ModuleType moduleType)
+        {
+            return new MemberProviderViewModel
+            {
+                Name = "(General)",
+                QualifiedModuleName = module,
+                ModuleType = moduleType,
+                Members = new ObservableCollection<IMemberInfoViewModel>(
+                    new MemberInfoViewModel[]
+                    {
+                        new MemberInfoViewModel
+                        {
+                            Name = "(Declarations)",
+                            MemberType = MemberType.None,
+                            IsUserDefined = false,
+                            HasImplementation = false,
+                            
+                        },
+                    })
+            };
+        }
+
         private string _name;
         public string Name 
         {
@@ -39,6 +62,21 @@ namespace Rubberduck.Core.Editor
                 }
             }
         }
+
+        private QualifiedModuleName _qualifiedModuleName;
+        public QualifiedModuleName QualifiedModuleName
+        {
+            get => _qualifiedModuleName;
+            set
+            {
+                if (_qualifiedModuleName != value)
+                {
+                    _qualifiedModuleName = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public ObservableCollection<IMemberInfoViewModel> Members { get; set; } = new ObservableCollection<IMemberInfoViewModel>();
 
         private IMemberInfoViewModel _currentMember;

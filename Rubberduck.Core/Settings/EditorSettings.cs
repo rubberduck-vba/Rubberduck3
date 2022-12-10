@@ -1,4 +1,6 @@
-﻿using Rubberduck.UI.Abstract;
+﻿using Rubberduck.Core.Editor;
+using Rubberduck.Parsing.Listeners;
+using Rubberduck.UI.Abstract;
 
 namespace Rubberduck.Settings
 {
@@ -8,5 +10,6 @@ namespace Rubberduck.Settings
         public string FontSize { get; set; }
         public bool ShowLineNumbers { get; set; } = true;
         public double IdleTimeoutSeconds { get; set; } = 0.35;
+        public IBlockFoldingSettings BlockFoldingSettings { get; set; } = new BlockFoldingSettings();
     }
 }

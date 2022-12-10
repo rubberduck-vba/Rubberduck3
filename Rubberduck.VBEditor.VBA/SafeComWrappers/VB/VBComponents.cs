@@ -96,6 +96,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 case ComponentTypeExtensions.FormBinaryExtension:
                     return null;
+
                 case ComponentTypeExtensions.DocClassExtension:
                 {
                     var name = _moduleNameFromFileExtractor.ModuleName(path);
@@ -106,7 +107,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     }
                     catch
                     {
-                        throw new IndexOutOfRangeException($"Could not find document component named '{name}'.  Try adding a document component with the same name and try again.");
+                        throw new IndexOutOfRangeException($"Could not find document component named '{name}'.");
                     }
 
                     var codeString = _fileSystem.File.ReadAllText(path, Encoding.UTF8);
@@ -114,11 +115,15 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     {
                         codeModule.Clear();
                         codeModule.AddFromString(codeString);
+                        _logger.Trace($"{nameof(VBComponents)}.{nameof(ImportSourceFile)} cleared document module '{name}'.");
+                        _logger.Warn($"File content was imported using {nameof(ICodeModule)}.{nameof(ICodeModule.AddFromString)}: attributes are lost.");
+                        _logger.Info($"Review 'MissingAttribute' inspection results to recover any attributes lost in the import process of document modules.");
+                        _logger.Info($"Review 'MissingAnnotation' inspection results to mark attributes for recovery and avoid losing them in the import process of document modules.");
                     }
 
                     return component;
-
                 }
+
                 case ComponentTypeExtensions.FormExtension:
                 {
                     var name = _moduleNameFromFileExtractor.ModuleName(path);

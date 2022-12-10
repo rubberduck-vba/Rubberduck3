@@ -7,11 +7,6 @@ using System.Linq;
 
 namespace Rubberduck.Parsing.Listeners
 {
-    public class BlockCompletionListener : VBAParserBaseListener
-    {
-        
-    }
-
     public class MemberListener : VBAParserBaseListener
     {
         private IList<MemberInfo> _members = new List<MemberInfo>();

@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Rubberduck.UI.Abstract
 {
@@ -25,25 +26,26 @@ namespace Rubberduck.UI.Abstract
 
     public class ParseTreeEventArgs : EventArgs
     {
-        public ParseTreeEventArgs(IParseTree tree, IEnumerable<MemberInfo> members, IEnumerable<BlockFoldingInfo> foldings)
+        public ParseTreeEventArgs(IParseTree tree, IEnumerable<MemberInfo> members, IEnumerable<BlockFoldingInfo> foldings, IEnumerable<ISyntaxErrorViewModel> syntaxErrors)
         {
             ParseTree = tree;
             MemberInfo = members;
             BlockFoldingInfo = foldings;
+            SyntaxErrors = syntaxErrors;
         }
 
         public IParseTree ParseTree { get; }
         public IEnumerable<MemberInfo> MemberInfo { get; }
         public IEnumerable<BlockFoldingInfo> BlockFoldingInfo { get; }
+        public IEnumerable<ISyntaxErrorViewModel> SyntaxErrors { get; }
     }
 
     public interface ICodePaneViewModel : INotifyPropertyChanged
     {
-        TextDocument Document { get; set; }
-        bool IsTabOpen { get; set; }
-        string Title { get; set; }
-        string Content { get; set; }
         IModuleInfoViewModel ModuleInfo { get; set; }
+
+        TextDocument Document { get; set; }
+        string Content { get; set; }
         ObservableCollection<IMemberProviderViewModel> MemberProviders { get; }
         IMemberProviderViewModel SelectedMemberProvider { get; set; }
         event EventHandler SelectedMemberProviderChanged;
@@ -54,11 +56,17 @@ namespace Rubberduck.UI.Abstract
         IEnumerable<ISyntaxErrorViewModel> SyntaxErrors { get; }
         IEnumerable<BlockFoldingInfo> Foldings { get; }
         IStatusBarViewModel Status { get; }
+
+        ICommand CloseCommand { get; }
     }
 
     public interface IMemberProviderViewModel : INotifyPropertyChanged
     {
         event EventHandler<NavigateToMemberEventArgs> MemberSelected;
+
+        QualifiedModuleName QualifiedModuleName { get; set; }
+        string Name { get; set; }
+        ModuleType ModuleType { get; set; }
 
         ObservableCollection<IMemberInfoViewModel> Members { get; }
         IMemberInfoViewModel CurrentMember { get; set; }
@@ -66,16 +74,20 @@ namespace Rubberduck.UI.Abstract
         void AddMember(string name, MemberType memberType, DocumentOffset offset);
     }
 
-    public interface IModuleInfoViewModel : IMemberProviderViewModel
+    public interface IModuleInfoViewModel : INotifyPropertyChanged
     {
-        string Folder { get; set; }
+        QualifiedModuleName QualifiedModuleName { get; set; }
         string Name { get; set; }
         ModuleType ModuleType { get; set; }
+
+        /// <summary>
+        /// The FolderAnnotation value for this module, if present.
+        /// </summary>
+        string Folder { get; set; }
         /// <summary>
         /// The last known caret location for this module.
         /// </summary>
         Selection EditorPosition { get; set; }
-        QualifiedModuleName QualifiedModuleName { get; set; }
     }
 
     public interface IMemberInfoViewModel : INotifyPropertyChanged

@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
+using Rubberduck.UI.Command.SyncPanel;
 using Rubberduck.VBEditor;
 using System.Windows.Input;
 
@@ -8,8 +9,11 @@ namespace Rubberduck.Core.Editor.Tools
 {
     public class SyncPanelModuleViewModel : ViewModelBase, ISyncPanelModuleViewModel
     {
-        public SyncPanelModuleViewModel()
+        public SyncPanelModuleViewModel(ILoadCommand loadCommand, IOpenCommand openCommand, ISyncCommand syncCommand)
         {
+            LoadCommand = loadCommand;
+            OpenCommand = openCommand;
+            SyncCommand = syncCommand;
         }
 
         public ICommand LoadCommand { get; }

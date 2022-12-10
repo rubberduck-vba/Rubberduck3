@@ -7,11 +7,9 @@ namespace Rubberduck.Core.Editor.Commands
     public abstract class EditorShellCommand<TParam> : CommandBase, IEditorShellCommand
         where TParam : class
     {
-        public IEditorShellViewModel Shell { get; set; }
-
-        protected override void OnExecute(object parameter)
+        protected sealed override void OnExecute(object parameter)
         {
-            var shell = Shell ?? throw new InvalidOperationException($"{nameof(Shell)} is not initialized.");
+            var shell = EditorShellContext.Current.Shell ?? throw new InvalidOperationException($"Editor shell is not initialized.");
             var param = parameter as TParam ?? throw new ArgumentException($"Unexpected parameter type. Was {parameter.GetType().Name}, expected {typeof(TParam).Name}");
 
             ExecuteInternal(shell, param);

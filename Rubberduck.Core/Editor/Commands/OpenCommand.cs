@@ -14,10 +14,10 @@ namespace Rubberduck.Core.Editor.Commands
 
         protected override void ExecuteInternal(IEditorShellViewModel shell, ISyncPanelModuleViewModel param)
         {
-            var vm = shell.LoadedModules.SingleOrDefault(e => e.ModuleInfo.QualifiedModuleName.Equals(param.QualifiedModuleName));
+            var vm = shell.ModuleDocumentTabs.SingleOrDefault(e => e.ModuleInfo.QualifiedModuleName.Equals(param.QualifiedModuleName));
             if (vm != null)
             {
-                vm.IsTabOpen = true;
+                shell.ActivateModuleDocumentTab(param.QualifiedModuleName);
             }
         }
     }

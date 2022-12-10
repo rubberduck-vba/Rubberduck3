@@ -74,7 +74,7 @@
             FontFamily="{Binding EditorSettings.FontFamily}"
             FontSize="{Binding EditorSettings.FontSize}" 
             ShowLineNumbers="{Binding EditorSettings.ShowLineNumbers}"
-            Text="{Binding ModuleContent}"
+            Text="{Binding Content}"
             SyntaxHighlighting="VB"
             HorizontalScrollBarVisibility="Auto"
             VerticalScrollBarVisibility="Auto"

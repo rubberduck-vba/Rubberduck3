@@ -56,14 +56,16 @@
   <ItemGroup>
     <Compile Include="Abstract\ICommonTokenStreamProvider.cs" />
     <Compile Include="Grammar\Antlr\ParserRuleContextExtensions.cs" />
+    <Compile Include="Grammar\Antlr\VBABaseLexer.cs" />
+    <Compile Include="Grammar\Antlr\VBABaseParser.cs" />
     <Compile Include="ITextDocumentProvider.cs" />
+    <Compile Include="Listeners\BlockCompletionListener.cs" />
+    <Compile Include="Listeners\IBlockFoldingSettings.cs" />
     <Compile Include="Listeners\MemberListener.cs" />
     <Compile Include="Model\BlockFoldingInfo.cs" />
     <Compile Include="Model\CodeKind.cs" />
     <Compile Include="Model\MemberInfo.cs" />
     <Compile Include="Model\DocumentOffset.cs" />
-    <Compile Include="Grammar\Antlr\VBABaseLexer.cs" />
-    <Compile Include="Grammar\Antlr\VBABaseParser.cs" />
     <Compile Include="Grammar\Antlr\VBABaseParserRuleContext.cs" />
     <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="Abstract\IParser.cs" />

@@ -124,6 +124,7 @@ moduleBody :
     ((moduleBodyElement | attributeStmt) endOfStatement)*;
 
 moduleBodyElement : 
+    (commentOrAnnotation)*
     functionStmt 
     | propertyGetStmt 
     | propertySetStmt 

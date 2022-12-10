@@ -53,15 +53,22 @@
 
         <GridSplitter Grid.Column="1" Width="3" />
 
-        <TabControl Grid.Column="2" ItemsSource="{Binding LoadedModules}">
+        <TabControl Grid.Column="2" ItemsSource="{Binding ModuleDocumentTabs}" SelectedItem="{Binding SelectedModuleDocumentTab}">
             <TabControl.Background>
                 <ImageBrush ImageSource="{StaticResource FaintDucky}" Stretch="UniformToFill" TileMode="None" />
             </TabControl.Background>
             <TabControl.ItemTemplate>
                 <DataTemplate DataType="vm:IEditorTabViewModel">
                     <DockPanel MinWidth="72">
-                        <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
-                        <Image Source="{DynamicResource CloseIcon}" DockPanel.Dock="Right" Height="16" Width="16" Margin="0,0,-24,0" />
+                        <TextBlock Text="{Binding ModuleInfo.Name}" VerticalAlignment="Center" />
+                        <Button HorizontalAlignment="Right" ToolTip="Close" Cursor="Hand"
+                                Command="{Binding CloseCommand}" CommandParameter="{Binding ModuleInfo.QualifiedModuleName}"> <!-- TODO get tooltip from localized resources -->
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <Image Source="{DynamicResource CloseIcon}" Height="16" Width="16" />
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
                     </DockPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>

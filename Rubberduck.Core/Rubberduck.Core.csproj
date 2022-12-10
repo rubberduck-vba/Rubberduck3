@@ -142,6 +142,7 @@
     <Compile Include="Editor\Commands\LoadCommand.cs" />
     <Compile Include="Editor\Commands\OpenCommand.cs" />
     <Compile Include="Editor\Commands\SyncCommand.cs" />
+    <Compile Include="Settings\BlockFoldingSettings.cs" />
     <Compile Include="Editor\Model\CodePaneViewModel.cs" />
     <Compile Include="Editor\EditorShellDockablePresenter.cs" />
     <Compile Include="Editor\Model\CodePaneViewModelProvider.cs" />

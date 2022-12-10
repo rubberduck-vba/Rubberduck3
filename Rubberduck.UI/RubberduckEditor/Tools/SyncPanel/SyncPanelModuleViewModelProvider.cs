@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing.Model;
 using Rubberduck.UI.Abstract;
+using Rubberduck.UI.Command.SyncPanel;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -9,9 +10,17 @@ namespace Rubberduck.Core.Editor.Tools
     public class SyncPanelModuleViewModelProvider : ISyncPanelModuleViewModelProvider
     {
         private readonly IProjectsProvider _projectsProvider;
-        public SyncPanelModuleViewModelProvider(IProjectsProvider projectsProvider)
+        private readonly ILoadCommand _loadCommand;
+        private readonly IOpenCommand _openCommand;
+        private readonly ISyncCommand _syncCommand;
+
+        public SyncPanelModuleViewModelProvider(IProjectsProvider projectsProvider,
+            ILoadCommand loadCommand, IOpenCommand openCommand, ISyncCommand syncCommand)
         {
             _projectsProvider = projectsProvider;
+            _loadCommand = loadCommand;
+            _openCommand = openCommand;
+            _syncCommand = syncCommand;
         }
 
         public ISyncPanelModuleViewModel Create(ComponentEventArgs info)
@@ -56,7 +65,7 @@ namespace Rubberduck.Core.Editor.Tools
                 }
             }
 
-            return new SyncPanelModuleViewModel
+            return new SyncPanelModuleViewModel(_loadCommand, _openCommand, _syncCommand)
             {
                 ModuleType = moduleType,
                 QualifiedModuleName = info.QualifiedModuleName,

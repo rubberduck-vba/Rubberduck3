@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.UI.Abstract
+﻿using Rubberduck.Parsing.Listeners;
+
+namespace Rubberduck.UI.Abstract
 {
     public interface IEditorSettings
     {
@@ -7,5 +9,6 @@
         bool ShowLineNumbers { get; set; }
 
         double IdleTimeoutSeconds { get; set; }
+        IBlockFoldingSettings BlockFoldingSettings { get; set; }
     }
 }

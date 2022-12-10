@@ -235,7 +235,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="WPF\vba.xshd" />
+    <None Include="RubberduckEditor\vba.xshd" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Ducky.ico" />

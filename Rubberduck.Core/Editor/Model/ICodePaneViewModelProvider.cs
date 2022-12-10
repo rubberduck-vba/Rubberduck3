@@ -5,6 +5,6 @@ namespace Rubberduck.Core.Editor
 {
     public interface ICodePaneViewModelProvider
     {
-        ICodePaneViewModel GetViewModel(IEditorShellViewModel shell, QualifiedModuleName module, string content);
+        ICodePaneViewModel GetViewModel(IEditorShellViewModel shell, QualifiedModuleName module, IMemberProviderViewModel memberProvider, string content);
     }
 }

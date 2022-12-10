@@ -7,6 +7,7 @@ namespace Rubberduck.Core.Editor
         public EditorShellContext(IEditorShellViewModel shell)
         {
             Shell = shell;
+            Current = this;
         }
 
         public static EditorShellContext Current { get; set; }

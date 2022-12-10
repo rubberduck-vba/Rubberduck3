@@ -19,6 +19,78 @@ using System.Windows.Media.Imaging;
 
 namespace Rubberduck.Core.Editor
 {
+    public class ModuleInfoViewModel : ViewModelBase, IModuleInfoViewModel
+    {
+        private string _name;
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private QualifiedModuleName _qualifiedModuleName;
+        public QualifiedModuleName QualifiedModuleName 
+        {
+            get => _qualifiedModuleName;
+            set
+            {
+                if (_qualifiedModuleName != value)
+                {
+                    _qualifiedModuleName = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private ModuleType _moduleType;
+        public ModuleType ModuleType
+        {
+            get => _moduleType;
+            set
+            {
+                if (_moduleType != value)
+                {
+                    _moduleType = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _folder;
+        public string Folder
+        {
+            get => _folder;
+            set
+            {
+                if (_folder != value)
+                {
+                    _folder = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Selection _position;
+        public Selection EditorPosition
+        {
+            get => _position;
+            set
+            {
+                if (_position != value)
+                {
+                    _position = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+    }
     public class MemberInfoViewModel : ViewModelBase, IMemberInfoViewModel, IEquatable<MemberInfoViewModel>
     {
         private static readonly IDictionary<string, string> _displayNamesByMemberType =
@@ -184,7 +256,6 @@ namespace Rubberduck.Core.Editor
 
         public ObservableCollection<IParameterInfoViewModel> Parameters { get; } = new ObservableCollection<IParameterInfoViewModel>();
     }
-
     public class ParameterInfoViewModel : ViewModelBase, IParameterInfoViewModel
     {
         private bool _isSelected;

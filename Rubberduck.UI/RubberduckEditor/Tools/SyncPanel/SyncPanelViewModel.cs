@@ -139,8 +139,11 @@ namespace Rubberduck.Core.Editor.Tools
 
         private void Components_ComponentRenamed(object sender, ComponentRenamedEventArgs e)
         {
-            var module = Shell.LoadedModules
-                .SingleOrDefault(m => m.ModuleInfo.QualifiedModuleName.ProjectId == e.ProjectId && m.ModuleInfo.Name == e.OldName);
+            var module = Shell.ModuleDocumentTabs.SingleOrDefault(m => m.ModuleInfo.QualifiedModuleName.ProjectId == e.ProjectId && m.ModuleInfo.Name == e.OldName);
+            if (module is null)
+            {
+                return;
+            }
             module.ModuleInfo.Name = e.QualifiedModuleName.Name;
             module.ModuleInfo.QualifiedModuleName = e.QualifiedModuleName;
         }
@@ -152,10 +155,9 @@ namespace Rubberduck.Core.Editor.Tools
             
             vm.State = ModuleSyncState.DeletedVBE;
 
-            var module = Shell.LoadedModules
-                .SingleOrDefault(m => m.ModuleInfo.QualifiedModuleName.Equals(e.QualifiedModuleName));
+            var module = Shell.ModuleDocumentTabs.SingleOrDefault(m => m.ModuleInfo.QualifiedModuleName.Equals(e.QualifiedModuleName));
 
-            Shell.LoadedModules.Remove(module);
+            Shell.UnloadModule(e.QualifiedModuleName);
             VBIDEModules.Remove(vm);
         }
 

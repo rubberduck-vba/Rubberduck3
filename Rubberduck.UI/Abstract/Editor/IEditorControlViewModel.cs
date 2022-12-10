@@ -11,19 +11,15 @@ namespace Rubberduck.UI.Abstract
 {
     public interface IEditorShellViewModel : INotifyPropertyChanged, ITextDocumentProvider
     {
-        /// <summary>
-        /// An observable collection of loaded modules.
-        /// </summary>
-        ObservableCollection<ICodePaneViewModel> LoadedModules { get; }
-
-        /// <summary>
-        /// An observable collection of tool tabs.
-        /// </summary>
-        ObservableCollection<IShellToolTab> ToolTabs { get; }
-
-        /// <summary>
-        /// The editor shell status bar view model.
-        /// </summary>
+        ObservableCollection<ICodePaneViewModel> ModuleDocumentTabs { get; }
+        ICodePaneViewModel SelectedModuleDocumentTab { get; set; }
+        IEnumerable<IShellToolTab> ToolTabs { get; }
         IStatusBarViewModel Status { get; }
+        IEnumerable<ISyntaxErrorViewModel> SyntaxErrors { get; }
+
+        ICodePaneViewModel GetModule(QualifiedModuleName module);
+        bool LoadModule(QualifiedModuleName module, string content, IMemberProviderViewModel vm);
+        bool UnloadModule(QualifiedModuleName module);
+        void ActivateModuleDocumentTab(QualifiedModuleName module);
     }
 }
