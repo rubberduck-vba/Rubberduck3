@@ -2,6 +2,9 @@
 
 namespace Rubberduck.VBEditor
 {
+    /// <summary>
+    /// TODO work with start/end offsets instead?
+    /// </summary>
     public readonly struct Selection : IEquatable<Selection>, IComparable<Selection>
     {
 

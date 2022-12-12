@@ -9,8 +9,10 @@ namespace Rubberduck.VBEditor
     /// <summary>
     /// Represents a VBComponent or a VBProject.
     /// </summary>
-    public class QualifiedModuleName
+    public readonly struct QualifiedModuleName
     {
+        public static QualifiedModuleName None { get; } = new QualifiedModuleName();
+
         public static string GetProjectId(IVBProject project)
         {
             if (project.IsWrappingNullReference)
@@ -140,12 +142,7 @@ namespace Rubberduck.VBEditor
                 return false;
             }
 
-            var other = obj as QualifiedModuleName;
-
-            if (other is null)
-            {
-                return false;
-            }
+            var other = (QualifiedModuleName)obj;
 
             return other.ProjectId == ProjectId && other.ComponentName == ComponentName;
         }

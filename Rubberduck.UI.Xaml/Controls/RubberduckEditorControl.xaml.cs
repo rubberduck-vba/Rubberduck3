@@ -250,7 +250,6 @@ namespace Rubberduck.UI.Xaml.Controls
             {
                 ShowCompletionList(ViewModel.SelectedMemberProvider.Members); // TODO be smarter than that
             }
-            e.Handled = true;
         }
 
         private void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
@@ -299,20 +298,11 @@ namespace Rubberduck.UI.Xaml.Controls
             var foldingInfo = e.BlockFoldingInfo.Select(i => new NewFolding { Name = i.Name, StartOffset = i.Offset.Start, EndOffset = i.Offset.End, IsDefinition = i.IsDefinition });
             _foldingManager.UpdateFoldings(foldingInfo, e.SyntaxErrors.OrderBy(i => i.StartOffset).FirstOrDefault()?.StartOffset ?? -1);
 
-            UpdateMembers(e.MemberInfo);
-
             _textMarkerService.RemoveAll(m => true);
             foreach (var error in e.SyntaxErrors)
             {
                 AddSyntaxErrorMarker(error);
             }
-
-            AddInspectionErrorMarker(0, 1);
-        }
-
-        private void OnTriggerBlockCompletion(object sender, ParseTreeEventArgs e)
-        {
-            
         }
 
         private void ShowCompletionList(IEnumerable<IMemberInfoViewModel> members)
@@ -508,35 +498,6 @@ namespace Rubberduck.UI.Xaml.Controls
             {
                 ViewModel.Status.DocumentLines = EditorPane.Document.LineCount;
                 ViewModel.Status.DocumentLength = EditorPane.Document.TextLength;
-            }
-        }
-
-        private void UpdateMembers(IEnumerable<MemberInfo> infos)
-        {
-            var allNames = infos.Select(i => i.Name).ToHashSet();
-            var existingNames = ViewModel.SelectedMemberProvider.Members.Where(m => m.HasImplementation).Select(m => m.Name).ToHashSet();
-
-            var deletedNames = existingNames.Except(allNames);
-            foreach (var name in deletedNames)
-            {
-                var member = ViewModel.SelectedMemberProvider.Members.SingleOrDefault(m => m.HasImplementation && m.Name == name);
-                if (member != null)
-                {
-                    ViewModel.SelectedMemberProvider.Members.Remove(member);
-                    break;
-                }
-            }
-
-            var newNames = allNames.Except(existingNames);
-            foreach (var name in newNames)
-            {
-                var candidates = infos.Where(i => i.Name == name).ToArray();
-                if (candidates.Length == 1)
-                {
-                    var info = candidates[0];
-                    ViewModel.SelectedMemberProvider.AddMember(name, info.MemberType, info.Offset);
-                    break;
-                }
             }
         }
 

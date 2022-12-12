@@ -5,6 +5,7 @@ using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
 using Rubberduck.VBEditor;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -69,7 +70,7 @@ namespace Rubberduck.Core.Editor
             get => _qualifiedModuleName;
             set
             {
-                if (_qualifiedModuleName != value)
+                if (!_qualifiedModuleName.Equals(value))
                 {
                     _qualifiedModuleName = value;
                     OnPropertyChanged();
@@ -77,7 +78,19 @@ namespace Rubberduck.Core.Editor
             }
         }
 
-        public ObservableCollection<IMemberInfoViewModel> Members { get; set; } = new ObservableCollection<IMemberInfoViewModel>();
+        private ICollection<IMemberInfoViewModel> _members = new List<IMemberInfoViewModel>();
+        public ICollection<IMemberInfoViewModel> Members 
+        {
+            get => _members;
+            set
+            {
+                if (_members != value)
+                {
+                    _members = value;
+                    OnPropertyChanged();
+                }
+            }
+        } 
 
         private IMemberInfoViewModel _currentMember;
 

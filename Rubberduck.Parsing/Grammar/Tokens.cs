@@ -239,6 +239,7 @@
         public static readonly string EndSelect = $"{End} {Select}";
         public static readonly string EndType = $"{End} {Type}";
         public static readonly string EndWith = $"{End} {With}";
+        public static readonly string EndIf = $"{End} {If}";
         public static readonly string ForEach = $"{For} {Each}";
         public static readonly string PropertyGet = $"{Property} {Get}";
         public static readonly string PropertyLet = $"{Property} {Let}";

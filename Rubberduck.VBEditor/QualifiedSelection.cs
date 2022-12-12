@@ -7,7 +7,7 @@ namespace Rubberduck.VBEditor
         public QualifiedSelection(QualifiedModuleName qualifiedName, Selection selection)
         {
             QualifiedName = qualifiedName;
-            Selection = selection;
+            Selection = selection;            
         }
 
         public QualifiedModuleName QualifiedName { get; }
@@ -21,7 +21,7 @@ namespace Rubberduck.VBEditor
 
         public int CompareTo(QualifiedSelection other)
         {
-            return other.QualifiedName == QualifiedName
+            return other.QualifiedName.Equals(QualifiedName)
                 ? Selection.CompareTo(other.Selection)
                 : string.Compare(QualifiedName.ToString(), other.QualifiedName.ToString(), StringComparison.Ordinal);
         }

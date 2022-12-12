@@ -14,6 +14,7 @@ namespace Rubberduck.UI.Abstract
         ObservableCollection<ICodePaneViewModel> ModuleDocumentTabs { get; }
         ICodePaneViewModel SelectedModuleDocumentTab { get; set; }
         IEnumerable<IShellToolTab> ToolTabs { get; }
+        IShellToolTab SelectedToolTab { get; set; }
         IStatusBarViewModel Status { get; }
         IEnumerable<ISyntaxErrorViewModel> SyntaxErrors { get; }
 

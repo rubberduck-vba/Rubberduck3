@@ -86,6 +86,19 @@
     <Compile Include="About\AboutUI.Designer.cs" />
     <Compile Include="About\AboutUI.fr.Designer.cs" />
     <Compile Include="ApplicationConstants.cs" />
+    <Compile Include="Inspections\InspectionInfo.de.Designer.cs" />
+    <Compile Include="Inspections\InspectionInfo.Designer.cs" />
+    <Compile Include="Inspections\InspectionInfo.fr.Designer.cs" />
+    <Compile Include="Inspections\InspectionNames.de.Designer.cs" />
+    <Compile Include="Inspections\InspectionNames.Designer.cs" />
+    <Compile Include="Inspections\InspectionNames.fr.Designer.cs" />
+    <Compile Include="Inspections\InspectionResults.de.Designer.cs" />
+    <Compile Include="Inspections\InspectionResults.Designer.cs" />
+    <Compile Include="Inspections\InspectionResults.fr.Designer.cs" />
+    <Compile Include="Inspections\InspectionsUI.de.Designer.cs" />
+    <Compile Include="Inspections\InspectionsUI.Designer.cs" />
+    <Compile Include="Inspections\InspectionsUI.fr.Designer.cs" />
+    <Compile Include="Inspections\QuickFixes.Designer.cs" />
     <Compile Include="Locales.cs" />
     <Compile Include="MemberTypeIcons.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -116,6 +129,36 @@
     <EmbeddedResource Include="About\AboutUI.fr.resx" />
     <EmbeddedResource Include="About\AboutUI.it.resx" />
     <EmbeddedResource Include="About\AboutUI.resx" />
+    <EmbeddedResource Include="Inspections\InspectionInfo.cs.resx" />
+    <EmbeddedResource Include="Inspections\InspectionInfo.de.resx" />
+    <EmbeddedResource Include="Inspections\InspectionInfo.es.resx" />
+    <EmbeddedResource Include="Inspections\InspectionInfo.fr.resx" />
+    <EmbeddedResource Include="Inspections\InspectionInfo.it.resx" />
+    <EmbeddedResource Include="Inspections\InspectionInfo.resx" />
+    <EmbeddedResource Include="Inspections\InspectionNames.cs.resx" />
+    <EmbeddedResource Include="Inspections\InspectionNames.de.resx" />
+    <EmbeddedResource Include="Inspections\InspectionNames.es.resx" />
+    <EmbeddedResource Include="Inspections\InspectionNames.fr.resx" />
+    <EmbeddedResource Include="Inspections\InspectionNames.it.resx" />
+    <EmbeddedResource Include="Inspections\InspectionNames.resx" />
+    <EmbeddedResource Include="Inspections\InspectionResults.cs.resx" />
+    <EmbeddedResource Include="Inspections\InspectionResults.de.resx" />
+    <EmbeddedResource Include="Inspections\InspectionResults.es.resx" />
+    <EmbeddedResource Include="Inspections\InspectionResults.fr.resx" />
+    <EmbeddedResource Include="Inspections\InspectionResults.it.resx" />
+    <EmbeddedResource Include="Inspections\InspectionResults.resx" />
+    <EmbeddedResource Include="Inspections\InspectionsUI.cs.resx" />
+    <EmbeddedResource Include="Inspections\InspectionsUI.de.resx" />
+    <EmbeddedResource Include="Inspections\InspectionsUI.es.resx" />
+    <EmbeddedResource Include="Inspections\InspectionsUI.fr.resx" />
+    <EmbeddedResource Include="Inspections\InspectionsUI.it.resx" />
+    <EmbeddedResource Include="Inspections\InspectionsUI.resx" />
+    <EmbeddedResource Include="Inspections\QuickFixes.cs.resx" />
+    <EmbeddedResource Include="Inspections\QuickFixes.de.resx" />
+    <EmbeddedResource Include="Inspections\QuickFixes.es.resx" />
+    <EmbeddedResource Include="Inspections\QuickFixes.fr.resx" />
+    <EmbeddedResource Include="Inspections\QuickFixes.it.resx" />
+    <EmbeddedResource Include="Inspections\QuickFixes.resx" />
     <EmbeddedResource Include="MemberTypeIcons.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>MemberTypeIcons.Designer.cs</LastGenOutput>

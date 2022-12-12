@@ -37,7 +37,7 @@
             <ColumnDefinition Width="Auto" /> <!-- right panel -->
         </Grid.ColumnDefinitions>
 
-        <TabControl TabStripPlacement="Bottom" ItemsSource="{Binding ToolTabs}">
+        <TabControl TabStripPlacement="Bottom" ItemsSource="{Binding ToolTabs}" SelectedItem="{Binding SelectedToolTab}">
             <TabControl.ItemTemplate>
                 <DataTemplate DataType="vm:IShellToolTab">
                     <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />

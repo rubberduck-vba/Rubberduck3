@@ -5,11 +5,31 @@ using Rubberduck.Parsing.Grammar;
 using System.Linq;
 using Antlr4.Runtime.Misc;
 using System;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing
 {
     public static class ParserRuleContextExtensions
     {
+        /// <summary>
+        ///  Returns a Selection structure containing the context
+        /// </summary>
+        public static Selection GetSelection(this ParserRuleContext context)
+        {
+            // if we have an empty module, `Stop` is null
+            if (context?.Stop == null) { return Selection.Home; }
+
+            // ANTLR indexes for columns are 0-based, but VBE's are 1-based.
+            // ANTLR lines and VBE's lines are both 1-based
+            // 1 is the default value that will select all lines. Replace zeroes with ones.
+            // See also: https://msdn.microsoft.com/en-us/library/aa443952(v=vs.60).aspx
+
+            return new Selection(context.Start.Line == 0 ? 1 : context.Start.Line,
+                                 context.Start.Column + 1,
+                                 context.Stop.Line == 0 ? 1 : context.Stop.EndLine(),
+                                 context.Stop.EndColumn() + 1);
+        }
+        
         /// <summary>
         ///  Returns whether the other context from the same parse tree is wholly contained in the current context
         /// </summary>
@@ -181,6 +201,19 @@ namespace Rubberduck.Parsing
         }
 
         /// <summary>
+        /// Determines whether the context contains the token with the specified token index.
+        /// </summary>
+        public static bool ContainsOffset(this ParserRuleContext context, int offset)
+        {
+            if (context?.Stop is null || context.Stop.StopIndex < context.Start.StartIndex)
+            {
+                return false;
+            }
+
+            return context.Start.StartIndex <= offset && offset <= context.Stop.StopIndex;
+        }
+        
+        /// <summary>
         /// Returns the context's first descendent of the generic Type.
         /// </summary>
         public static TContext GetDescendent<TContext>(this ParserRuleContext context) where TContext : ParserRuleContext
@@ -317,6 +350,35 @@ namespace Rubberduck.Parsing
                 {
                     matches.AddRange(childContext.GetDescendentsContainingTokenIndex<TContext>(tokenIndex));
                     break;  //Only one child can contain the token index.
+                }
+            }
+
+            return matches;
+        }
+
+        /// <summary>
+        /// Returns all the context's descendents of the generic type containing the specified document offset.
+        /// If there are multiple matches, they are ordered from outermost to innermost context.
+        /// </summary>
+        public static IEnumerable<TContext> GetDescendentsContainingOffset<TContext>(this ParserRuleContext context, int offset) where TContext : ParserRuleContext
+        {
+            if (context is null || !context.ContainsOffset(offset))
+            {
+                return new List<TContext>();
+            }
+
+            var matches = new List<TContext>();
+            if (context is TContext match)
+            {
+                matches.Add(match);
+            }
+
+            foreach (var child in context.children)
+            {
+                if (child is ParserRuleContext childContext && childContext.ContainsOffset(offset))
+                {
+                    matches.AddRange(childContext.GetDescendentsContainingOffset<TContext>(offset));
+                    break;  //Only one child can contain the offset.
                 }
             }
 

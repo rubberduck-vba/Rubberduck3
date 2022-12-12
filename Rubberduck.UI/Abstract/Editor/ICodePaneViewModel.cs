@@ -68,7 +68,7 @@ namespace Rubberduck.UI.Abstract
         string Name { get; set; }
         ModuleType ModuleType { get; set; }
 
-        ObservableCollection<IMemberInfoViewModel> Members { get; }
+        ICollection<IMemberInfoViewModel> Members { get; set; }
         IMemberInfoViewModel CurrentMember { get; set; }
         void ClearMemberSelectedHandlers();
         void AddMember(string name, MemberType memberType, DocumentOffset offset);

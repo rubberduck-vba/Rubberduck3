@@ -4,6 +4,8 @@ namespace Rubberduck.VBEditor
 {
     public readonly struct QualifiedMemberName
     {
+        public static QualifiedMemberName None { get; } = new QualifiedMemberName(QualifiedModuleName.None, string.Empty);
+
         public QualifiedMemberName(QualifiedModuleName qualifiedModuleName, string memberName)
         {
             QualifiedModuleName = qualifiedModuleName;

@@ -27,7 +27,7 @@ namespace Rubberduck.Core.Editor.Tools
             get => _qualifiedModuleName;
             set
             {
-                if (_qualifiedModuleName != value)
+                if (!_qualifiedModuleName.Equals(value))
                 {
                     _qualifiedModuleName = value;
                     OnPropertyChanged();

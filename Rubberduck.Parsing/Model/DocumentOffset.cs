@@ -1,7 +1,22 @@
 ﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Model
 {
+    public readonly struct QualifiedDocumentOffset
+    {
+        public QualifiedDocumentOffset(QualifiedModuleName module, DocumentOffset offset)
+        {
+            Module = module;
+            Offset = offset;
+        }
+
+        public QualifiedModuleName Module { get; }
+        public DocumentOffset Offset { get; }
+
+        // TODO implement IEquatable, IComparable, ...
+    }
+
     public readonly struct DocumentOffset
     {
         public DocumentOffset(VBABaseParserRuleContext context) 

@@ -128,7 +128,7 @@ namespace Rubberduck.Core.Editor.Tools
         private void DeregisterProjectComponents(IVBProject project)
         {
             var components = project.VBComponents;
-            foreach (var vbModule in VBIDEModules.Where(e => e.QualifiedModuleName?.ProjectId == project.ProjectId))
+            foreach (var vbModule in VBIDEModules.Where(e => e.QualifiedModuleName.ProjectId == project.ProjectId))
             {
                 VBIDEModules.Remove(vbModule);
             }

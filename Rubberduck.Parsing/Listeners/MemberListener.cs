@@ -9,7 +9,7 @@ namespace Rubberduck.Parsing.Listeners
 {
     public class MemberListener : VBAParserBaseListener
     {
-        private IList<MemberInfo> _members = new List<MemberInfo>();
+        private readonly IList<MemberInfo> _members = new List<MemberInfo>();
         public IEnumerable<MemberInfo> Members => _members;
 
         private IEnumerable<ParameterInfo> GetParameterInfo(VBAParser.ArgListContext argList)
@@ -20,17 +20,14 @@ namespace Rubberduck.Parsing.Listeners
             foreach (var arg in args)
             {
                 ordinal++;
-                yield return new ParameterInfo(
-                    arg.unrestrictedIdentifier()?.GetText()?? string.Empty,
-                    arg.Offset,
-                    arg.asTypeClause()?.type()?.GetText() ?? Tokens.Variant,
-                    ordinal,
-                    arg.asTypeClause()?.type() is null,
-                    arg.BYVAL() != null,
-                    arg.BYREF() != null,
-                    arg.OPTIONAL() != null,
-                    arg.PARAMARRAY() != null);
+                yield return new ParameterInfo(ordinal, arg);
             }
+        }
+
+        public override void EnterModule([NotNull] VBAParser.ModuleContext context)
+        {
+            base.EnterModule(context);
+            _members.Clear();
         }
 
         private bool _inModuleDeclarationsSection = true;

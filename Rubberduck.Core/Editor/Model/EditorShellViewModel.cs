@@ -26,6 +26,7 @@ namespace Rubberduck.Core.Editor
 
             var tabs = toolTabsProvider.GetShellToolTabs();
             ToolTabs = new ObservableCollection<IShellToolTab>(tabs);
+            SelectedToolTab = ToolTabs.FirstOrDefault();
 
             _vmProvider = vmProvider;
             _context = new EditorShellContext(this);
@@ -51,6 +52,21 @@ namespace Rubberduck.Core.Editor
                 if (value != _selectedDocumentTab)
                 {
                     _selectedDocumentTab = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private IShellToolTab _selectedToolTab;
+
+        public IShellToolTab SelectedToolTab
+        {
+            get => _selectedToolTab;
+            set
+            {
+                if (value != _selectedToolTab)
+                {
+                    _selectedToolTab = value;
                     OnPropertyChanged();
                 }
             }
