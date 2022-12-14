@@ -2,8 +2,8 @@
 {
     public enum ParserMode
     {
-        Default,
-        Sll,
-        Ll
+        FallBackSllToLl,
+        LlOnly,
+        SllOnly
     }
 }

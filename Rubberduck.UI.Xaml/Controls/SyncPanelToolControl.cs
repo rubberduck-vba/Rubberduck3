@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rubberduck.UI.Abstract;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,14 @@ namespace Rubberduck.UI.Xaml.Controls
         public SyncPanelToolControl()
         {
             InitializeComponent();
+            DataContextChanged += OnDataContextChanged;
+        }
+
+        private ISyncPanelViewModel ViewModel => DataContext as ISyncPanelViewModel;
+
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            ViewModel?.ReloadCommand?.Execute(null);
         }
     }
 }

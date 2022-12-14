@@ -151,7 +151,6 @@
     <Compile Include="Editor\Model\IEditorShellContext.cs" />
     <Compile Include="Editor\Model\StatusBarViewModel.cs" />
     <Compile Include="Editor\Model\ICodePaneViewModelProvider.cs" />
-    <Compile Include="Editor\Parsing\CodeParserService.cs" />
     <Compile Include="Editor\Model\MemberProviderViewModel.cs" />
     <Compile Include="Editor\Parsing\EditorSourceCodeHandler.cs" />
     <Compile Include="Editor\ShowEditorShellCommand.cs" />

@@ -130,7 +130,7 @@ namespace Rubberduck.VBEditor.Utility
 
         public bool TrySetActiveSelection(QualifiedSelection selection)
         {
-            return TrySetActiveSelection(selection.QualifiedName, selection.Selection);
+            return TrySetActiveSelection(selection.QualifiedModuleName, selection.Selection);
         }
 
         public bool TrySetSelection(QualifiedModuleName module, Selection selection)
@@ -160,7 +160,7 @@ namespace Rubberduck.VBEditor.Utility
 
         public bool TrySetSelection(QualifiedSelection selection)
         {
-            return TrySetSelection(selection.QualifiedName, selection.Selection);
+            return TrySetSelection(selection.QualifiedModuleName, selection.Selection);
         }
     }
 }

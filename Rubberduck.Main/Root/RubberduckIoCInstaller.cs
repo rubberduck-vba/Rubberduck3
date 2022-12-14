@@ -48,6 +48,8 @@ using Rubberduck.Core.Editor.Tools;
 using Rubberduck.Parsing.Abstract;
 using System.IO;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.TokenStreamProviders;
 
 namespace Rubberduck.Root
 {
@@ -88,8 +90,7 @@ namespace Rubberduck.Root
             RegisterAppWithSpecialDependencies(container);
             RegisterUnitTestingComSide(container);
 
-            container.Register(Component.For<IParser<TextReader>>().ImplementedBy<TextReaderParser>().LifestyleSingleton());
-            container.Register(Component.For<ICommonTokenStreamProvider<TextReader>>().ImplementedBy<TextReaderCommonTokenStreamProvider>().LifestyleSingleton());
+            container.Register(Component.For<ICommonTokenStreamProvider<TextReader>>().ImplementedBy<TextReaderTokenStreamProvider>().LifestyleSingleton());
 
             container.Register(Component.For<Version>()
                      .UsingFactoryMethod(() => Assembly.GetExecutingAssembly().GetName().Version)

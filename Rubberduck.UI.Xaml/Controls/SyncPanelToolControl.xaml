@@ -30,7 +30,7 @@
                     <Image Height="16" Width="16" Source="{StaticResource RefreshIcon}" />
                 </StackPanel>
             </Button>
-            <Button Command="{Binding SyncCommand}" ToolTip="Synchronize all">
+            <Button Command="{Binding SyncCommand}" CommandParameter="{Binding}" ToolTip="Synchronize all">
                 <StackPanel Orientation="Horizontal">
                     <Image Height="16" Width="16" Source="{StaticResource SyncModuleIcon}" />
                 </StackPanel>

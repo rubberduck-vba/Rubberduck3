@@ -6,39 +6,39 @@ namespace Rubberduck.VBEditor
     {
         public QualifiedSelection(QualifiedModuleName qualifiedName, Selection selection)
         {
-            QualifiedName = qualifiedName;
+            QualifiedModuleName = qualifiedName;
             Selection = selection;            
         }
 
-        public QualifiedModuleName QualifiedName { get; }
+        public QualifiedModuleName QualifiedModuleName { get; }
 
         public Selection Selection { get; }
 
         public bool Contains(QualifiedSelection other)
         {
-            return QualifiedName.Equals(other.QualifiedName) && Selection.Contains(other.Selection);
+            return QualifiedModuleName.Equals(other.QualifiedModuleName) && Selection.Contains(other.Selection);
         }
 
         public int CompareTo(QualifiedSelection other)
         {
-            return other.QualifiedName.Equals(QualifiedName)
+            return other.QualifiedModuleName.Equals(QualifiedModuleName)
                 ? Selection.CompareTo(other.Selection)
-                : string.Compare(QualifiedName.ToString(), other.QualifiedName.ToString(), StringComparison.Ordinal);
+                : string.Compare(QualifiedModuleName.ToString(), other.QualifiedModuleName.ToString(), StringComparison.Ordinal);
         }
 
         public bool Equals(QualifiedSelection other)
         {
-            return other.Selection.Equals(Selection) && other.QualifiedName.Equals(QualifiedName);
+            return other.Selection.Equals(Selection) && other.QualifiedModuleName.Equals(QualifiedModuleName);
         }
 
         public override string ToString()
         {
-            return $"{QualifiedName} {Selection}";
+            return $"{QualifiedModuleName} {Selection}";
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(QualifiedName.GetHashCode(), Selection.GetHashCode());
+            return HashCode.Combine(QualifiedModuleName.GetHashCode(), Selection.GetHashCode());
         }
 
         public static bool operator ==(QualifiedSelection selection1, QualifiedSelection selection2)

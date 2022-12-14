@@ -7,11 +7,11 @@ namespace Rubberduck.Parsing.Model
     {
         public QualifiedDocumentOffset(QualifiedModuleName module, DocumentOffset offset)
         {
-            Module = module;
+            QualifiedModuleName = module;
             Offset = offset;
         }
 
-        public QualifiedModuleName Module { get; }
+        public QualifiedModuleName QualifiedModuleName { get; }
         public DocumentOffset Offset { get; }
 
         // TODO implement IEquatable, IComparable, ...

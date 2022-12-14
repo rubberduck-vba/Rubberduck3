@@ -10,28 +10,32 @@ namespace Rubberduck.UI.Abstract
         /// </summary>
         NotLoaded = 0,
         /// <summary>
-        /// Module failed to load.
+        /// Module failed to load (VBE -> RDE).
         /// </summary>
         LoadError = 1,
         /// <summary>
+        /// Module failed to sync (RDE -> VBE).
+        /// </summary>
+        SyncError = 2,
+        /// <summary>
         /// The document is loaded and synchronized with the corresponding VBE module.
         /// </summary>
-        OK = 2,
+        OK = 4,
         /// <summary>
         /// The document was modified in the editor document tab.
         /// </summary>
-        ModifiedRDE = 4,
+        ModifiedRDE = 8,
         /// <summary>
         /// The corresponding VBE module was modified.
         /// </summary>
-        ModifiedVBE = 8,
+        ModifiedVBE = 16,
         /// <summary>
         /// The document was removed from its parent project in the editor shell.
         /// </summary>
-        DeletedRDE = 16,
+        DeletedRDE = 32,
         /// <summary>
         /// The corresponding VBE module was removed from its parent project in the VBE.
         /// </summary>
-        DeletedVBE = 32,
+        DeletedVBE = 64,
     }
 }
