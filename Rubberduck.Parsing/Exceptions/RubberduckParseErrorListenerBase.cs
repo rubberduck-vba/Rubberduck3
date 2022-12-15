@@ -7,11 +7,13 @@ namespace Rubberduck.Parsing.Exceptions
 {
     public class RubberduckParseErrorListenerBase : BaseErrorListener, IRubberduckParseErrorListener
     {
-        public RubberduckParseErrorListenerBase(CodeKind codeKind)
+        public RubberduckParseErrorListenerBase(string moduleName, CodeKind codeKind)
         {
+            ModuleName = moduleName;
             CodeKind = codeKind;
         }
 
+        protected string ModuleName { get; }
         protected CodeKind CodeKind { get; }
         
         //This serves as a method to postpone throwing a parse exception to after the entire input has been parsed,

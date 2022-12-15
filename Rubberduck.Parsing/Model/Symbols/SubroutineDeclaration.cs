@@ -16,9 +16,7 @@ namespace Rubberduck.Parsing.Model.Symbols
             Declaration parentScope,
             string asTypeName,
             Accessibility accessibility,
-            ParserRuleContext context,
-            ParserRuleContext attributesPassContext,
-            Selection selection,
+            DocumentOffset offset,
             bool isUserDefined,
             IEnumerable<IParseTreeAnnotation> annotations,
             Attributes attributes)
@@ -31,9 +29,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                   string.Empty,
                   accessibility,
                   DeclarationType.Procedure,
-                  context,
-                  attributesPassContext,
-                  selection,
+                  offset,
                   false,
                   isUserDefined,
                   annotations,
@@ -50,9 +46,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                   string.Empty,
                   Accessibility.Global,
                   eventHandler ? DeclarationType.Event : DeclarationType.Procedure,
-                  null,
-                  null,
-                  Selection.Home,
+                  DocumentOffset.Invalid,
                   false,
                   false,
                   null,
@@ -75,7 +69,5 @@ namespace Rubberduck.Parsing.Model.Symbols
                    && member.IsInterfaceMember
                    && ((ClassModuleDeclaration)member.ParentDeclaration).Subtypes.Any(implementation => ReferenceEquals(implementation, ParentDeclaration));
         }
-
-        public override BlockContext Block => ((SubStmtContext)Context).block();
     }
 }

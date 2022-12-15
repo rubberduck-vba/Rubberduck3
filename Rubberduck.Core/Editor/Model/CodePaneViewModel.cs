@@ -25,14 +25,14 @@ namespace Rubberduck.Core.Editor
 {
     public class CodePaneViewModel : ViewModelBase, ICodePaneViewModel
     {
-        private readonly ICodeParserService _parser;
+        //private readonly ICodeParserService _parser;
         private readonly IEditorSettings _settings;
 
         private IParseTree _parseTree;
 
-        public CodePaneViewModel(ICodeParserService parser, IEditorSettings settings, IEnumerable<IMemberProviderViewModel> memberProviders)
+        public CodePaneViewModel(/*ICodeParserService parser,*/ IEditorSettings settings, IEnumerable<IMemberProviderViewModel> memberProviders)
         {
-            _parser = parser;
+//            _parser = parser;
             _settings = settings;
 
             MemberProviders = new ObservableCollection<IMemberProviderViewModel>(memberProviders);
@@ -63,13 +63,13 @@ namespace Rubberduck.Core.Editor
                 EditorShellContext.Current.Shell.Status.ParserState = "Parsing...";
                 
                 var sw = Stopwatch.StartNew();
-                var result = await _parser.ParseAsync(ModuleInfo.Name, reader, listeners);
+//                var result = await _parser.ParseAsync(ModuleInfo.Name, reader, listeners);
                 sw.Stop();
 
-                _parseTree = result.ParseTree;
-                _rewriter = result.Rewriter;
+//                _parseTree = result.ParseTree;
+//                _rewriter = result.Rewriter;
 
-                SyntaxErrors = result.Errors.Select(e => new SyntaxErrorViewModel(e));
+//                SyntaxErrors = result.Errors.Select(e => new SyntaxErrorViewModel(e));
 
                 EditorShellContext.Current.Shell.Status.ParserState = $"Parse completed: {sw.ElapsedMilliseconds:N0}ms";
 

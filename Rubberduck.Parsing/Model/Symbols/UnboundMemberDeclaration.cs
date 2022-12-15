@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Model.Symbols
@@ -14,27 +15,28 @@ namespace Rubberduck.Parsing.Model.Symbols
         /// <summary>
         /// Context on the LHS of the member access.
         /// </summary>
-        public ParserRuleContext CallingContext { get; private set; }
+        /// <remarks>
+        /// RD3.NOTE: Used in MemberNotOnInterfaceInspection to pass a Selection to the finder for identifier references.
+        /// </remarks>
+        //public ParserRuleContext CallingContext { get; private set; }
 
-        public UnboundMemberDeclaration(Declaration parentDeclaration, ParserRuleContext unboundIdentifier, ParserRuleContext callingContext, IEnumerable<IParseTreeAnnotation> annotations) :
-            base(new QualifiedMemberName(parentDeclaration.QualifiedName.QualifiedModuleName, unboundIdentifier.GetText()),
+        public UnboundMemberDeclaration(Declaration parentDeclaration, VBABaseParserRuleContext unboundIdentifier, VBABaseParserRuleContext callingContext, IEnumerable<IParseTreeAnnotation> annotations) :
+            base(new QualifiedMemberName(parentDeclaration.QualifiedMemberName.QualifiedModuleName, unboundIdentifier.GetText()),
                 parentDeclaration,
                 parentDeclaration,
-                "Variant",
+                Tokens.Variant,
                 string.Empty,
                 false,
                 false,
                 Accessibility.Implicit,
                 DeclarationType.UnresolvedMember,
-                unboundIdentifier,
-                null,
-                unboundIdentifier.GetSelection(),
+                unboundIdentifier.Offset,
                 false,
                 null,
                 true,
                 annotations)
         {
-            CallingContext = callingContext;
+            //CallingContext = callingContext;
         }
     }
 }

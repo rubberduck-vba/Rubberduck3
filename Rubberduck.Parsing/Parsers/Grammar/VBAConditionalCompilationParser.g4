@@ -1,6 +1,10 @@
 parser grammar VBAConditionalCompilationParser;
 
-options { tokenVocab = VBALexer; }
+options {
+    tokenVocab = VBALexer;
+    superClass = VBABaseParser;
+    contextSuperClass = VBABaseParserRuleContext;
+ }
 
 compilationUnit : ccBlock EOF;
 

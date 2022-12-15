@@ -119,7 +119,6 @@
     <Compile Include="RubberduckEditor\Tools\SyncPanel\SyncPanelViewModel.cs" />
     <Compile Include="Abstract\IAboutControlViewModel.cs" />
     <Compile Include="Abstract\Editor\ICodePaneViewModel.cs" />
-    <Compile Include="Abstract\Editor\ICodeParserService.cs" />
     <Compile Include="Abstract\Editor\IEditorControlViewModel.cs" />
     <Compile Include="Abstract\Editor\IEditorSettings.cs" />
     <Compile Include="Abstract\Editor\Tools\IShellToolTab.cs" />

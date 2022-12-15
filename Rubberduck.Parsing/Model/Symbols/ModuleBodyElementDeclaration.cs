@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor;
 using static Rubberduck.Parsing.Grammar.VBAParser;
@@ -19,9 +18,7 @@ namespace Rubberduck.Parsing.Model.Symbols
             string typeHint,
             Accessibility accessibility,
             DeclarationType type,
-            ParserRuleContext context,
-            ParserRuleContext attributesPassContext,
-            Selection selection,
+            DocumentOffset offset,
             bool isArray,
             bool isUserDefined,
             IEnumerable<IParseTreeAnnotation> annotations,
@@ -36,9 +33,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 false,
                 accessibility,
                 type,
-                context,
-                attributesPassContext,
-                selection,
+                offset,
                 isArray,
                 asTypeContext,
                 isUserDefined,
@@ -159,7 +154,5 @@ namespace Rubberduck.Parsing.Model.Symbols
         {
             return element.InterfaceImplemented?.Members.FirstOrDefault(member => element.Implements(member as IInterfaceExposable));
         }
-
-        public abstract BlockContext Block { get; }
     }
 }

@@ -22,7 +22,7 @@ namespace Rubberduck.Parsing.Annotations
 
         public override void ExitAnnotation([NotNull] VBAParser.AnnotationContext context)
         {
-            var newAnnotation = _factory.Create(context, new QualifiedSelection(_qualifiedName, context.GetSelection()));
+            var newAnnotation = _factory.Create(context, new QualifiedSelection(_qualifiedName, context.Selection));
             _annotations.Add(newAnnotation);
         }
     }

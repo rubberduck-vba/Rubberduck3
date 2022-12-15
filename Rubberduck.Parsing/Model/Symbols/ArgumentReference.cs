@@ -15,8 +15,8 @@ namespace Rubberduck.Parsing.Model.Symbols
             Declaration parentScopingDeclaration,
             Declaration parentNonScopingDeclaration,
             string identifierName,
-            Selection argumentSelection,
-            ParserRuleContext context,
+            DocumentOffset offset,
+            VBABaseParserRuleContext context,
             VBAParser.ArgumentListContext argumentListContext,
             ArgumentListArgumentType argumentType,
             int argumentPosition,
@@ -27,7 +27,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 parentScopingDeclaration,
                 parentNonScopingDeclaration,
                 identifierName,
-                argumentSelection,
+                offset,
                 context,
                 referencedParameter,
                 false,
@@ -38,7 +38,7 @@ namespace Rubberduck.Parsing.Model.Symbols
             ArgumentPosition = argumentPosition;
             ArgumentListContext = argumentListContext;
             NumberOfArguments = ArgumentListContext?.argument()?.Length ?? 0;
-            ArgumentListSelection = argumentListContext?.GetSelection() ?? Selection.Empty;
+            ArgumentListSelection = argumentListContext?.Selection ?? Selection.Empty;
         }
 
         public ArgumentListArgumentType ArgumentType { get; }

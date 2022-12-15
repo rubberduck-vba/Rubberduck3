@@ -6,10 +6,7 @@ namespace Rubberduck.Parsing.Exceptions
     public class ParsePassSyntaxErrorInfo : SyntaxErrorInfo
     {
         public ParsePassSyntaxErrorInfo(string message, RecognitionException innerException, IToken offendingSymbol, int line, int position, string moduleName, CodeKind codeKind)
-        :base(message, innerException, offendingSymbol, line, position, codeKind){
-            ModuleName = moduleName;
+        :base(message, innerException, offendingSymbol, line, position, moduleName, codeKind){
         }
-
-        public string ModuleName { get; }
     }
 }

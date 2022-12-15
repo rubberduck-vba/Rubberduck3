@@ -2,6 +2,7 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Rubberduck.Parsing.Exceptions;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Model;
 
 namespace Rubberduck.Parsing.Parsers
@@ -19,14 +20,14 @@ namespace Rubberduck.Parsing.Parsers
             var lexer = new VBADateLexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBADateParser(tokens);
-            parser.AddErrorListener(new ExceptionErrorListener(CodeKind.SnippetCode)); // notify?
+            parser.AddErrorListener(new ExceptionErrorListener(null, CodeKind.SnippetCode)); // notify?
             VBADateParser.CompilationUnitContext tree;
             try
             {
                 parser.Interpreter.PredictionMode = PredictionMode.Sll;
                 tree = parser.compilationUnit();
             }
-            catch (Exception ex)
+            catch
             {
                 tokens.Reset();
                 parser.Reset();

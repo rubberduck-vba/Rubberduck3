@@ -18,9 +18,7 @@ namespace Rubberduck.Parsing.Model.Symbols
             string typeHint,
             Accessibility accessibility,
             DeclarationType type,
-            ParserRuleContext context,
-            ParserRuleContext attributesPassContext,
-            Selection selection,
+            DocumentOffset offset,
             bool isArray,
             bool isUserDefined,
             IEnumerable<IParseTreeAnnotation> annotations,
@@ -34,9 +32,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 typeHint,
                 accessibility,
                 type,
-                context,
-                attributesPassContext,
-                selection,
+                offset,
                 isArray,
                 isUserDefined,
                 annotations,
@@ -54,7 +50,7 @@ namespace Rubberduck.Parsing.Model.Symbols
 
                 return (DeclarationType == DeclarationType.PropertyLet ||
                        DeclarationType == DeclarationType.PropertySet) &&
-                       (Parameters.OrderBy(p => p.Selection).LastOrDefault()?.IsObject ?? false);
+                       (Parameters.OrderBy(p => p.Offset.Start).LastOrDefault()?.IsObject ?? false);
             }
         }
 

@@ -1,5 +1,11 @@
 grammar VBALike;
 
+options {
+    tokenVocab = VBALexer;
+    superClass = VBABaseParser;
+    contextSuperClass = VBABaseParserRuleContext;
+ }
+
 compilationUnit : likePatternString EOF;
 
 likePatternString : likePatternElement*;

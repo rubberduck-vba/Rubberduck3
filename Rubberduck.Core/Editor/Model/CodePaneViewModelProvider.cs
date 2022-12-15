@@ -11,13 +11,13 @@ namespace Rubberduck.Core.Editor
     public class CodePaneViewModelProvider : ICodePaneViewModelProvider
     {
         private readonly IProjectsRepository _projectsRepository;
-        private readonly ICodeParserService _parserService;
+        //private readonly ICodeParserService _parserService;
         private readonly IEditorSettings _editorSettings;
 
-        public CodePaneViewModelProvider(IProjectsRepository projectsRepository, ICodeParserService parserService, IEditorSettings editorSettings)
+        public CodePaneViewModelProvider(IProjectsRepository projectsRepository, /*ICodeParserService parserService,*/ IEditorSettings editorSettings)
         {
             _projectsRepository = projectsRepository;
-            _parserService = parserService;
+            //_parserService = parserService;
             _editorSettings = editorSettings;
         }
 
@@ -42,7 +42,7 @@ namespace Rubberduck.Core.Editor
                     // TODO add implemented interfaces, WithEvents variables, etc.
                 };
 
-                vm = new CodePaneViewModel(_parserService, _editorSettings, memberProviders)
+                vm = new CodePaneViewModel(/*_parserService,*/ _editorSettings, memberProviders)
                 {
                     Content = content,
                     ModuleInfo = info,

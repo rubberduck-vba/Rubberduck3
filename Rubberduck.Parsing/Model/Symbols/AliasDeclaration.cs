@@ -16,9 +16,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 false,
                 Accessibility.Public,
                 DeclarationType.ComAlias,
-                null,
-                null,
-                Selection.Home,
+                DocumentOffset.Invalid,
                 false,
                 null,
                 false)

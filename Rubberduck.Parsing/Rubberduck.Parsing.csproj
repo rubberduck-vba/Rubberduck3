@@ -184,11 +184,11 @@
     <Compile Include="Parsers\VBALikePatternParser.cs" />
     <Compile Include="Parsers\VBAPreprocessorParser.cs" />
     <Compile Include="Parsers\VBATokenStreamParser.cs" />
-    <Compile Include="Exceptions\ExceptionErrorListener.cs" />
-    <Compile Include="Exceptions\ExceptionErrorListenerFactory.cs" />
     <Compile Include="Abstract\IParsePassErrorListenerFactory.cs" />
     <Compile Include="Abstract\IRubberduckParseErrorListener.cs" />
     <Compile Include="Abstract\IRubberduckParserErrorListenerFactory.cs" />
+    <Compile Include="Exceptions\ExceptionErrorListener.cs" />
+    <Compile Include="Exceptions\ExceptionErrorListenerFactory.cs" />
     <Compile Include="Exceptions\MainParseErrorListenerFactory.cs" />
     <Compile Include="Exceptions\MainParseExceptionErrorListener.cs" />
     <Compile Include="Exceptions\MainParseSyntaxErrorException.cs" />
@@ -279,7 +279,7 @@
     <Compile Include="Model\Symbols\UnboundMemberDeclaration.cs" />
     <Compile Include="Model\Symbols\ValuedDeclaration.cs" />
     <Compile Include="Model\Symbols\VariableDeclaration.cs" />
-    <Compile Include="Extensions\ParserRuleContextExtensions.cs" />
+    <Compile Include="Extensions\VBABaseParserRuleContextExtensions.cs" />
     <Compile Include="Parsers\Grammar\VBABaseLexer.cs" />
     <Compile Include="Parsers\Grammar\VBABaseParser.cs" />
     <Compile Include="ITextDocumentProvider.cs" />
@@ -297,7 +297,6 @@
     <Compile Include="Model\NamedOffsetInfo.cs" />
     <Compile Include="Model\ParameterInfo.cs" />
     <Compile Include="ParserMode.cs" />
-    <Compile Include="ParserResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QualifiedContext.cs" />
     <Compile Include="ReferenceManagement\ConcurrentFailedResolutionStore.cs" />
@@ -319,14 +318,12 @@
     <Compile Include="Rewriter\RewriterInfo\VariableRewriterInfoFinder.cs" />
     <Compile Include="Parsers\TokenStreamProviders\StringTokenStreamProvider.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="SyntaxErrorListener.cs" />
     <Compile Include="Parsers\TokenStreamProviders\TextReaderTokenStreamProvider.cs" />
     <Compile Include="Parsers\TokenStreamProviders\CommonTokenStreamProvider.cs" />
     <Compile Include="Model\TypedMemberInfo.cs" />
     <Compile Include="Model\TypedNamedOffsetInfo.cs" />
     <Compile Include="Model\ValuedMemberInfo.cs" />
     <Compile Include="Listeners\VBFoldingListener.cs" />
-    <Compile Include="SyntaxError.cs" />
     <Compile Include="Extensions\TokenExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -359,9 +356,15 @@
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
     </Antlr4>
     <None Include="Annotations\Concrete\README.md" />
-    <Antlr4 Include="Parsers\Grammar\VBAConditionalCompilationParser.g4" />
-    <Antlr4 Include="Parsers\Grammar\VBADate.g4" />
-    <Antlr4 Include="Parsers\Grammar\VBALike.g4" />
+    <Antlr4 Include="Parsers\Grammar\VBAConditionalCompilationParser.g4">
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Include="Parsers\Grammar\VBADate.g4">
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Include="Parsers\Grammar\VBALike.g4">
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+    </Antlr4>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

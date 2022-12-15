@@ -28,9 +28,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 isWithEvents,
                 Accessibility.Public,
                 declarationType,
-                null,
-                null,
-                Selection.Home,
+                DocumentOffset.Invalid,
                 false,
                 null,
                 isUserDefined,
@@ -60,9 +58,9 @@ namespace Rubberduck.Parsing.Model.Symbols
             var folderAnnotation = Annotations.FirstOrDefault(pta => pta.Annotation is FolderAnnotation);
             if (folderAnnotation == null)
             {
-                return string.IsNullOrEmpty(QualifiedName.QualifiedModuleName.ProjectName)
+                return string.IsNullOrEmpty(QualifiedMemberName.QualifiedModuleName.ProjectName)
                     ? ProjectId
-                    : QualifiedName.QualifiedModuleName.ProjectName;
+                    : QualifiedMemberName.QualifiedModuleName.ProjectName;
             }
 
             var folderValue = folderAnnotation.AnnotationArguments.FirstOrDefault();

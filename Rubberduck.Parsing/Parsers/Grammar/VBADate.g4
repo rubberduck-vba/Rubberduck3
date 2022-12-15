@@ -1,4 +1,9 @@
 grammar VBADate;
+options {
+    tokenVocab = VBALexer;
+    superClass = VBABaseParser;
+    contextSuperClass = VBABaseParserRuleContext;
+ }
 
 compilationUnit : dateLiteral EOF;
 

@@ -9,7 +9,6 @@ namespace Rubberduck.Parsing.Model.Symbols
 {
     public static class Identifier
     {
-
         public static string GetName(VBAParser.SubStmtContext context, out Interval tokenInterval)
         {
             var nameContext = context.subroutineName();
@@ -271,6 +270,28 @@ namespace Rubberduck.Parsing.Model.Symbols
             return name;
         }
 
+        public static DocumentOffset GetNameOffset(VBAParser.UnrestrictedIdentifierContext context)
+        {
+            if (context.identifier() != null)
+            {
+                return GetNameOffset(context.identifier());
+            }
+            else
+            {
+                return context.Offset;
+            }
+        }
+
+        public static DocumentOffset GetNameOffset(VBAParser.IdentifierContext context)
+        {
+            return GetIdentifierValueContext(context).Offset;
+        }
+
+        public static DocumentOffset GetNameOffset(VBAParser.UntypedIdentifierContext context)
+        {
+            return GetIdentifierValueContext(context).Offset;
+        }
+
         public static Selection GetNameSelection(VBAParser.UnrestrictedIdentifierContext context)
         {
             if (context.identifier() != null)
@@ -279,18 +300,18 @@ namespace Rubberduck.Parsing.Model.Symbols
             }
             else
             {
-                return context.GetSelection();
+                return context.Selection;
             }
         }
 
         public static Selection GetNameSelection(VBAParser.IdentifierContext context)
         {
-            return GetIdentifierValueContext(context).GetSelection();
+            return GetIdentifierValueContext(context).Selection;
         }
 
         public static Selection GetNameSelection(VBAParser.UntypedIdentifierContext context)
         {
-            return GetIdentifierValueContext(context).GetSelection();
+            return GetIdentifierValueContext(context).Selection;
         }
 
         public static VBAParser.IdentifierValueContext GetIdentifierValueContext(VBAParser.IdentifierContext context)

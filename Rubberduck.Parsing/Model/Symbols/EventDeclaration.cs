@@ -20,8 +20,7 @@ namespace Rubberduck.Parsing.Model.Symbols
             VBAParser.AsTypeClauseContext asTypeContext,
             string typeHint,
             Accessibility accessibility,
-            ParserRuleContext context,
-            Selection selection,
+            DocumentOffset offset,
             bool isArray,
             bool isUserDefined,
             IEnumerable<IParseTreeAnnotation> annotations,
@@ -36,9 +35,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                   false,
                   accessibility,
                   DeclarationType.Event,
-                  context,
-                  null,
-                  selection,
+                  offset,
                   isArray,
                   asTypeContext,
                   isUserDefined,
@@ -57,19 +54,18 @@ namespace Rubberduck.Parsing.Model.Symbols
                 null,
                 null,
                 Accessibility.Global,
-                null,
-                Selection.Home,
+                DocumentOffset.Invalid,
                 member.AsTypeName.IsArray,
                 false,
                 null,
                 attributes)
         {
-            _parameters =
-                member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module))
-                    .ToList();
+            _parameters = member.Parameters
+                .Select(decl => new ParameterDeclaration(decl, this, module))
+                .ToList();
         }
 
-        public IReadOnlyList<ParameterDeclaration> Parameters => _parameters.ToList();
+        public IReadOnlyList<ParameterDeclaration> Parameters => _parameters;
 
         public void AddParameter(ParameterDeclaration parameter)
         {

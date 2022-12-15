@@ -18,9 +18,7 @@ namespace Rubberduck.Parsing.Model.Symbols
             AsTypeClauseContext asTypeContext,
             string typeHint,
             Accessibility accessibility,
-            ParserRuleContext context,
-            ParserRuleContext attributesPassContext,
-            Selection selection,
+            DocumentOffset offset,
             bool isArray,
             bool isUserDefined,
             IEnumerable<IParseTreeAnnotation> annotations,
@@ -34,9 +32,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                   typeHint,
                   accessibility,
                   DeclarationType.PropertyGet,
-                  context,
-                  attributesPassContext,
-                  selection,
+                  offset,
                   isArray,
                   isUserDefined,
                   annotations,
@@ -52,9 +48,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 null,
                 null,
                 Accessibility.Global,
-                null,
-                null,
-                Selection.Home,
+                DocumentOffset.Invalid,
                 member.AsTypeName.IsArray,
                 false,
                 null,
@@ -72,9 +66,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 null,
                 null,
                 Accessibility.Global,
-                null,
-                null,
-                Selection.Home,
+                DocumentOffset.Invalid,
                 false,  //TODO - check this assumption.
                 false,
                 null,
@@ -94,7 +86,5 @@ namespace Rubberduck.Parsing.Model.Symbols
                    && ((ClassModuleDeclaration)member.ParentDeclaration).Subtypes.Any(implementation => ReferenceEquals(implementation, ParentDeclaration))
                    && IdentifierName.Equals(member.ImplementingIdentifierName);
         }
-
-        public override BlockContext Block => ((PropertyGetStmtContext)Context).block();
     }
 }

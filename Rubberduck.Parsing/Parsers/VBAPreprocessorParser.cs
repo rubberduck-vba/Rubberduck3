@@ -2,6 +2,7 @@
 using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Abstract;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Parsers
 {

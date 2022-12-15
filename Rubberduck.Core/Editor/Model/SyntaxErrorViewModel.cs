@@ -1,4 +1,4 @@
-﻿using Rubberduck.Parsing;
+﻿using Rubberduck.Parsing.Exceptions;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Model;
 using Rubberduck.UI.Abstract;
@@ -16,13 +16,13 @@ namespace Rubberduck.Core.Editor
         private static readonly string TypeCannotBeEmptyError = "User-defined type cannot be empty.";
         #endregion
 
-        public SyntaxErrorViewModel(SyntaxError error)
+        public SyntaxErrorViewModel(SyntaxErrorInfo error)
         {
-            StartOffset = error.OffendingToken.StartIndex;
-            var endOffset = error.OffendingToken.StopIndex;
+            StartOffset = error.OffendingSymbol.StartIndex;
+            var endOffset = error.OffendingSymbol.StopIndex;
             Length = Math.Max(StartOffset, endOffset) - Math.Min(StartOffset, endOffset) + 1;
 
-            switch (error.Context)
+            switch (error.Exception.Context)
             {
                 case VBAParser.UdtMemberListContext udtMemberList when !udtMemberList.udtMember()?.Any() ?? false:
                     var parentTypeToken = ((VBAParser.UdtDeclarationContext)udtMemberList.Parent).TYPE();
@@ -111,12 +111,12 @@ namespace Rubberduck.Core.Editor
                     break;
             }
 
-            Line = error.OffendingToken.Line;
-            Column = error.OffendingToken.Column + 1;
+            Line = error.OffendingSymbol.Line;
+            Column = error.OffendingSymbol.Column + 1;
             ModuleName = error.ModuleName;
             Message = Message ?? error.Message;
 
-            LocationMessage = $"Unexpected '{error.OffendingToken.Text}' token in {ModuleName} at offset {error.OffendingToken.StartIndex} (L{Line}C{Column})";
+            LocationMessage = $"Unexpected '{error.OffendingSymbol.Text}' token in {ModuleName} at offset {error.OffendingSymbol.StartIndex} (L{Line}C{Column})";
         }
 
         public int StartOffset { get; }

@@ -24,9 +24,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                   false,
                   Accessibility.Implicit,
                   DeclarationType.Project,
-                  null,
-                  null,
-                  Selection.Home,
+                  DocumentOffset.Invalid,
                   false,
                   null,
                   isUserDefined)

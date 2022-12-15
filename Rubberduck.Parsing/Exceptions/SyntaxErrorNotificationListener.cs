@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Model;
 
@@ -6,31 +8,16 @@ namespace Rubberduck.Parsing.Exceptions
 {
     public class SyntaxErrorNotificationListener : RubberduckParseErrorListenerBase
     {
-        public SyntaxErrorNotificationListener(CodeKind codeKind) 
-        :base(codeKind)
-        {}
+        private readonly IList<SyntaxErrorInfo> _errors = new List<SyntaxErrorInfo>();
 
-        public event EventHandler<SyntaxErrorEventArgs> OnSyntaxError;
+        public SyntaxErrorNotificationListener(string moduleName, CodeKind codeKind) 
+        :base(moduleName, codeKind) { }
+
+        public IEnumerable<SyntaxErrorInfo> Errors => _errors;
+
         public override void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
         {
-            var info = new SyntaxErrorInfo(msg, e, offendingSymbol, line, charPositionInLine, CodeKind);
-            NotifySyntaxError(info);
+            _errors.Add(new SyntaxErrorInfo(msg, e, offendingSymbol, line, charPositionInLine, ModuleName, CodeKind));
         }
-
-        private void NotifySyntaxError(SyntaxErrorInfo info)
-        {
-            var handler = OnSyntaxError;
-            handler?.Invoke(this, new SyntaxErrorEventArgs(info));
-        }
-    }
-
-    public class SyntaxErrorEventArgs : EventArgs
-    {
-        public SyntaxErrorEventArgs(SyntaxErrorInfo info)
-        {
-            Info = info;
-        }
-
-        public SyntaxErrorInfo Info { get; }
     }
 }

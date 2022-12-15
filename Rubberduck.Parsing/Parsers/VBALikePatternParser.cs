@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Parsers
 {

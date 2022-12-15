@@ -31,9 +31,7 @@ namespace Rubberduck.Parsing.Model.Symbols
             bool isWithEvents,
             Accessibility accessibility,
             DeclarationType declarationType,
-            ParserRuleContext context,
-            ParserRuleContext attributesPassContext,
-            Selection selection,
+            DocumentOffset offset,
             bool isArray,
             VBAParser.AsTypeClauseContext asTypeContext,
             bool isUserDefined = true,
@@ -50,9 +48,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 isWithEvents,
                 accessibility,
                 declarationType,
-                context,
-                attributesPassContext,
-                selection,
+                offset,
                 isArray,
                 asTypeContext,
                 isUserDefined,
@@ -69,7 +65,7 @@ namespace Rubberduck.Parsing.Model.Symbols
             string parentScope,
             string asTypeName,
             string typeHint,
-            bool isSelfAssigned,
+            bool isAutoAssigned,
             bool isWithEvents,
             Accessibility accessibility,
             DeclarationType declarationType,
@@ -84,13 +80,11 @@ namespace Rubberduck.Parsing.Model.Symbols
                   parentScope,
                   asTypeName,
                   typeHint,
-                  isSelfAssigned,
+                  isAutoAssigned,
                   isWithEvents,
                   accessibility,
                   declarationType,
-                  null,
-                  null,
-                  Selection.Home,
+                  DocumentOffset.Invalid,
                   isArray,
                   asTypeContext,
                   isUserDefined,
@@ -104,37 +98,33 @@ namespace Rubberduck.Parsing.Model.Symbols
             string parentScope,
             string asTypeName,
             string typeHint,
-            bool isSelfAssigned,
+            bool isAutoAssigned,
             bool isWithEvents,
             Accessibility accessibility,
             DeclarationType declarationType,
-            ParserRuleContext context,
-            ParserRuleContext attributesPassContext,
-            Selection selection,
+            DocumentOffset offset,
             bool isArray,
             VBAParser.AsTypeClauseContext asTypeContext,
             bool isUserDefined = true,
             IEnumerable<IParseTreeAnnotation> annotations = null,
             Attributes attributes = null)
         {
-            QualifiedName = qualifiedName;            
+            QualifiedMemberName = qualifiedName;            
             ParentDeclaration = parentDeclaration;
             ParentScopeDeclaration = ParentDeclaration;
             ParentScope = parentScope ?? string.Empty;
             IdentifierName = qualifiedName.MemberName;
             AsTypeName = asTypeName;
-            IsAutoAssigned = isSelfAssigned;
+            IsAutoAssigned = isAutoAssigned;
             IsWithEvents = isWithEvents;
             Accessibility = accessibility;
             DeclarationType = declarationType;
-            Selection = selection;
-            Context = context;
-            AttributesPassContext = attributesPassContext;
+            Offset = offset;
             IsUserDefined = isUserDefined;
             _annotations = annotations;
             Attributes = attributes ?? new Attributes();
 
-            ProjectId = QualifiedName.QualifiedModuleName.ProjectId;
+            ProjectId = QualifiedMemberName.QualifiedModuleName.ProjectId;
             var projectDeclaration = GetProjectParent(parentDeclaration);
             if (projectDeclaration != null)
             {
@@ -146,8 +136,9 @@ namespace Rubberduck.Parsing.Model.Symbols
             }
 
             IsArray = isArray;
-            AsTypeContext = asTypeContext;
             TypeHint = typeHint;
+
+            HasExplicitTypeClause = asTypeContext?.AS() != null;
         }
 
         public Declaration(ComEnumeration enumeration, Declaration parent, QualifiedModuleName module) : this(
@@ -161,9 +152,7 @@ namespace Rubberduck.Parsing.Model.Symbols
             false,
             Accessibility.Global,
             DeclarationType.Enumeration,
-            null,
-            null,
-            Selection.Home,
+            DocumentOffset.Invalid,
             false,
             null,
             false,
@@ -181,9 +170,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 false,
                 Accessibility.Global,
                 DeclarationType.UserDefinedType,
-                null,
-                null,
-                Selection.Home,
+                DocumentOffset.Invalid,
                 false,
                 null,
                 false,
@@ -200,9 +187,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 false,
                 Accessibility.Global,
                 DeclarationType.EnumerationMember,
-                null,
-                null,
-                Selection.Home,
+                DocumentOffset.Invalid,
                 false,
                 null,
                 false,
@@ -220,9 +205,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 false,
                 Accessibility.Global,
                 field.Type,
-                null,
-                null,
-                Selection.Home,
+                DocumentOffset.Invalid,
                 false,
                 null,
                 false,
@@ -231,7 +214,7 @@ namespace Rubberduck.Parsing.Model.Symbols
 
         public static Declaration GetModuleParent(Declaration declaration)
         {
-            if (declaration == null)
+            if (declaration is null)
             {
                 return null;
             }
@@ -244,7 +227,7 @@ namespace Rubberduck.Parsing.Model.Symbols
 
         public static Declaration GetProjectParent(Declaration declaration)
         {
-            if (declaration == null)
+            if (declaration is null)
             {
                 return null;
             }
@@ -256,18 +239,18 @@ namespace Rubberduck.Parsing.Model.Symbols
         }
 
         public bool IsArray { get; }
-        public VBAParser.AsTypeClauseContext AsTypeContext { get; }
+        public bool HasExplicitTypeClause { get; }
         public string TypeHint { get; }
         public bool HasTypeHint => !string.IsNullOrWhiteSpace(TypeHint);
 
-        public bool IsTypeSpecified => HasTypeHint || AsTypeContext != null;
+        public bool IsTypeSpecified => HasTypeHint || HasExplicitTypeClause;
 
         public bool IsUserDefined { get; }
 
         public Declaration ParentDeclaration { get; }
 
-        public QualifiedMemberName QualifiedName { get; }
-        public QualifiedModuleName QualifiedModuleName => QualifiedName.QualifiedModuleName;
+        public QualifiedMemberName QualifiedMemberName { get; }
+        public QualifiedModuleName QualifiedModuleName => QualifiedMemberName.QualifiedModuleName;
 
         public ParserRuleContext Context { get; }
         public ParserRuleContext AttributesPassContext { get; }
@@ -296,14 +279,14 @@ namespace Rubberduck.Parsing.Model.Symbols
                 if (memberAttribute != null)
                 {
                     literalDescription = memberAttribute.Values.SingleOrDefault() ?? string.Empty;
-                    return CorrectlyFormatedDescription(literalDescription);
+                    return CorrectlyFormattedDescription(literalDescription);
                 }
 
                 var moduleAttribute = Attributes.SingleOrDefault(a => a.Name == "VB_Description");
                 if (moduleAttribute != null)
                 {
                     literalDescription = moduleAttribute.Values.SingleOrDefault() ?? string.Empty;
-                    return CorrectlyFormatedDescription(literalDescription);
+                    return CorrectlyFormattedDescription(literalDescription);
                 }
 
                 // fallback to description annotation; enables descriptions in document modules and non-synchronized members.
@@ -315,13 +298,13 @@ namespace Rubberduck.Parsing.Model.Symbols
                 if (descriptionAnnotation != null)
                 {
                     literalDescription = descriptionAnnotation.AnnotationArguments.FirstOrDefault();
-                    return CorrectlyFormatedDescription(literalDescription);
+                    return CorrectlyFormattedDescription(literalDescription);
                 }
                 return string.Empty;
             }
         }
 
-        private static string CorrectlyFormatedDescription(string literalDescription)
+        private static string CorrectlyFormattedDescription(string literalDescription)
         {
             if (string.IsNullOrEmpty(literalDescription) 
                 || literalDescription.Length < 2 
@@ -357,8 +340,8 @@ namespace Rubberduck.Parsing.Model.Symbols
                 }
 
                 var isIntrinsic = AsTypeIsBaseType
-                                  || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ?? false)
-                                  || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.Enumeration) ?? false);
+                    || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ?? false)
+                    || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.Enumeration) ?? false);
 
                 return !isIntrinsic;
             }
@@ -368,10 +351,10 @@ namespace Rubberduck.Parsing.Model.Symbols
             QualifiedModuleName module,
             Declaration scope,
             Declaration parent,
-            ParserRuleContext callSiteContext,
+            VBABaseParserRuleContext callSiteContext,
             string identifier,
             Declaration callee,
-            Selection selection,
+            DocumentOffset offset,
             IEnumerable<IParseTreeAnnotation> annotations,
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false,
@@ -393,7 +376,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 // ReSharper disable once PossibleUnintendedReferenceComparison
                 r.Key.ParentNonScoping == parent &&
                 r.Key.IdentifierName == identifier &&
-                r.Key.Selection == selection);
+                r.Key.QualifiedOffset.Equals(offset));
             if (oldReference.Key != null)
             {
                 _references.TryRemove(oldReference.Key, out _);
@@ -404,7 +387,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 scope,
                 parent,
                 identifier,
-                selection,
+                offset,
                 callSiteContext,
                 callee,
                 isAssignmentTarget,
@@ -431,7 +414,8 @@ namespace Rubberduck.Parsing.Model.Symbols
         /// </remarks>
         public Selection Selection { get; }
 
-        public QualifiedSelection QualifiedSelection => new QualifiedSelection(QualifiedName.QualifiedModuleName, Selection);
+        public DocumentOffset Offset { get; }
+
 
         /// <summary>
         /// Gets a unique identifier for the VBProject the declaration is made in.
@@ -455,7 +439,7 @@ namespace Rubberduck.Parsing.Model.Symbols
         /// <summary>
         /// Gets the name of the VBComponent the declaration is made in.
         /// </summary>
-        public string ComponentName => QualifiedName.QualifiedModuleName.ComponentName;
+        public string ComponentName => QualifiedMemberName.QualifiedModuleName.ComponentName;
 
         /// <summary>
         /// Gets the parent scope of the declaration.
@@ -504,7 +488,7 @@ namespace Rubberduck.Parsing.Model.Symbols
         {
             get
             {
-                if (AsTypeDeclaration == null)
+                if (AsTypeDeclaration is null)
                 {
                     return AsTypeName;
                 }
@@ -515,7 +499,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 }
 
                 //Enums and UDTs have to be qualified by the module they are contained in.
-                return AsTypeDeclaration.QualifiedName.ToString();
+                return AsTypeDeclaration.QualifiedMemberName.ToString();
             }
         }
 
@@ -557,8 +541,14 @@ namespace Rubberduck.Parsing.Model.Symbols
 
         public bool IsSelected(QualifiedSelection selection)
         {
-            return QualifiedName.QualifiedModuleName.Equals(selection.QualifiedModuleName) &&
+            return QualifiedMemberName.QualifiedModuleName.Equals(selection.QualifiedModuleName) &&
                    Selection.ContainsFirstCharacter(selection.Selection);
+        }
+
+        public bool IsSelected(QualifiedDocumentOffset offset)
+        {
+            return QualifiedModuleName.Equals(offset.QualifiedModuleName)
+                && Offset.Contains(offset.Offset);
         }
 
         /// <summary>
@@ -632,7 +622,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 && other.DeclarationType == DeclarationType
                 && other.Scope == Scope
                 && other.ParentScope == ParentScope
-                && other.Selection.Equals(Selection);
+                && other.Offset.Equals(Offset);
         }
 
         public override bool Equals(object obj)
@@ -642,17 +632,7 @@ namespace Rubberduck.Parsing.Model.Symbols
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hash = 17;
-                hash = hash * 23 + QualifiedName.QualifiedModuleName.GetHashCode();
-                hash = hash * 23 + IdentifierName.GetHashCode();
-                hash = hash * 23 + DeclarationType.GetHashCode();
-                hash = hash * 23 + Scope.GetHashCode();
-                hash = hash * 23 + ParentScope.GetHashCode();
-                hash = hash * 23 + Selection.GetHashCode();
-                return hash;
-            }
+            return HashCode.Combine(QualifiedMemberName, IdentifierName, DeclarationType, Scope, ParentScope, Offset);
         }
 
         public virtual void ClearReferences()

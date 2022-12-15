@@ -1,5 +1,4 @@
-﻿using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
+﻿using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Model;
 using System.Collections.Generic;
@@ -75,7 +74,7 @@ namespace Rubberduck.Parsing.Listeners
             {
                 var startOffset = context.Offset.Start;
 
-                var declarationsContext = ((ParserRuleContext)context.Parent.Parent).GetChild<VBAParser.ModuleDeclarationsContext>();
+                var declarationsContext = ((VBABaseParserRuleContext)context.Parent.Parent).GetChild<VBAParser.ModuleDeclarationsContext>();
                 var declarationComments = declarationsContext.GetDescendents<VBAParser.CommentOrAnnotationContext>()
                     .OrderByDescending(e => e.Start.StartIndex)
                     .ToLookup(e => e.Start.Line);

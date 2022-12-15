@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Rubberduck.Parsing.Expressions;
 using Rubberduck.Parsing.Abstract;
 using Rubberduck.Parsing.Model.Symbols;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
@@ -58,7 +59,7 @@ namespace Rubberduck.Parsing.PreProcessing
 
         public override IExpression VisitPhysicalLine([NotNull] VBAConditionalCompilationParser.PhysicalLineContext context)
         {
-            return new ConstantExpression(new TokensValue(context.GetTokens(_tokenStream)));
+            return new ConstantExpression(new TokensValue((context).GetTokens(_tokenStream)));
         }
 
         public override IExpression VisitCcBlock([NotNull] VBAConditionalCompilationParser.CcBlockContext context)

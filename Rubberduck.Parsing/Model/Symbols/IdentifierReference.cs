@@ -6,6 +6,7 @@ using System.Linq;
 using System.Diagnostics;
 using System;
 using Rubberduck.Parsing.Annotations;
+using System.Runtime.Remoting.Contexts;
 
 namespace Rubberduck.Parsing.Model.Symbols
 {
@@ -17,8 +18,8 @@ namespace Rubberduck.Parsing.Model.Symbols
             Declaration parentScopingDeclaration, 
             Declaration parentNonScopingDeclaration, 
             string identifierName,
-            Selection selection,
-            ParserRuleContext context, 
+            DocumentOffset offset,
+            VBABaseParserRuleContext context, 
             Declaration declaration, 
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false, 
@@ -35,9 +36,7 @@ namespace Rubberduck.Parsing.Model.Symbols
         {
             ParentScoping = parentScopingDeclaration;
             ParentNonScoping = parentNonScopingDeclaration;
-            QualifiedSelection = new QualifiedSelection(qualifiedName, selection);
             IdentifierName = identifierName;
-            Context = context;
             Declaration = declaration;
             HasExplicitLetStatement = hasExplicitLetStatement;
             IsAssignment = isAssignmentTarget;
@@ -51,11 +50,18 @@ namespace Rubberduck.Parsing.Model.Symbols
             IsInnerRecursiveDefaultMemberAccess = isInnerRecursiveDefaultMemberAccess;
             QualifyingReference = qualifyingReference;
             IsReDim = isReDim;
+
+            QualifiedOffset = new QualifiedDocumentOffset(qualifiedName, offset);
+            QualifiedModuleName = QualifiedOffset.QualifiedModuleName;
+
+            HasExplicitCallStatement = context.Parent is VBAParser.CallStmtContext callStmt && callStmt.CALL() != null;
+            HasTypeHint = HasTypeHintToken(context, out var typeHintToken);
+            TypeHintToken= typeHintToken;
         }
 
-        public QualifiedSelection QualifiedSelection { get; }
-        public QualifiedModuleName QualifiedModuleName => QualifiedSelection.QualifiedModuleName;
-        public Selection Selection => QualifiedSelection.Selection;
+        public QualifiedDocumentOffset QualifiedOffset { get; }
+
+        public QualifiedModuleName QualifiedModuleName { get; }
 
         public string IdentifierName { get; }
 
@@ -87,83 +93,57 @@ namespace Rubberduck.Parsing.Model.Symbols
         public bool IsArrayAccess { get; }
         public bool IsReDim { get; }
 
-        public ParserRuleContext Context { get; }
-
         public Declaration Declaration { get; }
 
         public IEnumerable<IParseTreeAnnotation> Annotations { get; }
 
         public bool HasExplicitLetStatement { get; }
 
-        public bool HasExplicitCallStatement() => Context.Parent is VBAParser.CallStmtContext && ((VBAParser.CallStmtContext)Context).CALL() != null;
+        public bool HasExplicitCallStatement { get; }
 
-        private bool? _hasTypeHint;
-        public bool HasTypeHint()
+        public bool HasTypeHint { get; }
+        public string TypeHintToken { get; }
+
+        private static bool HasTypeHintToken(VBABaseParserRuleContext context, out string token)
         {
-            if (_hasTypeHint.HasValue)
-            {
-                return _hasTypeHint.Value;
-            }
-
-            return HasTypeHint(out _);
-        }
-
-        public bool HasTypeHint(out string token)
-        {
-            if (Context == null)
+            if (context is null)
             {
                 token = null;
-                _hasTypeHint = false;
                 return false;
             }
-            var method = Context.Parent.GetType().GetMethods().FirstOrDefault(m => m.Name == "typeHint");
+            var method = context.Parent.GetType().GetMethods().FirstOrDefault(m => m.Name == "typeHint");
             if (method == null)
             {
                 token = null;
-                _hasTypeHint = false;
                 return false;
             }
 
-            var hint = Context.Parent is VBAParser.TypedIdentifierContext typedIdentifierContext
+            var hint = context.Parent is VBAParser.TypedIdentifierContext typedIdentifierContext
                 ? typedIdentifierContext.typeHint()
                 : null;
 
             token = hint?.GetText();
-            _hasTypeHint = hint != null;
-            return _hasTypeHint.Value;
-        }
-
-        public bool IsSelected(QualifiedSelection selection)
-        {
-            return QualifiedModuleName.Equals(selection.QualifiedModuleName) &&
-                   Selection.ContainsFirstCharacter(selection.Selection);
+            return hint != null;
         }
 
         public bool IsSelected(QualifiedDocumentOffset qualifiedOffset)
         {
             return QualifiedModuleName.Equals(qualifiedOffset.QualifiedModuleName) && 
-                Context.ContainsOffset(qualifiedOffset.Offset.Start);
+                QualifiedOffset.Offset.Start <= qualifiedOffset.Offset.Start &&
+                QualifiedOffset.Offset.End >= qualifiedOffset.Offset.End;
         }
 
         public bool Equals(IdentifierReference other)
         {
             return other != null
                 && other.QualifiedModuleName.Equals(QualifiedModuleName)
-                && other.Selection.Equals(Selection)
+                && other.QualifiedOffset.Equals(QualifiedOffset)
                 && (other.Declaration != null && other.Declaration.Equals(Declaration)
                     || other.Declaration == null && Declaration == null);
         }
 
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as IdentifierReference);
-        }
+        public override bool Equals(object obj) => Equals(obj as IdentifierReference);
 
-        public override int GetHashCode()
-        {
-            return Declaration != null
-                ? HashCode.Combine(QualifiedModuleName, Selection, Declaration)
-                : HashCode.Combine(QualifiedModuleName, Selection);
-        }
+        public override int GetHashCode() => HashCode.Combine(QualifiedModuleName, QualifiedOffset, Declaration);
     }
 }

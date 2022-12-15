@@ -5,35 +5,15 @@ using Rubberduck.Parsing.Grammar;
 using System.Linq;
 using Antlr4.Runtime.Misc;
 using System;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing
 {
-    public static class ParserRuleContextExtensions
-    {
-        /// <summary>
-        ///  Returns a Selection structure containing the context
-        /// </summary>
-        public static Selection GetSelection(this ParserRuleContext context)
-        {
-            // if we have an empty module, `Stop` is null
-            if (context?.Stop == null) { return Selection.Home; }
-
-            // ANTLR indexes for columns are 0-based, but VBE's are 1-based.
-            // ANTLR lines and VBE's lines are both 1-based
-            // 1 is the default value that will select all lines. Replace zeroes with ones.
-            // See also: https://msdn.microsoft.com/en-us/library/aa443952(v=vs.60).aspx
-
-            return new Selection(context.Start.Line == 0 ? 1 : context.Start.Line,
-                                 context.Start.Column + 1,
-                                 context.Stop.Line == 0 ? 1 : context.Stop.EndLine(),
-                                 context.Stop.EndColumn() + 1);
-        }
-        
+    public static class VBABaseParserRuleContextExtensions
+    {        
         /// <summary>
         ///  Returns whether the other context from the same parse tree is wholly contained in the current context
         /// </summary>
-        public static bool Contains(this ParserRuleContext context, ParserRuleContext otherContextInSameParseTree)
+        public static bool Contains(this VBABaseParserRuleContext context, VBABaseParserRuleContext otherContextInSameParseTree)
         {
             if (context is null || otherContextInSameParseTree is null)
             {
@@ -47,7 +27,7 @@ namespace Rubberduck.Parsing
         /// <summary>
         ///  Gets the tokens belonging to the context from the token stream.
         /// </summary>
-        public static IEnumerable<IToken> GetTokens(this ParserRuleContext context, CommonTokenStream tokenStream)
+        public static IEnumerable<IToken> GetTokens(this VBABaseParserRuleContext context, CommonTokenStream tokenStream)
         {
             var sourceInterval = context?.SourceInterval ?? Interval.Invalid;
             if (sourceInterval.Equals(Interval.Invalid) || sourceInterval.b < sourceInterval.a)
@@ -60,10 +40,10 @@ namespace Rubberduck.Parsing
         /// <summary>
         ///  Gets the original source, without "synthetic" text such as an 'EOF' token.
         /// </summary>
-        public static string GetText(this ParserRuleContext context, ICharStream stream)
+        public static string GetText(this VBABaseParserRuleContext context, ICharStream stream)
         {
             // Can be null if the input is empty it seems.
-            if (context?.Stop == null)
+            if (context?.Stop is null)
             {
                 return string.Empty;
             }
@@ -73,9 +53,9 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Returns the first direct child of 'context' that is of the generic Type.
         /// </summary>
-        public static TContext GetChild<TContext>(this ParserRuleContext context) where TContext : ParserRuleContext
+        public static TContext GetChild<TContext>(this VBABaseParserRuleContext context) where TContext : VBABaseParserRuleContext
         {
-            if (context == null)
+            if (context is null)
             {
                 return default;
             }
@@ -86,16 +66,16 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Determines if any of the context's ancestors are the generic Type.
         /// </summary>
-        public static bool IsDescendentOf<TContext>(this ParserRuleContext context) where TContext: ParserRuleContext
+        public static bool IsDescendentOf<TContext>(this VBABaseParserRuleContext context) where TContext: VBABaseParserRuleContext
         {
-            if (context == null)
+            if (context is null)
             {
                 return false;
             }
 
             if (context is TContext)
             {
-                return GetAncestor_Recursive<TContext>((ParserRuleContext)context.Parent) != null;
+                return GetAncestor_Recursive<TContext>((VBABaseParserRuleContext)context.Parent) != null;
             }
             return GetAncestor_Recursive<TContext>(context) != null;
         }
@@ -103,9 +83,9 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Determines if any of the context's ancestors are equal to the parameter 'ancestor'.
         /// </summary>
-        public static bool IsDescendentOf<T>(this ParserRuleContext context, T ancestor) where T : ParserRuleContext
+        public static bool IsDescendentOf<T>(this VBABaseParserRuleContext context, T ancestor) where T : VBABaseParserRuleContext
         {
-            if (context == null || ancestor == null)
+            if (context is null || ancestor is null)
             {
                 return false;
             }
@@ -118,7 +98,7 @@ namespace Rubberduck.Parsing
 
         private static bool IsDescendentOf_Recursive(IParseTree context, IParseTree targetParent)
         {
-            if (context == null)
+            if (context is null)
             {
                 return false;
             }
@@ -129,14 +109,14 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Returns the context's first ancestor of the generic Type.
         /// </summary>
-        public static TContext GetAncestor<TContext>(this ParserRuleContext context) where TContext: ParserRuleContext
+        public static TContext GetAncestor<TContext>(this VBABaseParserRuleContext context) where TContext: VBABaseParserRuleContext
         {
             switch (context)
             {
                 case null:
                     return default;
                 case TContext _:
-                    return GetAncestor_Recursive<TContext>((ParserRuleContext)context.Parent);
+                    return GetAncestor_Recursive<TContext>((VBABaseParserRuleContext)context.Parent);
                 default:
                     return GetAncestor_Recursive<TContext>(context);
             }
@@ -145,13 +125,13 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Tries to return the context's first ancestor of the generic Type.
         /// </summary>
-        public static bool TryGetAncestor<TContext>(this ParserRuleContext context, out TContext ancestor) where TContext : ParserRuleContext
+        public static bool TryGetAncestor<TContext>(this VBABaseParserRuleContext context, out TContext ancestor) where TContext : VBABaseParserRuleContext
         {
             ancestor = context.GetAncestor<TContext>();
             return ancestor != null;
         }
 
-        private static TContext GetAncestor_Recursive<TContext>(ParserRuleContext context) where TContext: ParserRuleContext
+        private static TContext GetAncestor_Recursive<TContext>(VBABaseParserRuleContext context) where TContext: VBABaseParserRuleContext
         {
             switch (context)
             {
@@ -160,16 +140,16 @@ namespace Rubberduck.Parsing
                 case TContext tContext:
                     return tContext;
                 default:
-                    return GetAncestor_Recursive<TContext>((ParserRuleContext)context.Parent);
+                    return GetAncestor_Recursive<TContext>((VBABaseParserRuleContext)context.Parent);
             }
         }
 
         /// <summary>
         /// Returns the context's first ancestor containing the token with the specified token index or the context itels if it already contains the token.
         /// </summary>
-        public static ParserRuleContext GetAncestorContainingTokenIndex(this ParserRuleContext context, int tokenIndex)
+        public static VBABaseParserRuleContext GetAncestorContainingTokenIndex(this VBABaseParserRuleContext context, int tokenIndex)
         {
-            if (context == null)
+            if (context is null)
             {
                 return default;
             }
@@ -179,7 +159,7 @@ namespace Rubberduck.Parsing
                 return context;
             }
 
-            if (!(context.Parent is ParserRuleContext parent))
+            if (!(context.Parent is VBABaseParserRuleContext parent))
             {
                 return default;
             }
@@ -190,9 +170,9 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Determines whether the context contains the token with the specified token index.
         /// </summary>
-        public static bool ContainsTokenIndex(this ParserRuleContext context, int tokenIndex)
+        public static bool ContainsTokenIndex(this VBABaseParserRuleContext context, int tokenIndex)
         {
-            if (context?.Stop == null)
+            if (context?.Stop is null)
             {
                 return false;
             }
@@ -203,7 +183,7 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Determines whether the context contains the token with the specified token index.
         /// </summary>
-        public static bool ContainsOffset(this ParserRuleContext context, int offset)
+        public static bool ContainsOffset(this VBABaseParserRuleContext context, int offset)
         {
             if (context?.Stop is null || context.Stop.StopIndex < context.Start.StartIndex)
             {
@@ -216,16 +196,16 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Returns the context's first descendent of the generic Type.
         /// </summary>
-        public static TContext GetDescendent<TContext>(this ParserRuleContext context) where TContext : ParserRuleContext
+        public static TContext GetDescendent<TContext>(this VBABaseParserRuleContext context) where TContext : VBABaseParserRuleContext
         {
-            if (context?.children == null)
+            if (context?.children is null)
             {
                 return null;
             }
 
             foreach (var child in context.children)
             {
-                if (child == null)
+                if (child is null)
                 {
                     continue;
                 }
@@ -235,7 +215,7 @@ namespace Rubberduck.Parsing
                     return match;
                 }
                 
-                var childResult = (child as ParserRuleContext)?.GetDescendent<TContext>();
+                var childResult = (child as VBABaseParserRuleContext)?.GetDescendent<TContext>();
                 if (childResult != null)
                 {
                     return childResult;
@@ -248,7 +228,7 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Returns all the context's descendents of the generic Type.
         /// </summary>
-        public static IEnumerable<TContext> GetDescendents<TContext>(this ParserRuleContext context) where TContext : ParserRuleContext
+        public static IEnumerable<TContext> GetDescendents<TContext>(this VBABaseParserRuleContext context) where TContext : VBABaseParserRuleContext
         {
             var walker = new ParseTreeWalker();
             var listener = new ChildNodeListener<TContext>();
@@ -259,7 +239,7 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Try to get the first child of the generic context type.
         /// </summary>
-        public static bool TryGetChildContext<TContext>(this ParserRuleContext ctxt, out TContext opCtxt) where TContext : ParserRuleContext
+        public static bool TryGetChildContext<TContext>(this VBABaseParserRuleContext ctxt, out TContext opCtxt) where TContext : VBABaseParserRuleContext
         {
             opCtxt = ctxt.GetChild<TContext>();
             return opCtxt != null;
@@ -273,7 +253,7 @@ namespace Rubberduck.Parsing
             //This dedicated method exists for performance reasons on hot-paths.
             var individualEndOfStatements = endOfStatement?.individualNonEOFEndOfStatement();
 
-            if (individualEndOfStatements == null)
+            if (individualEndOfStatements is null)
             {
                 return null;
             }
@@ -294,7 +274,7 @@ namespace Rubberduck.Parsing
         /// Determines if the context's module declares or defaults to 
         /// Option Compare Binary 
         /// </summary>
-        public static bool IsOptionCompareBinary(this ParserRuleContext context)
+        public static bool IsOptionCompareBinary(this VBABaseParserRuleContext context)
         {
             if( !(context is VBAParser.ModuleContext moduleContext))
             {
@@ -312,7 +292,7 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Returns the context's widest descendent of the generic type containing the token with the specified token index.
         /// </summary>
-        public static TContext GetWidestDescendentContainingTokenIndex<TContext>(this ParserRuleContext context, int tokenIndex) where TContext : ParserRuleContext
+        public static TContext GetWidestDescendentContainingTokenIndex<TContext>(this VBABaseParserRuleContext context, int tokenIndex) where TContext : VBABaseParserRuleContext
         {
             var descendents = GetDescendentsContainingTokenIndex<TContext>(context, tokenIndex);
             return descendents.FirstOrDefault();
@@ -321,7 +301,7 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Returns the context's smallest descendent of the generic type containing the token with the specified token index.
         /// </summary>
-        public static TContext GetSmallestDescendentContainingTokenIndex<TContext>(this ParserRuleContext context, int tokenIndex) where TContext : ParserRuleContext
+        public static TContext GetSmallestDescendentContainingTokenIndex<TContext>(this VBABaseParserRuleContext context, int tokenIndex) where TContext : VBABaseParserRuleContext
         {
             var descendents = GetDescendentsContainingTokenIndex<TContext>(context, tokenIndex);
             return descendents.LastOrDefault();
@@ -331,9 +311,9 @@ namespace Rubberduck.Parsing
         /// Returns all the context's descendents of the generic type containing the token with the specified token index.
         /// If there are multiple matches, they are ordered from outermost to innermost context.
         /// </summary>
-        public static IEnumerable<TContext> GetDescendentsContainingTokenIndex<TContext>(this ParserRuleContext context, int tokenIndex) where TContext : ParserRuleContext
+        public static IEnumerable<TContext> GetDescendentsContainingTokenIndex<TContext>(this VBABaseParserRuleContext context, int tokenIndex) where TContext : VBABaseParserRuleContext
         {
-            if (context == null || !context.ContainsTokenIndex(tokenIndex))
+            if (context is null || !context.ContainsTokenIndex(tokenIndex))
             {
                 return new List<TContext>();
             }
@@ -346,7 +326,7 @@ namespace Rubberduck.Parsing
 
             foreach (var child in context.children)
             {
-                if (child is ParserRuleContext childContext && childContext.ContainsTokenIndex(tokenIndex))
+                if (child is VBABaseParserRuleContext childContext && childContext.ContainsTokenIndex(tokenIndex))
                 {
                     matches.AddRange(childContext.GetDescendentsContainingTokenIndex<TContext>(tokenIndex));
                     break;  //Only one child can contain the token index.
@@ -360,7 +340,7 @@ namespace Rubberduck.Parsing
         /// Returns all the context's descendents of the generic type containing the specified document offset.
         /// If there are multiple matches, they are ordered from outermost to innermost context.
         /// </summary>
-        public static IEnumerable<TContext> GetDescendentsContainingOffset<TContext>(this ParserRuleContext context, int offset) where TContext : ParserRuleContext
+        public static IEnumerable<TContext> GetDescendentsContainingOffset<TContext>(this VBABaseParserRuleContext context, int offset) where TContext : VBABaseParserRuleContext
         {
             if (context is null || !context.ContainsOffset(offset))
             {
@@ -375,7 +355,7 @@ namespace Rubberduck.Parsing
 
             foreach (var child in context.children)
             {
-                if (child is ParserRuleContext childContext && childContext.ContainsOffset(offset))
+                if (child is VBABaseParserRuleContext childContext && childContext.ContainsOffset(offset))
                 {
                     matches.AddRange(childContext.GetDescendentsContainingOffset<TContext>(offset));
                     break;  //Only one child can contain the offset.
@@ -388,10 +368,10 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Returns the context containing the token preceding the context provided it is of the specified generic type.
         /// </summary>
-        public static bool TryGetPrecedingContext<TContext>(this ParserRuleContext context, out TContext precedingContext) where TContext : ParserRuleContext
+        public static bool TryGetPrecedingContext<TContext>(this VBABaseParserRuleContext context, out TContext precedingContext) where TContext : VBABaseParserRuleContext
         {
             precedingContext = null;
-            if (context == null)
+            if (context is null)
             {
                 return false;
             }
@@ -399,7 +379,7 @@ namespace Rubberduck.Parsing
             var precedingTokenIndex = context.Start.TokenIndex - 1;
             var ancestorContainingPrecedingIndex = context.GetAncestorContainingTokenIndex(precedingTokenIndex);
 
-            if (ancestorContainingPrecedingIndex == null)
+            if (ancestorContainingPrecedingIndex is null)
             {
                 return false;
             }
@@ -411,10 +391,10 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Returns the context containing the token following the context provided it is of the specified generic type.
         /// </summary>
-        public static bool TryGetFollowingContext<TContext>(this ParserRuleContext context, out TContext followingContext) where TContext : ParserRuleContext
+        public static bool TryGetFollowingContext<TContext>(this VBABaseParserRuleContext context, out TContext followingContext) where TContext : VBABaseParserRuleContext
         {
             followingContext = null;
-            if (context == null)
+            if (context is null)
             {
                 return false;
             }
@@ -422,7 +402,7 @@ namespace Rubberduck.Parsing
             var followingTokenIndex = context.Stop.TokenIndex + 1;
             var ancestorContainingFollowingIndex = context.GetAncestorContainingTokenIndex(followingTokenIndex);
 
-            if (ancestorContainingFollowingIndex == null)
+            if (ancestorContainingFollowingIndex is null)
             {
                 return false;
             }
@@ -452,7 +432,7 @@ namespace Rubberduck.Parsing
                 {
                     var mainBlockStmt = blockStmt.mainBlockStmt();
 
-                    if (mainBlockStmt == null)
+                    if (mainBlockStmt is null)
                     {
                         continue;   //We have a lone line label, which is not executable.
                     }
@@ -486,7 +466,7 @@ namespace Rubberduck.Parsing
             return block is VBAParser.VariableStmtContext || block is VBAParser.ConstStmtContext;
         }
 
-        private class ChildNodeListener<TContext> : VBAParserBaseListener where TContext : ParserRuleContext
+        private class ChildNodeListener<TContext> : VBAParserBaseListener where TContext : VBABaseParserRuleContext
         {
             private readonly HashSet<TContext> _matches = new HashSet<TContext>();
             public IEnumerable<TContext> Matches => _matches;

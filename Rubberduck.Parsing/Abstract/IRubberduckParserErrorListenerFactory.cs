@@ -4,6 +4,6 @@ namespace Rubberduck.Parsing.Abstract
 {
     public interface IRubberduckParserErrorListenerFactory
     {
-        IRubberduckParseErrorListener Create(CodeKind codeKind);
+        IRubberduckParseErrorListener Create(string moduleName, CodeKind codeKind);
     }
 }

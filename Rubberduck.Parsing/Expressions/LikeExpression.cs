@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Parsing.Abstract;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Parsers;
 using System.Text;
 using System.Text.RegularExpressions;
