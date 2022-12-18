@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System;
 using Rubberduck.Parsing.Annotations;
 using System.Runtime.Remoting.Contexts;
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.Parsing.Model.Symbols
 {

@@ -6,25 +6,25 @@ using Rubberduck.Parsing.Model;
 
 namespace Rubberduck.Parsing.Parsers
 {
-    public class TokenStreamParserStringParserAdapterWithPreprocessing : IStringParser
+    public class TokenStreamParserAdapterWithPreprocessing<TContent> : IParser<TContent>
     {
-        private readonly ICommonTokenStreamProvider<string> _tokenStreamProvider;
+        private readonly ICommonTokenStreamProvider<TContent> _tokenStreamProvider;
         private readonly ITokenStreamParser _tokenStreamParser;
         private readonly ITokenStreamPreprocessor _preprocessor;
 
-        public TokenStreamParserStringParserAdapterWithPreprocessing(ICommonTokenStreamProvider<string> tokenStreamProvider, ITokenStreamParser tokenStreamParser, ITokenStreamPreprocessor preprocessor)
+        public TokenStreamParserAdapterWithPreprocessing(ICommonTokenStreamProvider<TContent> tokenStreamProvider, ITokenStreamParser tokenStreamParser, ITokenStreamPreprocessor preprocessor)
         {
             _tokenStreamProvider = tokenStreamProvider;
             _tokenStreamParser = tokenStreamParser;
             _preprocessor = preprocessor;
         }
 
-        public (IParseTree tree, ITokenStream tokenStream) Parse(string moduleName, string projectId, string code, CancellationToken token,
+        public (IParseTree tree, ITokenStream tokenStream) Parse(string moduleName, string projectId, TContent content, CancellationToken token,
             CodeKind codeKind = CodeKind.SnippetCode, ParserMode parserMode = ParserMode.FallBackSllToLl)
         {
             token.ThrowIfCancellationRequested();
 
-            var rawTokenStream = _tokenStreamProvider.Tokens(code);
+            var rawTokenStream = _tokenStreamProvider.Tokens(content);
             token.ThrowIfCancellationRequested();
 
             var tokenStream = _preprocessor.PreprocessTokenStream(projectId, moduleName, rawTokenStream, token, codeKind);

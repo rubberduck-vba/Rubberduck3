@@ -13,6 +13,7 @@ using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Utility;
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.Parsing.Model.ComReflection
 {

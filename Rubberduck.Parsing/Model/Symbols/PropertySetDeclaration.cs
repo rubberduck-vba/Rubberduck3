@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Grammar;
 using static Rubberduck.Parsing.Grammar.VBAParser;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Model.ComReflection;
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.Parsing.Model.Symbols
 {

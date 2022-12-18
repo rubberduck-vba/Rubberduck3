@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>3021;</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -43,12 +44,17 @@
     <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.5.0.5\lib\net46\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Abstractions, Version=17.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.Abstractions.17.2.3\lib\net461\System.IO.Abstractions.dll</HintPath>
     </Reference>
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -64,12 +70,16 @@
     <Compile Include="Abstract\IExpression.cs" />
     <Compile Include="Abstract\IModuleParser.cs" />
     <Compile Include="Abstract\IParseRunner.cs" />
-    <Compile Include="Abstract\IStringParser.cs" />
+    <Compile Include="Abstract\IParser.cs" />
     <Compile Include="Abstract\ITokenStreamParser.cs" />
     <Compile Include="Abstract\ITokenStreamPreprocessor.cs" />
     <Compile Include="Abstract\IValue.cs" />
+    <Compile Include="Listeners\AttributeListener.cs" />
+    <Compile Include="Listeners\CombinedParseTreeListener.cs" />
+    <Compile Include="Listeners\CommentListener.cs" />
+    <Compile Include="Model\ModuleParseResults.cs" />
     <Compile Include="Annotations\AnnotationBase.cs" />
-    <Compile Include="Annotations\AnnotationListener.cs" />
+    <Compile Include="Listeners\AnnotationListener.cs" />
     <Compile Include="Annotations\AttributeAnnotationExtensions.cs" />
     <Compile Include="Annotations\AttributeAnnotationProvider.cs" />
     <Compile Include="Annotations\Concrete\DefaultMemberAnnotation.cs" />
@@ -176,8 +186,13 @@
     <Compile Include="Expressions\VBADateConstants.cs" />
     <Compile Include="Expressions\VBALibrary.cs" />
     <Compile Include="Abstract\TokenStreamParserBase.cs" />
+    <Compile Include="Model\QualifiedDocumentOffset.cs" />
+    <Compile Include="Parsers\Grammar\PartialExtensions\IAnnotatedContext.cs" />
+    <Compile Include="Parsers\Grammar\PartialExtensions\IAnnotatingContext.cs" />
+    <Compile Include="Parsers\Grammar\PartialExtensions\IIdentifierContext.cs" />
+    <Compile Include="Parsers\Grammar\PartialExtensions\VBAParserPartialExtensions.cs" />
+    <Compile Include="Parsers\VbeModuleParser.cs" />
     <Compile Include="Parsers\TokenStreamParserStringParserAdapter.cs" />
-    <Compile Include="Parsers\TokenStreamParserStringParserAdapterWithPreprocessing.cs" />
     <Compile Include="Parsers\VBACodeStringParser.cs" />
     <Compile Include="Parsers\VBADateLiteralParser.cs" />
     <Compile Include="Parsers\VBAExpressionParser.cs" />
@@ -239,7 +254,6 @@
     <Compile Include="COM\Reflection\SerializedReferencedDeclarationsCollector.cs" />
     <Compile Include="COM\Reflection\UserProjectRepository.cs" />
     <Compile Include="COM\Reflection\XmlComProjectSerializer.cs" />
-    <Compile Include="Model\Symbols\Accessibility.cs" />
     <Compile Include="Model\Symbols\AliasDeclaration.cs" />
     <Compile Include="Model\Symbols\ArgumentListArgumentType.cs" />
     <Compile Include="Model\Symbols\ArgumentReference.cs" />
@@ -251,7 +265,6 @@
     <Compile Include="Model\Symbols\Declaration.cs" />
     <Compile Include="Model\Symbols\DeclarationEnumerableExtensions.cs" />
     <Compile Include="Model\Symbols\DeclarationEventArgs.cs" />
-    <Compile Include="Model\Symbols\DeclarationType.cs" />
     <Compile Include="Model\Symbols\DocumentModuleDeclaration.cs" />
     <Compile Include="Model\Symbols\EventDeclaration.cs" />
     <Compile Include="Model\Symbols\ExternalProcedureDeclaration.cs" />
@@ -285,11 +298,9 @@
     <Compile Include="ITextDocumentProvider.cs" />
     <Compile Include="Listeners\BlockCompletionListener.cs" />
     <Compile Include="Listeners\IBlockFoldingSettings.cs" />
-    <Compile Include="Listeners\MemberListener.cs" />
     <Compile Include="Model\BlockFoldingInfo.cs" />
     <Compile Include="Model\CodeKind.cs" />
     <Compile Include="Model\MemberInfo.cs" />
-    <Compile Include="Model\DocumentOffset.cs" />
     <Compile Include="Parsers\Grammar\VBABaseParserRuleContext.cs" />
     <Compile Include="Model\Tokens.cs" />
     <Compile Include="Model\MemberType.cs" />
@@ -369,6 +380,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Model\Abstract\" />
+    <Folder Include="Settings\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

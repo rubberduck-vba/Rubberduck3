@@ -1,13 +1,12 @@
 ﻿using Antlr4.Runtime.Tree;
 using ICSharpCode.AvalonEdit.Document;
-using Rubberduck.Parsing;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.Parsing.Model;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;

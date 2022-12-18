@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.InternalApi.Common;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.VBEditor;
@@ -30,7 +31,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 declarationType,
                 DocumentOffset.Invalid,
                 false,
-                null,
+                true,
                 isUserDefined,
                 annotations,
                 attributes)

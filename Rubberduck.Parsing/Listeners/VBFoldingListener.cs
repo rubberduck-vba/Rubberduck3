@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime.Misc;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Model;
 using System.Collections.Generic;

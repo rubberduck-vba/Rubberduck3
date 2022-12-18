@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Model.ComReflection;
+﻿using Rubberduck.InternalApi.Model;
+using Rubberduck.Parsing.Model.ComReflection;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Model.Symbols
@@ -18,7 +19,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 DeclarationType.ComAlias,
                 DocumentOffset.Invalid,
                 false,
-                null,
+                true,
                 false)
         { }
     }

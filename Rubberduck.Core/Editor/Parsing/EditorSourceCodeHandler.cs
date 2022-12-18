@@ -1,10 +1,10 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using Rubberduck.Parsing;
 using Rubberduck.UI;
-using Rubberduck.UI.Abstract;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using System;
+using System.IO;
 using System.Linq;
 
 namespace Rubberduck.Core.Editor
@@ -20,7 +20,9 @@ namespace Rubberduck.Core.Editor
 
         private TextDocument GetDocument(QualifiedModuleName module) => _documentProvider.GetDocument(module);
 
-        public string SourceCode(QualifiedModuleName module) => GetDocument(module)?.Text ?? string.Empty;
+        public string StringSource(QualifiedModuleName module) => GetDocument(module)?.Text ?? string.Empty;
+
+        public TextReader SourceCode(QualifiedModuleName module) => GetDocument(module).CreateReader();
 
         public void SubstituteCode(QualifiedModuleName module, CodeString newCode)
         {
@@ -38,13 +40,23 @@ namespace Rubberduck.Core.Editor
             }
 
             document.Insert(snipStart, newCode.Code);
-            // TODO set caret position!
         }
 
         public void SubstituteCode(QualifiedModuleName module, string newCode)
         {
             var document = GetDocument(module) ?? throw new ArgumentOutOfRangeException(nameof(module));
             document.Text = newCode;
+        }
+
+        public void SetSelection(QualifiedModuleName module, Selection selection)
+        {
+            var tab = EditorShellContext.Current.Shell.ModuleDocumentTabs.SingleOrDefault(e => module.Equals(e.ModuleInfo.QualifiedModuleName));
+            
+        }
+
+        public CodeString GetCurrentLogicalLine(QualifiedModuleName module)
+        {
+            throw new NotImplementedException();
         }
     }
 }

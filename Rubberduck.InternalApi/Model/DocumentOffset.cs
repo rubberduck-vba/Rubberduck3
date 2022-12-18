@@ -1,21 +1,5 @@
-﻿using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
-
-namespace Rubberduck.Parsing.Model
+﻿namespace Rubberduck.InternalApi.Model
 {
-    public readonly struct QualifiedDocumentOffset
-    {
-        public QualifiedDocumentOffset(QualifiedModuleName module, DocumentOffset offset)
-        {
-            QualifiedModuleName = module;
-            Offset = offset;
-        }
-
-        public QualifiedModuleName QualifiedModuleName { get; }
-        public DocumentOffset Offset { get; }
-
-        // TODO implement IEquatable, IComparable, ...
-    }
 
     public readonly struct DocumentOffset
     {

@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Annotations;
+﻿using Rubberduck.InternalApi.Model;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Model.ComReflection;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;

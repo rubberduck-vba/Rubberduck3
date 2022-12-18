@@ -9,7 +9,7 @@ namespace Rubberduck.VBEditor
     /// <summary>
     /// Represents a VBComponent or a VBProject.
     /// </summary>
-    public readonly struct QualifiedModuleName
+    public class QualifiedModuleName
     {
         public static QualifiedModuleName None { get; } = new QualifiedModuleName();
 
@@ -100,6 +100,10 @@ namespace Rubberduck.VBEditor
             ProjectId = projectId ?? "External" + $"{_projectName};{ProjectPath}".GetHashCode().ToString(CultureInfo.InvariantCulture);
             _componentName = componentName;
             ComponentType = ComponentType.ComComponent;
+        }
+
+        public QualifiedModuleName()
+        {
         }
 
         public QualifiedMemberName QualifyMemberName(string member)

@@ -1,5 +1,6 @@
 using Antlr4.Runtime;
 using ICSharpCode.AvalonEdit.Document;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.Parsing.Model;
 using Rubberduck.VBEditor;
 

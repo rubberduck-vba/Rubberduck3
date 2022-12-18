@@ -4,11 +4,11 @@ using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.TokenStreamProviders
 {
-    public abstract class CommonTokenStreamProvider<T> : ICommonTokenStreamProvider<T>
+    public abstract class CommonTokenStreamProvider<TContent> : ICommonTokenStreamProvider<TContent>
     {
-        protected abstract AntlrInputStream GetInputStream(T content);
+        protected abstract AntlrInputStream GetInputStream(TContent content);
 
-        public CommonTokenStream Tokens(T content)
+        public CommonTokenStream Tokens(TContent content)
         {
             var stream = GetInputStream(content);
             return Tokenize(stream);

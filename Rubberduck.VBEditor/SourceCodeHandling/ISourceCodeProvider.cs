@@ -1,7 +1,8 @@
 ﻿namespace Rubberduck.VBEditor.SourceCodeHandling
 {
-    public interface ISourceCodeProvider
+    public interface ISourceCodeProvider<TContent>
     {
-        string SourceCode(QualifiedModuleName module);
+        TContent SourceCode(QualifiedModuleName module);
+        string StringSource(QualifiedModuleName module);
     }
 }

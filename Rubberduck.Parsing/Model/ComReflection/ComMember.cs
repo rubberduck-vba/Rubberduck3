@@ -10,6 +10,7 @@ using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 using INVOKEKIND = System.Runtime.InteropServices.ComTypes.INVOKEKIND;
 using FUNCFLAGS = System.Runtime.InteropServices.ComTypes.FUNCFLAGS;
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.Parsing.Model.ComReflection
 {

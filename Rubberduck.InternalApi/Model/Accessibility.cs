@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.Parsing.Model.Symbols
+﻿namespace Rubberduck.InternalApi.Model
 {
     public enum Accessibility
     {

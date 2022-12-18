@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Model.ComReflection;
@@ -36,7 +37,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                   DeclarationType.Parameter,
                   DocumentOffset.Invalid,
                   isArray,
-                  asTypeContext,
+                  asTypeContext?.AS() != null,
                   false)
         {
             IsOptional = isOptional;
@@ -73,7 +74,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                   DeclarationType.Parameter,
                   offset,
                   isArray,
-                  asTypeContext,
+                  asTypeContext?.AS() != null,
                   isUserDefined)
         {
             var argContext = context as VBAParser.ArgContext;

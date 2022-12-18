@@ -89,6 +89,9 @@
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\FolderExtensions.cs" />
     <Compile Include="Extensions\ReadOnlyListExtensions.cs" />
+    <Compile Include="Model\Accessibility.cs" />
+    <Compile Include="Model\DeclarationType.cs" />
+    <Compile Include="Model\DocumentOffset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UIContext\IUiContextProvider.cs" />
     <Compile Include="UIContext\IUiDispatcher.cs" />

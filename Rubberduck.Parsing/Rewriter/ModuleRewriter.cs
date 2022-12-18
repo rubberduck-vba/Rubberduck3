@@ -4,26 +4,27 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Model.Symbols;
 using Rubberduck.Parsing.Rewriter.RewriterInfo;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.Parsing.Rewriter
 {
-    public class ModuleRewriter : IExecutableModuleRewriter
+    public class ModuleRewriter<TContent> : IExecutableModuleRewriter
     {
         private readonly QualifiedModuleName _module;
-        private readonly ISourceCodeHandler _sourceCodeHandler;
+        private readonly ISourceCodeHandler<TContent> _sourceCodeHandler;
         private readonly TokenStreamRewriter _rewriter;
 
-        public ModuleRewriter(QualifiedModuleName module, ITokenStream tokenStream, ISourceCodeHandler sourceCodeHandler)
+        public ModuleRewriter(QualifiedModuleName module, ITokenStream tokenStream, ISourceCodeHandler<TContent> sourceCodeHandler)
         {
             _module = module;
             _rewriter = new TokenStreamRewriter(tokenStream);
             _sourceCodeHandler = sourceCodeHandler;
         }
 
-        public bool IsDirty => _rewriter.GetText() != _sourceCodeHandler.SourceCode(_module);
+        public bool IsDirty => _rewriter.GetText() != _sourceCodeHandler.StringSource(_module);
 
         public void Rewrite()
         {
@@ -54,10 +55,11 @@ namespace Rubberduck.Parsing.Rewriter
                 {typeof(VBAParser.ArgumentContext), new ArgumentRewriterInfoFinder()},
             };
 
-        //public void Remove(Declaration target)
-        //{
-        //    Remove(target.Context);
-        //}
+        public void Remove(Declaration target)
+        {
+            // FIXME Declaration no longer carries a reference to a ParserRuleContext
+            //Remove(target.Context);
+        }
 
         public void Remove(ParserRuleContext target)
         {

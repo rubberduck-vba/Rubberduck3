@@ -1,9 +1,10 @@
 ﻿using Antlr4.Runtime.Misc;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 
-namespace Rubberduck.Parsing.Annotations
+namespace Rubberduck.Parsing.Listeners
 {
     public sealed class AnnotationListener : VBAParserBaseListener
     {

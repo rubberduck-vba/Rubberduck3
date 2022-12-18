@@ -16,6 +16,8 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             _projectsProvider = projectsProvider;
         }
 
+        public string StringSource(QualifiedModuleName module) => SourceCode(module);
+
         public string SourceCode(QualifiedModuleName module)
         {
             var component = _projectsProvider.Component(module);
@@ -30,7 +32,21 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             }
         }
 
-        public void SetSelection(ICodeModule module, Selection selection)
+        public void SetSelection(QualifiedModuleName module, Selection selection)
+        {
+            var component = _projectsProvider.Component(module);
+            if (component == null)
+            {
+                return;
+            }
+
+            using (var codeModule = component.CodeModule)
+            {
+                SetSelection(codeModule, selection);
+            }
+        }
+
+        private void SetSelection(ICodeModule module, Selection selection)
         {
             using (var pane = module.CodePane)
             {
@@ -38,7 +54,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             }
         }
 
-        public void SubstituteCode(ICodeModule module, CodeString newCode)
+        private void SubstituteCode(ICodeModule module, CodeString newCode)
         {
             try
             {
@@ -80,7 +96,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             }
         }
 
-        public CodeString Prettify(ICodeModule module, CodeString original)
+        private CodeString Prettify(ICodeModule module, CodeString original)
         {
             var originalCode = original.Code.Replace("\r", string.Empty).Split('\n');
             var originalPosition = original.CaretPosition.StartColumn;
@@ -173,7 +189,21 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
 
         private const string LineContinuation = " _";
 
-        public CodeString GetCurrentLogicalLine(ICodeModule module)
+        public CodeString GetCurrentLogicalLine(QualifiedModuleName module)
+        {
+            var component = _projectsProvider.Component(module);
+            if (component == null)
+            {
+                return null;
+            }
+
+            using (var codeModule = component.CodeModule)
+            {
+                return GetCurrentLogicalLine(codeModule);
+            }
+        }
+
+        private CodeString GetCurrentLogicalLine(ICodeModule module)
         {
             Selection pSelection;
             using (var pane = module.CodePane)

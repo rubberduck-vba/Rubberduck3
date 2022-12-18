@@ -2,6 +2,7 @@
 using Antlr4.Runtime.Tree;
 using ICSharpCode.AvalonEdit.Document;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Abstract;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Listeners;
 using Rubberduck.Parsing.Model;
@@ -25,7 +26,7 @@ namespace Rubberduck.Core.Editor
 {
     public class CodePaneViewModel : ViewModelBase, ICodePaneViewModel
     {
-        //private readonly ICodeParserService _parser;
+        private readonly IModuleParser _parser;
         private readonly IEditorSettings _settings;
 
         private IParseTree _parseTree;
@@ -39,7 +40,6 @@ namespace Rubberduck.Core.Editor
             CloseCommand = new DelegateCommand(null, p => EditorShellContext.Current.Shell.UnloadModule((QualifiedModuleName)p)); // TODO handle sync to VBE when dirty
         }
 
-        private MemberListener _memberListener;
         private VBFoldingListener _foldingListener;
         private TokenStreamRewriter _rewriter;
 
@@ -52,11 +52,9 @@ namespace Rubberduck.Core.Editor
         {
             try
             {
-                _memberListener = new MemberListener();
                 _foldingListener = new VBFoldingListener(_settings.BlockFoldingSettings);
                 var listeners = new VBAParserBaseListener[]
                 { 
-                    _memberListener,
                     _foldingListener,
                 };
 
@@ -73,7 +71,7 @@ namespace Rubberduck.Core.Editor
 
                 EditorShellContext.Current.Shell.Status.ParserState = $"Parse completed: {sw.ElapsedMilliseconds:N0}ms";
 
-                var args = new ParseTreeEventArgs(_parseTree, _memberListener.Members, _foldingListener.Foldings, SyntaxErrors);
+                var args = new ParseTreeEventArgs(_parseTree, null, _foldingListener.Foldings, SyntaxErrors);
                 OnParseTreeChanged(args);
                 if (!args.SyntaxErrors.Any()) 
                 {

@@ -1,4 +1,5 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Model;
 using Rubberduck.UI;

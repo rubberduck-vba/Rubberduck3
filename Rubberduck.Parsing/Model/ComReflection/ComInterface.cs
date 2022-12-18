@@ -12,6 +12,7 @@ using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
 using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 using TYPELIBATTR = System.Runtime.InteropServices.ComTypes.TYPELIBATTR;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.Parsing.Model.ComReflection
 {

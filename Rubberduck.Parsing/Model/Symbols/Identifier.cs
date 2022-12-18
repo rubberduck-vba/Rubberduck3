@@ -4,6 +4,7 @@ using Rubberduck.VBEditor;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.Parsing.Model.Symbols
 {

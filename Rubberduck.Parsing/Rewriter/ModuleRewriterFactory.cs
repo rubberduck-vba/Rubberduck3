@@ -1,6 +1,8 @@
 ﻿using Antlr4.Runtime;
+using Rubberduck.Parsing.Model;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SourceCodeHandling;
+using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.Rewriter
 {
@@ -10,11 +12,10 @@ namespace Rubberduck.Parsing.Rewriter
     //and do not require disposal themselves. 
     public class ModuleRewriterFactory : IModuleRewriterFactory
     {
+        private readonly ISourceCodeHandler<string> _codePaneSourceCodeHandler;
+        private readonly ISourceCodeHandler<string> _attributesSourceCodeHandler;
 
-        private readonly ISourceCodeHandler _codePaneSourceCodeHandler;
-        private readonly ISourceCodeHandler _attributesSourceCodeHandler;
-
-        public ModuleRewriterFactory(ISourceCodeHandler codePaneSourceCodeHandler, ISourceCodeHandler attributesSourceCodeHandler)
+        public ModuleRewriterFactory(ISourceCodeHandler<string> codePaneSourceCodeHandler, ISourceCodeHandler<string> attributesSourceCodeHandler)
         {
             _codePaneSourceCodeHandler = codePaneSourceCodeHandler;
             _attributesSourceCodeHandler = attributesSourceCodeHandler;
@@ -22,12 +23,12 @@ namespace Rubberduck.Parsing.Rewriter
 
         public IExecutableModuleRewriter CodePaneRewriter(QualifiedModuleName module, ITokenStream tokenStream)
         {
-            return new ModuleRewriter(module, tokenStream, _codePaneSourceCodeHandler);
+            return new ModuleRewriter<string>(module, tokenStream, _codePaneSourceCodeHandler);
         }
 
         public IExecutableModuleRewriter AttributesRewriter(QualifiedModuleName module, ITokenStream tokenStream)
         {
-            return new ModuleRewriter(module, tokenStream, _attributesSourceCodeHandler);
+            return new ModuleRewriter<string>(module, tokenStream, _attributesSourceCodeHandler);
         }
     }
 }

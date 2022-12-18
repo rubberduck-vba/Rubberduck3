@@ -337,16 +337,16 @@ namespace Rubberduck.Root
 
         private void RegisterSourceCodeHandlers(IWindsorContainer container)
         {
-            container.Register(Component.For<ISourceCodeHandler>()
-                .ImplementedBy<ComponentSourceCodeHandlerSourceCodeHandlerAdapter>()
-                .DependsOn(Dependency.OnComponent<IComponentSourceCodeHandler, CodeModuleComponentSourceCodeHandler>())
-                .LifestyleSingleton()
-                .Named("CodeModuleSourceCodeHandler"));
-            container.Register(Component.For<ISourceCodeHandler>()
-                .ImplementedBy<ComponentSourceCodeHandlerSourceCodeHandlerAdapter>()
-                .DependsOn(Dependency.OnComponent<IComponentSourceCodeHandler, SourceFileHandlerComponentSourceCodeHandlerAdapter>())
-                .LifestyleSingleton()
-                .Named("SourceFileSourceCodeHandler"));
+            //container.Register(Component.For<ISourceCodeHandler<string>>()
+            //    .ImplementedBy<ComponentSourceCodeHandlerSourceCodeHandlerAdapter>()
+            //    .DependsOn(Dependency.OnComponent<IComponentSourceCodeHandler, CodeModuleComponentSourceCodeHandler>())
+            //    .LifestyleSingleton()
+            //    .Named("CodeModuleSourceCodeHandler"));
+            //container.Register(Component.For<ISourceCodeHandler>()
+            //    .ImplementedBy<ComponentSourceCodeHandlerSourceCodeHandlerAdapter>()
+            //    .DependsOn(Dependency.OnComponent<IComponentSourceCodeHandler, SourceFileHandlerComponentSourceCodeHandlerAdapter>())
+            //    .LifestyleSingleton()
+            //    .Named("SourceFileSourceCodeHandler"));
         }
 
         private void RegisterSpecialFactories(IWindsorContainer container)

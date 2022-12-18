@@ -39,6 +39,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Parsing", "Rubbe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.CodeAnalysis", "Rubberduck.CodeAnalysis\Rubberduck.CodeAnalysis.csproj", "{0D1048CF-6FBF-40D7-A38B-DB4D358EB11A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.DataServices", "Rubberduck.DataServices\Rubberduck.DataServices.csproj", "{D38F8438-9077-4BC2-9924-5BE75CF86712}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rubberduck.Data", "Rubberduck.Data", "{566BFB54-08B8-45E2-B53F-B33107410E38}"
+	ProjectSection(SolutionItems) = preProject
+		Rubberduck.Data\CreateSchema.sql = Rubberduck.Data\CreateSchema.sql
+		Rubberduck.Data\RubberduckLocalDB.db = Rubberduck.Data\RubberduckLocalDB.db
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -229,9 +237,24 @@ Global
 		{0D1048CF-6FBF-40D7-A38B-DB4D358EB11A}.Release|x64.Build.0 = Release|Any CPU
 		{0D1048CF-6FBF-40D7-A38B-DB4D358EB11A}.Release|x86.ActiveCfg = Release|Any CPU
 		{0D1048CF-6FBF-40D7-A38B-DB4D358EB11A}.Release|x86.Build.0 = Release|Any CPU
+		{D38F8438-9077-4BC2-9924-5BE75CF86712}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D38F8438-9077-4BC2-9924-5BE75CF86712}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D38F8438-9077-4BC2-9924-5BE75CF86712}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D38F8438-9077-4BC2-9924-5BE75CF86712}.Debug|x64.Build.0 = Debug|Any CPU
+		{D38F8438-9077-4BC2-9924-5BE75CF86712}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D38F8438-9077-4BC2-9924-5BE75CF86712}.Debug|x86.Build.0 = Debug|Any CPU
+		{D38F8438-9077-4BC2-9924-5BE75CF86712}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D38F8438-9077-4BC2-9924-5BE75CF86712}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D38F8438-9077-4BC2-9924-5BE75CF86712}.Release|x64.ActiveCfg = Release|Any CPU
+		{D38F8438-9077-4BC2-9924-5BE75CF86712}.Release|x64.Build.0 = Release|Any CPU
+		{D38F8438-9077-4BC2-9924-5BE75CF86712}.Release|x86.ActiveCfg = Release|Any CPU
+		{D38F8438-9077-4BC2-9924-5BE75CF86712}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{566BFB54-08B8-45E2-B53F-B33107410E38} = {29672418-530B-44AF-B95E-76EA20E96F44}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17B5E48B-DCFD-45F2-A672-3505C8225149}
