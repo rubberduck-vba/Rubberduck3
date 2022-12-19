@@ -1,6 +1,6 @@
 ﻿using Rubberduck.InternalApi.Model;
 
-namespace Rubberduck.DataServices.Model
+namespace Rubberduck.InternalApi.Model.RPC
 {
     public class LocationInfo
     {

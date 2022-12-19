@@ -99,15 +99,6 @@
     <Compile Include="MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Model\Declaration.cs" />
-    <Compile Include="Model\IdentifierReference.cs" />
-    <Compile Include="Model\Local.cs" />
-    <Compile Include="Model\LocationInfo.cs" />
-    <Compile Include="Model\Member.cs" />
-    <Compile Include="Model\Module.cs" />
-    <Compile Include="Model\Parameter.cs" />
-    <Compile Include="Model\Project.cs" />
-    <Compile Include="Model\ProjectSetting.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\IDbConnectionProvider.cs" />

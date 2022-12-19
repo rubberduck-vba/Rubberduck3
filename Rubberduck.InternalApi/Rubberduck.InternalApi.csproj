@@ -92,6 +92,15 @@
     <Compile Include="Model\Accessibility.cs" />
     <Compile Include="Model\DeclarationType.cs" />
     <Compile Include="Model\DocumentOffset.cs" />
+    <Compile Include="Model\RPC\Declaration.cs" />
+    <Compile Include="Model\RPC\IdentifierReference.cs" />
+    <Compile Include="Model\RPC\Local.cs" />
+    <Compile Include="Model\RPC\LocationInfo.cs" />
+    <Compile Include="Model\RPC\Member.cs" />
+    <Compile Include="Model\RPC\Module.cs" />
+    <Compile Include="Model\RPC\Parameter.cs" />
+    <Compile Include="Model\RPC\Project.cs" />
+    <Compile Include="Model\RPC\ProjectSetting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UIContext\IUiContextProvider.cs" />
     <Compile Include="UIContext\IUiDispatcher.cs" />
