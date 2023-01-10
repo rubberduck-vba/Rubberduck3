@@ -1,4 +1,4 @@
-﻿using Rubberduck.Server.DataServices.Abstract;
+﻿using Rubberduck.DataServer.Abstract;
 
 namespace Rubberduck.Server.DataServices
 {

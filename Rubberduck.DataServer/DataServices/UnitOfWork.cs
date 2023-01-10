@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using Dapper;
-using Rubberduck.Server.DataServices.Abstract;
-using Rubberduck.Server.DataServices.Entities;
-using Rubberduck.Server.DataServices.Repositories;
-using Rubberduck.Server.DataServices.Views;
+using Rubberduck.DataServer.Abstract;
+using Rubberduck.DataServer.Entities;
+using Rubberduck.DataServer.Repositories;
+using Rubberduck.DataServer.Views;
 
 namespace Rubberduck.Server.DataServices
 {
