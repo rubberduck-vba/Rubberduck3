@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Parsing.Annotations

@@ -1,8 +1,6 @@
 ﻿using Antlr4.Runtime;
-using Rubberduck.Parsing.Model;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SourceCodeHandling;
-using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.Rewriter
 {

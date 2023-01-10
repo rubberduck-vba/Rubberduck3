@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Globalization;
-using System.Linq;
 using System.Windows.Data;
 //using Rubberduck.Navigation.CodeExplorer;
 //using Rubberduck.Parsing.Annotations.Concrete;
 //using Rubberduck.Parsing.Symbols;
-using Rubberduck.Resources;
 //using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UI.WPF.Converters

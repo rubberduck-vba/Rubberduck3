@@ -1,5 +1,4 @@
-﻿using Rubberduck.UI.Abstract;
-using Rubberduck.VBEditor.Events;
+﻿using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.UI.Abstract
 {

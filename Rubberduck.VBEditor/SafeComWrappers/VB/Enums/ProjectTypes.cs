@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Rubberduck.VBEditor.SafeComWrappers
+﻿namespace Rubberduck.VBEditor.SafeComWrappers
 {
     public static class ProjectTypes
     {

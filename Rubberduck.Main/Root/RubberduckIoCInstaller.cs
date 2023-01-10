@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Castle.Facilities.TypedFactory;
@@ -43,12 +41,8 @@ using Rubberduck.InternalApi.Common;
 using Rubberduck.Core.About;
 using Rubberduck.UI.Xaml.Controls;
 using Rubberduck.Core.Editor;
-using Rubberduck.UI.Abstract;
-using Rubberduck.Core.Editor.Tools;
 using Rubberduck.Parsing.Abstract;
 using System.IO;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.TokenStreamProviders;
 
 namespace Rubberduck.Root

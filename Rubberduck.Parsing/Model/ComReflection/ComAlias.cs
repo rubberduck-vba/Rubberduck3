@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization;
-using Rubberduck.Parsing.Grammar;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 

@@ -1,16 +1,11 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
-using Rubberduck.Core.Editor.Tools;
-using Rubberduck.Parsing;
-using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
 using Rubberduck.VBEditor;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Threading;
 
 namespace Rubberduck.Core.Editor
 {

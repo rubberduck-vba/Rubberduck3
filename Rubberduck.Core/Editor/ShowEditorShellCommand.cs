@@ -1,12 +1,6 @@
-﻿using Rubberduck.UI;
-using Rubberduck.UI.Command;
+﻿using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Core.Editor
 {

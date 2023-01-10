@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization;
-using Rubberduck.Parsing.Model.Symbols;
 using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 using INVOKEKIND = System.Runtime.InteropServices.ComTypes.INVOKEKIND;

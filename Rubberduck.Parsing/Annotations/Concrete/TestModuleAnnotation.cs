@@ -1,5 +1,4 @@
-﻿using Rubberduck.Parsing.Annotations;
-using Rubberduck.VBEditor.SafeComWrappers;
+﻿using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Parsing.Annotations.Concrete
 {

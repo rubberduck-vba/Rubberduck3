@@ -1,6 +1,5 @@
 ﻿using Rubberduck.UI.Abstract;
 using Rubberduck.UI.Command.SyncPanel;
-using System;
 using System.Linq;
 
 namespace Rubberduck.Core.Editor.Commands

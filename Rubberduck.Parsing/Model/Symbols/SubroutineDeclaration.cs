@@ -1,11 +1,9 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.InternalApi.Model;
+﻿using Rubberduck.InternalApi.Model;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Model.ComReflection;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
-using static Rubberduck.Parsing.Grammar.VBAParser;
 
 namespace Rubberduck.Parsing.Model.Symbols
 {

@@ -4,7 +4,6 @@ using NLog;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO.Abstractions;
 using System.Reflection;

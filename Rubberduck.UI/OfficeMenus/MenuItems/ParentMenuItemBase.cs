@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 using NLog;
 using Rubberduck.InternalApi.UIContext;
 using Rubberduck.Resources.Menus;

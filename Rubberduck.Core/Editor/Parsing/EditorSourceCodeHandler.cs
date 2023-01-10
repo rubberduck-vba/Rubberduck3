@@ -50,11 +50,20 @@ namespace Rubberduck.Core.Editor
 
         public void SetSelection(QualifiedModuleName module, Selection selection)
         {
-            var tab = EditorShellContext.Current.Shell.ModuleDocumentTabs.SingleOrDefault(e => module.Equals(e.ModuleInfo.QualifiedModuleName));
+            var document = _documentProvider.GetDocument(module);
             
+            var startOffset = document.GetOffset(selection.StartLine, selection.StartColumn);
+            var endOffset = document.GetOffset(selection.EndLine, selection.EndColumn);
+
+            // TODO set document selection
         }
 
         public CodeString GetCurrentLogicalLine(QualifiedModuleName module)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetContentHash(QualifiedModuleName module)
         {
             throw new NotImplementedException();
         }

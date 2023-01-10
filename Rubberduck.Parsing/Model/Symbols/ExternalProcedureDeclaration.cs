@@ -1,5 +1,4 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.VBEditor;
+﻿using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Grammar;

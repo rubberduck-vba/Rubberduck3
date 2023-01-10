@@ -1,7 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using ICSharpCode.AvalonEdit.Document;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Abstract;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Listeners;
@@ -16,10 +15,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Annotations;
 using System.Windows.Input;
 
 namespace Rubberduck.Core.Editor

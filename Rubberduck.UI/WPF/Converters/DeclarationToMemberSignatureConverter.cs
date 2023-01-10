@@ -1,9 +1,7 @@
 ﻿//using Rubberduck.Parsing.Grammar;
 //using Rubberduck.Parsing.Symbols;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Windows.Data;
 
 namespace Rubberduck.UI.WPF.Converters

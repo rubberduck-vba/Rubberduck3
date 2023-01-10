@@ -17,7 +17,7 @@ namespace Rubberduck.Parsing.COM.Reflection
             _comLibraryProvider = comLibraryProvider;
         }
 
-        public override IReadOnlyCollection<Declaration> CollectedDeclarations(ReferenceInfo reference)
+        public override IReadOnlyCollection<Declaration> ExtractDeclarations(ReferenceInfo reference)
         {
             return LoadDeclarationsFromLibrary(reference);
         }
@@ -27,7 +27,7 @@ namespace Rubberduck.Parsing.COM.Reflection
             var libraryPath = reference.FullPath;
             // Failure to load might mean that it's a "normal" VBProject that will get loaded through a different channel.
             var typeLibrary = GetTypeLibrary(libraryPath);
-            if (typeLibrary == null)
+            if (typeLibrary is null)
             {
                 return new List<Declaration>();
             }

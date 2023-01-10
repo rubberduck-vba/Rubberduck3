@@ -13,6 +13,7 @@ namespace Rubberduck.Parsing.Model
 
         public ModuleParseResults(
             IDictionary<CodeKind, (IParseTree tree, ITokenStream tokens)> parseTrees,
+            int contentHash,
             IEnumerable<CommentNode> comments,
             IEnumerable<IParseTreeAnnotation> annotations,
             LogicalLineStore logicalLines,
@@ -21,6 +22,7 @@ namespace Rubberduck.Parsing.Model
         {
             _parseTrees = parseTrees;
 
+            ContentHash = contentHash;
             Comments = comments;
             Annotations = annotations;
             Attributes = attributes;
@@ -30,8 +32,10 @@ namespace Rubberduck.Parsing.Model
 
         public (IParseTree tree, ITokenStream tokens) this[CodeKind codeKind]
         {
-            get => _parseTrees[codeKind];
+            get => _parseTrees.TryGetValue(codeKind, out var result) ? result : (null, null);
         }
+
+        public int ContentHash { get; }
         public IEnumerable<CommentNode> Comments { get; }
         public IEnumerable<IParseTreeAnnotation> Annotations { get; }
         public LogicalLineStore LogicalLines { get; }

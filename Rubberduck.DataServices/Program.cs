@@ -1,14 +1,9 @@
-﻿using Rubberduck.InternalApi;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Rubberduck.DataServices
 {
@@ -77,9 +72,9 @@ namespace Rubberduck.DataServices
 
         private static void Start()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainWindow { WindowState = FormWindowState.Minimized });
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run(new MainWindow { WindowState = FormWindowState.Minimized });
         }
     }
 }

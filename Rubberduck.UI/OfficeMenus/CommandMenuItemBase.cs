@@ -4,7 +4,6 @@ using Rubberduck.VBEditor.SafeComWrappers.Office;
 using System;
 using System.Drawing;
 using System.Globalization;
-using System.Windows.Input;
 
 namespace Rubberduck.UI.OfficeMenus
 {

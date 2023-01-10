@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using Rubberduck.VersionCheck;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;

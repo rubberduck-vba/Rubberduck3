@@ -1,9 +1,6 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.VBEditor;
+﻿using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing.Grammar;
-using static Rubberduck.Parsing.Grammar.VBAParser;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Model.ComReflection;
 using Rubberduck.InternalApi.Model;

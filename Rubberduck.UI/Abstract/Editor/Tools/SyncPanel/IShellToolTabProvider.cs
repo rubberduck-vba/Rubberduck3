@@ -1,5 +1,4 @@
-﻿using Rubberduck.UI.Abstract;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Rubberduck.UI.Abstract
 {

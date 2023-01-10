@@ -1,9 +1,6 @@
-﻿using Rubberduck.Parsing;
-using Rubberduck.Parsing.Abstract;
-using Rubberduck.UI.Abstract;
+﻿using Rubberduck.UI.Abstract;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.Core.Editor

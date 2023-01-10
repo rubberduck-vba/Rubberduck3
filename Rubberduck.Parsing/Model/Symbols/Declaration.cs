@@ -146,8 +146,7 @@ namespace Rubberduck.Parsing.Model.Symbols
             module.QualifyMemberName(enumeration.Name),
             parent,
             parent,
-            "Long",
-            //Match the VBA default type declaration.  Technically these *can* be a LongLong on 64 bit systems, but would likely crash the VBE... 
+            Tokens.Long, //Match the VBA default type declaration.  Technically these *can* be a LongLong on 64 bit systems, but would likely crash the VBE... 
             null,
             false,
             false,
@@ -290,10 +289,10 @@ namespace Rubberduck.Parsing.Model.Symbols
                 }
 
                 // fallback to description annotation; enables descriptions in document modules and non-synchronized members.
-                var descriptionAnnotation = Annotations.SingleOrDefault(a =>
-                    a.Annotation.GetType() == typeof(DescriptionAnnotation)
-                    || a.Annotation.GetType() == typeof(VariableDescriptionAnnotation)
-                    || a.Annotation.GetType() == typeof(ModuleDescriptionAnnotation));
+                var descriptionAnnotation = Annotations
+                    .SingleOrDefault(a => a.Annotation is DescriptionAnnotation 
+                                       || a.Annotation is VariableDescriptionAnnotation
+                                       || a.Annotation is ModuleDescriptionAnnotation);
 
                 if (descriptionAnnotation != null)
                 {

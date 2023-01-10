@@ -7,6 +7,11 @@ namespace Rubberduck.Parsing.Annotations
     public interface IAnnotation
     {
         /// <summary>
+        /// The text of the annotation context.
+        /// </summary>
+        string Text { get; }
+
+        /// <summary>
         /// The name of the annotation (without the @ prefix).
         /// </summary>
         string Name { get; }

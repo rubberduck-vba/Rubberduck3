@@ -1,6 +1,4 @@
-﻿using ICSharpCode.AvalonEdit.Document;
-using Rubberduck.InternalApi.Model;
-using Rubberduck.Parsing;
+﻿using Rubberduck.InternalApi.Model;
 using Rubberduck.Parsing.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
@@ -8,15 +6,11 @@ using Rubberduck.UI.WinForms;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace Rubberduck.Core.Editor
 {

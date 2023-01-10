@@ -281,5 +281,19 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
                 }
             }
         }
+
+        public int GetContentHash(QualifiedModuleName module)
+        {
+            var component = _projectsProvider.Component(module);
+            if (component == null)
+            {
+                return 0;
+            }
+
+            using (var codeModule = component.CodeModule)
+            {
+                return codeModule.ContentHash();
+            }
+        }
     }
 }

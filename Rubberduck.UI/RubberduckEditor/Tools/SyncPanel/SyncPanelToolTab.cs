@@ -1,6 +1,5 @@
 ﻿using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
-using System.Windows.Input;
 
 namespace Rubberduck.Core.Editor.Tools
 {

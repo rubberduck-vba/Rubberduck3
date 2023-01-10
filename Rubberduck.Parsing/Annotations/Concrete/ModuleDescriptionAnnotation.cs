@@ -1,7 +1,4 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
-using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Parsing.Annotations.Concrete

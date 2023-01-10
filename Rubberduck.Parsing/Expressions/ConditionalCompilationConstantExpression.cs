@@ -1,6 +1,4 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing.Abstract;
-using System.Collections.Generic;
+﻿using Rubberduck.Parsing.Abstract;
 
 namespace Rubberduck.Parsing.Expressions
 {

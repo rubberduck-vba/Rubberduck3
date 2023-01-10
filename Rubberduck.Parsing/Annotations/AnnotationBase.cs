@@ -29,6 +29,8 @@ namespace Rubberduck.Parsing.Annotations
             AllowedArgumentTypes = allowedArgumentTypes ?? new List<AnnotationArgumentType>();
         }
 
+        public virtual string Text { get; }
+
         public virtual IReadOnlyList<string> ProcessAnnotationArguments(IEnumerable<string> arguments) => arguments.ToList();
 
         public override bool Equals(object obj) => obj is AnnotationBase annotation && Equals(annotation);

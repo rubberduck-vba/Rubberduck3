@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Model;
 

@@ -1,8 +1,6 @@
 ﻿using Castle.Core;
 using Castle.MicroKernel;
 using Castle.MicroKernel.ModelBuilder;
-using Castle.MicroKernel.ModelBuilder.Inspectors;
-using Castle.MicroKernel.SubSystems.Conversion;
 using Rubberduck.Main.Extensions;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;

@@ -45,14 +45,14 @@
       <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.5.0.5\lib\net46\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.5.1.0\lib\net46\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.IO.Abstractions, Version=17.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IO.Abstractions.17.2.3\lib\net461\System.IO.Abstractions.dll</HintPath>
+    <Reference Include="System.IO.Abstractions, Version=19.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Abstractions.19.1.5\lib\net461\System.IO.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
@@ -62,6 +62,12 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="TestableIO.System.IO.Abstractions, Version=19.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
+      <HintPath>..\packages\TestableIO.System.IO.Abstractions.19.1.5\lib\net461\TestableIO.System.IO.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="TestableIO.System.IO.Abstractions.Wrappers, Version=19.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
+      <HintPath>..\packages\TestableIO.System.IO.Abstractions.Wrappers.19.1.5\lib\net461\TestableIO.System.IO.Abstractions.Wrappers.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\ICommonTokenStreamProvider.cs" />
@@ -69,11 +75,20 @@
     <Compile Include="Abstract\ICompilationArgumentsProvider.cs" />
     <Compile Include="Abstract\IExpression.cs" />
     <Compile Include="Abstract\IModuleParser.cs" />
+    <Compile Include="Abstract\IParseCoordinator.cs" />
     <Compile Include="Abstract\IParseRunner.cs" />
     <Compile Include="Abstract\IParser.cs" />
+    <Compile Include="Abstract\IParsingStageService.cs" />
     <Compile Include="Abstract\ITokenStreamParser.cs" />
     <Compile Include="Abstract\ITokenStreamPreprocessor.cs" />
     <Compile Include="Abstract\IValue.cs" />
+    <Compile Include="Abstract\ModuleState.cs" />
+    <Compile Include="Abstract\ParserState.cs" />
+    <Compile Include="Abstract\ParserStateManager.cs" />
+    <Compile Include="COM\ReferenceLoading\COMReferenceSynchronizerBase.cs" />
+    <Compile Include="COM\ReferenceLoading\ICOMReferenceSynchronizer.cs" />
+    <Compile Include="COM\ReferenceLoading\IProjectReferencesProvider.cs" />
+    <Compile Include="COM\ReferenceLoading\ReferencePriorityMap.cs" />
     <Compile Include="Listeners\AttributeListener.cs" />
     <Compile Include="Listeners\CombinedParseTreeListener.cs" />
     <Compile Include="Listeners\CommentListener.cs" />
@@ -376,6 +391,7 @@
     <Antlr4 Include="Parsers\Grammar\VBALike.g4">
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
     </Antlr4>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

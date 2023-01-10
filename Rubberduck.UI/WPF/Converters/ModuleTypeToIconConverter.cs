@@ -1,6 +1,4 @@
-﻿using Rubberduck.Parsing;
-using Rubberduck.Parsing.Model;
-using Rubberduck.UI.Abstract;
+﻿using Rubberduck.Parsing.Model;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

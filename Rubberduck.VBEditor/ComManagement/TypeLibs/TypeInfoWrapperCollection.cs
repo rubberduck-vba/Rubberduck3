@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Utility;

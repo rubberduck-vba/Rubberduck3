@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization;
 using Rubberduck.InternalApi.Model;
-using Rubberduck.Parsing.Model.Symbols;
 using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;

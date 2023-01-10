@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows.Media;
 //using Rubberduck.Parsing.Symbols;
 //using Rubberduck.Resources.CodeExplorer;
 

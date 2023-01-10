@@ -1,5 +1,4 @@
-﻿using System;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Rubberduck.Parsing.Exceptions;
 using Rubberduck.Parsing.Grammar;

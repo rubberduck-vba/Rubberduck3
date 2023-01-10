@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices.ComTypes;
+﻿using System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Utility
 {

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization;
-using Rubberduck.Parsing.Model.Symbols;
 using Rubberduck.VBEditor.Utility;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;

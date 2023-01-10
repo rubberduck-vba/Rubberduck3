@@ -4,5 +4,6 @@
     {
         TContent SourceCode(QualifiedModuleName module);
         string StringSource(QualifiedModuleName module);
+        int GetContentHash(QualifiedModuleName module);
     }
 }

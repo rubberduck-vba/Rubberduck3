@@ -16,7 +16,6 @@ using Rubberduck.Parsing.Listeners;
 using Rubberduck.Parsing.Grammar;
 using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers;
-using System.Dynamic;
 using System.IO;
 using Rubberduck.InternalApi.Model;
 
@@ -37,15 +36,28 @@ namespace Rubberduck.Parsing.Parsers
 
         protected abstract ModuleParseResults ParseInternal(QualifiedModuleName module, CancellationToken cancellationToken, TokenStreamRewriter rewriter, Guid taskId);
 
-        protected (IParseTree tree, ITokenStream tokenStream) ParseInternal(CodeKind codeKind, ISourceCodeProvider<TContent> provider, QualifiedModuleName module, CancellationToken token)
+        protected LogicalLineStore LogicalLines(string code)
+        {
+            var lines = code.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            var logicalLineEnds = lines
+                .Select((line, index) => (line, index))
+                .Where(tpl => !tpl.line.TrimEnd().EndsWith(" _")) //Not line-continued
+                .Select(tpl => tpl.index + 1); //VBA lines are 1-based.
+            return new LogicalLineStore(logicalLineEnds);
+        }
+
+        protected (IParseTree tree, ITokenStream tokenStream, LogicalLineStore logicalLines, int contentHash) ParseInternal(CodeKind codeKind, ISourceCodeProvider<TContent> provider, QualifiedModuleName module, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             var code = provider.SourceCode(module);
 
             token.ThrowIfCancellationRequested();
-            var results = Parser.Parse(module.ComponentName, module.ProjectId, code, token, codeKind);
+            var contentHash = provider.GetContentHash(module);
 
-            return results;
+            token.ThrowIfCancellationRequested();
+            var (tree, tokenStream, logicalLines) = Parser.Parse(module.ComponentName, module.ProjectId, code, token, codeKind);
+
+            return (tree, tokenStream, logicalLines, contentHash);
         }
 
         public ModuleParseResults Parse(QualifiedModuleName module, CancellationToken cancellationToken, TokenStreamRewriter rewriter = null)
@@ -91,11 +103,11 @@ namespace Rubberduck.Parsing.Parsers
             }
         }
 
-        protected virtual (IEnumerable<CommentNode> Comments, IEnumerable<IParseTreeAnnotation> Annotations) TraverseForCommentsAndAnnotations(QualifiedModuleName module, IParseTree tree)
+        protected virtual (IEnumerable<CommentNode> Comments, IEnumerable<IParseTreeAnnotation> Annotations) TraverseForCommentsAndAnnotations(QualifiedModuleName module, IParseTree tree, params VBAParserBaseListener[] listeners)
         {
             var commentListener = new CommentListener();
             var annotationListener = new AnnotationListener(AnnotationFactory, module);
-            var combinedListener = new CombinedParseTreeListener(new IParseTreeListener[] { commentListener, annotationListener });
+            var combinedListener = new CombinedParseTreeListener(new IParseTreeListener[] { commentListener, annotationListener }.Union(listeners));
             ParseTreeWalker.Default.Walk(combinedListener, tree);
 
             var comments = QualifyAndUnionComments(module, commentListener.Comments, commentListener.RemComments);
@@ -128,14 +140,37 @@ namespace Rubberduck.Parsing.Parsers
     {
         private readonly ISourceCodeProvider<TextReader> _provider;
 
-        public EditorModuleParser(IParser<TextReader> parser, IAnnotationFactory annotationFactory) 
+        public EditorModuleParser(IParser<TextReader> parser, IAnnotationFactory annotationFactory, ISourceCodeProvider<TextReader> provider) 
             : base(parser, annotationFactory)
         {
+            _provider = provider;
         }
 
         protected override ModuleParseResults ParseInternal(QualifiedModuleName module, CancellationToken cancellationToken, TokenStreamRewriter rewriter, Guid taskId)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var (tree, tokenStream, logicalLines, contentHash) = ParseInternal(CodeKind.RubberduckEditorModule, _provider, module, cancellationToken);
+
+            var type = module.ComponentType == ComponentType.StandardModule
+                ? DeclarationType.ProceduralModule
+                : DeclarationType.ClassModule;
+            var attributesListener = new AttributeListener((module.ComponentName, type));
+
+            var (comments, annotations) = TraverseForCommentsAndAnnotations(module, tree, attributesListener);
+
+            return new ModuleParseResults(
+                new Dictionary<CodeKind, (IParseTree, ITokenStream)> 
+                {
+                    [CodeKind.AttributesCode] = (tree, tokenStream),
+                    [CodeKind.RubberduckEditorModule] = (tree, tokenStream),
+                },
+                contentHash,
+                comments, 
+                annotations, 
+                logicalLines, 
+                attributesListener.Attributes, 
+                attributesListener.MembersAllowingAttributes);
         }
     }
 
@@ -160,75 +195,53 @@ namespace Rubberduck.Parsing.Parsers
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            Logger.Trace($"ParseTaskID {taskId} begins code pane pass.");
-            var (codePaneParseTree, codePaneTokenStream, logicalLines) = CodePanePassResults(module, cancellationToken, rewriter);
-
-            Logger.Trace($"ParseTaskID {taskId} finished code pane pass.");
-            cancellationToken.ThrowIfCancellationRequested();
-
-            
-            // temporal coupling... comments must be acquired before we walk the parse tree for declarations
-            // otherwise none of the annotations get associated to their respective Declaration
-            Logger.Trace($"ParseTaskID {taskId} begins extracting comments and annotations.");
-            var (comments, annotations) = TraverseForCommentsAndAnnotations(module, codePaneParseTree);
-
-            Logger.Trace($"ParseTaskID {taskId} finished extracting comments and annotations.");
-            cancellationToken.ThrowIfCancellationRequested();
-
-            
             Logger.Trace($"ParseTaskID {taskId} begins attributes pass.");
-            var (attributesParseTree, attributesTokenStream) = AttributesPassResults(module, cancellationToken);
+            var (attributesParseTree, attributesTokenStream, logicalLines, contentHash) = AttributesPassResults(module, cancellationToken);
 
             Logger.Trace($"ParseTaskID {taskId} finished attributes pass.");
             cancellationToken.ThrowIfCancellationRequested();
 
-            
-            Logger.Trace($"ParseTaskID {taskId} begins extracting attributes.");
-            var (attributes, membersAllowingAttributes) = TraverseForAttributes(module, attributesParseTree);
+            Logger.Trace($"ParseTaskID {taskId} begins extracting comments, annotations, and attributes.");
+            var type = module.ComponentType == ComponentType.StandardModule
+                ? DeclarationType.ProceduralModule
+                : DeclarationType.ClassModule;
+            var attributesListener = new AttributeListener((module.ComponentName, type));
+            var (comments, annotations) = TraverseForCommentsAndAnnotations(module, attributesParseTree, attributesListener);
 
-            Logger.Trace($"ParseTaskID {taskId} finished extracting attributes.");
+            Logger.Trace($"ParseTaskID {taskId} finished extracting comments, annotations, and attributes.");
             cancellationToken.ThrowIfCancellationRequested();
 
             return new ModuleParseResults(
                 new Dictionary<CodeKind, (IParseTree, ITokenStream)> 
                 { 
-                    [CodeKind.CodePaneCode] = (codePaneParseTree, codePaneTokenStream),
                     [CodeKind.AttributesCode] = (attributesParseTree, attributesTokenStream),
+                    [CodeKind.RubberduckEditorModule] = (attributesParseTree, attributesTokenStream),
                 },
+                contentHash,
                 comments,
                 annotations,
                 logicalLines,
-                attributes,
-                membersAllowingAttributes
+                attributesListener.Attributes,
+                attributesListener.MembersAllowingAttributes
             );
         }
 
-        private (IParseTree tree, ITokenStream tokenStream) AttributesPassResults(QualifiedModuleName module, CancellationToken token)
+        private (IParseTree tree, ITokenStream tokenStream, LogicalLineStore logicalLines, int contentHash) AttributesPassResults(QualifiedModuleName module, CancellationToken token)
         {
             return ParseInternal(CodeKind.AttributesCode, _sourceCodeProviders[CodeKind.AttributesCode], module, token);
         }
 
-        private (IParseTree tree, ITokenStream tokenStream, LogicalLineStore logicalLines) CodePanePassResults(QualifiedModuleName module, CancellationToken token, TokenStreamRewriter rewriter = null)
-        {
-            var result = ParseInternal(CodeKind.CodePaneCode, _sourceCodeProviders[CodeKind.CodePaneCode], module, token);
+        //private (IParseTree tree, ITokenStream tokenStream, LogicalLineStore logicalLines) CodePanePassResults(QualifiedModuleName module, CancellationToken token, TokenStreamRewriter rewriter = null)
+        //{
+        //    var result = ParseInternal(CodeKind.CodePaneCode, _sourceCodeProviders[CodeKind.CodePaneCode], module, token);
             
-            token.ThrowIfCancellationRequested();
-            var code = rewriter?.GetText() ?? _sourceCodeProviders[CodeKind.CodePaneCode].SourceCode(module);
+        //    token.ThrowIfCancellationRequested();
+        //    var code = rewriter?.GetText() ?? _sourceCodeProviders[CodeKind.CodePaneCode].SourceCode(module);
 
-            token.ThrowIfCancellationRequested();
-            var logicalLines = LogicalLines(code);
+        //    token.ThrowIfCancellationRequested();
+        //    var logicalLines = LogicalLines(code);
 
-            return (result.tree, result.tokenStream, logicalLines);
-        }
-
-        private LogicalLineStore LogicalLines(string code)
-        {
-            var lines = code.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            var logicalLineEnds = lines
-                .Select((line, index) => (line, index))
-                .Where(tpl => !tpl.line.TrimEnd().EndsWith(" _")) //Not line-continued
-                .Select(tpl => tpl.index + 1); //VBA lines are 1-based.
-            return new LogicalLineStore(logicalLineEnds);
-        }
+        //    return (result.tree, result.tokenStream, logicalLines);
+        //}
     }
 }

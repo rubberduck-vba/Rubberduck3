@@ -1,5 +1,4 @@
 ﻿using Rubberduck.Parsing.Abstract;
-using Rubberduck.Parsing.PreProcessing;
 
 namespace Rubberduck.Parsing.Expressions
 {
