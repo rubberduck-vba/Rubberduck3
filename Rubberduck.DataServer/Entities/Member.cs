@@ -27,6 +27,7 @@ namespace Rubberduck.DataServer.Entities
         public string TypeHint { get; set; }
 
         public int ModuleDeclarationId { get; set; }
+        public DeclarationType ModuleDeclarationType { get; set; }
         public string ModuleName { get; set; }
         public string Folder { get; set; }
 

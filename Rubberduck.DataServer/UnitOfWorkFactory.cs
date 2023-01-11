@@ -1,6 +1,6 @@
 ﻿using Rubberduck.DataServer.Abstract;
 
-namespace Rubberduck.Server.DataServices
+namespace Rubberduck.Server
 {
     internal class UnitOfWorkFactory : IUnitOfWorkFactory
     {

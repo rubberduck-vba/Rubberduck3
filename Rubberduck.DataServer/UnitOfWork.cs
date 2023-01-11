@@ -8,7 +8,7 @@ using Rubberduck.DataServer.Entities;
 using Rubberduck.DataServer.Repositories;
 using Rubberduck.DataServer.Views;
 
-namespace Rubberduck.Server.DataServices
+namespace Rubberduck.Server
 {
     internal class UnitOfWork : IUnitOfWork
     {

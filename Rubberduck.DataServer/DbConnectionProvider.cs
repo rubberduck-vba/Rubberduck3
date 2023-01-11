@@ -4,7 +4,7 @@ using Microsoft.Data.Sqlite;
 using Rubberduck.DataServer.Abstract;
 using Rubberduck.DataServer.Properties;
 
-namespace Rubberduck.Server.DataServices
+namespace Rubberduck.Server
 {
     internal class DbConnectionProvider : IDbConnectionProvider
     {

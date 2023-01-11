@@ -40,9 +40,11 @@ namespace Rubberduck.DataServer.Views
             "IdentifierEndOffset",
             
             "MemberDeclarationId",
+            "MemberDeclarationType",
             "MemberName",
             
             "ModuleDeclarationId",
+            "ModuleDeclarationType",
             "ModuleName",
             "Folder",
 

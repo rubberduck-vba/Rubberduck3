@@ -27,6 +27,7 @@ namespace Rubberduck.DataServer.Views
             "AsTypeName",
             "AsTypeDeclarationId",
             "IsArray",
+            "IsImplicit",
             "TypeHint",
 
             "ContextStartOffset",
@@ -35,9 +36,11 @@ namespace Rubberduck.DataServer.Views
             "IdentifierEndOffset",
 
             "MemberDeclarationId",
+            "MemberDeclarationType",
             "MemberName",
 
             "ModuleDeclarationId",
+            "ModuleDeclarationType",
             "ModuleName",
             "Folder",
 

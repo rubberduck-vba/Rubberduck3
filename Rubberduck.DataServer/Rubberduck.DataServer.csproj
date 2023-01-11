@@ -96,7 +96,9 @@
     <Compile Include="Abstract\Repository.cs" />
     <Compile Include="Abstract\View.cs" />
     <Compile Include="Controllers\DeclarationsController.cs" />
-    <Compile Include="DataServices\DbConnectionProvider.cs" />
+    <Compile Include="Services\EnvironmentService.cs" />
+    <Compile Include="Controllers\ServerController.cs" />
+    <Compile Include="DbConnectionProvider.cs" />
     <Compile Include="Entities\AnnotationBase.cs" />
     <Compile Include="Entities\Declaration.cs" />
     <Compile Include="Entities\DeclarationAnnotation.cs" />
@@ -119,8 +121,8 @@
     <Compile Include="Repositories\ModuleRepository.cs" />
     <Compile Include="Repositories\ParameterRepository.cs" />
     <Compile Include="Repositories\ProjectRepository.cs" />
-    <Compile Include="DataServices\UnitOfWork.cs" />
-    <Compile Include="DataServices\UnitOfWorkFactory.cs" />
+    <Compile Include="UnitOfWork.cs" />
+    <Compile Include="UnitOfWorkFactory.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Views\IdentifierReferencesView.cs" />
     <Compile Include="Views\LocalsView.cs" />

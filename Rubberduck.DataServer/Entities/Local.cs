@@ -7,6 +7,7 @@ namespace Rubberduck.DataServer.Entities
     {
         public int DeclarationId { get; set; }
         public int IsAutoAssigned { get; set; }
+        public int IsImplicit { get; set; }
         public string ValueExpression { get; set; }
     }
 

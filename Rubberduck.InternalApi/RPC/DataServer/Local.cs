@@ -9,41 +9,47 @@ namespace Rubberduck.InternalApi.RPC.DataServer
         [ProtoMember(1)]
         public int Id { get; set; }
         [ProtoMember(2)]
-        public int DeclarationId { get; set; }
-        [ProtoMember(3)]
-        public int? ParentDeclarationId { get; set; }
-
-        [ProtoMember(4)]
-        public bool IsImplicit { get; set; }
-        [ProtoMember(5)]
         public bool IsAutoAssigned { get; set; }
-        [ProtoMember(6)]
+        [ProtoMember(3)]
         public string ValueExpression { get; set; }
 
-        [ProtoMember(7)]
+        [ProtoMember(4)]
+        public int DeclarationId { get; set; }
+        [ProtoMember(5)]
         public DeclarationType DeclarationType { get; set; }
-        [ProtoMember(8)]
+        [ProtoMember(6)]
         public string IdentifierName { get; set; }
-        [ProtoMember(9)]
+        [ProtoMember(7)]
         public string DocString { get; set; }
-        [ProtoMember(10)]
+        [ProtoMember(8)]
         public bool IsUserDefined { get; set; }
-
+        [ProtoMember(9)]
+        public string AsTypeName { get; set; }
+        [ProtoMember(10)]
+        public int AsTypeDeclarationId { get; set; }
         [ProtoMember(11)]
-        public DeclarationType MemberDeclarationType { get; set; }
+        public bool IsArray { get; set; }
         [ProtoMember(12)]
-        public string MemberName { get; set; }
-
+        public bool IsImplicit { get; set; }
         [ProtoMember(13)]
-        public DeclarationType ModuleDeclarationType { get; set; }
+        public string TypeHint { get; set; }
         [ProtoMember(14)]
-        public string ModuleName { get; set; }
+        public LocationInfo LocationInfo { get; set; }
+
         [ProtoMember(15)]
+        public int ModuleDeclarationId { get; set; }
+        [ProtoMember(16)]
+        public DeclarationType ModuleDeclarationType { get; set; }
+        [ProtoMember(17)]
+        public string ModuleName { get; set; }
+        [ProtoMember(18)]
         public string Folder { get; set; }
 
-        [ProtoMember(16)]
+        [ProtoMember(19)]
+        public int ProjectDeclarationId { get; set; }
+        [ProtoMember(20)]
         public string ProjectName { get; set; }
-        [ProtoMember(17)]
+        [ProtoMember(21)]
         public string VBProjectId { get; set; }
     }
 }
