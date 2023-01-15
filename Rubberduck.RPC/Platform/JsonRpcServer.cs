@@ -169,10 +169,10 @@ namespace Rubberduck.RPC.Platform
                 }
                 else
                 {
-                    Console.Log(LogLevel.Debug, $"{nameof(JsonRpcServer)}.{nameof(Start)}() was called, but server is already listening on port {_socketServer.Port}.");
+                    Console.Log(LogLevel.Debug, $"{nameof(JsonRpcClient)}.{nameof(Start)}() was called, but server is already listening on port {_socketServer.Port}.");
                 }
             });
-            Console.Log(LogLevel.Trace, $"{nameof(JsonRpcServer)}.{nameof(Start)}() completed in {elapsed.TotalMilliseconds:N0}ms.");
+            Console.Log(LogLevel.Trace, $"{nameof(JsonRpcClient)}.{nameof(Start)}() completed in {elapsed.TotalMilliseconds:N0}ms.");
         }
 
         public void Stop()
@@ -190,10 +190,10 @@ namespace Rubberduck.RPC.Platform
                 }
                 else
                 {
-                    Console.Log(LogLevel.Debug, $"{nameof(JsonRpcServer)}.{nameof(Stop)}() was called, but server has already stopped listening.");
+                    Console.Log(LogLevel.Debug, $"{nameof(JsonRpcClient)}.{nameof(Stop)}() was called, but server has already stopped listening.");
                 }
             });
-            Console.Log(LogLevel.Trace, $"{nameof(JsonRpcServer)}.{nameof(Stop)}() completed in {elapsed.TotalMilliseconds:N0}ms.");
+            Console.Log(LogLevel.Trace, $"{nameof(JsonRpcClient)}.{nameof(Stop)}() completed in {elapsed.TotalMilliseconds:N0}ms.");
         }
     }
 }

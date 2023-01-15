@@ -1,46 +1,79 @@
-﻿using Rubberduck.InternalApi.RPC;
+﻿using AustinHarris.JsonRpc;
+using Rubberduck.InternalApi.RPC.LSP;
 using Rubberduck.InternalApi.RPC.LSP.Parameters;
 using Rubberduck.InternalApi.RPC.LSP.Response;
-using System;
-using System.ServiceModel;
+using Rubberduck.RPC.Platform;
 using System.Threading.Tasks;
+using WebSocketSharp;
 
 namespace Rubberduck.Server.Controllers
 {
-    [ServiceContract]
-    public class ServerController
+    public class ServerController : JsonRpcClient
     {
-        [OperationContract(Name = "initialize")]
+        public ServerController(WebSocket socket) : base(socket)
+        {
+        }
+
+        [JsonRpcMethod(JsonRpcMethods.Initialize)]
         public async Task<InitializeResult> Initialize(InitializeParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.Initialize, parameters);
+                var response = Request<InitializeResult>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "initialized")]
+        [JsonRpcMethod(JsonRpcMethods.Initialized)]
         public async Task Initialized(InitializedParams parameters)
         {
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.Initialized, parameters);
+                Notify(request);
+            });
         }
 
-        [OperationContract(Name = "shutdown")]
+        [JsonRpcMethod(JsonRpcMethods.Shutdown)]
         public async Task Shutdown()
         {
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.Shutdown, null);
+                Notify(request);
+            });
         }
 
-        [OperationContract(Name = "exit")]
+        [JsonRpcMethod(JsonRpcMethods.Exit)]
         public async Task Exit()
         {
-            // TODO exit with code 1 if any requests were received between the Shutdown() and the Exit() calls.
-            Environment.Exit(0);
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.Exit, null);
+                Notify(request);
+            });
         }
 
-        [OperationContract(Name = "$/setTrace")]
+        [JsonRpcMethod(JsonRpcMethods.SetTrace)]
         public async Task SetTrace(SetTraceParams parameters)
         {
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.SetTrace, parameters);
+                Notify(request);
+            });
         }
 
-        [OperationContract(Name = "$/logTrace")]
+        [JsonRpcMethod(JsonRpcMethods.LogTrace)]
         public async Task LogTrace(LogTraceParams parameters)
         {
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.LogTrace, parameters);
+                Notify(request);
+            });
         }
     }
 }

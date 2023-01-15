@@ -1,22 +1,34 @@
-﻿using Rubberduck.InternalApi.RPC.LSP.Parameters;
+﻿using AustinHarris.JsonRpc;
+using Rubberduck.InternalApi.RPC.LSP;
+using Rubberduck.InternalApi.RPC.LSP.Parameters;
 using Rubberduck.InternalApi.RPC.LSP.Response;
-using System.ServiceModel;
+using Rubberduck.RPC.Platform;
 using System.Threading.Tasks;
+using WebSocketSharp;
 
 namespace Rubberduck.Server.Controllers
 {
-    [ServiceContract]
-    public class TypeHierarchyController
+    public class TypeHierarchyController : JsonRpcClient
     {
+        public TypeHierarchyController(WebSocket socket) : base(socket)
+        {
+        }
+
         /// <summary>
         /// Resolves the supertypes (base classes) for a given type hierarchy item.
         /// </summary>
         /// <param name="parameters">The type hierarchy item to resolve</param>
         /// <returns>An array of <c>TypeHierarchyItem</c> objects.</returns>
-        [OperationContract(Name = "typeHierarchy/supertypes")]
+        [JsonRpcMethod(JsonRpcMethods.SuperTypes)]
         public async Task<TypeHierarchyItem[]> SuperTypes(TypeHierarchySupertypesParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.SuperTypes, parameters);
+                var response = Request<TypeHierarchyItem[]>(request);
+
+                return response;
+            });
         }
 
         /// <summary>
@@ -24,10 +36,16 @@ namespace Rubberduck.Server.Controllers
         /// </summary>
         /// <param name="parameters">The type hierarchy item to resolve</param>
         /// <returns>An array of <c>TypeHierarchyItem</c> objects.</returns>
-        [OperationContract(Name = "typeHierarchy/subtypes")]
+        [JsonRpcMethod(JsonRpcMethods.SubTypes)]
         public async Task<TypeHierarchyItem[]> SubTypes(TypeHierarchySubtypesParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.SubTypes, parameters);
+                var response = Request<TypeHierarchyItem[]>(request);
+
+                return response;
+            });
         }
     }
 }

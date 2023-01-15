@@ -1,12 +1,12 @@
-﻿using System.ServiceModel;
+﻿using AustinHarris.JsonRpc;
+using Rubberduck.InternalApi.RPC.LSP;
 using System.Threading.Tasks;
 
-namespace Rubberduck.InternalApi.RPC.LSP.Client
+namespace Rubberduck.Server.LSP.Controllers.AbstractClient
 {
     /// <summary>
     /// Telemetry requests sent from a server to a client.
     /// </summary>
-    [ServiceContract]
     public interface ITelemetryClient
     {
         /// <summary>
@@ -15,7 +15,7 @@ namespace Rubberduck.InternalApi.RPC.LSP.Client
         /// <remarks>
         /// The protocol does not specify the payload.
         /// </remarks>
-        [OperationContract(Name = "telemetry/event")]
+        [JsonRpcMethod(JsonRpcMethods.TelemetryEvent)]
         Task TelemetryEvent(object parameters);
     }
 }

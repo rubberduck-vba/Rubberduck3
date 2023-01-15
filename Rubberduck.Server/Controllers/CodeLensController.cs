@@ -1,16 +1,28 @@
-﻿using Rubberduck.InternalApi.RPC.LSP.Response;
-using System.ServiceModel;
+﻿using AustinHarris.JsonRpc;
+using Rubberduck.InternalApi.RPC.LSP;
+using Rubberduck.InternalApi.RPC.LSP.Response;
+using Rubberduck.RPC.Platform;
 using System.Threading.Tasks;
+using WebSocketSharp;
 
 namespace Rubberduck.Server.Controllers
 {
-    [ServiceContract]
-    public class CodeLensController
+    public class CodeLensController : JsonRpcClient
     {
-        [OperationContract(Name = "codeLens/resolve")]
+        public CodeLensController(WebSocket socket) : base(socket)
+        {
+        }
+
+        [JsonRpcMethod(JsonRpcMethods.ResolveCodeLens)]
         public async Task<CodeLens> Resolve(CodeLens parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.ResolveCodeLens, parameters);
+                var response = Request<CodeLens>(request);
+
+                return response;
+            });
         }
     }
 }

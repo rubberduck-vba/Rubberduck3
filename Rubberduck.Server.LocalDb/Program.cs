@@ -64,7 +64,7 @@ namespace Rubberduck.Server.LocalDb
                         hasHandle = true;
                     }
 
-                    var args = Parser.Default.ParseArguments<StartupOptions>(args)
+                    var startupArgs = Parser.Default.ParseArguments<StartupOptions>(args)
                         .WithNotParsed(errors =>
                         {
                             using (var stdErr = Console.OpenStandardError())
@@ -82,12 +82,12 @@ namespace Rubberduck.Server.LocalDb
                             }
                         });
 
-                    if (args.Errors.Any())
+                    if (startupArgs.Errors.Any())
                     {
                         throw new ArgumentException("Invalid command-line arguments were supplied.");
                     }
 
-                    Start(args.Value);
+                    Start(startupArgs.Value);
                 }
                 finally
                 {

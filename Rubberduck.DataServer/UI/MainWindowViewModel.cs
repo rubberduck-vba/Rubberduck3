@@ -7,7 +7,7 @@ using Rubberduck.UI.Abstract;
 using System;
 using System.Threading;
 
-namespace Rubberduck.DataServer
+namespace Rubberduck.Client.LocalDb
 {
     public class ConsoleMessageViewModel : ViewModelBase, IConsoleMesssageViewModel, IExportable
     {

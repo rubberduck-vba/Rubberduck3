@@ -1,41 +1,74 @@
-﻿using Rubberduck.InternalApi.RPC.LSP.Parameters;
-using Rubberduck.InternalApi.RPC.LSP.Client;
+﻿using Rubberduck.RPC.Platform;
+using Rubberduck.InternalApi.RPC.LSP;
+using Rubberduck.InternalApi.RPC.LSP.Parameters;
 using Rubberduck.InternalApi.RPC.LSP.Response;
-using System;
 using System.Threading.Tasks;
+using WebSocketSharp;
 
 namespace Rubberduck.Server.Controllers
 {
-    public class WindowClientController : IWindowClient
+    public class WindowClientController : JsonRpcClient
     {
-        public Task CancelWorkDoneProgress(WorkDoneProgressCancelParams parameters)
+        public WindowClientController(WebSocket socket) : base(socket)
         {
-            throw new NotImplementedException();
         }
 
-        public Task CreateWorkDoneProgress(WorkDoneProgressCreateParams parameters)
+        public async Task CancelWorkDoneProgress(WorkDoneProgressCancelParams parameters)
         {
-            throw new NotImplementedException();
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.CancelWorkDoneProgress, parameters);
+                Notify(request);
+            });
         }
 
-        public Task LogMessage(LogMessageParams parameters)
+        public async Task CreateWorkDoneProgress(WorkDoneProgressCreateParams parameters)
         {
-            throw new NotImplementedException();
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.CreateWorkDoneProgress, parameters);
+                Notify(request);
+            });
         }
 
-        public Task<ShowDocumentResult> ShowDocument(ShowDocumentParams parameters)
+        public async Task LogMessage(LogMessageParams parameters)
         {
-            throw new NotImplementedException();
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.LogMessage, parameters);
+                Notify(request);
+            });
         }
 
-        public Task ShowMessage(ShowMessageParams parameters)
+        public async Task<ShowDocumentResult> ShowDocument(ShowDocumentParams parameters)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.ShowDocument, parameters);
+                var response = Request<ShowDocumentResult>(request);
+
+                return response;
+            });
         }
 
-        public Task<MessageActionItem> ShowMessageRequest(ShowMessageRequestParams parameters)
+        public async Task ShowMessage(ShowMessageParams parameters)
         {
-            throw new NotImplementedException();
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.ShowMessage, parameters);
+                Notify(request);
+            });
+        }
+
+        public async Task<MessageActionItem> ShowMessageRequest(ShowMessageRequestParams parameters)
+        {
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.ShowMessageRequest, parameters);
+                var response = Request<MessageActionItem>(request);
+
+                return response;
+            });
         }
     }
 }

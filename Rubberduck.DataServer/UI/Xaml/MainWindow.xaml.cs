@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Rubberduck.DataServer.UI.Xaml
+namespace Rubberduck.Client.LocalDb.UI.Xaml
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

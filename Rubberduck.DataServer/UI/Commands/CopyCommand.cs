@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 
-namespace Rubberduck.DataServer.UI.Commands
+namespace Rubberduck.Client.LocalDb.UI.Commands
 {
     public class CopyCommand : CommandBase
     {

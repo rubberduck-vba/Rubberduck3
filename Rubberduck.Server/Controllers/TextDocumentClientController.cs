@@ -1,15 +1,24 @@
 ﻿using Rubberduck.InternalApi.RPC.LSP.Parameters;
-using Rubberduck.InternalApi.RPC.LSP.Client;
-using System;
 using System.Threading.Tasks;
+using Rubberduck.RPC.Platform;
+using WebSocketSharp;
+using Rubberduck.InternalApi.RPC.LSP;
 
 namespace Rubberduck.Server.Controllers
 {
-    public class TextDocumentClientController : ITextDocumentClient
+    public class TextDocumentClientController : JsonRpcClient
     {
-        public Task PublishDiagnostics(PublishDiagnosticsParams parameters)
+        public TextDocumentClientController(WebSocket socket) : base(socket)
         {
-            throw new NotImplementedException();
+        }
+
+        public async Task PublishDiagnostics(PublishDiagnosticsParams parameters)
+        {
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.PublishTextDocumentDiagnostics, parameters);
+                Notify(request);
+            });
         }
     }
 }

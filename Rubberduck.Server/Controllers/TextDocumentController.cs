@@ -1,14 +1,19 @@
-﻿using Rubberduck.InternalApi.RPC.LSP;
+﻿using AustinHarris.JsonRpc;
+using Rubberduck.InternalApi.RPC.LSP;
 using Rubberduck.InternalApi.RPC.LSP.Parameters;
 using Rubberduck.InternalApi.RPC.LSP.Response;
-using System.ServiceModel;
+using Rubberduck.RPC.Platform;
 using System.Threading.Tasks;
+using WebSocketSharp;
 
 namespace Rubberduck.Server.Controllers
 {
-    [ServiceContract]
-    public class TextDocumentController
+    public class TextDocumentController : JsonRpcClient
     {
+        public TextDocumentController(WebSocket socket) : base(socket)
+        {
+        }
+
         /// <summary>
         /// A notification sent to the server from the client to signal newly opened text documents.
         /// </summary>
@@ -16,20 +21,28 @@ namespace Rubberduck.Server.Controllers
         /// Server ability to fulfill a request is independent of whether a text document is open or closed.
         /// </remarks>
         /// <param name="parameters">The document that was opened.</param>
-        [OperationContract(Name = "textDocument/didOpen")]
+        [JsonRpcMethod(JsonRpcMethods.DidOpen)]
         public async Task DidOpen(DidOpenTextDocumentParams parameters)
         {
-            
+            await Task.Run(() =>
+            { 
+                var request = CreateRequest(JsonRpcMethods.DidOpen, parameters);
+                Notify(request);
+            });
         }
 
         /// <summary>
         /// A notification that signals client-side changes to a text document.
         /// </summary>
         /// <param name="parameters">The document that changed.</param>
-        [OperationContract(Name = "textDocument/didChange")]
+        [JsonRpcMethod(JsonRpcMethods.DidChange)]
         public async Task DidChange(DidChangeTextDocumentParams parameters)
         {
-
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.DidChange, parameters);
+                Notify(request);
+            });
         }
 
         /// <summary>
@@ -37,10 +50,14 @@ namespace Rubberduck.Server.Controllers
         /// </summary>
         /// <param name="parameters">The document that will be saved.</param>
         /// <returns></returns>
-        [OperationContract(Name = "textDocument/willSave")]
+        [JsonRpcMethod(JsonRpcMethods.WillSave)]
         public async Task WillSave(WillSaveTextDocumentParams parameters)
         {
-
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.WillSave, parameters);
+                Notify(request);
+            });
         }
 
         /// <summary>
@@ -48,29 +65,43 @@ namespace Rubberduck.Server.Controllers
         /// </summary>
         /// <param name="parameters">The document that will be saved.</param>
         /// <returns></returns>
-        [OperationContract(Name = "textDocument/willSaveWaitUntil")]
+        [JsonRpcMethod(JsonRpcMethods.WillSaveUntil)]
         public async Task<TextEdit[]> WillSaveWaitUntil(WillSaveTextDocumentParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.WillSaveUntil, parameters);
+                var response = Request<TextEdit[]>(request);
+
+                return response;
+            });
         }
 
         /// <summary>
         /// A notification sent to the server when the client saves a document.
         /// </summary>
-        [OperationContract(Name = "textDocument/didSave")]
+        [JsonRpcMethod(JsonRpcMethods.DidSave)]
         public async Task DidSave(DidSaveTextDocumentParams parameters)
         {
-
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.DidSave, parameters);
+                Notify(request);
+            });
         }
 
         /// <summary>
         /// A notification sent to the server when the client closes a document.
         /// </summary>
         /// <param name="parameters">The document that was closed.</param>
-        [OperationContract(Name = "textDocument/didClose")]
+        [JsonRpcMethod(JsonRpcMethods.DidClose)]
         public async Task DidClose(DidCloseTextDocumentParams parameters)
         {
-
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.DidClose, parameters);
+                Notify(request);
+            });
         }
 
         /// <summary>
@@ -78,10 +109,16 @@ namespace Rubberduck.Server.Controllers
         /// </summary>
         /// <param name="parameters">The symbol to resolve.</param>
         /// <returns>An array of LocationLink objects.</returns>
-        [OperationContract(Name = "textDocument/declaration")]
+        [JsonRpcMethod(JsonRpcMethods.GoToDeclarations)]
         public async Task<LocationLink[]> GoToDeclaration(DeclarationParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            { 
+                var request = CreateRequest(JsonRpcMethods.GoToDeclarations, parameters);
+                var response = Request<LocationLink[]>(request);
+
+                return response;
+            });
         }
 
         /// <summary>
@@ -89,10 +126,16 @@ namespace Rubberduck.Server.Controllers
         /// </summary>
         /// <param name="parameters">The symbol to resolve.</param>
         /// <returns>An array of LocationLink objects.</returns>
-        [OperationContract(Name = "textDocument/definition")]
+        [JsonRpcMethod(JsonRpcMethods.GoToDefinition)]
         public async Task<LocationLink[]> GoToDefinition(DefinitionParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.GoToDefinition, parameters);
+                var response = Request<LocationLink[]>(request);
+
+                return response;
+            });
         }
 
         /// <summary>
@@ -100,10 +143,16 @@ namespace Rubberduck.Server.Controllers
         /// </summary>
         /// <param name="parameters">The symbol to resolve.</param>
         /// <returns>An array of LocationLink objects.</returns>
-        [OperationContract(Name = "textDocument/typeDefinition")]
+        [JsonRpcMethod(JsonRpcMethods.GoToTypeDefinition)]
         public async Task<LocationLink[]> GoToTypeDefinition(TypeDefinitionParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.GoToTypeDefinition, parameters);
+                var response = Request<LocationLink[]>(request);
+                
+                return response;
+            });
         }
 
         /// <summary>
@@ -111,10 +160,16 @@ namespace Rubberduck.Server.Controllers
         /// </summary>
         /// <param name="parameters">The symbol to resolve.</param>
         /// <returns>An array of LocationLink objects.</returns>
-        [OperationContract(Name = "textDocument/implementation")]
+        [JsonRpcMethod(JsonRpcMethods.GoToImplementation)]
         public async Task<LocationLink[]> GoToImplementation(ImplementationParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            { 
+                var request = CreateRequest(JsonRpcMethods.GoToImplementation, parameters);
+                var response = Request<LocationLink[]>(request);
+
+                return response;
+            });
         }
 
         /// <summary>
@@ -122,28 +177,52 @@ namespace Rubberduck.Server.Controllers
         /// </summary>
         /// <param name="parameters">The symbol to resolve.</param>
         /// <returns>An array of LocationLink objects.</returns>
-        [OperationContract(Name = "textDocument/references")]
+        [JsonRpcMethod(JsonRpcMethods.FindReferences)]
         public async Task<LocationLink[]> FindReferences(ReferencesParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.FindReferences, parameters);
+                var response = Request<LocationLink[]>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/prepareCallHierarchy")]
+        [JsonRpcMethod(JsonRpcMethods.PrepareCallHierarchy)]
         public async Task<CallHierarchyItem[]> CallHierarchyPrepare(CallHierarchyPrepareParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.PrepareCallHierarchy, parameters);
+                var response = Request<CallHierarchyItem[]>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/prepareTypeHierarchy")]
+        [JsonRpcMethod(JsonRpcMethods.PrepareTypeHierarchy)]
         public async Task<TypeHierarchyItem[]> TypeHierarchyPrepare(TypeHierarchyPrepareParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.PrepareTypeHierarchy, parameters);
+                var response = Request<TypeHierarchyItem[]>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/documentHighlight")]
+        [JsonRpcMethod(JsonRpcMethods.DocumentHighlights)]
         public async Task<DocumentHighlight[]> DocumentHighlights(DocumentHighlightParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.DocumentHighlights, parameters);
+                var response = Request<DocumentHighlight[]>(request);
+
+                return response;
+            });
         }
 
         /// <summary>
@@ -151,142 +230,261 @@ namespace Rubberduck.Server.Controllers
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        [OperationContract(Name = "textDocument/documentLink")]
+        [JsonRpcMethod(JsonRpcMethods.DocumentLinks)]
         public async Task<DocumentLink[]> DocumentLink(DocumentLinkParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.DocumentLinks, parameters);
+                var response = Request<DocumentLink[]>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/hover")]
+        [JsonRpcMethod(JsonRpcMethods.DocumentHover)]
         public async Task<Hover> Hover(HoverParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.DocumentHover, parameters);
+                var response = Request<Hover>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/codeLens")]
+        [JsonRpcMethod(JsonRpcMethods.DocumentCodeLens)]
         public async Task<CodeLens[]> CodeLens(CodeLensParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.DocumentCodeLens, parameters);
+                var response = Request<CodeLens[]>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/foldingRange")]
+        [JsonRpcMethod(JsonRpcMethods.DocumentFoldingRanges)]
         public async Task<FoldingRange[]> FoldingRange(FoldingRangeParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.DocumentFoldingRanges, parameters);
+                var response = Request<FoldingRange[]>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/selectionRange")]
         public async Task<SelectionRange[]> SelectionRange(SelectionRangeParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.DocumentSelectionRange, parameters);
+                var response = Request<SelectionRange[]>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/documentSymbol")]
         public async Task<DocumentSymbol[]> DocumentSymbol(DocumentSymbolParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.DocumentSymbols, parameters);
+                var response = Request<DocumentSymbol[]>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/semanticTokens")]
         public async Task<SemanticTokens> SemanticTokens(SemanticTokensParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.DocumentSemanticTokens, parameters);
+                var response = Request<SemanticTokens>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/semanticTokens/full")]
         public async Task<SemanticTokens> SemanticTokensFull(SemanticTokensParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.DocumentSemanticTokensFull, parameters);
+                var response = Request<SemanticTokens>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/semanticTokens/full/delta")]
         public async Task<SemanticTokensDelta> SemanticTokensDelta(SemanticTokensDeltaParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.DocumentSemanticTokensDelta, parameters);
+                var response = Request<SemanticTokensDelta>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/inlayHint")]
         public async Task<InlayHint[]> InlayHint(InlayHintParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.DocumentInlayHints, parameters);
+                var response = Request<InlayHint[]>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/moniker")]
         public async Task<Moniker[]> Moniker(MonikerParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.DocumentMonikers, parameters);
+                var response = Request<Moniker[]>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/completion")]
         public async Task<CompletionList> Completion(CompletionParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.Completion, parameters);
+                var response = Request<CompletionList>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/diagnostic")]
         public async Task<FullDocumentDiagnosticReport> Diagnostic(DocumentDiagnosticsParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.DocumentDiagnostics, parameters);
+                var response = Request<FullDocumentDiagnosticReport>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/signatureHelp")]
         public async Task<SignatureHelp> SignatureHelp(SignatureHelpParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.SignatureHelp, parameters);
+                var response = Request<SignatureHelp>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/codeAction")]
         public async Task<CodeAction> CodeAction(CodeActionParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.CodeAction, parameters);
+                var response = Request<CodeAction>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/documentColor")]
         public async Task<ColorInformation[]> DocumentColor(DocumentColorParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.Color, parameters);
+                var response = Request<ColorInformation[]>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/colorPresentation")]
         public async Task<ColorPresentation[]> ColorPresentation(ColorPresentationParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.ColorPresentation, parameters);
+                var response = Request<ColorPresentation[]>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/formatting")]
         public async Task<TextEdit[]> Formatting(DocumentFormattingParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.Formatting, parameters);
+                var response = Request<TextEdit[]>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/rangeFormatting")]
         public async Task<TextEdit[]> RangeFormatting(RangeFormattingParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.RangeFormatting, parameters);
+                var response = Request<TextEdit[]>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/onTypeFormatting")]
         public async Task<TextEdit[]> OnTypeFormatting(DocumentOnTypeFormattingParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.OnTypeFormatting, parameters);
+                var response = Request<TextEdit[]>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/rename")]
         public async Task<WorkspaceEdit> Rename(RenameParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.Rename, parameters);
+                var response = Request<WorkspaceEdit>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/prepareRename")]
         public async Task<Range> PrepareRename(PrepareRenameParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.PrepareRename, parameters);
+                var response = Request<Range>(request);
+
+                return response;
+            });
         }
 
-        [OperationContract(Name = "textDocument/linkedEditingRanges")]
         public async Task<LinkedEditingRanges> LinkedEditingRange(LinkedEditingRangeParams parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.LinkedEditingRanges, parameters)
+                var response = Request<LinkedEditingRanges>(request);
+
+                return response;
+            });
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using AustinHarris.JsonRpc;
 using NLog;
 using Rubberduck.InternalApi.RPC;
+using Rubberduck.InternalApi.RPC.DataServer;
 using Rubberduck.InternalApi.RPC.DataServer.Parameters;
 using Rubberduck.InternalApi.RPC.DataServer.Response;
 using Rubberduck.RPC.Proxy;
+using Rubberduck.RPC.Proxy.Controllers;
 using System;
 
 namespace Rubberduck.Server.LocalDb.Controllers
@@ -22,7 +24,7 @@ namespace Rubberduck.Server.LocalDb.Controllers
         /// <summary>
         /// Connects a client to the server.
         /// </summary>
-        [JsonRpcMethod("connect")]
+        [JsonRpcMethod(JsonRpcMethods.Connect)]
         public ConnectResult Connect(ConnectParams parameters)
         {
             var client = new Client
@@ -44,7 +46,7 @@ namespace Rubberduck.Server.LocalDb.Controllers
         /// <summary>
         /// Disconnects a client from the server.
         /// </summary>
-        [JsonRpcMethod("disconnect")]
+        [JsonRpcMethod(JsonRpcMethods.Disconnect)]
         public DisconnectResult Disconnect(DisconnectParams parameters)
         {
             if (!_server.HasClients)
@@ -72,7 +74,7 @@ namespace Rubberduck.Server.LocalDb.Controllers
         /// <summary>
         /// Terminates the server process.
         /// </summary>
-        [JsonRpcMethod("exit")]
+        [JsonRpcMethod(JsonRpcMethods.Exit)]
         public void Exit()
         {
             var exitCode = 0;

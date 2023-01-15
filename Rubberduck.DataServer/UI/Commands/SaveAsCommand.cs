@@ -7,7 +7,7 @@ using System.IO;
 using Microsoft.Win32;
 using Rubberduck.UI.Abstract;
 
-namespace Rubberduck.DataServer.UI.Commands
+namespace Rubberduck.Client.LocalDb.UI.Commands
 {
     public interface IFileNameProvider
     {
@@ -56,7 +56,7 @@ namespace Rubberduck.DataServer.UI.Commands
 
             if (parameter is IEnumerable<IConsoleMesssageViewModel> messages)
             {
-                if (_fileNameProvider.GetSaveAsFileName("SaveAs", "Log files |*.log", $"Rubberduck.DataServer.PID{_processId}.log", "log", out var path))
+                if (_fileNameProvider.GetSaveAsFileName("SaveAs", "Log files |*.log", $"Rubberduck.Client.LocalDb.PID{_processId}.log", "log", out var path))
                 {
                     File.WriteAllText(path, string.Join(Environment.NewLine, messages));
                 }

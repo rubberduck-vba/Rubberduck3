@@ -1,4 +1,4 @@
-﻿<Window x:Class="Rubberduck.DataServer.UI.Xaml.MainWindow"
+﻿<Window x:Class="Rubberduck.Client.LocalDb.UI.Xaml.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,7 +6,7 @@
         xmlns:controls="clr-namespace:Rubberduck.UI.Xaml.Controls;assembly=Rubberduck.UI.Xaml" 
         xmlns:vm="clr-namespace:Rubberduck.UI.Abstract;assembly=Rubberduck.UI" 
         mc:Ignorable="d" d:DataContext="{d:DesignInstance {x:Type vm:IDataServerMainWindowViewModel}, IsDesignTimeCreatable=False}"
-        Title="Rubberduck.DataServer" Icon="/Ducky.ico"
+        Title="Rubberduck.Client.LocalDb" Icon="/Ducky.ico"
         Height="340" Width="800" WindowState="Minimized">
     <Grid Margin="2">
         <Grid.RowDefinitions>

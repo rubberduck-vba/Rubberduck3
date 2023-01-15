@@ -1,5 +1,5 @@
 ﻿using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Proxy;
+using Rubberduck.RPC.Proxy.Controllers;
 using WebSocketSharp;
 
 namespace Rubberduck.Server
@@ -9,5 +9,7 @@ namespace Rubberduck.Server
         public DataServerDeclarationsControllerProxy(WebSocket socket) : base(socket)
         {
         }
+
+        /* TODO */
     }
 }

@@ -1,7 +1,7 @@
-﻿using Rubberduck.DataServer.UI.Xaml;
+﻿using Rubberduck.Client.LocalDb.UI.Xaml;
 using Rubberduck.RPC.Platform;
 
-namespace Rubberduck.DataServer
+namespace Rubberduck.Client.LocalDb
 {
     internal interface IMainWindowFactory
     {

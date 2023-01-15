@@ -133,6 +133,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RPC\DataServer\JsonRpcMethods.cs" />
     <Compile Include="RPC\EnvironmentService.cs" />
     <Compile Include="Common\ExperimentalAttribute.cs" />
     <Compile Include="Common\FileSystemProvider.cs" />
@@ -261,6 +262,7 @@
     <Compile Include="RPC\LSP\Capabilities\RegularExpressionClientCapabilies.cs" />
     <Compile Include="RPC\LSP\ClientInfo.cs" />
     <Compile Include="RPC\LSP\Constants.cs" />
+    <Compile Include="RPC\LSP\JsonRpcMethods.cs" />
     <Compile Include="RPC\LSP\Parameters\ApplyWorkspaceEditParams.cs" />
     <Compile Include="RPC\LSP\Parameters\CallHierarchyIncomingCallsParams.cs" />
     <Compile Include="RPC\LSP\Parameters\CallHierarchyOutgoingCallsParams.cs" />
@@ -332,10 +334,6 @@
     <Compile Include="RPC\LSP\Parameters\TypeHierarchySubtypesParams.cs" />
     <Compile Include="RPC\LSP\Parameters\TypeHierarchySupertypesParams.cs" />
     <Compile Include="RPC\LSP\Parameters\WillSaveTextDocumentParams.cs" />
-    <Compile Include="RPC\LSP\Client\ITelemetryClient.cs" />
-    <Compile Include="RPC\LSP\Client\ITextDocumentClient.cs" />
-    <Compile Include="RPC\LSP\Client\IWindowClient.cs" />
-    <Compile Include="RPC\LSP\Client\IWorkspaceClient.cs" />
     <Compile Include="RPC\LSP\Parameters\WorkDoneProgressCancelParams.cs" />
     <Compile Include="RPC\LSP\Parameters\WorkDoneProgressCreateParams.cs" />
     <Compile Include="RPC\LSP\Parameters\WorkspaceDiagnosticsParams.cs" />

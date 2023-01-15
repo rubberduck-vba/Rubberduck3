@@ -1,16 +1,16 @@
-﻿using Rubberduck.InternalApi.RPC.LSP.Parameters;
-using System.ServiceModel;
+﻿using AustinHarris.JsonRpc;
+using Rubberduck.InternalApi.RPC.LSP;
+using Rubberduck.InternalApi.RPC.LSP.Parameters;
 using System.Threading.Tasks;
 
-namespace Rubberduck.InternalApi.RPC.LSP.Client
+namespace Rubberduck.Server.LSP.Controllers.AbstractClient
 {
     /// <summary>
     /// Document-level requests sent from a server to a client.
     /// </summary>
-    [ServiceContract]
     public interface ITextDocumentClient
     {
-        [OperationContract(Name = "textDocument/publishDiagnostics")]
+        [JsonRpcMethod(JsonRpcMethods.PublishTextDocumentDiagnostics)]
         Task PublishDiagnostics(PublishDiagnosticsParams parameters);
     }
 }

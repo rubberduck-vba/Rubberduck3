@@ -8,11 +8,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Rubberduck.DataServer")]
+[assembly: AssemblyTitle("Rubberduck.Client.LocalDb")]
 [assembly: AssemblyDescription("SQLite backend for Rubberduck.Server")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Rubberduck")]
-[assembly: AssemblyProduct("Rubberduck.DataServer")]
+[assembly: AssemblyProduct("Rubberduck.Client.LocalDb")]
 [assembly: AssemblyCopyright("Copyright © Rubberduck Contributors 2014-2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

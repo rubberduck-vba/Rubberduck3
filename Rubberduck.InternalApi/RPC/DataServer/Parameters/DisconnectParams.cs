@@ -2,12 +2,9 @@
 
 namespace Rubberduck.InternalApi.RPC.DataServer.Parameters
 {
-    public class ConnectParams
+    public class DisconnectParams
     {
         [JsonPropertyName("processId")]
         public int ProcessId { get; set; }
-
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using CommandLine;
-using Rubberduck.DataServer.Properties;
-using Rubberduck.DataServer.UI;
-using Rubberduck.DataServer.UI.Commands;
+using Rubberduck.Client.LocalDb.Properties;
+using Rubberduck.Client.LocalDb.UI;
+using Rubberduck.Client.LocalDb.UI.Commands;
 using Rubberduck.InternalApi.RPC.LSP;
 using Rubberduck.RPC.Platform;
 using System;
@@ -13,7 +13,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading;
 
-namespace Rubberduck.DataServer
+namespace Rubberduck.Client.LocalDb
 {
     public static class Program
     {

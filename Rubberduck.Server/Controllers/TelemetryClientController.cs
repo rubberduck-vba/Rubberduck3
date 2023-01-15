@@ -1,14 +1,23 @@
-﻿using Rubberduck.InternalApi.RPC.LSP.Client;
-using System;
+﻿using Rubberduck.InternalApi.RPC.LSP;
+using Rubberduck.RPC.Platform;
 using System.Threading.Tasks;
+using WebSocketSharp;
 
 namespace Rubberduck.Server.Controllers
 {
-    public class TelemetryClientController : ITelemetryClient
+    public class TelemetryClientController : JsonRpcClient
     {
-        public Task TelemetryEvent(object parameters)
+        public TelemetryClientController(WebSocket socket) : base(socket)
         {
-            throw new NotImplementedException();
+        }
+
+        public async Task TelemetryEvent(object parameters)
+        {
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.TelemetryEvent, parameters);
+                Notify(request);
+            });
         }
     }
 }

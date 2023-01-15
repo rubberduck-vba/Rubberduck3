@@ -1,16 +1,28 @@
-﻿using Rubberduck.InternalApi.RPC.LSP.Response;
-using System.ServiceModel;
+﻿using AustinHarris.JsonRpc;
+using Rubberduck.InternalApi.RPC.LSP;
+using Rubberduck.InternalApi.RPC.LSP.Response;
+using Rubberduck.RPC.Platform;
 using System.Threading.Tasks;
+using WebSocketSharp;
 
 namespace Rubberduck.Server.Controllers
 {
-    [ServiceContract]
-    public class DocumentLinkController
+    public class DocumentLinkController : JsonRpcClient
     {
-        [OperationContract(Name = "documentLink/resolve")]
+        public DocumentLinkController(WebSocket socket) : base(socket)
+        {
+        }
+
+        [JsonRpcMethod(JsonRpcMethods.ResolveDocumentLink)]
         public async Task<DocumentLink> Resolve(DocumentLink parameters)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.ResolveDocumentLink, parameters);
+                var response = Request<DocumentLink>(request);
+
+                return response;
+            });
         }
     }
 }

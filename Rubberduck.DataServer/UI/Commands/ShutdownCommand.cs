@@ -1,11 +1,11 @@
 ﻿using NLog;
-using Rubberduck.DataServer.Services;
+using Rubberduck.InternalApi.RPC;
 using Rubberduck.RPC.Platform;
 using Rubberduck.UI.Command;
 using System;
 using System.Threading.Tasks;
 
-namespace Rubberduck.DataServer.UI.Commands
+namespace Rubberduck.Client.LocalDb.UI.Commands
 {
     public class ShutdownCommandParameter
     {

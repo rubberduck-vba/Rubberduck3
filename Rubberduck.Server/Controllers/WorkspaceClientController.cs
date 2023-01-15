@@ -1,38 +1,63 @@
 ﻿using Rubberduck.InternalApi.RPC.LSP.Parameters;
-using Rubberduck.InternalApi.RPC.LSP.Client;
 using Rubberduck.InternalApi.RPC.LSP.Response;
-using System;
-using System.ServiceModel;
 using System.Threading.Tasks;
+using Rubberduck.RPC.Platform;
+using WebSocketSharp;
+using Rubberduck.InternalApi.RPC.LSP;
 
 namespace Rubberduck.Server.Controllers
 {
-    [ServiceContract]
-    public class WorkspaceClientController : IWorkspaceClient
+    public class WorkspaceClientController : JsonRpcClient
     {
-        public Task<ApplyWorkspaceEditResult> ApplyEdit(ApplyWorkspaceEditParams parameters)
+        public WorkspaceClientController(WebSocket socket) : base(socket)
         {
-            throw new NotImplementedException();
         }
 
-        public Task RefreshCodeLens()
+        public async Task<ApplyWorkspaceEditResult> ApplyEdit(ApplyWorkspaceEditParams parameters)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.ApplyWorkspaceEdit, parameters);
+                var response = Request<ApplyWorkspaceEditResult>(request);
+
+                return response;
+            });
         }
 
-        public Task RefreshDiagnostics()
+        public async Task RefreshCodeLens()
         {
-            throw new NotImplementedException();
+            await Task.Run(() => 
+            {
+                var request = CreateRequest(JsonRpcMethods.RefreshCodeLens, null);
+                Notify(request);
+            });
         }
 
-        public Task RefreshInlayHints()
+        public async Task RefreshDiagnostics()
         {
-            throw new NotImplementedException();
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.RefreshDiagnostics, null);
+                Notify(request);
+            });
         }
 
-        public Task RefreshSemanticTokens()
+        public async Task RefreshInlayHints()
         {
-            throw new NotImplementedException();
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.RefreshInlayHints, null);
+                Notify(request);
+            });
+        }
+
+        public async Task RefreshSemanticTokens()
+        {
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.RefreshSemanticTokens, null);
+                Notify(request);
+            });
         }
     }
 }

@@ -1,10 +1,10 @@
-﻿using Rubberduck.DataServer.Properties;
+﻿using Rubberduck.Client.LocalDb.Properties;
 using Rubberduck.RPC.Platform;
 using System;
 using System.Linq;
 using System.Windows;
 
-namespace Rubberduck.DataServer
+namespace Rubberduck.Client.LocalDb
 {
     internal class App : Application 
     {

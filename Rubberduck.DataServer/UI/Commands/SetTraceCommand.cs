@@ -3,7 +3,7 @@ using Rubberduck.InternalApi.RPC.LSP;
 using Rubberduck.RPC.Platform;
 using Rubberduck.UI.Command;
 
-namespace Rubberduck.DataServer.UI.Commands
+namespace Rubberduck.Client.LocalDb.UI.Commands
 {
     public class SetTraceCommand : CommandBase
     {
