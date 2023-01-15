@@ -43,8 +43,16 @@ namespace Rubberduck.DataServer.UI.Commands
                 exitCode = 1;
             }
 
-            _server.Console.Log(LogLevel.Info, "Exiting ...", verbose: $"Exit code: {exitCode}; process terminating in {_server.ExitDelay.TotalMilliseconds:N0} milliseconds.");
-            Task.Delay(_server.ExitDelay).ContinueWith(t => _environment.Exit(exitCode));
+            if (_server.IsInteractive)
+            {
+                _server.Console.Log(LogLevel.Info, "Exiting...", verbose: $"Exit code: {exitCode}. Interactive mode: process terminating in {_server.ExitDelay.TotalMilliseconds:N0} milliseconds.");
+                Task.Delay(_server.ExitDelay).ContinueWith(t => _environment.Exit(exitCode));
+            }
+            else
+            {
+                _server.Console.Log(LogLevel.Info, "Exiting...", verbose: $"Exit code: {exitCode}.");
+                _environment.Exit(exitCode);
+            }
         }
     }
 }

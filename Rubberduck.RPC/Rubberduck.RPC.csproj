@@ -62,8 +62,13 @@
     <Compile Include="Platform\JsonRpcClient.cs" />
     <Compile Include="Platform\JsonRpcConsole.cs" />
     <Compile Include="Platform\JsonRpcServer.cs" />
-    <Compile Include="Platform\JsonRpcServiceProxyBase.cs" />
+    <Compile Include="Proxy\Client.cs" />
+    <Compile Include="Proxy\Controllers\ILocalDbDeclarationsController.cs" />
+    <Compile Include="Proxy\ILocalDbServer.cs" />
+    <Compile Include="Proxy\ILocalDbServerEvents.cs" />
+    <Compile Include="Proxy\JsonRpcServiceProxyBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Proxy\Controllers\ILocalDbServerController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -45,13 +45,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rubberduck.Data", "Rubberdu
 		Rubberduck.Data\RubberduckLocalDB.db = Rubberduck.Data\RubberduckLocalDB.db
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Server", "Rubberduck.Server\Rubberduck.Server.csproj", "{E87CC6DE-5C4F-4F90-B9DC-45D1D954FE82}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Server.LSP", "Rubberduck.Server\Rubberduck.Server.LSP.csproj", "{E87CC6DE-5C4F-4F90-B9DC-45D1D954FE82}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Client", "Rubberduck.Client\Rubberduck.Client.csproj", "{F44DB5B3-6E55-4680-A22D-902A76D75C2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.DataServer", "Rubberduck.DataServer\Rubberduck.DataServer.csproj", "{2539699A-2515-4667-A077-43C1BB87FD80}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.LocalDbClient", "Rubberduck.DataServer\Rubberduck.LocalDbClient.csproj", "{2539699A-2515-4667-A077-43C1BB87FD80}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.RPC", "Rubberduck.RPC\Rubberduck.RPC.csproj", "{8D218701-AF68-4013-B9C0-108C1D162E11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Server.LocalDb", "Rubberduck.Server.LocalDb\Rubberduck.Server.LocalDb.csproj", "{87228D3B-2801-4025-AFA2-BB6EE6A7F849}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -291,6 +293,18 @@ Global
 		{8D218701-AF68-4013-B9C0-108C1D162E11}.Release|x64.Build.0 = Release|Any CPU
 		{8D218701-AF68-4013-B9C0-108C1D162E11}.Release|x86.ActiveCfg = Release|Any CPU
 		{8D218701-AF68-4013-B9C0-108C1D162E11}.Release|x86.Build.0 = Release|Any CPU
+		{87228D3B-2801-4025-AFA2-BB6EE6A7F849}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87228D3B-2801-4025-AFA2-BB6EE6A7F849}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87228D3B-2801-4025-AFA2-BB6EE6A7F849}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{87228D3B-2801-4025-AFA2-BB6EE6A7F849}.Debug|x64.Build.0 = Debug|Any CPU
+		{87228D3B-2801-4025-AFA2-BB6EE6A7F849}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{87228D3B-2801-4025-AFA2-BB6EE6A7F849}.Debug|x86.Build.0 = Debug|Any CPU
+		{87228D3B-2801-4025-AFA2-BB6EE6A7F849}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87228D3B-2801-4025-AFA2-BB6EE6A7F849}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87228D3B-2801-4025-AFA2-BB6EE6A7F849}.Release|x64.ActiveCfg = Release|Any CPU
+		{87228D3B-2801-4025-AFA2-BB6EE6A7F849}.Release|x64.Build.0 = Release|Any CPU
+		{87228D3B-2801-4025-AFA2-BB6EE6A7F849}.Release|x86.ActiveCfg = Release|Any CPU
+		{87228D3B-2801-4025-AFA2-BB6EE6A7F849}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

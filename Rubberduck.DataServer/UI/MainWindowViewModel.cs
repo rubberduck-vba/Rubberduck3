@@ -1,7 +1,7 @@
 ﻿using NLog;
-using Rubberduck.DataServer.Abstract;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Proxy;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
 using System;
@@ -55,7 +55,7 @@ namespace Rubberduck.DataServer
     {
         private readonly Timer _timer;
 
-        public ServerStatusViewModel(IJsonRpcServer server, IDataServerEvents events)
+        public ServerStatusViewModel(IJsonRpcServer server, ILocalDbServerEvents events)
         {
             _timer = new Timer(_ =>
             {

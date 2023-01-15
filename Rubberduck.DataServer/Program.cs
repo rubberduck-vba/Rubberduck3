@@ -1,16 +1,12 @@
 ﻿using CommandLine;
-using Rubberduck.DataServer.Abstract;
 using Rubberduck.DataServer.Properties;
-using Rubberduck.DataServer.Services;
 using Rubberduck.DataServer.UI;
 using Rubberduck.DataServer.UI.Commands;
 using Rubberduck.InternalApi.RPC.LSP;
 using Rubberduck.RPC.Platform;
 using System;
-using System.Data;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
@@ -32,7 +28,7 @@ namespace Rubberduck.DataServer
             [Option('v', "verbose", Required = false, HelpText = "Whether this server logs verbose messages.")]
             public bool Verbose { get; set; }
 
-            [Option('s', "silent", Required = false, HelpText = "Whether this trace is disabled on this server.")]
+            [Option('s', "silent", Required = false, HelpText = "Whether trace output is disabled on this server.")]
             public bool Silent { get; set; }
 
             [Option('d', "exit-delay", Required = false, Default = 2000, HelpText = "The number of milliseconds to wait before exiting the process after shutting down.")]
