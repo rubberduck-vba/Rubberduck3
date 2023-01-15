@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Rubberduck.InternalApi.Model;
+using System.IO;
 
 namespace Rubberduck.VBEditor.SourceCodeHandling
 {
@@ -10,13 +11,13 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
         /// <summary>
         /// Replaces the entire module's contents with the specified code.
         /// </summary>
-        void SubstituteCode(QualifiedModuleName module, string newCode);
+        void SubstituteCode(IQualifiedModuleName module, string newCode);
         /// <summary>
         /// Replaces one or more specific line(s) in the specified module.
         /// </summary>
-        void SubstituteCode(QualifiedModuleName module, CodeString newCode);
-        void SetSelection(QualifiedModuleName module, Selection selection);
-        CodeString GetCurrentLogicalLine(QualifiedModuleName module);
+        void SubstituteCode(IQualifiedModuleName module, CodeString newCode);
+        void SetSelection(IQualifiedModuleName module, Selection selection);
+        CodeString GetCurrentLogicalLine(IQualifiedModuleName module);
     }
 
     /// <summary>
@@ -31,6 +32,6 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
     /// </summary>
     public interface ICodePaneHandler : ISourceCodeHandler<string>
     {
-        CodeString Prettify(QualifiedModuleName module, CodeString original);
+        CodeString Prettify(IQualifiedModuleName module, CodeString original);
     }
 }

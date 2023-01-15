@@ -1,14 +1,13 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
 {
-    [ProtoContract(Name = "executeCommandOptions")]
     public class ExecuteCommandOptions : WorkDoneProgressOptions
     {
         /// <summary>
         /// The commands to be executed on the server.
         /// </summary>
-        [ProtoMember(2, Name = "commands")]
+        [JsonPropertyName("commands")]
         public string[] Commands { get; set; }
     }
 }

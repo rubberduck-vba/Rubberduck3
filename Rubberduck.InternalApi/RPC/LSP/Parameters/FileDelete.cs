@@ -1,11 +1,10 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Parameters
 {
-    [ProtoContract(Name = "fileDelete")]
     public class FileDelete
     {
-        [ProtoMember(1, Name = "uri")]
+        [JsonPropertyName("uri")]
         public string Uri { get; set; }
     }
 }

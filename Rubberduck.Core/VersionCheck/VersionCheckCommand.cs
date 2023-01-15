@@ -50,19 +50,19 @@ namespace Rubberduck.UI.Command
 
         private void PromptAndBrowse(Version latestVersion, bool includePreRelease)
         {
-            var buildType = includePreRelease 
-                ? RubberduckUI.VersionCheck_BuildType_PreRelease 
-                : RubberduckUI.VersionCheck_BuildType_Release;
-            var prompt = string.Format(RubberduckUI.VersionCheck_NewVersionAvailable, _versionCheck.CurrentVersion, latestVersion, buildType);
-            if (!_prompt.Question(prompt, RubberduckUI.Rubberduck))
-            {
-                return;
-            }
+            //var buildType = includePreRelease 
+            //    ? RubberduckUI.VersionCheck_BuildType_PreRelease 
+            //    : RubberduckUI.VersionCheck_BuildType_Release;
+            //var prompt = string.Format(RubberduckUI.VersionCheck_NewVersionAvailable, _versionCheck.CurrentVersion, latestVersion, buildType);
+            //if (!_prompt.Question(prompt, RubberduckUI.Rubberduck))
+            //{
+            //    return;
+            //}
 
-            var url = new Uri(includePreRelease
-                ? "https://github.com/rubberduck-vba/Rubberduck/releases"
-                : "https://github.com/rubberduck-vba/Rubberduck/releases/latest");
-            _webNavigator.Navigate(url);
+            //var url = new Uri(includePreRelease
+            //    ? "https://github.com/rubberduck-vba/Rubberduck/releases"
+            //    : "https://github.com/rubberduck-vba/Rubberduck/releases/latest");
+            //_webNavigator.Navigate(url);
         }
     }
 }

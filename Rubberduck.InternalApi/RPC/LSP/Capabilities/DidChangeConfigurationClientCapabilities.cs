@@ -1,14 +1,14 @@
-﻿using ProtoBuf;
+﻿
+using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
 {
-    [ProtoContract(Name = "didChangeConfigurationClientCapabilities")]
     public class DidChangeConfigurationClientCapabilities
     {
         /// <summary>
         /// The modified configuration settings.
         /// </summary>
-        [ProtoMember(1, Name = "settings")]
+        [JsonPropertyName("settings")]
         public LSPAny Settings { get; set; }
     }
 }

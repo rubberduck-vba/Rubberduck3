@@ -1,17 +1,16 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Parameters
 {
-    [ProtoContract(Name = "publishDiagnosticsParams")]
     public class PublishDiagnosticsParams
     {
-        [ProtoMember(1, Name = "uri")]
+        [JsonPropertyName("uri")]
         public string DocumentUri { get; set; }
 
-        [ProtoMember(2, Name = "version")]
+        [JsonPropertyName("version")]
         public int? Version { get; set; }
 
-        [ProtoMember(3, Name = "diagnostics")]
+        [JsonPropertyName("diagnostics")]
         public Diagnostic[] Diagnostics { get; set; }
     }
 }

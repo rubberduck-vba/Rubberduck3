@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Rubberduck.Resources.Registration;
+using System.Reflection;
 using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -8,14 +9,15 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Rubberduck.DataServer")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("SQLite backend for Rubberduck.Server")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("HP")]
+[assembly: AssemblyCompany("Rubberduck")]
 [assembly: AssemblyProduct("Rubberduck.DataServer")]
-[assembly: AssemblyCopyright("Copyright © HP 2023")]
+[assembly: AssemblyCopyright("Copyright © Rubberduck Contributors 2014-2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
+[assembly: Guid(RubberduckGuid.DataServerGuid)]
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from
 // COM, set the ComVisible attribute to true on that type.

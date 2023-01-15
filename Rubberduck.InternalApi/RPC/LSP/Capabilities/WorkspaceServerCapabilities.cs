@@ -1,14 +1,13 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
 {
-    [ProtoContract(Name = "workspaceServerCapabilities")]
     public class WorkspaceServerCapabilities
     {
-        [ProtoMember(1, Name = "workspaceFolders")]
+        [JsonPropertyName("workspaceFolders")]
         public WorkspaceFoldersServerCapabilities WorkspaceFolders { get; set; }
 
-        [ProtoMember(2, Name = "fileOperations")]
+        [JsonPropertyName("fileOperations")]
         public FileOperationServerCapabilities FileOperations { get; set; }
     }
 }

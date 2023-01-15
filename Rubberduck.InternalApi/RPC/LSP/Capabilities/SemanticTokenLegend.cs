@@ -1,22 +1,21 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
 {
     /// <summary>
     /// Encodes token types and modifiers by index.
     /// </summary>
-    [ProtoContract(Name = "semanticTokenLegend")]
     public class SemanticTokenLegend
     {
         /// <summary>
         /// The token types a server uses.
         /// </summary>
-        [ProtoMember(1, Name = "tokenTypes")]
+        [JsonPropertyName("tokenTypes")]
         public string[] TokenTypes { get; set; }
         /// <summary>
         /// The token modifiers a server uses.
         /// </summary>
-        [ProtoMember(2, Name = "tokenModifiers")]
+        [JsonPropertyName("tokenModifiers")]
         public string[] TokenModifiers { get; set; }
     }
 }

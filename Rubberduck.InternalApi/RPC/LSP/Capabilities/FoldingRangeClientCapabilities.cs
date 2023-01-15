@@ -1,14 +1,13 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
 {
-    [ProtoContract(Name = "foldingRangeClientCapabilities")]
     public class FoldingRangeClientCapabilities
     {
         /// <summary>
         /// Whether the client supports dynamic registration.
         /// </summary>
-        [ProtoMember(1, Name = "dynamicRegistration")]
+        [JsonPropertyName("dynamicRegistration")]
         public bool SupportsDynamicRegistration { get; set; }
 
         /// <summary>
@@ -17,44 +16,42 @@ namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
         /// <remarks>
         /// The value serves as a hint; servers are free to acknowledge this limit.
         /// </remarks>
-        [ProtoMember(2, Name = "rangeLimit")]
+        [JsonPropertyName("rangeLimit")]
         public uint RangeLimit { get; set; }
 
         /// <summary>
         /// Signals that the client only supports folding complete lines.
         /// </summary>
-        [ProtoMember(3, Name = "lineFoldingOnly")]
+        [JsonPropertyName("lineFoldingOnly")]
         public bool LineFoldingOnly { get; set; } = true;
 
         /// <summary>
         /// Specific options for the folding range kind.
         /// </summary>
-        [ProtoMember(4, Name = "foldingRangeKind")]
+        [JsonPropertyName("foldingRangeKind")]
         public FoldingRangeKinds FoldingRangeKind { get; set; }
 
         /// <summary>
         /// Specific options for the folding range.
         /// </summary>
-        [ProtoMember(5, Name = "foldingRange")]
+        [JsonPropertyName("foldingRange")]
         public FoldingRangeOptions FoldingRange { get; set; }
 
-        [ProtoContract(Name = "foldingRangeKinds")]
         public class FoldingRangeKinds
         {
             /// <summary>
             /// The folding range kinds supported by the client.
             /// </summary>
-            [ProtoMember(1, Name = "valueSet")]
+            [JsonPropertyName("valueSet")]
             public string[] ValueSet { get; set; }
         }
 
-        [ProtoContract(Name = "foldingRangeOptions")]
         public class FoldingRangeOptions
         {
             /// <summary>
             /// Signals that the client supports setting 'collapsedText' on folding ranges to display custom labels instead of the default text.
             /// </summary>
-            [ProtoMember(1, Name = "collapsedText")]
+            [JsonPropertyName("collapsedText")]
             public bool CollapsedText { get; set; }
         }
     }

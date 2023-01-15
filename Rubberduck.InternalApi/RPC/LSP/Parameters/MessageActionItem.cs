@@ -1,14 +1,13 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Parameters
 {
-    [ProtoContract(Name = "messageActionItem")]
     public class MessageActionItem
     {
         /// <summary>
         /// A short title like 'Retry', 'Open Log', etc.
         /// </summary>
-        [ProtoMember(1)]
+        [JsonPropertyName("title")]
         public string Title { get; set; }
     }
 }

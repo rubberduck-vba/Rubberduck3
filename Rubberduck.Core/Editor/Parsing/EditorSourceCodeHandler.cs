@@ -1,11 +1,12 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using Rubberduck.Parsing;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SourceCodeHandling;
+using Rubberduck.InternalApi.Model;
 using System;
 using System.IO;
 using System.Linq;
+using RubberduckUI.Extensions;
 
 namespace Rubberduck.Core.Editor
 {
@@ -18,13 +19,13 @@ namespace Rubberduck.Core.Editor
             _documentProvider = documentProvider;
         }
 
-        private TextDocument GetDocument(QualifiedModuleName module) => _documentProvider.GetDocument(module);
+        private TextDocument GetDocument(IQualifiedModuleName module) => _documentProvider.GetDocument(module);
 
-        public string StringSource(QualifiedModuleName module) => GetDocument(module)?.Text ?? string.Empty;
+        public string StringSource(IQualifiedModuleName module) => GetDocument(module)?.Text ?? string.Empty;
 
-        public TextReader SourceCode(QualifiedModuleName module) => GetDocument(module).CreateReader();
+        public TextReader SourceCode(IQualifiedModuleName module) => GetDocument(module).CreateReader();
 
-        public void SubstituteCode(QualifiedModuleName module, CodeString newCode)
+        public void SubstituteCode(IQualifiedModuleName module, CodeString newCode)
         {
             var document = GetDocument(module) ?? throw new ArgumentOutOfRangeException(nameof(module));
 
@@ -42,13 +43,13 @@ namespace Rubberduck.Core.Editor
             document.Insert(snipStart, newCode.Code);
         }
 
-        public void SubstituteCode(QualifiedModuleName module, string newCode)
+        public void SubstituteCode(IQualifiedModuleName module, string newCode)
         {
             var document = GetDocument(module) ?? throw new ArgumentOutOfRangeException(nameof(module));
             document.Text = newCode;
         }
 
-        public void SetSelection(QualifiedModuleName module, Selection selection)
+        public void SetSelection(IQualifiedModuleName module, Selection selection)
         {
             var document = _documentProvider.GetDocument(module);
             
@@ -58,12 +59,12 @@ namespace Rubberduck.Core.Editor
             // TODO set document selection
         }
 
-        public CodeString GetCurrentLogicalLine(QualifiedModuleName module)
+        public CodeString GetCurrentLogicalLine(IQualifiedModuleName module)
         {
             throw new NotImplementedException();
         }
 
-        public int GetContentHash(QualifiedModuleName module)
+        public int GetContentHash(IQualifiedModuleName module)
         {
             throw new NotImplementedException();
         }

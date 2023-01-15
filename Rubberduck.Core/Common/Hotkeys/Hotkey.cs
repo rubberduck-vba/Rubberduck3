@@ -4,8 +4,8 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Rubberduck.InternalApi.WindowsApi;
 using NLog;
-using Rubberduck.Resources;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.UI.OfficeMenus;
 
 namespace Rubberduck.Common.Hotkeys
 {
@@ -55,7 +55,7 @@ namespace Rubberduck.Common.Hotkeys
 
             if (key == Keys.None)
             {
-                throw new InvalidOperationException(RubberduckUI.CommonHotkey_InvalidKey);
+                return;
             }
 
             HookKey(key, shift);
@@ -104,7 +104,7 @@ namespace Rubberduck.Common.Hotkeys
             var success = User32.RegisterHotKey(_hWndVbe, new IntPtr(hookId), shift, (uint)key);
             if (!success)
             {
-                Logger.Debug(RubberduckUI.CommonHotkey_KeyNotRegistered, key);
+                Logger.Debug("Hotkey was not registered", key);
                 return;
             }
 

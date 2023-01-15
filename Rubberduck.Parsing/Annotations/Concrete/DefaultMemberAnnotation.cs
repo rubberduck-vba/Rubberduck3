@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System.Linq;
 using Rubberduck.Resources.Registration;
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.Parsing.Annotations.Concrete
 {

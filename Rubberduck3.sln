@@ -51,6 +51,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Client", "Rubber
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.DataServer", "Rubberduck.DataServer\Rubberduck.DataServer.csproj", "{2539699A-2515-4667-A077-43C1BB87FD80}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.RPC", "Rubberduck.RPC\Rubberduck.RPC.csproj", "{8D218701-AF68-4013-B9C0-108C1D162E11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -277,6 +279,18 @@ Global
 		{2539699A-2515-4667-A077-43C1BB87FD80}.Release|x64.Build.0 = Release|Any CPU
 		{2539699A-2515-4667-A077-43C1BB87FD80}.Release|x86.ActiveCfg = Release|Any CPU
 		{2539699A-2515-4667-A077-43C1BB87FD80}.Release|x86.Build.0 = Release|Any CPU
+		{8D218701-AF68-4013-B9C0-108C1D162E11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D218701-AF68-4013-B9C0-108C1D162E11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D218701-AF68-4013-B9C0-108C1D162E11}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8D218701-AF68-4013-B9C0-108C1D162E11}.Debug|x64.Build.0 = Debug|Any CPU
+		{8D218701-AF68-4013-B9C0-108C1D162E11}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8D218701-AF68-4013-B9C0-108C1D162E11}.Debug|x86.Build.0 = Debug|Any CPU
+		{8D218701-AF68-4013-B9C0-108C1D162E11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D218701-AF68-4013-B9C0-108C1D162E11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D218701-AF68-4013-B9C0-108C1D162E11}.Release|x64.ActiveCfg = Release|Any CPU
+		{8D218701-AF68-4013-B9C0-108C1D162E11}.Release|x64.Build.0 = Release|Any CPU
+		{8D218701-AF68-4013-B9C0-108C1D162E11}.Release|x86.ActiveCfg = Release|Any CPU
+		{8D218701-AF68-4013-B9C0-108C1D162E11}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

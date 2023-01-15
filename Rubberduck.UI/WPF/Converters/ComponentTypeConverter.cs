@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Rubberduck.InternalApi.Model;
+using System;
 using System.Globalization;
 using System.Windows.Data;
-using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.WPF.Converters
 {

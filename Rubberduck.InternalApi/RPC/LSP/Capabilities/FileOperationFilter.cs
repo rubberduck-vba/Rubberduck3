@@ -1,14 +1,12 @@
-﻿using ProtoBuf;
-
+﻿using System.Text.Json.Serialization;
 namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
 {
-    [ProtoContract(Name = "fileOperationFilter")]
     public class FileOperationFilter
     {
-        [ProtoMember(1, Name = "scheme")]
+        [JsonPropertyName("scheme")]
         public string Scheme { get; set; }
 
-        [ProtoMember(2, Name = "pattern")]
+        [JsonPropertyName("pattern")]
         public FileOperationPattern Pattern { get; set; }
     }
 }

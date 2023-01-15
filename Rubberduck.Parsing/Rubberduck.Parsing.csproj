@@ -318,8 +318,6 @@
     <Compile Include="Model\MemberInfo.cs" />
     <Compile Include="Parsers\Grammar\VBABaseParserRuleContext.cs" />
     <Compile Include="Model\Tokens.cs" />
-    <Compile Include="Model\MemberType.cs" />
-    <Compile Include="Model\ModuleType.cs" />
     <Compile Include="Model\NamedOffsetInfo.cs" />
     <Compile Include="Model\ParameterInfo.cs" />
     <Compile Include="ParserMode.cs" />

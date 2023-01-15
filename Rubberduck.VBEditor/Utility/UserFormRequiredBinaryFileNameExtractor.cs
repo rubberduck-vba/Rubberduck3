@@ -3,8 +3,8 @@ using System.IO.Abstractions;
 using System.Text;
 using System.Text.RegularExpressions;
 using Rubberduck.InternalApi.Common;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.VBEditor.Utility
 {

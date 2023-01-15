@@ -1,14 +1,13 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Parameters
 {
-    [ProtoContract(Name = "workDoneProgressCancelParams")]
     public class WorkDoneProgressCancelParams
     {
         /// <summary>
         /// The token to be used to report progress for this task.
         /// </summary>
-        [ProtoMember(2, Name = "token")]
+        [JsonPropertyName("token")]
         public string ProgressToken { get; set; }
     }
 }

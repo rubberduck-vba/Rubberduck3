@@ -9,5 +9,11 @@
 &lt;/SerializableConnectionString&gt;</DesignTimeValue>
       <Value Profile="(Default)">Data Source=RubberduckLocalDB.db;</Value>
     </Setting>
+    <Setting Name="DefaultPort" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">3031</Value>
+    </Setting>
+    <Setting Name="JsonRpcServerPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">/Rubberduck/DataServer</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

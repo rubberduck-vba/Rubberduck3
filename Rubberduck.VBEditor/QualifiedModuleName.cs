@@ -1,58 +1,18 @@
 using System.Globalization;
 using Path = System.IO.Path;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System;
+using Rubberduck.VBEditor.Extensions;
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.VBEditor
 {
     /// <summary>
     /// Represents a VBComponent or a VBProject.
     /// </summary>
-    public class QualifiedModuleName
+    public class QualifiedModuleName : IQualifiedModuleName
     {
         public static QualifiedModuleName None { get; } = new QualifiedModuleName();
-
-        public static string GetProjectId(IVBProject project)
-        {
-            if (project.IsWrappingNullReference)
-            {
-                return string.Empty;
-            }
-
-            var projectId = project.ProjectId;
-
-            if (string.IsNullOrEmpty(projectId))
-            {
-                project.AssignProjectId();
-                projectId = project.ProjectId;
-            }
-
-            return projectId;
-        }
-
-        /// <summary>
-        /// Gets the standard projectId for a library reference.
-        /// Do not use this overload for referenced user projects.
-        /// </summary>
-        public static string GetProjectId(ReferenceInfo reference)
-        {
-            return new QualifiedModuleName(reference).ProjectId;
-        }
-
-        /// <summary>
-        /// Gets the standard projectId for a locked user projects.
-        /// Do not use this overload for unlocked user projects.
-        /// </summary>
-        public static string GetProjectId(string projectName, string projectPath)
-        {
-            return new QualifiedModuleName(projectName, projectPath, projectName).ProjectId;
-        }
-
-        public static int GetContentHash(IVBComponent component)
-        {
-            return component?.ContentHash() ?? 0;
-        }
 
         public QualifiedModuleName(IVBProject project)
         {
@@ -60,7 +20,7 @@ namespace Rubberduck.VBEditor
             ComponentType = ComponentType.Undefined;
             _projectName = project.Name;
             ProjectPath = string.Empty;
-            ProjectId = GetProjectId(project);
+            ProjectId = project.GetProjectId();
         }
 
         public QualifiedModuleName(IVBComponent component)
@@ -74,7 +34,7 @@ namespace Rubberduck.VBEditor
                 {
                     _projectName = project == null ? string.Empty : project.Name;
                     ProjectPath = string.Empty;
-                    ProjectId = GetProjectId(project);
+                    ProjectId = project.GetProjectId();
                 }
             }
         }
@@ -84,10 +44,7 @@ namespace Rubberduck.VBEditor
         /// Do not use this overload for referenced user projects.
         /// </summary>
         public QualifiedModuleName(ReferenceInfo reference)
-        :this(reference.Name,
-            reference.FullPath,
-            reference.Name)
-        {}
+        :this(reference.Name, reference.FullPath, reference.Name) { }
 
         /// <summary>
         /// Creates a QualifiedModuleName for a built-in declaration.
@@ -102,7 +59,7 @@ namespace Rubberduck.VBEditor
             ComponentType = ComponentType.ComComponent;
         }
 
-        public QualifiedModuleName()
+        private QualifiedModuleName()
         {
         }
 
@@ -146,9 +103,23 @@ namespace Rubberduck.VBEditor
                 return false;
             }
 
-            var other = (QualifiedModuleName)obj;
+            return Equals(obj as IQualifiedModuleName);
+        }
 
-            return other.ProjectId == ProjectId && other.ComponentName == ComponentName;
+        public bool Equals(IQualifiedModuleName other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            return other.ProjectId == ProjectId 
+                && other.ComponentName == ComponentName;
         }
     }
 

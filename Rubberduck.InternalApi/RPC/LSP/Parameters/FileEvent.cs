@@ -1,17 +1,16 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Parameters
 {
-    [ProtoContract(Name = "fileEvent")]
     public class FileEvent
     {
-        [ProtoMember(1, Name = "uri")]
+        [JsonPropertyName("uri")]
         public string Uri { get; set; }
 
         /// <summary>
         /// See <c>Constants.FileChangeType</c>.
         /// </summary>
-        [ProtoMember(2, Name = "type")]
+        [JsonPropertyName("type")]
         public int Type { get; set; }
     }
 }

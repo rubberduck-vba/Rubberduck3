@@ -1,13 +1,18 @@
-﻿using Rubberduck.InternalApi.RPC.DataServer.Parameters;
+﻿using System;
+using Rubberduck.InternalApi.RPC.DataServer.Parameters;
 using Rubberduck.InternalApi.RPC.DataServer.Response;
-using System;
-using System.ServiceModel;
-using System.Threading.Tasks;
+using Rubberduck.DataServer.Services;
+using AustinHarris.JsonRpc;
 
 namespace Rubberduck.DataServer.Controllers
 {
-    [ServiceContract(Name = "server")]
-    public class ServerController
+    public interface IServerController
+    {
+        ConnectResult Connect(ConnectParams parameters);
+        DisconnectResult Disconnect(DisconnectParams parameters);
+    }
+
+    public class ServerController : JsonRpcService, IServerController
     {
         private readonly IEnvironmentService _environment;
         private readonly Server _server;
@@ -21,8 +26,8 @@ namespace Rubberduck.DataServer.Controllers
         /// <summary>
         /// Connects a client to the server.
         /// </summary>
-        [OperationContract(Name = "connect")]
-        public async Task<ConnectResult> Connect(ConnectParams parameters)
+        [JsonRpcMethod("connect")]
+        public ConnectResult Connect(ConnectParams parameters)
         {
             var client = new Client
             { 
@@ -32,10 +37,10 @@ namespace Rubberduck.DataServer.Controllers
             
             var connected = _server.Connect(client);
             
-            return await Task.FromResult(new ConnectResult 
+            return new ConnectResult 
             { 
                 Connected = connected 
-            });
+            };
         }
 
         /// <summary>
@@ -44,8 +49,8 @@ namespace Rubberduck.DataServer.Controllers
         /// <remarks>
         /// Server shuts down if the last client disconnects.
         /// </remarks>
-        [OperationContract(Name = "disconnect")]
-        public async Task Disconnect(DisconnectParams parameters)
+        [JsonRpcMethod("disconnect")]
+        public DisconnectResult Disconnect(DisconnectParams parameters)
         {
             if (!_server.HasClients)
             {
@@ -60,10 +65,12 @@ namespace Rubberduck.DataServer.Controllers
             var disconnected = _server.Disconnect(client);
             var shuttingDown = disconnected && !_server.HasClients;
 
-            if (shuttingDown)
+            // TODO actually shutdown if we're supposed to
+            return new DisconnectResult
             {
-                _environment.Exit();
-            }
+                Disconnected = disconnected,
+                ShuttingDown = shuttingDown,
+            };
         }
     }
 }

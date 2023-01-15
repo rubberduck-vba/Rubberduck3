@@ -103,7 +103,12 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstract\DataServer\IConsoleMesssageViewModel.cs" />
+    <Compile Include="Abstract\DataServer\IConsoleViewModel.cs" />
+    <Compile Include="Abstract\DataServer\IDataServerMainWindowViewModel.cs" />
+    <Compile Include="Abstract\DataServer\IServerStatusViewModel.cs" />
     <Compile Include="Abstract\Editor\IEditorShellContext.cs" />
+    <Compile Include="Abstract\Editor\ITextDocumentProvider.cs" />
     <Compile Include="Abstract\Editor\Tools\IShellToolTabSetting.cs" />
     <Compile Include="Abstract\Editor\Tools\IToolTabViewModel.cs" />
     <Compile Include="Abstract\Editor\Tools\SyncPanel\IShellToolTabProvider.cs" />
@@ -112,11 +117,8 @@
     <Compile Include="Command\SyncPanel\ILoadCommand.cs" />
     <Compile Include="Command\SyncPanel\IOpenCommand.cs" />
     <Compile Include="Command\SyncPanel\ISyncCommand.cs" />
+    <Compile Include="IPresenter.cs" />
     <Compile Include="RubberduckEditor\EditorShellContext.cs" />
-    <Compile Include="RubberduckEditor\Tools\SyncPanel\SyncPanelModuleViewModel.cs" />
-    <Compile Include="RubberduckEditor\Tools\SyncPanel\SyncPanelModuleViewModelProvider.cs" />
-    <Compile Include="RubberduckEditor\Tools\SyncPanel\SyncPanelToolTab.cs" />
-    <Compile Include="RubberduckEditor\Tools\SyncPanel\SyncPanelViewModel.cs" />
     <Compile Include="Abstract\IAboutControlViewModel.cs" />
     <Compile Include="Abstract\Editor\ICodePaneViewModel.cs" />
     <Compile Include="Abstract\Editor\IEditorControlViewModel.cs" />
@@ -129,11 +131,8 @@
     <Compile Include="Abstract\Editor\ISyntaxErrorViewModel.cs" />
     <Compile Include="Abstract\Editor\Tools\SyncPanel\ModuleSyncState.cs" />
     <Compile Include="Abstract\Editor\ShellPanelLocation.cs" />
-    <Compile Include="Command\ComCommandBase.cs" />
     <Compile Include="Command\CommandBase.cs" />
     <Compile Include="Command\DelegateCommand.cs" />
-    <Compile Include="Command\IMenuCommand.cs" />
-    <Compile Include="OfficeMenus\MenuItems\ShowEditorCommandMenuItem.cs" />
     <Compile Include="RubberduckEditor\BlockCompletion.cs" />
     <Compile Include="RubberduckEditor\IBlockCompletionStrategy.cs" />
     <Compile Include="RubberduckEditor\TextTransform\ITextMarker.cs" />
@@ -141,7 +140,7 @@
     <Compile Include="RubberduckEditor\TextTransform\TextMarker.cs" />
     <Compile Include="RubberduckEditor\TextTransform\TextMarkerService.cs" />
     <Compile Include="RubberduckEditor\TextTransform\TextMarkerTypes.cs" />
-    <Compile Include="SelectionExtensions.cs" />
+    <Compile Include="Extensions\SelectionExtensions.cs" />
     <Compile Include="WPF\BindableTextEditor.cs" />
     <Compile Include="WPF\Converters\AccessibilityToIconConverter.cs" />
     <Compile Include="WPF\Converters\AnnotateDeclarationCommandCEVisibilityConverter.cs" />
@@ -178,17 +177,8 @@
     <Compile Include="WPF\Converters\StringHasValueToVisibilityConverter.cs" />
     <Compile Include="WPF\Converters\SubtractionConverter.cs" />
     <Compile Include="WPF\Converters\TemplateCommandParameterToTupleConverter.cs" />
-    <Compile Include="DockableToolwindowPresenter.cs" />
     <Compile Include="EnvironmentProvider.cs" />
     <Compile Include="IDockableUserControl.cs" />
-    <Compile Include="OfficeMenus\CommandMenuItemBase.cs" />
-    <Compile Include="OfficeMenus\IAppMenu.cs" />
-    <Compile Include="OfficeMenus\ICommandMenuItem.cs" />
-    <Compile Include="OfficeMenus\IMenuItem.cs" />
-    <Compile Include="OfficeMenus\MenuItems\AboutCommandMenuItem.cs" />
-    <Compile Include="OfficeMenus\MenuItems\IParentMenuItem.cs" />
-    <Compile Include="OfficeMenus\MenuItems\ParentMenuItemBase.cs" />
-    <Compile Include="OfficeMenus\MenuItems\RubberduckParentMenu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -207,28 +197,16 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="OfficeMenus\CommandBars\" />
+    <Folder Include="OfficeMenus\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj">
       <Project>{5E2588A5-2EF2-4267-952D-53AEC8F5F173}</Project>
       <Name>Rubberduck.InternalApi</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
-      <Project>{86502725-A9D2-47A8-B26A-5E7BC8A85D47}</Project>
-      <Name>Rubberduck.Parsing</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
       <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
       <Name>Rubberduck.Resources</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
-      <Project>{E794CFC3-3D9F-400F-88D9-69E929D8E8AF}</Project>
-      <Name>Rubberduck.SettingsProvider</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.VBEditor\Rubberduck.VBEditor.csproj">
-      <Project>{030FDE59-C347-4B81-AB80-5B4B80B757A0}</Project>
-      <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

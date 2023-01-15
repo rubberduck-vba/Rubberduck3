@@ -48,31 +48,31 @@ namespace Rubberduck.Core.Editor
         {
             try
             {
-                _foldingListener = new VBFoldingListener(_settings.BlockFoldingSettings);
-                var listeners = new VBAParserBaseListener[]
-                { 
-                    _foldingListener,
-                };
+                //_foldingListener = new VBFoldingListener(_settings.BlockFoldingSettings);
+//                var listeners = new VBAParserBaseListener[]
+//                { 
+//                    _foldingListener,
+//                };
 
-                EditorShellContext.Current.Shell.Status.ParserState = "Parsing...";
+//                EditorShellContext.Current.Shell.Status.ParserState = "Parsing...";
                 
-                var sw = Stopwatch.StartNew();
-//                var result = await _parser.ParseAsync(ModuleInfo.Name, reader, listeners);
-                sw.Stop();
+//                var sw = Stopwatch.StartNew();
+////                var result = await _parser.ParseAsync(ModuleInfo.Name, reader, listeners);
+//                sw.Stop();
 
-//                _parseTree = result.ParseTree;
-//                _rewriter = result.Rewriter;
+////                _parseTree = result.ParseTree;
+////                _rewriter = result.Rewriter;
 
-//                SyntaxErrors = result.Errors.Select(e => new SyntaxErrorViewModel(e));
+////                SyntaxErrors = result.Errors.Select(e => new SyntaxErrorViewModel(e));
 
-                EditorShellContext.Current.Shell.Status.ParserState = $"Parse completed: {sw.ElapsedMilliseconds:N0}ms";
+//                EditorShellContext.Current.Shell.Status.ParserState = $"Parse completed: {sw.ElapsedMilliseconds:N0}ms";
 
-                var args = new ParseTreeEventArgs(_parseTree, null, _foldingListener.Foldings, SyntaxErrors);
-                OnParseTreeChanged(args);
-                if (!args.SyntaxErrors.Any()) 
-                {
-                    OnParseTreeInspectionsRequested(args);
-                }
+                //var args = new ParseTreeEventArgs(_parseTree, null, _foldingListener.Foldings, SyntaxErrors);
+                //OnParseTreeChanged(args);
+                //if (!args.SyntaxErrors.Any()) 
+                //{
+                    //OnParseTreeInspectionsRequested(args);
+                //}
             }
             catch
             {
@@ -80,6 +80,7 @@ namespace Rubberduck.Core.Editor
             }
         }
 
+        /*
         private void OnParseTreeChanged(ParseTreeEventArgs e)
         {
             ParseTreeChanged?.Invoke(this, e);
@@ -89,6 +90,7 @@ namespace Rubberduck.Core.Editor
         {
             ParseTreeInspectionsRequested?.Invoke(this, e);
         }
+        */
 
         private IModuleInfoViewModel _moduleInfo;
         public IModuleInfoViewModel ModuleInfo
@@ -140,8 +142,8 @@ namespace Rubberduck.Core.Editor
         }
 
         public event EventHandler SelectedMemberProviderChanged;
-        public event EventHandler<ParseTreeEventArgs> ParseTreeChanged;
-        public event EventHandler<ParseTreeEventArgs> ParseTreeInspectionsRequested;
+        //public event EventHandler<ParseTreeEventArgs> ParseTreeChanged;
+        //public event EventHandler<ParseTreeEventArgs> ParseTreeInspectionsRequested;
 
         public ObservableCollection<IMemberProviderViewModel> MemberProviders { get; set; } 
 

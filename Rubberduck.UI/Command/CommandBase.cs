@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
 using NLog;
+using Rubberduck.InternalApi.Common;
 
 namespace Rubberduck.UI.Command
 {
@@ -59,7 +60,10 @@ namespace Rubberduck.UI.Command
         {
             try
             {
-                return CanExecuteCondition(parameter);
+                var result = false;
+                var elapsed = TimedAction.Run(() => result = CanExecuteCondition(parameter));
+                Logger.Trace($"{GetType().Name}.CanExecute completed in {elapsed.TotalMilliseconds}ms.");
+                return result;
             }
             catch (Exception exception)
             {
@@ -78,12 +82,16 @@ namespace Rubberduck.UI.Command
         {
             try
             {
-                if (!OnExecuteCondition(parameter))
+                var elapsed = TimedAction.Run(() =>
                 {
-                    return;
-                }
+                    if (!OnExecuteCondition(parameter))
+                    {
+                        return;
+                    }
 
-                OnExecute(parameter);
+                    OnExecute(parameter);
+                });
+                Logger.Trace($"{GetType().Name}.Execute completed in {elapsed.TotalMilliseconds}ms.");
             }
             catch (Exception exception)
             {

@@ -1,20 +1,19 @@
-﻿using ProtoBuf;
-using Rubberduck.InternalApi.RPC.LSP.Response;
+﻿using Rubberduck.InternalApi.RPC.LSP.Response;
+using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Parameters
 {
-    [ProtoContract(Name = "workspaceFoldersChangedEvent")]
     public class WorkspaceFoldersChangedEvent
     {
         /// <summary>
         /// An array containing the workspace folders that were added.
         /// </summary>
-        [ProtoMember(1, Name = "added")]
+        [JsonPropertyName("added")]
         public WorkspaceFolder[] Added { get; set; }
         /// <summary>
         /// An array containing the workspace folders that were removed.
         /// </summary>
-        [ProtoMember(2, Name = "removed")]
+        [JsonPropertyName("removed")]
         public WorkspaceFolder[] Removed { get; set; }
     }
 }

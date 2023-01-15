@@ -1,4 +1,4 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers;
+﻿using Rubberduck.InternalApi.Model;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.ComManagement.NonDisposalDecorators

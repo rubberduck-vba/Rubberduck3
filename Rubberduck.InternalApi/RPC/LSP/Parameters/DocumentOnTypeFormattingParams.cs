@@ -1,23 +1,22 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Parameters
 {
-    [ProtoContract(Name = "documentOnTypeFormattingParams")]
     public class DocumentOnTypeFormattingParams
     {
         /// <summary>
         /// The document to format.
         /// </summary>
-        [ProtoMember(1, Name = "textDocument")]
+        [JsonPropertyName("textDocument")]
         public TextDocumentIdentifier TextDocument { get; set; }
 
-        [ProtoMember(2, Name = "position")]
+        [JsonPropertyName("position")]
         public Position Position { get; set; }
 
-        [ProtoMember(3, Name = "ch")]
+        [JsonPropertyName("ch")]
         public string Ch { get; set; }
 
-        [ProtoMember(4, Name = "options")]
+        [JsonPropertyName("options")]
         public FormattingOptions Options { get; set; }
     }
 }

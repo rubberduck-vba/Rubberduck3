@@ -1,14 +1,27 @@
-﻿using Rubberduck.DataServer.Abstract;
+﻿using AustinHarris.JsonRpc;
+using Rubberduck.DataServer.Abstract;
 using Rubberduck.InternalApi.RPC.DataServer;
 using System.Collections.Generic;
 using System.Linq;
-using System.ServiceModel;
 using System.Threading.Tasks;
+using Entities = Rubberduck.DataServer.Storage.Entities;
 
 namespace Rubberduck.DataServer.Controllers
 {
-    [ServiceContract]
-    public class DeclarationsController
+    public interface IDeclarationsController
+    {
+        Task<IEnumerable<DeclarationAnnotation>> SaveAsync(IEnumerable<DeclarationAnnotation> annotations);
+        Task<IEnumerable<DeclarationAttribute>> SaveAsync(IEnumerable<DeclarationAttribute> attributes);
+        Task<IEnumerable<IdentifierReference>> SaveAsync(IEnumerable<IdentifierReference> identifierReferences);
+        Task<IEnumerable<Project>> SaveAsync(IEnumerable<Project> projects);
+        Task<IEnumerable<Module>> SaveAsync(IEnumerable<Module> modules);
+        Task<IEnumerable<Member>> SaveAsync(IEnumerable<Member> members);
+        Task<IEnumerable<Parameter>> SaveAsync(IEnumerable<Parameter> parameters);
+        Task<IEnumerable<Local>> SaveAsync(IEnumerable<Local> locals);
+
+    }
+
+    public class DeclarationsController : JsonRpcService, IDeclarationsController
     {
         private readonly IUnitOfWorkFactory _factory;
 
@@ -190,7 +203,7 @@ namespace Rubberduck.DataServer.Controllers
         /// Items with ID=0 are considered new inserts.
         /// </remarks>
         /// <returns>The saved declaration annotations, including their server-provided ID.</returns>
-        [OperationContract(Name = "saveAnnotations")]
+        [JsonRpcMethod("saveAnnotations")]
         public async Task<IEnumerable<DeclarationAnnotation>> SaveAsync(IEnumerable<DeclarationAnnotation> annotations)
         {
             using (var uow = _factory.CreateNew())
@@ -218,7 +231,7 @@ namespace Rubberduck.DataServer.Controllers
         /// Items with ID=0 are considered new inserts.
         /// </remarks>
         /// <returns>The saved declaration attributes, including their server-provided ID.</returns>
-        [OperationContract(Name = "saveAttributes")]
+        [JsonRpcMethod("saveAttributes")]
         public async Task<IEnumerable<DeclarationAttribute>> SaveAsync(IEnumerable<DeclarationAttribute> attributes)
         {
             using (var uow = _factory.CreateNew())
@@ -246,7 +259,7 @@ namespace Rubberduck.DataServer.Controllers
         /// Items with ID=0 are considered new inserts.
         /// </remarks>
         /// <returns>The saved identifier references, including their server-provided ID.</returns>
-        [OperationContract(Name = "saveIdentifierReferences")]
+        [JsonRpcMethod("saveIdentifierReferences")]
         public async Task<IEnumerable<IdentifierReference>> SaveAsync(IEnumerable<IdentifierReference> identifierReferences)
         {
             using (var uow = _factory.CreateNew())
@@ -274,7 +287,7 @@ namespace Rubberduck.DataServer.Controllers
         /// Items with ID=0 are considered new inserts.
         /// </remarks>
         /// <returns>The saved declarations, including their server-provided ID.</returns>
-        [OperationContract(Name = "saveProjects")]
+        [JsonRpcMethod("saveProjects")]
         public async Task<IEnumerable<Project>> SaveAsync(IEnumerable<Project> projects)
         {
             using (var uow = _factory.CreateNew())
@@ -316,7 +329,7 @@ namespace Rubberduck.DataServer.Controllers
         /// Items with ID=0 are considered new inserts.
         /// </remarks>
         /// <returns>The saved declarations, including their server-provided ID.</returns>
-        [OperationContract(Name = "saveModules")]
+        [JsonRpcMethod("saveModules")]
         public async Task<IEnumerable<Module>> SaveAsync(IEnumerable<Module> modules)
         {
             using (var uow = _factory.CreateNew())
@@ -354,7 +367,7 @@ namespace Rubberduck.DataServer.Controllers
         /// Items with ID=0 are considered new inserts.
         /// </remarks>
         /// <returns>The saved declarations, including their server-provided ID.</returns>
-        [OperationContract(Name = "saveMembers")]
+        [JsonRpcMethod("saveMembers")]
         public async Task<IEnumerable<Member>> SaveAsync(IEnumerable<Member> members)
         {
             using (var uow = _factory.CreateNew())
@@ -397,7 +410,7 @@ namespace Rubberduck.DataServer.Controllers
         /// Items with ID=0 are considered new inserts.
         /// </remarks>
         /// <returns>The saved declarations, including their server-provided ID.</returns>
-        [OperationContract(Name = "saveParameters")]
+        [JsonRpcMethod("saveParameters")]
         public async Task<IEnumerable<Parameter>> SaveAsync(IEnumerable<Parameter> parameters)
         {
             using (var uow = _factory.CreateNew())
@@ -441,7 +454,7 @@ namespace Rubberduck.DataServer.Controllers
         /// Items with ID=0 are considered new inserts.
         /// </remarks>
         /// <returns>The saved declarations, including their server-provided ID.</returns>
-        [OperationContract(Name = "saveLocals")]
+        [JsonRpcMethod("saveLocals")]
         public async Task<IEnumerable<Local>> SaveAsync(IEnumerable<Local> locals)
         {
             using (var uow = _factory.CreateNew())

@@ -1,8 +1,7 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
 {
-    [ProtoContract(Name = "fileOperationPattern")]
     public class FileOperationPattern
     {
         /**
@@ -22,20 +21,20 @@ namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
         /// <summary>
         /// The glob pattern to match.
         /// </summary>
-        [ProtoMember(1, Name = "glob")]
+        [JsonPropertyName("glob")]
         public string Glob { get; set; }
 
         /// <summary>
         /// Whether to match files or folders with this pattern. Matches both if unspecified.
         /// </summary>
         /// <remarks>See <c>Constants.FileOperationPatternKind</c>.</remarks>
-        [ProtoMember(2, Name = "matches")]
+        [JsonPropertyName("matches")]
         public string Matches { get; set; }
 
         /// <summary>
         /// Additional options used during matching.
         /// </summary>
-        [ProtoMember(3, Name = "options")]
+        [JsonPropertyName("options")]
         public FileOperationPatternOptions Options { get; set; }
     }
 }

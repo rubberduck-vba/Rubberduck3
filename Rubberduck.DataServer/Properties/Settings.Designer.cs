@@ -32,5 +32,23 @@ namespace Rubberduck.DataServer.Properties {
                 return ((string)(this["LocalDB"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3031")]
+        public int DefaultPort {
+            get {
+                return ((int)(this["DefaultPort"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("/Rubberduck/DataServer")]
+        public string JsonRpcServerPath {
+            get {
+                return ((string)(this["JsonRpcServerPath"]));
+            }
+        }
     }
 }

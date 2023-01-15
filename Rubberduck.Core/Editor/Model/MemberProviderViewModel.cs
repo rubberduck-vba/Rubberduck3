@@ -1,8 +1,6 @@
 ﻿using Rubberduck.InternalApi.Model;
-using Rubberduck.Parsing.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
-using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,7 +10,7 @@ namespace Rubberduck.Core.Editor
 {
     public class MemberProviderViewModel : ViewModelBase, IMemberProviderViewModel
     {
-        public static MemberProviderViewModel Default(QualifiedModuleName module, ModuleType moduleType)
+        public static MemberProviderViewModel Default(IQualifiedModuleName module, ModuleType moduleType)
         {
             return new MemberProviderViewModel
             {
@@ -62,8 +60,8 @@ namespace Rubberduck.Core.Editor
             }
         }
 
-        private QualifiedModuleName _qualifiedModuleName;
-        public QualifiedModuleName QualifiedModuleName
+        private IQualifiedModuleName _qualifiedModuleName;
+        public IQualifiedModuleName QualifiedModuleName
         {
             get => _qualifiedModuleName;
             set
@@ -92,7 +90,7 @@ namespace Rubberduck.Core.Editor
 
         private IMemberInfoViewModel _currentMember;
 
-        public event EventHandler<NavigateToMemberEventArgs> MemberSelected;
+        //public event EventHandler<NavigateToMemberEventArgs> MemberSelected;
 
         public IMemberInfoViewModel CurrentMember
         {
@@ -103,14 +101,14 @@ namespace Rubberduck.Core.Editor
                 {
                     _currentMember = value;
                     OnPropertyChanged();
-                    MemberSelected?.Invoke(this, new NavigateToMemberEventArgs(_currentMember));
+                    //MemberSelected?.Invoke(this, new NavigateToMemberEventArgs(_currentMember));
                 }
             }
         }
 
         public void ClearMemberSelectedHandlers()
         {
-            MemberSelected = null;
+            //MemberSelected = null;
         }
 
         public void AddMember(string name, MemberType memberType, DocumentOffset offset)

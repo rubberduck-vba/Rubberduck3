@@ -1,14 +1,13 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Parameters
 {
-    [ProtoContract(Name = "logMessageParams")]
     public class LogMessageParams
     {
-        [ProtoMember(1, Name = "messageType")]
+        [JsonPropertyName("messageType")]
         public int MessageType { get; set; } = Constants.MessageType.Log;
 
-        [ProtoMember(2, Name = "message")]
+        [JsonPropertyName("message")]
         public string Message { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Rubberduck.UI.Abstract;
+﻿using Rubberduck.InternalApi.Model;
+using Rubberduck.UI.Abstract;
 using Rubberduck.UI.Command.SyncPanel;
 using System.Linq;
 
@@ -8,7 +9,7 @@ namespace Rubberduck.Core.Editor.Commands
     {
         public OpenCommand() 
         {
-            AddToCanExecuteEvaluation(p => ((ISyncPanelModuleViewModel)p).ModuleType != Parsing.Model.ModuleType.None);
+            AddToCanExecuteEvaluation(p => ((ISyncPanelModuleViewModel)p).ModuleType != ModuleType.None);
         }
 
         protected override void ExecuteInternal(IEditorShellViewModel shell, ISyncPanelModuleViewModel param)

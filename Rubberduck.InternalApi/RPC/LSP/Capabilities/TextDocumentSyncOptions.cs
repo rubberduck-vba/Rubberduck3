@@ -1,14 +1,13 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
 {
-    [ProtoContract(Name = "textDocumentSyncOptions")]
     public class TextDocumentSyncOptions
     {
         /// <summary>
         /// Whether open and close notifications are sent to the server.
         /// </summary>
-        [ProtoMember(1, Name = "openClose")]
+        [JsonPropertyName("openClose")]
         public bool NotifyOpenClose { get; set; } = true;
 
         /// <summary>
@@ -17,7 +16,7 @@ namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
         /// <remarks>
         /// See <c>Constants.TextDocumentSyncKind</c>.
         /// </remarks>
-        [ProtoMember(2, Name = "change")]
+        [JsonPropertyName("change")]
         public int ChangeNotificationSyncKind { get; set; }
     }
 }

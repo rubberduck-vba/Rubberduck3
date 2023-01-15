@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rubberduck.InternalApi.Model;
+using System;
 
 namespace Rubberduck.VBEditor
 {

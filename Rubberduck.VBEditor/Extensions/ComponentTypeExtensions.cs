@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.VBEditor.Extensions

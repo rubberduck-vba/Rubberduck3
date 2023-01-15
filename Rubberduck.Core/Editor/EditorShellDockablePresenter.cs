@@ -1,10 +1,9 @@
 ﻿using Rubberduck.InternalApi.Model;
-using Rubberduck.Parsing.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.WinForms;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -30,8 +29,8 @@ namespace Rubberduck.Core.Editor
             }
         }
 
-        private QualifiedModuleName _qualifiedModuleName;
-        public QualifiedModuleName QualifiedModuleName 
+        private IQualifiedModuleName _qualifiedModuleName;
+        public IQualifiedModuleName QualifiedModuleName 
         {
             get => _qualifiedModuleName;
             set

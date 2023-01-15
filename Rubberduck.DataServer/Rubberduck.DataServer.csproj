@@ -38,11 +38,23 @@
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AustinHarris.JsonRpc, Version=1.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AustinHarris.JsonRpc.1.2.3\lib\netstandard2.0\AustinHarris.JsonRpc.dll</HintPath>
+    </Reference>
+    <Reference Include="CommandLine, Version=2.9.1.0, Culture=neutral, PublicKeyToken=5a870481e358d379, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommandLineParser.2.9.1\lib\net461\CommandLine.dll</HintPath>
+    </Reference>
     <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.2.0.123\lib\net461\Dapper.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Data.Sqlite, Version=7.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Data.Sqlite.Core.7.0.1\lib\netstandard2.0\Microsoft.Data.Sqlite.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.5.1.0\lib\net46\NLog.dll</HintPath>
     </Reference>
     <Reference Include="SQLitePCLRaw.core, Version=2.1.2.1721, Culture=neutral, PublicKeyToken=1488e028ca7ab535, processorArchitecture=MSIL">
       <HintPath>..\packages\SQLitePCLRaw.core.2.1.2\lib\netstandard2.0\SQLitePCLRaw.core.dll</HintPath>
@@ -51,7 +63,9 @@
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
     </Reference>
@@ -62,7 +76,6 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -77,60 +90,65 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
+    <Page Include="UI\Xaml\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Abstract\DbEntity.cs" />
+    <Compile Include="Abstract\IDataServerEvents.cs" />
     <Compile Include="Abstract\IDbConnectionProvider.cs" />
     <Compile Include="Abstract\IUnitOfWork.cs" />
     <Compile Include="Abstract\IUnitOfWorkFactory.cs" />
     <Compile Include="Abstract\Repository.cs" />
     <Compile Include="Abstract\View.cs" />
+    <Compile Include="App.cs" />
+    <Compile Include="UI\Commands\CopyCommand.cs" />
+    <Compile Include="UI\Commands\PauseTraceCommand.cs" />
+    <Compile Include="UI\Commands\ResumeTraceCommand.cs" />
+    <Compile Include="UI\Commands\SaveAsCommand.cs" />
+    <Compile Include="UI\Commands\SetTraceCommand.cs" />
+    <Compile Include="UI\Commands\ShutdownCommand.cs" />
+    <Compile Include="UI\ConsoleViewModel.cs" />
     <Compile Include="Controllers\DeclarationsController.cs" />
+    <Compile Include="UI\IMainWindowFactory.cs" />
+    <Compile Include="UI\MainWindowFactory.cs" />
+    <Compile Include="UI\MainWindowViewModel.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Services\EnvironmentService.cs" />
     <Compile Include="Controllers\ServerController.cs" />
-    <Compile Include="DbConnectionProvider.cs" />
-    <Compile Include="Entities\AnnotationBase.cs" />
-    <Compile Include="Entities\Declaration.cs" />
-    <Compile Include="Entities\DeclarationAnnotation.cs" />
-    <Compile Include="Entities\DeclarationAttribute.cs" />
-    <Compile Include="Entities\IdentifierReference.cs" />
-    <Compile Include="Entities\IdentifierReferenceAnnotation.cs" />
-    <Compile Include="Entities\Local.cs" />
-    <Compile Include="Entities\Member.cs" />
-    <Compile Include="Entities\Module.cs" />
-    <Compile Include="Entities\Parameter.cs" />
-    <Compile Include="Entities\Project.cs" />
-    <Compile Include="Entities\ProjectSetting.cs" />
-    <Compile Include="Repositories\DeclarationAnnotationRepository.cs" />
-    <Compile Include="Repositories\DeclarationAttributeRepository.cs" />
-    <Compile Include="Repositories\DeclarationRepository.cs" />
-    <Compile Include="Repositories\IdentifierReferenceAnnotationRepository.cs" />
-    <Compile Include="Repositories\IdentifierReferenceRepository.cs" />
-    <Compile Include="Repositories\LocalRepository.cs" />
-    <Compile Include="Repositories\MemberRepository.cs" />
-    <Compile Include="Repositories\ModuleRepository.cs" />
-    <Compile Include="Repositories\ParameterRepository.cs" />
-    <Compile Include="Repositories\ProjectRepository.cs" />
-    <Compile Include="UnitOfWork.cs" />
-    <Compile Include="UnitOfWorkFactory.cs" />
-    <Compile Include="Server.cs" />
-    <Compile Include="Views\IdentifierReferencesView.cs" />
-    <Compile Include="Views\LocalsView.cs" />
-    <Compile Include="Views\MembersView.cs" />
-    <Compile Include="Views\ModulesView.cs" />
-    <Compile Include="Views\ParametersView.cs" />
-    <Compile Include="Views\ProjectsView.cs" />
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Storage\DbConnectionProvider.cs" />
+    <Compile Include="Storage\Entities\AnnotationBase.cs" />
+    <Compile Include="Storage\Entities\Declaration.cs" />
+    <Compile Include="Storage\Entities\DeclarationAnnotation.cs" />
+    <Compile Include="Storage\Entities\DeclarationAttribute.cs" />
+    <Compile Include="Storage\Entities\IdentifierReference.cs" />
+    <Compile Include="Storage\Entities\IdentifierReferenceAnnotation.cs" />
+    <Compile Include="Storage\Entities\Local.cs" />
+    <Compile Include="Storage\Entities\Member.cs" />
+    <Compile Include="Storage\Entities\Module.cs" />
+    <Compile Include="Storage\Entities\Parameter.cs" />
+    <Compile Include="Storage\Entities\Project.cs" />
+    <Compile Include="Storage\Entities\ProjectSetting.cs" />
+    <Compile Include="Storage\Repositories\DeclarationAnnotationRepository.cs" />
+    <Compile Include="Storage\Repositories\DeclarationAttributeRepository.cs" />
+    <Compile Include="Storage\Repositories\DeclarationRepository.cs" />
+    <Compile Include="Storage\Repositories\IdentifierReferenceAnnotationRepository.cs" />
+    <Compile Include="Storage\Repositories\IdentifierReferenceRepository.cs" />
+    <Compile Include="Storage\Repositories\LocalRepository.cs" />
+    <Compile Include="Storage\Repositories\MemberRepository.cs" />
+    <Compile Include="Storage\Repositories\ModuleRepository.cs" />
+    <Compile Include="Storage\Repositories\ParameterRepository.cs" />
+    <Compile Include="Storage\Repositories\ProjectRepository.cs" />
+    <Compile Include="Storage\UnitOfWork.cs" />
+    <Compile Include="Storage\UnitOfWorkFactory.cs" />
+    <Compile Include="Services\Server.cs" />
+    <Compile Include="Storage\Views\IdentifierReferencesView.cs" />
+    <Compile Include="Storage\Views\LocalsView.cs" />
+    <Compile Include="Storage\Views\MembersView.cs" />
+    <Compile Include="Storage\Views\ModulesView.cs" />
+    <Compile Include="Storage\Views\ParametersView.cs" />
+    <Compile Include="Storage\Views\ProjectsView.cs" />
+    <Compile Include="UI\Xaml\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -153,6 +171,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="nlog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -170,6 +191,23 @@
       <Project>{5e2588a5-2ef2-4267-952d-53aec8f5f173}</Project>
       <Name>Rubberduck.InternalApi</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
+      <Project>{ed65baad-743d-4144-aee2-8d956e6da599}</Project>
+      <Name>Rubberduck.Resources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.RPC\Rubberduck.RPC.csproj">
+      <Project>{8D218701-AF68-4013-B9C0-108C1D162E11}</Project>
+      <Name>Rubberduck.RPC</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.UI.Xaml\Rubberduck.UI.Xaml.csproj">
+      <Project>{1192FA78-B73F-46BC-B98C-FD887A062A2C}</Project>
+      <Name>Rubberduck.UI.Xaml</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.UI\Rubberduck.UI.csproj">
+      <Project>{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}</Project>
+      <Name>Rubberduck.UI</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

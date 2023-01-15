@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.VBEditor.Utility
+﻿using Rubberduck.InternalApi.Model;
+
+namespace Rubberduck.VBEditor.Utility
 {
     public interface ISelectionService : ISelectionProvider
     {

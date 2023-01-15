@@ -1,4 +1,4 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers;
+﻿using Rubberduck.InternalApi.Model;
 using System;
 using System.Collections.Generic;
 

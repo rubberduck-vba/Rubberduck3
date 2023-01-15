@@ -1,7 +1,7 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
-using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -12,10 +12,9 @@ namespace Rubberduck.Core.Editor
     public class EditorShellViewModel : ViewModelBase, IEditorShellViewModel, INotifyCollectionChanged
     {
         private readonly IEditorShellContext _context;
-        private readonly ICodePaneViewModelProvider _vmProvider;
-        private readonly IDictionary<QualifiedModuleName, ICodePaneViewModel> _modules = new Dictionary<QualifiedModuleName, ICodePaneViewModel>();
+        private readonly IDictionary<IQualifiedModuleName, ICodePaneViewModel> _modules = new Dictionary<IQualifiedModuleName, ICodePaneViewModel>();
 
-        public EditorShellViewModel(IStatusBarViewModel status, ICodePaneViewModelProvider vmProvider, IShellToolTabProvider toolTabsProvider)
+        public EditorShellViewModel(IStatusBarViewModel status, IShellToolTabProvider toolTabsProvider)
         {
             Status = status;
 
@@ -23,11 +22,10 @@ namespace Rubberduck.Core.Editor
             ToolTabs = new ObservableCollection<IShellToolTab>(tabs);
             SelectedToolTab = ToolTabs.FirstOrDefault();
 
-            _vmProvider = vmProvider;
             _context = new EditorShellContext(this);
         }
 
-        public TextDocument GetDocument(QualifiedModuleName module)
+        public TextDocument GetDocument(IQualifiedModuleName module)
         {
             if (_modules.TryGetValue(module, out var vm))
             {
@@ -67,16 +65,16 @@ namespace Rubberduck.Core.Editor
             }
         }
 
-        public bool LoadModule(QualifiedModuleName module, string content, IMemberProviderViewModel memberProvider)
+        public bool LoadModule(IQualifiedModuleName module, string content, IMemberProviderViewModel memberProvider)
         {
             if (_modules.ContainsKey(module))
             {
                 return false;
             }
 
-            var vm = _vmProvider.GetViewModel(this, module, memberProvider, content);
-            _modules.Add(module, vm);
-            ModuleDocumentTabs.Add(vm);
+            //var vm = _vmProvider.GetViewModel(this, module, memberProvider, content);
+            //_modules.Add(module, vm);
+            //ModuleDocumentTabs.Add(vm);
             OnPropertyChanged(nameof(ModuleDocumentTabs));
             OnCollectionChanged(NotifyCollectionChangedAction.Add);
 
@@ -84,7 +82,7 @@ namespace Rubberduck.Core.Editor
             return true;
         }
 
-        public bool UnloadModule(QualifiedModuleName module)
+        public bool UnloadModule(IQualifiedModuleName module)
         {
             if (!_modules.TryGetValue(module, out var vm))
             {
@@ -100,7 +98,7 @@ namespace Rubberduck.Core.Editor
             return true;
         }
 
-        public ICodePaneViewModel GetModule(QualifiedModuleName module)
+        public ICodePaneViewModel GetModule(IQualifiedModuleName module)
         {
             if (_modules.TryGetValue(module, out var vm))
             {
@@ -110,7 +108,7 @@ namespace Rubberduck.Core.Editor
             return null;
         }
 
-        public void ActivateModuleDocumentTab(QualifiedModuleName module)
+        public void ActivateModuleDocumentTab(IQualifiedModuleName module)
         {
             if (_modules.TryGetValue(module, out var vm))
             {

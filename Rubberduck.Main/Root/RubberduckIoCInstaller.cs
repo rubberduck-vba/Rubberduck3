@@ -29,11 +29,7 @@ using System.IO.Abstractions;
 using Rubberduck.VBEditor.ComManagement.NonDisposalDecorators;
 using Rubberduck.InternalApi.UIContext;
 using System.Runtime.InteropServices;
-using Rubberduck.UI.OfficeMenus.MenuItems;
-using Rubberduck.UI.OfficeMenus;
-using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.Main.Extensions;
-using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.Core;
 using Rubberduck.UI.Command;
 using System.Windows.Input;
@@ -44,6 +40,9 @@ using Rubberduck.Core.Editor;
 using Rubberduck.Parsing.Abstract;
 using System.IO;
 using Rubberduck.Parsing.TokenStreamProviders;
+using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
+using Rubberduck.VBEditor.UI.OfficeMenus;
+using Rubberduck.VBEditor.UI;
 
 namespace Rubberduck.Root
 {

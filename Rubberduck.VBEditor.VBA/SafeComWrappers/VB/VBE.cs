@@ -11,6 +11,7 @@ using Rubberduck.VBEditor.VBA;
 using Rubberduck.VBEditor.WindowsApi;
 using VB = Microsoft.Vbe.Interop;
 using Rubberduck.VBEditor.SafeComWrappers.Office;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.WindowsApi;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities

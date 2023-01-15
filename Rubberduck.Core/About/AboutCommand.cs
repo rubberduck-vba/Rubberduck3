@@ -1,8 +1,8 @@
 ﻿using Rubberduck.Interaction.MessageBox;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.WinForms.Dialogs;
+using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 using Rubberduck.VersionCheck;
 using System.Runtime.InteropServices;
 

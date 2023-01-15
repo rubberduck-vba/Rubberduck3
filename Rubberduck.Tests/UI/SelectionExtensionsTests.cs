@@ -1,7 +1,6 @@
 using ICSharpCode.AvalonEdit.Document;
-using Rubberduck.UI;
-using Rubberduck.VBEditor;
-
+using Rubberduck.InternalApi.Model;
+using RubberduckUI.Extensions;
 
 namespace Rubberduck.Tests.UI
 {

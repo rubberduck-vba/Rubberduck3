@@ -5,11 +5,16 @@
         // Guid Suffix
         private const string GuidSuffix = "-43F0-3B33-B105-9B8188A6F040";
 
+        // Server Guids:
+        private const string ServerGuidspace = "69E0F5";
+        public const string ServerGuid = ServerGuidspace + "00" + GuidSuffix;
+        public const string DataServerGuid = ServerGuidspace + "01" + GuidSuffix;
+
         // TypeLib Guid:
         private const string TypeLibGuidspace = "E07C84";
         public const string RubberduckTypeLibGuid = TypeLibGuidspace + "1C" + GuidSuffix;
         public const string RubberduckApiTypeLibGuid = TypeLibGuidspace + "1D" + GuidSuffix;
-        
+
         // Addin Guids:
         private const string AddinGuidspace = "69E0F6";
         public const string ExtensionGuid = AddinGuidspace + "97" + GuidSuffix;
@@ -53,5 +58,7 @@
         private const string DebugGuidspace = "69E101";
         public const string DebugAddinObjectInterfaceGuid = DebugGuidspace + "23" + GuidSuffix;
         public const string DebugAddinObjectClassGuid = DebugGuidspace + "24" + GuidSuffix;
+
+
     }
 }

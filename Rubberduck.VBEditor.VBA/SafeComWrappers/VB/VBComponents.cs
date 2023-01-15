@@ -5,6 +5,7 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
 using Rubberduck.InternalApi.Common;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;

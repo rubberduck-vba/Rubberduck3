@@ -1,14 +1,13 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Parameters
 {
-    [ProtoContract(Name = "didOpenTextDocumentParams")]
     public class DidOpenTextDocumentParams
     {
         /// <summary>
         /// The document that was opened.
         /// </summary>
-        [ProtoMember(1, Name = "textDocument")]
+        [JsonPropertyName("textDocument")]
         public TextDocumentItem TextDocument { get; set; }
     }
 }

@@ -40,6 +40,9 @@
     <StartupObject>Rubberduck.Server.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AustinHarris.JsonRpc, Version=1.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AustinHarris.JsonRpc.1.2.3\lib\netstandard2.0\AustinHarris.JsonRpc.dll</HintPath>
+    </Reference>
     <Reference Include="Grpc.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d754f35622e28bad, processorArchitecture=MSIL">
       <HintPath>..\packages\Grpc.Core.2.46.5\lib\net45\Grpc.Core.dll</HintPath>
     </Reference>
@@ -51,6 +54,9 @@
     </Reference>
     <Reference Include="Microsoft.Data.Sqlite, Version=7.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Data.Sqlite.Core.7.0.1\lib\netstandard2.0\Microsoft.Data.Sqlite.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.5.1.0\lib\net46\NLog.dll</HintPath>
@@ -178,6 +184,10 @@
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{86502725-A9D2-47A8-B26A-5E7BC8A85D47}</Project>
       <Name>Rubberduck.Parsing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
+      <Project>{ed65baad-743d-4144-aee2-8d956e6da599}</Project>
+      <Name>Rubberduck.Resources</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

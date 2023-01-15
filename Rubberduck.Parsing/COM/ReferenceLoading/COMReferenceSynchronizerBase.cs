@@ -12,6 +12,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Parsing.COM.ReferenceLoading
 {
@@ -324,7 +325,7 @@ namespace Rubberduck.Parsing.COM.ReferenceLoading
                 return projectId;
             }
 
-            return QualifiedModuleName.GetProjectId(reference);
+            return reference.GetProjectId();
         }
 
         protected void LoadReference(ReferenceInfo reference, ConcurrentBag<ReferenceInfo> unmapped)

@@ -1,9 +1,8 @@
-﻿using Rubberduck.Parsing.Model;
-using Rubberduck.UI.Abstract;
+﻿using Rubberduck.UI.Abstract;
 using Rubberduck.UI.Command.SyncPanel;
 using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SourceCodeHandling;
+using Rubberduck.InternalApi.Model;
 using System.Collections.Generic;
 
 namespace Rubberduck.Core.Editor.Commands
@@ -18,7 +17,7 @@ namespace Rubberduck.Core.Editor.Commands
             _tempFile = tempFile;
             _projectsProvider = projectsProvider;
 
-            AddToCanExecuteEvaluation(p => p != null && ((ISyncPanelModuleViewModel)p).ModuleType != Parsing.Model.ModuleType.None);
+            AddToCanExecuteEvaluation(p => p != null && ((ISyncPanelModuleViewModel)p).ModuleType != ModuleType.None);
         }
 
         private static IDictionary<ComponentType, ModuleType> _moduleTypeByComponentType = new Dictionary<ComponentType, ModuleType>

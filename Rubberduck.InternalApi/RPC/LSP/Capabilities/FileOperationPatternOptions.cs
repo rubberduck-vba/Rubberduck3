@@ -1,11 +1,10 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
 {
-    [ProtoContract(Name = "fileOperationPatternOptions")]
     public class FileOperationPatternOptions
     {
-        [ProtoMember(1, Name = "ignoreCase")]
+        [JsonPropertyName("ignoreCase")]
         public bool IgnoreCase { get; set; }
     }
 }

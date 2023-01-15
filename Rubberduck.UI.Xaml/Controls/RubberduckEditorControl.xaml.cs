@@ -13,9 +13,9 @@ using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
 using Rubberduck.UI.Abstract;
 using System.Threading;
-using Rubberduck.Parsing.Model;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Editing;
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.UI.Xaml.Controls
 {
@@ -283,7 +283,7 @@ namespace Rubberduck.UI.Xaml.Controls
                 }
             }
         }
-
+        /*
         private void OnParseTreeChanged(object sender, ParseTreeEventArgs e)
         {
             var foldingInfo = e.BlockFoldingInfo.Select(i => new NewFolding { Name = i.Name, StartOffset = i.Offset.Start, EndOffset = i.Offset.End, IsDefinition = i.IsDefinition });
@@ -295,7 +295,7 @@ namespace Rubberduck.UI.Xaml.Controls
                 AddSyntaxErrorMarker(error);
             }
         }
-
+        */
         private void ShowCompletionList(IEnumerable<IMemberInfoViewModel> members)
         {
             _completionWindow = new CompletionWindow(EditorPane.TextArea);
@@ -309,7 +309,7 @@ namespace Rubberduck.UI.Xaml.Controls
 
         private void OnSelectedMemberProviderChanged(object sender, EventArgs e)
         {
-            ViewModel.SelectedMemberProvider.MemberSelected += OnMemberSelected;
+            //ViewModel.SelectedMemberProvider.MemberSelected += OnMemberSelected;
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -323,7 +323,7 @@ namespace Rubberduck.UI.Xaml.Controls
                 {
                     context.SelectedMemberProvider.CurrentMember = context.SelectedMemberProvider?.Members.FirstOrDefault();
                 }
-                context.ParseTreeChanged += OnParseTreeChanged;
+                //context.ParseTreeChanged += OnParseTreeChanged;
             }
         }
 
@@ -336,7 +336,7 @@ namespace Rubberduck.UI.Xaml.Controls
         {
             using (var reader = EditorPane.Document.CreateReader())
             {
-                await ViewModel.ParseAsync(reader);
+                //await ViewModel.ParseAsync(reader);
             }
         }
 
@@ -386,6 +386,7 @@ namespace Rubberduck.UI.Xaml.Controls
             }
         }
 
+        /*
         private void OnMemberSelected(object sender, NavigateToMemberEventArgs e)
         {
             //if (e.MemberInfo != null && EditorPane.TextArea.Caret.Line != e.MemberInfo.StartLine)
@@ -399,6 +400,7 @@ namespace Rubberduck.UI.Xaml.Controls
                 return;
             }
         }
+        */
 
         private void OnMouseHover(object sender, MouseEventArgs e)
         {

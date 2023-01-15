@@ -1,8 +1,7 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
 {
-    [ProtoContract(Name = "didChangeWatchedFilesClientCapabilities")]
     public class DidChangeWatchedFilesClientCapabilities
     {
         /// <summary>
@@ -11,13 +10,13 @@ namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
         /// <remarks>
         /// Protocol does not support static configuration for server-side file changes.
         /// </remarks>
-        [ProtoMember(1, Name = "dynamicRegistration")]
+        [JsonPropertyName("dynamicRegistration")]
         public bool SupportsDynamicRegistration { get; set; }
 
         /// <summary>
         /// <c>true</c> if the client supports relative patterns.
         /// </summary>
-        [ProtoMember(2, Name = "relativePatternSupport")]
+        [JsonPropertyName("relativePatternSupport")]
         public bool SupportsRelativePattern { get; set; }
     }
 }

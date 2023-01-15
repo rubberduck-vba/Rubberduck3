@@ -1,14 +1,13 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Parameters
 {
-    [ProtoContract(Name = "willSaveTextDocumentParams")]
     public class WillSaveTextDocumentParams
     {
         /// <summary>
         /// The document that will be saved.
         /// </summary>
-        [ProtoMember(1, Name = "textDocument")]
+        [JsonPropertyName("textDocument")]
         public TextDocumentIdentifier TextDocument { get; set; }
 
         /// <summary>
@@ -17,7 +16,7 @@ namespace Rubberduck.InternalApi.RPC.LSP.Parameters
         /// <remarks>
         /// See <c>Constants.TextDocumentSaveReason</c>.
         /// </remarks>
-        [ProtoMember(2, Name = "reason")]
+        [JsonPropertyName("reason")]
         public int Reason { get; set; }
     }
 }

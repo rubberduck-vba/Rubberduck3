@@ -1,4 +1,5 @@
 using System;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract

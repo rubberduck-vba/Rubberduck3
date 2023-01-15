@@ -1,4 +1,5 @@
-﻿using Rubberduck.VBEditor.ComManagement;
+﻿using Rubberduck.InternalApi.Model;
+using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.VBEditor.SourceCodeHandling
 {
@@ -13,7 +14,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             _projectsProvider = projectsProvider;
         }
 
-        public int GetContentHash(QualifiedModuleName module)
+        public int GetContentHash(IQualifiedModuleName module)
         {
             var component = _projectsProvider.Component(module);
             if (component is null)
@@ -24,17 +25,17 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             return component.ContentHash();
         }
 
-        public CodeString GetCurrentLogicalLine(QualifiedModuleName module)
+        public CodeString GetCurrentLogicalLine(IQualifiedModuleName module)
         {
             throw new System.NotSupportedException();
         }
 
-        public void SetSelection(QualifiedModuleName module, Selection selection)
+        public void SetSelection(IQualifiedModuleName module, Selection selection)
         {
             throw new System.NotSupportedException();
         }
 
-        public string SourceCode(QualifiedModuleName module)
+        public string SourceCode(IQualifiedModuleName module)
         {
             var component = _projectsProvider.Component(module);
             if (component is null)
@@ -45,9 +46,9 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             return _componentSourceCodeHandler.SourceCode(component);
         }
 
-        public string StringSource(QualifiedModuleName module) => SourceCode(module);
+        public string StringSource(IQualifiedModuleName module) => SourceCode(module);
 
-        public void SubstituteCode(QualifiedModuleName module, string newCode)
+        public void SubstituteCode(IQualifiedModuleName module, string newCode)
         {
             var component = _projectsProvider.Component(module);
             if (component is null)
@@ -59,7 +60,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             { /*We do nothing; we just need to guarantee that the returned RCW gets disposed.*/}
         }
 
-        public void SubstituteCode(QualifiedModuleName module, CodeString newCode)
+        public void SubstituteCode(IQualifiedModuleName module, CodeString newCode)
         {
             var component = _projectsProvider.Component(module);
             if (component is null)

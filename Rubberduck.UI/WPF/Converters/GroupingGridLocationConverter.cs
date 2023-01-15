@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Rubberduck.InternalApi.Model;
+using System;
 using System.Globalization;
 using System.Windows.Data;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.WPF.Converters
 {
@@ -10,7 +9,7 @@ namespace Rubberduck.UI.WPF.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is QualifiedModuleName qualifiedModuleName)
+            if (value is IQualifiedModuleName qualifiedModuleName)
             {
                 var componentTypeConverter = new ComponentTypeConverter();
                 var localizedComponentType = (string)componentTypeConverter.Convert(qualifiedModuleName.ComponentType, typeof(ComponentType), parameter, culture);

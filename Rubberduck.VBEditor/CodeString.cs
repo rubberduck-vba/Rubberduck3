@@ -1,4 +1,5 @@
-﻿using Rubberduck.VBEditor.Extensions;
+﻿using Rubberduck.InternalApi.Model;
+using Rubberduck.VBEditor.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

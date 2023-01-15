@@ -1,8 +1,7 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
 {
-    [ProtoContract(Name = "completionOptions")]
     public class CompletionOptions : WorkDoneProgressOptions
     {
         /// <summary>
@@ -11,31 +10,30 @@ namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
         /// <remarks>
         /// Characters that make up identifiers do not need to be listed here.
         /// </remarks>
-        [ProtoMember(2, Name = "triggerCharacters")]
+        [JsonPropertyName("triggerCharacters")]
         public string[] TriggerCharacters { get; set; }
 
         /// <summary>
         /// The list of all possible characters that commit a completion. Used as a fallback when individual completion items don't include commit characters.
         /// </summary>
-        [ProtoMember(3, Name = "allCommitCharacters")]
+        [JsonPropertyName("allCommitCharacters")]
         public string[] CommitCharacters { get; set; }
 
         /// <summary>
         /// <c>true</c> if the server provides support to resolve additional information for a completion item.
         /// </summary>
-        [ProtoMember(4, Name = "resolveProvider")]
+        [JsonPropertyName("resolveProvider")]
         public bool IsResolveProvider { get; set; }
 
         /// <summary>
         /// Defines <c>CompletionItem</c> specific capabilities supported by the server.
         /// </summary>
-        [ProtoMember(5, Name = "completionItem")]
+        [JsonPropertyName("completionItem")]
         public CompletionItemCapabilities CompletionItem { get; set; }
 
-        [ProtoContract(Name = "completionItemCapabilities")]
         public class CompletionItemCapabilities
         {
-            [ProtoMember(1, Name = "labelDetailsSupport")]
+            [JsonPropertyName("labelDetailsSupport")]
             public bool SupportsLabelDetails { get; set; }
         }
     }

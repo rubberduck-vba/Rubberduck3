@@ -1,6 +1,6 @@
 ﻿using Rubberduck.UI.Command;
-using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.UI.OfficeMenus;
 
 namespace Rubberduck.Core.Editor
 {

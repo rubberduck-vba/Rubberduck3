@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Xml.Serialization;
 using Rubberduck.UI;
+using Rubberduck.VBEditor.UI;
 //using Rubberduck.UI.CodeExplorer;
 //using Rubberduck.UI.Inspections;
 //using Rubberduck.UI.ToDoItems;

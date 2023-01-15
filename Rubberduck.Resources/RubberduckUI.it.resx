@@ -704,4 +704,10 @@ La finestra è stata visualizzata perché è abilitata la verifica di versione. 
   <data name="PeekDefinition_DefaultDescription" xml:space="preserve">
     <value>(nessuna annotazione o attributo di descrizione)</value>
   </data>
+  <data name="SelectionLocationPosition" xml:space="preserve">
+    <value>L{0}C{1}</value>
+  </data>
+  <data name="SelectionLocationRange" xml:space="preserve">
+    <value>L{0}C{1} - L{2}C{3}</value>
+  </data>
 </root>

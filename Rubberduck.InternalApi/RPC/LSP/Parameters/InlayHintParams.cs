@@ -1,20 +1,19 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Parameters
 {
-    [ProtoContract(Name = "inlayHintParams")]
     public class InlayHintParams : WorkDoneProgressParams
     {
         /// <summary>
         /// The text document.
         /// </summary>
-        [ProtoMember(2, Name = "textDocument")]
+        [JsonPropertyName("textDocument")]
         public TextDocumentIdentifier TextDocument { get; set; }
 
         /// <summary>
         /// The visible document range for which inlay hints should be computed.
         /// </summary>
-        [ProtoMember(3, Name = "range")]
+        [JsonPropertyName("range")]
         public Range Range { get; set; }
     }
 }

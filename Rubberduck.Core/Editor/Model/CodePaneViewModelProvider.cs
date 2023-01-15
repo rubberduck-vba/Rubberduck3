@@ -1,10 +1,15 @@
-﻿using Rubberduck.UI.Abstract;
-using Rubberduck.VBEditor;
+﻿using Rubberduck.InternalApi.Model;
+using Rubberduck.UI.Abstract;
 using Rubberduck.VBEditor.ComManagement;
 using System.Linq;
 
 namespace Rubberduck.Core.Editor
 {
+    public interface ICodePaneViewModelProvider
+    {
+        ICodePaneViewModel GetViewModel(IEditorShellViewModel shell, IQualifiedModuleName module, IMemberProviderViewModel memberProvider, string content);
+    }
+
     public class CodePaneViewModelProvider : ICodePaneViewModelProvider
     {
         private readonly IProjectsRepository _projectsRepository;
@@ -18,7 +23,7 @@ namespace Rubberduck.Core.Editor
             _editorSettings = editorSettings;
         }
 
-        public ICodePaneViewModel GetViewModel(IEditorShellViewModel shell, QualifiedModuleName module, IMemberProviderViewModel memberProvider, string content)
+        public ICodePaneViewModel GetViewModel(IEditorShellViewModel shell, IQualifiedModuleName module, IMemberProviderViewModel memberProvider, string content)
         {
             var vm = shell.ModuleDocumentTabs.SingleOrDefault(e => e.ModuleInfo.QualifiedModuleName.Equals(module));
             if (vm is null)

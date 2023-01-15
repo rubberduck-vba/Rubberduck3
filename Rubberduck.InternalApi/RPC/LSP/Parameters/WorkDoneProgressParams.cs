@@ -1,4 +1,4 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP
 {
@@ -7,17 +7,17 @@ namespace Rubberduck.InternalApi.RPC.LSP
         /// <summary>
         /// A token that the server can use to report work done progress.
         /// </summary>
-        [ProtoMember(1, Name = "workDoneToken")]
+        [JsonPropertyName("workDoneToken")]
         string WorkDoneToken { get; set; }
     }
 
-    [ProtoContract]
+
     public class WorkDoneProgressParams : IWorkDoneProgressParams
     {
         /// <summary>
         /// A token that the server can use to report work done progress.
         /// </summary>
-        [ProtoMember(1, Name = "workDoneToken")]
+        [JsonPropertyName("workDoneToken")]
         public string WorkDoneToken { get; set; }
     }
 }

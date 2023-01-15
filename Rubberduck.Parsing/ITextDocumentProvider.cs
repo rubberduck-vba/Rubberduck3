@@ -1,10 +1,10 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
-using Rubberduck.VBEditor;
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.Parsing
 {
     public interface ITextDocumentProvider
     {
-        TextDocument GetDocument(QualifiedModuleName module);
+        TextDocument GetDocument(IQualifiedModuleName module);
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Rubberduck.InternalApi.RPC.LSP.Parameters;
-using Rubberduck.InternalApi.RPC.LSP.Response;
+using Rubberduck.InternalApi.RPC.LSP.Response; 
 using System.ServiceModel;
 using System.Threading.Tasks;
 

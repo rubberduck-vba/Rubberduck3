@@ -1,20 +1,19 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
 {
-    [ProtoContract(Name = "documentLinkClientCapabilities")]
     public class DocumentLinkClientCapabilities
     {
         /// <summary>
         /// Whether the client supports dynamic registration.
         /// </summary>
-        [ProtoMember(1, Name = "dynamicRegistration")]
+        [JsonPropertyName("dynamicRegistration")]
         public bool SupportsDynamicRegistration { get; set; }
 
         /// <summary>
         /// Whether the client supports the 'tooltip' property on 'DocumentLink'.
         /// </summary>
-        [ProtoMember(2, Name = "tooltipSupport")]
+        [JsonPropertyName("tooltipSupport")]
         public bool SupportsToolTip { get; set; }
     }
 }

@@ -1,9 +1,10 @@
-﻿using Rubberduck.VBEditor.Events;
+﻿
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.UI.Abstract
 {
     public interface ISyncPanelModuleViewModelProvider
     {
-        ISyncPanelModuleViewModel Create(ComponentEventArgs info);
+        ISyncPanelModuleViewModel Create(IQualifiedModuleName info);
     }
 }

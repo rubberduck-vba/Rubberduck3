@@ -458,6 +458,13 @@
     <Resource Include="Icons\Fugue\selection-input.png" />
     <Resource Include="Icons\Fugue\document-code.png" />
     <Resource Include="Icons\faint-ducky.png" />
+    <Resource Include="Icons\Fugue\control-pause.png" />
+    <Resource Include="Icons\Fugue\control-power.png" />
+    <Resource Include="Icons\Fugue\drive--exclamation.png" />
+    <Resource Include="Icons\Fugue\clock-network.png" />
+    <Resource Include="Icons\Fugue\socket.png" />
+    <Resource Include="Icons\Fugue\user-silhouette.png" />
+    <Resource Include="Icons\Fugue\user-medium-silhouette.png" />
     <Content Include="Splash.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

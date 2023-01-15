@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Model.Symbols;
 using Rubberduck.Parsing.Rewriter.RewriterInfo;

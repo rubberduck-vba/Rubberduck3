@@ -1,27 +1,26 @@
-﻿using ProtoBuf;
-using Rubberduck.InternalApi.RPC.LSP.Response;
+﻿using Rubberduck.InternalApi.RPC.LSP.Response;
+using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Parameters
 {
-    [ProtoContract(Name = "signatureHelpContext")]
     public class SignatureHelpContext
     {
-        [ProtoMember(1, Name = "triggerKind")]
+        [JsonPropertyName("triggerKind")]
         public int TriggerKind { get; set; } = Constants.SignatureHelpTriggerKind.Invoked;
 
         /// <summary>
         /// The character that triggered signature help, if TriggerKind is 2.
         /// </summary>
-        [ProtoMember(2, Name = "triggerCharacter")]
+        [JsonPropertyName("triggerCharacter")]
         public string TriggerCharacter { get; set; }
 
         /// <summary>
         /// <c>true</c> if signature help was already showing when it was triggered.
         /// </summary>
-        [ProtoMember(3, Name = "isRetrigger")]
+        [JsonPropertyName("isRetrigger")]
         public bool IsRetrigger { get; set; }
 
-        [ProtoMember(4, Name = "activeSignatureHelp")]
+        [JsonPropertyName("activeSignatureHelp")]
         public SignatureHelp ActiveSignatureHelp { get; set; }
     }
 }

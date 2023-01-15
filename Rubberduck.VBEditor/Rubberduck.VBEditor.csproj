@@ -205,7 +205,6 @@
     <Compile Include="QualifiedModuleName.cs" />
     <Compile Include="QualifiedSelection.cs" />
     <Compile Include="ReferenceInfo.cs" />
-    <Compile Include="Resources\VBEEditorText.Designer.cs" />
     <Compile Include="SafeComWrappers\Abstract\HostApplicationBase.cs" />
     <Compile Include="SafeComWrappers\Abstract\IComCollection.cs" />
     <Compile Include="SafeComWrappers\Abstract\IComIndexedProperty.cs" />
@@ -263,7 +262,6 @@
     <Compile Include="SafeComWrappers\VB\Abstract\IWindow.cs" />
     <Compile Include="SafeComWrappers\VB\Abstract\IWindows.cs" />
     <Compile Include="SafeComWrappers\VB\Enums\CodePaneView.cs" />
-    <Compile Include="SafeComWrappers\VB\Enums\ComponentType.cs" />
     <Compile Include="SafeComWrappers\VB\Enums\EnvironmentMode.cs" />
     <Compile Include="SafeComWrappers\VB\Enums\MSAccessComponentType.cs" />
     <Compile Include="SafeComWrappers\VB\Enums\ProcKind.cs" />
@@ -274,7 +272,6 @@
     <Compile Include="SafeComWrappers\VB\Enums\VBEKind.cs" />
     <Compile Include="SafeComWrappers\VB\Enums\WindowKind.cs" />
     <Compile Include="SafeComWrappers\VB\Enums\WindowState.cs" />
-    <Compile Include="Selection.cs" />
     <Compile Include="SourceCodeHandling\CodeModuleComponentSourceCodeHandler.cs" />
     <Compile Include="SourceCodeHandling\CodePaneHandler.cs" />
     <Compile Include="SourceCodeHandling\SourceCodeHandlerComponentAdapter.cs" />
@@ -283,6 +280,18 @@
     <Compile Include="SourceCodeHandling\ISourceCodeProvider.cs" />
     <Compile Include="SourceCodeHandling\ITempSourceFileHandler.cs" />
     <Compile Include="SourceCodeHandling\SourceFileHandlerComponentSourceCodeHandlerAdapter.cs" />
+    <Compile Include="UI\DockableToolwindowPresenter.cs" />
+    <Compile Include="UI\OfficeMenus\ComCommandBase.cs" />
+    <Compile Include="UI\OfficeMenus\CommandMenuItemBase.cs" />
+    <Compile Include="UI\OfficeMenus\IAppMenu.cs" />
+    <Compile Include="UI\OfficeMenus\ICommandMenuItem.cs" />
+    <Compile Include="UI\OfficeMenus\IMenuCommand.cs" />
+    <Compile Include="UI\OfficeMenus\IMenuItem.cs" />
+    <Compile Include="UI\OfficeMenus\RubberduckMenu\AboutCommandMenuItem.cs" />
+    <Compile Include="UI\OfficeMenus\IParentMenuItem.cs" />
+    <Compile Include="UI\OfficeMenus\ParentMenuItemBase.cs" />
+    <Compile Include="UI\OfficeMenus\RubberduckMenu\RubberduckParentMenu.cs" />
+    <Compile Include="UI\OfficeMenus\RubberduckMenu\ShowEditorCommandMenuItem.cs" />
     <Compile Include="Utility\AddComponentService.cs" />
     <Compile Include="Utility\DisposalActionContainer.cs" />
     <Compile Include="Utility\IAddComponentService.cs" />
@@ -320,14 +329,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\VBEEditorText.cs.resx" />
-    <EmbeddedResource Include="Resources\VBEEditorText.de.resx" />
-    <EmbeddedResource Include="Resources\VBEEditorText.es.resx" />
-    <EmbeddedResource Include="Resources\VBEEditorText.fr.resx" />
-    <EmbeddedResource Include="Resources\VBEEditorText.it.resx" />
-    <EmbeddedResource Include="Resources\VBEEditorText.resx" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj">
       <Project>{5E2588A5-2EF2-4267-952D-53AEC8F5F173}</Project>
       <Name>Rubberduck.InternalApi</Name>
@@ -335,6 +336,10 @@
     <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
       <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
       <Name>Rubberduck.Resources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.UI\Rubberduck.UI.csproj">
+      <Project>{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}</Project>
+      <Name>Rubberduck.UI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -356,6 +361,9 @@
     <Content Include="EasyLoad64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UI\OfficeMenus\RubberduckMenu\MenuItems\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

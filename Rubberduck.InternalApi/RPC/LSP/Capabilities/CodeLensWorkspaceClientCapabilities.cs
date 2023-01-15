@@ -1,8 +1,6 @@
-﻿using ProtoBuf;
-
+﻿using System.Text.Json.Serialization;
 namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
 {
-    [ProtoContract(Name = "codeLensWorkspaceClientCapabilities")]
     public class CodeLensWorkspaceClientCapabilities
     {
         /// <summary>
@@ -11,7 +9,7 @@ namespace Rubberduck.InternalApi.RPC.LSP.Capabilities
         /// <remarks>
         /// This event is global and will force the client to refresh all code lenses currently shown. Use carefully.
         /// </remarks>
-        [ProtoMember(1, Name = "refreshSupport")]
+        [JsonPropertyName("refreshSupport")]
         public bool SupportsRefresh { get; set; }
     }
 }

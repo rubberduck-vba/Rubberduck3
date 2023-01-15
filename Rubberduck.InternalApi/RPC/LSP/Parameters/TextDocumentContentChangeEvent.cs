@@ -1,17 +1,16 @@
-﻿using ProtoBuf;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.RPC.LSP.Parameters
 {
     /// <summary>
     /// An event describing a change to a text document.
     /// </summary>
-    [ProtoContract(Name = "textDocumentContentChangeEvent")]
     public class TextDocumentContentChangeEvent
     {
         /// <summary>
         /// The range of the document that changed.
         /// </summary>
-        [ProtoMember(1, Name = "range")]
+        [JsonPropertyName("range")]
         public Range Range { get; set; }
 
         /// <summary>
@@ -20,7 +19,7 @@ namespace Rubberduck.InternalApi.RPC.LSP.Parameters
         /// <remarks>
         /// If <c>Range</c> is <c>null</c>, contains the text for the full document.
         /// </remarks>
-        [ProtoMember(2, Name = "text")]
+        [JsonPropertyName("text")]
         public string Text { get; set; }
     }
 }

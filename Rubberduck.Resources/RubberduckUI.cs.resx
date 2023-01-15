@@ -674,4 +674,10 @@ Import přerušen.</value>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value>Výběr není proměnná.</value>
   </data>
+  <data name="SelectionLocationPosition" xml:space="preserve">
+    <value>R{0}C{1}</value>
+  </data>
+  <data name="SelectionLocationRange" xml:space="preserve">
+    <value>R{0}C{1} - R{2}C{3}</value>
+  </data>
 </root>
