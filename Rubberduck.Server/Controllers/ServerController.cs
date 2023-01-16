@@ -1,21 +1,22 @@
 ﻿using AustinHarris.JsonRpc;
-using Rubberduck.InternalApi.RPC.LSP;
+using Rubberduck.InternalApi.RPC;
 using Rubberduck.InternalApi.RPC.LSP.Parameters;
 using Rubberduck.InternalApi.RPC.LSP.Response;
+using Rubberduck.RPC.Parameters;
 using Rubberduck.RPC.Platform;
 using System.Threading.Tasks;
 using WebSocketSharp;
 
 namespace Rubberduck.Server.Controllers
 {
-    public class ServerController : JsonRpcClient
+    public class ServerController : JsonRpcClient, IServerController
     {
         public ServerController(WebSocket socket) : base(socket)
         {
         }
 
         [JsonRpcMethod(JsonRpcMethods.Initialize)]
-        public async Task<InitializeResult> Initialize(InitializeParams parameters)
+        public async Task<InitializeResult> Initialize(LspInitializeParams parameters)
         {
             return await Task.Run(() =>
             {

@@ -1,4 +1,5 @@
 ﻿using AustinHarris.JsonRpc;
+using Rubberduck.InternalApi.RPC;
 using Rubberduck.InternalApi.RPC.LSP;
 using Rubberduck.InternalApi.RPC.LSP.Parameters;
 using Rubberduck.InternalApi.RPC.LSP.Response;
@@ -480,7 +481,7 @@ namespace Rubberduck.Server.Controllers
         {
             return await Task.Run(() =>
             {
-                var request = CreateRequest(JsonRpcMethods.LinkedEditingRanges, parameters)
+                var request = CreateRequest(JsonRpcMethods.LinkedEditingRanges, parameters);
                 var response = Request<LinkedEditingRanges>(request);
 
                 return response;

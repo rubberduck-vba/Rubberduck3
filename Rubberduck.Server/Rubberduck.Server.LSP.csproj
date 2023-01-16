@@ -134,6 +134,7 @@
     <Compile Include="Controllers\AbstractClient\ITextDocumentClient.cs" />
     <Compile Include="Controllers\AbstractClient\IWindowClient.cs" />
     <Compile Include="Controllers\AbstractClient\IWorkspaceClient.cs" />
+    <Compile Include="Controllers\IServerController.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

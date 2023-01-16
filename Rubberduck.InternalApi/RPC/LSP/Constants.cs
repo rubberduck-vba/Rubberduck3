@@ -1,9 +1,28 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Rubberduck.InternalApi.RPC.LSP
+﻿namespace Rubberduck.InternalApi.RPC
 {
     public class Constants
     {
+        public class Console
+        {
+            public class FontWeightOptions
+            {
+                public const int Normal = 0;
+                public const int Light = 1;
+                public const int SemiBold = 2;
+                public const int Bold = 4;
+                public const int Black = 8;
+            }
+        }
+
+        public class LocalDb
+        {
+
+        }
+
+        public class LSP
+        {
+
+        }
         public class CodeActionKind
         {
             /// <summary>

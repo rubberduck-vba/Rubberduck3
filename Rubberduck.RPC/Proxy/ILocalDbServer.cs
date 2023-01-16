@@ -1,9 +1,30 @@
-﻿using System;
+﻿using Rubberduck.InternalApi.RPC;
+using Rubberduck.InternalApi.RPC.LSP.Parameters;
+using Rubberduck.RPC.Parameters;
+using Rubberduck.RPC.Platform;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+
+using DataServer = Rubberduck.InternalApi.RPC.DataServer.Capabilities;
+using LspServer = Rubberduck.InternalApi.RPC.LSP.Capabilities;
 
 namespace Rubberduck.RPC.Proxy
 {
-    public interface ILocalDbServer
+    public interface IJsonRpcServerProxy<TServerCapabilities> 
+        where TServerCapabilities : class, new()
+    {
+        Task Exit();
+        Task<InitializeResult<TServerCapabilities>> Initialize(LspInitializeParams parameters);
+        Task Initialized(InitializedParams parameters);
+        Task LogTrace(LogTraceParams parameters);
+        Task SetTrace(SetTraceParams parameters);
+        Task Shutdown();
+
+
+        IJsonRpcConsole Console { get; }
+    }
+
+    public interface ILocalDbServer : IJsonRpcServerProxy<DataServer.ServerCapabilities>
     {
         /// <summary>
         /// <c>true</c> if the server has one or more connected clients.
@@ -13,19 +34,10 @@ namespace Rubberduck.RPC.Proxy
         /// The client processes connected to this server.
         /// </summary>
         IEnumerable<Client> Clients { get; }
+    }
 
-        /// <summary>
-        /// Connects a client to this server.
-        /// </summary>
-        /// <param name="client"></param>
-        /// <returns><c>true</c> if the connection succeeded.</returns>
-        bool Connect(Client client);
-
-        /// <summary>
-        /// Disconnects a client from this server.
-        /// </summary>
-        /// <param name="client"></param>
-        /// <returns><c>true</c> if the client was successfully disconnected.</returns>
-        bool Disconnect(Client client);
+    public interface ILSPServer : IJsonRpcServerProxy<LspServer.ServerCapabilities>
+    {
+        /* TODO */
     }
 }

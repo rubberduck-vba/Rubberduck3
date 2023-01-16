@@ -1,5 +1,5 @@
 ﻿using AustinHarris.JsonRpc;
-using Rubberduck.InternalApi.RPC.LSP;
+using Rubberduck.InternalApi.RPC;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Server.LSP.Controllers.AbstractClient

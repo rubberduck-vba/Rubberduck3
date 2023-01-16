@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Data;
 using Microsoft.Data.Sqlite;
-using Rubberduck.Server.LocalDb;
-using Rubberduck.DataServer.Properties;
+using Rubberduck.Server.LocalDb.Abstract;
+using Rubberduck.Server.LocalDb.Properties;
 
 namespace Rubberduck.Server.Storage
 {

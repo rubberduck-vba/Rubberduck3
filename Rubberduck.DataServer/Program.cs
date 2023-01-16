@@ -2,8 +2,11 @@
 using Rubberduck.Client.LocalDb.Properties;
 using Rubberduck.Client.LocalDb.UI;
 using Rubberduck.Client.LocalDb.UI.Commands;
+using Rubberduck.InternalApi.RPC;
 using Rubberduck.InternalApi.RPC.LSP;
+using Rubberduck.RPC;
 using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Proxy;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -43,63 +46,6 @@ namespace Rubberduck.Client.LocalDb
         [STAThread]
         static void Main(string[] args)
         {
-            #region Global Mutex https://stackoverflow.com/a/229567/1188513
-
-            // get application GUID as defined in AssemblyInfo.cs
-            var appGuid = ((GuidAttribute)Assembly.GetExecutingAssembly()
-                .GetCustomAttributes(typeof(GuidAttribute), false)
-                .GetValue(0)).Value
-                .ToString();
-
-            // unique id for global mutex - Global prefix means it is global to the machine
-            var mutexId = $"Global\\{{{appGuid}}}";
-
-            // edited by Jeremy Wiebe to add example of setting up security for multi-user usage
-            // edited by 'Marc' to work also on localized systems (don't use just "Everyone") 
-            var allowEveryoneRule = new MutexAccessRule(
-                new SecurityIdentifier(WellKnownSidType.WorldSid, null),
-                MutexRights.FullControl,
-                AccessControlType.Allow);
-            var securitySettings = new MutexSecurity();
-            securitySettings.AddAccessRule(allowEveryoneRule);
-
-            // edited by MasonGZhwiti to prevent race condition on security settings via VanNguyen
-            using (var mutex = new Mutex(false, mutexId, out _, securitySettings))
-            {
-                // edited by acidzombie24
-                var hasHandle = false;
-                try
-                {
-                    try
-                    {
-                        // edited by acidzombie24
-                        hasHandle = mutex.WaitOne(_exclusiveAccessTimeout.Milliseconds, false);
-                        if (!hasHandle) throw new TimeoutException("Timeout waiting for exclusive access");
-                    }
-                    catch (AbandonedMutexException)
-                    {
-                        // Log the fact that the mutex was abandoned in another process,
-                        // it will still get acquired
-                        hasHandle = true;
-                    }
-
-                    // Perform your work here.
-                    Start(args);
-                }
-                finally
-                {
-                    // edited by acidzombie24, added if statement
-                    if (hasHandle)
-                    {
-                        mutex.ReleaseMutex();
-                    }
-                }
-            }
-            #endregion
-        }
-
-        private static void Start(string[] args)
-        {
             var result = Parser.Default.ParseArguments<Options>(args)
                 .WithNotParsed(errors =>
                 {
@@ -125,19 +71,11 @@ namespace Rubberduck.Client.LocalDb
             var startupOptions = result.Value;
             ValidatePort(startupOptions.Port);
 
-            var console = new JsonRpcConsole
-            {
-                IsEnabled = !startupOptions.Silent,
-                Trace = startupOptions.Silent ? Constants.TraceValue.Off
-                    : startupOptions.Verbose
-                        ? Constants.TraceValue.Verbose
-                        : Constants.TraceValue.Messages
-            };
-            var server = new Server(Settings.Default.JsonRpcServerPath, startupOptions.Port, console, startupOptions.Interactive, TimeSpan.FromMilliseconds(startupOptions.ExitDelayMilliseconds));
+            LocalDbServerProcess.Start(startupOptions.Port, startupOptions.Interactive);
 
             IMainWindowFactory factory = null;
             if (startupOptions.Interactive)
-            {
+            {/*
                 var environment = new EnvironmentService();
                 var shutdownCommand = new ShutdownCommand(server, environment);
                 var copyCommand = new CopyCommand(console);
@@ -146,17 +84,20 @@ namespace Rubberduck.Client.LocalDb
                 var resumeTraceCommand = new ResumeTraceCommand(console);
                 var setTraceCommand = new SetTraceCommand(console);
 
-                var statusVM = new ServerStatusViewModel(server, server as IDataServerEvents);
+                var statusVM = new ServerStatusViewModel(server, server as ILocalDbServerEvents);
                 var consoleVM = new ConsoleViewModel(server, console,
                     shutdownCommand, copyCommand, saveAsCommand, pauseTraceCommand, resumeTraceCommand, setTraceCommand);
 
                 var vm = new MainWindowViewModel(consoleVM, statusVM);
                 factory = new MainWindowFactory(vm);
+                */
             }
 
+            /*
             App app = new App(server, factory);
             app.InitializeComponent();
             app.Run();
+            */
         }
 
         private static void ValidatePort(int port)

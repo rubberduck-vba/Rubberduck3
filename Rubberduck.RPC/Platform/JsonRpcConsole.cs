@@ -1,5 +1,5 @@
 ﻿using NLog;
-using Rubberduck.InternalApi.RPC.LSP;
+using Rubberduck.InternalApi.RPC;
 using System;
 using System.Threading;
 
@@ -91,7 +91,6 @@ namespace Rubberduck.RPC.Platform
         void Log(Exception exception, LogLevel level, string message, string verbose = null);
     }
 
-    /* YAGNI?
     public interface IJsonRpcConsole<TOptions> : IJsonRpcConsole
         where TOptions : class, new()
     {
@@ -100,7 +99,6 @@ namespace Rubberduck.RPC.Platform
         /// </summary>
         TOptions Configuration { get; }
     }
-    */
 
     public class JsonRpcConsole : IJsonRpcConsole
     {
@@ -143,6 +141,29 @@ namespace Rubberduck.RPC.Platform
             OnMessage(id, level, message, verbose, exception);
         }
 
+        protected virtual string StdFormat(int id, LogLevel level, string content)
+        {
+            return $"{id:000000000} {DateTime.Now:O} {level.ToString().ToUpperInvariant()} {content}";
+        }
+
+        protected virtual void StdOut(int id, LogLevel level, string message, string verbose = null)
+        {
+            Console.Out.WriteLine(StdFormat(id, level, message));
+            if (IsVerbose && !string.IsNullOrWhiteSpace(verbose))
+            {
+                Console.Out.WriteLine(StdFormat(id, level, verbose));
+            }
+        }
+
+        protected virtual void StdErr(int id, LogLevel level, string message, string verbose = null)
+        {
+            Console.Error.WriteLine(StdFormat(id, level, message));
+            if (IsVerbose && !string.IsNullOrWhiteSpace(verbose))
+            {
+                Console.Error.WriteLine(StdFormat(id, level, verbose));
+            }
+        }
+
         protected virtual void LogInternal(LogLevel level, string message, string verbose)
             => InternalLogger.Log(level, message + (IsVerbose ? " " + verbose : null));
 
@@ -155,7 +176,14 @@ namespace Rubberduck.RPC.Platform
         }
     }
 
-    /* YAGNI?
+    public class ConfigurableJsonRpcConsole : JsonRpcConsole<ServerConsoleOptions>
+    {
+        public ConfigurableJsonRpcConsole(ServerConsoleOptions configuration) 
+            : base(configuration)
+        {
+        }
+    }
+
     public abstract class JsonRpcConsole<TOptions> : JsonRpcConsole, IJsonRpcConsole<TOptions> 
         where TOptions : class, new()
     {
@@ -166,5 +194,4 @@ namespace Rubberduck.RPC.Platform
 
         public TOptions Configuration { get; }
     }
-    */
 }

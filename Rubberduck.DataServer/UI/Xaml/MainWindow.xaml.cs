@@ -22,7 +22,7 @@ namespace Rubberduck.Client.LocalDb.UI.Xaml
     {
         public MainWindow()
         {
-            InitializeComponent();
+            //InitializeComponent();
         }
     }
 }

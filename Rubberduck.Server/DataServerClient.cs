@@ -1,4 +1,5 @@
 ﻿using AustinHarris.JsonRpc;
+using Rubberduck.InternalApi.RPC;
 using Rubberduck.InternalApi.RPC.DataServer.Parameters;
 using Rubberduck.InternalApi.RPC.DataServer.Response;
 using Rubberduck.RPC.Platform;
@@ -7,25 +8,11 @@ using WebSocketSharp;
 
 namespace Rubberduck.Server
 {
-    internal class DataServerControllerProxy : JsonRpcClient, ILocalDbServerController
+    internal class LocalDbServerControllerProxy : JsonRpcClient, ILocalDbServerController
     {
-        public DataServerControllerProxy(WebSocket socket) : base(socket)
+        public LocalDbServerControllerProxy(WebSocket socket) : base(socket)
         {
             
-        }
-
-        [JsonRpcMethod("connect")]
-        public ConnectResult Connect(ConnectParams parameters)
-        {
-            var request = CreateRequest("connect", parameters);
-            return Request<ConnectResult>(request);
-        }
-
-        [JsonRpcMethod("disconnect")]
-        public DisconnectResult Disconnect(DisconnectParams parameters)
-        {
-            var request = CreateRequest("disconnect", parameters);
-            return Request<DisconnectResult>(request);
         }
 
         [JsonRpcMethod("exit")]
@@ -33,6 +20,21 @@ namespace Rubberduck.Server
         {
             var request = CreateRequest("exit", null);
             Notify(request);
+        }
+
+        public ConsoleStatusResult OptionsChanged()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public ConsoleStatusResult SetOptions(ServerConsoleOptions parameters)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public ConsoleStatusResult Status()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

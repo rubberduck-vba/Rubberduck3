@@ -133,7 +133,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RPC\DataServer\JsonRpcMethods.cs" />
+    <Compile Include="RPC\ClientInfo.cs" />
+    <Compile Include="RPC\DataServer\Capabilities\ServerCapabilities.cs" />
+    <Compile Include="RPC\DataServer\Parameters\DisconnectParams.cs" />
+    <Compile Include="RPC\DataServer\Response\DisconnectResult.cs" />
+    <Compile Include="RPC\DataServer\Response\InitializeResult.cs" />
     <Compile Include="RPC\EnvironmentService.cs" />
     <Compile Include="Common\ExperimentalAttribute.cs" />
     <Compile Include="Common\FileSystemProvider.cs" />
@@ -168,6 +172,7 @@
     <Compile Include="RPC\DataServer\ProjectSetting.cs" />
     <Compile Include="RPC\DataServer\Response\ConnectResult.cs" />
     <Compile Include="RPC\ErrorCodes.cs" />
+    <Compile Include="RPC\InitializeResult.cs" />
     <Compile Include="RPC\LSP\AnnotatedTextEdit.cs" />
     <Compile Include="RPC\LSP\Capabilities\CallHierarchyClientCapabilities.cs" />
     <Compile Include="RPC\LSP\Capabilities\CallHierarchyOptions.cs" />
@@ -260,9 +265,8 @@
     <Compile Include="RPC\LSP\Capabilities\FailureHandlingKind.cs" />
     <Compile Include="RPC\LSP\Capabilities\MarkdownClientCapabilities.cs" />
     <Compile Include="RPC\LSP\Capabilities\RegularExpressionClientCapabilies.cs" />
-    <Compile Include="RPC\LSP\ClientInfo.cs" />
     <Compile Include="RPC\LSP\Constants.cs" />
-    <Compile Include="RPC\LSP\JsonRpcMethods.cs" />
+    <Compile Include="RPC\JsonRpcMethods.cs" />
     <Compile Include="RPC\LSP\Parameters\ApplyWorkspaceEditParams.cs" />
     <Compile Include="RPC\LSP\Parameters\CallHierarchyIncomingCallsParams.cs" />
     <Compile Include="RPC\LSP\Parameters\CallHierarchyOutgoingCallsParams.cs" />
@@ -407,6 +411,7 @@
     <Compile Include="RPC\ResponseError.cs" />
     <Compile Include="RPC\ResponseMessage.cs" />
     <Compile Include="RPC\RpcPort.cs" />
+    <Compile Include="RPC\ServerConsoleOptions.cs" />
     <Compile Include="UIContext\IUiContextProvider.cs" />
     <Compile Include="UIContext\IUiDispatcher.cs" />
     <Compile Include="WindowsApi\EnumHelper.cs" />

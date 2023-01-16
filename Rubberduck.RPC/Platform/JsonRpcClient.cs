@@ -11,7 +11,7 @@ using WebSocketSharp;
 
 namespace Rubberduck.RPC.Platform
 {
-    public class JsonRpcClient
+    public abstract class JsonRpcClient
     {
         public int MaximumRequestId { get; set; } = int.MaxValue - 1;
         public TimeSpan ResponseTimeout { get; set; } = TimeSpan.FromMinutes(10);

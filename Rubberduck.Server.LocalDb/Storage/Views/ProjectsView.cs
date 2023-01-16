@@ -1,5 +1,5 @@
 ﻿using System.Data;
-using Rubberduck.Server.LocalDb;
+using Rubberduck.Server.LocalDb.Abstract;
 using Rubberduck.DataServer.Storage.Entities;
 
 namespace Rubberduck.DataServer.Storage.Views

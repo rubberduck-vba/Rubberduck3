@@ -14,7 +14,6 @@ namespace Rubberduck.Client.LocalDb
         public App(IJsonRpcServer server, IMainWindowFactory factory)
         {
             _server = server;
-            _factory = factory;
         }
 
         public void InitializeComponent()
@@ -24,12 +23,6 @@ namespace Rubberduck.Client.LocalDb
         protected override void OnStartup(StartupEventArgs e)
         {
             _server.Start();
-
-            if (_server.IsInteractive)
-            {
-                var view = _factory.Create(_server);
-                view.Show();
-            }
         }
     }
 }

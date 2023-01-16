@@ -1,4 +1,5 @@
 ﻿using AustinHarris.JsonRpc;
+using Rubberduck.InternalApi.RPC;
 using Rubberduck.InternalApi.RPC.LSP;
 using Rubberduck.InternalApi.RPC.LSP.Parameters;
 using Rubberduck.InternalApi.RPC.LSP.Response;

@@ -1,4 +1,4 @@
-﻿using Rubberduck.Server.LocalDb;
+﻿using Rubberduck.Server.LocalDb.Abstract;
 
 namespace Rubberduck.Server.Storage
 {

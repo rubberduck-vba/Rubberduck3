@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using Dapper;
-using Rubberduck.Server.LocalDb;
 using Rubberduck.DataServer.Storage.Entities;
 using Rubberduck.DataServer.Storage.Repositories;
 using Rubberduck.DataServer.Storage.Views;
+using Rubberduck.Server.LocalDb.Abstract;
 
 namespace Rubberduck.Server.Storage
 {

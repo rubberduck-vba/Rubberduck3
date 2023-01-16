@@ -1,5 +1,6 @@
-﻿using Rubberduck.InternalApi.RPC.LSP;
+﻿using Rubberduck.InternalApi.RPC;
 using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Telemetry;
 using System.Threading.Tasks;
 using WebSocketSharp;
 
@@ -11,7 +12,7 @@ namespace Rubberduck.Server.Controllers
         {
         }
 
-        public async Task TelemetryEvent(object parameters)
+        public async Task TelemetryEvent(TelemetryEvent parameters)
         {
             await Task.Run(() =>
             {

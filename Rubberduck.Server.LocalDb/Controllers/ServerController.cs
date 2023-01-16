@@ -1,90 +1,53 @@
-﻿using AustinHarris.JsonRpc;
-using NLog;
-using Rubberduck.InternalApi.RPC;
-using Rubberduck.InternalApi.RPC.DataServer;
-using Rubberduck.InternalApi.RPC.DataServer.Parameters;
-using Rubberduck.InternalApi.RPC.DataServer.Response;
-using Rubberduck.RPC.Proxy;
-using Rubberduck.RPC.Proxy.Controllers;
+﻿using Rubberduck.InternalApi.RPC;
+using Rubberduck.InternalApi.RPC.DataServer.Capabilities;
+using Rubberduck.InternalApi.RPC.LSP.Parameters;
+using Rubberduck.RPC;
+using Rubberduck.RPC.Parameters;
+using Rubberduck.RPC.Platform;
 using System;
+using System.Threading.Tasks;
+using WebSocketSharp;
 
 namespace Rubberduck.Server.LocalDb.Controllers
 {
-    public class ServerController : JsonRpcService, ILocalDbServerController
+    public class ServerController : JsonRpcClient, IServerController<ServerCapabilities>
     {
-        private readonly IEnvironmentService _environment;
-        private readonly LocalDbServer _server;
-
-        internal ServerController(IEnvironmentService environment, LocalDbServer server)
+        public ServerController(WebSocket socket) : base(socket)
         {
-            _environment = environment;
-            _server = server;
         }
 
-        /// <summary>
-        /// Connects a client to the server.
-        /// </summary>
-        [JsonRpcMethod(JsonRpcMethods.Connect)]
-        public ConnectResult Connect(ConnectParams parameters)
+        public async Task Exit()
         {
-            var client = new Client
-            { 
-                ProcessId = parameters.ProcessId,
-                Name = parameters.Name,
-            };
-            
-            var connected = _server.Connect(client);
-            
-            return new ConnectResult 
-            { 
-                Connected = connected 
-            };
+            await Task.Run(() =>
+            {
+                var request = CreateRequest(JsonRpcMethods.Exit, null);
+                Notify(request);
+            });
         }
 
-        private bool _awaitingExit = false;
-
-        /// <summary>
-        /// Disconnects a client from the server.
-        /// </summary>
-        [JsonRpcMethod(JsonRpcMethods.Disconnect)]
-        public DisconnectResult Disconnect(DisconnectParams parameters)
+        public Task<InitializeResult<ServerCapabilities>> Initialize(LspInitializeParams parameters)
         {
-            if (!_server.HasClients)
-            {
-                throw new InvalidOperationException("Server has no connected client.");
-            }
-
-            var client = new Client
-            {
-                ProcessId = parameters.ProcessId,
-            };
-            
-            var disconnected = _server.Disconnect(client);
-            var shuttingDown = disconnected && !_server.HasClients;
-
-            _awaitingExit = shuttingDown;
-
-            return new DisconnectResult
-            {
-                Disconnected = disconnected,
-                ShuttingDown = shuttingDown,
-            };
+            throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Terminates the server process.
-        /// </summary>
-        [JsonRpcMethod(JsonRpcMethods.Exit)]
-        public void Exit()
+        public Task Initialized(InitializedParams parameters)
         {
-            var exitCode = 0;
-            if (!_awaitingExit)
-            {
-                _server.Console.Log(LogLevel.Warn, "Unexpected exit notification.", verbose: "Exiting with code 1.");
-                exitCode = 1;
-            }
+            throw new NotImplementedException();
+        }
 
-            _environment.Exit(exitCode);
+        public Task LogTrace(LogTraceParams parameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetTrace(SetTraceParams parameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Shutdown()
+        {
+            throw new NotImplementedException();
         }
     }
 }

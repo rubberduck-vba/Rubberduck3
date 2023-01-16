@@ -2,7 +2,7 @@
 using System.Data;
 using Dapper;
 using System.Threading.Tasks;
-using Rubberduck.Server.LocalDb;
+using Rubberduck.Server.LocalDb.Abstract;
 using Rubberduck.DataServer.Storage.Entities;
 
 namespace Rubberduck.DataServer.Storage.Views

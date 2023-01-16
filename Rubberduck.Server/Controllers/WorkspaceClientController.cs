@@ -3,7 +3,7 @@ using Rubberduck.InternalApi.RPC.LSP.Response;
 using System.Threading.Tasks;
 using Rubberduck.RPC.Platform;
 using WebSocketSharp;
-using Rubberduck.InternalApi.RPC.LSP;
+using Rubberduck.InternalApi.RPC;
 
 namespace Rubberduck.Server.Controllers
 {

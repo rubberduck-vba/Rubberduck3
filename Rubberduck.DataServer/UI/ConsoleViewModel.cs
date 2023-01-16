@@ -1,5 +1,4 @@
-﻿using NLog;
-using Rubberduck.InternalApi.RPC.LSP;
+﻿using Rubberduck.InternalApi.RPC;
 using Rubberduck.RPC.Platform;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
@@ -7,7 +6,6 @@ using Rubberduck.UI.Command;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows.Input;
 
 namespace Rubberduck.Client.LocalDb

@@ -113,9 +113,8 @@ namespace Rubberduck.Server.LocalDb
                         ? Constants.TraceValue.Verbose
                         : Constants.TraceValue.Messages
             };
-            var server = new LocalDbServer(Settings.Default.JsonRpcServerPath, startupOptions.Port, console, startupOptions.Interactive, TimeSpan.FromMilliseconds(startupOptions.ExitDelayMilliseconds));
-            var environment = new EnvironmentService();
 
+            var server = new LocalDbServer(Settings.Default.JsonRpcServerPath, startupOptions.Port, console, startupOptions.Interactive, TimeSpan.FromMilliseconds(startupOptions.ExitDelayMilliseconds));
             server.Start();
         }
 
