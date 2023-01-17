@@ -19,7 +19,7 @@ namespace Rubberduck.Core.Editor
             _documentProvider = documentProvider;
         }
 
-        private TextDocument GetDocument(IQualifiedModuleName module) => _documentProvider.GetDocument(module);
+        private TextDocument GetDocument(IQualifiedModuleName module) => null; //_documentProvider.GetDocument(module);
 
         public string StringSource(IQualifiedModuleName module) => GetDocument(module)?.Text ?? string.Empty;
 
@@ -51,10 +51,10 @@ namespace Rubberduck.Core.Editor
 
         public void SetSelection(IQualifiedModuleName module, Selection selection)
         {
-            var document = _documentProvider.GetDocument(module);
+            //var document = _documentProvider.GetDocument(module);
             
-            var startOffset = document.GetOffset(selection.StartLine, selection.StartColumn);
-            var endOffset = document.GetOffset(selection.EndLine, selection.EndColumn);
+            //var startOffset = document.GetOffset(selection.StartLine, selection.StartColumn);
+            //var endOffset = document.GetOffset(selection.EndLine, selection.EndColumn);
 
             // TODO set document selection
         }

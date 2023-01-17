@@ -1,5 +1,5 @@
 using Antlr4.Runtime;
-using ICSharpCode.AvalonEdit.Document;
+//using ICSharpCode.AvalonEdit.Document;
 using Rubberduck.InternalApi.Model;
 using Rubberduck.VBEditor;
 
@@ -18,25 +18,25 @@ namespace Rubberduck.Parsing.Grammar
         {
             get
             {
-                var anchorOffset = DocumentAnchor?.Offset;
-                if (!anchorOffset.HasValue || !_offset.Equals(anchorOffset.Value))
+                //var anchorOffset = DocumentAnchor?.Offset;
+                //if (!anchorOffset.HasValue || !_offset.Equals(anchorOffset.Value))
                 {
                     var startOffset = Start?.StartIndex ?? DocumentOffset.Invalid.Start;
                     var endOffset = Stop?.StopIndex ?? DocumentOffset.Invalid.End;
 
-                    _offset = new DocumentOffset(anchorOffset ?? startOffset, (anchorOffset ?? 0) - startOffset + endOffset);
+                    //_offset = new DocumentOffset(anchorOffset ?? startOffset, (anchorOffset ?? 0) - startOffset + endOffset);
                 }
 
                 return _offset;
             }
         }
 
-        public TextAnchor DocumentAnchor { get; private set; }
+        //public TextAnchor DocumentAnchor { get; private set; }
 
-        public void Anchor(TextDocument document)
-        {
-            DocumentAnchor = document.CreateAnchor(Start.StartIndex);
-        }
+        //public void Anchor(TextDocument document)
+        //{
+        //    DocumentAnchor = document.CreateAnchor(Start.StartIndex);
+        //}
 
         public Selection Selection
         {

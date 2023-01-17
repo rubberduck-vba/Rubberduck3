@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using NLog;
 using Rubberduck.InternalApi.Common;
 using WebSocketSharp.Server;
@@ -18,14 +15,9 @@ namespace Rubberduck.RPC.Platform
         int Port { get; }
         string Path { get; }
 
-        /// <summary>
-        /// The amount of time to wait before terminating the process after shutting down.
-        /// </summary>
-        TimeSpan ExitDelay { get; }
-
         bool IsAlive { get; }
         TimeSpan Uptime { get; }
-        bool IsInteractive { get; }
+        DateTime? SessionStart { get; }
 
         int MessagesReceived { get; }
         int MessagesSent { get; }
@@ -39,7 +31,7 @@ namespace Rubberduck.RPC.Platform
         private readonly WebSocketServer _socketServer;
         private Stopwatch _uptimeStopwatch = new Stopwatch();
 
-        protected JsonRpcServer(string path, int port, IJsonRpcConsole console, bool interactive, TimeSpan exitDelay)
+        protected JsonRpcServer(string path, int port, IJsonRpcConsole console)
         {
             _socketServer = new WebSocketServer(port);
             _socketServer.KeepClean = false;
@@ -50,8 +42,6 @@ namespace Rubberduck.RPC.Platform
             Port = port;
 
             Console = console;
-            IsInteractive = interactive;
-            ExitDelay = exitDelay;
         }
 
         /// <summary>
@@ -59,7 +49,14 @@ namespace Rubberduck.RPC.Platform
         /// </summary>
         public int ProcessId { get; }
 
-        public TimeSpan ExitDelay { get; }
+        /// <summary>
+        /// The session start timestamp.
+        /// </summary>
+        public DateTime? SessionStart { get; private set; }
+
+        /// <summary>
+        /// The current trace level for this server.
+        /// </summary>
         public string Trace { get; set; }
 
         /// <summary>
@@ -159,7 +156,8 @@ namespace Rubberduck.RPC.Platform
                 if (!_socketServer.IsListening)
                 {
                     _socketServer.Start();
-                    Console.Log(LogLevel.Trace, $"Socket server started.", verbose: $"Port: {_socketServer.Port}");
+                    SessionStart = DateTime.Now;
+                    Console.Log(LogLevel.Trace, $"Socket server started.", verbose: $"Port: {_socketServer.Port} SessionStart: {SessionStart:o}");
 
                     _uptimeStopwatch.Restart();
                     Console.Log(LogLevel.Trace, $"Uptime stopwatch started.");

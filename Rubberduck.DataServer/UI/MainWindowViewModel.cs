@@ -68,8 +68,8 @@ namespace Rubberduck.Client.LocalDb
             RpcPort = server.Port;
             ServerName = server.Path;
 
-            events.OnClientConnected += (o, e) => Interlocked.Increment(ref _clientConnections);
-            events.OnClientDisconnected += (o, e) => Interlocked.Decrement(ref _clientConnections);
+            events.ClientConnected += (o, e) => Interlocked.Increment(ref _clientConnections);
+            events.ClientDisconnected += (o, e) => Interlocked.Decrement(ref _clientConnections);
         }
 
         public int RpcPort { get; }

@@ -1,6 +1,5 @@
 ﻿using CommandLine;
 using Rubberduck.InternalApi.RPC;
-using Rubberduck.InternalApi.RPC.LSP;
 using Rubberduck.RPC.Platform;
 using Rubberduck.Server.LocalDb.Properties;
 using System;
@@ -9,7 +8,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
-using System.Text;
 using System.Threading;
 
 namespace Rubberduck.Server.LocalDb
@@ -17,6 +15,7 @@ namespace Rubberduck.Server.LocalDb
     internal class Program
     {
         private static TimeSpan _exclusiveAccessTimeout = TimeSpan.FromSeconds(5);
+        private static ManualResetEvent _shutdownSignal = new ManualResetEvent(false);
 
         /// <summary>
         /// The main entry point for the application.
@@ -67,19 +66,11 @@ namespace Rubberduck.Server.LocalDb
                     var startupArgs = Parser.Default.ParseArguments<StartupOptions>(args)
                         .WithNotParsed(errors =>
                         {
-                            using (var stdErr = Console.OpenStandardError())
-                            {
-                                var message = Encoding.UTF8.GetBytes("Errors have occurred processing command-line arguments. Server will not be started.");
-                                stdErr.Write(message, 0, message.Length);
-                            }
+                            Console.WriteLine("Errors have occurred processing command-line arguments. Server will not be started.");
                         })
                         .WithParsed(options =>
                         {
-                            using (var stdOut = Console.OpenStandardOutput())
-                            {
-                                var message = Encoding.UTF8.GetBytes("Command-line arguments successfully parsed. Proceeding with startup...");
-                                stdOut.Write(message, 0, message.Length);
-                            }
+                            Console.WriteLine("Command-line arguments successfully parsed. Proceeding with startup...");
                         });
 
                     if (startupArgs.Errors.Any())
@@ -87,6 +78,7 @@ namespace Rubberduck.Server.LocalDb
                         throw new ArgumentException("Invalid command-line arguments were supplied.");
                     }
 
+                    Console.WriteLine("Startup checks completed. Starting server application...");
                     Start(startupArgs.Value);
                 }
                 finally
@@ -114,8 +106,11 @@ namespace Rubberduck.Server.LocalDb
                         : Constants.TraceValue.Messages
             };
 
-            var server = new LocalDbServer(Settings.Default.JsonRpcServerPath, startupOptions.Port, console, startupOptions.Interactive, TimeSpan.FromMilliseconds(startupOptions.ExitDelayMilliseconds));
+            var server = new LocalDbServer(Settings.Default.JsonRpcServerPath, startupOptions.Port, console);
+            server.ShutdownSignal += (o, e) => _shutdownSignal.Set();
             server.Start();
+
+            _shutdownSignal.WaitOne();
         }
 
         private static void ValidatePort(int port)

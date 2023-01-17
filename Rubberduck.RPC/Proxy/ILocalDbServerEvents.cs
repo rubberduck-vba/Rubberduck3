@@ -4,7 +4,8 @@ namespace Rubberduck.RPC.Proxy
 {
     public interface ILocalDbServerEvents
     {
-        event EventHandler OnClientConnected;
-        event EventHandler OnClientDisconnected;
+        event EventHandler ShutdownSignal;
+        event EventHandler ClientConnected;
+        event EventHandler ClientDisconnected;
     }
 }

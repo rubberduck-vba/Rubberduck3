@@ -13,13 +13,12 @@ namespace Rubberduck.RPC.Proxy
     public interface IJsonRpcServerProxy<TServerCapabilities> 
         where TServerCapabilities : class, new()
     {
+        Task Disconnect(ClientInfo client);
         Task Exit();
         Task<InitializeResult<TServerCapabilities>> Initialize(LspInitializeParams parameters);
         Task Initialized(InitializedParams parameters);
         Task LogTrace(LogTraceParams parameters);
         Task SetTrace(SetTraceParams parameters);
-        Task Shutdown();
-
 
         IJsonRpcConsole Console { get; }
     }
@@ -34,6 +33,11 @@ namespace Rubberduck.RPC.Proxy
         /// The client processes connected to this server.
         /// </summary>
         IEnumerable<Client> Clients { get; }
+
+        /// <summary>
+        /// Sends a shutdown signal, terminating the host process.
+        /// </summary>
+        void Shutdown();
     }
 
     public interface ILSPServer : IJsonRpcServerProxy<LspServer.ServerCapabilities>

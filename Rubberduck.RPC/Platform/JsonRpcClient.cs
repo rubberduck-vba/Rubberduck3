@@ -1,12 +1,9 @@
 ﻿using AustinHarris.JsonRpc;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Text.Json;
 using WebSocketSharp;
 
 namespace Rubberduck.RPC.Platform
@@ -39,7 +36,7 @@ namespace Rubberduck.RPC.Platform
 
             try
             {
-                var response = JsonConvert.DeserializeObject<JsonResponse>(e.Data);
+                var response = JsonSerializer.Deserialize<JsonResponse>(e.Data);
                 if (response.Error != null)
                 {
                     // TODO log error info
@@ -80,7 +77,7 @@ namespace Rubberduck.RPC.Platform
 
             try
             {
-                var jsonRequest = JsonConvert.SerializeObject(request);
+                var jsonRequest = JsonSerializer.Serialize(request);
                 _responses.TryAdd(requestId, completionSource);
                 _socket.Send(jsonRequest);
 
@@ -110,7 +107,7 @@ namespace Rubberduck.RPC.Platform
 
         public void Notify(JsonRequest request)
         {
-            var jsonRequest = JsonConvert.SerializeObject(request);
+            var jsonRequest = JsonSerializer.Serialize(request);
             _socket.Send(jsonRequest);
         }
     }

@@ -1,12 +1,13 @@
 ﻿using Antlr4.Runtime.Misc;
-using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Rendering;
+//using ICSharpCode.AvalonEdit.Document;
+//using ICSharpCode.AvalonEdit.Rendering;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Model;
 using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.Listeners
 {
+    /*
     public class SemanticHighlighting : DocumentColorizingTransformer
     {
         private readonly VBABaseParserRuleContext _context;
@@ -177,4 +178,5 @@ namespace Rubberduck.Parsing.Listeners
             }
         }
     }
+    */
 }

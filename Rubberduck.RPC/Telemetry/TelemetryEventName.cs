@@ -40,12 +40,13 @@
     /// </summary>
     public enum EventTelemetryName
     {
-        /* VBE_VisualBasicEditor (add-in) */
+        /* range 0-1000 not used */
 
+        #region range 1000-1999 [VBE] add-in client host process telemetry
         /// <summary>
         /// The splash screen was displayed.
         /// </summary>
-        VBE_OnSplashShown,
+        VBE_OnSplashShown = 1000,
 
         /// <summary>
         /// An Office CommandBar Rubberduck menu command button was clicked in the native VBIDE main menu bar.
@@ -97,15 +98,14 @@
         VBE_OnShowRubberduckEditorMenuCommandClicked,
 
         // ...other menu commands would go here...
+        #endregion
 
-
-
-        /* RDE_RubberduckEditor (add-in) */
+        #region range 2000-2999 [RDE] add-in client managed components telemetry
 
         /// <summary>
         /// The Rubberduck editor shell was displayed.
         /// </summary>
-        RDE_OnEditorShellShown,
+        RDE_OnEditorShellShown = 1000,
         /// <summary>
         /// The Rubberduck editor shell was closed.
         /// </summary>
@@ -175,12 +175,14 @@
         /// </summary>
         RDE_OnDismissParameterInfo,
 
-        /* LSP_LanguageServerProtocol (LSP server process) */
+        #endregion
+
+        #region range 3000-3999 [LSP] language server process telemetry
 
         /// <summary>
         /// The LSP client console GUI client main window was displayed.
         /// </summary>
-        LSP_OnClientConsoleShown,
+        LSP_OnClientConsoleShown = 3000,
         /// <summary>
         /// The LSP client console GUI client main window was minimized.
         /// </summary>
@@ -251,12 +253,14 @@
         /// </summary>
         LSP_OnCodeActionCommand,
 
-        /* SQL_LocalDbServer (SQLite server process) */
+        #endregion
+
+        #region range 4000-4999 [SQL] database server process telemetry
 
         /// <summary>
         /// The LocalDb client console GUI client main window was displayed.
         /// </summary>
-        SQL_OnClientConsoleShown,
+        SQL_OnClientConsoleShown = 4000,
         /// <summary>
         /// The LocalDb client console GUI client main window was minimized.
         /// </summary>
@@ -301,5 +305,7 @@
         /// SQL client/server settings were modified in the LocalDb console client.
         /// </summary>
         SQL_OnClientConsoleSaveSettings,
+
+        #endregion
     }
 }
