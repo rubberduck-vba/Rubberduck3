@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 
 namespace Rubberduck.RPC
 {
@@ -25,6 +26,7 @@ namespace Rubberduck.RPC
                 RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = hidden,
+                WorkingDirectory = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
             };
             Process serverProcess;
             

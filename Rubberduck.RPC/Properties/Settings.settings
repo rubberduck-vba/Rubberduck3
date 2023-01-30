@@ -3,13 +3,13 @@
   <Profiles />
   <Settings>
     <Setting Name="ServerExecutable_LocalDb" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Rubberduck.Server.LocalDb.exe</Value>
+      <Value Profile="(Default)">..\..\..\Rubberduck.Server.LocalDb\bin\Debug\Rubberduck.Server.LocalDb.exe</Value>
     </Setting>
     <Setting Name="ServerExecutable_LSP" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Rubberduck.Server.LSP.exe</Value>
+      <Value Profile="(Default)">..\..\..\Rubberduck.Server.LSP\bin\Debug\Rubberduck.Server.LSP.exe</Value>
     </Setting>
     <Setting Name="ServerExecutable_Telemetry" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Rubberduck.Server.Telemetry.exe</Value>
+      <Value Profile="(Default)">..\..\..\Rubberduck.Server.Telemetry\bin\Debug\Rubberduck.Server.Telemetry.exe</Value>
     </Setting>
   </Settings>
 </SettingsFile>

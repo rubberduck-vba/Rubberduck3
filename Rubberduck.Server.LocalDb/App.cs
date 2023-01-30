@@ -11,7 +11,6 @@ using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using Rubberduck.Server.LocalDb.Properties;
 using Rubberduck.Server.LocalDb.Services;
 using System;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
@@ -21,8 +20,6 @@ namespace Rubberduck.Server.LocalDb
 {
     internal class App
     {
-        private readonly ConcurrentDictionary<int, ClientInfo> _clients;
-
         private readonly ServerCapabilities _configuration;
 
         private readonly Process _hostProcess;
@@ -44,7 +41,6 @@ namespace Rubberduck.Server.LocalDb
 
         internal App(ServerCapabilities configuration)
         {
-            _clients = new ConcurrentDictionary<int, ClientInfo>();
             _configuration = configuration;
 
             GetServerStateInfo getInfo = () => Info;
@@ -83,7 +79,8 @@ namespace Rubberduck.Server.LocalDb
 
         private void ServerService_ClientDisconnected(object sender, ClientInfo e)
         {
-            Info.Disconnect(e.ProcessId, out var client);
+
+            Info.Disconnect(e.ProcessId, out _);
         }
 
         private void ServerService_ClientConnected(object sender, ClientInfo e)

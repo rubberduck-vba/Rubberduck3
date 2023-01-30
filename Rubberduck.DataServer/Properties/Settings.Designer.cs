@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Rubberduck.DataServer.Properties {
+namespace Rubberduck.Client.LocalDb.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -27,27 +27,9 @@ namespace Rubberduck.DataServer.Properties {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
         [global::System.Configuration.DefaultSettingValueAttribute("Data Source=RubberduckLocalDB.db;")]
-        public string LocalDB {
+        public string LocalDb {
             get {
-                return ((string)(this["LocalDB"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("3031")]
-        public int DefaultPort {
-            get {
-                return ((int)(this["DefaultPort"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("/Rubberduck/DataServer")]
-        public string JsonRpcServerPath {
-            get {
-                return ((string)(this["JsonRpcServerPath"]));
+                return ((string)(this["LocalDb"]));
             }
         }
     }

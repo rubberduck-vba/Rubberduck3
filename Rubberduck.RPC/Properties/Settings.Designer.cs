@@ -25,7 +25,7 @@ namespace Rubberduck.RPC.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Rubberduck.Server.LocalDb.exe")]
+        [global::System.Configuration.DefaultSettingValueAttribute("..\\..\\..\\Rubberduck.Server.LocalDb\\bin\\Debug\\Rubberduck.Server.LocalDb.exe")]
         public string ServerExecutable_LocalDb {
             get {
                 return ((string)(this["ServerExecutable_LocalDb"]));
@@ -34,7 +34,7 @@ namespace Rubberduck.RPC.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Rubberduck.Server.LSP.exe")]
+        [global::System.Configuration.DefaultSettingValueAttribute("..\\..\\..\\Rubberduck.Server.LSP\\bin\\Debug\\Rubberduck.Server.LSP.exe")]
         public string ServerExecutable_LSP {
             get {
                 return ((string)(this["ServerExecutable_LSP"]));
@@ -43,7 +43,7 @@ namespace Rubberduck.RPC.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Rubberduck.Server.Telemetry.exe")]
+        [global::System.Configuration.DefaultSettingValueAttribute("..\\..\\..\\Rubberduck.Server.Telemetry\\bin\\Debug\\Rubberduck.Server.Telemetry.exe")]
         public string ServerExecutable_Telemetry {
             get {
                 return ((string)(this["ServerExecutable_Telemetry"]));
