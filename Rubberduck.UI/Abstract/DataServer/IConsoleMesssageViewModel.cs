@@ -1,5 +1,4 @@
-﻿using NLog;
-using Rubberduck.InternalApi.Common;
+﻿using Rubberduck.InternalApi.Common;
 using System;
 
 namespace Rubberduck.UI.Abstract
@@ -20,7 +19,7 @@ namespace Rubberduck.UI.Abstract
         /// <summary>
         /// The message level. Client may use it to filter messages displayed.
         /// </summary>
-        LogLevel Level { get; }
+        /*ServerLogLevel*/ int Level { get; }
         /// <summary>
         /// The message text.
         /// </summary>

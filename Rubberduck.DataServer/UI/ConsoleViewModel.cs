@@ -1,5 +1,9 @@
-﻿using Rubberduck.InternalApi.RPC;
-using Rubberduck.RPC.Platform;
+﻿using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Proxy.SharedServices;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Commands;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.Command;
@@ -31,36 +35,27 @@ namespace Rubberduck.Client.LocalDb
             [Constants.TraceValue.Verbose] = new TraceSettingValue(Constants.TraceValue.Verbose),
         };
 
-        public ConsoleViewModel(IJsonRpcServer server, IJsonRpcConsole console,
-            ICommand shutdownCommand,
-            ICommand copyCommand,
-            ICommand saveAsCommand,
-            ICommand pauseTraceCommand,
-            ICommand resumeTraceCommand,
-            ICommand setTraceCommand)
+        public ConsoleViewModel(ServerService<SharedServerCapabilities, IServerProxyClient> server, IServerConsoleService<ServerConsoleOptions> console, ServerConsoleCommands commands)
         {
-            RpcPort = server.Port;
-            ServerName = server.Path;
-
             console.Message += OnConsoleMessage;
 
             ConsoleContent = new ObservableCollection<IConsoleMesssageViewModel>();
 
             ClearCommand = new DelegateCommand(null, o => ConsoleContent.Clear());
-
-            ShutdownCommand = shutdownCommand;
-            CopyCommand = copyCommand;
-            SaveAsCommand = saveAsCommand;
-            PauseTraceCommand = pauseTraceCommand;
+            /*
+            ShutdownCommand = server.Commands.ExitCommand;
+            CopyCommand = null;
+            SaveAsCommand = null;
+            PauseTraceCommand = new DelegateCommand(null, server.ServerConsole.Commands.SetTraceCommand);
             ResumeTraceCommand = resumeTraceCommand;
             SetTraceCommand = setTraceCommand;
-
-            _trace = console.Trace;
+            */
+            _trace = console.Configuration.Trace.ToString();
             TraceValues = _traceSettings.Values;
             SelectedTraceValue = _traceSettings[Trace];
         }
 
-        private void OnConsoleMessage(object sender, ConsoleMessageEventArgs e)
+        private void OnConsoleMessage(object sender, ConsoleMessage e)
         {
             ConsoleContent.Add(new ConsoleMessageViewModel(e));
             OnPropertyChanged(nameof(ConsoleContent));

@@ -6,7 +6,7 @@ using Dapper;
 using Rubberduck.DataServer.Storage.Entities;
 using Rubberduck.DataServer.Storage.Repositories;
 using Rubberduck.DataServer.Storage.Views;
-using Rubberduck.Server.LocalDb.Abstract;
+using Rubberduck.Server.LocalDb.Internal;
 
 namespace Rubberduck.Server.Storage
 {

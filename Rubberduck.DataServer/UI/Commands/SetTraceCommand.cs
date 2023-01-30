@@ -1,22 +1,25 @@
 ﻿using NLog;
-using Rubberduck.InternalApi.RPC;
 using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Proxy.SharedServices;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.UI.Command;
+using System;
 
 namespace Rubberduck.Client.LocalDb.UI.Commands
 {
     public class SetTraceCommand : CommandBase
     {
-        private readonly IJsonRpcConsole _console;
+        private readonly IServerConsoleService<ServerConsoleOptions> _console;
 
-        public SetTraceCommand(IJsonRpcConsole console) : base(LogManager.GetCurrentClassLogger())
+        public SetTraceCommand(IServerConsoleService<ServerConsoleOptions> console) : base(LogManager.GetCurrentClassLogger())
         {
             _console = console;
         }
 
         protected override void OnExecute(object parameter)
         {
-            _console.Log(LogLevel.Info, $"Executing {nameof(SetTraceCommand)}...", verbose: $"Parameter: '{parameter}'");
+            _console.Log(ServerLogLevel.Info, $"Executing {nameof(SetTraceCommand)}...", verbose: $"Parameter: '{parameter}'");
 
             if (parameter is string traceValue)
             {
@@ -25,10 +28,13 @@ namespace Rubberduck.Client.LocalDb.UI.Commands
                     case Constants.TraceValue.Off:
                     case Constants.TraceValue.Messages:
                     case Constants.TraceValue.Verbose:
-                        _console.Trace = traceValue;
+                        if (Enum.TryParse<Constants.Console.VerbosityOptions.AsStringEnum>(traceValue, true, out var verbosity))
+                        {
+                            _console.Configuration.Trace = verbosity;
+                        }
                         break;
                     default:
-                        _console.Log(LogLevel.Debug, $"Parameter value '{traceValue}' is not valid.", verbose: $"Trace will not be changed (value: '{_console.Trace}').");
+                        _console.Log(ServerLogLevel.Debug, $"Parameter value '{traceValue}' is not valid.", verbose: $"Trace will not be changed (value: '{_console.Configuration.Trace}').");
                         break;
                 }
             }

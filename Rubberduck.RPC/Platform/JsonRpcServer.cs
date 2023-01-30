@@ -1,197 +1,148 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using NLog;
-using Rubberduck.InternalApi.Common;
-using WebSocketSharp.Server;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using StreamJsonRpc;
+using Rubberduck.RPC.Platform.Model;
+using Rubberduck.RPC.Proxy.SharedServices;
 
 namespace Rubberduck.RPC.Platform
 {
+    /// <summary>
+    /// Represents a JsonRPC server.
+    /// </summary>
     public interface IJsonRpcServer
     {
-        IJsonRpcConsole Console { get; }
+        /// <summary>
+        /// Gets information about this server instance.
+        /// </summary>
+        ServerState Info { get; }
 
-        int ProcessId { get; }
-        int Port { get; }
-        string Path { get; }
-
-        bool IsAlive { get; }
-        TimeSpan Uptime { get; }
-        DateTime? SessionStart { get; }
-
-        int MessagesReceived { get; }
-        int MessagesSent { get; }
-
-        void Start();
-        void Stop();
+        /// <summary>
+        /// Starts the RPC server.
+        /// </summary>
+        Task StartAsync(CancellationToken token);
     }
 
-    public abstract class JsonRpcServer : IJsonRpcServer
+    /// <summary>
+    /// Represents a server process.
+    /// </summary>
+    /// <remarks>
+    /// Implementation holds the server state for the lifetime of the host process.
+    /// </remarks>
+    public abstract class JsonRpcServer<TStream, TServerService, TOptions, TClientProxy> 
+        where TStream : Stream
+        where TServerService : ServerService<TOptions, TClientProxy>
+        where TOptions : class, new()
+        where TClientProxy : IServerProxyClient
     {
-        private readonly WebSocketServer _socketServer;
-        private Stopwatch _uptimeStopwatch = new Stopwatch();
+        private readonly IRpcStreamFactory<TStream> _rpcStreamFactory;
+        private readonly IServerServiceFactory<TServerService, TOptions, TClientProxy> _serviceFactory;
 
-        protected JsonRpcServer(string path, int port, IJsonRpcConsole console)
+        private readonly BasicServerInfo _info;
+        private readonly CancellationToken _token;
+        private IEnumerable<Type> _proxyTypes;
+
+        protected JsonRpcServer(
+            BasicServerInfo info,
+            IRpcStreamFactory<TStream> rpcStreamFactory, 
+            IServerServiceFactory<TServerService, TOptions, TClientProxy> serviceFactory, 
+            CancellationToken token)
         {
-            _socketServer = new WebSocketServer(port);
-            _socketServer.KeepClean = false;
-
-            ProcessId = Process.GetCurrentProcess().Id;
-
-            Path = path;
-            Port = port;
-
-            Console = console;
+            _info = info;
+            _rpcStreamFactory = rpcStreamFactory;
+            _serviceFactory = serviceFactory;
+            _token = token;
+            _proxyTypes = GetProxyTypes();
         }
 
         /// <summary>
-        /// Gets the ID of the server process.
+        /// Wait for a client to connect.
         /// </summary>
-        public int ProcessId { get; }
+        protected abstract Task WaitForConnectionAsync(TStream stream, CancellationToken token);
 
         /// <summary>
-        /// The session start timestamp.
+        /// Gets all proxy types to register for this server.
         /// </summary>
-        public DateTime? SessionStart { get; private set; }
+        protected abstract IEnumerable<Type> GetProxyTypes();
 
         /// <summary>
-        /// The current trace level for this server.
-        /// </summary>
-        public string Trace { get; set; }
-
-        /// <summary>
-        /// An output console for this server.
-        /// </summary>
-        public IJsonRpcConsole Console { get; }
-
-        /// <summary>
-        /// <c>true</c> if the socket server is listening to its assigned port.
-        /// </summary>
-        public bool IsAlive => _socketServer.IsListening;
-
-        /// <summary>
-        /// <c>true</c> if this server can display an interactive user interface.
-        /// </summary>
-        public bool IsInteractive { get; }
-
-        /// <summary>
-        /// Gets the RPC port this server is configured with.
-        /// </summary>
-        public int Port { get; }
-
-        /// <summary>
-        /// Gets the JSON-RPC path for this server.
-        /// </summary>
-        public string Path { get; }
-
-        /// <summary>
-        /// The number of requests received by this server.
-        /// </summary>
-        public int MessagesReceived { get; private set; }
-
-        /// <summary>
-        /// The number of responses returned by this server.
+        /// Starts the server.
         /// </summary>
         /// <remarks>
-        /// Notification requests (LSP) do not get a response.
+        /// Creates a new RPC stream for each new client connection, until cancellation is requested on the token.
         /// </remarks>
-        public int MessagesSent { get; private set; }
-
-        /// <summary>
-        /// Gets a <c>TimeSpan</c> representing the time elapsed since the server was started.
-        /// </summary>
-        public TimeSpan Uptime => _uptimeStopwatch.Elapsed;
-
-        private void ConfigureServices()
+        public async Task StartAsync()
         {
-            _socketServer.AddWebSocketService<JsonRpcBehavior>(Path, InitializeRpc);
-        }
-
-        private void InitializeRpc(JsonRpcBehavior behavior)
-        {
-            behavior.WebSocketOpened += OnWebSocketOpened;
-            behavior.MessageReceived += OnWebSocketMessage;
-            behavior.MessageSent += OnWebSocketMessageSent;
-            behavior.WebSocketClosed += OnWebSocketClosed;
-        }
-
-        private void OnWebSocketMessageSent(object sender, OutgoingMessageEventArgs e)
-        {
-            MessagesSent++;
-            Console.Log(LogLevel.Trace, "Response message sent.", verbose: e.Response);
-        }
-
-        private void OnWebSocketMessage(object sender, WebSocketSharp.MessageEventArgs e)
-        {
-            if (e.IsPing)
+            while (!_token.IsCancellationRequested)
             {
-                Console.Log(LogLevel.Trace, "Ping message received.");
+                var stream = _rpcStreamFactory.CreateNew();
+                await WaitForConnectionAsync(stream, _token);
+                _ = SendResponseAsync(stream, _token);
             }
-            else if (e.IsText)
+            _token.ThrowIfCancellationRequested();
+        }
+
+        private TServerService _cachedService = null;
+        private TServerService GetOrCreateService()
+        {
+            return _cachedService ?? (_cachedService = CreateServerService());
+        }
+
+        private TServerService CreateServerService()
+        {
+
+            /*
+            var getServerInfoCommand = new DelegateServerRequestCommand<object, JsonRpcServerInfo>(_ => GetServerInfo.Invoke());
+            var initializeCommand = new InitializeCommand();
+            var setServerConfigCommand = new SetServerOptionsCommand();
+            var connectCommand = new ConnectClientCommand();
+            var disconnectCommand = new DisconnectClientCommand();
+            var exitCommand = new ExitCommand(console, GetServerInfo);
+
+            var commands = new ServerCommands<TOptions>(getServerInfoCommand, initializeCommand, setServerConfigCommand, connectCommand, disconnectCommand, exitCommand);
+            */
+            return _serviceFactory.Create(null);
+        }
+
+        private async Task SendResponseAsync(Stream stream, CancellationToken token)
+        {
+            using (var rpc = new JsonRpc(stream))
             {
-                MessagesReceived++;
-                Console.Log(LogLevel.Trace, "Request message received.", verbose: e.Data);
+                foreach (var type in _proxyTypes)
+                {
+                    rpc.AddLocalRpcTarget(type);
+                }
+                token.ThrowIfCancellationRequested();
+
+                var service = GetOrCreateService();
+                rpc.AddLocalRpcTarget(service, new JsonRpcTargetOptions
+                {
+                    MethodNameTransform = MethodNameTransform,
+                    EventNameTransform = EventNameTransform,
+                    AllowNonPublicInvocation = false,
+                    ClientRequiresNamedArguments = true,
+                    DisposeOnDisconnect = true,
+                    NotifyClientOfEvents = true,
+                    UseSingleObjectParameterDeserialization = true,
+                });
+
+                rpc.StartListening();
+                await rpc.Completion;
             }
         }
 
-        private void OnWebSocketClosed(object sender, WebSocketSharp.CloseEventArgs e)
+        private string MethodNameTransform(string name)
         {
-            Console.Log(LogLevel.Info, "Socket connection closed.", verbose: $"Code: {e.Code} Reason: {e.Reason}");
-            if (!e.WasClean)
-            {
-                Console.Log(LogLevel.Warn, $"Socket connection was not cleanly closed.");
-            }
+            var camelCased = CommonMethodNameTransforms.CamelCase(name);
+            return camelCased;
         }
 
-        private void OnWebSocketOpened(object sender, EventArgs e)
+        private string EventNameTransform(string name)
         {
-            Console.Log(LogLevel.Info, "Socket connection opened.", verbose: $"Port: {_socketServer.Port}");
-        }
-
-        public void Start()
-        {
-            Console.Log(LogLevel.Info, $"Starting server...");
-            var elapsed = TimedAction.Run(() =>
-            {
-                if (!_socketServer.IsListening)
-                {
-                    _socketServer.Start();
-                    SessionStart = DateTime.Now;
-                    Console.Log(LogLevel.Trace, $"Socket server started.", verbose: $"Port: {_socketServer.Port} SessionStart: {SessionStart:o}");
-
-                    _uptimeStopwatch.Restart();
-                    Console.Log(LogLevel.Trace, $"Uptime stopwatch started.");
-
-                    ConfigureServices();
-                    Console.Log(LogLevel.Trace, $"JsonRpc services configured.", verbose: $"Path(s): {string.Join(";", _socketServer.WebSocketServices.Paths.Select(p => $"'{p}'"))}");
-                }
-                else
-                {
-                    Console.Log(LogLevel.Debug, $"{nameof(JsonRpcClient)}.{nameof(Start)}() was called, but server is already listening on port {_socketServer.Port}.");
-                }
-            });
-            Console.Log(LogLevel.Trace, $"{nameof(JsonRpcClient)}.{nameof(Start)}() completed in {elapsed.TotalMilliseconds:N0}ms.");
-        }
-
-        public void Stop()
-        {
-            Console.Log(LogLevel.Info, $"Stopping server...");
-            var elapsed = TimedAction.Run(() =>
-            {
-                if (_socketServer.IsListening)
-                {
-                    _socketServer.Stop();
-                    Console.Log(LogLevel.Info, $"Socket server stopped.");
-
-                    _uptimeStopwatch.Stop();
-                    Console.Log(LogLevel.Debug, $"Uptime stopwatch stopped at {_uptimeStopwatch.Elapsed:g}.");
-                }
-                else
-                {
-                    Console.Log(LogLevel.Debug, $"{nameof(JsonRpcClient)}.{nameof(Stop)}() was called, but server has already stopped listening.");
-                }
-            });
-            Console.Log(LogLevel.Trace, $"{nameof(JsonRpcClient)}.{nameof(Stop)}() completed in {elapsed.TotalMilliseconds:N0}ms.");
+            var camelCased = CommonMethodNameTransforms.CamelCase(name);
+            return camelCased;
         }
     }
 }

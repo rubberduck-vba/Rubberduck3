@@ -1,5 +1,5 @@
 ﻿using Rubberduck.InternalApi.Model;
-using Rubberduck.Server.LocalDb.Abstract;
+using Rubberduck.Server.LocalDb.Internal;
 
 namespace Rubberduck.DataServer.Storage.Entities
 {

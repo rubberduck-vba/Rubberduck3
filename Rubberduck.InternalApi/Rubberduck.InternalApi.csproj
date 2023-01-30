@@ -82,6 +82,9 @@
       <HintPath>..\packages\NLog.5.1.1\lib\net46\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Collections.Immutable, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.7.0.0\lib\net462\System.Collections.Immutable.dll</HintPath>
     </Reference>
@@ -93,13 +96,22 @@
       <HintPath>..\packages\System.IO.Abstractions.19.1.5\lib\net461\System.IO.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Text.Encodings.Web, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.Encodings.Web.7.0.0\lib\net462\System.Text.Encodings.Web.dll</HintPath>
     </Reference>
-    <Reference Include="System.Text.Json, Version=7.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Json.7.0.1\lib\net462\System.Text.Json.dll</HintPath>
+    <Reference Include="System.Text.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.6.0.0\lib\net461\System.Text.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Channels, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Channels.7.0.0\lib\net462\System.Threading.Channels.dll</HintPath>
@@ -124,12 +136,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RPC\ClientInfo.cs" />
-    <Compile Include="RPC\DataServer\Capabilities\ServerCapabilities.cs" />
-    <Compile Include="RPC\DataServer\Parameters\DisconnectParams.cs" />
-    <Compile Include="RPC\DataServer\Response\DisconnectResult.cs" />
-    <Compile Include="RPC\DataServer\Response\InitializeResult.cs" />
-    <Compile Include="RPC\EnvironmentService.cs" />
+    <Compile Include="RPC\LocalDb\Parameters\DisconnectParams.cs" />
     <Compile Include="Common\ExperimentalAttribute.cs" />
     <Compile Include="Common\FileSystemProvider.cs" />
     <Compile Include="Common\IExportable.cs" />
@@ -148,261 +155,18 @@
     <Compile Include="Model\QualifiedModuleName.cs" />
     <Compile Include="Model\Selection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RPC\CancelRequest.cs" />
-    <Compile Include="RPC\DataServer\Declaration.cs" />
-    <Compile Include="RPC\DataServer\DeclarationAnnotation.cs" />
-    <Compile Include="RPC\DataServer\DeclarationAttribute.cs" />
-    <Compile Include="RPC\DataServer\IdentifierReference.cs" />
-    <Compile Include="RPC\DataServer\Local.cs" />
-    <Compile Include="RPC\DataServer\LocationInfo.cs" />
-    <Compile Include="RPC\DataServer\Member.cs" />
-    <Compile Include="RPC\DataServer\Module.cs" />
-    <Compile Include="RPC\DataServer\Parameter.cs" />
-    <Compile Include="RPC\DataServer\Parameters\ConnectParams.cs" />
-    <Compile Include="RPC\DataServer\Project.cs" />
-    <Compile Include="RPC\DataServer\ProjectSetting.cs" />
-    <Compile Include="RPC\DataServer\Response\ConnectResult.cs" />
-    <Compile Include="RPC\ErrorCodes.cs" />
-    <Compile Include="RPC\InitializeResult.cs" />
-    <Compile Include="RPC\LSP\AnnotatedTextEdit.cs" />
-    <Compile Include="RPC\LSP\Capabilities\CallHierarchyClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\CallHierarchyOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\ClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\CodeActionClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\CodeActionOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\CodeLensClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\CodeLensOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\CodeLensWorkspaceClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\CompletionClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\CompletionItemTag.cs" />
-    <Compile Include="RPC\LSP\Capabilities\CompletionOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DeclarationClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DeclarationOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DefinitionClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DefinitionOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DiagnosticClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DiagnosticOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DiagnosticWorkspaceClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DidChangeConfigurationClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DidChangeWatchedFilesClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DocumentColorClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DocumentColorOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DocumentFormattingClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DocumentFormattingOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DocumentHighlightClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DocumentHighlightOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DocumentLinkClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DocumentLinkOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DocumentOnTypeFormattingClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DocumentOnTypeFormattingOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DocumentRangeFormattingClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DocumentRangeFormattingOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DocumentSymbolClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\DocumentSymbolProvider.cs" />
-    <Compile Include="RPC\LSP\Capabilities\ExecuteCommandClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\ExecuteCommandOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\FileOperationFilter.cs" />
-    <Compile Include="RPC\LSP\Capabilities\FileOperationPattern.cs" />
-    <Compile Include="RPC\LSP\Capabilities\FileOperationPatternOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\FileOperationRegistrationOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\FileOperationServerCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\FoldingRangeClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\FoldingRangeOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\GeneralClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\HoverClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\HoverOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\ImplementationClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\ImplementationOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\InlayHintClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\InlayHintOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\InlayHintWorkspaceClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\InlineValueClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\InlineValueOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\InlineValuesWorkspaceClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\LinkedEditingRangeClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\LinkedEditingRangeOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\MonikerClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\MonikerOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\PublishDiagnosticsClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\ReferenceClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\ReferenceOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\RenameClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\RenameOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\SelectionRangeClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\SelectionRangeOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\SemanticTokenClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\SemanticTokenLegend.cs" />
-    <Compile Include="RPC\LSP\Capabilities\SemanticTokensOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\SemanticTokenWorkspaceClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\ServerCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\ShowDocumentClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\ShowMessageRequestClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\SignatureHelpClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\SignatureHelpOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\TextDocumentClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\TextDocumentSyncClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\TextDocumentSyncOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\TypeDefinitionClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\TypeDefinitionOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\TypeHierarchyClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\TypeHierarchyOptions.cs" />
-    <Compile Include="RPC\LSP\Capabilities\WindowClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\WorkspaceClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\WorkspaceFoldersServerCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\WorkspaceServerCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\WorkspaceSymbolClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\WorkspaceSymbolOptions.cs" />
-    <Compile Include="RPC\LSP\ChangeAnnotation.cs" />
-    <Compile Include="RPC\LSP\Capabilities\FailureHandlingKind.cs" />
-    <Compile Include="RPC\LSP\Capabilities\MarkdownClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\RegularExpressionClientCapabilies.cs" />
-    <Compile Include="RPC\LSP\Constants.cs" />
-    <Compile Include="RPC\JsonRpcMethods.cs" />
-    <Compile Include="RPC\LSP\Parameters\ApplyWorkspaceEditParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\CallHierarchyIncomingCallsParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\CallHierarchyOutgoingCallsParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\CallHierarchyPrepareParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\CodeActionContext.cs" />
-    <Compile Include="RPC\LSP\Parameters\CodeActionParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\CodeLensParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\ColorPresentationParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\CompletionContext.cs" />
-    <Compile Include="RPC\LSP\Parameters\CompletionParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\ConfigurationItem.cs" />
-    <Compile Include="RPC\LSP\Parameters\ConfigurationParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\CreateFilesParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\DeclarationParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\DefinitionParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\DeleteFilesParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\DidChangeConfigurationParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\DidChangeTextDocumentParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\DidChangeWatchedFilesParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\DidChangeWorkspaceFoldersParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\DidCloseTextDocumentParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\DidOpenTextDocumentParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\DidSaveTextDocumentParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\DocumentColorParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\DocumentDiagnosticsParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\DocumentFormattingParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\DocumentHighlightParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\DocumentLinkParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\DocumentOnTypeFormattingParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\DocumentSymbolParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\ExecuteCommandParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\FileCreate.cs" />
-    <Compile Include="RPC\LSP\Parameters\FileDelete.cs" />
-    <Compile Include="RPC\LSP\Parameters\FileEvent.cs" />
-    <Compile Include="RPC\LSP\Parameters\FileRename.cs" />
-    <Compile Include="RPC\LSP\Parameters\FoldingRangeParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\FormattingOptions.cs" />
-    <Compile Include="RPC\LSP\Parameters\HoverParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\ImplementationParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\InitializedParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\InitializeParams.cs" />
-    <Compile Include="RPC\LSP\LSPAny.cs" />
-    <Compile Include="RPC\LSP\LSPArray.cs" />
-    <Compile Include="RPC\LSP\LSPObject.cs" />
-    <Compile Include="RPC\LSP\Parameters\InlayHintParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\LinkedEditingRangeParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\LogMessageParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\MessageActionItem.cs" />
-    <Compile Include="RPC\LSP\Parameters\MonikerParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\PartialResultParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\PrepareRenameParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\PreviousResultId.cs" />
-    <Compile Include="RPC\LSP\Parameters\PublishDiagnosticsParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\ReferencesParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\RenameFilesParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\RenameParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\SelectionRangeParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\SemanticTokensDeltaParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\SemanticTokensParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\SetTraceParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\ShowDocumentParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\ShowMessageParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\ShowMessageRequestParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\SignatureHelpContext.cs" />
-    <Compile Include="RPC\LSP\Parameters\SignatureHelpParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\TextDocumentContentChangeEvent.cs" />
-    <Compile Include="RPC\LSP\Parameters\TypeDefinitionParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\TypeHierarchyPrepareParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\TypeHierarchySubtypesParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\TypeHierarchySupertypesParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\WillSaveTextDocumentParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\WorkDoneProgressCancelParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\WorkDoneProgressCreateParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\WorkspaceDiagnosticsParams.cs" />
-    <Compile Include="RPC\LSP\Parameters\WorkspaceFoldersChangedEvent.cs" />
-    <Compile Include="RPC\LSP\Parameters\WorkspaceSymbolParams.cs" />
-    <Compile Include="RPC\LSP\Response\CallHierarchyIncomingCall.cs" />
-    <Compile Include="RPC\LSP\Response\CallHierarchyItem.cs" />
-    <Compile Include="RPC\LSP\Response\CallHierarchyOutgoingCall.cs" />
-    <Compile Include="RPC\LSP\Response\CodeLens.cs" />
-    <Compile Include="RPC\LSP\Response\CompletionItem.cs" />
-    <Compile Include="RPC\LSP\Response\CompletionItemLabelDetails.cs" />
-    <Compile Include="RPC\LSP\Response\CompletionList.cs" />
-    <Compile Include="RPC\LSP\Response\DocumentHighlight.cs" />
-    <Compile Include="RPC\LSP\Response\DocumentLink.cs" />
-    <Compile Include="RPC\LSP\Response\DocumentSymbol.cs" />
-    <Compile Include="RPC\LSP\Response\FoldingRange.cs" />
-    <Compile Include="RPC\LSP\Response\FullDocumentDiagnosticReport.cs" />
-    <Compile Include="RPC\LSP\Response\Hover.cs" />
-    <Compile Include="RPC\LSP\Response\InitializeResult.cs" />
-    <Compile Include="RPC\LSP\Capabilities\WindowWorkDoneProgressClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\Capabilities\WorkspaceEditClientCapabilities.cs" />
-    <Compile Include="RPC\LSP\CodeDescription.cs" />
-    <Compile Include="RPC\LSP\Command.cs" />
-    <Compile Include="RPC\LSP\CreateFile.cs" />
-    <Compile Include="RPC\LSP\CreateFileOptions.cs" />
-    <Compile Include="RPC\LSP\DeleteFile.cs" />
-    <Compile Include="RPC\LSP\DeleteFileOptions.cs" />
-    <Compile Include="RPC\LSP\Diagnostic.cs" />
-    <Compile Include="RPC\LSP\DiagnosticRelatedInformation.cs" />
-    <Compile Include="RPC\LSP\DocumentFilter.cs" />
-    <Compile Include="RPC\LSP\Location.cs" />
-    <Compile Include="RPC\LSP\LocationLink.cs" />
-    <Compile Include="RPC\LSP\MarkupContent.cs" />
-    <Compile Include="RPC\LSP\OptionalVersionedTextDocumentIdentifier.cs" />
-    <Compile Include="RPC\LSP\Position.cs" />
-    <Compile Include="RPC\LSP\Range.cs" />
-    <Compile Include="RPC\LSP\RenameFile.cs" />
-    <Compile Include="RPC\LSP\RenameFileOptions.cs" />
-    <Compile Include="RPC\LSP\Response\InlayHint.cs" />
-    <Compile Include="RPC\LSP\Response\InlayHintLabelPart.cs" />
-    <Compile Include="RPC\LSP\Response\Moniker.cs" />
-    <Compile Include="RPC\LSP\Response\ParameterInformation.cs" />
-    <Compile Include="RPC\LSP\Response\RelatedFullDocumentDiagnosticReport.cs" />
-    <Compile Include="RPC\LSP\Response\RelatedUnchangedDocumentDiagnosticReport.cs" />
-    <Compile Include="RPC\LSP\Response\SelectionRange.cs" />
-    <Compile Include="RPC\LSP\Response\SemanticTokens.cs" />
-    <Compile Include="RPC\LSP\Response\SemanticTokensDelta.cs" />
-    <Compile Include="RPC\LSP\Response\SemanticTokensEdit.cs" />
-    <Compile Include="RPC\LSP\Response\SemanticTokensPartialResult.cs" />
-    <Compile Include="RPC\LSP\Response\SignatureHelp.cs" />
-    <Compile Include="RPC\LSP\Response\SignatureInformation.cs" />
-    <Compile Include="RPC\LSP\Response\TypeHierarchyItem.cs" />
-    <Compile Include="RPC\LSP\Response\UnchangedDocumentDiagnosticReport.cs" />
-    <Compile Include="RPC\LSP\Response\WorkspaceFullDocumentDiagnosticReport.cs" />
-    <Compile Include="RPC\LSP\Response\WorkspaceUnchangedDocumentDiagnosticReport.cs" />
-    <Compile Include="RPC\LSP\TextDocumentEdit.cs" />
-    <Compile Include="RPC\LSP\TextDocumentIdentifier.cs" />
-    <Compile Include="RPC\LSP\TextDocumentItem.cs" />
-    <Compile Include="RPC\LSP\Parameters\TextDocumentPositionParams.cs" />
-    <Compile Include="RPC\LSP\TextEdit.cs" />
-    <Compile Include="RPC\LSP\VersionedTextDocumentIdentifier.cs" />
-    <Compile Include="RPC\LSP\WorkDoneProgressBegin.cs" />
-    <Compile Include="RPC\LSP\WorkDoneProgressEnd.cs" />
-    <Compile Include="RPC\LSP\WorkDoneProgressOptions.cs" />
-    <Compile Include="RPC\LSP\Parameters\WorkDoneProgressParams.cs" />
-    <Compile Include="RPC\LSP\WorkDoneProgressReport.cs" />
-    <Compile Include="RPC\LSP\WorkspaceEdit.cs" />
-    <Compile Include="RPC\Message.cs" />
-    <Compile Include="RPC\NotificationMessage.cs" />
-    <Compile Include="RPC\ProgressNotification.cs" />
-    <Compile Include="RPC\ResponseError.cs" />
-    <Compile Include="RPC\ResponseMessage.cs" />
-    <Compile Include="RPC\RpcPort.cs" />
-    <Compile Include="RPC\ServerConsoleOptions.cs" />
+    <Compile Include="RPC\LocalDb\Declaration.cs" />
+    <Compile Include="RPC\LocalDb\DeclarationAnnotation.cs" />
+    <Compile Include="RPC\LocalDb\DeclarationAttribute.cs" />
+    <Compile Include="RPC\LocalDb\IdentifierReference.cs" />
+    <Compile Include="RPC\LocalDb\Local.cs" />
+    <Compile Include="RPC\LocalDb\LocationInfo.cs" />
+    <Compile Include="RPC\LocalDb\Member.cs" />
+    <Compile Include="RPC\LocalDb\Module.cs" />
+    <Compile Include="RPC\LocalDb\Parameter.cs" />
+    <Compile Include="RPC\LocalDb\Parameters\ConnectParams.cs" />
+    <Compile Include="RPC\LocalDb\Project.cs" />
+    <Compile Include="RPC\LocalDb\ProjectSetting.cs" />
     <Compile Include="UIContext\IUiContextProvider.cs" />
     <Compile Include="UIContext\IUiDispatcher.cs" />
     <Compile Include="WindowsApi\EnumHelper.cs" />
@@ -429,5 +193,16 @@
       <Name>Rubberduck.Resources</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="RPC\LocalDb\Capabilities\" />
+    <Folder Include="RPC\LocalDb\Response\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\System.Text.Json.6.0.0\build\System.Text.Json.targets" Condition="Exists('..\packages\System.Text.Json.6.0.0\build\System.Text.Json.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\System.Text.Json.6.0.0\build\System.Text.Json.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Text.Json.6.0.0\build\System.Text.Json.targets'))" />
+  </Target>
 </Project>

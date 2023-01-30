@@ -1,7 +1,8 @@
-﻿using NLog;
-using Rubberduck.InternalApi.Common;
+﻿using Rubberduck.InternalApi.Common;
 using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Proxy;
+using Rubberduck.RPC.Proxy.LocalDbServer.Abstract;
+using Rubberduck.RPC.Proxy.SharedServices;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
 using System;
@@ -11,13 +12,13 @@ namespace Rubberduck.Client.LocalDb
 {
     public class ConsoleMessageViewModel : ViewModelBase, IConsoleMesssageViewModel, IExportable
     {
-        public ConsoleMessageViewModel(ConsoleMessageEventArgs args)
+        public ConsoleMessageViewModel(ConsoleMessage args)
         {
             Id = args.Id;
             Timestamp = args.Timestamp;
             IsError = args.IsError;
             Exception = args.Exception;
-            Level = args.Level;
+            Level = (int)args.Level;
             Message = args.Message;
             Verbose = args.Verbose;
         }
@@ -25,9 +26,9 @@ namespace Rubberduck.Client.LocalDb
         public int Id { get; }
         public DateTime Timestamp { get; }
         public bool IsError { get; }
-        public bool IsWarning => Level == LogLevel.Warn;
+        public bool IsWarning => Level == (int)ServerLogLevel.Warn;
         public Exception Exception { get; }
-        public LogLevel Level { get; }
+        public int Level { get; }
         public string Message { get; }
         public string Verbose { get; }
 
@@ -59,20 +60,19 @@ namespace Rubberduck.Client.LocalDb
         {
             _timer = new Timer(_ =>
             {
-                Uptime = server.Uptime;
-                TotalInbound = server.MessagesReceived;
-                TotalOutbound = server.MessagesSent;
-                IsAlive = server.IsAlive;
+                Uptime = server.Info.UpTime ?? TimeSpan.Zero;
+                TotalInbound = server.Info.MessagesReceived;
+                TotalOutbound = server.Info.MessagesSent;
+                ClientConnections = server.Info.ClientsCount;
+                IsAlive = server.Info.IsAlive;
             }, null, 0, 1000);
 
-            RpcPort = server.Port;
-            ServerName = server.Path;
+            ServerName = server.Info.Name;
 
             events.ClientConnected += (o, e) => Interlocked.Increment(ref _clientConnections);
             events.ClientDisconnected += (o, e) => Interlocked.Decrement(ref _clientConnections);
         }
 
-        public int RpcPort { get; }
         public string ServerName { get; }
 
         private TimeSpan _uptime;

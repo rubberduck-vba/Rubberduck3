@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,8 +39,29 @@
     <Reference Include="CommandLine, Version=2.9.1.0, Culture=neutral, PublicKeyToken=5a870481e358d379, processorArchitecture=MSIL">
       <HintPath>..\packages\CommandLineParser.2.9.1\lib\net461\CommandLine.dll</HintPath>
     </Reference>
+    <Reference Include="MessagePack, Version=2.4.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
+      <HintPath>..\packages\MessagePack.2.4.35\lib\netstandard2.0\MessagePack.dll</HintPath>
+    </Reference>
+    <Reference Include="MessagePack.Annotations, Version=2.4.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
+      <HintPath>..\packages\MessagePack.Annotations.2.4.35\lib\netstandard2.0\MessagePack.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.NET.StringTools, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.NET.StringTools.1.0.0\lib\net472\Microsoft.NET.StringTools.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Threading, Version=17.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Threading.17.1.46\lib\net472\Microsoft.VisualStudio.Threading.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Validation, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Validation.17.0.53\lib\netstandard2.0\Microsoft.VisualStudio.Validation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Win32.Registry, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Win32.Registry.5.0.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
+    </Reference>
+    <Reference Include="Nerdbank.Streams, Version=2.9.0.0, Culture=neutral, PublicKeyToken=cac503e1823ce71c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nerdbank.Streams.2.9.109\lib\netstandard2.0\Nerdbank.Streams.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -46,13 +69,25 @@
     <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.5.1.1\lib\net46\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="StreamJsonRpc, Version=2.13.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\StreamJsonRpc.2.13.33\lib\netstandard2.0\StreamJsonRpc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.Collections.Immutable, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.6.0.0\lib\net461\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.6.0.0\lib\net461\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Pipelines, Version=6.0.0.3, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Pipelines.6.0.3\lib\net461\System.IO.Pipelines.dll</HintPath>
+    </Reference>
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
@@ -63,11 +98,20 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Security.AccessControl, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.AccessControl.5.0.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="System.Text.Encodings.Web, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.Encodings.Web.7.0.0\lib\net462\System.Text.Encodings.Web.dll</HintPath>
     </Reference>
-    <Reference Include="System.Text.Json, Version=7.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Json.7.0.1\lib\net462\System.Text.Json.dll</HintPath>
+    <Reference Include="System.Text.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.6.0.0\lib\net461\System.Text.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Dataflow, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Dataflow.6.0.0\lib\net461\System.Threading.Tasks.Dataflow.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
@@ -84,40 +128,95 @@
     <Reference Include="websocket-sharp, Version=1.0.1.0, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">
       <HintPath>..\packages\WebSocketSharp-netstandard.1.0.1\lib\net45\websocket-sharp.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Parameters\LspInitializeParams.cs" />
-    <Compile Include="IServerController.cs" />
-    <Compile Include="Platform\JsonRpcBehavior.cs" />
-    <Compile Include="Platform\JsonRpcClient.cs" />
-    <Compile Include="Platform\JsonRpcConsole.cs" />
+    <Compile Include="Platform\Exceptions\InvalidEnumValueException.cs" />
+    <Compile Include="Platform\Exceptions\ServerExceptions\CommandNotExecutedException.cs" />
+    <Compile Include="Platform\Exceptions\ServerExceptions\DisabledFeatureException.cs" />
+    <Compile Include="Platform\Exceptions\ServerExceptions\InvalidStateException.cs" />
+    <Compile Include="Platform\Exceptions\ServerExceptions\ServerException.cs" />
+    <Compile Include="Platform\Metadata\JsonRpcMethods.cs" />
+    <Compile Include="Platform\Metadata\LspCompliantAttribute.cs" />
+    <Compile Include="Platform\Metadata\RubberduckSPAttribute.cs" />
+    <Compile Include="Platform\Model\ClientInitializedParams.cs" />
+    <Compile Include="Platform\Model\ClientShutdownParams.cs" />
+    <Compile Include="Platform\Model\ClientState.cs" />
+    <Compile Include="Platform\IJsonRpcServer.cs" />
+    <Compile Include="Platform\IServerConsoleService.cs" />
+    <Compile Include="Platform\IServerServiceFactory.cs" />
+    <Compile Include="Platform\LogOutputPart.cs" />
+    <Compile Include="Platform\RpcServerProcessExitCode.cs" />
+    <Compile Include="Platform\RpcServerService.cs" />
+    <Compile Include="Platform\ServerCommands.cs" />
+    <Compile Include="Platform\ServerConsoleService.cs" />
+    <Compile Include="Proxy\LocalDbServer\ILocalDbServerProxy.cs" />
+    <Compile Include="Proxy\SharedServices\Console\Commands\SetEnabledCommand.cs" />
+    <Compile Include="Proxy\SharedServices\Console\Commands\SetTraceCommand.cs" />
+    <Compile Include="Proxy\SharedServices\Console\Configuration\BackgroundFormattingOptions.cs" />
+    <Compile Include="Proxy\SharedServices\Console\Commands\Parameters\GetConsoleOptionsParams.cs" />
+    <Compile Include="Proxy\SharedServices\Console\Commands\Parameters\LogTraceParams.cs" />
+    <Compile Include="Proxy\SharedServices\Console\Commands\ServerConsoleCommands.cs" />
+    <Compile Include="Proxy\SharedServices\Console\Commands\Parameters\SetEnabledParams.cs" />
+    <Compile Include="Proxy\SharedServices\Console\Commands\Parameters\SetTraceParams.cs" />
+    <Compile Include="Proxy\SharedServices\Console\Configuration\ConsoleColorOptions.cs" />
+    <Compile Include="Proxy\SharedServices\Console\Configuration\ConsoleOutputFormatOptions.cs" />
+    <Compile Include="Proxy\SharedServices\Console\Configuration\FontFormattingOptions.cs" />
+    <Compile Include="Proxy\SharedServices\Console\Configuration\FontOptions.cs" />
+    <Compile Include="Proxy\SharedServices\DelegateServerNotificationCommand.cs" />
+    <Compile Include="Proxy\SharedServices\DelegateServerRequestCommand.cs" />
+    <Compile Include="Proxy\SharedServices\IConfigurableProxy.cs" />
+    <Compile Include="Proxy\SharedServices\IConsoleCommandsProxy.cs" />
+    <Compile Include="Proxy\SharedServices\IServerCommandsProxy.cs" />
+    <Compile Include="Proxy\SharedServices\IServerNotificationCommand.cs" />
+    <Compile Include="Proxy\SharedServices\IServerProxy.cs" />
+    <Compile Include="Platform\Model\JsonRpcServerInfo.cs" />
+    <Compile Include="Platform\NamedPipeStreamFactory.cs" />
+    <Compile Include="Proxy\SharedServices\Console\Configuration\ConsoleMessage.cs" />
+    <Compile Include="Proxy\SharedServices\Console\IServerConsoleEvents.cs" />
+    <Compile Include="Proxy\SharedServices\Console\IServerConsoleProxy.cs" />
+    <Compile Include="Proxy\SharedServices\Console\IServerConsoleService.cs" />
+    <Compile Include="Proxy\SharedServices\Console\JsonRpcConsoleVerbosity.cs" />
+    <Compile Include="Platform\IServiceOptions.cs" />
+    <Compile Include="Platform\ITelemetryService.cs" />
+    <Compile Include="Proxy\SharedServices\Console\Configuration\ServerConsoleOptions.cs" />
     <Compile Include="Platform\JsonRpcServer.cs" />
-    <Compile Include="Proxy\Client.cs" />
-    <Compile Include="Proxy\LocalDb\Controllers\IConsoleController.cs" />
-    <Compile Include="Proxy\LocalDb\Controllers\ILocalDbDeclarationsController.cs" />
-    <Compile Include="Proxy\ILocalDbServer.cs" />
-    <Compile Include="Proxy\ILocalDbServerEvents.cs" />
-    <Compile Include="Proxy\JsonRpcServiceProxyBase.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Proxy\LocalDbServer\ILocalDbDeclarationsServerProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Proxy\LocalDb\Controllers\ILocalDbServerController.cs" />
-    <Compile Include="LocalDbServerProcess.cs" />
-    <Compile Include="LspServerProcess.cs" />
-    <Compile Include="Telemetry\DependencyTelemetry.cs" />
-    <Compile Include="Telemetry\EventTelemetry.cs" />
-    <Compile Include="Telemetry\ExceptionTelemetry.cs" />
-    <Compile Include="Telemetry\MetricTelemetry.cs" />
-    <Compile Include="Telemetry\PageViewTelemetry.cs" />
-    <Compile Include="Telemetry\RequestTelemetry.cs" />
-    <Compile Include="Telemetry\TelemetryContext.cs" />
-    <Compile Include="Telemetry\TelemetryCustomPropertyName.cs" />
-    <Compile Include="Telemetry\TelemetryEvent.cs" />
-    <Compile Include="Telemetry\TelemetryEventName.cs" />
-    <Compile Include="Telemetry\TelemetryEventSeverityLevel.cs" />
-    <Compile Include="Telemetry\TraceTelemetry.cs" />
+    <Compile Include="Proxy\SharedServices\IServerProxyClient.cs" />
+    <Compile Include="Proxy\SharedServices\IServerRequestCommand.cs" />
+    <Compile Include="Proxy\SharedServices\ServerNotificationCommand.cs" />
+    <Compile Include="Proxy\SharedServices\ServerRequestCommand.cs" />
+    <Compile Include="Proxy\SharedServices\ServerState.cs" />
+    <Compile Include="Proxy\SharedServices\TupleExtensions.cs" />
+    <Compile Include="Platform\Exceptions\ServerExceptions\UnexpectedExitNotificationException.cs" />
+    <Compile Include="ServerProcessClientHelper.cs" />
+    <Compile Include="Proxy\SharedServices\Telemetry\DependencyTelemetry.cs" />
+    <Compile Include="Proxy\SharedServices\Telemetry\EventTelemetry.cs" />
+    <Compile Include="Proxy\SharedServices\Telemetry\ExceptionTelemetry.cs" />
+    <Compile Include="Proxy\SharedServices\Telemetry\MetricTelemetry.cs" />
+    <Compile Include="Proxy\SharedServices\Telemetry\PageViewTelemetry.cs" />
+    <Compile Include="Proxy\SharedServices\Telemetry\RequestTelemetry.cs" />
+    <Compile Include="Proxy\SharedServices\Telemetry\TelemetryContext.cs" />
+    <Compile Include="Proxy\SharedServices\Telemetry\TelemetryCustomPropertyName.cs" />
+    <Compile Include="Proxy\SharedServices\Telemetry\TelemetryEvent.cs" />
+    <Compile Include="Proxy\SharedServices\Telemetry\TelemetryEventName.cs" />
+    <Compile Include="Proxy\SharedServices\Telemetry\TelemetryEventSeverityLevel.cs" />
+    <Compile Include="Proxy\SharedServices\Telemetry\TraceTelemetry.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
@@ -127,7 +226,24 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Proxy\LSP\" />
+    <Folder Include="Proxy\LspServer\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.1.46\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.1.46\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CSharp.dll" />
+    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.1.46\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.1.46\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.1.46\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.1.46\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.VisualBasic.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\System.Text.Json.6.0.0\build\System.Text.Json.targets" Condition="Exists('..\packages\System.Text.Json.6.0.0\build\System.Text.Json.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\System.Text.Json.6.0.0\build\System.Text.Json.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Text.Json.6.0.0\build\System.Text.Json.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.1.46\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.1.46\build\Microsoft.VisualStudio.Threading.Analyzers.targets'))" />
+  </Target>
+  <Import Project="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.1.46\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.1.46\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />
 </Project>

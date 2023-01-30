@@ -1,11 +1,13 @@
 ﻿using NLog;
-using Rubberduck.RPC.Platform;
 using Rubberduck.UI.Command;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Win32;
 using Rubberduck.UI.Abstract;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Abstract;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
+using Rubberduck.RPC.Proxy.SharedServices;
 
 namespace Rubberduck.Client.LocalDb.UI.Commands
 {
@@ -39,20 +41,20 @@ namespace Rubberduck.Client.LocalDb.UI.Commands
 
     public class SaveAsCommand : CommandBase
     {
-        private readonly IJsonRpcServer _server;
+        private readonly IServerProxyService<SharedServerCapabilities> _server;
         private readonly IFileNameProvider _fileNameProvider;
         private readonly int _processId;
 
-        public SaveAsCommand(IJsonRpcServer server, IFileNameProvider fileNameProvider) : base(LogManager.GetCurrentClassLogger())
+        public SaveAsCommand(IServerProxyService<SharedServerCapabilities> server, IFileNameProvider fileNameProvider) : base(LogManager.GetCurrentClassLogger())
         {
             _server = server;
-            _processId = server.ProcessId;
+            //_processId = server.Info.ProcessId; // TODO add the session-wide immutable values to server state (process ID, name, start time)
             _fileNameProvider = fileNameProvider;
         }
 
         protected override void OnExecute(object parameter)
         {
-            _server.Console.Log(LogLevel.Info, $"Executing {nameof(SaveAsCommand)}...");
+            _server.ServerConsole.Log(ServerLogLevel.Info, $"Executing {nameof(SaveAsCommand)}...");
 
             if (parameter is IEnumerable<IConsoleMesssageViewModel> messages)
             {

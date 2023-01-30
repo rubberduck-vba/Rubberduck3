@@ -1,7 +1,5 @@
-﻿using Rubberduck.Client.LocalDb.Properties;
-using Rubberduck.RPC.Platform;
-using System;
-using System.Linq;
+﻿using Rubberduck.RPC.Platform;
+using System.Threading;
 using System.Windows;
 
 namespace Rubberduck.Client.LocalDb
@@ -14,15 +12,12 @@ namespace Rubberduck.Client.LocalDb
         public App(IJsonRpcServer server, IMainWindowFactory factory)
         {
             _server = server;
-        }
-
-        public void InitializeComponent()
-        {
+            _factory = factory;
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            _server.Start();
+            _server.StartAsync(CancellationToken.None);
         }
     }
 }

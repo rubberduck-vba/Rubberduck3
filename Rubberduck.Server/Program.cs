@@ -72,7 +72,7 @@ namespace Rubberduck.Server
 
         private static void Start()
         {
-            App.Main();
+            //App.Main();
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Data;
 using System.Threading.Tasks;
 using Dapper;
 using Rubberduck.DataServer.Storage.Entities;
-using Rubberduck.Server.LocalDb.Abstract;
+using Rubberduck.Server.LocalDb.Internal;
 
 namespace Rubberduck.DataServer.Storage.Repositories
 {

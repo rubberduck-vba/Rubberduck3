@@ -1,22 +1,25 @@
 ﻿using NLog;
-using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Proxy.SharedServices;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.Client.LocalDb.UI.Commands
 {
     public class ResumeTraceCommand : CommandBase
     {
-        private readonly IJsonRpcConsole _console;
+        private readonly IServerConsoleService<ServerConsoleOptions> _console;
 
-        public ResumeTraceCommand(IJsonRpcConsole console) : base(LogManager.GetCurrentClassLogger())
+        public ResumeTraceCommand(IServerConsoleService<ServerConsoleOptions> console) 
+            : base(LogManager.GetCurrentClassLogger())
         {
             _console = console;
         }
 
         protected override void OnExecute(object parameter)
         {
-            _console.Log(LogLevel.Info, $"Executing {nameof(ResumeTraceCommand)}..."); // normally not logged
-            _console.IsEnabled = true;
+            _console.Log(ServerLogLevel.Info, $"Executing {nameof(ResumeTraceCommand)}..."); // normally not logged
+            _console.Configuration.IsEnabled = true;
         }
     }
 }

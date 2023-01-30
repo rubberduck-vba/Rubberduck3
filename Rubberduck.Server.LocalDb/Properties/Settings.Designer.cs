@@ -25,19 +25,19 @@ namespace Rubberduck.Server.LocalDb.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("3031")]
-        public int DefaultPort {
+        [global::System.Configuration.DefaultSettingValueAttribute("32")]
+        public int MaxConcurrentRequests {
             get {
-                return ((int)(this["DefaultPort"]));
+                return ((int)(this["MaxConcurrentRequests"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("/Rubberduck.Server/LocalDb")]
-        public string JsonRpcServerPath {
+        [global::System.Configuration.DefaultSettingValueAttribute("Rubberduck.Server.LocalDb.RPC")]
+        public string JsonRpcPipeName {
             get {
-                return ((string)(this["JsonRpcServerPath"]));
+                return ((string)(this["JsonRpcPipeName"]));
             }
         }
         

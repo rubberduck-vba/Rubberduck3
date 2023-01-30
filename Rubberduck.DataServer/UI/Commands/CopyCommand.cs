@@ -1,5 +1,7 @@
 ﻿using NLog;
-using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Proxy.SharedServices;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.Command;
 using System.Collections.Generic;
@@ -11,16 +13,17 @@ namespace Rubberduck.Client.LocalDb.UI.Commands
 {
     public class CopyCommand : CommandBase
     {
-        private readonly IJsonRpcConsole _console;
+        private readonly IServerConsoleService<ServerConsoleOptions> _console;
 
-        public CopyCommand(IJsonRpcConsole console) : base(LogManager.GetCurrentClassLogger())
+        public CopyCommand(IServerConsoleService<ServerConsoleOptions> console) 
+            : base(LogManager.GetCurrentClassLogger())
         {
             _console = console;
         }
 
         protected override void OnExecute(object parameter)
         {
-            _console.Log(LogLevel.Info, $"Executing {nameof(CopyCommand)}...");
+            _console.Log(ServerLogLevel.Info, $"Executing {nameof(CopyCommand)}...");
 
             var asText = new StringBuilder();
             if (parameter is IEnumerable<IConsoleMesssageViewModel> messages)

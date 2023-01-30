@@ -1,7 +1,5 @@
 ﻿using CommandLine;
-using Rubberduck.InternalApi.RPC;
 using Rubberduck.RPC.Platform;
-using Rubberduck.Server.LocalDb.Properties;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -9,19 +7,19 @@ using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Rubberduck.Server.LocalDb
 {
-    internal class Program
+    internal static class Program
     {
         private static TimeSpan _exclusiveAccessTimeout = TimeSpan.FromSeconds(5);
-        private static ManualResetEvent _shutdownSignal = new ManualResetEvent(false);
 
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
             #region Global Mutex https://stackoverflow.com/a/229567/1188513
 
@@ -79,7 +77,21 @@ namespace Rubberduck.Server.LocalDb
                     }
 
                     Console.WriteLine("Startup checks completed. Starting server application...");
-                    Start(startupArgs.Value);
+                    try
+                    {
+                        await StartAsync(startupArgs.Value);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // normal exit
+                        return ExitCode(RpcServerProcessExitCode.OK);
+                    }
+                    catch (Exception exception)
+                    {
+                        // any other exception type exits with an error code
+                        await Console.Error.WriteLineAsync(exception.ToString());
+                        return ExitCode(RpcServerProcessExitCode.Error);
+                    }
                 }
                 finally
                 {
@@ -89,36 +101,24 @@ namespace Rubberduck.Server.LocalDb
                         mutex.ReleaseMutex();
                     }
                 }
+
+                // not a normal exit
+                return ExitCode(RpcServerProcessExitCode.Error);
             }
             #endregion
         }
 
-        private static void Start(StartupOptions startupOptions)
+        private static int ExitCode(RpcServerProcessExitCode code)
         {
-            ValidatePort(startupOptions.Port);
-
-            var console = new JsonRpcConsole
-            {
-                IsEnabled = !startupOptions.Silent,
-                Trace = startupOptions.Silent ? Constants.TraceValue.Off
-                    : startupOptions.Verbose
-                        ? Constants.TraceValue.Verbose
-                        : Constants.TraceValue.Messages
-            };
-
-            var server = new LocalDbServer(Settings.Default.JsonRpcServerPath, startupOptions.Port, console);
-            server.ShutdownSignal += (o, e) => _shutdownSignal.Set();
-            server.Start();
-
-            _shutdownSignal.WaitOne();
+            return (int)code;
         }
 
-        private static void ValidatePort(int port)
+        private static async Task StartAsync(StartupOptions startupOptions)
         {
-            if (!RpcPort.IsValid(port))
-            {
-                throw new ArgumentOutOfRangeException("Invalid RPC port. Must be in the range 1024-5000.");
-            }
+            /* TODO resolve app from IoC container here? */
+            var config = LocalDbServerCapabilities.GetDefaultConfiguration(startupOptions);
+            var app = new App(config);
+            await app.StartAsync();
         }
     }
 }
