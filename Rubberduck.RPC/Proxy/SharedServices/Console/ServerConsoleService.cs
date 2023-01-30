@@ -1,16 +1,15 @@
 ﻿using System;
+using Rubberduck.RPC.Platform;
 using System.Text;
 using System.Threading;
-using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Proxy.SharedServices.Abstract;
-using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Commands;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
+using Rubberduck.RPC.Proxy.SharedServices.Abstract;
 
-namespace Rubberduck.RPC.Proxy.SharedServices.Console
+namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
 {
     public class ServerConsoleService<TOptions> : ServerProxyService<TOptions, ServerConsoleCommands>, IServerConsoleService<TOptions>
         where TOptions : ServerConsoleOptions, new()
@@ -22,7 +21,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console
         {
             GetServerOptions<TOptions> getConfiguration = () => Configuration;
             Logger = new ServerLogger(LogError, LogMessage);
-            
+
             var setTraceCommand = new SetTraceCommand(Logger, getConfiguration, getServerState);
             var setEnabledCommand = new SetEnabledCommand(Logger, getConfiguration, getServerState);
             var getOptionsCommand = new GetConsoleOptionsCommand(Logger, getConfiguration, getServerState);
@@ -61,7 +60,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console
             var separator = Configuration.ConsoleOutputFormatting.MessagePartSeparator;
 
             var willNotify = level != ServerLogLevel.Off && level >= Configuration.LogLevel;
-            var builder =  willNotify ? new StringBuilder() : null;
+            var builder = willNotify ? new StringBuilder() : null;
 
             ConsoleOutput(builder, level, id.ToString(), LogOutputPart.MessageId);
             ConsoleOutput(builder, level, separator);
@@ -131,7 +130,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console
             (Func<ConsoleColorOptions> foreground, Func<ConsoleColorOptions> background) config =
                 (() => provider.FontFormatting.DefaultFont.ForegroundColorProvider, () => provider.BackgroundFormatting.DefaultFormatProvider);
 
-            (ConsoleColor foreground, ConsoleColor background) = 
+            (ConsoleColor foreground, ConsoleColor background) =
                 (provider.FontFormatting.DefaultFont.ForegroundColorProvider.Default, provider.BackgroundFormatting.DefaultFormatProvider.Default);
 
             if (part.HasValue)

@@ -1,6 +1,6 @@
 ﻿using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Platform.Model;
-using Rubberduck.RPC.Proxy.LocalDbServer.Abstract;
+using Rubberduck.RPC.Proxy.LocalDbServer;
 using Rubberduck.Server.LocalDb.Services;
 using System;
 using System.Collections.Generic;

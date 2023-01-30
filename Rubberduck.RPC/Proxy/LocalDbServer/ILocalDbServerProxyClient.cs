@@ -2,7 +2,7 @@
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using System;
 
-namespace Rubberduck.RPC.Proxy.LocalDbServer.Abstract
+namespace Rubberduck.RPC.Proxy.LocalDbServer
 {
     public interface ILocalDbServerProxyClient : IServerProxyClient
     {

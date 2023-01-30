@@ -1,10 +1,10 @@
 ﻿using Rubberduck.RPC;
 using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Platform.Model;
-using Rubberduck.RPC.Proxy.LocalDbServer.Abstract;
+using Rubberduck.RPC.Proxy.LocalDbServer;
 using Rubberduck.RPC.Proxy.SharedServices;
 using Rubberduck.RPC.Proxy.SharedServices.Abstract;
-using Rubberduck.RPC.Proxy.SharedServices.Console;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
@@ -79,7 +79,6 @@ namespace Rubberduck.Server.LocalDb
 
         private void ServerService_ClientDisconnected(object sender, ClientInfo e)
         {
-
             Info.Disconnect(e.ProcessId, out _);
         }
 

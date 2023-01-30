@@ -2,7 +2,7 @@
 using Rubberduck.RPC.Platform.Model;
 using System;
 
-namespace Rubberduck.RPC.Proxy.LocalDbServer.Abstract
+namespace Rubberduck.RPC.Proxy.LocalDbServer
 {
     public interface ILocalDbServerEvents
     {

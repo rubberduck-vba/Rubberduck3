@@ -2,13 +2,13 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Entities = Rubberduck.DataServer.Storage.Entities;
-using AustinHarris.JsonRpc;
 using Rubberduck.InternalApi.RPC.DataServer;
 using Rubberduck.Server.LocalDb.Internal;
+using StreamJsonRpc;
 
-namespace Rubberduck.DataServer.Controllers
+namespace Rubberduck.Server.LocalDb.Services
 {
-    public interface IDeclarationsController
+    public interface IDeclarationsProxy
     {
         Task<IEnumerable<DeclarationAnnotation>> SaveAsync(IEnumerable<DeclarationAnnotation> annotations);
         Task<IEnumerable<DeclarationAttribute>> SaveAsync(IEnumerable<DeclarationAttribute> attributes);
@@ -20,7 +20,7 @@ namespace Rubberduck.DataServer.Controllers
         Task<IEnumerable<Local>> SaveAsync(IEnumerable<Local> locals);
     }
 
-    public class DeclarationsService : JsonRpcService, IDeclarationsController
+    public class DeclarationsService : IDeclarationsProxy
     {
         private readonly IUnitOfWorkFactory _factory;
 

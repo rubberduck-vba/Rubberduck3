@@ -1,5 +1,5 @@
-﻿using AustinHarris.JsonRpc;
-using Rubberduck.RPC.Platform.Metadata;
+﻿using Rubberduck.RPC.Platform.Metadata;
+using StreamJsonRpc;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Server.LSP.Controllers.AbstractClient

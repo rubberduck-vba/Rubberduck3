@@ -43,7 +43,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Server.LSP", "Ru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Client.LSP", "Rubberduck.Client\Rubberduck.Client.LSP.csproj", "{F44DB5B3-6E55-4680-A22D-902A76D75C2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Client.LocalDb", "Rubberduck.DataServer\Rubberduck.Client.LocalDb.csproj", "{2539699A-2515-4667-A077-43C1BB87FD80}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Client.LocalDb", "Rubberduck.Client.LocalDb\Rubberduck.Client.LocalDb.csproj", "{2539699A-2515-4667-A077-43C1BB87FD80}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.RPC", "Rubberduck.RPC\Rubberduck.RPC.csproj", "{8D218701-AF68-4013-B9C0-108C1D162E11}"
 EndProject

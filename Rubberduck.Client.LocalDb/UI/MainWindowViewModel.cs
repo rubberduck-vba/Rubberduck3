@@ -1,6 +1,6 @@
 ﻿using Rubberduck.InternalApi.Common;
 using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Proxy.LocalDbServer.Abstract;
+using Rubberduck.RPC.Proxy.LocalDbServer;
 using Rubberduck.RPC.Proxy.SharedServices;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.UI;

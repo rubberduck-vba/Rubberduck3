@@ -1,7 +1,6 @@
-﻿using MessagePack.Formatters;
-using Rubberduck.RPC;
+﻿using Rubberduck.RPC;
 using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Proxy.LocalDbServer.Abstract;
+using Rubberduck.RPC.Proxy.LocalDbServer;
 using Rubberduck.RPC.Proxy.SharedServices;
 using Rubberduck.RPC.Proxy.SharedServices.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
