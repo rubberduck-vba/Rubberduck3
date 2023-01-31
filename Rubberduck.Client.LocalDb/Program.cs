@@ -1,4 +1,9 @@
-﻿using Rubberduck.RPC;
+﻿using Rubberduck.Client.LocalDb.UI;
+using Rubberduck.Client.LocalDb.UI.Commands;
+using Rubberduck.RPC;
+using Rubberduck.RPC.Proxy.LocalDbServer;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using System;
 using System.Diagnostics;
 
@@ -14,32 +19,30 @@ namespace Rubberduck.Client.LocalDb
         {
             var options = StartupOptions.Validate(args);
             var serverProcess = GetOrCreateServer(options);
-            
+
             //IMainWindowFactory factory = null;
-            //    var environment = new EnvironmentService();
-            //    var shutdownCommand = new ShutdownCommand(server, environment);
-            //    var copyCommand = new CopyCommand(console);
-            //    var saveAsCommand = new SaveAsCommand(server, new FileNameProvider());
-            //    var pauseTraceCommand = new PauseTraceCommand(console);
-            //    var resumeTraceCommand = new ResumeTraceCommand(console);
-            //    var setTraceCommand = new SetTraceCommand(console);
+            //var shutdownCommand = new ShutdownCommand(server);
 
-            //    var statusVM = new ServerStatusViewModel(server, server as ILocalDbServerEvents);
-            //    var consoleVM = new ConsoleViewModel(server, console,
-            //        shutdownCommand, copyCommand, saveAsCommand, pauseTraceCommand, resumeTraceCommand, setTraceCommand);
+            //var copyCommand = new CopyCommand(console);
+            //var saveAsCommand = new SaveAsCommand(server, new FileNameProvider());
+            //var pauseTraceCommand = new PauseTraceCommand(console);
+            //var resumeTraceCommand = new ResumeTraceCommand(console);
+            //var setTraceCommand = new SetTraceCommand(console);
 
-            //    var vm = new MainWindowViewModel(consoleVM, statusVM);
-            //    factory = new MainWindowFactory(vm);
-            //}
+            //var statusVM = new ServerStatusViewModel(server, server as ILocalDbServerEvents);
+            //var consoleVM = new ConsoleViewModel(server, console,
+            //    shutdownCommand, copyCommand, saveAsCommand, pauseTraceCommand, resumeTraceCommand, setTraceCommand);
+
+            //var vm = new MainWindowViewModel(consoleVM, statusVM);
+            //factory = new MainWindowFactory(vm);
 
             //App app = new App(server, factory);
-            //app.InitializeComponent();
             //app.Run();
         }
 
         private static Process GetOrCreateServer(StartupOptions startupOptions)
         {
-            var process = ServerProcessClientHelper.StartLocalDb(hidden: true);
+            var process = ServerProcessClientHelper.StartLocalDb(hidden: false);
             
             process.OutputDataReceived += OnServerProcessStdOut;
             process.ErrorDataReceived += OnServerProcessStdErr;

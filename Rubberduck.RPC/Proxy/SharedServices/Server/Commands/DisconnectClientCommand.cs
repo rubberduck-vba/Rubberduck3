@@ -1,6 +1,7 @@
 ﻿using Rubberduck.RPC.Proxy.SharedServices.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using System;
+using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
 {
@@ -12,5 +13,10 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
         }
 
         public override string Description { get; } = "Disconnects a client from the server.";
+
+        protected override Task ExecuteInternalAsync(ClientShutdownParams parameter)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

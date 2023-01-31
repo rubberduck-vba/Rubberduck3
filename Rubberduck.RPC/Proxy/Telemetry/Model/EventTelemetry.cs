@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Rubberduck.RPC.Telemetry
+namespace Rubberduck.RPC.Proxy.SharedServices.Telemetry.Model
 {
     /// <summary>
     /// <strong>EventTelemetry</strong> represents an event that occurred in the application. 

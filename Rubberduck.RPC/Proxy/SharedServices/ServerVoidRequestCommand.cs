@@ -33,7 +33,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         /// <remarks>
         /// Server state is valid and exceptions are handled when this method is invoked.
         /// </remarks>
-        protected abstract Task ExecuteInternalAsync(TParameter parameter, CancellationToken token);
+        protected abstract Task ExecuteInternalAsync(TParameter parameter);
 
         /// <summary>
         /// Throws an exception if the server is not in a valid state for this command.
@@ -48,11 +48,11 @@ namespace Rubberduck.RPC.Proxy.SharedServices
             }
         }
 
-        public Func<TParameter, CancellationToken, Task> ExecuteAction => (parameter, token) => ExecuteAsync(parameter, token);
+        public Func<TParameter, Task> ExecuteAction => parameter => ExecuteAsync(parameter);
 
-        public Func<TParameter, CancellationToken, Task<bool>> CanExecuteFunc => (parameter, token) => CanExecuteAsync(parameter, token);
+        public Func<TParameter, Task<bool>> CanExecuteFunc => parameter => CanExecuteAsync(parameter);
 
-        public virtual async Task<bool> CanExecuteAsync(TParameter parameter, CancellationToken token)
+        public virtual async Task<bool> CanExecuteAsync(TParameter parameter)
         {
             var state = GetCurrentServerStateInfo().Status;
             var result = ExpectedServerStates.Contains(state);
@@ -60,16 +60,14 @@ namespace Rubberduck.RPC.Proxy.SharedServices
             return await Task.FromResult(result);
         }
 
-        public async Task ExecuteAsync(TParameter parameter, CancellationToken token)
+        public async Task ExecuteAsync(TParameter parameter)
         {
             try
             {
                 Logger.OnTrace($"Executing command '{Name}'.", verbose: Description);
 
                 ThrowOnUnexpectedServerState();
-                token.ThrowIfCancellationRequested();
-
-                await ExecuteInternalAsync(parameter, token);
+                await ExecuteInternalAsync(parameter);
             }
             catch (ApplicationException exception)
             {
@@ -82,7 +80,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
             }
         }
 
-        public Task<bool> TryExecuteAsync(TParameter parameter, CancellationToken token)
+        public Task<bool> TryExecuteAsync(TParameter parameter)
         {
             throw new NotImplementedException();
         }
@@ -112,7 +110,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         /// <remarks>
         /// Server state is valid and exceptions are handled when this method is invoked; implementation should periodically check the token and throw if cancellation is requested.
         /// </remarks>
-        protected abstract Task ExecuteInternalAsync(CancellationToken token);
+        protected abstract Task ExecuteInternalAsync();
 
         /// <summary>
         /// Throws an exception if the server is not in a valid state for this command.
@@ -127,11 +125,11 @@ namespace Rubberduck.RPC.Proxy.SharedServices
             }
         }
 
-        public Func<CancellationToken, Task> ExecuteAction => (token) => ExecuteAsync(token);
+        public Func<Task> ExecuteAction => () => ExecuteAsync();
 
-        public Func<CancellationToken, Task<bool>> CanExecuteFunc => (token) => CanExecuteAsync(token);
+        public Func<Task<bool>> CanExecuteFunc => () => CanExecuteAsync();
 
-        public virtual async Task<bool> CanExecuteAsync(CancellationToken token)
+        public virtual async Task<bool> CanExecuteAsync()
         {
             var state = GetCurrentServerStateInfo().Status;
             var result = ExpectedServerStates.Contains(state);
@@ -139,16 +137,14 @@ namespace Rubberduck.RPC.Proxy.SharedServices
             return await Task.FromResult(result);
         }
 
-        public async Task ExecuteAsync(CancellationToken token)
+        public async Task ExecuteAsync()
         {
             try
             {
                 Logger.OnTrace($"Executing command '{Name}'.", verbose: Description);
 
                 ThrowOnUnexpectedServerState();
-                token.ThrowIfCancellationRequested();
-
-                await ExecuteInternalAsync(token);
+                await ExecuteInternalAsync();
             }
             catch (ApplicationException exception)
             {
@@ -161,7 +157,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
             }
         }
 
-        public Task<bool> TryExecuteAsync(CancellationToken token)
+        public Task<bool> TryExecuteAsync()
         {
             throw new NotImplementedException();
         }

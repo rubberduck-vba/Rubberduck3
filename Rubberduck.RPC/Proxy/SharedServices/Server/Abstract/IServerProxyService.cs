@@ -5,6 +5,7 @@ using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Model;
+using Rubberduck.RPC.Proxy.SharedServices.Telemetry;
 using StreamJsonRpc;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,8 +20,9 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
     /// Proxy implementations should be stateless: the instance only lives for the duration of a single request.
     /// </remarks>
     /// <typeparam name="TOptions">A type representing all server settings and capabilities.</typeparam>
-    public interface IServerProxyService<TOptions> : IConfigurableProxy<TOptions>, IServerCommandsProxy<TOptions>
+    public interface IServerProxyService<TOptions, TClientProxy> : IConfigurableServerProxy<TOptions, TClientProxy>, IServerCommandsProxy<TOptions>
         where TOptions : class, new()
+        where TClientProxy : class
     {
         /// <summary>
         /// An <c>Initialize</c> request is sent as the first request from a client to the server.
@@ -48,5 +50,10 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
         /// Exposes server console services and configurations.
         /// </summary>
         IServerConsoleService<ServerConsoleOptions> ServerConsole { get; }
+
+        /// <summary>
+        /// Exposes server telemetry services and configurations.
+        /// </summary>
+        ITelemetryClientService Telemetry { get; }
     }
 }

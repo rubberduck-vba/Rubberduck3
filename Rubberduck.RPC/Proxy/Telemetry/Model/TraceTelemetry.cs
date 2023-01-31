@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Rubberduck.RPC.Telemetry
+namespace Rubberduck.RPC.Proxy.SharedServices.Telemetry.Model
 {
     /// <summary>
     /// <strong>TraceTelemetry</strong> represents trace logs that can later be searched.
@@ -21,7 +21,7 @@ namespace Rubberduck.RPC.Telemetry
         /// <summary>
         /// The trace severity level.
         /// </summary>
-        [JsonPropertyName("severityLevel")]
-        public string SeverityLevel { get; set; } = TelemetryEventSeverityLevel.Verbose.ToString();
+        [JsonPropertyName("severityLevel"), JsonConverter(typeof(JsonStringEnumConverter))]
+        public TelemetryEventSeverityLevel SeverityLevel { get; set; } = TelemetryEventSeverityLevel.Verbose;
     }
 }

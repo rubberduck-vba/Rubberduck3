@@ -383,7 +383,7 @@
     <Compile Include="Proxy\LspServer\Workspace\Model\Command.cs" />
     <Compile Include="Proxy\LspServer\Workspace\Model\FileOperationFilter.cs" />
     <Compile Include="Proxy\LspServer\Workspace\Model\FileOperationPattern.cs" />
-    <Compile Include="Proxy\SharedServices\Abstract\IConfigurableProxy.cs" />
+    <Compile Include="Proxy\SharedServices\Abstract\IConfigurableServerProxy.cs" />
     <Compile Include="Proxy\SharedServices\Abstract\IServerCommandsProxy.cs" />
     <Compile Include="Proxy\SharedServices\Abstract\IServerLogger.cs" />
     <Compile Include="Proxy\SharedServices\Abstract\IServerNotificationCommand.cs" />
@@ -426,7 +426,6 @@
     <Compile Include="Proxy\SharedServices\ServerRequestCommand.cs" />
     <Compile Include="Proxy\SharedServices\ServerStatus.cs" />
     <Compile Include="Proxy\SharedServices\ServerVoidRequestCommand.cs" />
-    <Compile Include="Proxy\SharedServices\Server\Abstract\IServerCommandsBuilder.cs" />
     <Compile Include="Proxy\SharedServices\Server\Abstract\IServerProxyService.cs" />
     <Compile Include="Proxy\SharedServices\Server\Abstract\ServerProxyService.cs" />
     <Compile Include="Proxy\SharedServices\Server\Commands\ClientInitializedParams.cs" />
@@ -449,11 +448,26 @@
     <Compile Include="Proxy\SharedServices\TupleExtensions.cs" />
     <Compile Include="Platform\Exceptions\ServerExceptions\UnexpectedExitNotificationException.cs" />
     <Compile Include="Proxy\SharedServices\WorkDoneProgress\Configuration\WorkDoneProgressOptions.cs" />
+    <Compile Include="Proxy\Telemetry\ITelemetryClientService.cs" />
+    <Compile Include="Proxy\Telemetry\Model\DependencyTelemetry.cs" />
+    <Compile Include="Proxy\Telemetry\Model\EventTelemetry.cs" />
+    <Compile Include="Proxy\Telemetry\Model\ExceptionTelemetry.cs" />
+    <Compile Include="Proxy\Telemetry\Model\MetricTelemetry.cs" />
+    <Compile Include="Proxy\Telemetry\Model\PageViewTelemetry.cs" />
+    <Compile Include="Proxy\Telemetry\Model\RequestTelemetry.cs" />
+    <Compile Include="Proxy\Telemetry\Model\TelemetryContext.cs" />
+    <Compile Include="Proxy\Telemetry\Model\TelemetryCustomPropertyName.cs" />
+    <Compile Include="Proxy\Telemetry\Model\TelemetryEvent.cs" />
+    <Compile Include="Proxy\Telemetry\Model\TelemetryEventName.cs" />
+    <Compile Include="Proxy\Telemetry\Model\TelemetryEventSeverityLevel.cs" />
+    <Compile Include="Proxy\Telemetry\Model\TraceTelemetry.cs" />
+    <Compile Include="Proxy\Telemetry\TelemetryClientService.cs" />
     <Compile Include="ServerProcessClientHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Platform.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

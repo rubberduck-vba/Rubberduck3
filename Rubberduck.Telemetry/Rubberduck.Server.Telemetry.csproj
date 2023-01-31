@@ -121,20 +121,8 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Abstract\ITelemetryService.cs" />
-    <Compile Include="Telemetry\DependencyTelemetry.cs" />
-    <Compile Include="Telemetry\EventTelemetry.cs" />
-    <Compile Include="Telemetry\ExceptionTelemetry.cs" />
-    <Compile Include="Telemetry\MetricTelemetry.cs" />
-    <Compile Include="Telemetry\PageViewTelemetry.cs" />
-    <Compile Include="Telemetry\RequestTelemetry.cs" />
-    <Compile Include="Telemetry\TelemetryContext.cs" />
-    <Compile Include="Telemetry\TelemetryCustomPropertyName.cs" />
-    <Compile Include="Telemetry\TelemetryEvent.cs" />
-    <Compile Include="Telemetry\TelemetryEventName.cs" />
-    <Compile Include="Telemetry\TelemetryEventSeverityLevel.cs" />
+    <Compile Include="Telemetry\ITelemetryService.cs" />
     <Compile Include="Telemetry\TelemetryService.cs" />
-    <Compile Include="Telemetry\TraceTelemetry.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -142,6 +130,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Abstract\" />
     <Folder Include="Commands\Parameters\" />
     <Folder Include="Configuration\" />
     <Folder Include="Model\Events\" />

@@ -25,10 +25,9 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
             ServerStatus.Initialized,
         };
 
-        protected override async Task ExecuteInternalAsync(CancellationToken token)
+        protected override async Task ExecuteInternalAsync()
         {
-            token.ThrowIfCancellationRequested();
-            await Task.Run(_shutdownAction, token);
+            await Task.Run(_shutdownAction);
         }
     }
 
@@ -43,10 +42,9 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
             _shutdownAction = shutdownAction;
         }
 
-        protected override async Task ExecuteInternalAsync(TParameter parameters, CancellationToken token)
+        protected override async Task ExecuteInternalAsync(TParameter parameters)
         {
-            token.ThrowIfCancellationRequested();
-            await Task.Run(() => _shutdownAction.Invoke(parameters), token);
+            await Task.Run(() => _shutdownAction.Invoke(parameters));
         }
 
         protected sealed override IReadOnlyCollection<ServerStatus> ExpectedServerStates => new[]

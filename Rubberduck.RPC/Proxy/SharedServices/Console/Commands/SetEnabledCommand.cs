@@ -14,11 +14,9 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Commands
 
         public override string Description { get; } = "Pauses or resumes console output.";
 
-        protected override async Task ExecuteInternalAsync(SetEnabledParams parameter, CancellationToken token)
+        protected override async Task ExecuteInternalAsync(SetEnabledParams parameter)
         {
             var config = GetConfiguration();
-
-            token.ThrowIfCancellationRequested();
             config.IsEnabled = parameter.Value;
 
             await Task.CompletedTask;

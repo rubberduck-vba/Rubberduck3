@@ -20,10 +20,8 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
             ServerStatus.AwaitingInitialized,
         };
 
-        protected override async Task ExecuteInternalAsync(InitializedParams parameter, CancellationToken token)
+        protected override async Task ExecuteInternalAsync(InitializedParams parameter)
         {
-            token.ThrowIfCancellationRequested();
-
             var state = GetCurrentServerStateInfo.Invoke();
             state.Status = ServerStatus.Initialized;
 

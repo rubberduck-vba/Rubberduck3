@@ -1,30 +1,59 @@
-﻿using System;
+﻿using Rubberduck.RPC.Proxy.SharedServices.Abstract;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Proxy.SharedServices
 {
-/*
     /// <summary>
     /// A command sent from a server proxy implementation to the actual server application,
     /// that injects delegates so that the command can be defined inline by its owner.
     /// </summary>
     /// <typeparam name="TParameter">The class type of the parameter passed to the command.</typeparam>
-    public class DelegateServerNotificationCommand<TParameter> : ServerNotificationCommand<TParameter>
-        where TParameter : class
+    public class DelegateServerNotificationCommand<TOptions> : ServerNotificationCommand<TOptions>
+        where TOptions : class, new()
     {
-        private readonly Action<TParameter> _execute;
-        private readonly Func<TParameter, bool> _canExecute;
+        private readonly Func<Task> _execute;
+        private readonly Func<Task<bool>> _canExecute;
 
-        public DelegateServerNotificationCommand(Action<TParameter> executeDelegate, Func<TParameter, bool> canExecuteDelegate = null)
+        public DelegateServerNotificationCommand(string description, IServerLogger logger, GetServerOptions<TOptions> getConfiguration, GetServerStateInfo getServerState)
+            : base(logger, getConfiguration, getServerState)
         {
-            _execute = executeDelegate;
-            _canExecute = canExecuteDelegate;
+            Description = description;
         }
 
-        protected override ServerState[] ExpectedServerStates => new ServerState[] { };
+        public override string Description { get; }
 
-        public async override Task<bool> CanExecuteAsync(TParameter parameter) => await Task.Run(() => _canExecute?.Invoke(parameter) ?? true);
-        public async override Task ExecuteAsync(TParameter parameter) => await Task.Run(() => _execute.Invoke(parameter));
+        protected override IReadOnlyCollection<ServerStatus> ExpectedServerStates => new ServerStatus[0];
+
+        public async override Task<bool> CanExecuteAsync() => await (_canExecute?.Invoke() ?? Task.FromResult(true));
+        protected async override Task ExecuteInternalAsync() => await _execute.Invoke();
     }
-*/
+
+    /// <summary>
+    /// A command sent from a server proxy implementation to the actual server application,
+    /// that injects delegates so that the command can be defined inline by its owner.
+    /// </summary>
+    /// <typeparam name="TParameter">The class type of the parameter passed to the command.</typeparam>
+    public class DelegateServerNotificationCommand<TOptions, TParameter> : ServerNotificationCommand<TOptions, TParameter>
+        where TOptions : class, new()
+        where TParameter : class, new()
+    {
+        private readonly Func<TParameter, Task> _execute;
+        private readonly Func<TParameter, Task<bool>> _canExecute;
+
+        public DelegateServerNotificationCommand(string description, IServerLogger logger, GetServerOptions<TOptions> getConfiguration, GetServerStateInfo getServerState) 
+            : base(logger, getConfiguration, getServerState)
+        {
+            Description = description;
+        }
+
+        public override string Description { get; }
+
+        protected override IReadOnlyCollection<ServerStatus> ExpectedServerStates => new ServerStatus[0];
+        
+        public async override Task<bool> CanExecuteAsync(TParameter parameter) => await (_canExecute?.Invoke(parameter) ?? Task.FromResult(true));
+        protected async override Task ExecuteInternalAsync(TParameter parameter) => await _execute.Invoke(parameter);
+    }
 }

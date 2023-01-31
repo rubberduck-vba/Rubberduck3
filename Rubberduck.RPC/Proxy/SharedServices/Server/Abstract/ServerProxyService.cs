@@ -9,7 +9,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
     /// </summary>
     /// <typeparam name="TOptions">The class type of the configuration options for this service.</typeparam>
     /// <typeparam name="TCommands">The class type of the class that exposes the commands for this service.</typeparam>
-    public abstract class ServerProxyService<TOptions, TCommands> : IConfigurableProxy<TOptions>
+    public abstract class ServerProxyService<TOptions, TCommands> : IConfigurableServerProxy<TOptions, IServerProxyClient>
         where TOptions : class, new()
         where TCommands : class
     {
@@ -21,6 +21,8 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
             Logger = logger;
             _getConfiguration = getConfiguration;
             _getServerState = getServerState;
+            
+            // TODO handle ClientProxy events
         }
 
         public abstract TCommands Commands { get; }
@@ -31,5 +33,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
         /// Gets the current server state.
         /// </summary>
         public ServerState ServerState => _getServerState.Invoke();
+
+        public IServerProxyClient ClientProxy { get; }
     }
 }

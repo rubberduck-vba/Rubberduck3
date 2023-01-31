@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.RPC.Telemetry
+﻿namespace Rubberduck.RPC.Proxy.SharedServices.Telemetry.Model
 {
     /// <summary>
     /// Defines the possible values of <c>TelemetryEvent.EventName</c>.

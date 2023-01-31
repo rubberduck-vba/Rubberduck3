@@ -1,5 +1,4 @@
-﻿using Rubberduck.RPC.Proxy.SharedServices;
-using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
+﻿using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 
 namespace Rubberduck.RPC.Platform
 {
@@ -8,11 +7,9 @@ namespace Rubberduck.RPC.Platform
     /// </summary>
     /// <typeparam name="TService">The class type of the service to create.</typeparam>
     /// <typeparam name="TOptions">The class type of server configuration options.</typeparam>
-    /// <typeparam name="TClientProxy">A provider for server-level client-to-server notifications/events.</typeparam>
-    public interface IServerServiceFactory<TService, TOptions, TClientProxy>
-        where TService : ServerService<TOptions, TClientProxy>
+    public interface IServerServiceFactory<TService, TOptions>
+        where TService : ServerService<TOptions>
         where TOptions : class, new()
-        where TClientProxy : IServerProxyClient
     {
         /// <summary>
         /// Creates a new instance of the ServerService.

@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="JsonRpcServer base class runs the server's request/response loop. Implementations should be invoked from App.cs in a Rubberduck.Server.* project">
+    <Position X="1.208" Y="0.817" Height="0.733" Width="3.85" />
+  </Comment>
+  <Comment CommentText="All proxy services are stateless services that execute in the context of a single request or notification. Each implementation represents a segregated functionality.">
+    <Position X="6.725" Y="0.5" Height="0.542" Width="4.967" />
+  </Comment>
+  <Comment CommentText="Server proxy represents the server-level services that are common to all server proxies.">
+    <Position X="6.786" Y="1.133" Height="0.308" Width="4.95" />
+  </Comment>
+  <Comment CommentText="Only client services are shared for telemetry; the server proxy implementation is under the Rubberduck.Server.Telemetry project.">
+    <Position X="4.25" Y="6" Height="0.553" Width="4.95" />
+  </Comment>
+  <Comment CommentText="Console services are shared across server implementations, and centralize trace logging.">
+    <Position X="10.75" Y="4.75" Height="0.396" Width="5.527" />
+  </Comment>
+  <Comment CommentText="LSP server functionality was segregated into more digestible interfaces that regroup methods by functionality. The implementations are under the Rubberduck.Server.LSP project.">
+    <Position X="18" Y="4.75" Height="0.636" Width="10.71" />
+  </Comment>
+  <Comment CommentText="Server command classes represent JsonRPC endpoint handlers: they are injected into proxy services to handle RPC endpoints, and encapsulate the base logic and tooling common to all such server commands.">
+    <Position X="4.299" Y="10.5" Height="0.75" Width="4.849" />
+  </Comment>
+  <Comment CommentText="Various abstract command classes provide a base implementation for various signatures supporting all RPC endpoint types and parameterizations.&#xD;&#xA;Delegate implementations build on top of these abstractions to provide handler functionality through inline delegates when necessary.">
+    <Position X="12.395" Y="14.061" Height="1.056" Width="4.552" />
+  </Comment>
+  <Comment CommentText="Proxies use these delegate types to access the current server state and configuration.">
+    <Position X="0.584" Y="10.608" Height="0.549" Width="2.933" />
+  </Comment>
+  <Class Name="Rubberduck.RPC.Platform.JsonRpcServer&lt;TStream, TServerService, TOptions&gt;">
+    <Position X="1.25" Y="2" Width="2" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAIAAAAAAACAAAQCAggAAAAAIQAgAEAAAAI=</HashCode>
+      <FileName>Platform\JsonRpcServer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rubberduck.RPC.Proxy.SharedServices.Server.Abstract.ServerProxyService&lt;TOptions, TCommands&gt;">
+    <Position X="6.75" Y="2" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAIAAAAAAAAAAAAAAgAAgAAAgAAAAgAAIAA=</HashCode>
+      <FileName>Proxy\SharedServices\Server\Abstract\ServerProxyService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rubberduck.RPC.Proxy.SharedServices.Telemetry.TelemetryClientService">
+    <Position X="4.25" Y="7" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAgAAAEAAAAAA=</HashCode>
+      <FileName>Proxy\Telemetry\TelemetryClientService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rubberduck.RPC.Proxy.SharedServices.Console.Abstract.ServerConsoleService&lt;TOptions&gt;">
+    <Position X="10.75" Y="5.75" Width="2.75" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <InheritanceLine Type="Rubberduck.RPC.Proxy.SharedServices.Server.Abstract.ServerProxyService&lt;TOptions, TCommands&gt;" ManuallyRouted="true" FixedToPoint="true">
+      <Path>
+        <Point X="7.875" Y="4.968" />
+        <Point X="7.875" Y="5.528" />
+        <Point X="9.801" Y="5.528" />
+        <Point X="9.801" Y="6.625" />
+        <Point X="10.75" Y="6.625" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAwAABAIAAAAAAAAAAAAAIAgAIAAAAACAIAAAAgU=</HashCode>
+      <FileName>Proxy\SharedServices\Console\ServerConsoleService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rubberduck.RPC.Proxy.SharedServices.Server.Commands.ServerCommandBase&lt;TOptions&gt;">
+    <Position X="4.25" Y="11.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIgAAAAAAAAAAQAEAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Proxy\SharedServices\Server\Commands\ServerCommandBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rubberduck.RPC.Proxy.SharedServices.ServerRequestCommand&lt;TParameter, TResult, TOptions&gt;" Collapsed="true">
+    <Position X="8" Y="12.75" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAEgAAAAAAABACAAAAAAAAAACAAAAEAAAAABAAAEA=</HashCode>
+      <FileName>Proxy\SharedServices\ServerRequestCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rubberduck.RPC.Proxy.SharedServices.ServerRequestCommand&lt;TResult, TOptions&gt;" Collapsed="true">
+    <Position X="8" Y="11.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAEgAAAAAAABACAAAAAAAAAACAAAAEAAAAABAAAEA=</HashCode>
+      <FileName>Proxy\SharedServices\ServerRequestCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rubberduck.RPC.Proxy.SharedServices.ServerVoidRequestCommand&lt;TParameter, TOptions&gt;" Collapsed="true">
+    <Position X="8" Y="14.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEgAAAAAAABACAAAAAAAAAACAAAAEAAAAABAAAEA=</HashCode>
+      <FileName>Proxy\SharedServices\ServerVoidRequestCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rubberduck.RPC.Proxy.SharedServices.ServerVoidRequestCommand&lt;TOptions&gt;" Collapsed="true">
+    <Position X="8" Y="13.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAEgAAAAAAABACAAAAAAAAAACAAAAEAAAAABAAAEA=</HashCode>
+      <FileName>Proxy\SharedServices\ServerVoidRequestCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rubberduck.RPC.Proxy.SharedServices.ServerNotificationCommand&lt;TOptions, TParameter&gt;">
+    <Position X="8" Y="16.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEgAAAAAAABACAAAAAAAAAACAAAAEAAAAABAAAEA=</HashCode>
+      <FileName>Proxy\SharedServices\ServerNotificationCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rubberduck.RPC.Proxy.SharedServices.ServerNotificationCommand&lt;TOptions&gt;" Collapsed="true">
+    <Position X="8" Y="15.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAEgAAAAAAABACAAAAAAAAAACAAAAEAAAAABAAAEA=</HashCode>
+      <FileName>Proxy\SharedServices\ServerNotificationCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rubberduck.RPC.Proxy.SharedServices.DelegateServerRequestCommand&lt;TParameter, TResult, TOptions&gt;" Collapsed="true">
+    <Position X="12.5" Y="12.75" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAEAgAAAAAACAAAQAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Proxy\SharedServices\DelegateServerRequestCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rubberduck.RPC.Proxy.SharedServices.DelegateServerRequestCommand&lt;TResult, TOptions&gt;" Collapsed="true">
+    <Position X="12.5" Y="11.75" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAEAgAAAAAACAAAQAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Proxy\SharedServices\DelegateServerRequestCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rubberduck.RPC.Proxy.SharedServices.DelegateServerNotificationCommand&lt;TOptions&gt;" Collapsed="true">
+    <Position X="12.25" Y="15.75" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Proxy\SharedServices\DelegateServerNotificationCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rubberduck.RPC.Proxy.SharedServices.DelegateServerNotificationCommand&lt;TOptions, TParameter&gt;">
+    <Position X="12.25" Y="16.75" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAEgAAAEAgAAAAAACAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Proxy\SharedServices\DelegateServerNotificationCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Rubberduck.RPC.Platform.IJsonRpcServer">
+    <Position X="3.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAEAAAAA=</HashCode>
+      <FileName>Platform\JsonRpcServer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rubberduck.RPC.Proxy.SharedServices.Server.Abstract.IServerProxyService&lt;TOptions, TClientProxy&gt;">
+    <Position X="9.25" Y="2" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>EAAEAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>Proxy\SharedServices\Server\Abstract\IServerProxyService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rubberduck.RPC.Proxy.SharedServices.Telemetry.ITelemetryClientService">
+    <Position X="6.75" Y="8.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Proxy\Telemetry\ITelemetryClientService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rubberduck.RPC.Proxy.SharedServices.Telemetry.ITelemetryClientProxy">
+    <Position X="6.75" Y="7" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Proxy\Telemetry\ITelemetryClientService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rubberduck.RPC.Proxy.SharedServices.Console.Abstract.IServerConsoleService&lt;TOptions&gt;">
+    <Position X="13.75" Y="5.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAAAAAAAAAAAgAAAAAgAAAIAAAAAA=</HashCode>
+      <FileName>Proxy\SharedServices\Console\Abstract\IServerConsoleService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rubberduck.RPC.Proxy.LspServer.TextDocument.Editor.Abstract.ITextDocumentEditorProxy">
+    <Position X="18" Y="5.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACACAAAAQAAAAAAEgwAAAIAAAAAAEAAgAAAAAAICI=</HashCode>
+      <FileName>Proxy\LspServer\TextDocument\Editor\Abstract\ITextDocumentEditorProxy.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rubberduck.RPC.Proxy.LspServer.TextDocument.File.Abstract.ITextDocumentFileProxy">
+    <Position X="20.75" Y="5.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAgAAAAAAAAAAAAAAQAAAAAAAAAAAAAABAAAAAQA=</HashCode>
+      <FileName>Proxy\LspServer\TextDocument\File\Abstract\ITextDocumentFileProxy.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rubberduck.RPC.Proxy.LspServer.TextDocument.Language.Abstract.ITextDocumentLanguageProxy">
+    <Position X="23.5" Y="5.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>QAAhAAAAIABAAAkAAAAAAAAAQAAAAAAAEMABAAIAEAE=</HashCode>
+      <FileName>Proxy\LspServer\TextDocument\Language\Abstract\ITextDocumentLanguageProxy.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rubberduck.RPC.Proxy.LspServer.TextDocument.Navigation.Abstract.ITextDocumentNavigationProxy">
+    <Position X="26.25" Y="5.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAgAAABAAAAAAIAAAIAAEAAAAAAAAAAAAgAgAAA=</HashCode>
+      <FileName>Proxy\LspServer\TextDocument\Navigation\Abstract\ITextDocumentNavigationProxy.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Delegate Name="Rubberduck.RPC.Proxy.SharedServices.Server.Commands.GetServerStateInfo" Collapsed="true">
+    <Position X="0.75" Y="11.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Proxy\SharedServices\Server\Commands\ServerCommandBase.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="Rubberduck.RPC.Proxy.SharedServices.Server.Commands.GetServerOptions&lt;TOptions&gt;" Collapsed="true">
+    <Position X="0.75" Y="12.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Proxy\SharedServices\Server\Commands\ServerCommandBase.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

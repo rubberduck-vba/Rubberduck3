@@ -29,8 +29,9 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
             ServerStatus.ShuttingDown,
         };
 
-        protected override async Task ExecuteInternalAsync(CancellationToken token)
+        protected override async Task ExecuteInternalAsync()
         {
+            // TODO send WillExit notification
             _tokenSource.Cancel();
             await Task.CompletedTask;
         }

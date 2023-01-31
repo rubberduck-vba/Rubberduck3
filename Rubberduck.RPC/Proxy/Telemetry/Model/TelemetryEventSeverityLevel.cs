@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.RPC.Telemetry
+﻿namespace Rubberduck.RPC.Proxy.SharedServices.Telemetry.Model
 {
     public enum TelemetryEventSeverityLevel
     {

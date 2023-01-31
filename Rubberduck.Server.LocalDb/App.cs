@@ -32,7 +32,7 @@ namespace Rubberduck.Server.LocalDb
 
         private readonly CancellationTokenSource _serverTokenSource;
         private readonly NamedPipeStreamFactory _rpcStreamFactory;
-        private readonly IServerServiceFactory<LocalDbServerService, ServerCapabilities, ILocalDbServerProxyClient> _serverServiceFactory;
+        private readonly IServerServiceFactory<LocalDbServerService, ServerCapabilities> _serverServiceFactory;
 
         private readonly IServerLogger _logger;
         private readonly ILocalDbServerProxyClient _clientProxy;
@@ -53,12 +53,13 @@ namespace Rubberduck.Server.LocalDb
             _consoleProxyService = new ServerConsoleService<ServerConsoleOptions>(_configuration.ConsoleOptions, getInfo);
             _logger = new ServerLogger(exception => _consoleProxyService.Logger.OnError(exception), (level, message, verbose) => _consoleProxyService.Log(level, message, verbose));
 
+
             _serverTokenSource = new CancellationTokenSource();
             _rpcStreamFactory = new NamedPipeStreamFactory(Settings.Default.JsonRpcPipeName, Settings.Default.MaxConcurrentRequests);
 
-            _serverServiceFactory = new ServerServiceFactory(_serverTokenSource.Token, _logger, _clientProxy, getConfig, getInfo);
+            _serverServiceFactory = new ServerServiceFactory(_serverTokenSource.Token, _logger, null, getConfig, getInfo);
 
-            _dbServer = new LocalDbServer(Info, _rpcStreamFactory, _serverServiceFactory, _serverTokenSource);
+            _dbServer = new LocalDbServer(Info, getInfo, _rpcStreamFactory, _serverServiceFactory, _serverTokenSource);
             _rpcServer = new LocalDbServerService(_serverTokenSource.Token, _logger, _clientProxy, getConfig, getInfo, _consoleProxyService);
         }
 
@@ -74,7 +75,7 @@ namespace Rubberduck.Server.LocalDb
             _rpcServer.WillExit += ServerService_WillExit;
 
             _uptimeStopwatch.Start();
-            await _dbServer.StartAsync();
+            await _dbServer.StartAsync(_serverTokenSource.Token);
         }
 
         private void ServerService_ClientDisconnected(object sender, ClientInfo e)

@@ -15,19 +15,19 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Abstract
         /// </summary>
         /// <param name="parameter">The parameter that would be passed to the <c>ExecuteAsync</c> method to execute the command.</param>
         /// <returns><c>true</c> if the command can be executed, <c>false</c> otherwise.</returns>
-        Task<bool> CanExecuteAsync(TParameter parameter, CancellationToken token);
+        Task<bool> CanExecuteAsync(TParameter parameter);
         /// <summary>
         /// Asynchronously executes the command on the server.
         /// </summary>
         /// <param name="parameter">A parameter containing information useful for executing this command.</param>
-        Task ExecuteAsync(TParameter parameter, CancellationToken token);
+        Task ExecuteAsync(TParameter parameter);
 
         /// <summary>
         /// Asynchrously executes the command if <c>CanExecuteAsync</c> returns <c>true</c>.
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns><c>true</c> if the command was invoked, <c>false</c> otherwise.</returns>
-        Task<bool> TryExecuteAsync(TParameter parameter, CancellationToken token);
+        Task<bool> TryExecuteAsync(TParameter parameter);
     }
 
     /// <summary>
@@ -39,16 +39,16 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Abstract
         /// Asynchronously evaluates whether the command can be executed.
         /// </summary>
         /// <returns><c>true</c> if the command can be executed, <c>false</c> otherwise.</returns>
-        Task<bool> CanExecuteAsync(CancellationToken token);
+        Task<bool> CanExecuteAsync();
         /// <summary>
         /// Asynchronously executes the command on the server.
         /// </summary>
-        Task ExecuteAsync(CancellationToken token);
+        Task ExecuteAsync();
 
         /// <summary>
         /// Asynchrously executes the command if <c>CanExecuteAsync</c> returns <c>true</c>.
         /// </summary>
         /// <returns><c>true</c> if the command was invoked, <c>false</c> otherwise.</returns>
-        Task<bool> TryExecuteAsync(CancellationToken token);
+        Task<bool> TryExecuteAsync();
     }
 }

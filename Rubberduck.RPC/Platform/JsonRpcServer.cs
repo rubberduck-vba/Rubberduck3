@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using StreamJsonRpc;
 using Rubberduck.RPC.Platform.Model;
 using Rubberduck.RPC.Proxy.SharedServices;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
+using System.Linq;
+using System.Reflection;
+using Rubberduck.RPC.Platform.Metadata;
 
 namespace Rubberduck.RPC.Platform
 {
@@ -31,31 +35,30 @@ namespace Rubberduck.RPC.Platform
     /// <remarks>
     /// Implementation holds the server state for the lifetime of the host process.
     /// </remarks>
-    public abstract class JsonRpcServer<TStream, TServerService, TOptions, TClientProxy> 
+    public abstract class JsonRpcServer<TStream, TServerService, TOptions> : IJsonRpcServer
         where TStream : Stream
-        where TServerService : ServerService<TOptions, TClientProxy>
+        where TServerService : ServerService<TOptions>
         where TOptions : class, new()
-        where TClientProxy : IServerProxyClient
     {
         private readonly IRpcStreamFactory<TStream> _rpcStreamFactory;
-        private readonly IServerServiceFactory<TServerService, TOptions, TClientProxy> _serviceFactory;
+        private readonly IServerServiceFactory<TServerService, TOptions> _serviceFactory;
 
+        private readonly GetServerStateInfo _getServerState;
         private readonly BasicServerInfo _info;
-        private readonly CancellationToken _token;
         private IEnumerable<Type> _proxyTypes;
 
-        protected JsonRpcServer(
-            BasicServerInfo info,
+        protected JsonRpcServer(BasicServerInfo info, GetServerStateInfo getServerState,
             IRpcStreamFactory<TStream> rpcStreamFactory, 
-            IServerServiceFactory<TServerService, TOptions, TClientProxy> serviceFactory, 
-            CancellationToken token)
+            IServerServiceFactory<TServerService, TOptions> serviceFactory)
         {
             _info = info;
+            _getServerState = getServerState;
             _rpcStreamFactory = rpcStreamFactory;
             _serviceFactory = serviceFactory;
-            _token = token;
             _proxyTypes = GetProxyTypes();
         }
+
+        public ServerState Info => _getServerState.Invoke();
 
         /// <summary>
         /// Wait for a client to connect.
@@ -73,74 +76,58 @@ namespace Rubberduck.RPC.Platform
         /// <remarks>
         /// Creates a new RPC stream for each new client connection, until cancellation is requested on the token.
         /// </remarks>
-        public async Task StartAsync()
+        public async Task StartAsync(CancellationToken serverToken)
         {
-            while (!_token.IsCancellationRequested)
+            Console.WriteLine("Server started. Awaiting client connection...");
+
+            while (!serverToken.IsCancellationRequested)
             {
                 var stream = _rpcStreamFactory.CreateNew();
-                await WaitForConnectionAsync(stream, _token);
-                _ = SendResponseAsync(stream, _token);
+                await WaitForConnectionAsync(stream, serverToken);
+                _ = SendResponseAsync(stream, serverToken);
             }
-            _token.ThrowIfCancellationRequested();
-        }
-
-        private TServerService _cachedService = null;
-        private TServerService GetOrCreateService()
-        {
-            return _cachedService ?? (_cachedService = CreateServerService());
-        }
-
-        private TServerService CreateServerService()
-        {
-
-            /*
-            var getServerInfoCommand = new DelegateServerRequestCommand<object, JsonRpcServerInfo>(_ => GetServerInfo.Invoke());
-            var initializeCommand = new InitializeCommand();
-            var setServerConfigCommand = new SetServerOptionsCommand();
-            var connectCommand = new ConnectClientCommand();
-            var disconnectCommand = new DisconnectClientCommand();
-            var exitCommand = new ExitCommand(console, GetServerInfo);
-
-            var commands = new ServerCommands<TOptions>(getServerInfoCommand, initializeCommand, setServerConfigCommand, connectCommand, disconnectCommand, exitCommand);
-            */
-            return _serviceFactory.Create(null);
+            serverToken.ThrowIfCancellationRequested();
         }
 
         private async Task SendResponseAsync(Stream stream, CancellationToken token)
         {
             using (var rpc = new JsonRpc(stream))
             {
-                foreach (var type in _proxyTypes)
+                var targetOptions = new JsonRpcTargetOptions
                 {
-                    rpc.AddLocalRpcTarget(type);
-                }
-                token.ThrowIfCancellationRequested();
-
-                var service = GetOrCreateService();
-                rpc.AddLocalRpcTarget(service, new JsonRpcTargetOptions
-                {
-                    MethodNameTransform = MethodNameTransform,
                     EventNameTransform = EventNameTransform,
                     AllowNonPublicInvocation = false,
                     ClientRequiresNamedArguments = true,
                     DisposeOnDisconnect = true,
                     NotifyClientOfEvents = true,
                     UseSingleObjectParameterDeserialization = true,
-                });
+                };
+
+                foreach (var type in _proxyTypes)
+                {
+                    rpc.AddLocalRpcTarget(type, targetOptions);
+                }
+
+                token.ThrowIfCancellationRequested();
 
                 rpc.StartListening();
                 await rpc.Completion;
             }
         }
 
-        private string MethodNameTransform(string name)
-        {
-            var camelCased = CommonMethodNameTransforms.CamelCase(name);
-            return camelCased;
-        }
+        private static readonly IDictionary<string, string> _mappedEventNames = (from e in typeof(IJsonRpcServer).Assembly.GetTypes().SelectMany(t => t.GetEvents())
+                                                                                 let lsp = e.GetCustomAttribute<RubberduckSPAttribute>(inherit:true)
+                                                                                 where lsp != null
+                                                                                 select (EventName: e.Name, RpcMethodName: lsp.MethodName)).ToDictionary(e => e.EventName, e => e.RpcMethodName);
 
         private string EventNameTransform(string name)
         {
+            if (_mappedEventNames.TryGetValue(name, out var mapped))
+            {
+                return mapped;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"Event '{name}' is not mapped to an explicit RPC method name.");
             var camelCased = CommonMethodNameTransforms.CamelCase(name);
             return camelCased;
         }

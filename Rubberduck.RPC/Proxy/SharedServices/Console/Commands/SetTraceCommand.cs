@@ -18,14 +18,12 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Commands
 
         public override string Description => "Sets the trace verbosity level of this server.";
 
-        protected override async Task ExecuteInternalAsync(SetTraceParams parameter, CancellationToken token)
+        protected override async Task ExecuteInternalAsync(SetTraceParams parameter)
         {
             if (!Enum.TryParse<Constants.Console.VerbosityOptions.AsStringEnum>(parameter.Value, ignoreCase: true, out var newValue))
             {
                 throw new ArgumentOutOfRangeException(nameof(parameter.Value));
             }
-
-            token.ThrowIfCancellationRequested();
 
             var config = GetConfiguration();
             config.Trace = newValue;

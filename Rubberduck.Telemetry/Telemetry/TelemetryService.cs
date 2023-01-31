@@ -1,7 +1,5 @@
-﻿using Rubberduck.RPC.Proxy.SharedServices.Abstract;
-using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
-using Rubberduck.RPC.Proxy.SharedServices.Telemetry.Abstract;
-using Rubberduck.RPC.Telemetry;
+﻿using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
+using Rubberduck.RPC.Proxy.SharedServices.Telemetry.Model;
 using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Telemetry
@@ -20,7 +18,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Telemetry
         /// </summary>
         public bool IsEnabled => Configuration.IsEnabled;
 
-        TelemetryOptions IConfigurableProxy<TelemetryOptions>.Configuration { get; }
+        public ITelemetryClientService ClientProxy { get; }
 
         public bool Transmit()
         {

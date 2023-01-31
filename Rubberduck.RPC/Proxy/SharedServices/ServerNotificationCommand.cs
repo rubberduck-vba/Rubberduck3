@@ -22,15 +22,15 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         {
         }
 
-        public Action<TParameter, CancellationToken> ExecuteAction => (parameter, token) => ExecuteAsync(parameter, token).ConfigureAwait(false);
+        public Func<TParameter, Task> ExecuteAction => parameter => ExecuteAsync(parameter);
 
-        public Func<TParameter, CancellationToken, bool> CanExecuteFunc => (parameter, token) => CanExecuteAsync(parameter, token).ConfigureAwait(false).GetAwaiter().GetResult();
+        public Func<TParameter, Task<bool>> CanExecuteFunc => parameter => CanExecuteAsync(parameter);
 
         /// <summary>
         /// Writes an error-level exception to the console.
         /// </summary>
 
-        public virtual async Task<bool> CanExecuteAsync(TParameter parameter, CancellationToken token)
+        public virtual async Task<bool> CanExecuteAsync(TParameter parameter)
         {
             var state = GetCurrentServerStateInfo().Status;
             var result = ExpectedServerStates.Contains(state);
@@ -44,16 +44,15 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         /// <remarks>
         /// Server state is valid and exceptions are handled.
         /// </remarks>
-        protected abstract Task ExecuteInternalAsync(TParameter parameter, CancellationToken token);
+        protected abstract Task ExecuteInternalAsync(TParameter parameter);
 
-        public async Task ExecuteAsync(TParameter parameter, CancellationToken token)
+        public async Task ExecuteAsync(TParameter parameter)
         {
             try
             {
                 ThrowOnUnexpectedServerState();
-                token.ThrowIfCancellationRequested();
 
-                await ExecuteInternalAsync(parameter, token);
+                await ExecuteInternalAsync(parameter);
             }
             catch (ApplicationException exception)
             {
@@ -88,13 +87,13 @@ namespace Rubberduck.RPC.Proxy.SharedServices
             }
         }
 
-        public async Task<bool> TryExecuteAsync(TParameter parameter, CancellationToken token)
+        public async Task<bool> TryExecuteAsync(TParameter parameter)
         {
             try
             {
-                if (await CanExecuteAsync(parameter, token))
+                if (await CanExecuteAsync(parameter))
                 {
-                    await ExecuteAsync(parameter, token);
+                    await ExecuteAsync(parameter);
                     return true;
                 }
             }
@@ -119,11 +118,11 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         {
         }
 
-        public Action<CancellationToken> ExecuteAction => token => ExecuteAsync(token).ConfigureAwait(false);
+        public Func<Task> ExecuteAction => () => ExecuteAsync();
 
-        public Func<CancellationToken, bool> CanExecuteFunc => token => CanExecuteAsync(token).ConfigureAwait(false).GetAwaiter().GetResult();
+        public Func<Task<bool>> CanExecuteFunc => () => CanExecuteAsync();
 
-        public virtual async Task<bool> CanExecuteAsync(CancellationToken token)
+        public virtual async Task<bool> CanExecuteAsync()
         {
             var state = GetCurrentServerStateInfo().Status;
             var result = ExpectedServerStates.Contains(state);
@@ -137,16 +136,14 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         /// <remarks>
         /// Server state is valid and exceptions are handled.
         /// </remarks>
-        protected abstract Task ExecuteInternalAsync(CancellationToken token);
+        protected abstract Task ExecuteInternalAsync();
 
-        public async Task ExecuteAsync(CancellationToken token)
+        public async Task ExecuteAsync()
         {
             try
             {
                 ThrowOnUnexpectedServerState();
-                token.ThrowIfCancellationRequested();
-
-                await ExecuteInternalAsync(token);
+                await ExecuteInternalAsync();
             }
             catch (ApplicationException exception)
             {
@@ -181,13 +178,13 @@ namespace Rubberduck.RPC.Proxy.SharedServices
             }
         }
 
-        public async Task<bool> TryExecuteAsync(CancellationToken token)
+        public async Task<bool> TryExecuteAsync()
         {
             try
             {
-                if (await CanExecuteAsync(token))
+                if (await CanExecuteAsync())
                 {
-                    await ExecuteAsync(token);
+                    await ExecuteAsync();
                     return true;
                 }
             }

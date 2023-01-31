@@ -18,7 +18,7 @@ namespace Rubberduck.Server.LocalDb.Services
     /// <remarks>
     /// Proxies should be stateless: the instance may be request-scoped.
     /// </remarks>
-    internal class LocalDbServerService : ServerService<ServerCapabilities, ILocalDbServerProxyClient>
+    internal class LocalDbServerService : ServerService<ServerCapabilities>
     {
         public LocalDbServerService(CancellationToken serverToken,
             IServerLogger logger,
@@ -26,21 +26,21 @@ namespace Rubberduck.Server.LocalDb.Services
             GetServerOptions<ServerCapabilities> configuration, 
             GetServerStateInfo getServerState,
             IServerConsoleService<ServerConsoleOptions> consoleService)
-            : base(logger, clientProxy, configuration, getServerState)
+            : base(clientProxy, logger, configuration, getServerState)
         {
         }
 
-        protected override void RegisterNotifications(ILocalDbServerProxyClient proxy)
+        protected override void RegisterNotifications(IServerProxyClient proxy)
         {
-            proxy.ClientInitialized += HandleClientInitializedNotification;
-            proxy.ClientShutdown += HandleShutdownClientNotification;
-            proxy.RequestExit += HandleExitClientNotification;
+            //proxy.ClientInitialized += HandleClientInitializedNotification;
+            //proxy.ClientShutdown += HandleShutdownClientNotification;
+            //proxy.RequestExit += HandleExitClientNotification;
         }
 
-        protected override void DeregisterNotifications(ILocalDbServerProxyClient proxy)
+        protected override void DeregisterNotifications(IServerProxyClient proxy)
         {
-            proxy.ClientInitialized -= HandleClientInitializedNotification;
-            proxy.ClientShutdown -= HandleShutdownClientNotification;
+            //proxy.ClientInitialized -= HandleClientInitializedNotification;
+            //proxy.ClientShutdown -= HandleShutdownClientNotification;
             proxy.RequestExit -= HandleExitClientNotification;
         }
 
@@ -81,7 +81,7 @@ namespace Rubberduck.Server.LocalDb.Services
 
         protected async void HandleSetTraceClientNotification(object sender, SetTraceParams e)
         {
-            if (await ServerConsole.Commands.SetTraceCommand.TryExecuteAsync(e, CancellationToken.None))
+            if (await ServerConsole.Commands.SetTraceCommand.TryExecuteAsync(e))
             {
                 Logger.OnInfo("Trace configuration set.", $"Value: {e.Value}");
             }
@@ -106,7 +106,7 @@ namespace Rubberduck.Server.LocalDb.Services
         {
             OnWillExit();
             DeregisterNotifications(ClientProxy);
-            await Commands.ExitCommand.TryExecuteAsync(CancellationToken.None); // not cancellable at this point
+            await Commands.ExitCommand.TryExecuteAsync();
         }
     }
 }
