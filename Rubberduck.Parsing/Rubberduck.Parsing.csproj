@@ -52,7 +52,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Abstractions, Version=19.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IO.Abstractions.19.1.5\lib\net461\System.IO.Abstractions.dll</HintPath>
+      <HintPath>..\packages\System.IO.Abstractions.19.1.14\lib\net461\System.IO.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
@@ -63,10 +63,10 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="TestableIO.System.IO.Abstractions, Version=19.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
-      <HintPath>..\packages\TestableIO.System.IO.Abstractions.19.1.5\lib\net461\TestableIO.System.IO.Abstractions.dll</HintPath>
+      <HintPath>..\packages\TestableIO.System.IO.Abstractions.19.1.14\lib\net461\TestableIO.System.IO.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="TestableIO.System.IO.Abstractions.Wrappers, Version=19.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
-      <HintPath>..\packages\TestableIO.System.IO.Abstractions.Wrappers.19.1.5\lib\net461\TestableIO.System.IO.Abstractions.Wrappers.dll</HintPath>
+      <HintPath>..\packages\TestableIO.System.IO.Abstractions.Wrappers.19.1.14\lib\net461\TestableIO.System.IO.Abstractions.Wrappers.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

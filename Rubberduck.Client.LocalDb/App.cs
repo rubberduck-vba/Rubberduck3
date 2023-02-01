@@ -17,7 +17,7 @@ namespace Rubberduck.Client.LocalDb
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            _server.StartAsync(CancellationToken.None);
+            _server.RunAsync(CancellationToken.None);
         }
     }
 }

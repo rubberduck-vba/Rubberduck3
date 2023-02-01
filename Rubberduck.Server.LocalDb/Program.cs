@@ -1,4 +1,7 @@
 ﻿using CommandLine;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Rubberduck.RPC;
 using Rubberduck.RPC.Platform;
 using System;
 using System.Linq;
@@ -13,6 +16,7 @@ namespace Rubberduck.Server.LocalDb
 {
     internal static class Program
     {
+        private static StartupOptions _startupOptions;
         private static TimeSpan _exclusiveAccessTimeout = TimeSpan.FromSeconds(5);
 
         /// <summary>
@@ -79,7 +83,8 @@ namespace Rubberduck.Server.LocalDb
                     Console.WriteLine("Startup checks completed. Starting server application...");
                     try
                     {
-                        await StartAsync(startupArgs.Value);
+                        _startupOptions = startupArgs.Value;
+                        await StartAsync();
                     }
                     catch (OperationCanceledException)
                     {
@@ -113,12 +118,23 @@ namespace Rubberduck.Server.LocalDb
             return (int)code;
         }
 
-        private static async Task StartAsync(StartupOptions startupOptions)
+        private static async Task StartAsync()
         {
-            /* TODO resolve app from IoC container here? */
-            var config = LocalDbServerCapabilities.GetDefaultConfiguration(startupOptions);
-            var app = new App(config);
-            await app.StartAsync();
+            var tokenSource = new CancellationTokenSource();
+
+            var builder = Host.CreateDefaultBuilder()
+                .UseConsoleLifetime()
+                .ConfigureServices(ConfigureServices);
+
+            await builder.RunConsoleAsync(tokenSource.Token);
+        }
+
+        private static void ConfigureServices(IServiceCollection services)
+        {
+            var config = LocalDbServerConfiguration.Default(_startupOptions);
+
+            services.AddHostedService<ServerApp>()
+                    .AddRubberduckServerServices(config);
         }
     }
 }

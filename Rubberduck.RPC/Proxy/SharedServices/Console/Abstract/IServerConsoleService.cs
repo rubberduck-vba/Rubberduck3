@@ -41,7 +41,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
         void Log(Exception exception, ServerLogLevel level, string message = null, string verbose = null);
 
         /// <summary>
-        /// Writes an message log at the specified level.
+        /// Writes a message log at the specified level.
         /// </summary>
         /// <param name="level">The log level for this message.</param>
         /// <param name="message">The message to log.</param>

@@ -5,14 +5,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using StreamJsonRpc;
 using Rubberduck.RPC.Platform.Model;
-using Rubberduck.RPC.Proxy.SharedServices;
-using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
-using System.Linq;
-using System.Reflection;
-using Rubberduck.RPC.Platform.Metadata;
 
 namespace Rubberduck.RPC.Platform
 {
+    /// <summary>
+    /// A marker interface for a type to register as a JsonRpc target.
+    /// </summary>
+    /// <remarks>
+    /// Might turn into an attribute
+    /// </remarks>
+    public interface IJsonRpcTarget { }
+
     /// <summary>
     /// Represents a JsonRPC server.
     /// </summary>
@@ -26,7 +29,7 @@ namespace Rubberduck.RPC.Platform
         /// <summary>
         /// Starts the RPC server.
         /// </summary>
-        Task StartAsync(CancellationToken token);
+        Task RunAsync(CancellationToken token);
     }
 
     /// <summary>
@@ -41,34 +44,21 @@ namespace Rubberduck.RPC.Platform
         where TOptions : class, new()
     {
         private readonly IRpcStreamFactory<TStream> _rpcStreamFactory;
-        private readonly IServerServiceFactory<TServerService, TOptions> _serviceFactory;
+        private readonly IEnumerable<IJsonRpcTarget> _proxies;
 
-        private readonly GetServerStateInfo _getServerState;
-        private readonly BasicServerInfo _info;
-        private IEnumerable<Type> _proxyTypes;
-
-        protected JsonRpcServer(BasicServerInfo info, GetServerStateInfo getServerState,
-            IRpcStreamFactory<TStream> rpcStreamFactory, 
-            IServerServiceFactory<TServerService, TOptions> serviceFactory)
+        protected JsonRpcServer(IRpcStreamFactory<TStream> rpcStreamFactory, IEnumerable<IJsonRpcTarget> proxies)
         {
-            _info = info;
-            _getServerState = getServerState;
-            _rpcStreamFactory = rpcStreamFactory;
-            _serviceFactory = serviceFactory;
-            _proxyTypes = GetProxyTypes();
+            _rpcStreamFactory = rpcStreamFactory ?? throw new ArgumentNullException(nameof(rpcStreamFactory));
+            _proxies = proxies ?? throw new ArgumentNullException(nameof(proxies));
         }
 
-        public ServerState Info => _getServerState.Invoke();
+        public ServerState Info => null; // _getServerState.Invoke();
 
         /// <summary>
         /// Wait for a client to connect.
         /// </summary>
         protected abstract Task WaitForConnectionAsync(TStream stream, CancellationToken token);
 
-        /// <summary>
-        /// Gets all proxy types to register for this server.
-        /// </summary>
-        protected abstract IEnumerable<Type> GetProxyTypes();
 
         /// <summary>
         /// Starts the server.
@@ -76,36 +66,54 @@ namespace Rubberduck.RPC.Platform
         /// <remarks>
         /// Creates a new RPC stream for each new client connection, until cancellation is requested on the token.
         /// </remarks>
-        public async Task StartAsync(CancellationToken serverToken)
+        public async Task RunAsync(CancellationToken serverToken)
         {
-            Console.WriteLine("Server started. Awaiting client connection...");
+            Console.WriteLine("Registered RPC server targets:");
+            foreach (var proxy in _proxies)
+            {
+                Console.WriteLine($" * {proxy.GetType().Name}");
+            }
 
+            Console.WriteLine("Server started. Awaiting client connection...");
+            
             while (!serverToken.IsCancellationRequested)
             {
+                // our stream only buffers a single message, so we need a new one every time:
                 var stream = _rpcStreamFactory.CreateNew();
                 await WaitForConnectionAsync(stream, serverToken);
-                _ = SendResponseAsync(stream, serverToken);
+
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
+                // we specifically *do NOT want* to wait for the response here.
+                // awaiting this call would block the thread and prevent handling other incoming requests while a response is cooking.
+
+                /*await*/ SendResponseAsync(stream, serverToken); 
+
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
+
+            Console.WriteLine("Server has stopped.");
             serverToken.ThrowIfCancellationRequested();
         }
 
-        private async Task SendResponseAsync(Stream stream, CancellationToken token)
+        private static readonly JsonRpcTargetOptions _targetOptions = new JsonRpcTargetOptions
+        {
+            MethodNameTransform = MethodNameTransform,
+            EventNameTransform = EventNameTransform,
+            AllowNonPublicInvocation = false,
+            ClientRequiresNamedArguments = true,
+            DisposeOnDisconnect = true,
+            NotifyClientOfEvents = true,
+            UseSingleObjectParameterDeserialization = true,
+        };
+
+    private async Task SendResponseAsync(Stream stream, CancellationToken token)
         {
             using (var rpc = new JsonRpc(stream))
             {
-                var targetOptions = new JsonRpcTargetOptions
+                foreach (var proxy in _proxies)
                 {
-                    EventNameTransform = EventNameTransform,
-                    AllowNonPublicInvocation = false,
-                    ClientRequiresNamedArguments = true,
-                    DisposeOnDisconnect = true,
-                    NotifyClientOfEvents = true,
-                    UseSingleObjectParameterDeserialization = true,
-                };
-
-                foreach (var type in _proxyTypes)
-                {
-                    rpc.AddLocalRpcTarget(type, targetOptions);
+                    rpc.AddLocalRpcTarget(proxy, _targetOptions);
                 }
 
                 token.ThrowIfCancellationRequested();
@@ -115,14 +123,21 @@ namespace Rubberduck.RPC.Platform
             }
         }
 
-        private static readonly IDictionary<string, string> _mappedEventNames = (from e in typeof(IJsonRpcServer).Assembly.GetTypes().SelectMany(t => t.GetEvents())
-                                                                                 let lsp = e.GetCustomAttribute<RubberduckSPAttribute>(inherit:true)
-                                                                                 where lsp != null
-                                                                                 select (EventName: e.Name, RpcMethodName: lsp.MethodName)).ToDictionary(e => e.EventName, e => e.RpcMethodName);
-
-        private string EventNameTransform(string name)
+        private static string EventNameTransform(string name)
         {
-            if (_mappedEventNames.TryGetValue(name, out var mapped))
+            if (RpcMethodNameMappings.IsMappedEvent(name, out var mapped))
+            {
+                return mapped;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"Event '{name}' is not mapped to an explicit RPC method name.");
+            var camelCased = CommonMethodNameTransforms.CamelCase(name);
+            return camelCased;
+        }
+
+        private static string MethodNameTransform(string name)
+        {
+            if (RpcMethodNameMappings.IsMappedEvent(name, out var mapped))
             {
                 return mapped;
             }

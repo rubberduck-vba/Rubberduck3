@@ -30,18 +30,18 @@ namespace Rubberduck.Server.LocalDb.Services
         {
         }
 
-        protected override void RegisterNotifications(IServerProxyClient proxy)
+        protected override void RegisterNotifications(IServerProxyClient client)
         {
-            //proxy.ClientInitialized += HandleClientInitializedNotification;
-            //proxy.ClientShutdown += HandleShutdownClientNotification;
-            //proxy.RequestExit += HandleExitClientNotification;
+            //client.ClientInitialized += HandleClientInitializedNotification;
+            //client.ClientShutdown += HandleShutdownClientNotification;
+            client.RequestExit += HandleExitClientNotification;
         }
 
-        protected override void DeregisterNotifications(IServerProxyClient proxy)
+        protected override void DeregisterNotifications(IServerProxyClient client)
         {
-            //proxy.ClientInitialized -= HandleClientInitializedNotification;
-            //proxy.ClientShutdown -= HandleShutdownClientNotification;
-            proxy.RequestExit -= HandleExitClientNotification;
+            //client.ClientInitialized -= HandleClientInitializedNotification;
+            //client.ClientShutdown -= HandleShutdownClientNotification;
+            client.RequestExit -= HandleExitClientNotification;
         }
 
         public override ServerCommands<ServerCapabilities> Commands { get; }

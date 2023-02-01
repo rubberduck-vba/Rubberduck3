@@ -1,17 +1,16 @@
 ﻿using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Proxy.SharedServices.Console;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
-using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using System;
 
 namespace Rubberduck.Server.LocalDb
 {
-    internal static class LocalDbServerCapabilities
+    internal static class LocalDbServerConfiguration
     {
         /// <summary>
         /// Gets the default configuration for this server, taking the specified <see cref="StartupOptions"/> into account.
         /// </summary>
-        public static ServerCapabilities GetDefaultConfiguration(StartupOptions startupOptions)
+        public static ServerCapabilities Default(StartupOptions startupOptions)
         {
             return new ServerCapabilities
             {
@@ -48,13 +47,5 @@ namespace Rubberduck.Server.LocalDb
                 /* TODO */
             };
         }
-    }
-
-    /// <summary>
-    /// The localdb-specific configurations.
-    /// </summary>
-    public class ServerCapabilities : SharedServerCapabilities
-    {
-        /* TODO */
     }
 }
