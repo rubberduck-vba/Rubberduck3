@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Server.LocalDb.Internal
 {
-    internal interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork : IDisposable
     {
         Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string sql, object parameters);
         Task<TEntity> QuerySingleOrDefaultAsync<TEntity>(string sql, object parameters);

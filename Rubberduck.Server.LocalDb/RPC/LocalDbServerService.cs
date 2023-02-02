@@ -1,11 +1,8 @@
 ﻿using Rubberduck.RPC;
 using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Proxy.LocalDbServer;
 using Rubberduck.RPC.Proxy.SharedServices;
 using Rubberduck.RPC.Proxy.SharedServices.Abstract;
-using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
-using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using System;
 using System.Threading;
@@ -20,13 +17,9 @@ namespace Rubberduck.Server.LocalDb.Services
     /// </remarks>
     internal class LocalDbServerService : ServerService<ServerCapabilities>
     {
-        public LocalDbServerService(CancellationToken serverToken,
-            IServerLogger logger,
-            ILocalDbServerProxyClient clientProxy, 
-            GetServerOptions<ServerCapabilities> configuration, 
-            GetServerStateInfo getServerState,
-            IServerConsoleService<ServerConsoleOptions> consoleService)
-            : base(clientProxy, logger, configuration, getServerState)
+        public LocalDbServerService(IServerLogger logger,
+            IServerStateService<ServerCapabilities> serverStateService)
+            : base(null, logger, serverStateService)
         {
         }
 
@@ -34,14 +27,14 @@ namespace Rubberduck.Server.LocalDb.Services
         {
             //client.ClientInitialized += HandleClientInitializedNotification;
             //client.ClientShutdown += HandleShutdownClientNotification;
-            client.RequestExit += HandleExitClientNotification;
+            //client.RequestExit += HandleExitClientNotification;
         }
 
         protected override void DeregisterNotifications(IServerProxyClient client)
         {
             //client.ClientInitialized -= HandleClientInitializedNotification;
             //client.ClientShutdown -= HandleShutdownClientNotification;
-            client.RequestExit -= HandleExitClientNotification;
+            //client.RequestExit -= HandleExitClientNotification;
         }
 
         public override ServerCommands<ServerCapabilities> Commands { get; }
@@ -70,7 +63,7 @@ namespace Rubberduck.Server.LocalDb.Services
         {
             try
             {
-                ServerState.SetInitialized(e.ProcessId);
+                ServerStateService.Info.SetInitialized(e.ProcessId);
                 Logger.OnInfo("Client initialized.", $"Process ID: {e.ProcessId}.");
             }
             catch (Exception exception)

@@ -91,6 +91,8 @@ namespace Rubberduck.RPC.Platform.Model
         /// Working set memory, in bytes.
         /// </summary>
         long WorkingSet { get; }
+
+        long GC { get; }
     }
 
     /// <summary>
@@ -115,6 +117,7 @@ namespace Rubberduck.RPC.Platform.Model
             Status = info.Status;
 
             Clients = info.Clients;
+            GC = info.GC;
         }
 
         public ServerState(IServerInfo info)
@@ -207,6 +210,9 @@ namespace Rubberduck.RPC.Platform.Model
 
         [JsonPropertyName("state")]
         public ServerStatus Status { get; set; }
+
+        [JsonPropertyName("gc")]
+        public long GC { get; set; }
 
         public int ClientsCount => Clients.Length;
     }

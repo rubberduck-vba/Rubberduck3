@@ -10,7 +10,7 @@ using System.Text.Json.Serialization;
 
 namespace Rubberduck.RPC.Proxy.LspServer.Configuration.Capabilities
 {
-    public class ServerCapabilities
+    public class ServerCapabilities : SharedServerCapabilities
     {
         [JsonPropertyName("positionEncoding"), LspCompliant]
         public string PositionEncodingKind { get; set; } = Constants.PositionEncodingKind.UTF16;

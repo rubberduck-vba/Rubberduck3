@@ -1,4 +1,5 @@
 ﻿using System;
+using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Platform.Metadata;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
 
@@ -7,7 +8,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
     /// <summary>
     /// An interface that specifies server to client RPC communications.
     /// </summary>
-    public interface IServerConsoleProxy
+    public interface IServerConsoleProxy : IJsonRpcTarget
     {
         /// <summary>
         /// A notification sent from the server to the client to log the trace of the server's execution.

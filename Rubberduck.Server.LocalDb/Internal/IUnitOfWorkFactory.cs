@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.Server.LocalDb.Internal
 {
-    internal interface IUnitOfWorkFactory
+    public interface IUnitOfWorkFactory
     {
         IUnitOfWork CreateNew();
     }

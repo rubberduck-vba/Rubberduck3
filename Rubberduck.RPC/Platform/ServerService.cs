@@ -8,6 +8,7 @@ using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Model;
 using Rubberduck.RPC.Proxy.SharedServices.Telemetry;
 
@@ -21,23 +22,20 @@ namespace Rubberduck.RPC.Platform
     /// </remarks>
     /// <typeparam name="TOptions">The class type that defines server configuration options.</typeparam>
     public abstract class ServerService<TOptions> : ServerProxyService<TOptions, ServerCommands<TOptions>>, IServerProxyService<TOptions, IServerProxyClient>
-            where TOptions : class, new()
+            where TOptions : SharedServerCapabilities, new()
     {
         /// <summary>
         /// Creates a server service to handle a RPC request or notification on the server side.
         /// </summary>
-        protected ServerService(IServerProxyClient clientProxy, IServerLogger logger, GetServerOptions<TOptions> getConfiguration, GetServerStateInfo getServerState)
-            : base(logger, getConfiguration, getServerState)
+        protected ServerService(IServerProxyClient clientProxy, IServerLogger logger, IServerStateService<TOptions> serverStateService)
+            : base(logger, serverStateService)
         {
             RegisterNotifications(clientProxy);
         }
 
-        public ServerState Info()
-        {
-            return ServerState;
-        }
+        public ServerState Info() => ServerStateService.Info;
 
-        public IServerConsoleService<ServerConsoleOptions> ServerConsole { get; }
+        public IServerConsoleService<SharedServerCapabilities> ServerConsole { get; }
 
         public ITelemetryClientService Telemetry { get; }
 

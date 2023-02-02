@@ -1,5 +1,6 @@
 ﻿using Rubberduck.RPC.Proxy.SharedServices.Console.Commands;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using System;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
@@ -9,7 +10,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
     /// </summary>
     /// <typeparam name="TOptions">The class type for console settings.</typeparam>
     public interface IServerConsoleService<TOptions> : IServerConsoleProxy
-        where TOptions : ServerConsoleOptions
+        where TOptions : SharedServerCapabilities
     {
         /// <summary>
         /// Configuration options for the server console.

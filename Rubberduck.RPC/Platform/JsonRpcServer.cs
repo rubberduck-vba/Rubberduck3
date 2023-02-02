@@ -5,60 +5,38 @@ using System.Threading;
 using System.Threading.Tasks;
 using StreamJsonRpc;
 using Rubberduck.RPC.Platform.Model;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 
 namespace Rubberduck.RPC.Platform
 {
-    /// <summary>
-    /// A marker interface for a type to register as a JsonRpc target.
-    /// </summary>
-    /// <remarks>
-    /// Might turn into an attribute
-    /// </remarks>
-    public interface IJsonRpcTarget { }
-
-    /// <summary>
-    /// Represents a JsonRPC server.
-    /// </summary>
-    public interface IJsonRpcServer
-    {
-        /// <summary>
-        /// Gets information about this server instance.
-        /// </summary>
-        ServerState Info { get; }
-
-        /// <summary>
-        /// Starts the RPC server.
-        /// </summary>
-        Task RunAsync(CancellationToken token);
-    }
-
     /// <summary>
     /// Represents a server process.
     /// </summary>
     /// <remarks>
     /// Implementation holds the server state for the lifetime of the host process.
     /// </remarks>
-    public abstract class JsonRpcServer<TStream, TServerService, TOptions> : IJsonRpcServer
+    public abstract class JsonRpcServer<TStream, TServerService, TOptions> : BackgroundService, IJsonRpcServer
         where TStream : Stream
         where TServerService : ServerService<TOptions>
-        where TOptions : class, new()
+        where TOptions : SharedServerCapabilities, new()
     {
         private readonly IRpcStreamFactory<TStream> _rpcStreamFactory;
         private readonly IEnumerable<IJsonRpcTarget> _proxies;
 
-        protected JsonRpcServer(IRpcStreamFactory<TStream> rpcStreamFactory, IEnumerable<IJsonRpcTarget> proxies)
+        protected JsonRpcServer(IServiceProvider serviceProvider)
         {
-            _rpcStreamFactory = rpcStreamFactory ?? throw new ArgumentNullException(nameof(rpcStreamFactory));
-            _proxies = proxies ?? throw new ArgumentNullException(nameof(proxies));
+            _rpcStreamFactory = serviceProvider.GetService<IRpcStreamFactory<TStream>>();
+            _proxies = serviceProvider.GetService<IEnumerable<IJsonRpcTarget>>();
         }
 
-        public ServerState Info => null; // _getServerState.Invoke();
+        public abstract ServerState Info { get; }
 
         /// <summary>
         /// Wait for a client to connect.
         /// </summary>
         protected abstract Task WaitForConnectionAsync(TStream stream, CancellationToken token);
-
 
         /// <summary>
         /// Starts the server.
@@ -66,7 +44,7 @@ namespace Rubberduck.RPC.Platform
         /// <remarks>
         /// Creates a new RPC stream for each new client connection, until cancellation is requested on the token.
         /// </remarks>
-        public async Task RunAsync(CancellationToken serverToken)
+        protected override async Task ExecuteAsync(CancellationToken serverToken)
         {
             Console.WriteLine("Registered RPC server targets:");
             foreach (var proxy in _proxies)
@@ -75,21 +53,22 @@ namespace Rubberduck.RPC.Platform
             }
 
             Console.WriteLine("Server started. Awaiting client connection...");
-            
             while (!serverToken.IsCancellationRequested)
             {
                 // our stream only buffers a single message, so we need a new one every time:
                 var stream = _rpcStreamFactory.CreateNew();
+
                 await WaitForConnectionAsync(stream, serverToken);
 
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                // Because this call is not awaited, execution of the current method continues before the call is completed
+#pragma warning disable CS4014
 
-                // we specifically *do NOT want* to wait for the response here.
+                // we specifically *DO NOT* want to *wait* for the request processing (so, the response) here.
                 // awaiting this call would block the thread and prevent handling other incoming requests while a response is cooking.
 
-                /*await*/ SendResponseAsync(stream, serverToken); 
+                SendResponseAsync(stream, serverToken);
 
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+#pragma warning restore CS4014
             }
 
             Console.WriteLine("Server has stopped.");
@@ -107,7 +86,7 @@ namespace Rubberduck.RPC.Platform
             UseSingleObjectParameterDeserialization = true,
         };
 
-    private async Task SendResponseAsync(Stream stream, CancellationToken token)
+        private async Task SendResponseAsync(Stream stream, CancellationToken token)
         {
             using (var rpc = new JsonRpc(stream))
             {
@@ -130,8 +109,9 @@ namespace Rubberduck.RPC.Platform
                 return mapped;
             }
 
-            System.Diagnostics.Debug.WriteLine($"Event '{name}' is not mapped to an explicit RPC method name.");
             var camelCased = CommonMethodNameTransforms.CamelCase(name);
+            System.Diagnostics.Debug.WriteLine($"Event '{name}' is not mapped to an explicit RPC method name: method is mapped to '{camelCased}'.");
+
             return camelCased;
         }
 
@@ -142,8 +122,9 @@ namespace Rubberduck.RPC.Platform
                 return mapped;
             }
 
-            System.Diagnostics.Debug.WriteLine($"Event '{name}' is not mapped to an explicit RPC method name.");
             var camelCased = CommonMethodNameTransforms.CamelCase(name);
+            System.Diagnostics.Debug.WriteLine($"Method '{name}' is not mapped to an explicit RPC method name: method is mapped to '{camelCased}'.");
+
             return camelCased;
         }
     }

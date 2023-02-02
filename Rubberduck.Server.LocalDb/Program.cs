@@ -1,7 +1,6 @@
 ﻿using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Rubberduck.RPC;
 using Rubberduck.RPC.Platform;
 using System;
 using System.Linq;

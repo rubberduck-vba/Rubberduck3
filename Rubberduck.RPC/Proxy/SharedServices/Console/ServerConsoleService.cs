@@ -6,27 +6,20 @@ using Rubberduck.RPC.Proxy.SharedServices.Console.Commands;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Abstract;
-using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using Rubberduck.RPC.Proxy.SharedServices.Abstract;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
 {
     public class ServerConsoleService<TOptions> : ServerProxyService<TOptions, ServerConsoleCommands>, IServerConsoleService<TOptions>
-        where TOptions : ServerConsoleOptions, new()
+        where TOptions : SharedServerCapabilities, new()
     {
         private int _nextMessageId = 0;
 
-        public ServerConsoleService(TOptions configuration, GetServerStateInfo getServerState)
-            : base(null, () => configuration, getServerState)
+        public ServerConsoleService(IServerStateService<TOptions> serverStateService)
+            : base(null, serverStateService)
         {
-            GetServerOptions<TOptions> getConfiguration = () => Configuration;
             Logger = new ServerLogger(LogError, LogMessage);
-
-            var setTraceCommand = new SetTraceCommand(Logger, getConfiguration, getServerState);
-            var setEnabledCommand = new SetEnabledCommand(Logger, getConfiguration, getServerState);
-            var getOptionsCommand = new GetConsoleOptionsCommand(Logger, getConfiguration, getServerState);
-
-            Commands = new ServerConsoleCommands(setTraceCommand, setEnabledCommand, getOptionsCommand);
         }
 
         public override ServerConsoleCommands Commands { get; }
@@ -37,14 +30,14 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
 
         public event EventHandler<ConsoleMessage> Message;
         protected void OnMessage(int id, ServerLogLevel level, string message, string verbose, Exception exception = null)
-            => Message?.Invoke(this, new ConsoleMessage(id, DateTime.Now, level, message, Configuration.IsVerbose ? verbose : null, exception));
+            => Message?.Invoke(this, new ConsoleMessage(id, DateTime.Now, level, message, Configuration.ConsoleOptions.IsVerbose ? verbose : null, exception));
 
         public event EventHandler<LogTraceParams> LogTrace;
         protected void OnLogTrace(LogTraceParams parameters) => LogTrace?.Invoke(this, parameters);
 
         public void Log(ServerLogLevel level, string message, string verbose = null)
         {
-            if (!Configuration.CanLog(level))
+            if (!Configuration.ConsoleOptions.CanLog(level))
             {
                 return;
             }
@@ -55,11 +48,11 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
             }
 
             var id = Interlocked.Increment(ref _nextMessageId);
-            var timestamp = DateTime.Now.ToString(Configuration.ConsoleOutputFormatting.TimestampFormatString);
+            var timestamp = DateTime.Now.ToString(Configuration.ConsoleOptions.ConsoleOutputFormatting.TimestampFormatString);
 
-            var separator = Configuration.ConsoleOutputFormatting.MessagePartSeparator;
+            var separator = Configuration.ConsoleOptions.ConsoleOutputFormatting.MessagePartSeparator;
 
-            var willNotify = level != ServerLogLevel.Off && level >= Configuration.LogLevel;
+            var willNotify = level != ServerLogLevel.Off && level >= Configuration.ConsoleOptions.LogLevel;
             var builder = willNotify ? new StringBuilder() : null;
 
             ConsoleOutput(builder, level, id.ToString(), LogOutputPart.MessageId);
@@ -74,7 +67,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
             ConsoleOutput(builder, level, message, LogOutputPart.Message);
             ConsoleOutput(builder, level, separator);
 
-            if (Configuration.Trace == Constants.Console.VerbosityOptions.AsStringEnum.Verbose && !string.IsNullOrWhiteSpace(verbose))
+            if (Configuration.ConsoleOptions.Trace == Constants.Console.VerbosityOptions.AsStringEnum.Verbose && !string.IsNullOrWhiteSpace(verbose))
             {
                 ConsoleOutput(builder, level, verbose, LogOutputPart.Verbose);
             }
@@ -126,7 +119,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
 
         private void SetConsoleColors(LogOutputPart? part = null, ServerLogLevel? level = null)
         {
-            var provider = Configuration.ConsoleOutputFormatting;
+            var provider = Configuration.ConsoleOptions.ConsoleOutputFormatting;
             (Func<ConsoleColorOptions> foreground, Func<ConsoleColorOptions> background) config =
                 (() => provider.FontFormatting.DefaultFont.ForegroundColorProvider, () => provider.BackgroundFormatting.DefaultFormatProvider);
 

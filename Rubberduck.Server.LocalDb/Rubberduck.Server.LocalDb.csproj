@@ -276,10 +276,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="RPC\ServerServiceFactory.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="StartupOptions.cs" />
-    <Compile Include="Storage\DbConnectionProvider.cs" />
+    <Compile Include="Storage\SqliteDbConnectionProvider.cs" />
     <Compile Include="Storage\Entities\AnnotationBase.cs" />
     <Compile Include="Storage\Entities\Declaration.cs" />
     <Compile Include="Storage\Entities\DeclarationAnnotation.cs" />

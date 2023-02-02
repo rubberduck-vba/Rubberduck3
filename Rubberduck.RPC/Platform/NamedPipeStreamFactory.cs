@@ -29,7 +29,7 @@ namespace Rubberduck.RPC.Platform
 
         public NamedPipeServerStream CreateNew()
         {
-            return new NamedPipeServerStream(_pipeName, PipeDirection.InOut, _maxConcurrentRequests, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+            return new NamedPipeServerStream(_pipeName, PipeDirection.InOut, _maxConcurrentRequests, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
         }
     }
 }

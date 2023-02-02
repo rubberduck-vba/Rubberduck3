@@ -6,17 +6,18 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Telemetry
 {
     public class TelemetryService : ITelemetryService
     {
-        public TelemetryService(TelemetryOptions configuration)
+        public TelemetryService(SharedServerCapabilities configuration)
         {
             Configuration = configuration;
         }
 
-        public TelemetryOptions Configuration { get; }
+        // TODO only expose the telemetry options here
+        public SharedServerCapabilities Configuration { get; }
 
         /// <summary>
         /// <c>true</c> if telemetry is enabled on this server.
         /// </summary>
-        public bool IsEnabled => Configuration.IsEnabled;
+        public bool IsEnabled => true; // Configuration.IsEnabled;
 
         public ITelemetryClientService ClientProxy { get; }
 

@@ -1,4 +1,7 @@
-﻿namespace Rubberduck.RPC.Proxy.SharedServices.Abstract
+﻿using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
+
+namespace Rubberduck.RPC.Proxy.SharedServices.Abstract
 {
     /// <summary>
     /// The base interface for a RSP/LSP server proxy.
@@ -10,7 +13,7 @@
     /// Proxy implementations should be stateless: the instance only lives for the duration of a single request.
     /// </remarks>
     public interface IConfigurableServerProxy<TOptions, TClientProxy> : IConfigurableProxy<TOptions>
-        where TOptions : class, new()
+        where TOptions : SharedServerCapabilities, new()
         where TClientProxy : class
     {
         /// <summary>
@@ -29,7 +32,7 @@
     /// <remarks>
     /// Proxy implementations should be stateless: the instance only lives for the duration of a single request.
     /// </remarks>
-    public interface IConfigurableProxy<TOptions>
+    public interface IConfigurableProxy<TOptions> : IJsonRpcTarget
         where TOptions : class, new()
     {
         /// <summary>

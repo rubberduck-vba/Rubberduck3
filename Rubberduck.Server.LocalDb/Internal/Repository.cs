@@ -6,7 +6,7 @@ using Dapper;
 
 namespace Rubberduck.Server.LocalDb.Internal
 {
-    internal abstract class Repository<TEntity> : View<TEntity>
+    public abstract class Repository<TEntity> : View<TEntity>
         where TEntity : DbEntity
     {
         protected Repository(IDbConnection connection) 

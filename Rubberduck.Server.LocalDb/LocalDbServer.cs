@@ -1,6 +1,8 @@
 ﻿using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Platform.Model;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using Rubberduck.Server.LocalDb.Services;
-using System.Collections.Generic;
+using System;
 using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,10 +17,13 @@ namespace Rubberduck.Server.LocalDb
     /// </remarks>
     internal class LocalDbServer : JsonRpcServer<NamedPipeServerStream, LocalDbServerService, ServerCapabilities>
     {
-        public LocalDbServer(IRpcStreamFactory<NamedPipeServerStream> rpcStreamFactory, IEnumerable<IJsonRpcTarget> proxies) 
-            : base(rpcStreamFactory, proxies)
+        public LocalDbServer(IServiceProvider serviceProvider) 
+            : base(serviceProvider) 
         {
         }
+
+        public GetServerStateInfo GetServerState { get; internal set; }
+        public override ServerState Info => GetServerState?.Invoke();
 
         protected override async Task WaitForConnectionAsync(NamedPipeServerStream stream, CancellationToken token) 
             => await stream.WaitForConnectionAsync(token);

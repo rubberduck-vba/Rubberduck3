@@ -1,45 +1,34 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO.Pipes;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Rubberduck.RPC;
-using Rubberduck.RPC.Platform.Model;
+using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Proxy.SharedServices;
+using Rubberduck.RPC.Proxy.SharedServices.Abstract;
 using Rubberduck.Server.LocalDb.Services;
 
 namespace Rubberduck.Server.LocalDb
 {
     internal class ServerApp : BackgroundService
     {
-        private readonly ServerCapabilities _configuration;
-
-        private readonly Process _hostProcess;
-        private readonly string _assemblyName;
-        private readonly string _assemblyVersion;
+        private readonly IServerStateService<ServerCapabilities> _serverStateService;
         
-        private readonly LocalDbServer _dbServer;
+        private readonly IJsonRpcServer _dbServer;
         private readonly LocalDbServerService _rpcServerProxy;
 
-        private readonly Stopwatch _uptimeStopwatch;
-
-        private ServerStatus _serverState = ServerStatus.Starting;
-
-        internal ServerApp(ServerCapabilities configuration, LocalDbServer dbServer, LocalDbServerService rpcServerProxy)
+        public ServerApp(IJsonRpcServer server, IServerStateService<ServerCapabilities> stateService, IEnumerable<IJsonRpcTarget> proxies)
         {
-            _hostProcess = Process.GetCurrentProcess();
-
-            var name = Assembly.GetExecutingAssembly().GetName();
-            _assemblyName = name.Name;
-            _assemblyVersion = name.Version.ToString(3);
-
-            _dbServer = dbServer;
-            _rpcServerProxy = rpcServerProxy;
-
-            _configuration = configuration;
-
-            _uptimeStopwatch = new Stopwatch();
+            _dbServer = server;
+            _serverStateService = stateService;
+            _rpcServerProxy = proxies.OfType<LocalDbServerService>().SingleOrDefault();
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -50,48 +39,32 @@ namespace Rubberduck.Server.LocalDb
             _rpcServerProxy.ClientDisconnected += ServerService_ClientDisconnected;
             _rpcServerProxy.WillExit += ServerService_WillExit;
 
-            _uptimeStopwatch.Start();
-            return _dbServer.RunAsync(stoppingToken);
+            return _dbServer.StartAsync(stoppingToken);
         }
 
         private void ServerService_ClientDisconnected(object sender, ClientInfo e)
         {
-            Info.Disconnect(e.ProcessId, out _);
+            _serverStateService.Info.Disconnect(e.ProcessId, out _);
         }
 
         private void ServerService_ClientConnected(object sender, ClientInfo e)
         {
-            Info.Connect(e);
+            _serverStateService.Info.Connect(e);
         }
 
         private void ServerService_WillExit(object sender, EventArgs e)
         {
-            _serverState = ServerStatus.Terminating;
+            _serverStateService.Info.Status = ServerStatus.Terminating;
         }
 
         private void Greetings()
         {
+            var state = _serverStateService.Info;
+
             Console.WriteLine(new string('*', 20));
-            Console.WriteLine($"{_assemblyName} v{_assemblyVersion}");
-            Console.WriteLine($"{_hostProcess.ProcessName} (ID {_hostProcess.Id}) | PriorityClass: {_hostProcess.PriorityClass} PriorityBoostEnabled: {_hostProcess.PriorityBoostEnabled}");
+            Console.WriteLine($"{state.Name} v{state.Version}");
+            Console.WriteLine($"Process ID: {state.ProcessId}");
             Console.WriteLine(new string('*', 20));
         }
-
-        /// <summary>
-        /// Gets the current server info, including process-level details.
-        /// </summary>
-        internal ServerState Info => new ServerState
-        {
-            IsAlive = false,
-            Name = _assemblyName,
-            Version = _assemblyVersion,
-            StartTime = _hostProcess.StartTime,
-            UpTime = _uptimeStopwatch.Elapsed,
-            Threads = _hostProcess.Threads.Count,
-            ProcessId = _hostProcess.Id,
-            WorkingSet = _hostProcess.WorkingSet64,
-            PeakWorkingSet = _hostProcess.PeakWorkingSet64,
-            Status = _serverState,
-        };
     }
 }

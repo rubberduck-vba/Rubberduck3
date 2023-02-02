@@ -4,6 +4,7 @@ using Rubberduck.RPC.Proxy.SharedServices.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Model;
 using Rubberduck.RPC.Proxy.SharedServices.Telemetry;
 using StreamJsonRpc;
@@ -21,7 +22,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
     /// </remarks>
     /// <typeparam name="TOptions">A type representing all server settings and capabilities.</typeparam>
     public interface IServerProxyService<TOptions, TClientProxy> : IConfigurableServerProxy<TOptions, TClientProxy>, IServerCommandsProxy<TOptions>
-        where TOptions : class, new()
+        where TOptions : SharedServerCapabilities, new()
         where TClientProxy : class
     {
         /// <summary>
@@ -49,7 +50,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
         /// <summary>
         /// Exposes server console services and configurations.
         /// </summary>
-        IServerConsoleService<ServerConsoleOptions> ServerConsole { get; }
+        IServerConsoleService<SharedServerCapabilities> ServerConsole { get; }
 
         /// <summary>
         /// Exposes server telemetry services and configurations.

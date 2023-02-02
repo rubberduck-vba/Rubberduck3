@@ -2,7 +2,7 @@
 
 namespace Rubberduck.Server.LocalDb.Internal
 {
-    internal abstract class DbEntity
+    public abstract class DbEntity
     {
         public int Id { get; set; }
         public DateTime DateInserted { get; set; }

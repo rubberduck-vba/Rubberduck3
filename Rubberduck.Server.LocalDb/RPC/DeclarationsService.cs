@@ -5,18 +5,35 @@ using Entities = Rubberduck.DataServer.Storage.Entities;
 using Rubberduck.InternalApi.RPC.DataServer;
 using Rubberduck.Server.LocalDb.Internal;
 using StreamJsonRpc;
+using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Platform.Metadata;
 
 namespace Rubberduck.Server.LocalDb.Services
 {
-    public interface IDeclarationsProxy
+    public interface IDeclarationsProxy : IJsonRpcTarget
     {
+        [RubberduckSP("saveAnnotations")]
         Task<IEnumerable<DeclarationAnnotation>> SaveAsync(IEnumerable<DeclarationAnnotation> annotations);
+
+        [RubberduckSP("saveAttributes")]
         Task<IEnumerable<DeclarationAttribute>> SaveAsync(IEnumerable<DeclarationAttribute> attributes);
+
+        [RubberduckSP("saveIdentifierReferences")]
         Task<IEnumerable<IdentifierReference>> SaveAsync(IEnumerable<IdentifierReference> identifierReferences);
+
+        [RubberduckSP("saveProjects")]
         Task<IEnumerable<Project>> SaveAsync(IEnumerable<Project> projects);
+
+        [RubberduckSP("saveModules")]
         Task<IEnumerable<Module>> SaveAsync(IEnumerable<Module> modules);
+
+        [RubberduckSP("saveMembers")]
         Task<IEnumerable<Member>> SaveAsync(IEnumerable<Member> members);
+
+        [RubberduckSP("saveParameters")]
         Task<IEnumerable<Parameter>> SaveAsync(IEnumerable<Parameter> parameters);
+
+        [RubberduckSP("saveLocals")]
         Task<IEnumerable<Local>> SaveAsync(IEnumerable<Local> locals);
     }
 
@@ -24,9 +41,9 @@ namespace Rubberduck.Server.LocalDb.Services
     {
         private readonly IUnitOfWorkFactory _factory;
 
-        internal DeclarationsService(IUnitOfWorkFactory factory)
+        public DeclarationsService(IUnitOfWorkFactory factory)
         {
-            /* TODO inject some service layer and lighten up the controller */
+            /* TODO inject some service layer and lighten up the RPC entry point layer */
 
             _factory = factory;
         }

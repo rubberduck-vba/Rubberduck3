@@ -33,7 +33,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAIAAAAAAAIAAAAAAACAAAQCAggAAAAAIQAgAEAAAAI=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAACgAAQCAAgAAQAAAAAABEAAAEA=</HashCode>
       <FileName>Platform\JsonRpcServer.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -41,7 +41,7 @@
   <Class Name="Rubberduck.RPC.Proxy.SharedServices.Server.Abstract.ServerProxyService&lt;TOptions, TCommands&gt;">
     <Position X="6.75" Y="2" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAgAAAAIAAAAAAAAAAAAAAgAAgAAAgAAAAgAAIAA=</HashCode>
+      <HashCode>AAAAAgAAAAIAAAAAAAAAEAAAAAAAAAAAgAAAAgAAAAA=</HashCode>
       <FileName>Proxy\SharedServices\Server\Abstract\ServerProxyService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -61,7 +61,7 @@
     </Compartments>
     <InheritanceLine Type="Rubberduck.RPC.Proxy.SharedServices.Server.Abstract.ServerProxyService&lt;TOptions, TCommands&gt;" ManuallyRouted="true" FixedToPoint="true">
       <Path>
-        <Point X="7.875" Y="4.968" />
+        <Point X="7.875" Y="4.324" />
         <Point X="7.875" Y="5.528" />
         <Point X="9.801" Y="5.528" />
         <Point X="9.801" Y="6.625" />
@@ -160,7 +160,7 @@
   <Interface Name="Rubberduck.RPC.Platform.IJsonRpcServer">
     <Position X="3.5" Y="2" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAEAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAA=</HashCode>
       <FileName>Platform\JsonRpcServer.cs</FileName>
     </TypeIdentifier>
   </Interface>
