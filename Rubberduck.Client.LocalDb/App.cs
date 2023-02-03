@@ -7,17 +7,14 @@ namespace Rubberduck.Client.LocalDb
     internal class App : Application 
     {
         private readonly IMainWindowFactory _factory;
-        private IJsonRpcServer _server;
 
-        public App(IJsonRpcServer server, IMainWindowFactory factory)
+        public App(IMainWindowFactory factory)
         {
-            _server = server;
             _factory = factory;
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            _server.StartAsync(CancellationToken.None);
         }
     }
 }
