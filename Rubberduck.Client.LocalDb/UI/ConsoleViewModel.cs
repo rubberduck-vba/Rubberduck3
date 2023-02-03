@@ -35,7 +35,7 @@ namespace Rubberduck.Client.LocalDb
             [Constants.TraceValue.Verbose] = new TraceSettingValue(Constants.TraceValue.Verbose),
         };
 
-        public ConsoleViewModel(ServerService<SharedServerCapabilities, IServerProxyClient> server, IServerConsoleService<ServerConsoleOptions> console, ServerConsoleCommands commands)
+        public ConsoleViewModel(ServerService<SharedServerCapabilities> server, IServerConsoleService<SharedServerCapabilities> console, ServerConsoleCommands commands)
         {
             console.Message += OnConsoleMessage;
 
@@ -50,7 +50,7 @@ namespace Rubberduck.Client.LocalDb
             ResumeTraceCommand = resumeTraceCommand;
             SetTraceCommand = setTraceCommand;
             */
-            _trace = console.Configuration.Trace.ToString();
+            _trace = console.Configuration.ConsoleOptions.Trace.ToString();
             TraceValues = _traceSettings.Values;
             SelectedTraceValue = _traceSettings[Trace];
         }

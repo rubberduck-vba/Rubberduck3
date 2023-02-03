@@ -8,6 +8,10 @@ using Rubberduck.RPC.Platform.Model;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
+using Rubberduck.RPC.Proxy.SharedServices;
+using System.Reflection;
+using System.Linq;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Rubberduck.RPC.Platform
 {
@@ -22,13 +26,18 @@ namespace Rubberduck.RPC.Platform
         where TServerService : ServerService<TOptions>
         where TOptions : SharedServerCapabilities, new()
     {
-        private readonly IRpcStreamFactory<TStream> _rpcStreamFactory;
-        private readonly IEnumerable<IJsonRpcTarget> _proxies;
+        private readonly IServiceProvider _serviceProvider;
 
-        protected JsonRpcServer(IServiceProvider serviceProvider)
+        private readonly IRpcStreamFactory<TStream> _rpcStreamFactory;
+        private readonly IEnumerable<IJsonRpcTarget> _serverProxies;
+        private readonly IEnumerable<Type> _clientProxyTypes;
+        protected JsonRpcServer(IServiceProvider serviceProvider, IEnumerable<Type> clientProxyTypes)
         {
+            _serviceProvider = serviceProvider;
+
             _rpcStreamFactory = serviceProvider.GetService<IRpcStreamFactory<TStream>>();
-            _proxies = serviceProvider.GetService<IEnumerable<IJsonRpcTarget>>();
+            _serverProxies = serviceProvider.GetService<IEnumerable<IJsonRpcTarget>>();
+            _clientProxyTypes = clientProxyTypes;
         }
 
         public abstract ServerState Info { get; }
@@ -47,28 +56,36 @@ namespace Rubberduck.RPC.Platform
         protected override async Task ExecuteAsync(CancellationToken serverToken)
         {
             Console.WriteLine("Registered RPC server targets:");
-            foreach (var proxy in _proxies)
+            foreach (var proxy in _serverProxies)
             {
-                Console.WriteLine($" * {proxy.GetType().Name}");
+                Console.WriteLine($" • {proxy.GetType().Name}");
             }
 
             Console.WriteLine("Server started. Awaiting client connection...");
             while (!serverToken.IsCancellationRequested)
             {
-                // our stream only buffers a single message, so we need a new one every time:
-                var stream = _rpcStreamFactory.CreateNew();
+                try
+                {
 
-                await WaitForConnectionAsync(stream, serverToken);
+                    // our stream only buffers a single message, so we need a new one every time:
+                    var stream = _rpcStreamFactory.CreateNew();
 
-                // Because this call is not awaited, execution of the current method continues before the call is completed
+                    await WaitForConnectionAsync(stream, serverToken);
+
+                    // Because this call is not awaited, execution of the current method continues before the call is completed
 #pragma warning disable CS4014
 
-                // we specifically *DO NOT* want to *wait* for the request processing (so, the response) here.
-                // awaiting this call would block the thread and prevent handling other incoming requests while a response is cooking.
+                    // we specifically *DO NOT* want to *wait* for the request processing (so, the response) here.
+                    // awaiting this call would block the thread and prevent handling other incoming requests while a response is cooking.
 
-                SendResponseAsync(stream, serverToken);
+                    SendResponseAsync(stream, serverToken);
 
 #pragma warning restore CS4014
+                }
+                catch (OperationCanceledException) when (Thread.CurrentThread.IsBackground)
+                {
+                    await Task.Yield();
+                }
             }
 
             Console.WriteLine("Server has stopped.");
@@ -90,9 +107,15 @@ namespace Rubberduck.RPC.Platform
         {
             using (var rpc = new JsonRpc(stream))
             {
-                foreach (var proxy in _proxies)
+                foreach (var proxy in _serverProxies)
                 {
                     rpc.AddLocalRpcTarget(proxy, _targetOptions);
+                }
+
+                foreach (var proxyType in _clientProxyTypes)
+                {
+                    var proxy = rpc.Attach(proxyType);
+                    // TODO figure out how to access the client proxy instances?
                 }
 
                 token.ThrowIfCancellationRequested();

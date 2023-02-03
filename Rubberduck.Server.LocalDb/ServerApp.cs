@@ -61,10 +61,10 @@ namespace Rubberduck.Server.LocalDb
         {
             var state = _serverStateService.Info;
 
-            Console.WriteLine(new string('*', 20));
-            Console.WriteLine($"{state.Name} v{state.Version}");
+            Console.WriteLine(new string('*', 60));
+            Console.WriteLine($"{state.Name} v{state.Version} ©2014-{DateTime.Today.Year} Rubberduck project contributors");
             Console.WriteLine($"Process ID: {state.ProcessId}");
-            Console.WriteLine(new string('*', 20));
+            Console.WriteLine(new string('*', 60));
         }
     }
 }

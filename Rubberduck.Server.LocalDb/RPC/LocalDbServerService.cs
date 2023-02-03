@@ -58,7 +58,6 @@ namespace Rubberduck.Server.LocalDb.Services
         internal event EventHandler<ClientInfo> ClientDisconnected;
         private void OnClientDisconnected(ClientInfo info) => ClientDisconnected?.Invoke(this, info);
 
-
         public void HandleClientInitializedNotification(object sender, ClientInitializedParams e)
         {
             try

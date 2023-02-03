@@ -1,7 +1,7 @@
 ﻿using NLog;
 using Rubberduck.RPC.Proxy.SharedServices;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
-using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.Command;
 using System.Collections.Generic;
@@ -13,9 +13,9 @@ namespace Rubberduck.Client.LocalDb.UI.Commands
 {
     public class CopyCommand : CommandBase
     {
-        private readonly IServerConsoleService<ServerConsoleOptions> _console;
+        private readonly IServerConsoleService<SharedServerCapabilities> _console;
 
-        public CopyCommand(IServerConsoleService<ServerConsoleOptions> console) 
+        public CopyCommand(IServerConsoleService<SharedServerCapabilities> console) 
             : base(LogManager.GetCurrentClassLogger())
         {
             _console = console;

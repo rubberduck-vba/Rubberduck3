@@ -41,11 +41,11 @@ namespace Rubberduck.Client.LocalDb.UI.Commands
 
     public class SaveAsCommand : CommandBase
     {
-        private readonly IServerProxyService<SharedServerCapabilities> _server;
+        private readonly IServerProxyService<SharedServerCapabilities, IServerProxyClient> _server;
         private readonly IFileNameProvider _fileNameProvider;
         private readonly int _processId;
 
-        public SaveAsCommand(IServerProxyService<SharedServerCapabilities> server, IFileNameProvider fileNameProvider) : base(LogManager.GetCurrentClassLogger())
+        public SaveAsCommand(IServerProxyService<SharedServerCapabilities, IServerProxyClient> server, IFileNameProvider fileNameProvider) : base(LogManager.GetCurrentClassLogger())
         {
             _server = server;
             //_processId = server.Info.ProcessId; // TODO add the session-wide immutable values to server state (process ID, name, start time)

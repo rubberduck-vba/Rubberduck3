@@ -24,6 +24,8 @@ namespace Rubberduck.Server.LocalDb
         [STAThread]
         public static async Task<int> Main(string[] args)
         {
+            var context = SynchronizationContext.Current;
+
             #region Global Mutex https://stackoverflow.com/a/229567/1188513
 
             // get application GUID as defined in AssemblyInfo.cs
@@ -59,9 +61,8 @@ namespace Rubberduck.Server.LocalDb
                     }
                     catch (AbandonedMutexException)
                     {
-                        // Log the fact that the mutex was abandoned in another process,
-                        // it will still get acquired
-                        hasHandle = true;
+                        // something went wrong
+                        Thread.CurrentThread.Abort();
                     }
 
                     var startupArgs = Parser.Default.ParseArguments<StartupOptions>(args)
@@ -102,12 +103,20 @@ namespace Rubberduck.Server.LocalDb
                     // edited by acidzombie24, added if statement
                     if (hasHandle)
                     {
-                        mutex.ReleaseMutex();
+                        // MG: can only do this from the main thread...
+                        if (!Thread.CurrentThread.IsBackground)
+                        {
+                            mutex.ReleaseMutex(); // FIXME does not get called
+                        }
+                        else
+                        {
+                            // mutex gets released on dispose, I guess
+                        }
                     }
                 }
 
-                // not a normal exit
-                return ExitCode(RpcServerProcessExitCode.Error);
+                // normal exit // FIXME would be nice to be on the main thread here, but we're not
+                return ExitCode(RpcServerProcessExitCode.OK);
             }
             #endregion
         }

@@ -13,7 +13,9 @@ using Rubberduck.Server.LocalDb.Internal;
 using Rubberduck.Server.LocalDb.Properties;
 using Rubberduck.Server.LocalDb.Services;
 using Rubberduck.Server.Storage;
+using System;
 using System.IO.Pipes;
+using System.Linq;
 
 namespace Rubberduck.Server.LocalDb
 {
@@ -24,9 +26,14 @@ namespace Rubberduck.Server.LocalDb
             var pipeName = Settings.Default.JsonRpcPipeName;
             var maxConcurrentRequests = Settings.Default.MaxConcurrentRequests;
 
+            var clientProxyTypes = AppDomain.CurrentDomain.GetAssemblies()
+                .Where(a => a.FullName.Contains("Rubberduck."))
+                .SelectMany(a => a.GetTypes().Where(t => t.IsInterface && t.GetInterfaces().Contains(typeof(IJsonRpcSource))))
+                .ToArray();
+
             services
                 .AddSingleton<ServerApp>()
-                .AddSingleton<IJsonRpcServer>(provider => new LocalDbServer(provider))
+                .AddSingleton<IJsonRpcServer>(provider => new LocalDbServer(provider, clientProxyTypes))
                 .AddSingleton<IRpcStreamFactory<NamedPipeServerStream>>(provider => new NamedPipeStreamFactory(pipeName, maxConcurrentRequests))
                 .AddSingleton<IServerProxyService<ServerCapabilities, IServerProxyClient>, LocalDbServerService>()
                 .AddSingleton<ITelemetryClientService, TelemetryClientService>()

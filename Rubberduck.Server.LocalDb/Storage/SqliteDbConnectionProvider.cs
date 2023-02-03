@@ -21,7 +21,11 @@ namespace Rubberduck.Server.Storage
         {
             if (_disposed) return;
 
-            _lazyConnection.Value.Dispose();
+            if (_lazyConnection.IsValueCreated)
+            {
+                _lazyConnection.Value.Dispose();
+            }
+
             _disposed = true;
         }
 
