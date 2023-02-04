@@ -243,6 +243,7 @@
     <Compile Include="Platform\Exceptions\ServerExceptions\InvalidStateException.cs" />
     <Compile Include="Platform\Exceptions\ServerExceptions\ServerException.cs" />
     <Compile Include="Platform\IJsonRpcServer.cs" />
+    <Compile Include="Platform\IJsonRpcSource.cs" />
     <Compile Include="Platform\IJsonRpcTarget.cs" />
     <Compile Include="Platform\Metadata\JsonRpcMethods.cs" />
     <Compile Include="Platform\Metadata\LspCompliantAttribute.cs" />

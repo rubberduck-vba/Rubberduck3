@@ -5,7 +5,6 @@ using Rubberduck.RPC.Platform.Model;
 using Rubberduck.RPC.Proxy.SharedServices;
 using Rubberduck.RPC.Proxy.SharedServices.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
-using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
@@ -40,7 +39,6 @@ namespace Rubberduck.RPC.Platform
         public ITelemetryClientService Telemetry { get; }
 
         /* TODO */
-
 
         public async Task<InitializeResult<TOptions>> InitializeAsync(InitializeParams<TOptions> parameters, CancellationToken token)
         {

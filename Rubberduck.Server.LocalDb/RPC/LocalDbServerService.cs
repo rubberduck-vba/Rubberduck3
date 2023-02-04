@@ -100,5 +100,20 @@ namespace Rubberduck.Server.LocalDb.Services
             DeregisterNotifications(ClientProxy);
             await Commands.ExitCommand.TryExecuteAsync();
         }
+
+        protected override void RpcClientSetTrace(object sender, SetTraceParams e)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void RpcClientRequestExit(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void RpcClientInitialized(object sender, InitializedParams e)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

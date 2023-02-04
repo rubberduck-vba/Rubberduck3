@@ -1,4 +1,5 @@
-﻿using Rubberduck.RPC.Platform.Metadata;
+﻿using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Platform.Metadata;
 using Rubberduck.RPC.Proxy.SharedServices.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Telemetry.Model;
@@ -12,7 +13,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Telemetry
     /// <remarks>
     /// Events are raised on the client side.
     /// </remarks>
-    public interface ITelemetryClientService : ITelemetryClientProxy
+    public interface ITelemetryClientService : ITelemetryClientProxy, IJsonRpcSource
     {
         /// <summary>
         /// Sents a <strong>TelemetryEvent</strong> notification to the Rubberduck.Telemetry server.

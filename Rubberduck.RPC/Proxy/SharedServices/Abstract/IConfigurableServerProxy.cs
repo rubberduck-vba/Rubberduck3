@@ -16,23 +16,17 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Abstract
         where TOptions : SharedServerCapabilities, new()
         where TClientProxy : class
     {
-        /// <summary>
-        /// Represents the client-side RPC proxy.
-        /// </summary>
-        /// <remarks>
-        /// Fires events for client-to-server notifications. Invoked methods run client-side.
-        /// </remarks>
         TClientProxy ClientProxy { get; }
     }
 
     /// <summary>
-    /// The base interface for a configurable RPC proxy.
+    /// The base interface for a configurable RPC proxy (client or server).
     /// </summary>
     /// <typeparam name="TOptions">The class type for the configuration options for this proxy.</typeparam>
     /// <remarks>
     /// Proxy implementations should be stateless: the instance only lives for the duration of a single request.
     /// </remarks>
-    public interface IConfigurableProxy<TOptions> : IJsonRpcTarget
+    public interface IConfigurableProxy<TOptions>
         where TOptions : class, new()
     {
         /// <summary>

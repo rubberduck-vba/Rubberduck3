@@ -8,10 +8,7 @@ using Rubberduck.RPC.Platform.Model;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
-using Rubberduck.RPC.Proxy.SharedServices;
-using System.Reflection;
 using System.Linq;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Rubberduck.RPC.Platform
 {
@@ -107,15 +104,25 @@ namespace Rubberduck.RPC.Platform
         {
             using (var rpc = new JsonRpc(stream))
             {
+                var serverProxies = _serviceProvider.GetService<IEnumerable<IJsonRpcTarget>>();
                 foreach (var proxy in _serverProxies)
                 {
                     rpc.AddLocalRpcTarget(proxy, _targetOptions);
                 }
 
+                if (_clientProxyTypes.Any())
+                {
+                    Console.WriteLine("Registered RPC client targets:");
+                }
                 foreach (var proxyType in _clientProxyTypes)
                 {
                     var proxy = rpc.Attach(proxyType);
-                    // TODO figure out how to access the client proxy instances?
+                    foreach (var serverProxy in _serverProxies.Where(p => p.ClientProxyType.GetType() == proxyType))
+                    {
+                        serverProxy.SetClientProxy(proxy);
+                        Console.WriteLine($" • {proxyType.Name}");
+                        break;
+                    }
                 }
 
                 token.ThrowIfCancellationRequested();

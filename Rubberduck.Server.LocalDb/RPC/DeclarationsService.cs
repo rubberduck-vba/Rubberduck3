@@ -7,6 +7,7 @@ using Rubberduck.Server.LocalDb.Internal;
 using StreamJsonRpc;
 using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Platform.Metadata;
+using System;
 
 namespace Rubberduck.Server.LocalDb.Services
 {
@@ -40,6 +41,8 @@ namespace Rubberduck.Server.LocalDb.Services
     public class DeclarationsService : IDeclarationsProxy
     {
         private readonly IUnitOfWorkFactory _factory;
+
+        public Type ClientProxyType { get; } = null;
 
         public DeclarationsService(IUnitOfWorkFactory factory)
         {
@@ -501,6 +504,11 @@ namespace Rubberduck.Server.LocalDb.Services
                 await Task.WhenAll(operations).ContinueWith(t => uow.SaveChanges());
                 return locals;
             }
+        }
+
+        public void SetClientProxy<T>(T proxy) where T : class
+        {
+            throw new NotImplementedException();
         }
     }
 }

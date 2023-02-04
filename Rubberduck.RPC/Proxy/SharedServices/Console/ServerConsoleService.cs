@@ -8,6 +8,8 @@ using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
+using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
 {
@@ -24,6 +26,8 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
 
         public override ServerConsoleCommands Commands { get; }
         public override IServerLogger Logger { get; }
+
+        public Type ClientProxyType { get; } = typeof(IServerConsoleProxyClient);
 
         private void LogError(Exception exception) => Log(exception);
         private void LogMessage(ServerLogLevel level, string message, string verbose) => Log(level, message, verbose);
@@ -166,6 +170,21 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
 
             System.Console.ForegroundColor = foreground;
             System.Console.BackgroundColor = background;
+        }
+
+        protected override void RpcClientSetTrace(object sender, SetTraceParams e)
+        {
+            _ = Task.Run(() => Commands.SetTraceCommand.ExecuteAsync(e));
+        }
+
+        protected override void RpcClientRequestExit(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void RpcClientInitialized(object sender, InitializedParams e)
+        {
+            throw new NotImplementedException();
         }
     }
 }
