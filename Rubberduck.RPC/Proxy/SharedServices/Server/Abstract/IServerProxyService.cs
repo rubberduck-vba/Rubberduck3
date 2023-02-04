@@ -21,7 +21,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
     /// <typeparam name="TOptions">A type representing all server settings and capabilities.</typeparam>
     public interface IServerProxyService<TOptions, TServerProxyClient, TCommands> : IConfigurableServerProxy<TOptions, TServerProxyClient, TCommands>, IServerCommandsProxy<TOptions>
         where TOptions : SharedServerCapabilities, new()
-        where TServerProxyClient : class, IServerProxyClient
+        where TServerProxyClient : IServerProxyClient
         where TCommands : class
     {
         /// <summary>

@@ -264,6 +264,7 @@
     <Compile Include="Platform\Protocol\ResponseMessage.cs" />
     <Compile Include="Platform\RpcMethodNameMappings.cs" />
     <Compile Include="Platform\RpcServerProcessExitCode.cs" />
+    <Compile Include="Platform\RubberduckServerApp.cs" />
     <Compile Include="Platform\ServerService.cs" />
     <Compile Include="Proxy\LocalDbServer\ILocalDbServerEvents.cs" />
     <Compile Include="Proxy\LocalDbServer\ILocalDbServerProxyClient.cs" />

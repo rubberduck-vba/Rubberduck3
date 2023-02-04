@@ -22,7 +22,7 @@ namespace Rubberduck.RPC.Platform
     /// <typeparam name="TOptions">The class type that defines server configuration options.</typeparam>
     public abstract class ServerService<TOptions, TServerProxyClient> : ServerProxyService<TOptions, ServerCommands<TOptions>, TServerProxyClient>, IServerProxyService<TOptions, TServerProxyClient, ServerCommands<TOptions>>
         where TOptions : SharedServerCapabilities, new()
-        where TServerProxyClient : class, IServerProxyClient
+        where TServerProxyClient : IServerProxyClient
     {
         /// <summary>
         /// Creates a server service to handle a RPC request or notification on the server side.

@@ -14,7 +14,6 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
     /// </remarks>
     public interface IConfigurableServerProxy<TOptions, TClientProxy, TCommands> : IConfigurableProxy<TOptions>
         where TOptions : SharedServerCapabilities, new()
-        where TClientProxy : class
         where TCommands : class
     {
         /// <summary>

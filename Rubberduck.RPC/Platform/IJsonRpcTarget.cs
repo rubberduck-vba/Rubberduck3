@@ -6,7 +6,7 @@ namespace Rubberduck.RPC.Platform
     /// Represents a local RPC target, i.e. a RPC server-side proxy.
     /// </summary>
     public interface IJsonRpcTarget<TProxyClient> : IJsonRpcTarget
-        where TProxyClient : class, IJsonRpcSource
+        where TProxyClient : IJsonRpcSource
     {
         /// <summary>
         /// Gets the client proxy.

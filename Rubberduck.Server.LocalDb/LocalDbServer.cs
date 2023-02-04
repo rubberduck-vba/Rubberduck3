@@ -17,7 +17,7 @@ namespace Rubberduck.Server.LocalDb
     /// <remarks>
     /// Holds the server state for the lifetime of the host process.
     /// </remarks>
-    internal class LocalDbServer : JsonRpcServer<NamedPipeServerStream, LocalDbServerService, ILocalDbServerProxyClient, ServerCapabilities>
+    internal class LocalDbServer : NamedPipeJsonRpcServer<LocalDbServerService, ILocalDbServerProxyClient, ServerCapabilities>
     {
         public LocalDbServer(IServiceProvider serviceProvider, IEnumerable<Type> clientProxyTypes) 
             : base(serviceProvider, clientProxyTypes) 

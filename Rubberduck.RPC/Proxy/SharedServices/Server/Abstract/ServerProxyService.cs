@@ -13,7 +13,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
     public abstract class ServerProxyService<TOptions, TCommands, TProxyClient> : IConfigurableServerProxy<TOptions, TProxyClient, TCommands>, IJsonRpcTarget<TProxyClient>
         where TOptions : SharedServerCapabilities, new()
         where TCommands : class
-        where TProxyClient : class, IJsonRpcSource
+        where TProxyClient : IJsonRpcSource
     {
         protected ServerProxyService(IServerLogger logger, IServerStateService<TOptions> serverStateService)
         {
@@ -33,13 +33,13 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
 
         public void InitializeClientProxy(TProxyClient proxy)
         {
-            if (!(ClientProxy is null))
+            if (!(ClientProxy == null))
             {
                 throw new InvalidOperationException($"{nameof(ClientProxy)} was already initialized once.");
             }
 
             ClientProxy = proxy;
-            if (!(ClientProxy is null))
+            if (!(ClientProxy == null))
             {
                 RegisterClientNotifications(proxy);
             }
@@ -57,6 +57,6 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
         /// <param name="client">The client to deregister notifications for.</param>
         protected abstract void DeregisterClientNotifications(TProxyClient client);
 
-        public void InitializeClientProxy(object proxy) => InitializeClientProxy(proxy as TProxyClient);
+        public void InitializeClientProxy(object proxy) => InitializeClientProxy((TProxyClient)proxy);
     }
 }

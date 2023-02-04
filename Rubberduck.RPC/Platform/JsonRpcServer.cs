@@ -10,9 +10,25 @@ using StreamJsonRpc;
 using Rubberduck.RPC.Platform.Model;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices;
+using System.IO.Pipes;
 
 namespace Rubberduck.RPC.Platform
 {
+    /// <summary>
+    /// Represents a server process that communicates over named pipes.
+    /// </summary>
+    /// <remarks>
+    /// Implementation holds the server state for the lifetime of the host process.
+    /// </remarks>
+    public abstract class NamedPipeJsonRpcServer<TServerService, TServerProxyClient, TOptions> : JsonRpcServer<NamedPipeServerStream, TServerService, TServerProxyClient, TOptions>
+        where TServerService : ServerService<TOptions, TServerProxyClient>
+        where TOptions : SharedServerCapabilities, new()
+        where TServerProxyClient : class, IServerProxyClient
+    {
+        protected NamedPipeJsonRpcServer(IServiceProvider serviceProvider, IEnumerable<Type> clientProxyTypes) 
+            : base(serviceProvider, clientProxyTypes) { }
+    }
+
     /// <summary>
     /// Represents a server process.
     /// </summary>
