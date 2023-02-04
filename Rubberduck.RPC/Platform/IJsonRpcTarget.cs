@@ -31,6 +31,9 @@ namespace Rubberduck.RPC.Platform
         /// <summary>
         /// Injects a client proxy and registers its notifications.
         /// </summary>
+        /// <remarks>
+        /// Use on the server side.
+        /// </remarks>
         /// <param name="proxy">The client proxy to initialize.</param>
         void InitializeClientProxy(object proxy);
     }

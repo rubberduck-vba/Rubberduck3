@@ -236,6 +236,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientInfo.cs" />
+    <Compile Include="Platform\Client\JsonRpcClient.cs" />
+    <Compile Include="Platform\Client\NamedPipeJsonRpcClient.cs" />
     <Compile Include="Platform\Constants.cs" />
     <Compile Include="Platform\Exceptions\InvalidEnumValueException.cs" />
     <Compile Include="Platform\Exceptions\ServerExceptions\CommandNotExecutedException.cs" />
@@ -245,6 +247,7 @@
     <Compile Include="Platform\IJsonRpcServer.cs" />
     <Compile Include="Platform\IJsonRpcSource.cs" />
     <Compile Include="Platform\IJsonRpcTarget.cs" />
+    <Compile Include="Platform\Client\JsonRpcClientSideServerProxy.cs" />
     <Compile Include="Platform\Metadata\JsonRpcMethods.cs" />
     <Compile Include="Platform\Metadata\LspCompliantAttribute.cs" />
     <Compile Include="Platform\Metadata\RubberduckSPAttribute.cs" />

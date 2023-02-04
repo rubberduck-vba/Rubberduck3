@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using StreamJsonRpc;
-using Rubberduck.RPC.Platform.Model;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using StreamJsonRpc;
+using Rubberduck.RPC.Platform.Model;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
-using System.Linq;
 using Rubberduck.RPC.Proxy.SharedServices;
 
 namespace Rubberduck.RPC.Platform
