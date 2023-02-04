@@ -2,6 +2,7 @@
 using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using System;
+using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Proxy.SharedServices
 {
@@ -21,6 +22,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         /// </remarks>
         [LspCompliant(JsonRpcMethods.ServerProxyRequests.Shared.Server.Exit)]
         event EventHandler RequestExit;
+        Task OnRequestExitAsync();
 
         /// <summary>
         /// A <c>Initialized</c> notification is sent <em>from the client to the server</em> after the client received an <c>InitializeResult</c>,
@@ -31,5 +33,6 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         /// </remarks>
         [LspCompliant(JsonRpcMethods.ServerProxyRequests.Shared.Server.Initialized)]
         event EventHandler<InitializedParams> Initialized;
+        Task OnInitializedAsync(InitializedParams parameter);
     }
 }

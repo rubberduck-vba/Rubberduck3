@@ -247,7 +247,7 @@
     <Compile Include="Platform\IJsonRpcServer.cs" />
     <Compile Include="Platform\IJsonRpcSource.cs" />
     <Compile Include="Platform\IJsonRpcTarget.cs" />
-    <Compile Include="Platform\Client\JsonRpcClientSideServerProxy.cs" />
+    <Compile Include="Platform\Client\JsonRpcClientSideServerProxyService.cs" />
     <Compile Include="Platform\Metadata\JsonRpcMethods.cs" />
     <Compile Include="Platform\Metadata\LspCompliantAttribute.cs" />
     <Compile Include="Platform\Metadata\RubberduckSPAttribute.cs" />

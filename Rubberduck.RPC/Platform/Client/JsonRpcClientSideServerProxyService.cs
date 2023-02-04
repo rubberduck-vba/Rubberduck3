@@ -9,10 +9,13 @@ namespace Rubberduck.RPC.Platform.Client
     /// Represents a client-side server proxy service that can send notifications and request server responses.
     /// </summary>
     /// <typeparam name="TServerProxy">The type of the server proxy to communicate with.</typeparam>
-    public abstract class JsonRpcClientSideServerProxyService<TServerProxy> : NamedPipeJsonRpcClient
-        where TServerProxy : class, IJsonRpcTarget
+    public class JsonRpcClientSideServerProxyService<TServerProxy> : NamedPipeJsonRpcClient
+        where TServerProxy : class, IJsonRpcSource
     {
-        protected JsonRpcClientSideServerProxyService(IRpcStreamFactory<NamedPipeClientStream> rpcStreamFactory) 
+        /// <summary>
+        /// Creates a client-side server proxy service that can send notifications and request server responses.
+        /// </summary>
+        public JsonRpcClientSideServerProxyService(IRpcStreamFactory<NamedPipeClientStream> rpcStreamFactory) 
             : base(rpcStreamFactory)
         {
         }
@@ -21,7 +24,7 @@ namespace Rubberduck.RPC.Platform.Client
         /// Sends a RPC message notifying the server of a client event.
         /// </summary>
         /// <param name="method">A delegate that invokes a method against a <c>TServerProxy</c>.</param>
-        protected async Task NotifyAsync(Func<TServerProxy, Task> method)
+        public async Task NotifyAsync(Func<TServerProxy, Task> method)
         {
             using (var stream = RpcStreamFactory.CreateNew())
             {
@@ -38,7 +41,7 @@ namespace Rubberduck.RPC.Platform.Client
         /// </summary>
         /// <param name="method">A delegate that invokes a method against a <c>TServerProxy</c>.</param>
         /// <param name="parameter">A parameter object to send along with the notification.</param>
-        protected async Task NotifyAsync<TParameter>(Func<TServerProxy, TParameter, Task> method, TParameter parameter)
+        public async Task NotifyAsync<TParameter>(Func<TServerProxy, TParameter, Task> method, TParameter parameter)
         {
             using (var stream = RpcStreamFactory.CreateNew())
             {
@@ -57,7 +60,7 @@ namespace Rubberduck.RPC.Platform.Client
         /// <typeparam name="TResponse">The class type of the response object returned from the server.</typeparam>
         /// <param name="method">A delegate that invokes a method against any implementation of <c>IJsonRpcTarget</c>.</param>
         /// <returns>The server response.</returns>
-        protected virtual async Task<TResponse> RequestAsync<TResponse>(Func<TServerProxy, Task<TResponse>> method)
+        public async Task<TResponse> RequestAsync<TResponse>(Func<TServerProxy, Task<TResponse>> method)
             where TResponse : class, new()
         {
             using (var stream = RpcStreamFactory.CreateNew())
@@ -75,7 +78,7 @@ namespace Rubberduck.RPC.Platform.Client
         /// <param name="method">A delegate that invokes a method against any implementation of <c>IJsonRpcTarget</c>.</param>
         /// <param name="parameter">A parameter object to send along with the request.</param>
         /// <returns>The server response.</returns>
-        protected virtual async Task<TResponse> RequestAsync<TParameter, TResponse>(Func<TServerProxy, TParameter, Task<TResponse>> method, TParameter parameter)
+        public async Task<TResponse> RequestAsync<TParameter, TResponse>(Func<TServerProxy, TParameter, Task<TResponse>> method, TParameter parameter)
             where TResponse : class, new()
         {
             using (var stream = RpcStreamFactory.CreateNew())

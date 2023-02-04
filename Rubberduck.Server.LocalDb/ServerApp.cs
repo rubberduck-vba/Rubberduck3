@@ -49,10 +49,27 @@ namespace Rubberduck.Server.LocalDb
         {
             var state = _serverStateService.Info;
 
-            Console.WriteLine(new string('*', 60));
+            Console.WriteLine(new string('*', 80));
+            Console.WriteLine(@"
+
+                (#########
+              ##..........##(
+             ##.......##/...#######
+             ##...........##(///##
+  (###        ##..........,####                                     @@@@@@@
+  #*...####    ,##.........#          @@@@@@@@@@@  .@@@@@@@@@@.    @@/**,,@@*.
+ ##..........,*,............##*        @@@,    @@/.  @@*.    @@/        *@@@/,
+ ##...........................##       @@@@@@@@@/*   @@*.    @@@,      &@@@@,
+ ##............................##      @@@*,,@@@(    @@*.    @@(,         ,@@*
+  #*...........................##    (@@@@@@   @@@@@@@@@@@@@@@/*  @@@@@@@@@@/*
+   ##.........................##      .,****,    ,*,,,*****,,.      ,******,
+    *##.....................##.
+       (###(..........,####
+
+");
+            Console.WriteLine(new string('*', 80));
             Console.WriteLine($"{state.Name} v{state.Version} (C)2014-{DateTime.Today.Year} Rubberduck project contributors");
             Console.WriteLine($"Process ID: {state.ProcessId}");
-            Console.WriteLine(new string('*', 60));
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Rubberduck.RPC.Proxy.SharedServices;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using System;
+using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Proxy.LocalDbServer
 {
@@ -14,9 +15,12 @@ namespace Rubberduck.RPC.Proxy.LocalDbServer
         /// This notification sends a <c>processId</c> to identify the connecting client process.
         /// </remarks>
         event EventHandler<ClientInitializedParams> ClientInitialized;
+        Task OnClientInitializedAsync(ClientInitializedParams parameter);
+
         /// <summary>
         /// A notification sent from a client to the server to signal it is shutting down and disconnecting from the server.
         /// </summary>
         event EventHandler<ClientShutdownParams> ClientShutdown;
+        Task OnClientShutdownAsync(ClientShutdownParams parameter);
     }
 }

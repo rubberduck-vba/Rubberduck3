@@ -166,6 +166,7 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="App.cs" />
+    <Compile Include="Client\LocalDbServerProxyClient.cs" />
     <Compile Include="StartupOptions.cs" />
     <Compile Include="UI\Commands\CopyCommand.cs" />
     <Compile Include="UI\Commands\PauseTraceCommand.cs" />
