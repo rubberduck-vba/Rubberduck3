@@ -1,8 +1,10 @@
 ﻿using Rubberduck.RPC;
 using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Proxy.LocalDbServer;
 using Rubberduck.RPC.Proxy.SharedServices;
 using Rubberduck.RPC.Proxy.SharedServices.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using System;
 using System.Threading;
@@ -15,29 +17,16 @@ namespace Rubberduck.Server.LocalDb.Services
     /// <remarks>
     /// Proxies should be stateless: the instance may be request-scoped.
     /// </remarks>
-    internal class LocalDbServerService : ServerService<ServerCapabilities>
+    internal class LocalDbServerService : ServerService<ServerCapabilities, ILocalDbServerProxyClient>, 
+        IServerProxyService<ServerCapabilities, ILocalDbServerProxyClient, ServerCommands<ServerCapabilities>>
     {
+        public override ServerCommands<ServerCapabilities> Commands => throw new NotImplementedException();
+
         public LocalDbServerService(IServerLogger logger,
             IServerStateService<ServerCapabilities> serverStateService)
-            : base(null, logger, serverStateService)
+            : base(logger, serverStateService)
         {
         }
-
-        protected override void RegisterNotifications(IServerProxyClient client)
-        {
-            //client.ClientInitialized += HandleClientInitializedNotification;
-            //client.ClientShutdown += HandleShutdownClientNotification;
-            //client.RequestExit += HandleExitClientNotification;
-        }
-
-        protected override void DeregisterNotifications(IServerProxyClient client)
-        {
-            //client.ClientInitialized -= HandleClientInitializedNotification;
-            //client.ClientShutdown -= HandleShutdownClientNotification;
-            //client.RequestExit -= HandleExitClientNotification;
-        }
-
-        public override ServerCommands<ServerCapabilities> Commands { get; }
 
         /// <summary>
         /// Notifies the parent service that the server is ready to terminate.
@@ -45,18 +34,6 @@ namespace Rubberduck.Server.LocalDb.Services
 
         internal event EventHandler WillExit;
         private void OnWillExit() => WillExit?.Invoke(this, EventArgs.Empty);
-
-        /// <summary>
-        /// Notifies the parent service that a client has connected.
-        /// </summary>
-        internal event EventHandler<ClientInfo> ClientConnected;
-        private void OnClientConnected(ClientInfo info) => ClientConnected?.Invoke(this, info);
-
-        /// <summary>
-        /// Notifies the parent service that a client has disconnected.
-        /// </summary>
-        internal event EventHandler<ClientInfo> ClientDisconnected;
-        private void OnClientDisconnected(ClientInfo info) => ClientDisconnected?.Invoke(this, info);
 
         public void HandleClientInitializedNotification(object sender, ClientInitializedParams e)
         {
@@ -89,7 +66,7 @@ namespace Rubberduck.Server.LocalDb.Services
             {
                 if (result.ShuttingDown)
                 {
-
+                    Logger.OnInfo("All clients haver disconnected, server is shutting down.");
                 }
             }
         }
@@ -97,23 +74,33 @@ namespace Rubberduck.Server.LocalDb.Services
         protected async void HandleExitClientNotification(object sender, EventArgs e)
         {
             OnWillExit();
-            DeregisterNotifications(ClientProxy);
+            DeregisterClientNotifications(ClientProxy);
             await Commands.ExitCommand.TryExecuteAsync();
         }
 
-        protected override void RpcClientSetTrace(object sender, SetTraceParams e)
+        protected override void RegisterClientNotifications(ILocalDbServerProxyClient client)
         {
-            throw new NotImplementedException();
+            client.ClientInitialized += HandleClientInitializedNotification;
+            client.ClientShutdown += HandleShutdownClientNotification;
+            client.RequestExit += HandleExitClientNotification;
+            client.SetTrace += HandleSetTraceClientNotification;
+  
+            client.Initialized += Client_Initialized;
         }
 
-        protected override void RpcClientRequestExit(object sender, EventArgs e)
+        protected override void DeregisterClientNotifications(ILocalDbServerProxyClient client)
         {
-            throw new NotImplementedException();
+            client.ClientInitialized -= HandleClientInitializedNotification;
+            client.ClientShutdown -= HandleShutdownClientNotification;
+            client.RequestExit -= HandleExitClientNotification;
+            client.SetTrace -= HandleSetTraceClientNotification;
+
+            client.Initialized -= Client_Initialized;
         }
 
-        protected override void RpcClientInitialized(object sender, InitializedParams e)
+        private void Client_Initialized(object sender, InitializedParams e)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("This server does not implement the 'initialized' LSP notification. Use 'clientInitialized' instead.");
         }
     }
 }

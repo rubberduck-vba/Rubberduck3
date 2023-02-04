@@ -4,6 +4,7 @@ using Rubberduck.RPC.Proxy.LocalDbServer;
 using Rubberduck.RPC.Proxy.SharedServices;
 using Rubberduck.RPC.Proxy.SharedServices.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Commands;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
@@ -35,10 +36,10 @@ namespace Rubberduck.Server.LocalDb
                 .AddSingleton<ServerApp>()
                 .AddSingleton<IJsonRpcServer>(provider => new LocalDbServer(provider, clientProxyTypes))
                 .AddSingleton<IRpcStreamFactory<NamedPipeServerStream>>(provider => new NamedPipeStreamFactory(pipeName, maxConcurrentRequests))
-                .AddSingleton<IServerProxyService<ServerCapabilities, IServerProxyClient>, LocalDbServerService>()
+                .AddSingleton<IServerProxyService<ServerCapabilities, ILocalDbServerProxyClient, ServerCommands<ServerCapabilities>>, LocalDbServerService>()
                 .AddSingleton<ITelemetryClientService, TelemetryClientService>()
                 .AddSingleton<IServerStateService<ServerCapabilities>>(provider => new ServerStateService<ServerCapabilities>(config))
-                .AddSingleton<IServerConsoleService<ServerCapabilities>>(provider => new ServerConsoleService<ServerCapabilities>(provider.GetService<IServerStateService<ServerCapabilities>>()))
+                .AddSingleton<IServerConsoleService<ServerCapabilities>>(provider => new ServerConsoleService<ServerCapabilities, IServerProxyClient>(provider.GetService<IServerStateService<ServerCapabilities>>()))
                 .AddSingleton<IServerLogger>(provider =>
                 {
                     var console = provider.GetService<IServerConsoleService<ServerCapabilities>>();
@@ -47,7 +48,7 @@ namespace Rubberduck.Server.LocalDb
                 .AddScoped<IUnitOfWorkFactory, UnitOfWorkFactory>()
                 .AddScoped<IDbConnectionProvider, SqliteDbConnectionProvider>()
 
-                .AddScoped<IJsonRpcTarget, ServerConsoleService<ServerCapabilities>>()
+                .AddScoped<IJsonRpcTarget, ServerConsoleService<ServerCapabilities, IServerProxyClient>>()
                 .AddScoped<IJsonRpcTarget, LocalDbServerService>()
                 .AddScoped<IJsonRpcTarget, DeclarationsService>()
                     ;

@@ -42,7 +42,7 @@ namespace Rubberduck.Client.LocalDb
 
         private static Process GetOrCreateServer(StartupOptions startupOptions)
         {
-            var process = ServerProcessClientHelper.StartLocalDb(hidden: false);
+            var process = ServerProcessClientHelper.StartLocalDb(hidden: true);
             
             process.OutputDataReceived += OnServerProcessStdOut;
             process.ErrorDataReceived += OnServerProcessStdErr;

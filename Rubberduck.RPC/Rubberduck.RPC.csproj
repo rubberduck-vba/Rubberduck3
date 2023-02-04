@@ -492,12 +492,13 @@
     <Compile Include="Proxy\LspServer\Workspace\Model\Command.cs" />
     <Compile Include="Proxy\LspServer\Workspace\Model\FileOperationFilter.cs" />
     <Compile Include="Proxy\LspServer\Workspace\Model\FileOperationPattern.cs" />
-    <Compile Include="Proxy\SharedServices\Abstract\IConfigurableServerProxy.cs" />
-    <Compile Include="Proxy\SharedServices\Abstract\IServerCommandsProxy.cs" />
-    <Compile Include="Proxy\SharedServices\Abstract\IServerLogger.cs" />
+    <Compile Include="Proxy\SharedServices\Abstract\IConfigurableProxy.cs" />
+    <Compile Include="Proxy\SharedServices\Server\Abstract\IConfigurableServerProxy.cs" />
+    <Compile Include="Proxy\SharedServices\Server\Abstract\IServerCommandsProxy.cs" />
+    <Compile Include="Proxy\SharedServices\Server\Abstract\IServerLogger.cs" />
     <Compile Include="Proxy\SharedServices\Abstract\IServerNotificationCommand.cs" />
     <Compile Include="Proxy\SharedServices\Abstract\IServerRequestCommand.cs" />
-    <Compile Include="Proxy\SharedServices\Abstract\IServerStateService.cs" />
+    <Compile Include="Proxy\SharedServices\Server\Abstract\IServerStateService.cs" />
     <Compile Include="Proxy\SharedServices\Console\Abstract\IConsoleCommandsService.cs" />
     <Compile Include="Proxy\SharedServices\Console\Abstract\IServerConsoleEvents.cs" />
     <Compile Include="Proxy\SharedServices\Console\Abstract\IServerConsoleService.cs" />

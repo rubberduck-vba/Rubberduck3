@@ -20,16 +20,16 @@ namespace Rubberduck.RPC.Platform
     /// Proxy implementations should be stateless: the instance only lives for the duration of a single request, but an instance may be cached and reused.
     /// </remarks>
     /// <typeparam name="TOptions">The class type that defines server configuration options.</typeparam>
-    public abstract class ServerService<TOptions> : ServerProxyService<TOptions, ServerCommands<TOptions>>, IServerProxyService<TOptions, IServerProxyClient>
-            where TOptions : SharedServerCapabilities, new()
+    public abstract class ServerService<TOptions, TServerProxyClient> : ServerProxyService<TOptions, ServerCommands<TOptions>, TServerProxyClient>, IServerProxyService<TOptions, TServerProxyClient, ServerCommands<TOptions>>
+        where TOptions : SharedServerCapabilities, new()
+        where TServerProxyClient : class, IServerProxyClient
     {
         /// <summary>
         /// Creates a server service to handle a RPC request or notification on the server side.
         /// </summary>
-        protected ServerService(IServerProxyClient clientProxy, IServerLogger logger, IServerStateService<TOptions> serverStateService)
+        protected ServerService(IServerLogger logger, IServerStateService<TOptions> serverStateService)
             : base(logger, serverStateService)
         {
-            RegisterNotifications(clientProxy);
         }
 
         public ServerState Info() => ServerStateService.Info;
@@ -49,19 +49,5 @@ namespace Rubberduck.RPC.Platform
 
             return response;
         }
-
-        /// <summary>
-        /// Registers client event/notification handlers for the specified client proxy.
-        /// </summary>
-        /// <param name="proxy">The notification provider proxy.</param>
-        /// <remarks>
-        /// Event handlers should invoke the corresponding command, as appropriate.
-        /// </remarks>
-        protected abstract void RegisterNotifications(IServerProxyClient proxy);
-        /// <summary>
-        /// Registers client event/notification handlers for the specified client proxy.
-        /// </summary>
-        /// <param name="proxy">The notification provider proxy.</param>
-        protected abstract void DeregisterNotifications(IServerProxyClient proxy);
     }
 }

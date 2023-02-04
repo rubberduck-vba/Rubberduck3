@@ -1,6 +1,6 @@
 ﻿using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 
-namespace Rubberduck.RPC.Proxy.SharedServices.Abstract
+namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
 {
     public interface IServerCommandsProxy<TOptions>
         where TOptions : class, new()

@@ -10,49 +10,53 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
     /// </summary>
     /// <typeparam name="TOptions">The class type of the configuration options for this service.</typeparam>
     /// <typeparam name="TCommands">The class type of the class that exposes the commands for this service.</typeparam>
-    public abstract class ServerProxyService<TOptions, TCommands> : IConfigurableServerProxy<TOptions, IServerProxyClient>, IJsonRpcTarget
+    public abstract class ServerProxyService<TOptions, TCommands, TProxyClient> : IConfigurableServerProxy<TOptions, TProxyClient, TCommands>, IJsonRpcTarget<TProxyClient>
         where TOptions : SharedServerCapabilities, new()
         where TCommands : class
+        where TProxyClient : class, IJsonRpcSource
     {
         protected ServerProxyService(IServerLogger logger, IServerStateService<TOptions> serverStateService)
         {
             Logger = logger;
-            ServerStateService = serverStateService;
+            ServerStateService = serverStateService ?? throw new ArgumentNullException(nameof(serverStateService));
         }
 
         public TOptions Configuration => ServerStateService.Configuration;
+
         public abstract TCommands Commands { get; }
+
         public virtual IServerLogger Logger { get; }
 
-        protected IServerStateService<TOptions> ServerStateService { get; }
+        public IServerStateService<TOptions> ServerStateService { get; }
 
-        private IServerProxyClient _client;
-        public IServerProxyClient ClientProxy 
-        { 
-            get => _client;
-            private set
+        public TProxyClient ClientProxy { get; private set; }
+
+        public void InitializeClientProxy(TProxyClient proxy)
+        {
+            if (!(ClientProxy is null))
             {
-                if (_client != null)
-                {
-                    throw new InvalidOperationException("client proxy is being set twice.");
-                }
+                throw new InvalidOperationException($"{nameof(ClientProxy)} was already initialized once.");
+            }
 
-                _client = value;
-                _client.Initialized += RpcClientInitialized;
-                _client.SetTrace += RpcClientSetTrace;
-                _client.RequestExit += RpcClientRequestExit;
+            ClientProxy = proxy;
+            if (!(ClientProxy is null))
+            {
+                RegisterClientNotifications(proxy);
             }
         }
 
-        public Type ClientProxyType { get; } = typeof(IServerProxyClient);
+        /// <summary>
+        /// Registers events/notifications from the provided client proxy.
+        /// </summary>
+        /// <param name="client">The client to register notifications for.</param>
+        protected abstract void RegisterClientNotifications(TProxyClient client);
 
-        abstract protected void RpcClientSetTrace(object sender, Console.Commands.Parameters.SetTraceParams e);
-        abstract protected void RpcClientRequestExit(object sender, EventArgs e);
-        abstract protected void RpcClientInitialized(object sender, Commands.InitializedParams e);
+        /// <summary>
+        /// Removes event handler registrations for previously registered events of the provided client proxy.
+        /// </summary>
+        /// <param name="client">The client to deregister notifications for.</param>
+        protected abstract void DeregisterClientNotifications(TProxyClient client);
 
-        public void SetClientProxy<T>(T proxy) where T : class
-        {
-            ClientProxy = (IServerProxyClient)proxy;
-        }
+        public void InitializeClientProxy(object proxy) => InitializeClientProxy(proxy as TProxyClient);
     }
 }

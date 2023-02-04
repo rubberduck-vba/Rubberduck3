@@ -3,20 +3,35 @@
 namespace Rubberduck.RPC.Platform
 {
     /// <summary>
-    /// A marker interface for a type to register as a JsonRpc target.
+    /// Represents a local RPC target, i.e. a RPC server-side proxy.
     /// </summary>
-    /// <remarks>
-    /// Might turn into an attribute.
-    /// </remarks>
+    public interface IJsonRpcTarget<TProxyClient> : IJsonRpcTarget
+        where TProxyClient : class, IJsonRpcSource
+    {
+        /// <summary>
+        /// Gets the client proxy.
+        /// </summary>
+        /// <remarks>
+        /// <c>null</c> until initialized.
+        /// </remarks>
+        TProxyClient ClientProxy { get; }
+
+        /// <summary>
+        /// Injects the <c>ClientProxy</c> and registers its notifications.
+        /// </summary>
+        /// <param name="proxy">The client proxy to initialize.</param>
+        void InitializeClientProxy(TProxyClient proxy);
+    }
+
+    /// <summary>
+    /// Represents a local RPC target, i.e. a RPC server-side proxy.
+    /// </summary>
     public interface IJsonRpcTarget
     {
         /// <summary>
-        /// Represents the client-side RPC proxy.
+        /// Injects a client proxy and registers its notifications.
         /// </summary>
-        /// <remarks>
-        /// Fires events for client-to-server notifications. Invoked methods run client-side.
-        /// </remarks>
-        Type ClientProxyType { get; }
-        void SetClientProxy<T>(T proxy) where T : class;
+        /// <param name="proxy">The client proxy to initialize.</param>
+        void InitializeClientProxy(object proxy);
     }
 }

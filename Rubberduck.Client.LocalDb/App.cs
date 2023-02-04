@@ -1,6 +1,4 @@
-﻿using Rubberduck.RPC.Platform;
-using System.Threading;
-using System.Windows;
+﻿using System.Windows;
 
 namespace Rubberduck.Client.LocalDb
 {

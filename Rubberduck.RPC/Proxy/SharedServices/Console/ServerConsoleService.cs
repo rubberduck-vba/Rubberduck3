@@ -1,20 +1,19 @@
 ﻿using System;
-using Rubberduck.RPC.Platform;
 using System.Text;
 using System.Threading;
+using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Proxy.SharedServices.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Commands;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Abstract;
-using Rubberduck.RPC.Proxy.SharedServices.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
-using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
-using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
 {
-    public class ServerConsoleService<TOptions> : ServerProxyService<TOptions, ServerConsoleCommands>, IServerConsoleService<TOptions>
+    public class ServerConsoleService<TOptions, TProxyClient> : ServerProxyService<TOptions, ServerConsoleCommands, TProxyClient>, IServerConsoleService<TOptions>
         where TOptions : SharedServerCapabilities, new()
+        where TProxyClient : class, IServerConsoleProxyClient
     {
         private int _nextMessageId = 0;
 
@@ -26,8 +25,6 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
 
         public override ServerConsoleCommands Commands { get; }
         public override IServerLogger Logger { get; }
-
-        public Type ClientProxyType { get; } = typeof(IServerConsoleProxyClient);
 
         private void LogError(Exception exception) => Log(exception);
         private void LogMessage(ServerLogLevel level, string message, string verbose) => Log(level, message, verbose);
@@ -172,19 +169,33 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
             System.Console.BackgroundColor = background;
         }
 
-        protected override void RpcClientSetTrace(object sender, SetTraceParams e)
+        /// <summary>
+        /// Registers events/notifications from the provided client proxy.
+        /// </summary>
+        /// <param name="client">The client to register notifications for.</param>
+        /// <remarks>
+        /// Base implementation registers LSP-compliant notifications. Override to register any additional notifications.
+        /// </remarks>
+        protected override void RegisterClientNotifications(TProxyClient client)
         {
-            _ = Task.Run(() => Commands.SetTraceCommand.ExecuteAsync(e));
+            client.SetTrace += Client_SetTrace;
         }
 
-        protected override void RpcClientRequestExit(object sender, EventArgs e)
+        /// <summary>
+        /// Deregisters events/notifications from the provided client proxy.
+        /// </summary>
+        /// <param name="client">The client to deregister notifications for.</param>
+        /// <remarks>
+        /// Base implementation deregisters LSP-compliant notifications. Override to deregister any additional notifications.
+        /// </remarks>
+        protected override void DeregisterClientNotifications(TProxyClient client)
         {
-            throw new NotImplementedException();
+            client.SetTrace -= Client_SetTrace;
         }
 
-        protected override void RpcClientInitialized(object sender, InitializedParams e)
+        private async void Client_SetTrace(object sender, SetTraceParams e)
         {
-            throw new NotImplementedException();
+            await Commands.SetTraceCommand.ExecuteAsync(e);
         }
     }
 }

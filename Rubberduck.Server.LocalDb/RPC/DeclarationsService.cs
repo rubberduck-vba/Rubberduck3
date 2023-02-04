@@ -238,7 +238,9 @@ namespace Rubberduck.Server.LocalDb.Services
 
                 }).ToList();
 
-                await Task.WhenAll(operations).ContinueWith(t => uow.SaveChanges());
+                await Task.WhenAll(operations);
+                uow.SaveChanges();
+
                 return annotations;
             }
         }
@@ -266,7 +268,9 @@ namespace Rubberduck.Server.LocalDb.Services
 
                 }).ToList();
 
-                await Task.WhenAll(operations).ContinueWith(t => uow.SaveChanges());
+                await Task.WhenAll(operations);
+                uow.SaveChanges();
+
                 return attributes;
             }
         }
@@ -294,7 +298,9 @@ namespace Rubberduck.Server.LocalDb.Services
 
                 }).ToList();
 
-                await Task.WhenAll(operations).ContinueWith(t => uow.SaveChanges());
+                await Task.WhenAll(operations);
+                uow.SaveChanges();
+
                 return identifierReferences;
             }
         }
@@ -336,7 +342,9 @@ namespace Rubberduck.Server.LocalDb.Services
 
                 }).ToList();
 
-                await Task.WhenAll(operations).ContinueWith(t => uow.SaveChanges());
+                await Task.WhenAll(operations);
+                uow.SaveChanges();
+
                 return projects;
             }
         }
@@ -374,7 +382,9 @@ namespace Rubberduck.Server.LocalDb.Services
 
                 }).ToList();
 
-                await Task.WhenAll(operations).ContinueWith(t => uow.SaveChanges());
+                await Task.WhenAll(operations);
+                uow.SaveChanges();
+
                 return modules;
             }
         }
@@ -417,7 +427,9 @@ namespace Rubberduck.Server.LocalDb.Services
 
                 }).ToList();
 
-                await Task.WhenAll(operations).ContinueWith(t => uow.SaveChanges());
+                await Task.WhenAll(operations);
+                uow.SaveChanges();
+
                 return members;
             }
         }
@@ -461,7 +473,9 @@ namespace Rubberduck.Server.LocalDb.Services
 
                 }).ToList();
 
-                await Task.WhenAll(operations).ContinueWith(t => uow.SaveChanges());
+                await Task.WhenAll(operations);
+                uow.SaveChanges();
+
                 return parameters;
             }
         }
@@ -501,14 +515,21 @@ namespace Rubberduck.Server.LocalDb.Services
 
                 }).ToList();
 
-                await Task.WhenAll(operations).ContinueWith(t => uow.SaveChanges());
+                await Task.WhenAll(operations);
+                uow.SaveChanges();
+
                 return locals;
             }
         }
 
         public void SetClientProxy<T>(T proxy) where T : class
         {
-            throw new NotImplementedException();
+            // no client events/notifications to register.
+        }
+
+        public void InitializeClientProxy(object proxy)
+        {
+            // no client proxy to initialize
         }
     }
 }

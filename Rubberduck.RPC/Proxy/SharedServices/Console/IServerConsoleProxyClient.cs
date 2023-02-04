@@ -5,7 +5,7 @@ using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
 {
-    public interface IServerConsoleProxyClient : IJsonRpcTarget
+    public interface IServerConsoleProxyClient : IJsonRpcSource
     {
         /// <summary>
         /// A notification sent from the client to the server to modify the server's trace level.

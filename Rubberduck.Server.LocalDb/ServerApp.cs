@@ -35,21 +35,9 @@ namespace Rubberduck.Server.LocalDb
         {
             Greetings();
 
-            _rpcServerProxy.ClientConnected += ServerService_ClientConnected;
-            _rpcServerProxy.ClientDisconnected += ServerService_ClientDisconnected;
             _rpcServerProxy.WillExit += ServerService_WillExit;
 
             return _dbServer.StartAsync(stoppingToken);
-        }
-
-        private void ServerService_ClientDisconnected(object sender, ClientInfo e)
-        {
-            _serverStateService.Info.Disconnect(e.ProcessId, out _);
-        }
-
-        private void ServerService_ClientConnected(object sender, ClientInfo e)
-        {
-            _serverStateService.Info.Connect(e);
         }
 
         private void ServerService_WillExit(object sender, EventArgs e)

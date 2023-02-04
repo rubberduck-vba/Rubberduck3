@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using System.Linq;
+using Rubberduck.RPC.Proxy.SharedServices;
 
 namespace Rubberduck.RPC.Platform
 {
@@ -18,22 +19,21 @@ namespace Rubberduck.RPC.Platform
     /// <remarks>
     /// Implementation holds the server state for the lifetime of the host process.
     /// </remarks>
-    public abstract class JsonRpcServer<TStream, TServerService, TOptions> : BackgroundService, IJsonRpcServer
+    public abstract class JsonRpcServer<TStream, TServerService, TServerProxyClient, TOptions> : BackgroundService, IJsonRpcServer
         where TStream : Stream
-        where TServerService : ServerService<TOptions>
+        where TServerService : ServerService<TOptions, TServerProxyClient>
         where TOptions : SharedServerCapabilities, new()
+        where TServerProxyClient : class, IServerProxyClient
     {
         private readonly IServiceProvider _serviceProvider;
 
         private readonly IRpcStreamFactory<TStream> _rpcStreamFactory;
-        private readonly IEnumerable<IJsonRpcTarget> _serverProxies;
         private readonly IEnumerable<Type> _clientProxyTypes;
         protected JsonRpcServer(IServiceProvider serviceProvider, IEnumerable<Type> clientProxyTypes)
         {
             _serviceProvider = serviceProvider;
 
             _rpcStreamFactory = serviceProvider.GetService<IRpcStreamFactory<TStream>>();
-            _serverProxies = serviceProvider.GetService<IEnumerable<IJsonRpcTarget>>();
             _clientProxyTypes = clientProxyTypes;
         }
 
@@ -53,7 +53,7 @@ namespace Rubberduck.RPC.Platform
         protected override async Task ExecuteAsync(CancellationToken serverToken)
         {
             Console.WriteLine("Registered RPC server targets:");
-            foreach (var proxy in _serverProxies)
+            foreach (var proxy in _serviceProvider.GetService<IEnumerable<IJsonRpcTarget>>())
             {
                 Console.WriteLine($" • {proxy.GetType().Name}");
             }
@@ -105,7 +105,7 @@ namespace Rubberduck.RPC.Platform
             using (var rpc = new JsonRpc(stream))
             {
                 var serverProxies = _serviceProvider.GetService<IEnumerable<IJsonRpcTarget>>();
-                foreach (var proxy in _serverProxies)
+                foreach (var proxy in serverProxies)
                 {
                     rpc.AddLocalRpcTarget(proxy, _targetOptions);
                 }
@@ -117,9 +117,9 @@ namespace Rubberduck.RPC.Platform
                 foreach (var proxyType in _clientProxyTypes)
                 {
                     var proxy = rpc.Attach(proxyType);
-                    foreach (var serverProxy in _serverProxies.Where(p => p.ClientProxyType.GetType() == proxyType))
+                    foreach (var serverProxy in serverProxies)
                     {
-                        serverProxy.SetClientProxy(proxy);
+                        serverProxy.InitializeClientProxy(proxy);
                         Console.WriteLine($" • {proxyType.Name}");
                         break;
                     }
