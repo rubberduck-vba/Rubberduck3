@@ -248,12 +248,14 @@
     <Compile Include="Platform\IJsonRpcSource.cs" />
     <Compile Include="Platform\IJsonRpcTarget.cs" />
     <Compile Include="Platform\Client\JsonRpcClientSideServerProxyService.cs" />
+    <Compile Include="Platform\IRpcStreamFactory.cs" />
     <Compile Include="Platform\Metadata\JsonRpcMethods.cs" />
     <Compile Include="Platform\Metadata\LspCompliantAttribute.cs" />
     <Compile Include="Platform\Metadata\RubberduckSPAttribute.cs" />
     <Compile Include="Platform\Model\ClientState.cs" />
     <Compile Include="Platform\LogOutputPart.cs" />
     <Compile Include="Platform\Model\ServerState.cs" />
+    <Compile Include="Platform\Client\NamedPipeClientStreamFactory.cs" />
     <Compile Include="Platform\Protocol\CancelRequest.cs" />
     <Compile Include="Platform\Protocol\ErrorCodes.cs" />
     <Compile Include="Platform\Protocol\Message.cs" />
@@ -268,9 +270,12 @@
     <Compile Include="Platform\ServerService.cs" />
     <Compile Include="Proxy\LocalDbServer\ILocalDbServerEvents.cs" />
     <Compile Include="Proxy\LocalDbServer\ILocalDbServerProxyClient.cs" />
+    <Compile Include="Proxy\LocalDbServer\LocalDbServerCapabilities.cs" />
+    <Compile Include="Proxy\LocalDbServer\LocalDbServerProxyClient.cs" />
+    <Compile Include="Proxy\LocalDbServer\LocalDbServerProxyService.cs" />
     <Compile Include="Proxy\LspServer\Server\Commands\Parameters\ConfigurationParams.cs" />
     <Compile Include="Proxy\LspServer\Server\Commands\Parameters\ExecuteCommandParams.cs" />
-    <Compile Include="Proxy\LspServer\Server\Commands\Parameters\LogMessageParams.cs" />
+    <Compile Include="Proxy\SharedServices\Console\Commands\Parameters\LogMessageParams.cs" />
     <Compile Include="Proxy\LspServer\Server\Commands\Parameters\PartialResultParams.cs" />
     <Compile Include="Proxy\LspServer\Server\Commands\Parameters\ProgressParams.cs" />
     <Compile Include="Proxy\LspServer\Server\Commands\Parameters\WorkDoneProgressCancelParams.cs" />
@@ -498,17 +503,16 @@
     <Compile Include="Proxy\LspServer\Workspace\Model\FileOperationPattern.cs" />
     <Compile Include="Proxy\SharedServices\Abstract\IConfigurableProxy.cs" />
     <Compile Include="Proxy\SharedServices\Server\Abstract\IConfigurableServerProxy.cs" />
-    <Compile Include="Proxy\SharedServices\Server\Abstract\IServerCommandsProxy.cs" />
     <Compile Include="Proxy\SharedServices\Server\Abstract\IServerLogger.cs" />
     <Compile Include="Proxy\SharedServices\Abstract\IServerNotificationCommand.cs" />
     <Compile Include="Proxy\SharedServices\Abstract\IServerRequestCommand.cs" />
     <Compile Include="Proxy\SharedServices\Server\Abstract\IServerStateService.cs" />
     <Compile Include="Proxy\SharedServices\Console\Abstract\IConsoleCommandsService.cs" />
     <Compile Include="Proxy\SharedServices\Console\Abstract\IServerConsoleEvents.cs" />
-    <Compile Include="Proxy\SharedServices\Console\Abstract\IServerConsoleService.cs" />
+    <Compile Include="Proxy\SharedServices\Console\Abstract\IServerConsoleProxy.cs" />
     <Compile Include="Proxy\SharedServices\Console\Commands\GetConsoleOptionsCommand.cs" />
-    <Compile Include="Proxy\SharedServices\Console\Commands\SetEnabledCommand.cs" />
-    <Compile Include="Proxy\SharedServices\Console\Commands\SetTraceCommand.cs" />
+    <Compile Include="Proxy\SharedServices\Console\Commands\SetEnabledNotificationCommand.cs" />
+    <Compile Include="Proxy\SharedServices\Console\Commands\SetTraceNotificationCommand.cs" />
     <Compile Include="Proxy\SharedServices\Console\Configuration\BackgroundFormattingOptions.cs" />
     <Compile Include="Proxy\SharedServices\Console\Commands\Parameters\LogTraceParams.cs" />
     <Compile Include="Proxy\SharedServices\Console\Commands\ServerConsoleCommands.cs" />
@@ -520,13 +524,12 @@
     <Compile Include="Proxy\SharedServices\Console\Configuration\FontOptions.cs" />
     <Compile Include="Proxy\SharedServices\Console\IServerConsoleProxyClient.cs" />
     <Compile Include="Proxy\SharedServices\Console\Responses\ConsoleStatusResult.cs" />
-    <Compile Include="Proxy\SharedServices\Console\ServerConsoleService.cs" />
+    <Compile Include="Proxy\SharedServices\Console\ServerConsoleProxyService.cs" />
     <Compile Include="Proxy\SharedServices\ServerStateService.cs" />
     <Compile Include="Proxy\SharedServices\DelegateServerNotificationCommand.cs" />
     <Compile Include="Proxy\SharedServices\DelegateServerRequestCommand.cs" />
-    <Compile Include="Platform\NamedPipeStreamFactory.cs" />
+    <Compile Include="Platform\NamedPipeServerStreamFactory.cs" />
     <Compile Include="Proxy\SharedServices\Console\Configuration\ConsoleMessage.cs" />
-    <Compile Include="Proxy\SharedServices\Console\IServerConsoleProxy.cs" />
     <Compile Include="Proxy\SharedServices\Console\Configuration\ServerConsoleOptions.cs" />
     <Compile Include="Platform\JsonRpcServer.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -542,8 +545,8 @@
     <Compile Include="Proxy\SharedServices\ServerRequestCommand.cs" />
     <Compile Include="Proxy\SharedServices\ServerStatus.cs" />
     <Compile Include="Proxy\SharedServices\ServerVoidRequestCommand.cs" />
-    <Compile Include="Proxy\SharedServices\Server\Abstract\IServerProxyService.cs" />
-    <Compile Include="Proxy\SharedServices\Server\Abstract\ServerProxyService.cs" />
+    <Compile Include="Proxy\SharedServices\Server\Abstract\IServerProxy.cs" />
+    <Compile Include="Proxy\SharedServices\Server\Abstract\ServerSideProxyService.cs" />
     <Compile Include="Proxy\SharedServices\Server\Commands\ClientInitializedParams.cs" />
     <Compile Include="Proxy\SharedServices\Server\Commands\ClientShutdownParams.cs" />
     <Compile Include="Proxy\SharedServices\Server\Commands\ConnectClientCommand.cs" />
@@ -582,8 +585,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Doc\Proxies.cd" />
     <None Include="packages.config" />
-    <None Include="Platform.cd" />
+    <None Include="Doc\Platform.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

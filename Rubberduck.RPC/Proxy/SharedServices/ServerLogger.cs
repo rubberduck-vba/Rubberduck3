@@ -1,25 +1,26 @@
 ﻿using Rubberduck.RPC.Proxy.SharedServices.Abstract;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using System;
 
 namespace Rubberduck.RPC.Proxy.SharedServices
 {
-    public class ServerLogger : IServerLogger, IInternalServerLogger 
+    public class ServerLogger<TOptions> : IServerLogger, IInternalServerLogger 
+        where TOptions : SharedServerCapabilities
     {
-        private readonly Action<Exception> _onErrorAction;
-        private readonly Action<ServerLogLevel, string, string> _onLogMessageAction;
+        private readonly IServerConsoleProxy<TOptions> _service;
 
-        public ServerLogger(Action<Exception> onErrorAction, Action<ServerLogLevel, string, string> onLogMessageAction)
+        public ServerLogger(IServerConsoleProxy<TOptions> service)
         {
-            _onErrorAction = onErrorAction;
-            _onLogMessageAction = onLogMessageAction;
+            _service = service;
         }
 
-        public void OnError(Exception exception) => _onErrorAction?.Invoke(exception);
-        public void OnWarning(string message, string verbose = null) => _onLogMessageAction.Invoke(ServerLogLevel.Warn, message, verbose);
-        public void OnInfo(string message, string verbose = null) => _onLogMessageAction.Invoke(ServerLogLevel.Info, message, verbose);
-        public void OnDebug(string message, string verbose = null) => _onLogMessageAction.Invoke(ServerLogLevel.Debug, message, verbose);
-        public void OnTrace(string message, string verbose = null) => _onLogMessageAction.Invoke(ServerLogLevel.Trace, message, verbose);
+        public void OnError(Exception exception) => Log(ServerLogLevel.Error, exception.Message, exception.StackTrace);
+        public void OnWarning(string message, string verbose = null) => Log(ServerLogLevel.Warn, message, verbose);
+        public void OnInfo(string message, string verbose = null) => Log(ServerLogLevel.Info, message, verbose);
+        public void OnDebug(string message, string verbose = null) => Log(ServerLogLevel.Debug, message, verbose);
+        public void OnTrace(string message, string verbose = null) => Log(ServerLogLevel.Trace, message, verbose);
 
-        public void Log(ServerLogLevel level, string message, string verbose = null) => _onLogMessageAction(level, message, verbose);
+        public void Log(ServerLogLevel level, string message, string verbose = null) => _service.LogTraceAsync(level, message, verbose);
     }
 }

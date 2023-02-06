@@ -56,21 +56,19 @@ namespace Rubberduck.Client.LocalDb
     {
         private readonly Timer _timer;
 
-        public ServerStatusViewModel(IJsonRpcServer server, ILocalDbServerEvents events)
+        public ServerStatusViewModel(ILocalDbServerProxyClient server)
         {
+            var info = server.ServerStateService.Info;
             _timer = new Timer(_ =>
             {
-                Uptime = server.Info.UpTime ?? TimeSpan.Zero;
-                TotalInbound = server.Info.MessagesReceived;
-                TotalOutbound = server.Info.MessagesSent;
-                ClientConnections = server.Info.ClientsCount;
-                IsAlive = server.Info.IsAlive;
+                Uptime = info.UpTime ?? TimeSpan.Zero;
+                TotalInbound = info.MessagesReceived;
+                TotalOutbound = info.MessagesSent;
+                ClientConnections = info.ClientsCount;
+                IsAlive = info.IsAlive;
             }, null, 0, 1000);
-
-            ServerName = server.Info.Name;
-
-            events.ClientConnected += (o, e) => Interlocked.Increment(ref _clientConnections);
-            events.ClientDisconnected += (o, e) => Interlocked.Decrement(ref _clientConnections);
+            
+            ServerName = info.Name;
         }
 
         public string ServerName { get; }

@@ -1,11 +1,13 @@
-﻿using Rubberduck.RPC.Proxy.SharedServices;
+﻿using Rubberduck.RPC.Platform.Metadata;
+using Rubberduck.RPC.Platform.Model;
+using Rubberduck.RPC.Proxy.SharedServices;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using System;
 using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Proxy.LocalDbServer
 {
-    public interface ILocalDbServerProxyClient : IServerProxyClient
+    public interface ILocalDbServerProxyClient : IServerProxyClient<LocalDbServerCapabilities>
     {
         /// <summary>
         /// A notification sent from a client to the server to signal it is ready to send and receive requests and notifications.
@@ -22,5 +24,12 @@ namespace Rubberduck.RPC.Proxy.LocalDbServer
         /// </summary>
         event EventHandler<ClientShutdownParams> ClientShutdown;
         Task OnClientShutdownAsync(ClientShutdownParams parameter);
+
+        /// <summary>
+        /// Requests server information.
+        /// </summary>
+        /// <returns>The current server state.</returns>
+        [RubberduckSP(JsonRpcMethods.ServerProxyRequests.Shared.Server.Info)]
+        Task<ServerState> OnRequestServerInfoAsync();
     }
 }

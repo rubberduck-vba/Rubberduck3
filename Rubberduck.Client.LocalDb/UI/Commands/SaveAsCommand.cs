@@ -8,6 +8,8 @@ using Rubberduck.UI.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices;
+using Rubberduck.RPC.Proxy.LocalDbServer;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 
 namespace Rubberduck.Client.LocalDb.UI.Commands
 {
@@ -41,11 +43,11 @@ namespace Rubberduck.Client.LocalDb.UI.Commands
 
     public class SaveAsCommand : CommandBase
     {
-        private readonly IServerProxyService<SharedServerCapabilities, IServerProxyClient> _server;
+        private readonly ILocalDbServerProxyClient _server;
         private readonly IFileNameProvider _fileNameProvider;
         private readonly int _processId;
 
-        public SaveAsCommand(IServerProxyService<SharedServerCapabilities, IServerProxyClient> server, IFileNameProvider fileNameProvider) : base(LogManager.GetCurrentClassLogger())
+        public SaveAsCommand(ILocalDbServerProxyClient server, IFileNameProvider fileNameProvider) : base(LogManager.GetCurrentClassLogger())
         {
             _server = server;
             //_processId = server.Info.ProcessId; // TODO add the session-wide immutable values to server state (process ID, name, start time)
@@ -54,7 +56,7 @@ namespace Rubberduck.Client.LocalDb.UI.Commands
 
         protected override void OnExecute(object parameter)
         {
-            _server.ServerConsole.Log(ServerLogLevel.Info, $"Executing {nameof(SaveAsCommand)}...");
+            _server.LogAsync(ServerLogLevel.Info, $"Executing {nameof(SaveAsCommand)}...");
 
             if (parameter is IEnumerable<IConsoleMesssageViewModel> messages)
             {

@@ -1,6 +1,8 @@
-﻿using Rubberduck.RPC.Platform.Metadata;
-using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
+﻿using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Platform.Metadata;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Model;
 using System;
 using System.Threading.Tasks;
 
@@ -10,9 +12,10 @@ namespace Rubberduck.RPC.Proxy.SharedServices
     /// Represents a client-side notifications provider.
     /// </summary>
     /// <remarks>
-    /// This interface must be implemented on the client side.
+    /// This interface is implemented on the client side with automatic StreamJsonRpc proxies.
     /// </remarks>
-    public interface IServerProxyClient : IServerConsoleProxyClient
+    public interface IServerProxyClient<TServerCapabilities> : IJsonRpcSource
+        where TServerCapabilities : SharedServerCapabilities, new()
     {
         /// <summary>
         /// A notification sent from the client to ask the server to exit its process.
@@ -22,6 +25,10 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         /// </remarks>
         [LspCompliant(JsonRpcMethods.ServerProxyRequests.Shared.Server.Exit)]
         event EventHandler RequestExit;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         Task OnRequestExitAsync();
 
         /// <summary>
@@ -33,6 +40,25 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         /// </remarks>
         [LspCompliant(JsonRpcMethods.ServerProxyRequests.Shared.Server.Initialized)]
         event EventHandler<InitializedParams> Initialized;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
         Task OnInitializedAsync(InitializedParams parameter);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        Task<InitializeResult<TServerCapabilities>> InitializeClientAsync(InitializeParams<TServerCapabilities> parameter);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        Task ShutdownClientAsync(ClientShutdownParams parameter);
     }
 }

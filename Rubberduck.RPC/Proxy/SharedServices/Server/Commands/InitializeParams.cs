@@ -38,6 +38,6 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
         /// The initial trace setting. Logs <c>Messages</c> if unspecified.
         /// </summary>
         [JsonPropertyName("trace")]
-        public string Trace { get; set; } = Constants.TraceValue.Messages;
+        public Constants.TraceValue.AsStringEnum Trace { get; set; } = Constants.TraceValue.AsStringEnum.Messages;
     }
 }

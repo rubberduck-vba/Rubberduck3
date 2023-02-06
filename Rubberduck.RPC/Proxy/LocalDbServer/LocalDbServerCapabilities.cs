@@ -1,11 +1,11 @@
 ﻿using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 
-namespace Rubberduck.Server.LocalDb
+namespace Rubberduck.RPC.Proxy.LocalDbServer
 {
     /// <summary>
     /// The localdb-specific configurations.
     /// </summary>
-    public class ServerCapabilities : SharedServerCapabilities
+    public class LocalDbServerCapabilities : SharedServerCapabilities
     {
         /* TODO */
     }

@@ -1,20 +1,22 @@
-﻿using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Platform.Client;
-using Rubberduck.RPC.Proxy.LocalDbServer;
-using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
-using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO.Pipes;
-using System.Linq;
-using System.Runtime.Remoting.Proxies;
-using System.Text;
 using System.Threading.Tasks;
+using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Platform.Client;
+using Rubberduck.RPC.Platform.Model;
+using Rubberduck.RPC.Proxy.SharedServices.Abstract;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Model;
 
-namespace Rubberduck.Client.LocalDb.Client
+namespace Rubberduck.RPC.Proxy.LocalDbServer
 {
     internal class LocalDbServerProxyClient : JsonRpcClientSideServerProxyService<ILocalDbServerProxyClient>, ILocalDbServerProxyClient
     {
+        public IServerLogger Logger { get; set; }
+
+        public LocalDbServerCapabilities Configuration { get; set; }
+
+
         public LocalDbServerProxyClient(IRpcStreamFactory<NamedPipeClientStream> rpcStreamFactory) 
             : base(rpcStreamFactory)
         {
@@ -36,8 +38,13 @@ namespace Rubberduck.Client.LocalDb.Client
         public async Task OnInitializedAsync(InitializedParams parameter)
             => await NotifyAsync(async proxy => await proxy.OnInitializedAsync(parameter));
 
-        public event EventHandler<SetTraceParams> SetTrace;
-        public async Task OnSetTraceAsync(SetTraceParams parameter)
-            => await NotifyAsync(async proxy => await proxy.OnSetTraceAsync(parameter));
+        public async Task<InitializeResult<LocalDbServerCapabilities>> InitializeClientAsync(InitializeParams<LocalDbServerCapabilities> parameter)
+            => await RequestAsync(async proxy => await proxy.InitializeClientAsync(parameter));
+
+        public async Task ShutdownClientAsync(ClientShutdownParams parameter)
+            => await NotifyAsync(async proxy => await proxy.OnClientShutdownAsync(parameter));
+
+        public async Task<ServerState> OnRequestServerInfoAsync()
+            => await RequestAsync(async proxy => await proxy.OnRequestServerInfoAsync());
     }
 }

@@ -1,16 +1,16 @@
-﻿using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Proxy.SharedServices;
-using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
-using Rubberduck.RPC.Proxy.SharedServices.Console.Commands;
-using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
-using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
-using Rubberduck.UI;
-using Rubberduck.UI.Abstract;
-using Rubberduck.UI.Command;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Rubberduck.Client.LocalDb.UI.Commands;
+using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Proxy.LocalDbServer;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
+using Rubberduck.UI;
+using Rubberduck.UI.Abstract;
+using Rubberduck.UI.Command;
 
 namespace Rubberduck.Client.LocalDb
 {
@@ -35,22 +35,27 @@ namespace Rubberduck.Client.LocalDb
             [Constants.TraceValue.Verbose] = new TraceSettingValue(Constants.TraceValue.Verbose),
         };
 
-        public ConsoleViewModel(ServerService<SharedServerCapabilities> server, IServerConsoleService<SharedServerCapabilities> console, ServerConsoleCommands commands)
+        public ConsoleViewModel(ILocalDbServerProxyClient server)
         {
-            console.Message += OnConsoleMessage;
+            server.Message += OnConsoleMessage;
 
             ConsoleContent = new ObservableCollection<IConsoleMesssageViewModel>();
 
             ClearCommand = new DelegateCommand(null, o => ConsoleContent.Clear());
-            /*
-            ShutdownCommand = server.Commands.ExitCommand;
-            CopyCommand = null;
-            SaveAsCommand = null;
-            PauseTraceCommand = new DelegateCommand(null, server.ServerConsole.Commands.SetTraceCommand);
-            ResumeTraceCommand = resumeTraceCommand;
-            SetTraceCommand = setTraceCommand;
-            */
-            _trace = console.Configuration.ConsoleOptions.Trace.ToString();
+
+            ShutdownCommand = new AsyncDelegateCommand(o => server.ShutdownClientAsync(o as ClientShutdownParams));
+            CopyCommand = new CopyCommand(server);
+            SaveAsCommand = new SaveAsCommand(server, new FileNameProvider());
+
+            var enableParams = new SetEnabledParams { Value = true };
+            var disableParams = new SetEnabledParams { Value = false };
+
+            PauseTraceCommand = new AsyncDelegateCommand(_ => server.OnStopTraceAsync());
+            ResumeTraceCommand = new AsyncDelegateCommand(_ => server.OnResumeTraceAsync());
+            SetTraceCommand = new AsyncDelegateCommand(o => server.OnSetTraceAsync(o as SetTraceParams));
+
+            _trace = Constants.TraceValue.Verbose;
+
             TraceValues = _traceSettings.Values;
             SelectedTraceValue = _traceSettings[Trace];
         }
@@ -120,20 +125,6 @@ namespace Rubberduck.Client.LocalDb
                     _trace = value;
                     OnPropertyChanged();
                     SetTraceCommand.Execute(value);
-                }
-            }
-        }
-
-        private int _rpcPort;
-        public int RpcPort
-        {
-            get => _rpcPort;
-            set
-            {
-                if (_rpcPort != value)
-                {
-                    _rpcPort = value;
-                    OnPropertyChanged();
                 }
             }
         }

@@ -1,44 +1,66 @@
 ﻿using System;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Proxy.SharedServices.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Commands;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Abstract;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
 {
-    public class ServerConsoleService<TOptions, TProxyClient> : ServerProxyService<TOptions, ServerConsoleCommands, TProxyClient>, IServerConsoleService<TOptions>
+    public class ServerConsoleProxyService<TOptions> : ServerSideProxyService<TOptions>, IServerConsoleProxy<TOptions>
         where TOptions : SharedServerCapabilities, new()
-        where TProxyClient : class, IServerConsoleProxyClient
     {
         private int _nextMessageId = 0;
 
-        public ServerConsoleService(IServerStateService<TOptions> serverStateService)
+        public ServerConsoleProxyService(IServerStateService<TOptions> serverStateService, IServerConsoleProxyClient client)
             : base(null, serverStateService)
         {
-            Logger = new ServerLogger(LogError, LogMessage);
+            Logger = new ServerLogger<TOptions>(this);
+
+            client.SetTrace += Client_SetTrace;
+            client.StopTrace += Client_StopTrace;
+            client.ResumeTrace += Client_ResumeTrace;
+
+            var getConfig = new GetServerOptions<ServerConsoleOptions>(() => Configuration);
+            var getState = new GetServerStateInfo(() => ServerStateService.Info);
+
+            _setEnabledCommand = new SetEnabledNotificationCommand(Logger, getConfig, getState);
+            _setTraceCommand = new SetTraceNotificationCommand(Logger, getConfig, getState);
         }
 
-        public override ServerConsoleCommands Commands { get; }
+        private readonly SetEnabledNotificationCommand _setEnabledCommand;
+        private async void Client_ResumeTrace(object sender, EventArgs e)
+        {
+            await _setEnabledCommand.ExecuteAsync(new SetEnabledParams { Value = true });
+        }
+
+        private async void Client_StopTrace(object sender, EventArgs e)
+        {
+            await _setEnabledCommand.ExecuteAsync(new SetEnabledParams { Value = false });
+        }
+
+        private readonly SetTraceNotificationCommand _setTraceCommand;
+        private async void Client_SetTrace(object sender, SetTraceParams e)
+        {
+            await _setTraceCommand.ExecuteAsync(e);
+        }
+
         public override IServerLogger Logger { get; }
 
-        private void LogError(Exception exception) => Log(exception);
-        private void LogMessage(ServerLogLevel level, string message, string verbose) => Log(level, message, verbose);
-
-        public event EventHandler<ConsoleMessage> Message;
-        protected void OnMessage(int id, ServerLogLevel level, string message, string verbose, Exception exception = null)
-            => Message?.Invoke(this, new ConsoleMessage(id, DateTime.Now, level, message, Configuration.ConsoleOptions.IsVerbose ? verbose : null, exception));
+        public ServerConsoleOptions Configuration => ServerOptions.ConsoleOptions;
 
         public event EventHandler<LogTraceParams> LogTrace;
-        protected void OnLogTrace(LogTraceParams parameters) => LogTrace?.Invoke(this, parameters);
+        public async Task OnLogTraceAsync(LogTraceParams parameters) => await Task.Run(() => LogTrace?.Invoke(this, parameters));
 
-        public void Log(ServerLogLevel level, string message, string verbose = null)
+        public async Task LogTraceAsync(ServerLogLevel level, string message, string verbose = null)
         {
-            if (!Configuration.ConsoleOptions.CanLog(level))
+            if (!ServerOptions.ConsoleOptions.CanLog(level))
             {
                 return;
             }
@@ -49,53 +71,51 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
             }
 
             var id = Interlocked.Increment(ref _nextMessageId);
-            var timestamp = DateTime.Now.ToString(Configuration.ConsoleOptions.ConsoleOutputFormatting.TimestampFormatString);
+            var timestamp = DateTime.Now.ToString(ServerOptions.ConsoleOptions.ConsoleOutputFormatting.TimestampFormatString);
 
-            var separator = Configuration.ConsoleOptions.ConsoleOutputFormatting.MessagePartSeparator;
+            var separator = ServerOptions.ConsoleOptions.ConsoleOutputFormatting.MessagePartSeparator;
 
-            var willNotify = level != ServerLogLevel.Off && level >= Configuration.ConsoleOptions.LogLevel;
+            var willNotify = level != ServerLogLevel.Off && level >= ServerOptions.ConsoleOptions.LogLevel;
             var builder = willNotify ? new StringBuilder() : null;
 
-            ConsoleOutput(builder, level, id.ToString(), LogOutputPart.MessageId);
-            ConsoleOutput(builder, level, separator);
+            await ConsoleOutputAsync(builder, level, id.ToString(), LogOutputPart.MessageId);
+            await ConsoleOutputAsync(builder, level, separator);
 
-            ConsoleOutput(builder, level, timestamp, LogOutputPart.Timestamp);
-            ConsoleOutput(builder, level, separator);
+            await ConsoleOutputAsync(builder, level, timestamp, LogOutputPart.Timestamp);
+            await ConsoleOutputAsync(builder, level, separator);
 
-            ConsoleOutput(builder, level, level.ToString().ToUpperInvariant(), LogOutputPart.LogLevel);
-            ConsoleOutput(builder, level, separator);
+            await ConsoleOutputAsync(builder, level, level.ToString().ToUpperInvariant(), LogOutputPart.LogLevel);
+            await ConsoleOutputAsync(builder, level, separator);
 
-            ConsoleOutput(builder, level, message, LogOutputPart.Message);
-            ConsoleOutput(builder, level, separator);
+            await ConsoleOutputAsync(builder, level, message, LogOutputPart.Message);
+            await ConsoleOutputAsync(builder, level, separator);
 
-            if (Configuration.ConsoleOptions.Trace == Constants.Console.VerbosityOptions.AsStringEnum.Verbose && !string.IsNullOrWhiteSpace(verbose))
+            if (ServerOptions.ConsoleOptions.Trace == Constants.Console.VerbosityOptions.AsStringEnum.Verbose && !string.IsNullOrWhiteSpace(verbose))
             {
-                ConsoleOutput(builder, level, verbose, LogOutputPart.Verbose);
+                await ConsoleOutputAsync(builder, level, verbose, LogOutputPart.Verbose);
             }
 
-            ConsoleOutput(builder, level, Environment.NewLine);
+            await ConsoleOutputAsync(builder, level, Environment.NewLine);
 
             if (willNotify)
             {
-                OnLogTrace(new LogTraceParams { Message = builder.ToString() });
+                await OnLogTraceAsync(new LogTraceParams { Message = builder.ToString() });
             }
-
-            OnMessage(id, level, message, verbose);
         }
 
-        public void Log(Exception exception, ServerLogLevel level, string message = null, string verbose = null)
+        public async Task LogTraceAsync(Exception exception, ServerLogLevel level, string message = null, string verbose = null)
         {
             var logMessage = string.IsNullOrWhiteSpace(message) ? exception.Message : message;
             var logVerbose = string.IsNullOrWhiteSpace(verbose) ? exception.StackTrace : verbose;
-            Log(level, logMessage, logVerbose);
+            await LogTraceAsync(level, logMessage, logVerbose);
         }
 
-        public void Log(Exception exception)
+        public async Task LogTraceAsync(Exception exception)
         {
-            Log(exception, ServerLogLevel.Error, null);
+            await LogTraceAsync(exception, ServerLogLevel.Error, null);
         }
 
-        private void ConsoleOutput(StringBuilder messageBuilder, ServerLogLevel level, string message, LogOutputPart? messagePart = null)
+        private async Task ConsoleOutputAsync(StringBuilder messageBuilder, ServerLogLevel level, string message, LogOutputPart? messagePart = null)
         {
             messageBuilder?.Append(message);
 
@@ -110,17 +130,17 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
 
             if (level == ServerLogLevel.Error || level == ServerLogLevel.Fatal)
             {
-                System.Console.Error.Write(message);
+                await System.Console.Error.WriteAsync(message);
             }
             else
             {
-                System.Console.Out.Write(message);
+                await System.Console.Out.WriteAsync(message);
             }
         }
 
         private void SetConsoleColors(LogOutputPart? part = null, ServerLogLevel? level = null)
         {
-            var provider = Configuration.ConsoleOptions.ConsoleOutputFormatting;
+            var provider = ServerOptions.ConsoleOptions.ConsoleOutputFormatting;
             (Func<ConsoleColorOptions> foreground, Func<ConsoleColorOptions> background) config =
                 (() => provider.FontFormatting.DefaultFont.ForegroundColorProvider, () => provider.BackgroundFormatting.DefaultFormatProvider);
 
@@ -167,35 +187,6 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
 
             System.Console.ForegroundColor = foreground;
             System.Console.BackgroundColor = background;
-        }
-
-        /// <summary>
-        /// Registers events/notifications from the provided client proxy.
-        /// </summary>
-        /// <param name="client">The client to register notifications for.</param>
-        /// <remarks>
-        /// Base implementation registers LSP-compliant notifications. Override to register any additional notifications.
-        /// </remarks>
-        protected override void RegisterClientNotifications(TProxyClient client)
-        {
-            client.SetTrace += Client_SetTrace;
-        }
-
-        /// <summary>
-        /// Deregisters events/notifications from the provided client proxy.
-        /// </summary>
-        /// <param name="client">The client to deregister notifications for.</param>
-        /// <remarks>
-        /// Base implementation deregisters LSP-compliant notifications. Override to deregister any additional notifications.
-        /// </remarks>
-        protected override void DeregisterClientNotifications(TProxyClient client)
-        {
-            client.SetTrace -= Client_SetTrace;
-        }
-
-        private async void Client_SetTrace(object sender, SetTraceParams e)
-        {
-            await Commands.SetTraceCommand.ExecuteAsync(e);
         }
     }
 }

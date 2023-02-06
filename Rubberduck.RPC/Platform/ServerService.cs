@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Rubberduck.RPC.Platform.Exceptions;
 using Rubberduck.RPC.Platform.Model;
@@ -20,9 +21,9 @@ namespace Rubberduck.RPC.Platform
     /// Proxy implementations should be stateless: the instance only lives for the duration of a single request, but an instance may be cached and reused.
     /// </remarks>
     /// <typeparam name="TOptions">The class type that defines server configuration options.</typeparam>
-    public abstract class ServerService<TOptions, TServerProxyClient> : ServerProxyService<TOptions, ServerCommands<TOptions>, TServerProxyClient>, IServerProxyService<TOptions, TServerProxyClient, ServerCommands<TOptions>>
+    public abstract class ServerService<TOptions, TClientOptions> : ServerSideProxyService<TOptions>, IServerProxy<TOptions>
         where TOptions : SharedServerCapabilities, new()
-        where TServerProxyClient : IServerProxyClient
+        where TClientOptions : new()
     {
         /// <summary>
         /// Creates a server service to handle a RPC request or notification on the server side.
@@ -32,22 +33,21 @@ namespace Rubberduck.RPC.Platform
         {
         }
 
-        public ServerState Info() => ServerStateService.Info;
+        public event EventHandler WillExit;
+        public async Task OnWillExitAsync() => await Task.Run(() => WillExit?.Invoke(this, EventArgs.Empty);
 
-        public IServerConsoleService<SharedServerCapabilities> ServerConsole { get; }
+        public async Task<ServerState> RequestServerInfoAsync() => await Task.FromResult(ServerStateService.Info);
 
-        public ITelemetryClientService Telemetry { get; }
-
-        /* TODO */
-
+        private readonly InitializeCommand<TOptions, TClientOptions> _initializeCommand;
         public async Task<InitializeResult<TOptions>> InitializeAsync(InitializeParams<TOptions> parameters, CancellationToken token)
         {
-            if (!(await Commands.InitializeCommand.TryExecuteAsync(parameters, token)).TryOut(out var response))
+            if (!(await _initializeCommand.TryExecuteAsync(parameters, token)).TryOut(out var response))
             {
-                throw new CommandNotExecutedException(nameof(Commands.InitializeCommand));
+                throw new CommandNotExecutedException(typeof(InitializeCommand<TOptions, TClientOptions>).Name);
             }
 
             return response;
         }
+
     }
 }

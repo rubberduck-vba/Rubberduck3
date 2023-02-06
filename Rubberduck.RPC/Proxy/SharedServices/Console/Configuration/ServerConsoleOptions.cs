@@ -7,7 +7,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Configuration
     /// <summary>
     /// Configuration options for server console.
     /// </summary>
-    public class ServerConsoleOptions
+    public class ServerConsoleOptions // TODO: implement INotifyPropertyChanged?
     {
         /// <summary>
         /// The minimum log level of messages that are output to the server console.

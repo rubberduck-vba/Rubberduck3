@@ -10,9 +10,9 @@ namespace Rubberduck.Server.LocalDb
         /// <summary>
         /// Gets the default configuration for this server, taking the specified <see cref="StartupOptions"/> into account.
         /// </summary>
-        public static ServerCapabilities Default(StartupOptions startupOptions)
+        public static LocalDbServerCapabilities Default(StartupOptions startupOptions)
         {
-            return new ServerCapabilities
+            return new LocalDbServerCapabilities
             {
                 ConsoleOptions = new ServerConsoleOptions
                 {

@@ -6,11 +6,12 @@ using Rubberduck.Server.LocalDb.Services;
 
 namespace Rubberduck.Server.LocalDb
 {
-    internal class ServerApp : RubberduckServerApp<IJsonRpcServer, LocalDbServerService, ServerCapabilities>
+    internal class ServerApp : RubberduckServerApp<IJsonRpcServer, LocalDbServerService, LocalDbServerCapabilities>
     {
-        public ServerApp(IJsonRpcServer server, IEnumerable<IJsonRpcTarget> proxies, IServerStateService<ServerCapabilities> stateService) 
+        public ServerApp(IJsonRpcServer server, IEnumerable<IJsonRpcTarget> proxies, IServerStateService<LocalDbServerCapabilities> stateService) 
             : base(server, proxies, stateService)
         {
+            
         }
 
         protected override void RegisterServerProxyEvents(LocalDbServerService proxy)

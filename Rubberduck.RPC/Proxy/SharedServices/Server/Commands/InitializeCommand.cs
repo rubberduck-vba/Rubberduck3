@@ -1,4 +1,5 @@
 ﻿using Rubberduck.RPC.Proxy.SharedServices.Abstract;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Model;
 using System.Collections.Generic;
 using System.Threading;
@@ -11,8 +12,8 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
     /// </summary>
     /// <typeparam name="TServerOptions">The specific class type of the server configuration options.</typeparam>
     public abstract class InitializeCommand<TServerOptions, TClientOptions> : ServerRequestCommand<InitializeParams<TClientOptions>, InitializeResult<TServerOptions>, TServerOptions>
-        where TServerOptions : class, new()
-        where TClientOptions : class, new()
+        where TServerOptions : SharedServerCapabilities, new()
+        where TClientOptions : new()
     {
         public InitializeCommand(IServerLogger logger, GetServerOptions<TServerOptions> getConfiguration, GetServerStateInfo getServerState)
             : base(logger, getConfiguration, getServerState)
@@ -43,7 +44,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
                 {
                     Name = info.Name,
                     ProcessId = info.ProcessId,
-                    StartTimestamp = info.StartTime.Value,
+                    StartTimestamp = info.StartTime.GetValueOrDefault(),
                     Version = info.Version
                 },
                 Capabilities = serverConfig

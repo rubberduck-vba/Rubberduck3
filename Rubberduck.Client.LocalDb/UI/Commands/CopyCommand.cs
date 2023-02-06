@@ -1,7 +1,6 @@
 ﻿using NLog;
 using Rubberduck.RPC.Proxy.SharedServices;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
-using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.Command;
 using System.Collections.Generic;
@@ -13,9 +12,9 @@ namespace Rubberduck.Client.LocalDb.UI.Commands
 {
     public class CopyCommand : CommandBase
     {
-        private readonly IServerConsoleService<SharedServerCapabilities> _console;
+        private readonly IServerConsoleProxyClient _console;
 
-        public CopyCommand(IServerConsoleService<SharedServerCapabilities> console) 
+        public CopyCommand(IServerConsoleProxyClient console) 
             : base(LogManager.GetCurrentClassLogger())
         {
             _console = console;
@@ -23,7 +22,7 @@ namespace Rubberduck.Client.LocalDb.UI.Commands
 
         protected override void OnExecute(object parameter)
         {
-            _console.Log(ServerLogLevel.Info, $"Executing {nameof(CopyCommand)}...");
+            _console.(ServerLogLevel.Info, $"Executing {nameof(CopyCommand)}...");
 
             var asText = new StringBuilder();
             if (parameter is IEnumerable<IConsoleMesssageViewModel> messages)

@@ -1,28 +1,26 @@
-﻿using Rubberduck.RPC.Platform.Metadata;
+﻿using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Platform.Metadata;
 using Rubberduck.RPC.Platform.Model;
-using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Model;
-using Rubberduck.RPC.Proxy.SharedServices.Telemetry;
 using StreamJsonRpc;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
 {
     /// <summary>
-    /// Handles server-level notifications and requests sent from the client.
+    /// Handles server-level notifications and requests.
     /// </summary>
     /// <remarks>
     /// This interface must be implemented on the server side.
     /// Proxy implementations should be stateless: the instance only lives for the duration of a single request.
     /// </remarks>
     /// <typeparam name="TOptions">A type representing all server settings and capabilities.</typeparam>
-    public interface IServerProxyService<TOptions, TServerProxyClient, TCommands> : IConfigurableServerProxy<TOptions, TServerProxyClient, TCommands>, IServerCommandsProxy<TOptions>
+    public interface IServerProxy<TOptions> : IConfigurableServerProxy<TOptions>, IJsonRpcTarget
         where TOptions : SharedServerCapabilities, new()
-        where TServerProxyClient : IServerProxyClient
-        where TCommands : class
     {
         /// <summary>
         /// An <c>Initialize</c> request is sent as the first request from a client to the server.
@@ -44,16 +42,12 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
         /// Gets the current server info, including server uptime, process ID, connected clients, etc.
         /// </summary>
         [JsonRpcMethod(JsonRpcMethods.ServerProxyRequests.Shared.Server.Info)]
-        ServerState Info();
+        Task<ServerState> RequestServerInfoAsync();
 
         /// <summary>
-        /// Exposes server console services and configurations.
+        /// Notifies any remaining listeners that the server is ready to terminate.
         /// </summary>
-        IServerConsoleService<SharedServerCapabilities> ServerConsole { get; }
-
-        /// <summary>
-        /// Exposes server telemetry services and configurations.
-        /// </summary>
-        ITelemetryClientService Telemetry { get; }
+        event EventHandler WillExit;
+        Task OnWillExitAsync();
     }
 }

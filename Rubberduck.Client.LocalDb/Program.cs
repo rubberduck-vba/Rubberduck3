@@ -1,6 +1,8 @@
-﻿using Rubberduck.Client.LocalDb.UI;
+﻿using Rubberduck.Client.LocalDb.Client;
+using Rubberduck.Client.LocalDb.UI;
 using Rubberduck.Client.LocalDb.UI.Commands;
 using Rubberduck.RPC;
+using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Proxy.LocalDbServer;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
@@ -20,7 +22,7 @@ namespace Rubberduck.Client.LocalDb
             var options = StartupOptions.Validate(args);
             var serverProcess = GetOrCreateServer(options);
 
-            //IMainWindowFactory factory = null;
+            IMainWindowFactory factory = null;
             //var shutdownCommand = new ShutdownCommand(server);
 
             //var copyCommand = new CopyCommand(console);
@@ -28,16 +30,19 @@ namespace Rubberduck.Client.LocalDb
             //var pauseTraceCommand = new PauseTraceCommand(console);
             //var resumeTraceCommand = new ResumeTraceCommand(console);
             //var setTraceCommand = new SetTraceCommand(console);
-
+            
             //var statusVM = new ServerStatusViewModel(server, server as ILocalDbServerEvents);
             //var consoleVM = new ConsoleViewModel(server, console,
             //    shutdownCommand, copyCommand, saveAsCommand, pauseTraceCommand, resumeTraceCommand, setTraceCommand);
+            var server = new LocalDbServerService(null, serverStateService, commands);
 
-            //var vm = new MainWindowViewModel(consoleVM, statusVM);
-            //factory = new MainWindowFactory(vm);
+            var rpcStreamFactory = new NamedPipeStreamFactory()
+            var proxy = new LocalDbServerProxyClient(rpcStreamFactory);
+            var vm = new MainWindowViewModel(consoleVM, statusVM);
+            factory = new MainWindowFactory(vm);
 
-            //App app = new App(server, factory);
-            //app.Run();
+            var app = new App(factory, server);
+            app.Run();
         }
 
         private static Process GetOrCreateServer(StartupOptions startupOptions)

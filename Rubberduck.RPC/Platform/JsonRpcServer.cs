@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -9,21 +8,32 @@ using Microsoft.Extensions.DependencyInjection;
 using StreamJsonRpc;
 using Rubberduck.RPC.Platform.Model;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
-using Rubberduck.RPC.Proxy.SharedServices;
 using System.IO.Pipes;
 
 namespace Rubberduck.RPC.Platform
 {
+    /// <summary>
+    /// Represents a client-side RPC server process that can respond to server-to-client requests over a named pipe stream.
+    /// </summary>
+    public abstract class NamedPipeClientSideJsonRpcServer<TServerService, TOptions> : NamedPipeJsonRpcServer<TServerService, TOptions>
+        where TServerService : ServerService<TOptions>
+        where TOptions : SharedServerCapabilities, new()
+    {
+        protected NamedPipeClientSideJsonRpcServer(IServiceProvider serviceProvider, IEnumerable<Type> clientProxyTypes) 
+            : base(serviceProvider, clientProxyTypes)
+        {
+        }
+    }
+
     /// <summary>
     /// Represents a server process that communicates over named pipes.
     /// </summary>
     /// <remarks>
     /// Implementation holds the server state for the lifetime of the host process.
     /// </remarks>
-    public abstract class NamedPipeJsonRpcServer<TServerService, TServerProxyClient, TOptions> : JsonRpcServer<NamedPipeServerStream, TServerService, TServerProxyClient, TOptions>
-        where TServerService : ServerService<TOptions, TServerProxyClient>
+    public abstract class NamedPipeJsonRpcServer<TServerService, TOptions> : JsonRpcServer<NamedPipeServerStream, TServerService, TOptions>
+        where TServerService : ServerService<TOptions>
         where TOptions : SharedServerCapabilities, new()
-        where TServerProxyClient : class, IServerProxyClient
     {
         protected NamedPipeJsonRpcServer(IServiceProvider serviceProvider, IEnumerable<Type> clientProxyTypes) 
             : base(serviceProvider, clientProxyTypes) { }
@@ -35,11 +45,10 @@ namespace Rubberduck.RPC.Platform
     /// <remarks>
     /// Implementation holds the server state for the lifetime of the host process.
     /// </remarks>
-    public abstract class JsonRpcServer<TStream, TServerService, TServerProxyClient, TOptions> : BackgroundService, IJsonRpcServer
+    public abstract class JsonRpcServer<TStream, TServerService, TOptions> : BackgroundService, IJsonRpcServer
         where TStream : Stream
-        where TServerService : ServerService<TOptions, TServerProxyClient>
+        where TServerService : ServerService<TOptions>
         where TOptions : SharedServerCapabilities, new()
-        where TServerProxyClient : class, IServerProxyClient
     {
         private readonly IServiceProvider _serviceProvider;
 
@@ -124,21 +133,6 @@ namespace Rubberduck.RPC.Platform
                 foreach (var proxy in serverProxies)
                 {
                     rpc.AddLocalRpcTarget(proxy, _targetOptions);
-                }
-
-                if (_clientProxyTypes.Any())
-                {
-                    Console.WriteLine("Registered RPC client targets:");
-                }
-                foreach (var proxyType in _clientProxyTypes)
-                {
-                    var proxy = rpc.Attach(proxyType);
-                    foreach (var serverProxy in serverProxies)
-                    {
-                        serverProxy.InitializeClientProxy(proxy);
-                        Console.WriteLine($" • {proxyType.Name}");
-                        break;
-                    }
                 }
 
                 token.ThrowIfCancellationRequested();

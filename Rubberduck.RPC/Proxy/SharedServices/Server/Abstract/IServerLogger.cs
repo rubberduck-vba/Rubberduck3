@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
+using System;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Abstract
 {

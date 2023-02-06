@@ -270,7 +270,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\ServerCapabilities.cs" />
     <Compile Include="IServiceCollectionExtensions.cs" />
     <Compile Include="ServerApp.cs" />
     <Compile Include="Internal\DbEntity.cs" />
@@ -281,7 +280,6 @@
     <Compile Include="Internal\View.cs" />
     <Compile Include="Configuration\LocalDbServerConfiguration.cs" />
     <Compile Include="RPC\DeclarationsService.cs" />
-    <Compile Include="RPC\LocalDbServerService.cs" />
     <Compile Include="LocalDbServer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

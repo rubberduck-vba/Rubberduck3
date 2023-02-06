@@ -22,7 +22,7 @@ namespace Rubberduck.Server.LocalDb
 {
     internal static class IServiceCollectionExtensions
     {
-        internal static IServiceCollection AddRubberduckServerServices(this IServiceCollection services, ServerCapabilities config)
+        internal static IServiceCollection AddRubberduckServerServices(this IServiceCollection services, LocalDbServerCapabilities config)
         {
             var pipeName = Settings.Default.JsonRpcPipeName;
             var maxConcurrentRequests = Settings.Default.MaxConcurrentRequests;
@@ -35,23 +35,23 @@ namespace Rubberduck.Server.LocalDb
             services
                 .AddSingleton<ServerApp>()
                 .AddSingleton<IJsonRpcServer>(provider => new LocalDbServer(provider, clientProxyTypes))
-                .AddSingleton<IRpcStreamFactory<NamedPipeServerStream>>(provider => new NamedPipeStreamFactory(pipeName, maxConcurrentRequests))
-                .AddSingleton<IServerProxyService<ServerCapabilities, ILocalDbServerProxyClient, ServerCommands<ServerCapabilities>>, LocalDbServerService>()
+                .AddSingleton<IRpcStreamFactory<NamedPipeServerStream>>(provider => new NamedPipeServerStreamFactory(pipeName, maxConcurrentRequests))
+                .AddSingleton<IServerProxy<LocalDbServerCapabilities>>()
                 .AddSingleton<ITelemetryClientService, TelemetryClientService>()
-                .AddSingleton<IServerStateService<ServerCapabilities>>(provider => new ServerStateService<ServerCapabilities>(config))
-                .AddSingleton<IServerConsoleService<ServerCapabilities>>(provider => new ServerConsoleService<ServerCapabilities, IServerProxyClient>(provider.GetService<IServerStateService<ServerCapabilities>>()))
+                .AddSingleton<IServerStateService<LocalDbServerCapabilities>>(provider => new ServerStateService<LocalDbServerCapabilities>(config))
+                .AddSingleton<IServerConsoleProxy<LocalDbServerCapabilities>>(provider => new ServerConsoleProxyService<LocalDbServerCapabilities>(provider.GetService<IServerStateService<LocalDbServerCapabilities>>(), /* cannot inject the client proxy here */ null))
                 .AddSingleton<IServerLogger>(provider =>
                 {
-                    var console = provider.GetService<IServerConsoleService<ServerCapabilities>>();
-                    return new ServerLogger(console.Log, console.Log);
+                    var service = provider.GetService<IServerConsoleProxy<LocalDbServerCapabilities>>();
+                    return new ServerLogger<LocalDbServerCapabilities>(service);
                 })
                 .AddScoped<IUnitOfWorkFactory, UnitOfWorkFactory>()
                 .AddScoped<IDbConnectionProvider, SqliteDbConnectionProvider>()
 
-                .AddScoped<IJsonRpcTarget, ServerConsoleService<ServerCapabilities, IServerProxyClient>>()
-                .AddScoped<IJsonRpcTarget, LocalDbServerService>()
+                .AddScoped<IJsonRpcTarget, ServerConsoleProxyService<LocalDbServerCapabilities>>()
+                .AddScoped<IJsonRpcTarget, LocalDbServerProxyService>()
                 .AddScoped<IJsonRpcTarget, DeclarationsService>()
-                    ;
+            ;
 
             return services;
         }

@@ -1,7 +1,7 @@
 ﻿using Rubberduck.RPC.Platform;
 using System.Text.Json.Serialization;
 
-namespace Rubberduck.RPC.Proxy.LspServer.Server.Commands.Parameters
+namespace Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters
 {
     public class LogMessageParams
     {

@@ -8,7 +8,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Telemetry
 {
     public class TelemetryClientService : ITelemetryClientService
     {
-        public TelemetryOptions Configuration { get; set; }
+        public TelemetryOptions ServerOptions { get; set; }
 
         public event EventHandler<object> TelemetryEvent;
         public event EventHandler RequestExit;

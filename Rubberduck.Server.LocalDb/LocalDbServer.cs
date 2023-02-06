@@ -2,7 +2,6 @@
 using Rubberduck.RPC.Platform.Model;
 using Rubberduck.RPC.Proxy.LocalDbServer;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
-using Rubberduck.Server.LocalDb.Services;
 using System;
 using System.Collections.Generic;
 using System.IO.Pipes;
@@ -17,7 +16,7 @@ namespace Rubberduck.Server.LocalDb
     /// <remarks>
     /// Holds the server state for the lifetime of the host process.
     /// </remarks>
-    internal class LocalDbServer : NamedPipeJsonRpcServer<LocalDbServerService, ILocalDbServerProxyClient, ServerCapabilities>
+    internal class LocalDbServer : NamedPipeJsonRpcServer<LocalDbServerProxyService, LocalDbServerCapabilities>
     {
         public LocalDbServer(IServiceProvider serviceProvider, IEnumerable<Type> clientProxyTypes) 
             : base(serviceProvider, clientProxyTypes) 

@@ -9,9 +9,12 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Console.Commands
 {
-    public class SetTraceCommand : ServerNotificationCommand<ServerConsoleOptions, SetTraceParams>
+    /// <summary>
+    /// A command that is executed in responser to a '<c>$/setTrace</c>' notification sent from a client.
+    /// </summary>
+    public class SetTraceNotificationCommand : ServerNotificationCommand<ServerConsoleOptions, SetTraceParams>
     {
-        public SetTraceCommand(IServerLogger logger, GetServerOptions<ServerConsoleOptions> getConfiguration, GetServerStateInfo getServerState)
+        public SetTraceNotificationCommand(IServerLogger logger, GetServerOptions<ServerConsoleOptions> getConfiguration, GetServerStateInfo getServerState)
             : base(logger, getConfiguration, getServerState)
         {
         }
@@ -20,13 +23,8 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Commands
 
         protected override async Task ExecuteInternalAsync(SetTraceParams parameter)
         {
-            if (!Enum.TryParse<Constants.Console.VerbosityOptions.AsStringEnum>(parameter.Value, ignoreCase: true, out var newValue))
-            {
-                throw new ArgumentOutOfRangeException(nameof(parameter.Value));
-            }
-
             var config = GetConfiguration();
-            config.Trace = newValue;
+            config.Trace = parameter.Value;
 
             await Task.CompletedTask;
         }

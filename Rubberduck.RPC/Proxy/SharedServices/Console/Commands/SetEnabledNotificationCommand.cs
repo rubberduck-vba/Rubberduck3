@@ -2,14 +2,13 @@
 using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Console.Commands
 {
-    public class SetEnabledCommand : ServerNotificationCommand<ServerConsoleOptions, SetEnabledParams>
+    public class SetEnabledNotificationCommand : ServerNotificationCommand<ServerConsoleOptions, SetEnabledParams>
     {
-        public SetEnabledCommand(IServerLogger logger, GetServerOptions<ServerConsoleOptions> getConfiguration, GetServerStateInfo getServerState)
+        public SetEnabledNotificationCommand(IServerLogger logger, GetServerOptions<ServerConsoleOptions> getConfiguration, GetServerStateInfo getServerState)
             : base(logger, getConfiguration, getServerState) { }
 
         public override string Description { get; } = "Pauses or resumes console output.";
