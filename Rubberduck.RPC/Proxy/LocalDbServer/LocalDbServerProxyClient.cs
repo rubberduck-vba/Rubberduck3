@@ -10,7 +10,7 @@ using Rubberduck.RPC.Proxy.SharedServices.Server.Model;
 
 namespace Rubberduck.RPC.Proxy.LocalDbServer
 {
-    internal class LocalDbServerProxyClient : JsonRpcClientSideServerProxyService<ILocalDbServerProxyClient>, ILocalDbServerProxyClient
+    public class LocalDbServerProxyClient : JsonRpcClientSideServerProxyService<ILocalDbServerProxyClient>, ILocalDbServerProxyClient
     {
         public IServerLogger Logger { get; set; }
 

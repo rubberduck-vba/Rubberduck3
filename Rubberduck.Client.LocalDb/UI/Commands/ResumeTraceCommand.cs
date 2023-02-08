@@ -1,5 +1,4 @@
 ﻿using NLog;
-using Rubberduck.RPC.Proxy.SharedServices;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using Rubberduck.UI.Command;
@@ -18,8 +17,8 @@ namespace Rubberduck.Client.LocalDb.UI.Commands
 
         protected override void OnExecute(object parameter)
         {
-            _console.LogTraceAsync(ServerLogLevel.Info, $"Executing {nameof(ResumeTraceCommand)}..."); // normally not logged
-            _console.Configuration.ConsoleOptions.IsEnabled = true;
+            //_console.LogTraceAsync(ServerLogLevel.Info, $"Executing {nameof(ResumeTraceCommand)}..."); // normally not logged
+            _console.Configuration.IsEnabled = true;
         }
     }
 }

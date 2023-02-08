@@ -1,5 +1,4 @@
 ﻿using Rubberduck.Client.LocalDb.UI.Xaml;
-using Rubberduck.RPC.Platform;
 
 namespace Rubberduck.Client.LocalDb.UI
 {
@@ -12,7 +11,7 @@ namespace Rubberduck.Client.LocalDb.UI
             _viewModel = viewModel;
         }
 
-        public MainWindow Create(IJsonRpcServer server)
+        public MainWindow Create()
         {
             return new MainWindow
             {

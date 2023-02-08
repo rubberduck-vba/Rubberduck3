@@ -3,6 +3,7 @@ using Rubberduck.RPC.Proxy.LspServer.Server.Commands.Parameters;
 using Rubberduck.RPC.Proxy.LspServer.Window.Commands.Parameters;
 using Rubberduck.RPC.Proxy.LspServer.Window.Model;
 using Rubberduck.RPC.Proxy.LspServer.Workspace.Language.Model;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
 using StreamJsonRpc;
 using System.Threading.Tasks;
 

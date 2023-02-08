@@ -1,6 +1,7 @@
 ﻿using Rubberduck.RPC.Platform.Metadata;
 using Rubberduck.RPC.Proxy.LspServer.Server.Commands.Parameters;
 using Rubberduck.RPC.Proxy.LspServer.Window.Commands.Parameters;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
 using System;
 
 namespace Rubberduck.Server.LSP.Proxies

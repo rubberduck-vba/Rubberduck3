@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Proxy.LspServer.Configuration.Options;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -132,17 +133,17 @@ namespace Rubberduck.Server.LocalDb
 
             var builder = Host.CreateDefaultBuilder()
                 .UseConsoleLifetime()
-                .ConfigureServices(ConfigureServices);
+                .ConfigureServices(provider => ConfigureServices(provider, tokenSource));
 
             await builder.RunConsoleAsync(tokenSource.Token);
         }
 
-        private static void ConfigureServices(IServiceCollection services)
+        private static void ConfigureServices(IServiceCollection services, CancellationTokenSource cts)
         {
             var config = LocalDbServerConfiguration.Default(_startupOptions);
 
             services.AddHostedService<ServerApp>()
-                    .AddRubberduckServerServices(config);
+                    .ConfigureRubberduckServerApp(config, cts);
         }
     }
 }

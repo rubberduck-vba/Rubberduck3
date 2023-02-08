@@ -6,7 +6,7 @@ using System;
 namespace Rubberduck.RPC.Proxy.SharedServices
 {
     public class ServerLogger<TOptions> : IServerLogger, IInternalServerLogger 
-        where TOptions : SharedServerCapabilities
+        where TOptions : SharedServerCapabilities, new()
     {
         private readonly IServerConsoleProxy<TOptions> _service;
 

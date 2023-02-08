@@ -2,6 +2,8 @@
 using Rubberduck.RPC.Proxy.SharedServices.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
 {
@@ -23,5 +25,23 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
         public virtual IServerLogger Logger { get; }
 
         public IServerStateService<TOptions> ServerStateService { get; }
+
+        public IEnumerable<IJsonRpcSource> ClientProxies { get; private set; }
+
+        public void Initialize(IEnumerable<IJsonRpcSource> clientProxies)
+        {
+            if (ClientProxies != null)
+            {
+                throw new InvalidOperationException("This instance was already intiialized. As a proxy service, its instancing should be scoped.");
+            }
+
+            ClientProxies = clientProxies;
+            if (ClientProxies?.Any() ?? false)
+            {
+                RegisterClientProxyNotifications(clientProxies);
+            }
+        }
+
+        protected abstract void RegisterClientProxyNotifications(IEnumerable<IJsonRpcSource> clientProxies);
     }
 }

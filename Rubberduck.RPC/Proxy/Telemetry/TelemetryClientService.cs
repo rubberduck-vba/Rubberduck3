@@ -6,7 +6,7 @@ using System;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Telemetry
 {
-    public class TelemetryClientService : ITelemetryClientService
+    public class TelemetryClientService : ITelemetryProxyClient
     {
         public TelemetryOptions ServerOptions { get; set; }
 

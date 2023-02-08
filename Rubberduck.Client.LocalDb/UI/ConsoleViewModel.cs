@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Rubberduck.Client.LocalDb.UI.Commands;
 using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Proxy.LocalDbServer;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
@@ -35,29 +36,23 @@ namespace Rubberduck.Client.LocalDb
             [Constants.TraceValue.Verbose] = new TraceSettingValue(Constants.TraceValue.Verbose),
         };
 
-        public ConsoleViewModel(ILocalDbServerProxyClient server)
+        public ConsoleViewModel(ILocalDbServerProxyClient server, IServerConsoleProxyClient console)
         {
-            server.Message += OnConsoleMessage;
-
             ConsoleContent = new ObservableCollection<IConsoleMesssageViewModel>();
 
             ClearCommand = new DelegateCommand(null, o => ConsoleContent.Clear());
 
             ShutdownCommand = new AsyncDelegateCommand(o => server.ShutdownClientAsync(o as ClientShutdownParams));
-            CopyCommand = new CopyCommand(server);
-            SaveAsCommand = new SaveAsCommand(server, new FileNameProvider());
+            CopyCommand = new CopyCommand(console);
+            SaveAsCommand = new SaveAsCommand(console, new FileNameProvider());
+
+            SetTraceCommand = new SetTraceCommand(console);
 
             var enableParams = new SetEnabledParams { Value = true };
             var disableParams = new SetEnabledParams { Value = false };
 
-            PauseTraceCommand = new AsyncDelegateCommand(_ => server.OnStopTraceAsync());
-            ResumeTraceCommand = new AsyncDelegateCommand(_ => server.OnResumeTraceAsync());
-            SetTraceCommand = new AsyncDelegateCommand(o => server.OnSetTraceAsync(o as SetTraceParams));
-
-            _trace = Constants.TraceValue.Verbose;
-
             TraceValues = _traceSettings.Values;
-            SelectedTraceValue = _traceSettings[Trace];
+            _selectedTraceValue = _traceSettings[Constants.TraceValue.Verbose];
         }
 
         private void OnConsoleMessage(object sender, ConsoleMessage e)

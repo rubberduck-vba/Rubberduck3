@@ -567,7 +567,7 @@
     <Compile Include="Proxy\SharedServices\TupleExtensions.cs" />
     <Compile Include="Platform\Exceptions\ServerExceptions\UnexpectedExitNotificationException.cs" />
     <Compile Include="Proxy\SharedServices\WorkDoneProgress\Configuration\WorkDoneProgressOptions.cs" />
-    <Compile Include="Proxy\Telemetry\ITelemetryClientService.cs" />
+    <Compile Include="Proxy\Telemetry\ITelemetryProxyClient.cs" />
     <Compile Include="Proxy\Telemetry\Model\DependencyTelemetry.cs" />
     <Compile Include="Proxy\Telemetry\Model\EventTelemetry.cs" />
     <Compile Include="Proxy\Telemetry\Model\ExceptionTelemetry.cs" />

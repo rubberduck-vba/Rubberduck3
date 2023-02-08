@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
 {
     public class InitializeParams<TOptions> : WorkDoneProgressParams
-        where TOptions : class, new()
+        where TOptions : new()
     {
         /// <summary>
         /// The process ID of the parent process that started the server. <c>null</c> if the process has not been started by another process.

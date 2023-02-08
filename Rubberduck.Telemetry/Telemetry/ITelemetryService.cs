@@ -13,7 +13,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Telemetry
     /// Methods are implemented on the server side.
     /// </remarks>
     /// <typeparam name="TEvent">A common base class type for telemetry event items.</typeparam>
-    public interface ITelemetryService : IConfigurableServerProxy<SharedServerCapabilities, ITelemetryClientService>
+    public interface ITelemetryService : IConfigurableProxy<SharedServerCapabilities>
     {
         /// <summary>
         /// Saves the provided telemetry item locally.

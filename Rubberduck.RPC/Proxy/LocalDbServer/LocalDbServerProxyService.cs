@@ -1,12 +1,11 @@
-﻿using Rubberduck.RPC.Platform.Model;
+﻿using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Proxy.SharedServices;
 using Rubberduck.RPC.Proxy.SharedServices.Abstract;
-using Rubberduck.RPC.Proxy.SharedServices.Server.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
-using Rubberduck.RPC.Proxy.SharedServices.Server.Model;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Proxy.LocalDbServer
 {
@@ -16,17 +15,11 @@ namespace Rubberduck.RPC.Proxy.LocalDbServer
     /// <remarks>
     /// Proxies should be stateless: the instance may be request-scoped.
     /// </remarks>
-    public class LocalDbServerProxyService : IServerProxy<LocalDbServerCapabilities>
+    public class LocalDbServerProxyService : ServerService<LocalDbServerCapabilities, InitializeParams<LocalDbServerCapabilities>>
     {
-        public LocalDbServerProxyService(CancellationTokenSource serverTokenSource, IServerLogger logger, IServerStateService<LocalDbServerCapabilities> serverStateService,
-            IServerProxyClient<LocalDbServerCapabilities> client)
+        public LocalDbServerProxyService(CancellationTokenSource serverTokenSource, IServerLogger logger, IServerStateService<LocalDbServerCapabilities> serverStateService)
+            :base(logger, serverStateService)
         {
-            ServerStateService = serverStateService;
-            Logger = logger;
-
-            client.RequestExit += Client_RequestExit;
-            client.Initialized += Client_Initialized;
-
             var getConfig = new GetServerOptions<LocalDbServerCapabilities>(() => ServerOptions);
             var getState = new GetServerStateInfo(() => ServerStateService.Info);
 
@@ -46,24 +39,12 @@ namespace Rubberduck.RPC.Proxy.LocalDbServer
             await _exitCommand.ExecuteAsync();
         }
 
-        public IServerStateService<LocalDbServerCapabilities> ServerStateService { get; }
-
-        public IServerLogger Logger { get; }
-
-        public LocalDbServerCapabilities ServerOptions { get; }
-
-        public event EventHandler WillExit;
-        public Task OnWillExitAsync() => Task.Run(() => WillExit?.Invoke(this, EventArgs.Empty));
-
-        private readonly InitializeCommand<LocalDbServerCapabilities, LocalDbServerCapabilities> _initializeCommand; // TODO implement LocalDbClientCapabilities?
-        public async Task<InitializeResult<LocalDbServerCapabilities>> InitializeAsync(InitializeParams<LocalDbServerCapabilities> parameter, CancellationToken token)
+        protected override void RegisterClientProxyNotifications(IEnumerable<IJsonRpcSource> clientProxies)
         {
-            return await _initializeCommand.ExecuteAsync(parameter, token);
+            var client = clientProxies.OfType<IServerProxyClient<LocalDbServerCapabilities>>().Single();
+            client.Initialized += Client_Initialized;
+            client.RequestExit += Client_RequestExit;
         }
 
-        public async Task<ServerState> RequestServerInfoAsync()
-        {
-            return await Task.FromResult(ServerStateService.Info);
-        }
     }
 }

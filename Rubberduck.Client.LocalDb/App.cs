@@ -1,15 +1,15 @@
-﻿using Rubberduck.Client.LocalDb.Client;
-using Rubberduck.RPC;
+﻿using Rubberduck.RPC;
 using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Platform.Client;
 using Rubberduck.RPC.Proxy.LocalDbServer;
 using Rubberduck.RPC.Proxy.SharedServices;
 using Rubberduck.RPC.Proxy.SharedServices.Console;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace Rubberduck.Client.LocalDb
@@ -18,14 +18,21 @@ namespace Rubberduck.Client.LocalDb
     {
         private readonly IMainWindowFactory _factory;
         private readonly LocalDbServerProxyClient _server;
+        private readonly IServerConsoleProxyClient _console;
         
-        public App(IMainWindowFactory factory, LocalDbServerProxyClient server)
+        public App(IMainWindowFactory factory, LocalDbServerProxyClient server, IServerConsoleProxyClient console)
         {
             _factory = factory;
             _server = server;
+            _console = console;
         }
 
-        protected async override void OnStartup(StartupEventArgs e)
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            _ = StartupAsync();
+        }
+
+        private async Task StartupAsync()
         {
             var assembly = Assembly.GetExecutingAssembly().GetName();
             var process = Process.GetCurrentProcess();
@@ -91,10 +98,10 @@ namespace Rubberduck.Client.LocalDb
             var serverConfig = response.Capabilities;
 
             var statusService = new ServerStatusViewModel(_server);
-            var consoleService = new ConsoleViewModel(_server);
+            var consoleService = new ConsoleViewModel(_server, _console);
 
-            var vm = new MainWindowViewModel(consoleService, statusService);
-            
+            var window = _factory.Create();
+            window.Show();
         }
     }
 }

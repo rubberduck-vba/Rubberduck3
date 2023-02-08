@@ -58,20 +58,21 @@ namespace Rubberduck.Client.LocalDb
 
         public ServerStatusViewModel(ILocalDbServerProxyClient server)
         {
-            var info = server.ServerStateService.Info;
             _timer = new Timer(_ =>
             {
+                var info = server.OnRequestServerInfoAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+
                 Uptime = info.UpTime ?? TimeSpan.Zero;
                 TotalInbound = info.MessagesReceived;
                 TotalOutbound = info.MessagesSent;
                 ClientConnections = info.ClientsCount;
                 IsAlive = info.IsAlive;
+
+                ServerName = info.Name;
             }, null, 0, 1000);
-            
-            ServerName = info.Name;
         }
 
-        public string ServerName { get; }
+        public string ServerName { get; private set; }
 
         private TimeSpan _uptime;
         public TimeSpan Uptime 

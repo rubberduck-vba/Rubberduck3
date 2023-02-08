@@ -1,11 +1,9 @@
-﻿using Rubberduck.Client.LocalDb.Client;
-using Rubberduck.Client.LocalDb.UI;
-using Rubberduck.Client.LocalDb.UI.Commands;
+﻿using Rubberduck.Client.LocalDb.UI;
 using Rubberduck.RPC;
 using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Proxy.LocalDbServer;
-using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
-using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
+using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
 using System;
 using System.Diagnostics;
 
@@ -20,34 +18,29 @@ namespace Rubberduck.Client.LocalDb
         static void Main(string[] args)
         {
             var options = StartupOptions.Validate(args);
-            var serverProcess = GetOrCreateServer(options);
+            var process = GetOrCreateServer(options);
 
-            IMainWindowFactory factory = null;
-            //var shutdownCommand = new ShutdownCommand(server);
+            var rpcStreamFactory = new NamedPipeClientStreamFactory("Rubberduck.Server.LocalDb.RPC");
+            var serverProxy = new LocalDbServerProxyClient(rpcStreamFactory);
+            //var consoleProxy = new IServerConsoleProxyClient
 
-            //var copyCommand = new CopyCommand(console);
-            //var saveAsCommand = new SaveAsCommand(server, new FileNameProvider());
-            //var pauseTraceCommand = new PauseTraceCommand(console);
-            //var resumeTraceCommand = new ResumeTraceCommand(console);
-            //var setTraceCommand = new SetTraceCommand(console);
-            
-            //var statusVM = new ServerStatusViewModel(server, server as ILocalDbServerEvents);
-            //var consoleVM = new ConsoleViewModel(server, console,
-            //    shutdownCommand, copyCommand, saveAsCommand, pauseTraceCommand, resumeTraceCommand, setTraceCommand);
-            var server = new LocalDbServerService(null, serverStateService, commands);
+            var statusVM = new ServerStatusViewModel(serverProxy);
+            var consoleVM = new ConsoleViewModel(serverProxy, null as IServerConsoleProxyClient);
 
-            var rpcStreamFactory = new NamedPipeStreamFactory()
-            var proxy = new LocalDbServerProxyClient(rpcStreamFactory);
             var vm = new MainWindowViewModel(consoleVM, statusVM);
-            factory = new MainWindowFactory(vm);
+            var factory = new MainWindowFactory(vm);
 
-            var app = new App(factory, server);
+            var app = new App(factory, serverProxy, null as IServerConsoleProxyClient);
             app.Run();
+
+            process.OutputDataReceived -= OnServerProcessStdOut;
+            process.ErrorDataReceived -= OnServerProcessStdErr;
+            process.Exited -= OnServerProcessExit;
         }
 
         private static Process GetOrCreateServer(StartupOptions startupOptions)
         {
-            var process = ServerProcessClientHelper.StartLocalDb(hidden: true);
+            var process = ServerProcessClientHelper.StartLocalDb(hidden: false);
             
             process.OutputDataReceived += OnServerProcessStdOut;
             process.ErrorDataReceived += OnServerProcessStdErr;

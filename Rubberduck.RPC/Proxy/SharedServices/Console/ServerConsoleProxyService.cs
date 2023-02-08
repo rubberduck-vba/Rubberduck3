@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,14 +20,10 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
     {
         private int _nextMessageId = 0;
 
-        public ServerConsoleProxyService(IServerStateService<TOptions> serverStateService, IServerConsoleProxyClient client)
+        public ServerConsoleProxyService(IServerStateService<TOptions> serverStateService)
             : base(null, serverStateService)
         {
             Logger = new ServerLogger<TOptions>(this);
-
-            client.SetTrace += Client_SetTrace;
-            client.StopTrace += Client_StopTrace;
-            client.ResumeTrace += Client_ResumeTrace;
 
             var getConfig = new GetServerOptions<ServerConsoleOptions>(() => Configuration);
             var getState = new GetServerStateInfo(() => ServerStateService.Info);
@@ -187,6 +185,14 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
 
             System.Console.ForegroundColor = foreground;
             System.Console.BackgroundColor = background;
+        }
+
+        protected override void RegisterClientProxyNotifications(IEnumerable<IJsonRpcSource> clientProxies)
+        {
+            var client = clientProxies.OfType<IServerConsoleProxyClient>().Single();
+            client.SetTrace += Client_SetTrace;
+            client.StopTrace += Client_StopTrace;
+            client.ResumeTrace += Client_ResumeTrace;
         }
     }
 }

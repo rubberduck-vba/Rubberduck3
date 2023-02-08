@@ -21,7 +21,7 @@
   <Comment CommentText="Proxies use these delegate types to access the current server state and configuration.">
     <Position X="0.584" Y="10.608" Height="0.549" Width="2.933" />
   </Comment>
-  <Class Name="Rubberduck.RPC.Platform.JsonRpcServer&lt;TStream, TServerService, TOptions&gt;">
+  <Class Name="Rubberduck.RPC.Platform.JsonRpcServer&lt;TStream, TServerService, TOptions, TInitializeParams&gt;">
     <Position X="1.25" Y="2" Width="2" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
@@ -141,18 +141,11 @@
       <FileName>Platform\IJsonRpcServer.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Rubberduck.RPC.Proxy.SharedServices.Telemetry.ITelemetryClientService">
+  <Interface Name="Rubberduck.RPC.Proxy.SharedServices.Telemetry.ITelemetryProxyClient">
     <Position X="6.75" Y="8.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Proxy\Telemetry\ITelemetryClientService.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="Rubberduck.RPC.Proxy.SharedServices.Telemetry.ITelemetryClientProxy">
-    <Position X="6.75" Y="7" Width="2.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
-      <FileName>Proxy\Telemetry\ITelemetryClientService.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Proxy\Telemetry\ITelemetryProxyClient.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rubberduck.RPC.Proxy.LspServer.TextDocument.Editor.Abstract.ITextDocumentEditorProxy">

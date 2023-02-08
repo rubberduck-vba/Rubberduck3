@@ -8,6 +8,9 @@ using StreamJsonRpc;
 using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Platform.Metadata;
 using System;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Abstract;
+using Rubberduck.RPC.Proxy.SharedServices.Abstract;
+using Rubberduck.RPC.Proxy.LocalDbServer;
 
 namespace Rubberduck.Server.LocalDb.Services
 {
@@ -38,13 +41,14 @@ namespace Rubberduck.Server.LocalDb.Services
         Task<IEnumerable<Local>> SaveAsync(IEnumerable<Local> locals);
     }
 
-    public class DeclarationsService : IDeclarationsProxy
+    public class DeclarationsService : ServerSideProxyService<LocalDbServerCapabilities>, IDeclarationsProxy
     {
         private readonly IUnitOfWorkFactory _factory;
 
         public Type ClientProxyType { get; } = null;
 
-        public DeclarationsService(IUnitOfWorkFactory factory)
+        public DeclarationsService(IServerLogger logger, IServerStateService<LocalDbServerCapabilities> serverStateService, IUnitOfWorkFactory factory)
+            : base(logger, serverStateService)
         {
             /* TODO inject some service layer and lighten up the RPC entry point layer */
 
@@ -522,12 +526,7 @@ namespace Rubberduck.Server.LocalDb.Services
             }
         }
 
-        public void SetClientProxy<T>(T proxy) where T : class
-        {
-            // no client events/notifications to register.
-        }
-
-        public void InitializeClientProxy(object proxy)
+        protected override void RegisterClientProxyNotifications(IEnumerable<IJsonRpcSource> clientProxies)
         {
             // no client proxy to initialize
         }

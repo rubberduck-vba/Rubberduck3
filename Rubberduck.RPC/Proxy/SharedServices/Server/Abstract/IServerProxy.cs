@@ -1,7 +1,6 @@
 ﻿using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Platform.Metadata;
 using Rubberduck.RPC.Platform.Model;
-using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Model;
 using StreamJsonRpc;
@@ -19,8 +18,9 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
     /// Proxy implementations should be stateless: the instance only lives for the duration of a single request.
     /// </remarks>
     /// <typeparam name="TOptions">A type representing all server settings and capabilities.</typeparam>
-    public interface IServerProxy<TOptions> : IConfigurableServerProxy<TOptions>, IJsonRpcTarget
+    public interface IServerProxy<TOptions, TInitializeParams> : IConfigurableServerProxy<TOptions>, IJsonRpcTarget
         where TOptions : SharedServerCapabilities, new()
+        where TInitializeParams : class, new()
     {
         /// <summary>
         /// An <c>Initialize</c> request is sent as the first request from a client to the server.
@@ -36,7 +36,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
         /// and <c>telemetry/event</c> requests to the client while the <c>Initialize</c> request is processing.
         /// </remarks>
         [JsonRpcMethod(JsonRpcMethods.ServerProxyRequests.Shared.Server.Initialize), LspCompliant]
-        Task<InitializeResult<TOptions>> InitializeAsync(InitializeParams<TOptions> parameters, CancellationToken token);
+        Task<InitializeResult<TOptions>> InitializeAsync(TInitializeParams parameters, CancellationToken token);
 
         /// <summary>
         /// Gets the current server info, including server uptime, process ID, connected clients, etc.

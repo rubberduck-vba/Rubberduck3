@@ -8,6 +8,8 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
 {
     public interface IServerConsoleProxyClient : IJsonRpcSource
     {
+        Task LogMessageAsync(LogMessageParams parameter);
+
         /// <summary>
         /// A notification sent from the client to the server to modify the server's trace level.
         /// </summary>

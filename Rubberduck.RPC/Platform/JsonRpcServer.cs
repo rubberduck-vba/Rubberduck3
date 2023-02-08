@@ -9,15 +9,17 @@ using StreamJsonRpc;
 using Rubberduck.RPC.Platform.Model;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using System.IO.Pipes;
+using System.Linq;
 
 namespace Rubberduck.RPC.Platform
 {
     /// <summary>
     /// Represents a client-side RPC server process that can respond to server-to-client requests over a named pipe stream.
     /// </summary>
-    public abstract class NamedPipeClientSideJsonRpcServer<TServerService, TOptions> : NamedPipeJsonRpcServer<TServerService, TOptions>
-        where TServerService : ServerService<TOptions>
+    public abstract class NamedPipeClientSideJsonRpcServer<TServerService, TOptions, TInitializeParams> : NamedPipeJsonRpcServer<TServerService, TOptions, TInitializeParams>
+        where TServerService : ServerService<TOptions, TInitializeParams>
         where TOptions : SharedServerCapabilities, new()
+        where TInitializeParams : class, new()
     {
         protected NamedPipeClientSideJsonRpcServer(IServiceProvider serviceProvider, IEnumerable<Type> clientProxyTypes) 
             : base(serviceProvider, clientProxyTypes)
@@ -31,9 +33,10 @@ namespace Rubberduck.RPC.Platform
     /// <remarks>
     /// Implementation holds the server state for the lifetime of the host process.
     /// </remarks>
-    public abstract class NamedPipeJsonRpcServer<TServerService, TOptions> : JsonRpcServer<NamedPipeServerStream, TServerService, TOptions>
-        where TServerService : ServerService<TOptions>
+    public abstract class NamedPipeJsonRpcServer<TServerService, TOptions, TInitializeParams> : JsonRpcServer<NamedPipeServerStream, TServerService, TOptions, TInitializeParams>
+        where TServerService : ServerService<TOptions, TInitializeParams>
         where TOptions : SharedServerCapabilities, new()
+        where TInitializeParams : class, new()
     {
         protected NamedPipeJsonRpcServer(IServiceProvider serviceProvider, IEnumerable<Type> clientProxyTypes) 
             : base(serviceProvider, clientProxyTypes) { }
@@ -45,10 +48,11 @@ namespace Rubberduck.RPC.Platform
     /// <remarks>
     /// Implementation holds the server state for the lifetime of the host process.
     /// </remarks>
-    public abstract class JsonRpcServer<TStream, TServerService, TOptions> : BackgroundService, IJsonRpcServer
+    public abstract class JsonRpcServer<TStream, TServerService, TOptions, TInitializeParams> : BackgroundService, IJsonRpcServer
         where TStream : Stream
-        where TServerService : ServerService<TOptions>
+        where TServerService : ServerService<TOptions, TInitializeParams>
         where TOptions : SharedServerCapabilities, new()
+        where TInitializeParams : class, new()
     {
         private readonly IServiceProvider _serviceProvider;
 
@@ -129,16 +133,26 @@ namespace Rubberduck.RPC.Platform
         {
             using (var rpc = new JsonRpc(stream))
             {
-                var serverProxies = _serviceProvider.GetService<IEnumerable<IJsonRpcTarget>>();
-                foreach (var proxy in serverProxies)
+                var clientProxies = new List<object>();
+                foreach (var type in _clientProxyTypes)
                 {
-                    rpc.AddLocalRpcTarget(proxy, _targetOptions);
+                    clientProxies.Add(rpc.Attach(type));
                 }
 
-                token.ThrowIfCancellationRequested();
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var serverProxies = scope.ServiceProvider.GetService<IEnumerable<IJsonRpcTarget>>();
+                    foreach (var proxy in serverProxies)
+                    {
+                        proxy.Initialize(clientProxies.Select(client => client as IJsonRpcSource));
+                        rpc.AddLocalRpcTarget(proxy, _targetOptions);
+                    }
 
-                rpc.StartListening();
-                await rpc.Completion;
+                    token.ThrowIfCancellationRequested();
+
+                    rpc.StartListening();
+                    await rpc.Completion;
+                }
             }
         }
 

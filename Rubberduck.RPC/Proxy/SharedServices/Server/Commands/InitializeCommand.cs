@@ -11,9 +11,9 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
     /// A base implementation for an <c>Initialize</c> command that should be implemented in all Rubberduck.Server projects.
     /// </summary>
     /// <typeparam name="TServerOptions">The specific class type of the server configuration options.</typeparam>
-    public abstract class InitializeCommand<TServerOptions, TClientOptions> : ServerRequestCommand<InitializeParams<TClientOptions>, InitializeResult<TServerOptions>, TServerOptions>
+    public abstract class InitializeCommand<TServerOptions, TInitializeParams> : ServerRequestCommand<TInitializeParams, InitializeResult<TServerOptions>, TServerOptions>
         where TServerOptions : SharedServerCapabilities, new()
-        where TClientOptions : new()
+        where TInitializeParams : class, new()
     {
         public InitializeCommand(IServerLogger logger, GetServerOptions<TServerOptions> getConfiguration, GetServerStateInfo getServerState)
             : base(logger, getConfiguration, getServerState)
@@ -27,11 +27,11 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
         /// </summary>
         /// <param name="client">The client initialization parameters.</param>
         /// <returns>The server configuration.</returns>
-        protected abstract Task<TServerOptions> ExecuteInternalAsync(InitializeParams<TClientOptions> clientConfig, TServerOptions serverConfig, CancellationToken token);
+        protected abstract Task<TServerOptions> ExecuteInternalAsync(TInitializeParams clientConfig, TServerOptions serverConfig, CancellationToken token);
 
         protected override IReadOnlyCollection<ServerStatus> ExpectedServerStates { get; } = new[] { ServerStatus.Started };
 
-        protected sealed override async Task<InitializeResult<TServerOptions>> ExecuteInternalAsync(InitializeParams<TClientOptions> parameter, CancellationToken token)
+        protected sealed override async Task<InitializeResult<TServerOptions>> ExecuteInternalAsync(TInitializeParams parameter, CancellationToken token)
         {
             var initialConfig = GetConfiguration.Invoke();
             var serverConfig = await ExecuteInternalAsync(parameter, initialConfig, token);

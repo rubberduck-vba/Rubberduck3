@@ -1,5 +1,4 @@
 ﻿using NLog;
-using Rubberduck.RPC.Proxy.SharedServices;
 using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.Command;
@@ -22,7 +21,11 @@ namespace Rubberduck.Client.LocalDb.UI.Commands
 
         protected override void OnExecute(object parameter)
         {
-            _console.(ServerLogLevel.Info, $"Executing {nameof(CopyCommand)}...");
+            // TODO set up client-side RPC server to send such console notifications
+            //_console.Log(ServerLogLevel.Info, $"Executing {nameof(CopyCommand)}...");
+
+            // ...otherwise TODO set up client-side RPC server to send telemetry notifications :)
+            // _telemetry.OnEvent(...)
 
             var asText = new StringBuilder();
             if (parameter is IEnumerable<IConsoleMesssageViewModel> messages)
