@@ -69,7 +69,7 @@ namespace Rubberduck.Client.LocalDb
                 IsAlive = info.IsAlive;
 
                 ServerName = info.Name;
-            }, null, 0, 1000);
+            }, null, 1000, 1000);
         }
 
         public string ServerName { get; private set; }

@@ -271,6 +271,7 @@
     <Compile Include="Proxy\LocalDbServer\ILocalDbServerEvents.cs" />
     <Compile Include="Proxy\LocalDbServer\ILocalDbServerProxyClient.cs" />
     <Compile Include="Proxy\LocalDbServer\LocalDbServerCapabilities.cs" />
+    <Compile Include="Proxy\LocalDbServer\LocalDbServerConsoleProxyClient.cs" />
     <Compile Include="Proxy\LocalDbServer\LocalDbServerProxyClient.cs" />
     <Compile Include="Proxy\LocalDbServer\LocalDbServerProxyService.cs" />
     <Compile Include="Proxy\LspServer\Server\Commands\Parameters\ConfigurationParams.cs" />

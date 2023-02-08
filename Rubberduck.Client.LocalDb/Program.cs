@@ -22,7 +22,7 @@ namespace Rubberduck.Client.LocalDb
 
             var rpcStreamFactory = new NamedPipeClientStreamFactory("Rubberduck.Server.LocalDb.RPC");
             var serverProxy = new LocalDbServerProxyClient(rpcStreamFactory);
-            //var consoleProxy = new IServerConsoleProxyClient
+            var consoleProxy = new LocalDbServerConsoleProxyClient(rpcStreamFactory);
 
             var statusVM = new ServerStatusViewModel(serverProxy);
             var consoleVM = new ConsoleViewModel(serverProxy, null as IServerConsoleProxyClient);
@@ -30,7 +30,7 @@ namespace Rubberduck.Client.LocalDb
             var vm = new MainWindowViewModel(consoleVM, statusVM);
             var factory = new MainWindowFactory(vm);
 
-            var app = new App(factory, serverProxy, null as IServerConsoleProxyClient);
+            var app = new App(factory, serverProxy, consoleProxy);
             app.Run();
 
             process.OutputDataReceived -= OnServerProcessStdOut;
