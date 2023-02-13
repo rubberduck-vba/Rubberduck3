@@ -1,7 +1,9 @@
 ﻿using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Platform.Metadata;
 using Rubberduck.RPC.Platform.Model;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Model;
+using StreamJsonRpc;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,17 +35,20 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
         /// Server may send <c>window/showMessage</c>, <c>window/showMessageRequest</c>, <c>window/logMessage</c>, 
         /// and <c>telemetry/event</c> requests to the client while the <c>Initialize</c> request is processing.
         /// </remarks>
+        [JsonRpcMethod(JsonRpcMethods.ServerProxyRequests.Shared.Server.Initialize)]
         Task<InitializeResult<TOptions>> InitializeAsync(TInitializeParams parameters, CancellationToken token);
 
         /// <summary>
         /// Gets the current server info, including server uptime, process ID, connected clients, etc.
         /// </summary>
+        [JsonRpcMethod(JsonRpcMethods.ServerProxyRequests.Shared.Server.Info)]
         Task<ServerState> RequestServerInfoAsync(CancellationToken token);
 
         /// <summary>
         /// Notifies any remaining listeners that the server is ready to terminate.
         /// </summary>
         event EventHandler WillExit;
+        [JsonRpcIgnore]
         Task OnWillExitAsync();
     }
 }

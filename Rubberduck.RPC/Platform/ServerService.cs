@@ -38,13 +38,13 @@ namespace Rubberduck.RPC.Platform
         [JsonRpcIgnore]
         public async Task OnWillExitAsync() => await Task.Run(() => WillExit?.Invoke(this, EventArgs.Empty));
 
-        [JsonRpcMethod(JsonRpcMethods.ServerProxyRequests.Shared.Server.Info)]
+        [JsonRpcMethod(JsonRpcMethods.ServerProxyRequests.Shared.Server.Info), RubberduckSP(JsonRpcMethods.ServerProxyRequests.Shared.Server.Info)]
         public async Task<ServerState> RequestServerInfoAsync(CancellationToken token) => (await GetServerStateServiceAsync()).Info;
 
 
         private readonly InitializeCommand<TOptions, TInitializeParams> _initializeCommand;
 
-        [JsonRpcMethod(JsonRpcMethods.ServerProxyRequests.Shared.Server.Initialize)]
+        [RubberduckSP(JsonRpcMethods.ServerProxyRequests.Shared.Server.Info)]
         public async Task<InitializeResult<TOptions>> InitializeAsync(TInitializeParams parameters, CancellationToken token)
         {
             if (!(await _initializeCommand.TryExecuteAsync(parameters, token)).TryOut(out var response))

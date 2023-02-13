@@ -32,6 +32,6 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
         /// This method should be ignored by JsonRPC.
         /// </remarks>
         [JsonRpcIgnore]
-        Task<IServerLogger> GetLogger();
+        Task<IServerLogger> GetLoggerAsync();
     }
 }

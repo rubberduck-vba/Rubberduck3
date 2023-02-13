@@ -32,7 +32,7 @@ namespace Rubberduck.RPC.Platform
             var methods = types.SelectMany(t => t.GetMethods()).ToArray();
             var rpcMethods = GetRpcMethods<RubberduckSPAttribute>(methods);
 
-            _mappedMethodNames = rpcMethods.ToDictionary(m => m.MethodName, m => m.RpcMethodName);
+            _mappedMethodNames = rpcMethods.Distinct().ToDictionary(m => m.MethodName, m => m.RpcMethodName);
 
 
             _rpcEndpointNames = _mappedEventNames.Values.Concat(_mappedMethodNames.Values).ToHashSet();

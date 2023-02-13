@@ -171,7 +171,7 @@ namespace Rubberduck.RPC.Platform
 
         public static string MethodNameTransform(string name)
         {
-            if (RpcMethodNameMappings.IsMappedEvent(name, out var mapped))
+            if (RpcMethodNameMappings.IsMappedMethod(name, out var mapped))
             {
                 return mapped;
             }

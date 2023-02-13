@@ -29,7 +29,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
         public async Task<TOptions> GetServerOptionsAsync() => await Task.FromResult(_serverStateService.Configuration);
 
         [JsonRpcIgnore]
-        public async Task<IServerLogger> GetLogger() => await Task.FromResult(Logger);
+        public async Task<IServerLogger> GetLoggerAsync() => await Task.FromResult(Logger);
 
         [JsonRpcIgnore]
         public async Task<IServerStateService<TOptions>> GetServerStateServiceAsync() => await Task.FromResult(_serverStateService);
