@@ -41,7 +41,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
         /// <summary>
         /// Configuration options for the server console.
         /// </summary>
-        ServerConsoleOptions Configuration { get; }
+        Task<ServerConsoleOptions> GetConfigurationAsync();
 
         /// <summary>
         /// Writes an error-level exception trace log message.

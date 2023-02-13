@@ -15,7 +15,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
         where TServerOptions : SharedServerCapabilities, new()
         where TInitializeParams : class, new()
     {
-        public InitializeCommand(IServerLogger logger, GetServerOptions<TServerOptions> getConfiguration, GetServerStateInfo getServerState)
+        public InitializeCommand(IServerLogger logger, GetServerOptionsAsync<TServerOptions> getConfiguration, GetServerStateInfoAsync getServerState)
             : base(logger, getConfiguration, getServerState)
         {
         }
@@ -33,10 +33,10 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
 
         protected sealed override async Task<InitializeResult<TServerOptions>> ExecuteInternalAsync(TInitializeParams parameter, CancellationToken token)
         {
-            var initialConfig = GetConfiguration.Invoke();
+            var initialConfig = await GetConfigurationAsync.Invoke();
             var serverConfig = await ExecuteInternalAsync(parameter, initialConfig, token);
 
-            var info = GetCurrentServerStateInfo.Invoke();
+            var info = await GetCurrentServerStateInfoAsync.Invoke();
 
             return await Task.FromResult(new InitializeResult<TServerOptions>
             {

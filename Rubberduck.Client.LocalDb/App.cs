@@ -92,7 +92,7 @@ namespace Rubberduck.Client.LocalDb
 
             var token = CancellationToken.None;
 
-            var response = await _server.RequestAsync(proxy => proxy.InitializeClientAsync(parameter));
+            var response = await _server.RequestAsync(proxy => proxy.InitializeAsync(parameter, token));
 
             var serverInfo = response.ServerInfo;
             var serverConfig = response.Capabilities;

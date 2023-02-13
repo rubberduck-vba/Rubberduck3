@@ -7,7 +7,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
 {
     public class DisconnectClientCommand : ShutdownCommand<ClientShutdownParams>
     {
-        public DisconnectClientCommand(Action<ClientShutdownParams> shutdownAction, IServerLogger logger, GetServerOptions<SharedServerCapabilities> getConfiguration, GetServerStateInfo getServerState) 
+        public DisconnectClientCommand(Action<ClientShutdownParams> shutdownAction, IServerLogger logger, GetServerOptionsAsync<SharedServerCapabilities> getConfiguration, GetServerStateInfoAsync getServerState) 
             : base(shutdownAction, logger, getConfiguration, getServerState)
         {
         }

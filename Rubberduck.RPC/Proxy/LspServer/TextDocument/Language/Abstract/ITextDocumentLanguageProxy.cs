@@ -30,7 +30,7 @@ namespace Rubberduck.RPC.Proxy.LspServer.TextDocument.Language.Abstract
         /// </summary>
         /// <param name="parameters">The type hierarchy item to resolve</param>
         /// <returns>An array of <c>TypeHierarchyItem</c> objects. May be <c>null</c> or empty if the server couldn’t infer a valid type from the position</returns>
-        [JsonRpcMethod(JsonRpcMethods.ServerProxyRequests.LSP.TextDocument.Language.SuperTypes), LspCompliant]
+        [JsonRpcMethod(JsonRpcMethods.ServerProxyRequests.LSP.TextDocument.Language.Supertypes), LspCompliant]
         Task<TypeHierarchyItem[]> TypeHierarchySuperTypesAsync(TypeHierarchySupertypesParams parameters);
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace Rubberduck.RPC.Proxy.LspServer.TextDocument.Language.Abstract
         /// </summary>
         /// <param name="parameters">The type hierarchy item to resolve</param>
         /// <returns>An array of <c>TypeHierarchyItem</c> objects.</returns>
-        [JsonRpcMethod(JsonRpcMethods.ServerProxyRequests.LSP.TextDocument.Language.SubTypes), LspCompliant]
+        [JsonRpcMethod(JsonRpcMethods.ServerProxyRequests.LSP.TextDocument.Language.Subtypes), LspCompliant]
         Task<TypeHierarchyItem[]> TypeHierarchySubTypesAsync(TypeHierarchySubtypesParams parameters);
 
         /// <summary>

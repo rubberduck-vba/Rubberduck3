@@ -1,9 +1,11 @@
 ﻿using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Proxy.SharedServices.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
+using StreamJsonRpc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
 {
@@ -17,26 +19,36 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
         protected ServerSideProxyService(IServerLogger logger, IServerStateService<TOptions> serverStateService)
         {
             Logger = logger; // logger may be supplied by derived class
-            ServerStateService = serverStateService ?? throw new ArgumentNullException(nameof(serverStateService));
+            _serverStateService = serverStateService ?? throw new ArgumentNullException(nameof(serverStateService));
         }
 
-        public TOptions ServerOptions => ServerStateService.Configuration;
+        protected IServerLogger Logger { get; set; }
+        protected readonly IServerStateService<TOptions> _serverStateService;
 
-        public virtual IServerLogger Logger { get; }
+        [JsonRpcIgnore]
+        public async Task<TOptions> GetServerOptionsAsync() => await Task.FromResult(_serverStateService.Configuration);
 
-        public IServerStateService<TOptions> ServerStateService { get; }
+        [JsonRpcIgnore]
+        public async Task<IServerLogger> GetLogger() => await Task.FromResult(Logger);
 
-        public IEnumerable<IJsonRpcSource> ClientProxies { get; private set; }
+        [JsonRpcIgnore]
+        public async Task<IServerStateService<TOptions>> GetServerStateServiceAsync() => await Task.FromResult(_serverStateService);
 
+        private IEnumerable<IJsonRpcSource> _clientProxies;
+
+        [JsonRpcIgnore]
+        public async Task<IEnumerable<IJsonRpcSource>> GetClientProxies() => await Task.FromResult(_clientProxies);
+
+        [JsonRpcIgnore]
         public void Initialize(IEnumerable<IJsonRpcSource> clientProxies)
         {
-            if (ClientProxies != null)
+            if (_clientProxies != null)
             {
                 throw new InvalidOperationException("This instance was already intiialized. As a proxy service, its instancing should be scoped.");
             }
 
-            ClientProxies = clientProxies;
-            if (ClientProxies?.Any() ?? false)
+            _clientProxies = clientProxies;
+            if (_clientProxies?.Any() ?? false)
             {
                 RegisterClientProxyNotifications(clientProxies);
             }

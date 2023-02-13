@@ -3,7 +3,9 @@ using Rubberduck.RPC.Platform.Metadata;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Model;
+using StreamJsonRpc;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Proxy.SharedServices
@@ -25,11 +27,6 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         /// </remarks>
         [LspCompliant(JsonRpcMethods.ServerProxyRequests.Shared.Server.Exit)]
         event EventHandler RequestExit;
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        Task OnRequestExitAsync();
 
         /// <summary>
         /// A <c>Initialized</c> notification is sent <em>from the client to the server</em> after the client received an <c>InitializeResult</c>,
@@ -40,25 +37,17 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         /// </remarks>
         [LspCompliant(JsonRpcMethods.ServerProxyRequests.Shared.Server.Initialized)]
         event EventHandler<InitializedParams> Initialized;
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
+
+        [JsonRpcIgnore]
+        Task OnRequestExitAsync();
+
+        [JsonRpcIgnore]
         Task OnInitializedAsync(InitializedParams parameter);
 
         /// <summary>
-        /// 
+        /// Connects a client to the server and initializes server options and capabilities.
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
-        Task<InitializeResult<TServerCapabilities>> InitializeClientAsync(InitializeParams<TServerCapabilities> parameter);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
-        Task ShutdownClientAsync(ClientShutdownParams parameter);
+        [JsonRpcMethod(JsonRpcMethods.ServerProxyRequests.Shared.Server.Initialize)]
+        Task<InitializeResult<TServerCapabilities>> InitializeClientAsync(InitializeParams<TServerCapabilities> parameter, CancellationToken token);
     }
 }

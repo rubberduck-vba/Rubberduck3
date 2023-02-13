@@ -20,7 +20,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         private readonly Func<TParameter, CancellationToken, Task<TResult>> _execute;
         private readonly Func<TParameter, CancellationToken, Task<bool>> _canExecute;
 
-        public DelegateServerRequestCommand(string name, string description, IServerLogger logger, GetServerOptions<TOptions> getConfiguration, GetServerStateInfo getServerState,
+        public DelegateServerRequestCommand(string name, string description, IServerLogger logger, GetServerOptionsAsync<TOptions> getConfiguration, GetServerStateInfoAsync getServerState,
             Func<TParameter, CancellationToken, Task<TResult>> executeDelegate, 
             Func<TParameter, CancellationToken, Task<bool>> canExecuteDelegate = null)
             : base(logger, getConfiguration, getServerState)
@@ -58,7 +58,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         private readonly Func<CancellationToken, Task<TResult>> _execute;
         private readonly Func<CancellationToken, Task<bool>> _canExecute;
 
-        public DelegateServerRequestCommand(string name, string description, IServerLogger logger, GetServerOptions<TOptions> getConfiguration, GetServerStateInfo getServerState,
+        public DelegateServerRequestCommand(string name, string description, IServerLogger logger, GetServerOptionsAsync<TOptions> getConfiguration, GetServerStateInfoAsync getServerState,
             Func<CancellationToken, Task<TResult>> executeDelegate, Func<CancellationToken, Task<bool>> canExecuteDelegate = null)
             : base(logger, getConfiguration, getServerState)
         {

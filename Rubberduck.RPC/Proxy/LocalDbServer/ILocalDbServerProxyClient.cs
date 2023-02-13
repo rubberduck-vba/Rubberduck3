@@ -1,12 +1,16 @@
-﻿using Rubberduck.RPC.Platform.Metadata;
+﻿using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Platform.Metadata;
 using Rubberduck.RPC.Platform.Model;
 using Rubberduck.RPC.Proxy.SharedServices;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
+using StreamJsonRpc;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Proxy.LocalDbServer
 {
+    [JsonRpcSource]
     public interface ILocalDbServerProxyClient : IServerProxyClient<LocalDbServerCapabilities>
     {
         /// <summary>
@@ -17,19 +21,23 @@ namespace Rubberduck.RPC.Proxy.LocalDbServer
         /// This notification sends a <c>processId</c> to identify the connecting client process.
         /// </remarks>
         event EventHandler<ClientInitializedParams> ClientInitialized;
-        Task OnClientInitializedAsync(ClientInitializedParams parameter);
 
         /// <summary>
         /// A notification sent from a client to the server to signal it is shutting down and disconnecting from the server.
         /// </summary>
         event EventHandler<ClientShutdownParams> ClientShutdown;
+
+        [JsonRpcIgnore]
+        Task OnClientInitializedAsync(ClientInitializedParams parameter);
+        
+        [JsonRpcIgnore]
         Task OnClientShutdownAsync(ClientShutdownParams parameter);
 
         /// <summary>
         /// Requests server information.
         /// </summary>
         /// <returns>The current server state.</returns>
-        [RubberduckSP(JsonRpcMethods.ServerProxyRequests.Shared.Server.Info)]
-        Task<ServerState> OnRequestServerInfoAsync();
+        [JsonRpcMethod(JsonRpcMethods.ServerProxyRequests.Shared.Server.Info)]
+        Task<ServerState> OnRequestServerInfoAsync(CancellationToken token);
     }
 }

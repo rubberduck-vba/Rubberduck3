@@ -1,5 +1,7 @@
 ﻿using Rubberduck.RPC.Proxy.SharedServices.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
+using StreamJsonRpc;
+using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
 {
@@ -17,11 +19,19 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Abstract
         /// <summary>
         /// Gets a service that returns the current server state.
         /// </summary>
-        IServerStateService<TOptions> ServerStateService { get; }
+        /// <remarks>
+        /// This method should be ignored by JsonRPC.
+        /// </remarks>
+        [JsonRpcIgnore]
+        Task<IServerStateService<TOptions>> GetServerStateServiceAsync();
 
         /// <summary>
         /// Gets the server's console logger.
         /// </summary>
-        IServerLogger Logger { get; }
+        /// <remarks>
+        /// This method should be ignored by JsonRPC.
+        /// </remarks>
+        [JsonRpcIgnore]
+        Task<IServerLogger> GetLogger();
     }
 }

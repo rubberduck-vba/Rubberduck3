@@ -14,7 +14,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Commands
     /// </summary>
     public class SetTraceNotificationCommand : ServerNotificationCommand<ServerConsoleOptions, SetTraceParams>
     {
-        public SetTraceNotificationCommand(IServerLogger logger, GetServerOptions<ServerConsoleOptions> getConfiguration, GetServerStateInfo getServerState)
+        public SetTraceNotificationCommand(IServerLogger logger, GetServerOptionsAsync<ServerConsoleOptions> getConfiguration, GetServerStateInfoAsync getServerState)
             : base(logger, getConfiguration, getServerState)
         {
         }
@@ -23,7 +23,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Commands
 
         protected override async Task ExecuteInternalAsync(SetTraceParams parameter)
         {
-            var config = GetConfiguration();
+            var config = await GetConfigurationAsync();
             config.Trace = parameter.Value;
 
             await Task.CompletedTask;

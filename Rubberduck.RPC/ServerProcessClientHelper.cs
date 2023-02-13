@@ -18,29 +18,31 @@ namespace Rubberduck.RPC
         /// <returns>Returns the server process, whether it was already running or the method call started it.</returns>
         public static Process StartLocalDb(bool hidden = true)
         {
-            var info = new ProcessStartInfo
-            {
-                FileName = Settings.Default.ServerExecutable_LocalDb,
-                Arguments = $"",
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = hidden,
-                WorkingDirectory = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
-            };
-            Process serverProcess;
-            
+            Process serverProcess = null;
             try
             {
-                serverProcess = Process.Start(info);
+                if (TryFindServerProcess(Settings.Default.ServerExecutable_LocalDb, out serverProcess))
+                {
+                    Debug.WriteLine($"Found existing '{serverProcess.ProcessName}' process (ID {serverProcess.Id}).");
+                    return serverProcess;
+                }
+
+                var info = new ProcessStartInfo
+                {
+                    FileName = Settings.Default.ServerExecutable_LocalDb,
+                    Arguments = $"",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = hidden,
+                    WorkingDirectory = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
+                };
+
+                return Process.Start(info);
             }
             catch (Exception exception)
             {
                 Debug.WriteLine(exception);
-                if (TryFindServerProcess(Settings.Default.ServerExecutable_LocalDb, out serverProcess))
-                {
-                    Debug.WriteLine($"Found existing '{serverProcess.ProcessName}' process (ID {serverProcess.Id}).");
-                }
             }
 
             return serverProcess ?? throw new InvalidOperationException("Could not start or find a localdb server process.");
@@ -48,8 +50,22 @@ namespace Rubberduck.RPC
 
         private static bool TryFindServerProcess(string name, out Process process)
         {
-            process = Process.GetProcessesByName(name).FirstOrDefault();
-            return process != null;
+            process = null;
+
+            try
+            {
+                var matches = Process.GetProcessesByName(name);
+                if (matches.Length > 0)
+                {
+                    Debug.Assert(matches.Length == 1);
+                    process = matches[0];
+                }
+                return process != null;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static Process StartLSP()

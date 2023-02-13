@@ -9,7 +9,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
 {
     public class ConnectClientCommand : ServerRequestCommand<ClientInfo, ConnectResult, SharedServerCapabilities>
     {
-        public ConnectClientCommand(IServerLogger logger, GetServerOptions<SharedServerCapabilities> getConfiguration, GetServerStateInfo getServerState) 
+        public ConnectClientCommand(IServerLogger logger, GetServerOptionsAsync<SharedServerCapabilities> getConfiguration, GetServerStateInfoAsync getServerState) 
             : base(logger, getConfiguration, getServerState)
         {
         }
@@ -21,7 +21,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
             var info = ValidateParameter(parameter);
             token.ThrowIfCancellationRequested();
 
-            var state = GetCurrentServerStateInfo.Invoke();
+            var state = await GetCurrentServerStateInfoAsync.Invoke();
             token.ThrowIfCancellationRequested();
 
             var isConnected = state.Connect(info);

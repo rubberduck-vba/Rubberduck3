@@ -1,4 +1,7 @@
-﻿namespace Rubberduck.RPC.Proxy.SharedServices.Abstract
+﻿using StreamJsonRpc;
+using System.Threading.Tasks;
+
+namespace Rubberduck.RPC.Proxy.SharedServices.Abstract
 {
     /// <summary>
     /// The base interface for a configurable RPC proxy (client or server).
@@ -13,6 +16,7 @@
         /// <summary>
         /// Configuration options for this server.
         /// </summary>
-        TOptions ServerOptions { get; }
+        [JsonRpcIgnore]
+        Task<TOptions> GetServerOptionsAsync();
     }
 }

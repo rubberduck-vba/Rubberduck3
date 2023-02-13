@@ -92,21 +92,11 @@ namespace Rubberduck.RPC.Platform
             {
                 try
                 {
-
                     // our stream only buffers a single message, so we need a new one every time:
                     var stream = _rpcStreamFactory.CreateNew();
 
                     await WaitForConnectionAsync(stream, serverToken);
-
-                    // Because this call is not awaited, execution of the current method continues before the call is completed
-#pragma warning disable CS4014
-
-                    // we specifically *DO NOT* want to *wait* for the request processing (so, the response) here.
-                    // awaiting this call would block the thread and prevent handling other incoming requests while a response is cooking.
-
-                    SendResponseAsync(stream, serverToken);
-
-#pragma warning restore CS4014
+                    await SendResponseAsync(stream, serverToken);
                 }
                 catch (OperationCanceledException) when (Thread.CurrentThread.IsBackground)
                 {
@@ -120,13 +110,20 @@ namespace Rubberduck.RPC.Platform
 
         private static readonly JsonRpcTargetOptions _targetOptions = new JsonRpcTargetOptions
         {
-            MethodNameTransform = MethodNameTransform,
-            EventNameTransform = EventNameTransform,
+            MethodNameTransform = JsonRpcNameTransforms.MethodNameTransform,
+            EventNameTransform = JsonRpcNameTransforms.EventNameTransform,
             AllowNonPublicInvocation = false,
-            ClientRequiresNamedArguments = true,
+            ClientRequiresNamedArguments = false,
             DisposeOnDisconnect = true,
             NotifyClientOfEvents = true,
             UseSingleObjectParameterDeserialization = true,
+        };
+
+        private static readonly JsonRpcProxyOptions _proxyOptions = new JsonRpcProxyOptions
+        {
+            EventNameTransform = JsonRpcNameTransforms.EventNameTransform,
+            MethodNameTransform = JsonRpcNameTransforms.MethodNameTransform,
+            ServerRequiresNamedArguments = true,
         };
 
         private async Task SendResponseAsync(Stream stream, CancellationToken token)
@@ -136,7 +133,7 @@ namespace Rubberduck.RPC.Platform
                 var clientProxies = new List<object>();
                 foreach (var type in _clientProxyTypes)
                 {
-                    clientProxies.Add(rpc.Attach(type));
+                    clientProxies.Add(rpc.Attach(type, _proxyOptions));
                 }
 
                 using (var scope = _serviceProvider.CreateScope())
@@ -155,8 +152,11 @@ namespace Rubberduck.RPC.Platform
                 }
             }
         }
+    }
 
-        private static string EventNameTransform(string name)
+    public static class JsonRpcNameTransforms
+    {
+        public static string EventNameTransform(string name)
         {
             if (RpcMethodNameMappings.IsMappedEvent(name, out var mapped))
             {
@@ -169,7 +169,7 @@ namespace Rubberduck.RPC.Platform
             return camelCased;
         }
 
-        private static string MethodNameTransform(string name)
+        public static string MethodNameTransform(string name)
         {
             if (RpcMethodNameMappings.IsMappedEvent(name, out var mapped))
             {

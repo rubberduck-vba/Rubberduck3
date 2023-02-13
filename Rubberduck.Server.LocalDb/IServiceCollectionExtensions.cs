@@ -14,6 +14,7 @@ using Rubberduck.Server.Storage;
 using System;
 using System.IO.Pipes;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 
 namespace Rubberduck.Server.LocalDb
@@ -76,7 +77,7 @@ namespace Rubberduck.Server.LocalDb
 
             var clientProxyTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => a.FullName.Contains("Rubberduck."))
-                .SelectMany(a => a.GetTypes().Where(t => t.IsInterface && t.GetInterfaces().Contains(typeof(IJsonRpcSource))))
+                .SelectMany(a => a.GetTypes().Where(t => t.IsInterface && t.GetCustomAttribute<JsonRpcSourceAttribute>() != null && t.GetInterfaces().Contains(typeof(IJsonRpcSource))))
                 .ToArray();
 
             return services

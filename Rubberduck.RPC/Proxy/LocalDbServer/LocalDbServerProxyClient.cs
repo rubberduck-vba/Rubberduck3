@@ -1,16 +1,21 @@
 ﻿using System;
 using System.IO.Pipes;
+using System.Threading;
 using System.Threading.Tasks;
 using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Platform.Client;
+using Rubberduck.RPC.Platform.Metadata;
 using Rubberduck.RPC.Platform.Model;
 using Rubberduck.RPC.Proxy.SharedServices.Abstract;
+using Rubberduck.RPC.Proxy.SharedServices.Server.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Model;
+using StreamJsonRpc;
 
 namespace Rubberduck.RPC.Proxy.LocalDbServer
 {
-    public class LocalDbServerProxyClient : JsonRpcClientSideServerProxyService<ILocalDbServerProxyClient>, ILocalDbServerProxyClient
+    [JsonRpcSource]
+    public class LocalDbServerProxyClient : JsonRpcClientSideServerProxyService<IServerProxy<LocalDbServerCapabilities, InitializeParams<LocalDbServerCapabilities>>>, ILocalDbServerProxyClient
     {
         public IServerLogger Logger { get; set; }
 
@@ -23,28 +28,29 @@ namespace Rubberduck.RPC.Proxy.LocalDbServer
         }
 
         public event EventHandler<ClientInitializedParams> ClientInitialized;
-        public async Task OnClientInitializedAsync(ClientInitializedParams parameter) 
-            => await NotifyAsync(async proxy => await proxy.OnClientInitializedAsync(parameter));
-
         public event EventHandler<ClientShutdownParams> ClientShutdown;
-        public async Task OnClientShutdownAsync(ClientShutdownParams parameter) 
-            => await NotifyAsync(async proxy => await proxy.OnClientShutdownAsync(parameter));
-
         public event EventHandler RequestExit;
-        public async Task OnRequestExitAsync()
-            => await NotifyAsync(async proxy => await proxy.OnRequestExitAsync());
-
         public event EventHandler<InitializedParams> Initialized;
+
+        public async Task OnClientInitializedAsync(ClientInitializedParams parameter) 
+            => await Task.Run(() => ClientInitialized?.Invoke(this, parameter));
+
+        public async Task OnRequestExitAsync()
+            => await Task.Run(() => RequestExit?.Invoke(this, EventArgs.Empty));
+
         public async Task OnInitializedAsync(InitializedParams parameter)
-            => await NotifyAsync(async proxy => await proxy.OnInitializedAsync(parameter));
+            => await Task.Run(() => Initialized?.Invoke(this, parameter));
 
-        public async Task<InitializeResult<LocalDbServerCapabilities>> InitializeClientAsync(InitializeParams<LocalDbServerCapabilities> parameter)
-            => await RequestAsync(async proxy => await proxy.InitializeClientAsync(parameter));
+        [RubberduckSP(JsonRpcMethods.ServerProxyRequests.Shared.Server.Initialize)]
+        public async Task<InitializeResult<LocalDbServerCapabilities>> InitializeClientAsync(InitializeParams<LocalDbServerCapabilities> parameter, CancellationToken token)
+            => await RequestAsync(async proxy => await proxy.InitializeAsync(parameter, token));
 
-        public async Task ShutdownClientAsync(ClientShutdownParams parameter)
-            => await NotifyAsync(async proxy => await proxy.OnClientShutdownAsync(parameter));
+        [RubberduckSP(JsonRpcMethods.ServerProxyRequests.Shared.Server.Info)]
+        public async Task<ServerState> OnRequestServerInfoAsync(CancellationToken token)
+            => await RequestAsync(async proxy => await proxy.RequestServerInfoAsync(token));
 
-        public async Task<ServerState> OnRequestServerInfoAsync()
-            => await RequestAsync(async proxy => await proxy.OnRequestServerInfoAsync());
+        [RubberduckSP(JsonRpcMethods.ServerProxyRequests.Shared.Server.Shutdown)]
+        public async Task OnClientShutdownAsync(ClientShutdownParams parameter)
+            => await Task.Run(() => ClientShutdown?.Invoke(this, parameter));
     }
 }

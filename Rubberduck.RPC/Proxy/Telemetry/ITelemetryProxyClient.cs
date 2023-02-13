@@ -13,7 +13,8 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Telemetry
     /// <remarks>
     /// Events are raised on the client side.
     /// </remarks>
-    public interface ITelemetryProxyClient : IConfigurableProxy<TelemetryOptions>, IJsonRpcSource
+    [JsonRpcSource]
+    public interface ITelemetryProxyClient : IJsonRpcSource
     {
         /// <summary>
         /// The <strong>TelemetryEvent</strong> notification is sent from the LSP server to the IDE client to ask the client to log a telemetry event.
@@ -24,6 +25,36 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Telemetry
         /// <summary>
         /// Sents a <strong>TelemetryEvent</strong> notification to the Rubberduck.Telemetry server.
         /// </summary>
-        void OnTelemetryEvent<TEvent>(TEvent item) where TEvent : TelemetryEvent;
+        void OnExceptionTelemetry(ExceptionTelemetry item);
+
+        /// <summary>
+        /// Sents a <strong>TelemetryEvent</strong> notification to the Rubberduck.Telemetry server.
+        /// </summary>
+        void OnEventTelemetry(EventTelemetry item);
+
+        /// <summary>
+        /// Sents a <strong>TelemetryEvent</strong> notification to the Rubberduck.Telemetry server.
+        /// </summary>
+        void OnTraceTelemetry(TraceTelemetry item);
+
+        /// <summary>
+        /// Sents a <strong>TelemetryEvent</strong> notification to the Rubberduck.Telemetry server.
+        /// </summary>
+        void OnRequestTelemetry(RequestTelemetry item);
+
+        /// <summary>
+        /// Sents a <strong>TelemetryEvent</strong> notification to the Rubberduck.Telemetry server.
+        /// </summary>
+        void OnMetricTelemetry(MetricTelemetry item);
+
+        /// <summary>
+        /// Sents a <strong>TelemetryEvent</strong> notification to the Rubberduck.Telemetry server.
+        /// </summary>
+        void OnPageViewTelemetry(PageViewTelemetry item);
+
+        /// <summary>
+        /// Sents a <strong>TelemetryEvent</strong> notification to the Rubberduck.Telemetry server.
+        /// </summary>
+        void OnDependencyTelemetry(DependencyTelemetry item);
     }
 }

@@ -10,5 +10,8 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Configuration
     {
         [RubberduckSP("consoleProvider")]
         public ServerConsoleOptions ConsoleOptions { get; set; }
+
+        [RubberduckSP("telemetryProvider")]
+        public TelemetryOptions TelemetryOptions { get; set; }
     }
 }

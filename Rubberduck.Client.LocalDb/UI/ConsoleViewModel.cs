@@ -42,7 +42,7 @@ namespace Rubberduck.Client.LocalDb
 
             ClearCommand = new DelegateCommand(null, o => ConsoleContent.Clear());
 
-            ShutdownCommand = new AsyncDelegateCommand(o => server.ShutdownClientAsync(o as ClientShutdownParams));
+            ShutdownCommand = new AsyncDelegateCommand(o => server.OnClientShutdownAsync(o as ClientShutdownParams));
             CopyCommand = new CopyCommand(console);
             SaveAsCommand = new SaveAsCommand(console, new FileNameProvider());
 

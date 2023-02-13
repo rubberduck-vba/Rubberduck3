@@ -25,8 +25,8 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
         {
             Logger = new ServerLogger<TOptions>(this);
 
-            var getConfig = new GetServerOptions<ServerConsoleOptions>(() => Configuration);
-            var getState = new GetServerStateInfo(() => ServerStateService.Info);
+            var getConfig = new GetServerOptionsAsync<ServerConsoleOptions>(() => GetConfigurationAsync());
+            var getState = new GetServerStateInfoAsync(async () => (await GetServerStateServiceAsync()).Info);
 
             _setEnabledCommand = new SetEnabledNotificationCommand(Logger, getConfig, getState);
             _setTraceCommand = new SetTraceNotificationCommand(Logger, getConfig, getState);
@@ -49,16 +49,15 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
             await _setTraceCommand.ExecuteAsync(e);
         }
 
-        public override IServerLogger Logger { get; }
-
-        public ServerConsoleOptions Configuration => ServerOptions.ConsoleOptions;
+        public async Task<ServerConsoleOptions> GetConfigurationAsync() => (await GetServerOptionsAsync()).ConsoleOptions;
 
         public event EventHandler<LogTraceParams> LogTrace;
         public async Task OnLogTraceAsync(LogTraceParams parameters) => await Task.Run(() => LogTrace?.Invoke(this, parameters));
 
         public async Task LogTraceAsync(ServerLogLevel level, string message, string verbose = null)
         {
-            if (!ServerOptions.ConsoleOptions.CanLog(level))
+            var options = await GetServerOptionsAsync();
+            if (!options.ConsoleOptions.CanLog(level))
             {
                 return;
             }
@@ -69,11 +68,11 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
             }
 
             var id = Interlocked.Increment(ref _nextMessageId);
-            var timestamp = DateTime.Now.ToString(ServerOptions.ConsoleOptions.ConsoleOutputFormatting.TimestampFormatString);
+            var timestamp = DateTime.Now.ToString(options.ConsoleOptions.ConsoleOutputFormatting.TimestampFormatString);
 
-            var separator = ServerOptions.ConsoleOptions.ConsoleOutputFormatting.MessagePartSeparator;
+            var separator = options.ConsoleOptions.ConsoleOutputFormatting.MessagePartSeparator;
 
-            var willNotify = level != ServerLogLevel.Off && level >= ServerOptions.ConsoleOptions.LogLevel;
+            var willNotify = level != ServerLogLevel.Off && level >= options.ConsoleOptions.LogLevel;
             var builder = willNotify ? new StringBuilder() : null;
 
             await ConsoleOutputAsync(builder, level, id.ToString(), LogOutputPart.MessageId);
@@ -88,7 +87,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
             await ConsoleOutputAsync(builder, level, message, LogOutputPart.Message);
             await ConsoleOutputAsync(builder, level, separator);
 
-            if (ServerOptions.ConsoleOptions.Trace == Constants.Console.VerbosityOptions.AsStringEnum.Verbose && !string.IsNullOrWhiteSpace(verbose))
+            if (options.ConsoleOptions.Trace == Constants.Console.VerbosityOptions.AsStringEnum.Verbose && !string.IsNullOrWhiteSpace(verbose))
             {
                 await ConsoleOutputAsync(builder, level, verbose, LogOutputPart.Verbose);
             }
@@ -119,11 +118,11 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
 
             if (messagePart.HasValue)
             {
-                SetConsoleColors(messagePart.Value, level);
+                await SetConsoleColorsAsync(messagePart.Value, level);
             }
             else
             {
-                SetConsoleColors();
+                await SetConsoleColorsAsync();
             }
 
             if (level == ServerLogLevel.Error || level == ServerLogLevel.Fatal)
@@ -136,9 +135,9 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
             }
         }
 
-        private void SetConsoleColors(LogOutputPart? part = null, ServerLogLevel? level = null)
+        private async Task SetConsoleColorsAsync(LogOutputPart? part = null, ServerLogLevel? level = null)
         {
-            var provider = ServerOptions.ConsoleOptions.ConsoleOutputFormatting;
+            var provider = (await GetConfigurationAsync()).ConsoleOutputFormatting;
             (Func<ConsoleColorOptions> foreground, Func<ConsoleColorOptions> background) config =
                 (() => provider.FontFormatting.DefaultFont.ForegroundColorProvider, () => provider.BackgroundFormatting.DefaultFormatProvider);
 

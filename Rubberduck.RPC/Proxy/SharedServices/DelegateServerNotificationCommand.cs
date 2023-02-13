@@ -17,7 +17,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         private readonly Func<Task> _execute;
         private readonly Func<Task<bool>> _canExecute;
 
-        public DelegateServerNotificationCommand(string description, IServerLogger logger, GetServerOptions<TOptions> getConfiguration, GetServerStateInfo getServerState)
+        public DelegateServerNotificationCommand(string description, IServerLogger logger, GetServerOptionsAsync<TOptions> getConfiguration, GetServerStateInfoAsync getServerState)
             : base(logger, getConfiguration, getServerState)
         {
             Description = description;
@@ -43,7 +43,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         private readonly Func<TParameter, Task> _execute;
         private readonly Func<TParameter, Task<bool>> _canExecute;
 
-        public DelegateServerNotificationCommand(string description, IServerLogger logger, GetServerOptions<TOptions> getConfiguration, GetServerStateInfo getServerState) 
+        public DelegateServerNotificationCommand(string description, IServerLogger logger, GetServerOptionsAsync<TOptions> getConfiguration, GetServerStateInfoAsync getServerState) 
             : base(logger, getConfiguration, getServerState)
         {
             Description = description;

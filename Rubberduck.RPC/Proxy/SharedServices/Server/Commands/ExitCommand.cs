@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
 {
-    public class ExitCommand : ServerNotificationCommand<SharedServerCapabilities>
+    public class ExitCommand<TOptions> : ServerNotificationCommand<TOptions>
+        where TOptions : SharedServerCapabilities, new()
     {
         private readonly CancellationTokenSource _tokenSource;
 
@@ -14,7 +15,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
         /// A command that terminates the server process.
         /// </summary>
         /// <param name="tokenSource">The cancellation token that controls the main server loop.</param>
-        public ExitCommand(CancellationTokenSource tokenSource, IServerLogger logger, GetServerOptions<SharedServerCapabilities> getConfiguration, GetServerStateInfo getCurrentServerState) 
+        public ExitCommand(CancellationTokenSource tokenSource, IServerLogger logger, GetServerOptionsAsync<TOptions> getConfiguration, GetServerStateInfoAsync getCurrentServerState) 
             : base(logger, getConfiguration, getCurrentServerState)
         {
             _tokenSource = tokenSource;

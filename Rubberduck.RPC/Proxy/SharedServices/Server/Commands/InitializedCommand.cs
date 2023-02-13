@@ -8,7 +8,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
     public class InitializedCommand<TOptions> : ServerNotificationCommand<TOptions, InitializedParams>
         where TOptions : class, new()
     {
-        public InitializedCommand(IServerLogger logger, GetServerOptions<TOptions> getConfiguration, GetServerStateInfo getServerState) 
+        public InitializedCommand(IServerLogger logger, GetServerOptionsAsync<TOptions> getConfiguration, GetServerStateInfoAsync getServerState) 
             : base(logger, getConfiguration, getServerState)
         {
         }
@@ -22,7 +22,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
 
         protected override async Task ExecuteInternalAsync(InitializedParams parameter)
         {
-            var state = GetCurrentServerStateInfo.Invoke();
+            var state = await GetCurrentServerStateInfoAsync.Invoke();
             state.Status = ServerStatus.Initialized;
 
             Logger.OnInfo("Initialization completed.", $"Clients connected: {state.ClientsCount}.");

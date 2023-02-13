@@ -8,14 +8,14 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Console.Commands
 {
     public class SetEnabledNotificationCommand : ServerNotificationCommand<ServerConsoleOptions, SetEnabledParams>
     {
-        public SetEnabledNotificationCommand(IServerLogger logger, GetServerOptions<ServerConsoleOptions> getConfiguration, GetServerStateInfo getServerState)
+        public SetEnabledNotificationCommand(IServerLogger logger, GetServerOptionsAsync<ServerConsoleOptions> getConfiguration, GetServerStateInfoAsync getServerState)
             : base(logger, getConfiguration, getServerState) { }
 
         public override string Description { get; } = "Pauses or resumes console output.";
 
         protected override async Task ExecuteInternalAsync(SetEnabledParams parameter)
         {
-            var config = GetConfiguration();
+            var config = await GetConfigurationAsync();
             config.IsEnabled = parameter.Value;
 
             await Task.CompletedTask;

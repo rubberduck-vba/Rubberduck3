@@ -11,7 +11,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
     {
         private readonly Action _shutdownAction;
 
-        public ShutdownCommand(Action shutdownAction, IServerLogger logger, GetServerOptions<SharedServerCapabilities> getConfiguration, GetServerStateInfo getServerState)
+        public ShutdownCommand(Action shutdownAction, IServerLogger logger, GetServerOptionsAsync<SharedServerCapabilities> getConfiguration, GetServerStateInfoAsync getServerState)
             : base(logger, getConfiguration, getServerState)
         {
             _shutdownAction = shutdownAction;
@@ -36,7 +36,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
     {
         private readonly Action<TParameter> _shutdownAction;
 
-        public ShutdownCommand(Action<TParameter> shutdownAction, IServerLogger logger, GetServerOptions<SharedServerCapabilities> getConfiguration, GetServerStateInfo getServerState)
+        public ShutdownCommand(Action<TParameter> shutdownAction, IServerLogger logger, GetServerOptionsAsync<SharedServerCapabilities> getConfiguration, GetServerStateInfoAsync getServerState)
             : base(logger, getConfiguration, getServerState)
         {
             _shutdownAction = shutdownAction;

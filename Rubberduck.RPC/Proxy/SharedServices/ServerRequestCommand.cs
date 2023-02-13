@@ -14,7 +14,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         where TResult : class, new()
         where TOptions : class, new()
     {
-        protected ServerRequestCommand(IServerLogger logger, GetServerOptions<TOptions> getConfiguration, GetServerStateInfo getServerState)
+        protected ServerRequestCommand(IServerLogger logger, GetServerOptionsAsync<TOptions> getConfiguration, GetServerStateInfoAsync getServerState)
             : base(logger, getConfiguration, getServerState)
         {
         }
@@ -25,7 +25,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
 
         public virtual async Task<bool> CanExecuteAsync(TParameter parameter, CancellationToken token)
         {
-            var state = GetCurrentServerStateInfo().Status;
+            var state = (await GetCurrentServerStateInfoAsync()).Status;
             var result = ExpectedServerStates.Contains(state);
 
             return await Task.FromResult(result);
@@ -45,7 +45,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
             {
                 Logger.OnTrace($"Executing command '{GetType().Name}'");
 
-                ThrowOnUnexpectedServerState();
+                await ThrowOnUnexpectedServerStateAsync();
                 token.ThrowIfCancellationRequested();
 
                 return await ExecuteInternalAsync(parameter, token);
@@ -76,9 +76,9 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         /// Throws an exception if the server is not in a valid state for this command.
         /// </summary>
         /// <exception cref="InvalidStateException"></exception>
-        protected void ThrowOnUnexpectedServerState()
+        protected async Task ThrowOnUnexpectedServerStateAsync()
         {
-            var state = GetCurrentServerStateInfo().Status;
+            var state = (await GetCurrentServerStateInfoAsync()).Status;
             if (ExpectedServerStates.Any() && !ExpectedServerStates.Contains(state))
             {
                 throw new InvalidStateException(GetType().Name, state, ExpectedServerStates.ToArray());
@@ -108,7 +108,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         where TResult : class, new()
         where TOptions : class, new()
     {
-        protected ServerRequestCommand(IServerLogger logger, GetServerOptions<TOptions> getConfiguration, GetServerStateInfo getServerState)
+        protected ServerRequestCommand(IServerLogger logger, GetServerOptionsAsync<TOptions> getConfiguration, GetServerStateInfoAsync getServerState)
             : base(logger, getConfiguration, getServerState)
         {
         }
@@ -119,7 +119,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
 
         public virtual async Task<bool> CanExecuteAsync(CancellationToken token)
         {
-            var state = GetCurrentServerStateInfo().Status;
+            var state = (await GetCurrentServerStateInfoAsync()).Status;
             var result = ExpectedServerStates.Contains(state);
 
             return await Task.FromResult(result);
@@ -139,7 +139,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
             {
                 Logger.OnTrace($"Executing command {GetType().Name}");
 
-                ThrowOnUnexpectedServerState();
+                await ThrowOnUnexpectedServerStateAsync();
                 token.ThrowIfCancellationRequested();
 
                 return await ExecuteInternalAsync(token);
@@ -170,9 +170,9 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         /// Throws an exception if the server is not in a valid state for this command.
         /// </summary>
         /// <exception cref="InvalidStateException"></exception>
-        protected void ThrowOnUnexpectedServerState()
+        protected async Task ThrowOnUnexpectedServerStateAsync()
         {
-            var state = GetCurrentServerStateInfo().Status;
+            var state = (await GetCurrentServerStateInfoAsync()).Status;
             if (ExpectedServerStates.Any() && !ExpectedServerStates.Contains(state))
             {
                 throw new InvalidStateException(GetType().Name, state, ExpectedServerStates.ToArray());

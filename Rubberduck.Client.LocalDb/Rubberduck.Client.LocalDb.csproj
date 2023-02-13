@@ -172,11 +172,13 @@
     <Compile Include="UI\Commands\ResumeTraceCommand.cs" />
     <Compile Include="UI\Commands\SaveAsCommand.cs" />
     <Compile Include="UI\Commands\SetTraceCommand.cs" />
+    <Compile Include="UI\ConsoleMessageViewModel.cs" />
     <Compile Include="UI\ConsoleViewModel.cs" />
     <Compile Include="UI\IMainWindowFactory.cs" />
     <Compile Include="UI\MainWindowFactory.cs" />
     <Compile Include="UI\MainWindowViewModel.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="UI\ServerStatusViewModel.cs" />
     <Compile Include="UI\Xaml\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

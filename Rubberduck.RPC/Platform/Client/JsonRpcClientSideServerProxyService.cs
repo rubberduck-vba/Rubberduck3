@@ -10,8 +10,15 @@ namespace Rubberduck.RPC.Platform.Client
     /// </summary>
     /// <typeparam name="TServerProxy">The type of the server proxy to communicate with.</typeparam>
     public class JsonRpcClientSideServerProxyService<TServerProxy> : NamedPipeJsonRpcClient
-        where TServerProxy : class, IJsonRpcSource
+        where TServerProxy : class, IJsonRpcTarget
     {
+        private static readonly JsonRpcProxyOptions _proxyOptions = new JsonRpcProxyOptions
+        {
+            EventNameTransform = JsonRpcNameTransforms.EventNameTransform,
+            MethodNameTransform = JsonRpcNameTransforms.MethodNameTransform,
+            ServerRequiresNamedArguments = true,
+        };
+
         /// <summary>
         /// Creates a client-side server proxy service that can send notifications and request server responses.
         /// </summary>
@@ -67,6 +74,7 @@ namespace Rubberduck.RPC.Platform.Client
             {
                 await ConnectAsync(stream);
                 var rpc = JsonRpc.Attach<TServerProxy>(stream);
+                
                 return await method.Invoke(rpc);
             }
         }
@@ -85,6 +93,7 @@ namespace Rubberduck.RPC.Platform.Client
             {
                 await ConnectAsync(stream);
                 var rpc = JsonRpc.Attach<TServerProxy>(stream);
+                
                 return await method.Invoke(rpc, parameter);
             }
         }

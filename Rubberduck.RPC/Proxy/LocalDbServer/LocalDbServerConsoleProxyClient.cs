@@ -8,7 +8,8 @@ using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
 
 namespace Rubberduck.RPC.Proxy.LocalDbServer
 {
-    public class LocalDbServerConsoleProxyClient : JsonRpcClientSideServerProxyService<IServerConsoleProxyClient>, IServerConsoleProxyClient
+    [JsonRpcSource]
+    public class LocalDbServerConsoleProxyClient : JsonRpcClientSideServerProxyService<IServerConsoleProxy>, IServerConsoleProxyClient
     {
         public LocalDbServerConsoleProxyClient(IRpcStreamFactory<NamedPipeClientStream> rpcStreamFactory) 
             : base(rpcStreamFactory)

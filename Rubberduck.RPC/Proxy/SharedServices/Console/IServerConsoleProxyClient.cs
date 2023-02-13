@@ -6,6 +6,7 @@ using Rubberduck.RPC.Proxy.SharedServices.Console.Commands.Parameters;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Console.Abstract
 {
+    [JsonRpcSource]
     public interface IServerConsoleProxyClient : IJsonRpcSource
     {
         Task LogMessageAsync(LogMessageParams parameter);

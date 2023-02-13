@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.RPC.Platform
+﻿using System;
+
+namespace Rubberduck.RPC.Platform
 {
     /// <summary>
     /// A marker interface for a type to register as a StreamJsonRpc client proxy.
@@ -9,5 +11,11 @@
     public interface IJsonRpcSource
     {
 
+    }
+
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
+    public class JsonRpcSourceAttribute : Attribute
+    {
+        public JsonRpcSourceAttribute() { }
     }
 }

@@ -20,11 +20,11 @@ namespace Rubberduck.RPC.Proxy.LocalDbServer
         public LocalDbServerProxyService(CancellationTokenSource serverTokenSource, IServerLogger logger, IServerStateService<LocalDbServerCapabilities> serverStateService)
             :base(logger, serverStateService)
         {
-            var getConfig = new GetServerOptions<LocalDbServerCapabilities>(() => ServerOptions);
-            var getState = new GetServerStateInfo(() => ServerStateService.Info);
+            var getConfig = new GetServerOptionsAsync<LocalDbServerCapabilities>(async () => await GetServerOptionsAsync());
+            var getState = new GetServerStateInfoAsync(async () => (await GetServerStateServiceAsync()).Info);
 
             _initializedCommand = new InitializedCommand<LocalDbServerCapabilities>(logger, getConfig, getState);
-            _exitCommand = new ExitCommand(serverTokenSource, logger, getConfig, getState);
+            _exitCommand = new ExitCommand<LocalDbServerCapabilities>(serverTokenSource, logger, getConfig, getState);
         }
 
         private readonly InitializedCommand<LocalDbServerCapabilities> _initializedCommand;
@@ -33,7 +33,7 @@ namespace Rubberduck.RPC.Proxy.LocalDbServer
             await _initializedCommand.ExecuteAsync(e);
         }
 
-        private readonly ExitCommand _exitCommand;
+        private readonly ExitCommand<LocalDbServerCapabilities> _exitCommand;
         private async void Client_RequestExit(object sender, EventArgs e)
         {
             await _exitCommand.ExecuteAsync();
@@ -45,6 +45,5 @@ namespace Rubberduck.RPC.Proxy.LocalDbServer
             client.Initialized += Client_Initialized;
             client.RequestExit += Client_RequestExit;
         }
-
     }
 }

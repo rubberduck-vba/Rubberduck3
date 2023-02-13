@@ -17,7 +17,8 @@ namespace Rubberduck.Client.LocalDb.UI.Commands
         protected override void OnExecute(object parameter)
         {
             //_console.LogTraceAsync(ServerLogLevel.Info, $"Executing {nameof(PauseTraceCommand)}...");
-            _console.Configuration.IsEnabled = false;
+            var config = _console.GetConfigurationAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            config.IsEnabled = false;
         }
     }
 }

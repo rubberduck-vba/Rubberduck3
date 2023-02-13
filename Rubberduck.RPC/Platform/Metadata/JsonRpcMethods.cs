@@ -162,8 +162,8 @@
 
                         // "implements" and document module subtypes
                         [LspCompliant] public const string PrepareTypeHierarchy = "textDocument/prepareTypeHierarchy";
-                        [LspCompliant] public const string SuperTypes = "typeHierarchy/supertypes";
-                        [LspCompliant] public const string SubTypes = "typeHierarchy/subtypes";
+                        [LspCompliant] public const string Supertypes = "typeHierarchy/supertypes";
+                        [LspCompliant] public const string Subtypes = "typeHierarchy/subtypes";
 
                         // refactor-rename
                         [LspCompliant] public const string Rename = "textDocument/rename";

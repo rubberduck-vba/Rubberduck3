@@ -1,5 +1,7 @@
-﻿using System;
+﻿using StreamJsonRpc;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Platform
 { 
@@ -8,8 +10,10 @@ namespace Rubberduck.RPC.Platform
     /// </summary>
     public interface IJsonRpcTarget
     {
+        [JsonRpcIgnore]
         void Initialize(IEnumerable<IJsonRpcSource> clientProxies);
 
-        IEnumerable<IJsonRpcSource> ClientProxies { get; }
+        [JsonRpcIgnore]
+        Task<IEnumerable<IJsonRpcSource>> GetClientProxies();
     }
 }

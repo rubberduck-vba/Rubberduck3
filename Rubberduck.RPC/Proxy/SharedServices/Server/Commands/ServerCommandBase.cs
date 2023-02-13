@@ -1,10 +1,11 @@
 ﻿using Rubberduck.RPC.Platform.Model;
 using Rubberduck.RPC.Proxy.SharedServices.Abstract;
+using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
 {
-    public delegate ServerState GetServerStateInfo();
-    public delegate TOptions GetServerOptions<out TOptions>() where TOptions : class, new();
+    public delegate Task<ServerState> GetServerStateInfoAsync();
+    public delegate Task<TOptions> GetServerOptionsAsync<TOptions>() where TOptions : class, new();
 
     /// <summary>
     /// Represents a server command that abstracts away its execution.
@@ -13,11 +14,11 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
     public abstract class ServerCommandBase<TOptions>
         where TOptions : class, new()
     {
-        protected ServerCommandBase(IServerLogger logger, GetServerOptions<TOptions> getConfiguration, GetServerStateInfo getCurrentServerState)
+        protected ServerCommandBase(IServerLogger logger, GetServerOptionsAsync<TOptions> getConfiguration, GetServerStateInfoAsync getCurrentServerState)
         {
             Logger = logger;
-            GetCurrentServerStateInfo = getCurrentServerState;
-            GetConfiguration = getConfiguration;
+            GetCurrentServerStateInfoAsync = getCurrentServerState;
+            GetConfigurationAsync = getConfiguration;
         }
 
         /// <summary>
@@ -27,11 +28,11 @@ namespace Rubberduck.RPC.Proxy.SharedServices.Server.Commands
         /// <summary>
         /// Gets the current server state information.
         /// </summary>
-        protected GetServerStateInfo GetCurrentServerStateInfo { get; }
+        protected GetServerStateInfoAsync GetCurrentServerStateInfoAsync { get; }
         /// <summary>
         /// Gets the current configuration options for the service that owns this command.
         /// </summary>
-        protected GetServerOptions<TOptions> GetConfiguration { get; }
+        protected GetServerOptionsAsync<TOptions> GetConfigurationAsync { get; }
 
         /// <summary>
         /// The name of this command.

@@ -23,8 +23,8 @@ namespace Rubberduck.Server.LocalDb
         {
         }
 
-        public GetServerStateInfo GetServerState { get; internal set; }
-        public override ServerState Info => GetServerState?.Invoke();
+        public GetServerStateInfoAsync GetServerState { get; internal set; }
+        public override ServerState Info => GetServerState?.Invoke().ConfigureAwait(false).GetAwaiter().GetResult();
 
         protected override async Task WaitForConnectionAsync(NamedPipeServerStream stream, CancellationToken token) 
             => await stream.WaitForConnectionAsync(token);

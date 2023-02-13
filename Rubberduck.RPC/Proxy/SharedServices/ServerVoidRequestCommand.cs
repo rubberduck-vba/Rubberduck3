@@ -13,7 +13,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         where TParameter : class, new()
         where TOptions : class, new()
     {
-        protected ServerVoidRequestCommand(IServerLogger logger, GetServerOptions<TOptions> getConfiguration, GetServerStateInfo getCurrentServerState) 
+        protected ServerVoidRequestCommand(IServerLogger logger, GetServerOptionsAsync<TOptions> getConfiguration, GetServerStateInfoAsync getCurrentServerState) 
             : base(logger, getConfiguration, getCurrentServerState)
         {
         }
@@ -39,9 +39,9 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         /// Throws an exception if the server is not in a valid state for this command.
         /// </summary>
         /// <exception cref="InvalidStateException"></exception>
-        protected void ThrowOnUnexpectedServerState()
+        protected async Task ThrowOnUnexpectedServerStateAsync()
         {
-            var state = GetCurrentServerStateInfo().Status;
+            var state = (await GetCurrentServerStateInfoAsync()).Status;
             if (ExpectedServerStates.Any() && !ExpectedServerStates.Contains(state))
             {
                 throw new InvalidStateException(GetType().Name, state, ExpectedServerStates.ToArray());
@@ -54,7 +54,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
 
         public virtual async Task<bool> CanExecuteAsync(TParameter parameter)
         {
-            var state = GetCurrentServerStateInfo().Status;
+            var state = (await GetCurrentServerStateInfoAsync()).Status;
             var result = ExpectedServerStates.Contains(state);
 
             return await Task.FromResult(result);
@@ -66,7 +66,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
             {
                 Logger.OnTrace($"Executing command '{Name}'.", verbose: Description);
 
-                ThrowOnUnexpectedServerState();
+                await ThrowOnUnexpectedServerStateAsync();
                 await ExecuteInternalAsync(parameter);
             }
             catch (ApplicationException exception)
@@ -89,7 +89,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
     public abstract class ServerVoidRequestCommand<TOptions> : ServerCommandBase<TOptions>, IServerNotificationCommand
         where TOptions : class, new()
     {
-        protected ServerVoidRequestCommand(IServerLogger logger, GetServerOptions<TOptions> getConfiguration, GetServerStateInfo getCurrentServerState)
+        protected ServerVoidRequestCommand(IServerLogger logger, GetServerOptionsAsync<TOptions> getConfiguration, GetServerStateInfoAsync getCurrentServerState)
             : base(logger, getConfiguration, getCurrentServerState)
         {
         }
@@ -116,9 +116,9 @@ namespace Rubberduck.RPC.Proxy.SharedServices
         /// Throws an exception if the server is not in a valid state for this command.
         /// </summary>
         /// <exception cref="InvalidStateException"></exception>
-        protected void ThrowOnUnexpectedServerState()
+        protected async Task ThrowOnUnexpectedServerStateAsync()
         {
-            var state = GetCurrentServerStateInfo().Status;
+            var state = (await GetCurrentServerStateInfoAsync()).Status;
             if (ExpectedServerStates.Any() && !ExpectedServerStates.Contains(state))
             {
                 throw new InvalidStateException(GetType().Name, state, ExpectedServerStates.ToArray());
@@ -131,7 +131,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
 
         public virtual async Task<bool> CanExecuteAsync()
         {
-            var state = GetCurrentServerStateInfo().Status;
+            var state = (await GetCurrentServerStateInfoAsync()).Status;
             var result = ExpectedServerStates.Contains(state);
 
             return await Task.FromResult(result);
@@ -143,7 +143,7 @@ namespace Rubberduck.RPC.Proxy.SharedServices
             {
                 Logger.OnTrace($"Executing command '{Name}'.", verbose: Description);
 
-                ThrowOnUnexpectedServerState();
+                await ThrowOnUnexpectedServerStateAsync();
                 await ExecuteInternalAsync();
             }
             catch (ApplicationException exception)

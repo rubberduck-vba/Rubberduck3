@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Rubberduck.RPC.Platform.Exceptions;
+using Rubberduck.RPC.Platform.Metadata;
 using Rubberduck.RPC.Platform.Model;
 using Rubberduck.RPC.Proxy.SharedServices;
 using Rubberduck.RPC.Proxy.SharedServices.Abstract;
@@ -9,6 +10,7 @@ using Rubberduck.RPC.Proxy.SharedServices.Server.Abstract;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
 using Rubberduck.RPC.Proxy.SharedServices.Server.Model;
+using StreamJsonRpc;
 
 namespace Rubberduck.RPC.Platform
 {
@@ -32,11 +34,17 @@ namespace Rubberduck.RPC.Platform
         }
 
         public event EventHandler WillExit;
+
+        [JsonRpcIgnore]
         public async Task OnWillExitAsync() => await Task.Run(() => WillExit?.Invoke(this, EventArgs.Empty));
 
-        public async Task<ServerState> RequestServerInfoAsync() => await Task.FromResult(ServerStateService.Info);
+        [JsonRpcMethod(JsonRpcMethods.ServerProxyRequests.Shared.Server.Info)]
+        public async Task<ServerState> RequestServerInfoAsync(CancellationToken token) => (await GetServerStateServiceAsync()).Info;
+
 
         private readonly InitializeCommand<TOptions, TInitializeParams> _initializeCommand;
+
+        [JsonRpcMethod(JsonRpcMethods.ServerProxyRequests.Shared.Server.Initialize)]
         public async Task<InitializeResult<TOptions>> InitializeAsync(TInitializeParams parameters, CancellationToken token)
         {
             if (!(await _initializeCommand.TryExecuteAsync(parameters, token)).TryOut(out var response))
@@ -46,6 +54,5 @@ namespace Rubberduck.RPC.Platform
 
             return response;
         }
-
     }
 }
