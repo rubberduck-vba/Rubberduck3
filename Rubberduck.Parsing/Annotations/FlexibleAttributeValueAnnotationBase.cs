@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.InternalApi.Common;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model;
-using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Parsing.Annotations
 {
