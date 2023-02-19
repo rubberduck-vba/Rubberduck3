@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OmniSharp.Extensions.JsonRpc;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.Server.LocalDb.Properties;
 using System;
 using System.IO;
@@ -11,16 +9,6 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Server.LocalDb.Configuration
 {
-
-    internal class InitializeHandler : IOnLanguageServerInitialize, IJsonRpcHandler
-    {
-        public async Task OnInitialize(ILanguageServer server, InitializeParams request, CancellationToken cancellationToken)
-        {
-            Console.WriteLine("Huzzah!");
-            await Task.CompletedTask;
-        }
-    }
-
     internal static class IServiceCollectionExtensions
     {
         internal static IServiceCollection ConfigureRubberduckServerApp(this IServiceCollection services, LocalDbServerCapabilities config, CancellationTokenSource cts)
