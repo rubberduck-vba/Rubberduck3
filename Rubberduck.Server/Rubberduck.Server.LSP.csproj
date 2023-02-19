@@ -46,9 +46,6 @@
     <Reference Include="MediatR.Contracts, Version=2.0.0.0, Culture=neutral, PublicKeyToken=bb9a41a5e8aaa7e2, processorArchitecture=MSIL">
       <HintPath>..\packages\MediatR.Contracts.2.0.0\lib\netstandard2.0\MediatR.Contracts.dll</HintPath>
     </Reference>
-    <Reference Include="MessagePack, Version=2.4.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
-      <HintPath>..\packages\MessagePack.2.4.59\lib\netstandard2.0\MessagePack.dll</HintPath>
-    </Reference>
     <Reference Include="MessagePack.Annotations, Version=2.4.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
       <HintPath>..\packages\MessagePack.Annotations.2.4.59\lib\netstandard2.0\MessagePack.Annotations.dll</HintPath>
     </Reference>
@@ -124,9 +121,6 @@
     <Reference Include="OmniSharp.Extensions.LanguageServer.Shared, Version=0.19.0.0, Culture=neutral, PublicKeyToken=6d868dff454e6022, processorArchitecture=MSIL">
       <HintPath>..\packages\OmniSharp.Extensions.LanguageServer.Shared.0.19.7\lib\netstandard2.0\OmniSharp.Extensions.LanguageServer.Shared.dll</HintPath>
     </Reference>
-    <Reference Include="StreamJsonRpc, Version=2.13.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\StreamJsonRpc.2.13.33\lib\netstandard2.0\StreamJsonRpc.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -192,9 +186,6 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="websocket-sharp, Version=1.0.1.0, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">
-      <HintPath>..\packages\WebSocketSharp-netstandard.1.0.1\lib\net45\websocket-sharp.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
