@@ -34,6 +34,7 @@ namespace Rubberduck.Server.LocalDb.RPC.Save
             catch (Exception exception)
             {
                 return new SaveResult { Success = false, Message = exception.ToString() };
+            }
         }
     }
 }
