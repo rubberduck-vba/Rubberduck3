@@ -1,4 +1,4 @@
-﻿using Rubberduck.RPC.Proxy.SharedServices;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
@@ -6,6 +6,37 @@ using System.Text.Json.Serialization;
 
 namespace Rubberduck.RPC.Platform.Model
 {
+    /// <summary>
+    /// Describes the current state of a RPC server.
+    /// </summary>
+    public enum ServerStatus
+    {
+        /// <summary>
+        /// The initial server state.
+        /// </summary>
+        Starting,
+        /// <summary>
+        /// The server is configured and listening, but no client has connected yet.
+        /// </summary>
+        Started,
+        /// <summary>
+        /// Received an <c>Initialize</c> request, awaiting client <c>Initialized</c> notification.
+        /// </summary>
+        AwaitingInitialized,
+        /// <summary>
+        /// Client has sent an <c>Initialized</c> request, signaling it is ready to send requests and accept notifications.
+        /// </summary>
+        Initialized,
+        /// <summary>
+        /// Server is shutting down.
+        /// </summary>
+        ShuttingDown,
+        /// <summary>
+        /// Server process is terminating.
+        /// </summary>
+        Terminating,
+    }
+
     /// <summary>
     /// Holds the immutable base server state.
     /// </summary>
@@ -100,7 +131,7 @@ namespace Rubberduck.RPC.Platform.Model
     /// </summary>
     public class ServerState : BasicServerInfo, IServerState
     {
-        private readonly ConcurrentDictionary<int, (ClientInfo Client, bool Initialized)> _clientsByProcessId = new ConcurrentDictionary<int, (ClientInfo, bool)>();
+        private readonly ConcurrentDictionary<string, (ClientInfo Client, bool Initialized)> _clients = new ConcurrentDictionary<string, (ClientInfo, bool)>();
 
         public ServerState() { }
 
@@ -137,51 +168,48 @@ namespace Rubberduck.RPC.Platform.Model
         {
             var didConnect = false;
 
-            if (_clientsByProcessId.TryAdd(client.ProcessId, (client, Initialized: false)))
+            if (_clients.TryAdd(client.Name, (client, Initialized: false)))
             {
                 didConnect = true;
                 UpdateClients();
             }
 
-            return didConnect && _clientsByProcessId.ContainsKey(client.ProcessId);
+            return didConnect && _clients.ContainsKey(client.Name);
         }
 
         /// <summary>
-        /// Removes from the server state the client associated to the specified process ID.
+        /// Removes from the server state the client associated to the specified client.
         /// </summary>
-        /// <param name="processId">The process ID of the client to disconnect.</param>
-        /// <param name="client">The disconnected client, if it was successfully disconnected.</param>
         /// <returns><c>true</c> if the client was successfully removed.</returns>
-        public bool Disconnect(int processId, out ClientInfo client)
+        public bool Disconnect(string name, out ClientInfo client)
         {
             client = null;
             var didRemove = false;
 
-            if (_clientsByProcessId.TryRemove(processId, out var removed))
+            if (_clients.TryRemove(name, out var removed))
             {
                 client = removed.Client;
                 didRemove = true;
                 UpdateClients();
             }
 
-            return didRemove && !_clientsByProcessId.ContainsKey(processId);
+            return didRemove && !_clients.ContainsKey(name);
         }
 
         private void UpdateClients()
         {
-            Clients = _clientsByProcessId.Select(e => e.Value.Client).ToArray();
+            Clients = _clients.Select(e => e.Value.Client).ToArray();
         }
 
         /// <summary>
-        /// Sets the initialized state of the specified client process ID.
+        /// Sets the initialized state of the specified client.
         /// </summary>
-        /// <param name="processId">The process ID of the initialized client.</param>
-        public void SetInitialized(int processId)
+        public void SetInitialized(string name)
         {
-            var clientState = _clientsByProcessId[processId];
+            var clientState = _clients[name];
             clientState.Initialized = true;
 
-            _clientsByProcessId[processId] = clientState;
+            _clients[name] = clientState;
         }
 
         [JsonPropertyName("memory")]

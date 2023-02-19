@@ -1,11 +1,6 @@
-﻿using Rubberduck.Client.LocalDb.UI;
-using Rubberduck.RPC;
-using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Proxy.LocalDbServer;
-using Rubberduck.RPC.Proxy.SharedServices.Console.Abstract;
-using Rubberduck.RPC.Proxy.SharedServices.Console.Configuration;
-using System;
+﻿using System;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Rubberduck.Client.LocalDb
 {
@@ -20,27 +15,19 @@ namespace Rubberduck.Client.LocalDb
             var options = StartupOptions.Validate(args);
             var process = GetOrCreateServer(options);
 
-            var rpcStreamFactory = new NamedPipeClientStreamFactory("Rubberduck.Server.LocalDb.RPC");
-            var serverProxy = new LocalDbServerProxyClient(rpcStreamFactory);
-            var consoleProxy = new LocalDbServerConsoleProxyClient(rpcStreamFactory);
-
-            var statusVM = new ServerStatusViewModel(serverProxy);
-            var consoleVM = new ConsoleViewModel(serverProxy, null as IServerConsoleProxyClient);
-
-            var vm = new MainWindowViewModel(consoleVM, statusVM);
-            var factory = new MainWindowFactory(vm);
-
-            var app = new App(factory, serverProxy, consoleProxy);
-            app.Run();
-
             process.OutputDataReceived -= OnServerProcessStdOut;
             process.ErrorDataReceived -= OnServerProcessStdErr;
             process.Exited -= OnServerProcessExit;
+
+            var assembly = Assembly.GetExecutingAssembly().GetName();
+            var clientProcess = Process.GetCurrentProcess();
+            
+            
         }
 
         private static Process GetOrCreateServer(StartupOptions startupOptions)
         {
-            var process = ServerProcessClientHelper.StartLocalDb(hidden: false);
+            var process = RPC.ServerProcessClientHelper.StartLocalDb(hidden: false);
             
             process.OutputDataReceived += OnServerProcessStdOut;
             process.ErrorDataReceived += OnServerProcessStdErr;

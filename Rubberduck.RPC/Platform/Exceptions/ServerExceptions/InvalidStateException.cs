@@ -1,4 +1,4 @@
-﻿using Rubberduck.RPC.Proxy.SharedServices;
+﻿using Rubberduck.RPC.Platform.Model;
 using System.Collections.Generic;
 
 namespace Rubberduck.RPC.Platform.Exceptions

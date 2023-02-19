@@ -10,6 +10,7 @@ namespace Rubberduck.Telemetry
     {
         static void Main(string[] args)
         {
+            /*TODO*/
         }
     }
 }

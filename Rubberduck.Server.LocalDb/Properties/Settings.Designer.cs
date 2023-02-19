@@ -50,5 +50,14 @@ namespace Rubberduck.Server.LocalDb.Properties {
                 return ((string)(this["LocalDB"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Rubberduck.Server.LocalDb")]
+        public string JsonRpcServerName {
+            get {
+                return ((string)(this["JsonRpcServerName"]));
+            }
+        }
     }
 }

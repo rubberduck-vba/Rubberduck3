@@ -1,8 +1,6 @@
 ﻿using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Proxy.LspServer.Configuration.Options;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -90,13 +88,13 @@ namespace Rubberduck.Server.LocalDb
                     catch (OperationCanceledException)
                     {
                         // normal exit
-                        return ExitCode(RpcServerProcessExitCode.OK);
+                        return 0;
                     }
                     catch (Exception exception)
                     {
                         // any other exception type exits with an error code
                         await Console.Error.WriteLineAsync(exception.ToString());
-                        return ExitCode(RpcServerProcessExitCode.Error);
+                        return 1;
                     }
                 }
                 finally
@@ -117,14 +115,9 @@ namespace Rubberduck.Server.LocalDb
                 }
 
                 // normal exit // FIXME would be nice to be on the main thread here, but we're not
-                return ExitCode(RpcServerProcessExitCode.OK);
+                return 0;
             }
             #endregion
-        }
-
-        private static int ExitCode(RpcServerProcessExitCode code)
-        {
-            return (int)code;
         }
 
         private static async Task StartAsync()
@@ -141,9 +134,7 @@ namespace Rubberduck.Server.LocalDb
         private static void ConfigureServices(IServiceCollection services, CancellationTokenSource cts)
         {
             var config = LocalDbServerConfiguration.Default(_startupOptions);
-
-            services.AddHostedService<ServerApp>()
-                    .ConfigureRubberduckServerApp(config, cts);
+            services.ConfigureRubberduckServerApp(config, cts);
         }
     }
 }

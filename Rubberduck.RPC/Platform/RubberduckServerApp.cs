@@ -4,27 +4,26 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-using Rubberduck.RPC.Proxy.SharedServices.Abstract;
-using Rubberduck.RPC.Proxy.SharedServices.Server.Configuration;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 
 namespace Rubberduck.RPC.Platform
 {
+    /*
     /// <summary>
     /// A common base class for Rubberduck3 server applications.
     /// </summary>
-    public abstract class RubberduckServerApp<TJsonRpcServer, TServerProxy, TOptions> : BackgroundService
-        where TJsonRpcServer : IJsonRpcServer
+    public abstract class RubberduckServerApp<TServerProxy, TOptions> : BackgroundService
         where TOptions : SharedServerCapabilities, new()
     {
-        protected RubberduckServerApp(TJsonRpcServer server, IEnumerable<IJsonRpcTarget> proxies, IServerStateService<TOptions> stateService)
+        protected RubberduckServerApp(ILanguageServer server, IEnumerable<IJsonRpcTarget> proxies, IServerStateService<TOptions> stateService)
         {
             Server = server;
-            RpcServerProxy = proxies.OfType<TServerProxy>().SingleOrDefault();
+            RpcServerProxy = proxies.OfType<TServerProxy>().Single();
 
             ServerState = stateService;
         }
 
-        protected TJsonRpcServer Server { get; }
+        protected ILanguageServer Server { get; }
         protected TServerProxy RpcServerProxy { get; }
 
         protected IServerStateService<TOptions> ServerState { get; }
@@ -36,7 +35,6 @@ namespace Rubberduck.RPC.Platform
         {
             Greetings();
             RegisterServerProxyEvents(RpcServerProxy);
-            return Server.StartAsync(stoppingToken);
         }
 
         private void Greetings()
@@ -64,4 +62,5 @@ namespace Rubberduck.RPC.Platform
             Console.WriteLine($"Process ID: {state.ProcessId}");
         }
     }
+    */
 }

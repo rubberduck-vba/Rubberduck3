@@ -1,7 +1,4 @@
-﻿using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Platform.Model;
-using Rubberduck.RPC.Proxy.LocalDbServer;
-using Rubberduck.RPC.Proxy.SharedServices.Server.Commands;
+﻿using OmniSharp.Extensions.JsonRpc;
 using System;
 using System.Collections.Generic;
 using System.IO.Pipes;
@@ -10,6 +7,18 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Server.LocalDb
 {
+
+    internal class LocalDbServer
+    {
+        private readonly IJsonRpcServer _server;
+
+        public LocalDbServer(IJsonRpcServer server)
+        {
+            _server = server;
+        }
+    }
+
+    /*
     /// <summary>
     /// A <c>JsonRpcServer</c> that runs a local database and transports RPC messages over named pipe streams.
     /// </summary>
@@ -29,4 +38,5 @@ namespace Rubberduck.Server.LocalDb
         protected override async Task WaitForConnectionAsync(NamedPipeServerStream stream, CancellationToken token) 
             => await stream.WaitForConnectionAsync(token);
     }
+    */
 }
