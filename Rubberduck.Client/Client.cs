@@ -25,8 +25,8 @@ namespace Rubberduck.Client
             {
                 ClientInfo = new ClientInfo
                 {
-                    Name = $"[{assembly.Name}]:{clientProcess.Id}",
-                    Version = assembly.Version.ToString(3)
+                    //Name = $"[{assembly.Name}]:{clientProcess.Id}",
+                    //Version = assembly.Version.ToString(3)
                 },
                 ClientCapabilities = new ClientCapabilities
                 {
