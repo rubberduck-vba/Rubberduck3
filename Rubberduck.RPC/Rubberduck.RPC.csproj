@@ -272,9 +272,6 @@
     <Compile Include="Platform\Exceptions\ServerExceptions\DisabledFeatureException.cs" />
     <Compile Include="Platform\Exceptions\ServerExceptions\InvalidStateException.cs" />
     <Compile Include="Platform\Exceptions\ServerExceptions\ServerException.cs" />
-    <Compile Include="Platform\Metadata\JsonRpcMethods.cs" />
-    <Compile Include="Platform\Metadata\LspCompliantAttribute.cs" />
-    <Compile Include="Platform\Metadata\RubberduckSPAttribute.cs" />
     <Compile Include="Platform\Model\ClientState.cs" />
     <Compile Include="Platform\Model\ServerState.cs" />
     <Compile Include="Platform\RubberduckServerApp.cs" />
