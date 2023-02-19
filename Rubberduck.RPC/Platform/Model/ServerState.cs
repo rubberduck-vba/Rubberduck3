@@ -6,7 +6,6 @@ using System.Text.Json.Serialization;
 
 namespace Rubberduck.RPC.Platform.Model
 {
-
     /// <summary>
     /// Holds the immutable base server state.
     /// </summary>

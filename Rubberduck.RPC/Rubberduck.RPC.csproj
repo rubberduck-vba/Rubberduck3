@@ -274,6 +274,7 @@
     <Compile Include="Platform\Exceptions\ServerExceptions\ServerException.cs" />
     <Compile Include="Platform\Model\ClientState.cs" />
     <Compile Include="Platform\Model\ServerState.cs" />
+    <Compile Include="Platform\Model\ServerStatus.cs" />
     <Compile Include="Platform\RubberduckServerApp.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
