@@ -166,23 +166,23 @@
     <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.5.1.1\lib\net46\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="OmniSharp.Extensions.JsonRpc, Version=0.18.0.0, Culture=neutral, PublicKeyToken=6d868dff454e6022, processorArchitecture=MSIL">
-      <HintPath>..\packages\OmniSharp.Extensions.JsonRpc.0.18.3\lib\netstandard2.0\OmniSharp.Extensions.JsonRpc.dll</HintPath>
+    <Reference Include="OmniSharp.Extensions.JsonRpc, Version=0.19.0.0, Culture=neutral, PublicKeyToken=6d868dff454e6022, processorArchitecture=MSIL">
+      <HintPath>..\packages\OmniSharp.Extensions.JsonRpc.0.19.7\lib\netstandard2.0\OmniSharp.Extensions.JsonRpc.dll</HintPath>
     </Reference>
     <Reference Include="OmniSharp.Extensions.JsonRpc.Generators, Version=0.19.0.0, Culture=neutral, PublicKeyToken=6d868dff454e6022, processorArchitecture=MSIL">
       <HintPath>..\packages\OmniSharp.Extensions.JsonRpc.Generators.0.19.7\lib\netstandard2.0\OmniSharp.Extensions.JsonRpc.Generators.dll</HintPath>
     </Reference>
-    <Reference Include="OmniSharp.Extensions.LanguageClient, Version=0.18.0.0, Culture=neutral, PublicKeyToken=6d868dff454e6022, processorArchitecture=MSIL">
-      <HintPath>..\packages\OmniSharp.Extensions.LanguageClient.0.18.3\lib\netstandard2.0\OmniSharp.Extensions.LanguageClient.dll</HintPath>
+    <Reference Include="OmniSharp.Extensions.LanguageClient, Version=0.19.0.0, Culture=neutral, PublicKeyToken=6d868dff454e6022, processorArchitecture=MSIL">
+      <HintPath>..\packages\OmniSharp.Extensions.LanguageClient.0.19.7\lib\netstandard2.0\OmniSharp.Extensions.LanguageClient.dll</HintPath>
     </Reference>
-    <Reference Include="OmniSharp.Extensions.LanguageProtocol, Version=0.18.0.0, Culture=neutral, PublicKeyToken=6d868dff454e6022, processorArchitecture=MSIL">
-      <HintPath>..\packages\OmniSharp.Extensions.LanguageProtocol.0.18.3\lib\netstandard2.0\OmniSharp.Extensions.LanguageProtocol.dll</HintPath>
+    <Reference Include="OmniSharp.Extensions.LanguageProtocol, Version=0.19.0.0, Culture=neutral, PublicKeyToken=6d868dff454e6022, processorArchitecture=MSIL">
+      <HintPath>..\packages\OmniSharp.Extensions.LanguageProtocol.0.19.7\lib\netstandard2.0\OmniSharp.Extensions.LanguageProtocol.dll</HintPath>
     </Reference>
-    <Reference Include="OmniSharp.Extensions.LanguageServer, Version=0.18.0.0, Culture=neutral, PublicKeyToken=6d868dff454e6022, processorArchitecture=MSIL">
-      <HintPath>..\packages\OmniSharp.Extensions.LanguageServer.0.18.3\lib\netstandard2.0\OmniSharp.Extensions.LanguageServer.dll</HintPath>
+    <Reference Include="OmniSharp.Extensions.LanguageServer, Version=0.19.0.0, Culture=neutral, PublicKeyToken=6d868dff454e6022, processorArchitecture=MSIL">
+      <HintPath>..\packages\OmniSharp.Extensions.LanguageServer.0.19.7\lib\netstandard2.0\OmniSharp.Extensions.LanguageServer.dll</HintPath>
     </Reference>
-    <Reference Include="OmniSharp.Extensions.LanguageServer.Shared, Version=0.18.0.0, Culture=neutral, PublicKeyToken=6d868dff454e6022, processorArchitecture=MSIL">
-      <HintPath>..\packages\OmniSharp.Extensions.LanguageServer.Shared.0.18.3\lib\netstandard2.0\OmniSharp.Extensions.LanguageServer.Shared.dll</HintPath>
+    <Reference Include="OmniSharp.Extensions.LanguageServer.Shared, Version=0.19.0.0, Culture=neutral, PublicKeyToken=6d868dff454e6022, processorArchitecture=MSIL">
+      <HintPath>..\packages\OmniSharp.Extensions.LanguageServer.Shared.0.19.7\lib\netstandard2.0\OmniSharp.Extensions.LanguageServer.Shared.dll</HintPath>
     </Reference>
     <Reference Include="SQLitePCLRaw.batteries_v2, Version=2.1.4.1835, Culture=neutral, PublicKeyToken=8226ea5df37bcae9, processorArchitecture=MSIL">
       <HintPath>..\packages\SQLitePCLRaw.bundle_e_sqlite3.2.1.4\lib\net461\SQLitePCLRaw.batteries_v2.dll</HintPath>
@@ -298,11 +298,14 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IServiceCollectionExtensions.cs" />
-    <Compile Include="LocalDbServerCapabilities.cs" />
-    <Compile Include="RPC\Initialize\InitializeHandler.cs" />
-    <Compile Include="RPC\Initialize\InitializeRequest.cs" />
-    <Compile Include="RPC\Initialize\InitializeResult.cs" />
+    <Compile Include="Configuration\IServiceCollectionExtensions.cs" />
+    <Compile Include="Configuration\LocalDbServerCapabilities.cs" />
+    <Compile Include="RPC\Info\InfoHandler.cs" />
+    <Compile Include="RPC\Info\InfoRequest.cs" />
+    <Compile Include="RPC\Info\InfoResult.cs" />
+    <Compile Include="RPC\Connect\ConnectHandler.cs" />
+    <Compile Include="RPC\Connect\ConnectRequest.cs" />
+    <Compile Include="RPC\Connect\ConnectResult.cs" />
     <Compile Include="RPC\JsonRpcMethods.cs" />
     <Compile Include="RPC\Query\Abstract\QueryHandler.cs" />
     <Compile Include="RPC\Query\Abstract\QueryRequest.cs" />
@@ -315,14 +318,13 @@
     <Compile Include="RPC\Save\SaveModuleRequest.cs" />
     <Compile Include="RPC\Save\SaveParameterRequest.cs" />
     <Compile Include="RPC\Save\SaveProjectRequest.cs" />
-    <Compile Include="RPC\Save\SaveResult.cs" />
-    <Compile Include="Internal\DbEntity.cs" />
-    <Compile Include="Internal\IDbConnectionProvider.cs" />
-    <Compile Include="Internal\IUnitOfWork.cs" />
-    <Compile Include="Internal\IUnitOfWorkFactory.cs" />
-    <Compile Include="Internal\Repository.cs" />
-    <Compile Include="Internal\View.cs" />
-    <Compile Include="Configuration\LocalDbServerConfiguration.cs" />
+    <Compile Include="RPC\Save\Abstract\SaveResult.cs" />
+    <Compile Include="Internal\Model\DbEntity.cs" />
+    <Compile Include="Internal\Storage\Abstract\IDbConnectionProvider.cs" />
+    <Compile Include="Internal\Storage\Abstract\IUnitOfWork.cs" />
+    <Compile Include="Internal\Storage\Abstract\IUnitOfWorkFactory.cs" />
+    <Compile Include="Internal\Storage\Abstract\Repository.cs" />
+    <Compile Include="Internal\Storage\Abstract\View.cs" />
     <Compile Include="LocalDbServer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -331,39 +333,39 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
-    <Compile Include="StartupOptions.cs" />
-    <Compile Include="Storage\SqliteDbConnectionProvider.cs" />
-    <Compile Include="Storage\Entities\AnnotationBase.cs" />
-    <Compile Include="Storage\Entities\Declaration.cs" />
-    <Compile Include="Storage\Entities\DeclarationAnnotation.cs" />
-    <Compile Include="Storage\Entities\DeclarationAttribute.cs" />
-    <Compile Include="Storage\Entities\IdentifierReference.cs" />
-    <Compile Include="Storage\Entities\IdentifierReferenceAnnotation.cs" />
-    <Compile Include="Storage\Entities\Local.cs" />
-    <Compile Include="Storage\Entities\Member.cs" />
-    <Compile Include="Storage\Entities\Module.cs" />
-    <Compile Include="Storage\Entities\Parameter.cs" />
-    <Compile Include="Storage\Entities\Project.cs" />
-    <Compile Include="Storage\Entities\ProjectSetting.cs" />
-    <Compile Include="Storage\Repositories\DeclarationAnnotationRepository.cs" />
-    <Compile Include="Storage\Repositories\DeclarationAttributeRepository.cs" />
-    <Compile Include="Storage\Repositories\DeclarationRepository.cs" />
-    <Compile Include="Storage\Repositories\IdentifierReferenceAnnotationRepository.cs" />
-    <Compile Include="Storage\Repositories\IdentifierReferenceRepository.cs" />
-    <Compile Include="Storage\Repositories\LocalRepository.cs" />
-    <Compile Include="Storage\Repositories\MemberRepository.cs" />
-    <Compile Include="Storage\Repositories\ModuleRepository.cs" />
-    <Compile Include="Storage\Repositories\ParameterRepository.cs" />
-    <Compile Include="Storage\Repositories\ProjectRepository.cs" />
-    <Compile Include="Storage\UnitOfWork.cs" />
-    <Compile Include="Storage\UnitOfWorkFactory.cs" />
-    <Compile Include="Storage\Views\IdentifierReferencesView.cs" />
-    <Compile Include="Storage\Views\LocalsView.cs" />
-    <Compile Include="Storage\Views\MembersView.cs" />
-    <Compile Include="Storage\Views\ModulesView.cs" />
-    <Compile Include="Storage\Views\ParametersView.cs" />
-    <Compile Include="Storage\Views\ProjectsView.cs" />
+    <Compile Include="Properties\Settings.cs" />
+    <Compile Include="Configuration\StartupOptions.cs" />
+    <Compile Include="Internal\Storage\SqliteDbConnectionProvider.cs" />
+    <Compile Include="Internal\Model\AnnotationBase.cs" />
+    <Compile Include="Internal\Model\Declaration.cs" />
+    <Compile Include="Internal\Model\DeclarationAnnotation.cs" />
+    <Compile Include="Internal\Model\DeclarationAttribute.cs" />
+    <Compile Include="Internal\Model\IdentifierReference.cs" />
+    <Compile Include="Internal\Model\IdentifierReferenceAnnotation.cs" />
+    <Compile Include="Internal\Model\Local.cs" />
+    <Compile Include="Internal\Model\Member.cs" />
+    <Compile Include="Internal\Model\Module.cs" />
+    <Compile Include="Internal\Model\Parameter.cs" />
+    <Compile Include="Internal\Model\Project.cs" />
+    <Compile Include="Internal\Model\ProjectSetting.cs" />
+    <Compile Include="Internal\Storage\Repositories\DeclarationAnnotationRepository.cs" />
+    <Compile Include="Internal\Storage\Repositories\DeclarationAttributeRepository.cs" />
+    <Compile Include="Internal\Storage\Repositories\DeclarationRepository.cs" />
+    <Compile Include="Internal\Storage\Repositories\IdentifierReferenceAnnotationRepository.cs" />
+    <Compile Include="Internal\Storage\Repositories\IdentifierReferenceRepository.cs" />
+    <Compile Include="Internal\Storage\Repositories\LocalRepository.cs" />
+    <Compile Include="Internal\Storage\Repositories\MemberRepository.cs" />
+    <Compile Include="Internal\Storage\Repositories\ModuleRepository.cs" />
+    <Compile Include="Internal\Storage\Repositories\ParameterRepository.cs" />
+    <Compile Include="Internal\Storage\Repositories\ProjectRepository.cs" />
+    <Compile Include="Internal\Storage\UnitOfWork.cs" />
+    <Compile Include="Internal\Storage\UnitOfWorkFactory.cs" />
+    <Compile Include="Internal\Storage\Views\IdentifierReferencesView.cs" />
+    <Compile Include="Internal\Storage\Views\LocalsView.cs" />
+    <Compile Include="Internal\Storage\Views\MembersView.cs" />
+    <Compile Include="Internal\Storage\Views\ModulesView.cs" />
+    <Compile Include="Internal\Storage\Views\ParametersView.cs" />
+    <Compile Include="Internal\Storage\Views\ProjectsView.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

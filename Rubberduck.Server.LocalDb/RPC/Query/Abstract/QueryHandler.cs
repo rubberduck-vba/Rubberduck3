@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Rubberduck.Server.LocalDb.RPC.Query.Asbstract
+namespace Rubberduck.Server.LocalDb.RPC.Query
 {
     public abstract class QueryHandler<T> : IJsonRpcRequestHandler<QueryRequest<T>, QueryResult<T>>
         where T : class, new()

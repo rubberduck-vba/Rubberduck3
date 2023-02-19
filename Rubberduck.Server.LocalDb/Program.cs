@@ -1,6 +1,7 @@
 ﻿using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Rubberduck.Server.LocalDb.Configuration;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -133,7 +134,7 @@ namespace Rubberduck.Server.LocalDb
 
         private static void ConfigureServices(IServiceCollection services, CancellationTokenSource cts)
         {
-            var config = LocalDbServerConfiguration.Default(_startupOptions);
+            var config = LocalDbServerCapabilities.Default;
             services.ConfigureRubberduckServerApp(config, cts);
         }
     }

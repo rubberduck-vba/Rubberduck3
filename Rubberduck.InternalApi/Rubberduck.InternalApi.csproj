@@ -140,33 +140,33 @@
     <Compile Include="Common\ExperimentalAttribute.cs" />
     <Compile Include="Common\FileSystemProvider.cs" />
     <Compile Include="Common\IExportable.cs" />
-    <Compile Include="Common\StringExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Common\TimedAction.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\FolderExtensions.cs" />
     <Compile Include="Extensions\ReadOnlyListExtensions.cs" />
-    <Compile Include="Model\Accessibility.cs" />
-    <Compile Include="Model\ComponentType.cs" />
-    <Compile Include="Model\DeclarationType.cs" />
-    <Compile Include="Model\DocumentOffset.cs" />
-    <Compile Include="Model\MemberType.cs" />
-    <Compile Include="Model\ModuleType.cs" />
-    <Compile Include="Model\QualifiedModuleName.cs" />
-    <Compile Include="Model\Selection.cs" />
+    <Compile Include="SharedModel\Accessibility.cs" />
+    <Compile Include="SharedModel\ComponentType.cs" />
+    <Compile Include="SharedModel\DeclarationType.cs" />
+    <Compile Include="SharedModel\DocumentOffset.cs" />
+    <Compile Include="SharedModel\MemberType.cs" />
+    <Compile Include="SharedModel\ModuleType.cs" />
+    <Compile Include="SharedModel\QualifiedModuleName.cs" />
+    <Compile Include="SharedModel\Selection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RPC\LocalDb\Declaration.cs" />
-    <Compile Include="RPC\LocalDb\DeclarationAnnotation.cs" />
-    <Compile Include="RPC\LocalDb\DeclarationAttribute.cs" />
-    <Compile Include="RPC\LocalDb\IdentifierReference.cs" />
-    <Compile Include="RPC\LocalDb\Local.cs" />
-    <Compile Include="RPC\LocalDb\LocationInfo.cs" />
-    <Compile Include="RPC\LocalDb\Member.cs" />
-    <Compile Include="RPC\LocalDb\Module.cs" />
-    <Compile Include="RPC\LocalDb\Parameter.cs" />
+    <Compile Include="RPC\LocalDb\Model\Declaration.cs" />
+    <Compile Include="RPC\LocalDb\Model\DeclarationAnnotation.cs" />
+    <Compile Include="RPC\LocalDb\Model\DeclarationAttribute.cs" />
+    <Compile Include="RPC\LocalDb\Model\IdentifierReference.cs" />
+    <Compile Include="RPC\LocalDb\Model\Local.cs" />
+    <Compile Include="RPC\LocalDb\Model\LocationInfo.cs" />
+    <Compile Include="RPC\LocalDb\Model\Member.cs" />
+    <Compile Include="RPC\LocalDb\Model\Module.cs" />
+    <Compile Include="RPC\LocalDb\Model\Parameter.cs" />
     <Compile Include="RPC\LocalDb\Parameters\ConnectParams.cs" />
-    <Compile Include="RPC\LocalDb\Project.cs" />
-    <Compile Include="RPC\LocalDb\ProjectSetting.cs" />
+    <Compile Include="RPC\LocalDb\Model\Project.cs" />
+    <Compile Include="RPC\LocalDb\Model\ProjectSetting.cs" />
     <Compile Include="UIContext\IUiContextProvider.cs" />
     <Compile Include="UIContext\IUiDispatcher.cs" />
     <Compile Include="WindowsApi\EnumHelper.cs" />
@@ -194,8 +194,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="RPC\LocalDb\Capabilities\" />
-    <Folder Include="RPC\LocalDb\Response\" />
+    <Folder Include="RPC\LocalDb\Requests\Connect\" />
+    <Folder Include="RPC\LocalDb\Requests\Disconnect\" />
+    <Folder Include="RPC\LocalDb\Requests\Info\" />
+    <Folder Include="RPC\LocalDb\Requests\Query\" />
+    <Folder Include="RPC\LocalDb\Requests\Save\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
