@@ -1,1 +1,0 @@
-# Rubberduck.InternalApi
