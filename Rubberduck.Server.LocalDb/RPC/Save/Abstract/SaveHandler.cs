@@ -1,8 +1,8 @@
-﻿using MediatR;
-using OmniSharp.Extensions.JsonRpc;
+﻿using OmniSharp.Extensions.JsonRpc;
 using Rubberduck.Server.LocalDb.Internal.Model;
 using Rubberduck.Server.LocalDb.Internal.Storage.Abstract;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,15 +20,20 @@ namespace Rubberduck.Server.LocalDb.RPC.Save
 
         public async Task<SaveResult> Handle(SaveRequest<T> request, CancellationToken cancellationToken)
         {
-            using (var uow = _factory.CreateNew())
+            try
             {
-                var repo = uow.GetRepository<T>();
-                var entities = request.Params.ToObject<T[]>();
-                foreach (var entity in entities)
+                using (var uow = _factory.CreateNew())
                 {
-                    await repo.SaveAsync(entity);
+                    var repo = uow.GetRepository<T>();
+                    var entities = request.Params.ToObject<T[]>();
+                    await Task.WhenAll(entities.Select(repo.SaveAsync));
                 }
+
+                return new SaveResult { Success = true };
             }
+            catch (Exception exception)
+            {
+                return new SaveResult { Success = false, Message = exception.ToString() };
         }
     }
 }
