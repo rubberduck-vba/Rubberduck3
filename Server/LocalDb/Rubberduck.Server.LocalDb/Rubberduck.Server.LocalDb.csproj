@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net48</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<LangVersion>Latest</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="CommandLineParser" Version="2.9.1" />
+	  <PackageReference Include="Dapper" Version="2.0.123" />
+	  <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.3" />
+	  <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+	  <PackageReference Include="NLog" Version="5.1.2" />
+	  <PackageReference Include="OmniSharp.Extensions.JsonRpc" Version="0.19.7" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
+	  <ProjectReference Include="..\..\..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj" />
+	  <ProjectReference Include="..\..\..\Shared\Rubberduck.RPC\Rubberduck.RPC.csproj" />
+	</ItemGroup>
+	
+</Project>

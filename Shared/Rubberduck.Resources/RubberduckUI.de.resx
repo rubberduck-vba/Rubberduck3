@@ -1,0 +1,680 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CancelButtonText" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="NameLabelText" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Parsing" xml:space="preserve">
+    <value>(Parse...)</value>
+  </data>
+  <data name="AllReferences_NoneFound" xml:space="preserve">
+    <value>Keine Referenzen für '{0}' gefunden.</value>
+  </data>
+  <data name="AllReferences_Caption" xml:space="preserve">
+    <value>Alle Referenzen: '{0}'</value>
+  </data>
+  <data name="AllImplementations_NoneFound" xml:space="preserve">
+    <value>Klasse oder Element '{0}' ist nicht implementiert.</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="LoadConfigError" xml:space="preserve">
+    <value>Fehler beim Laden der Rubberduck-Konfiguration</value>
+  </data>
+  <data name="ParseProgress" xml:space="preserve">
+    <value>Parse '{0}'...</value>
+  </data>
+  <data name="ParseStarted" xml:space="preserve">
+    <value>Parse Projekt-Komponenten...</value>
+  </data>
+  <data name="PromptLoadDefaultConfig" xml:space="preserve">
+    <value>{0}
+{1}
+
+{2}
+
+Wollen sie die Standardkonfiguration wiederherstellen?
+Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird unter '{3}' gespeichert.</value>
+  </data>
+  <data name="ResolutionProgress" xml:space="preserve">
+    <value>Löse auf ...</value>
+  </data>
+  <data name="RubberduckLoadFailure" xml:space="preserve">
+    <value>Konnte das Rubberduck Add-In nicht laden</value>
+  </data>
+  <data name="Rubberduck_AboutBuild" xml:space="preserve">
+    <value>Version {0}</value>
+  </data>
+  <data name="AllImplementations_Caption" xml:space="preserve">
+    <value>Implementierungen von '{0}'</value>
+  </data>
+  <data name="Fix" xml:space="preserve">
+    <value>Beheben</value>
+  </data>
+  <data name="Issue" xml:space="preserve">
+    <value>Problem</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Nächstes</value>
+  </data>
+  <data name="Offline" xml:space="preserve">
+    <value>Offline</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Parameter" xml:space="preserve">
+    <value>Parameter</value>
+  </data>
+  <data name="Passed" xml:space="preserve">
+    <value>Übergeben</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Voriges</value>
+  </data>
+  <data name="Severity" xml:space="preserve">
+    <value>Sensitivität</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warnung</value>
+  </data>
+  <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
+    <value>Modul-Optionen sollten zuerst deklariert werden</value>
+  </data>
+  <data name="Component" xml:space="preserve">
+    <value>Komponente</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Ergebnis</value>
+  </data>
+  <data name="Language_EN" xml:space="preserve">
+    <value>Englisch</value>
+  </data>
+  <data name="Language_FR" xml:space="preserve">
+    <value>Französisch</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>Wiederherstellen</value>
+  </data>
+  <data name="ParseErrors_Caption" xml:space="preserve">
+    <value>Rubberduck - Parserfehler</value>
+  </data>
+  <data name="Inspect" xml:space="preserve">
+    <value>Inspizieren</value>
+  </data>
+  <data name="Navigate" xml:space="preserve">
+    <value>Navigieren</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Umbenennen</value>
+  </data>
+  <data name="Go" xml:space="preserve">
+    <value>Los</value>
+  </data>
+  <data name="ProjectName" xml:space="preserve">
+    <value>Projektname</value>
+  </data>
+  <data name="ModuleName" xml:space="preserve">
+    <value>Modulname</value>
+  </data>
+  <data name="Run" xml:space="preserve">
+    <value>Ausführen</value>
+  </data>
+  <data name="Line" xml:space="preserve">
+    <value>Zeile</value>
+  </data>
+  <data name="Project" xml:space="preserve">
+    <value>Projekt</value>
+  </data>
+  <data name="Change" xml:space="preserve">
+    <value>Ändern</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Entfernen</value>
+  </data>
+  <data name="Navigation" xml:space="preserve">
+    <value>Navigation</value>
+  </data>
+  <data name="OK_AllCaps" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Neu</value>
+  </data>
+  <data name="Language_DE" xml:space="preserve">
+    <value>Deutsch</value>
+  </data>
+  <data name="ParserProgress_ShowDetails" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="MakeActiveWorkbookReferenceExplicit" xml:space="preserve">
+    <value>Setze die Referenz explizit auf das 'ActiveWorkbook'</value>
+  </data>
+  <data name="MakeActiveSheetReferenceExplicit" xml:space="preserve">
+    <value>Setze die Referenz explizit auf das 'ActiveSheet'</value>
+  </data>
+  <data name="FindSymbolDialog_Caption" xml:space="preserve">
+    <value>Suche Symbol</value>
+  </data>
+  <data name="DeselectAll_Button" xml:space="preserve">
+    <value>Alles abwählen</value>
+  </data>
+  <data name="SelectAll_Button" xml:space="preserve">
+    <value>Alles auswählen</value>
+  </data>
+  <data name="SeverityLabelText" xml:space="preserve">
+    <value>Schweregrad:</value>
+  </data>
+  <data name="EndOfLineCommentStyle_Absolute" xml:space="preserve">
+    <value>Absolut</value>
+  </data>
+  <data name="EndOfLineCommentStyle_AlignInColumn" xml:space="preserve">
+    <value>In Spalten ausrichten</value>
+  </data>
+  <data name="EndOfLineCommentStyle_SameGap" xml:space="preserve">
+    <value>Gleicher Abstand</value>
+  </data>
+  <data name="EndOfLineCommentStyle_StandardGap" xml:space="preserve">
+    <value>Standardabstand</value>
+  </data>
+  <data name="GroupingStyle_ByLocation" xml:space="preserve">
+    <value>Nach Ort</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="SearchResults_Caption" xml:space="preserve">
+    <value>Suchergebnis</value>
+  </data>
+  <data name="SearchResults_Location" xml:space="preserve">
+    <value>Ort</value>
+  </data>
+  <data name="SearchResults_MemberName" xml:space="preserve">
+    <value>Methode</value>
+  </data>
+  <data name="SearchResults_ModuleName" xml:space="preserve">
+    <value>Modul</value>
+  </data>
+  <data name="SearchResults_Context" xml:space="preserve">
+    <value>Kontext</value>
+  </data>
+  <data name="SearchResults_AllImplementationsTabFormat" xml:space="preserve">
+    <value>Alle Vorkommnisse: '{0}'</value>
+  </data>
+  <data name="SearchResults_AllReferencesTabFormat" xml:space="preserve">
+    <value>Alle Referenzen: '{0}'</value>
+  </data>
+  <data name="Rubberduck" xml:space="preserve">
+    <value>Rubberduck</value>
+  </data>
+  <data name="SearchResults_MemberType" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="ParserState_Error" xml:space="preserve">
+    <value>Fehler beim Parsen</value>
+  </data>
+  <data name="ParserState_LoadingReference" xml:space="preserve">
+    <value>Referenzen werden geladen</value>
+  </data>
+  <data name="ParserState_Parsed" xml:space="preserve">
+    <value>Fertig analysiert</value>
+  </data>
+  <data name="ParserState_Parsing" xml:space="preserve">
+    <value>Parsing…</value>
+  </data>
+  <data name="ParserState_Pending" xml:space="preserve">
+    <value>Wartend</value>
+  </data>
+  <data name="ParserState_Ready" xml:space="preserve">
+    <value>Fertig</value>
+  </data>
+  <data name="ParserState_ResolverError" xml:space="preserve">
+    <value>Fehler beim Auflösen</value>
+  </data>
+  <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
+    <value>Parse alle offenen Projekte</value>
+  </data>
+  <data name="CommonHotkey_InvalidKey" xml:space="preserve">
+    <value>Ungültiges Zeichen.</value>
+  </data>
+  <data name="CommonHotkey_HookDetached" xml:space="preserve">
+    <value>Hook ist nicht mehr aktiv.</value>
+  </data>
+  <data name="CommonHotkey_HookAttached" xml:space="preserve">
+    <value>Hook ist schon hinzugefügt.</value>
+  </data>
+  <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
+    <value>Hotkey ({0}) ist nicht registriert.</value>
+  </data>
+  <data name="Find" xml:space="preserve">
+    <value>Suchen</value>
+  </data>
+  <data name="Parser_ParserError" xml:space="preserve">
+    <value>Parserfehler</value>
+  </data>
+  <data name="ParserState_ResolvingReferences" xml:space="preserve">
+    <value>Löse Referenzen auf...</value>
+  </data>
+  <data name="ParserState_ResolvingDeclarations" xml:space="preserve">
+    <value>Löse Deklarationen auf...</value>
+  </data>
+  <data name="RubberduckFatalError" xml:space="preserve">
+    <value>In Rubberduck ist ein Fehler aufgetreten. Bitte speichern Sie Ihre Arbeit und starten Sie das Hostprogramm neu. Laden Sie dann Ihre Logdatei zu unserer GitHub-Seite hoch.</value>
+  </data>
+  <data name="RubberduckReloadFailure_Title" xml:space="preserve">
+    <value>Rubberduck wird nicht neu geladen</value>
+  </data>
+  <data name="RubberduckReloadFailure_Message" xml:space="preserve">
+    <value>Werkzeugfenster wurden nicht korrekt entfernt und/oder konnten nicht wieder hergestellt werden; Die VBE könnte instabil sein. Rubberduck wird beim nächsten Start der VBE normal laden.</value>
+  </data>
+  <data name="ParserErrorToolTipText" xml:space="preserve">
+    <value>{0} Modul(e) konnten nicht geparsed werden; Klicken Sie für Details.</value>
+  </data>
+  <data name="ReparseToolTipText" xml:space="preserve">
+    <value>{0}. Klicken zum aktualisieren.</value>
+  </data>
+  <data name="ContextReferences" xml:space="preserve">
+    <value>Referenzen</value>
+  </data>
+  <data name="SmartIndenter_LegacySettingPrompt" xml:space="preserve">
+    <value>Einstellungen für Smart Indenter wurden in der Registry gefunden.
+Möchten sie die Einstellungen in Rubberduck importieren?</value>
+  </data>
+  <data name="WindowSettings_StartupVisibilityHeader" xml:space="preserve">
+    <value>Fenstersichtbarkeit beim Start</value>
+  </data>
+  <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
+    <value>Sie verwenden momentan Rubberduck Version {0}.
+Version {1}({2}) ist nun verfügbar.
+
+Um den Change Log anzuschauen und Rubberduck manuell zu aktualisieren, klicken Sie 'Ja'.
+
+Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Diese können unter Rubberduck &gt; Einstellungen deaktiviert werden.</value>
+  </data>
+  <data name="ContextMultipleControlsSelection" xml:space="preserve">
+    <value>Mehrere Schaltflächen</value>
+  </data>
+  <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
+    <value>Variable '{0}' ist zugewiesen. Zuweisung(en) entfernen?</value>
+  </data>
+  <data name="Preview" xml:space="preserve">
+    <value>Vorschau</value>
+  </data>
+  <data name="EmptyUIRefreshMessage" xml:space="preserve">
+    <value>Um die Projekte in der VBE zu parsen und zu analysieren.</value>
+  </data>
+  <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
+    <value>Rubberduck sieht noch nichts.</value>
+  </data>
+  <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
+    <value>Einen Ordner als Ziel für den Quellcode von {0} wählen:</value>
+  </data>
+  <data name="ParserState_Started" xml:space="preserve">
+    <value>Gestartet</value>
+  </data>
+  <data name="ParserState_UnexpectedError" xml:space="preserve">
+    <value>Unerwarteter Fehler</value>
+  </data>
+  <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
+    <value>Modul einrücken</value>
+  </data>
+  <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
+    <value>Prozedur einrücken</value>
+  </data>
+  <data name="CommandDescription_CodeExplorerCommand" xml:space="preserve">
+    <value>Code Explorer</value>
+  </data>
+  <data name="CommandDescription_InspectionResultsCommand" xml:space="preserve">
+    <value>Codeuntersuchungen</value>
+  </data>
+  <data name="CommandDescription_RefactorExtractMethodCommand" xml:space="preserve">
+    <value>Refactor / Methode extrahieren</value>
+  </data>
+  <data name="CommandDescription_CodePaneRefactorRenameCommand" xml:space="preserve">
+    <value>Refactor / Umbenennen</value>
+  </data>
+  <data name="CommandDescription_TestExplorerCommand" xml:space="preserve">
+    <value>Test Explorer</value>
+  </data>
+  <data name="CommandDescription_FindSymbolCommand" xml:space="preserve">
+    <value>Symbol finden</value>
+  </data>
+  <data name="CommandDescription_RefactorMoveCloserToUsageCommand" xml:space="preserve">
+    <value>Refactor / Deklaration näher an Verwendung verschieben</value>
+  </data>
+  <data name="CommandDescription_ReparseCommand" xml:space="preserve">
+    <value>Parserzustand aktualisieren</value>
+  </data>
+  <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
+    <value>Refactor / Feld kapseln</value>
+  </data>
+  <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
+    <value>Aktives Projekt exportieren</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="IndentCurrentProject" xml:space="preserve">
+    <value>Aktuelles Projekt</value>
+  </data>
+  <data name="ParserState_Busy" xml:space="preserve">
+    <value>Beschäftigt</value>
+  </data>
+  <data name="GroupingStyle_ByCategory" xml:space="preserve">
+    <value>Nach Kategorie</value>
+  </data>
+  <data name="Language_CS" xml:space="preserve">
+    <value>Tschechisch</value>
+  </data>
+  <data name="ReferenceSettings_FixBroken" xml:space="preserve">
+    <value>Versuche fehlerhafte Referenzen zu reparieren</value>
+  </data>
+  <data name="ApplyButtonText" xml:space="preserve">
+    <value>Ausführen</value>
+  </data>
+  <data name="ReferenceSettings_FolderDialogHeader" xml:space="preserve">
+    <value>Projektverzeichnis öffnen</value>
+  </data>
+  <data name="ReferenceSettings_FoldersHeader" xml:space="preserve">
+    <value>Projektverzeichnisse</value>
+  </data>
+  <data name="ReferenceSettings_TrackHostReferences" xml:space="preserve">
+    <value>Verfolge nicht von Rubberduck hinzugefügte Referenzen</value>
+  </data>
+  <data name="ReferenceSettings_RecentTracked" xml:space="preserve">
+    <value>Zuletzt verfolgte Referenzen:</value>
+  </data>
+  <data name="MemberAttributeRecoveryRewriteFailedMessage" xml:space="preserve">
+    <value>Das Wiederherstellen der Elementattribute ist fehlgeschlagen.</value>
+  </data>
+  <data name="MemberAttributeRecoveryFailureCaption" xml:space="preserve">
+    <value>Wiederherstellen der Elementattribute fehlgeschlagen</value>
+  </data>
+  <data name="MemberAttributeRecoveryMembersNotFoundMessage" xml:space="preserve">
+    <value>Die Elementattribute für die folgenden Elemente konnten nicht wiederhergestellt werden, da sie nicht mehr aufgefunden wurden: {0}</value>
+  </data>
+  <data name="AllReferences_NoneFoundReference" xml:space="preserve">
+    <value>Es wurden keine Verwendungen der Projektreferenz '{0}' gefunden.</value>
+  </data>
+  <data name="AllReferences_PerformanceWarning" xml:space="preserve">
+    <value>Die Suche nach Verwendungen von Referenz '{0}' hat {1} Ergebnisse geliefert. Sie anzuzeigen könnte die Performance beeinträchtigen. Fortfahren?</value>
+  </data>
+  <data name="PerformanceWarningCaption" xml:space="preserve">
+    <value>Performancewarnung</value>
+  </data>
+  <data name="Language_ES" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="GroupingStyle_ByName" xml:space="preserve">
+    <value>Nach Codeuntersuchung</value>
+  </data>
+  <data name="GroupingStyle_BySeverity" xml:space="preserve">
+    <value>Nach Schweregrad</value>
+  </data>
+  <data name="InspectionResults_CollapseAll" xml:space="preserve">
+    <value>Alle einklappen</value>
+  </data>
+  <data name="InspectionResults_ExpandAll" xml:space="preserve">
+    <value>Alle ausklappen</value>
+  </data>
+  <data name="SaveAndClose" xml:space="preserve">
+    <value>Speichern &amp; Schließen</value>
+  </data>
+  <data name="MeaninglessNameCriteriaMatchFormat" xml:space="preserve">
+    <value>Der Name '{0}' wird die "Sinnige Namen verwenden"-Inspektion auslösen.</value>
+  </data>
+  <data name="VersionCheck_BuildType_PreRelease" xml:space="preserve">
+    <value>Prerelease</value>
+  </data>
+  <data name="VersionCheck_BuildType_Release" xml:space="preserve">
+    <value>Release</value>
+  </data>
+  <data name="ReplaceProjectContentsFromFilesCommand_DialogCaption" xml:space="preserve">
+    <value>Projektinhalt durch Inhalt von Dateien ersetzen</value>
+  </data>
+  <data name="ReplaceProjectContentsFromFilesCommand_ConfirmationMessage" xml:space="preserve">
+    <value>Soll der Inhalt von Project '{0}' wirklich gelöscht und durch den Inhalt der ausgewählten Dateien ersetzt werden?</value>
+  </data>
+  <data name="UpdateFromFilesCommand_DialogCaption" xml:space="preserve">
+    <value>Komponenten aus Dateien aktualisieren</value>
+  </data>
+  <data name="UpdateFromFilesCommand_DifferentComponentType" xml:space="preserve">
+    <value>Der Komponententyp der existierenden Komponente '{0}' stimmt nicht mit dem dem zur Dateierweiterung der Datei '{1}' gehörenden überein.
+
+Import abgebrochen.</value>
+  </data>
+  <data name="ComponentType_ActiveXDesigner" xml:space="preserve">
+    <value>ActiveX-Designer</value>
+  </data>
+  <data name="ComponentType_ClassModule" xml:space="preserve">
+    <value>Klassenmodul</value>
+  </data>
+  <data name="ComponentType_ComComponent" xml:space="preserve">
+    <value>COM-Komponente</value>
+  </data>
+  <data name="ComponentType_Document" xml:space="preserve">
+    <value>Dokumentmodul</value>
+  </data>
+  <data name="ComponentType_DocObject" xml:space="preserve">
+    <value>Dokumentobjekt</value>
+  </data>
+  <data name="ComponentType_MDIForm" xml:space="preserve">
+    <value>MDI-Formular</value>
+  </data>
+  <data name="ComponentType_PropPage" xml:space="preserve">
+    <value>Eigenschaftsseite</value>
+  </data>
+  <data name="ComponentType_RelatedDocument" xml:space="preserve">
+    <value>Zugehöriges Dokument</value>
+  </data>
+  <data name="ComponentType_ResFile" xml:space="preserve">
+    <value>Ressourcendatei</value>
+  </data>
+  <data name="ComponentType_StandardModule" xml:space="preserve">
+    <value>Standardmodul</value>
+  </data>
+  <data name="ComponentType_Undefined" xml:space="preserve">
+    <value>Undefiniert</value>
+  </data>
+  <data name="ComponentType_UserForm" xml:space="preserve">
+    <value>UserForm</value>
+  </data>
+  <data name="ComponentType_VBForm" xml:space="preserve">
+    <value>VB Formular</value>
+  </data>
+  <data name="ComponentType_UserControl" xml:space="preserve">
+    <value>Benutzerkontrollelement</value>
+  </data>
+  <data name="GroupingStyle_ByOutcome" xml:space="preserve">
+    <value>Nach Ergebnis</value>
+  </data>
+  <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
+    <value>Gruppierung</value>
+  </data>
+  <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
+    <value>Nach Inspektionstyp</value>
+  </data>
+  <data name="GroupingStyle_ByMarker" xml:space="preserve">
+    <value>Nach Markierung</value>
+  </data>
+  <data name="DeclarationType_Document" xml:space="preserve">
+    <value>Dokument</value>
+  </data>
+  <data name="CodeInspectionsWindowSettings_AccessKey" xml:space="preserve">
+    <value>Code _Untersuchung</value>
+  </data>
+  <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
+    <value>Zum vorigen Problem navigieren</value>
+  </data>
+  <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
+    <value>Das Problem beheben</value>
+  </data>
+  <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
+    <value>Code-Untersuchung ausführen</value>
+  </data>
+  <data name="CodeInspections_Run" xml:space="preserve">
+    <value>Code-Untersuchung ausführen</value>
+  </data>
+  <data name="CodeInspections_GoToolTip" xml:space="preserve">
+    <value>Zum ausgewählten Problem navigieren</value>
+  </data>
+  <data name="CodeInspections_NextToolTip" xml:space="preserve">
+    <value>Zum nächsten Problem navigieren</value>
+  </data>
+  <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
+    <value>{0} {1} {2} {3} {4} {5}</value>
+  </data>
+  <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
+    <value>ParamArray-Parameter muss als letztes spezifiziert werden.</value>
+  </data>
+  <data name="TodoMarkerBug" xml:space="preserve">
+    <value>BUG</value>
+  </data>
+  <data name="TodoMarkerNote" xml:space="preserve">
+    <value>NOTE</value>
+  </data>
+  <data name="TodoMarkerTodo" xml:space="preserve">
+    <value>TODO</value>
+  </data>
+  <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
+    <value>Die Auswahl ist keine Variable.</value>
+  </data>
+  <data name="SelectionLocationPosition" xml:space="preserve">
+    <value>Z{0}S{1}</value>
+  </data>
+  <data name="SelectionLocationRange" xml:space="preserve">
+    <value>Z{0}S{1} - Z{2}S{3}</value>
+  </data>
+</root>

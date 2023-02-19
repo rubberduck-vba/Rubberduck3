@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net48</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<LangVersion>Latest</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Parsers\TokenStreamParserAdapterWithPreprocessing.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Antlr4.CodeGenerator" Version="4.6.6">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
+	  <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
+	  <PackageReference Include="NLog" Version="5.1.2" />
+	  <PackageReference Include="System.IO.Abstractions" Version="19.1.18" />
+	  <PackageReference Include="System.Net.Http" Version="4.3.4" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\..\Client\Rubberduck.VBEditor\Rubberduck.VBEditor.csproj" />
+	  <ProjectReference Include="..\..\..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
+	  <ProjectReference Include="..\..\..\..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj" />
+	  <ProjectReference Include="..\..\..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Antlr4 Include="Parsers\Grammar\VBALexer.g4">
+			<CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+		</Antlr4>
+		<Antlr4 Include="Parsers\Grammar\VBAParser.g4">
+			<CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+		</Antlr4>
+		<Antlr4 Include="Parsers\Grammar\VBAMemberParser.g4">
+			<Generator>MSBuild:Compile</Generator>
+			<CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+		</Antlr4>
+		<None Include="Annotations\Concrete\README.md" />
+		<Antlr4 Include="Parsers\Grammar\VBAConditionalCompilationParser.g4">
+			<CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+		</Antlr4>
+		<Antlr4 Include="Parsers\Grammar\VBADate.g4">
+			<CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+		</Antlr4>
+		<Antlr4 Include="Parsers\Grammar\VBALike.g4">
+			<CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+		</Antlr4>
+	</ItemGroup>
+</Project>

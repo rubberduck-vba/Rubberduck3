@@ -1,0 +1,503 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Rubberduck.Resources</RootNamespace>
+    <AssemblyName>Rubberduck.Resources</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Ducky.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MessagePack.Annotations, Version=2.4.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
+      <HintPath>..\packages\MessagePack.Annotations.2.4.59\lib\netstandard2.0\MessagePack.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.NET.StringTools, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.NET.StringTools.17.4.0\lib\net472\Microsoft.NET.StringTools.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Immutable, Version=1.2.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.7.1\lib\net461\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="About\AboutUI.cs.Designer.cs" />
+    <Compile Include="About\AboutUI.de.Designer.cs" />
+    <Compile Include="About\AboutUI.Designer.cs" />
+    <Compile Include="About\AboutUI.fr.Designer.cs" />
+    <Compile Include="ApplicationConstants.cs" />
+    <Compile Include="Inspections\InspectionInfo.de.Designer.cs" />
+    <Compile Include="Inspections\InspectionInfo.Designer.cs" />
+    <Compile Include="Inspections\InspectionInfo.fr.Designer.cs" />
+    <Compile Include="Inspections\InspectionNames.de.Designer.cs" />
+    <Compile Include="Inspections\InspectionNames.Designer.cs" />
+    <Compile Include="Inspections\InspectionNames.fr.Designer.cs" />
+    <Compile Include="Inspections\InspectionResults.de.Designer.cs" />
+    <Compile Include="Inspections\InspectionResults.Designer.cs" />
+    <Compile Include="Inspections\InspectionResults.fr.Designer.cs" />
+    <Compile Include="Inspections\InspectionsUI.de.Designer.cs" />
+    <Compile Include="Inspections\InspectionsUI.Designer.cs" />
+    <Compile Include="Inspections\InspectionsUI.fr.Designer.cs" />
+    <Compile Include="Inspections\QuickFixes.Designer.cs" />
+    <Compile Include="Locales.cs" />
+    <Compile Include="MemberTypeIcons.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MemberTypeIcons.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Menus\RubberduckMenus.cs.Designer.cs" />
+    <Compile Include="Menus\RubberduckMenus.de.Designer.cs" />
+    <Compile Include="Menus\RubberduckMenus.Designer.cs" />
+    <Compile Include="Menus\RubberduckMenus.fr.Designer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Registration\RubberduckGuid.cs" />
+    <Compile Include="Registration\RubberduckProgId.cs" />
+    <Compile Include="Registration\WellKnownDispIds.cs" />
+    <Compile Include="RubberduckUI.cs.Designer.cs" />
+    <Compile Include="RubberduckUI.de.Designer.cs" />
+    <Compile Include="RubberduckUI.fr.Designer.cs" />
+    <Compile Include="RubberduckUI1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RubberduckUI.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="About\AboutUI.cs.resx" />
+    <EmbeddedResource Include="About\AboutUI.de.resx" />
+    <EmbeddedResource Include="About\AboutUI.es.resx" />
+    <EmbeddedResource Include="About\AboutUI.fr.resx" />
+    <EmbeddedResource Include="About\AboutUI.it.resx" />
+    <EmbeddedResource Include="About\AboutUI.resx" />
+    <EmbeddedResource Include="Inspections\InspectionInfo.cs.resx" />
+    <EmbeddedResource Include="Inspections\InspectionInfo.de.resx" />
+    <EmbeddedResource Include="Inspections\InspectionInfo.es.resx" />
+    <EmbeddedResource Include="Inspections\InspectionInfo.fr.resx" />
+    <EmbeddedResource Include="Inspections\InspectionInfo.it.resx" />
+    <EmbeddedResource Include="Inspections\InspectionInfo.resx" />
+    <EmbeddedResource Include="Inspections\InspectionNames.cs.resx" />
+    <EmbeddedResource Include="Inspections\InspectionNames.de.resx" />
+    <EmbeddedResource Include="Inspections\InspectionNames.es.resx" />
+    <EmbeddedResource Include="Inspections\InspectionNames.fr.resx" />
+    <EmbeddedResource Include="Inspections\InspectionNames.it.resx" />
+    <EmbeddedResource Include="Inspections\InspectionNames.resx" />
+    <EmbeddedResource Include="Inspections\InspectionResults.cs.resx" />
+    <EmbeddedResource Include="Inspections\InspectionResults.de.resx" />
+    <EmbeddedResource Include="Inspections\InspectionResults.es.resx" />
+    <EmbeddedResource Include="Inspections\InspectionResults.fr.resx" />
+    <EmbeddedResource Include="Inspections\InspectionResults.it.resx" />
+    <EmbeddedResource Include="Inspections\InspectionResults.resx" />
+    <EmbeddedResource Include="Inspections\InspectionsUI.cs.resx" />
+    <EmbeddedResource Include="Inspections\InspectionsUI.de.resx" />
+    <EmbeddedResource Include="Inspections\InspectionsUI.es.resx" />
+    <EmbeddedResource Include="Inspections\InspectionsUI.fr.resx" />
+    <EmbeddedResource Include="Inspections\InspectionsUI.it.resx" />
+    <EmbeddedResource Include="Inspections\InspectionsUI.resx" />
+    <EmbeddedResource Include="Inspections\QuickFixes.cs.resx" />
+    <EmbeddedResource Include="Inspections\QuickFixes.de.resx" />
+    <EmbeddedResource Include="Inspections\QuickFixes.es.resx" />
+    <EmbeddedResource Include="Inspections\QuickFixes.fr.resx" />
+    <EmbeddedResource Include="Inspections\QuickFixes.it.resx" />
+    <EmbeddedResource Include="Inspections\QuickFixes.resx" />
+    <EmbeddedResource Include="MemberTypeIcons.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MemberTypeIcons.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menus\RubberduckMenus.cs.resx" />
+    <EmbeddedResource Include="Menus\RubberduckMenus.de.resx" />
+    <EmbeddedResource Include="Menus\RubberduckMenus.es.resx" />
+    <EmbeddedResource Include="Menus\RubberduckMenus.fr.resx" />
+    <EmbeddedResource Include="Menus\RubberduckMenus.it.resx" />
+    <EmbeddedResource Include="Menus\RubberduckMenus.resx" />
+    <EmbeddedResource Include="RubberduckUI.cs.resx" />
+    <EmbeddedResource Include="RubberduckUI.de.resx" />
+    <EmbeddedResource Include="RubberduckUI.es.resx" />
+    <EmbeddedResource Include="RubberduckUI.fr.resx" />
+    <EmbeddedResource Include="RubberduckUI.it.resx" />
+    <EmbeddedResource Include="RubberduckUI.resx">
+      <SubType>Designer</SubType>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUI1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Ducky.ico" />
+    <Content Include="Icons\Custom\attribution.txt" />
+    <Content Include="Icons\Custom\cc_license.txt" />
+    <Content Include="Icons\Custom\Mask\AddPropertyMask.bmp" />
+    <Content Include="Icons\Custom\Mask\AddVariableMask.bmp" />
+    <Content Include="Icons\Custom\Mask\AllLoadedTestsMask.bmp" />
+    <Content Include="Icons\Custom\Mask\ExtractInterfaceMask.bmp" />
+    <Content Include="Icons\Custom\Mask\ExtractMethodMask.bmp" />
+    <Content Include="Icons\Custom\Mask\FindSymbolMask.bmp" />
+    <Content Include="Icons\Custom\Mask\ImplementInterfaceMask.bmp" />
+    <Content Include="Icons\Custom\Mask\PromoteLocalMask.bmp" />
+    <Content Include="Icons\Custom\Mask\RemoveParametersMask.bmp" />
+    <Content Include="Icons\Custom\Mask\ReorderParametersMask.bmp" />
+    <Content Include="Icons\Custom\Mask\TestManagerMask.bmp" />
+    <Content Include="Icons\Custom\mit_license.txt" />
+    <Content Include="Icons\Custom\PNG\AccessibilityFriend.png" />
+    <Content Include="Icons\Custom\PNG\DefaultMemberDot.png" />
+    <Content Include="Icons\Custom\PNG\AccessibilityPrivate.png" />
+    <Content Include="Icons\Custom\PNG\AccessibilityStatic.png" />
+    <Content Include="Icons\Custom\PNG\AddClass.png" />
+    <Content Include="Icons\Custom\PNG\AddEvent.png" />
+    <Content Include="Icons\Custom\PNG\AddForm.png" />
+    <Content Include="Icons\Custom\PNG\AddMdiForm.png" />
+    <Content Include="Icons\Custom\PNG\AddMethod.png" />
+    <Content Include="Icons\Custom\PNG\AddModule.png" />
+    <Content Include="Icons\Custom\PNG\AddProperty.png" />
+    <Content Include="Icons\Custom\PNG\AddPropertyPage.png" />
+    <Content Include="Icons\Custom\PNG\AddResourceFile.png" />
+    <Content Include="Icons\Custom\PNG\AddUserControl.png" />
+    <Content Include="Icons\Custom\PNG\AddUserDocument.png" />
+    <Content Include="Icons\Custom\PNG\AddVariable.png" />
+    <Content Include="Icons\Custom\PNG\AllLoadedTests.png" />
+    <Content Include="Icons\Custom\PNG\ApplyCodeChanges.png" />
+    <Content Include="Icons\Custom\PNG\BrokenReference.png" />
+    <Content Include="Icons\Custom\PNG\CollapseDown.png" />
+    <Content Include="Icons\Custom\PNG\CollapseUp.png" />
+    <Content Include="Icons\Custom\PNG\DisplayFullSignature.png" />
+    <Content Include="Icons\Custom\PNG\DisplayName.png" />
+    <Content Include="Icons\Custom\PNG\Document.png" />
+    <Content Include="Icons\Custom\PNG\ExportTestRunResults.png" />
+    <Content Include="Icons\Custom\PNG\ExtractInterface.png" />
+    <Content Include="Icons\Custom\PNG\ExtractMethod.png" />
+    <Content Include="Icons\Custom\PNG\FindSymbol.png" />
+    <Content Include="Icons\Custom\PNG\FolderClosed.png" />
+    <Content Include="Icons\Custom\PNG\FolderClosedHidden.png" />
+    <Content Include="Icons\Custom\PNG\FolderClosedVirtual.png" />
+    <Content Include="Icons\Custom\PNG\FolderOpen.png" />
+    <Content Include="Icons\Custom\PNG\FolderOpenHidden.png" />
+    <Content Include="Icons\Custom\PNG\FolderOpenVirtual.png" />
+    <Content Include="Icons\Custom\PNG\GenerateMethod.png" />
+    <Content Include="Icons\Custom\PNG\GroupBy.png" />
+    <Content Include="Icons\Custom\PNG\ImplementInterface.png" />
+    <Content Include="Icons\Custom\PNG\ListOfTests.png" />
+    <Content Include="Icons\Custom\PNG\LockedReference.png" />
+    <Content Include="Icons\Custom\PNG\MdiForm.png" />
+    <Content Include="Icons\Custom\PNG\NewConstant.png" />
+    <Content Include="Icons\Custom\PNG\NewEvent.png" />
+    <Content Include="Icons\Custom\PNG\ObjectAssembly.png" />
+    <Content Include="Icons\Custom\PNG\ObjectClass.png" />
+    <Content Include="Icons\Custom\PNG\ObjectClassFriend.png" />
+    <Content Include="Icons\Custom\PNG\ObjectClassPredeclared.png" />
+    <Content Include="Icons\Custom\PNG\ObjectClassPrivate.png" />
+    <Content Include="Icons\Custom\PNG\ObjectClassProtected.png" />
+    <Content Include="Icons\Custom\PNG\ObjectClassSealed.png" />
+    <Content Include="Icons\Custom\PNG\ObjectClassShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectConstant.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectConstantFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectConstantPrivate.png" />
+    <Content Include="Icons\Custom\PNG\ObjectConstantProtected.png" />
+    <Content Include="Icons\Custom\PNG\ObjectConstantSealed.png" />
+    <Content Include="Icons\Custom\PNG\ObjectConstantShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEnum.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEnumFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEnumItem.png" />
+    <Content Include="Icons\Custom\PNG\ObjectEnumItemFriend.png" />
+    <Content Include="Icons\Custom\PNG\ObjectEnumItemPrivate.png" />
+    <Content Include="Icons\Custom\PNG\ObjectEnumItemProtected.png" />
+    <Content Include="Icons\Custom\PNG\ObjectEnumItemSealed.png" />
+    <Content Include="Icons\Custom\PNG\ObjectEnumItemShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEnumPrivate.png" />
+    <Content Include="Icons\Custom\PNG\ObjectEnumProtected.png" />
+    <Content Include="Icons\Custom\PNG\ObjectEnumSealed.png" />
+    <Content Include="Icons\Custom\PNG\ObjectEnumShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEvent.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEventFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEventPrivate.png" />
+    <Content Include="Icons\Custom\PNG\ObjectEventProtected.png" />
+    <Content Include="Icons\Custom\PNG\ObjectEventSealed.png" />
+    <Content Include="Icons\Custom\PNG\ObjectEventShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectField.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectFieldFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectFieldPrivate.png" />
+    <Content Include="Icons\Custom\PNG\ObjectFieldProtected.png" />
+    <Content Include="Icons\Custom\PNG\ObjectFieldSealed.png" />
+    <Content Include="Icons\Custom\PNG\ObjectFieldShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectInterface.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectLibrary.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectLibraryFunction.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectMethod.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectMethodFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectMethodPrivate.png" />
+    <Content Include="Icons\Custom\PNG\ObjectMethodProtected.png" />
+    <Content Include="Icons\Custom\PNG\ObjectMethodSealed.png" />
+    <Content Include="Icons\Custom\PNG\ObjectMethodShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectModule.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectModuleFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectModulePrivate.png" />
+    <Content Include="Icons\Custom\PNG\ObjectModuleProtected.png" />
+    <Content Include="Icons\Custom\PNG\ObjectModuleSealed.png" />
+    <Content Include="Icons\Custom\PNG\ObjectModuleShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectProperties.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectPropertiesFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectPropertiesPrivate.png" />
+    <Content Include="Icons\Custom\PNG\ObjectPropertiesProtected.png" />
+    <Content Include="Icons\Custom\PNG\ObjectPropertiesSealed.png" />
+    <Content Include="Icons\Custom\PNG\ObjectPropertiesShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectPropertyGet.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectPropertyLet.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectPropertySet.png" />
+    <Content Include="Icons\Custom\PNG\ObjectStructure.png" />
+    <Content Include="Icons\Custom\PNG\ObjectStructureFriend.png" />
+    <Content Include="Icons\Custom\PNG\ObjectStructurePrivate.png" />
+    <Content Include="Icons\Custom\PNG\ObjectStructureProtected.png" />
+    <Content Include="Icons\Custom\PNG\ObjectStructureSealed.png" />
+    <Content Include="Icons\Custom\PNG\ObjectStructureShortcut.png" />
+    <Content Include="Icons\Custom\PNG\ObjectType.png" />
+    <Content Include="Icons\Custom\PNG\ObjectTypeFriend.png" />
+    <Content Include="Icons\Custom\PNG\ObjectTypePrivate.png" />
+    <Content Include="Icons\Custom\PNG\ObjectTypeProtected.png" />
+    <Content Include="Icons\Custom\PNG\ObjectTypeSealed.png" />
+    <Content Include="Icons\Custom\PNG\ObjectTypeShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectValueType.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectValueTypeFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectValueTypePrivate.png" />
+    <Content Include="Icons\Custom\PNG\ObjectValueTypeProtected.png" />
+    <Content Include="Icons\Custom\PNG\ObjectValueTypeSealed.png" />
+    <Content Include="Icons\Custom\PNG\ObjectValueTypeShortcut.png" />
+    <Content Include="Icons\Custom\PNG\Options.png" />
+    <Content Include="Icons\Custom\PNG\Play.png" />
+    <Resource Include="Icons\Custom\PNG\ProjectForm.png" />
+    <Resource Include="Icons\Custom\PNG\ProjectReference.png" />
+    <Content Include="Icons\Custom\PNG\PromoteLocal.png" />
+    <Content Include="Icons\Custom\PNG\Recursion.png" />
+    <Content Include="Icons\Custom\PNG\Refresh.png" />
+    <Content Include="Icons\Custom\PNG\RemoveParameters.png" />
+    <Content Include="Icons\Custom\PNG\ReorderParameters.png" />
+    <Content Include="Icons\Custom\PNG\Services.png" />
+    <Resource Include="Icons\Custom\PNG\Severity.png" />
+    <Content Include="Icons\Custom\PNG\StepRunTest.png" />
+    <Content Include="Icons\Custom\PNG\SyncArrows.png" />
+    <Content Include="Icons\Custom\PNG\Task.png" />
+    <Content Include="Icons\Custom\PNG\TestManager.png" />
+    <Resource Include="Icons\Custom\PNG\TestMethod.png" />
+    <Content Include="Icons\Ducky.ico" />
+    <Resource Include="Icons\Fugue\application-resize.png" />
+    <Resource Include="Icons\Fugue\arrow-090-dimmed.png" />
+    <Resource Include="Icons\Fugue\arrow-090.png" />
+    <Resource Include="Icons\Fugue\arrow-180.png" />
+    <Resource Include="Icons\Fugue\arrow-270-dimmed.png" />
+    <Resource Include="Icons\Fugue\arrow-270.png" />
+    <Resource Include="Icons\Fugue\arrow-branch-090.png" />
+    <Resource Include="Icons\Fugue\arrow-circle-double.png" />
+    <Resource Include="Icons\Fugue\arrow-circle-left.png" />
+    <Resource Include="Icons\Fugue\arrow-merge-090.png" />
+    <Resource Include="Icons\Fugue\arrow-repeat.png" />
+    <Resource Include="Icons\Fugue\arrow-repeat1.png" />
+    <Resource Include="Icons\Fugue\arrow-return-180-left.png" />
+    <Resource Include="Icons\Fugue\arrow-split.png" />
+    <Resource Include="Icons\Fugue\arrow-step.png" />
+    <Resource Include="Icons\Fugue\arrow.png" />
+    <Resource Include="Icons\Fugue\arrow1.png" />
+    <Resource Include="Icons\Fugue\arrow_circle_double_mask.bmp" />
+    <Resource Include="Icons\Fugue\balloon-prohibition.png" />
+    <Resource Include="Icons\Fugue\balloon_ellipsis.bmp" />
+    <Resource Include="Icons\Fugue\balloon_mask.bmp" />
+    <Resource Include="Icons\Fugue\balloon_prohibition.bmp" />
+    <Resource Include="Icons\Fugue\balloon_smiley.bmp" />
+    <Resource Include="Icons\Fugue\block.png" />
+    <Resource Include="Icons\Fugue\blue-folder-horizontal-open.png" />
+    <Resource Include="Icons\Fugue\blue-folder-horizontal.png" />
+    <Resource Include="Icons\Fugue\circle_mask.bmp" />
+    <Resource Include="Icons\Fugue\clock-select-pinned.png" />
+    <Resource Include="Icons\Fugue\clock-select.png" />
+    <Resource Include="Icons\Fugue\clock.png" />
+    <Resource Include="Icons\Fugue\collapse-all.png" />
+    <Resource Include="Icons\Fugue\control-000-small.png" />
+    <Resource Include="Icons\Fugue\control-stop-square.png" />
+    <Resource Include="Icons\Fugue\control.png" />
+    <Resource Include="Icons\Fugue\creative-commons.png" />
+    <Resource Include="Icons\Fugue\cross-button.png" />
+    <Resource Include="Icons\Fugue\cross-circle.png" />
+    <Resource Include="Icons\Fugue\cross-script.png" />
+    <Resource Include="Icons\Fugue\disk.png" />
+    <Resource Include="Icons\Fugue\document-block.png" />
+    <Resource Include="Icons\Fugue\document-copy.png" />
+    <Resource Include="Icons\Fugue\document-excel.png" />
+    <Resource Include="Icons\Fugue\document-globe.png" />
+    <Resource Include="Icons\Fugue\document-import.png" />
+    <Resource Include="Icons\Fugue\document-office.png" />
+    <Resource Include="Icons\Fugue\document-outlook.png" />
+    <Resource Include="Icons\Fugue\document-powerpoint.png" />
+    <Resource Include="Icons\Fugue\document-smiley-sad.png" />
+    <Resource Include="Icons\Fugue\document-word.png" />
+    <Resource Include="Icons\Fugue\drive-download.png" />
+    <Resource Include="Icons\Fugue\drive-upload.png" />
+    <Resource Include="Icons\Fugue\edit-list-order.png" />
+    <Resource Include="Icons\Fugue\edit-size.png" />
+    <Resource Include="Icons\Fugue\exclamation-circle.png" />
+    <Resource Include="Icons\Fugue\exclamation-diamond.png" />
+    <Resource Include="Icons\Fugue\exclamation-pinned.png" />
+    <Resource Include="Icons\Fugue\exclamation-white.png" />
+    <Resource Include="Icons\Fugue\exclamation.png" />
+    <Resource Include="Icons\Fugue\expand-all.png" />
+    <Resource Include="Icons\Fugue\flask--arrow.png" />
+    <Resource Include="Icons\Fugue\flask--exclamation.png" />
+    <Resource Include="Icons\Fugue\flask--pencil.png" />
+    <Resource Include="Icons\Fugue\flask--plus.png" />
+    <Resource Include="Icons\Fugue\flask-empty.png" />
+    <Resource Include="Icons\Fugue\flask-question.png" />
+    <Resource Include="Icons\Fugue\flask-tag.png" />
+    <Resource Include="Icons\Fugue\flask-undo.png" />
+    <Resource Include="Icons\Fugue\flask.png" />
+    <Resource Include="Icons\Fugue\flask_exclamation_mask.png" />
+    <Resource Include="Icons\Fugue\flask_mask.png" />
+    <Resource Include="Icons\Fugue\folder--pencil.png" />
+    <Resource Include="Icons\Fugue\folder--plus.png" />
+    <Resource Include="Icons\Fugue\folder-horizontal-open.png" />
+    <Resource Include="Icons\Fugue\folder-horizontal.png" />
+    <Resource Include="Icons\Fugue\folder-open.png" />
+    <Resource Include="Icons\Fugue\folder-rename.png" />
+    <Resource Include="Icons\Fugue\folder.png" />
+    <Resource Include="Icons\Fugue\Funnel.png" />
+    <Resource Include="Icons\Fugue\gear.png" />
+    <Resource Include="Icons\Fugue\git.png" />
+    <Resource Include="Icons\Fugue\hourglass.png" />
+    <Resource Include="Icons\Fugue\icon-github.png" />
+    <Resource Include="Icons\Fugue\information-white.png" />
+    <Resource Include="Icons\Fugue\information.png" />
+    <Resource Include="Icons\Fugue\init-repo.png" />
+    <Resource Include="Icons\Fugue\light-bulb-code.png" />
+    <Resource Include="Icons\Fugue\lock--exclamation.png" />
+    <Resource Include="Icons\Fugue\lock-pinned.png" />
+    <Resource Include="Icons\Fugue\lock.png" />
+    <Resource Include="Icons\Fugue\magnifier--arrow.png" />
+    <Resource Include="Icons\Fugue\magnifier-medium.png" />
+    <Resource Include="Icons\Fugue\minus-circle.png" />
+    <Resource Include="Icons\Fugue\minus-white.png" />
+    <Resource Include="Icons\Fugue\navigation-180.png" />
+    <Resource Include="Icons\Fugue\navigation.png" />
+    <Resource Include="Icons\Fugue\node-select-all.png" />
+    <Resource Include="Icons\Fugue\pencil-ruler.png" />
+    <Resource Include="Icons\Fugue\pinned.png" />
+    <Resource Include="Icons\Fugue\plus-circle-pinned.png" />
+    <Resource Include="Icons\Fugue\plus-circle.png" />
+    <Resource Include="Icons\Fugue\plus-circle1.png" />
+    <Resource Include="Icons\Fugue\printer.png" />
+    <Resource Include="Icons\Fugue\question-white.png" />
+    <Resource Include="Icons\Fugue\skull-mad.png" />
+    <Resource Include="Icons\Fugue\status-offline.png" />
+    <Resource Include="Icons\Fugue\sticky-note-pin.png" />
+    <Resource Include="Icons\Fugue\tag-label-gray.png" />
+    <Resource Include="Icons\Fugue\terminal.png" />
+    <Resource Include="Icons\Fugue\tick-circle-pinned.png" />
+    <Resource Include="Icons\Fugue\tick-circle.png" />
+    <Resource Include="Icons\Fugue\tick.png" />
+    <Resource Include="Icons\Fugue\todo-completed.png" />
+    <Resource Include="Icons\Fugue\ui-scroll-pane-form.png" />
+    <Resource Include="Icons\Fugue\ui-tab-content.png" />
+    <Resource Include="Icons\Fugue\document-broken.png" />
+    <Resource Include="Icons\Fugue\document-convert.png" />
+    <Resource Include="Icons\Fugue\document--exclamation.png" />
+    <Resource Include="Icons\Fugue\document--minus.png" />
+    <Resource Include="Icons\Fugue\document--pencil.png" />
+    <Resource Include="Icons\Fugue\document--plus.png" />
+    <Resource Include="Icons\Fugue\selection-input.png" />
+    <Resource Include="Icons\Fugue\document-code.png" />
+    <Resource Include="Icons\faint-ducky.png" />
+    <Resource Include="Icons\Fugue\control-pause.png" />
+    <Resource Include="Icons\Fugue\control-power.png" />
+    <Resource Include="Icons\Fugue\drive--exclamation.png" />
+    <Resource Include="Icons\Fugue\clock-network.png" />
+    <Resource Include="Icons\Fugue\socket.png" />
+    <Resource Include="Icons\Fugue\user-silhouette.png" />
+    <Resource Include="Icons\Fugue\user-medium-silhouette.png" />
+    <Content Include="Splash.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
