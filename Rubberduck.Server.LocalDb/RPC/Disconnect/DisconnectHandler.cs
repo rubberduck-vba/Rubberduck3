@@ -6,6 +6,7 @@ using System;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Server.LocalDb.RPC.Disconnect
+{ 
     internal class DisconnectHandler : JsonRpcRequestHandler<DisconnectRequest, DisconnectResult>
     {
         private readonly ServerState _serverState;

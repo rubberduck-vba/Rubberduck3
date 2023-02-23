@@ -266,7 +266,7 @@
     <Compile Include="Platform\Model\ClientState.cs" />
     <Compile Include="Platform\Model\ServerState.cs" />
     <Compile Include="Platform\Model\ServerStatus.cs" />
-    <Compile Include="Platform\RequestHandler.cs" />
+    <Compile Include="Platform\JsonRpcRequestHandler.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

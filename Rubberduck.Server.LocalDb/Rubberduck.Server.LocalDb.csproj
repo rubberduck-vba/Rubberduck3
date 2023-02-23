@@ -296,9 +296,9 @@
     <Compile Include="Configuration\IServiceCollectionExtensions.cs" />
     <Compile Include="Configuration\LocalDbServerCapabilities.cs" />
     <Compile Include="RPC\Disconnect\DisconnectHandler.cs" />
+    <Compile Include="RPC\Info\InfoHandler.cs" />
     <Compile Include="RPC\Disconnect\DisconnectRequest.cs" />
     <Compile Include="RPC\Disconnect\DisconnectResult.cs" />
-    <Compile Include="RPC\Info\InfoHandler.cs" />
     <Compile Include="RPC\Info\InfoRequest.cs" />
     <Compile Include="RPC\Info\InfoResult.cs" />
     <Compile Include="RPC\Connect\ConnectHandler.cs" />

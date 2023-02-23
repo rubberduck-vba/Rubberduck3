@@ -27,7 +27,7 @@ namespace Rubberduck.RPC.Platform
                 Logger.LogTrace($"Handling notification: {GetType().Name}");
                 TResponse response = default;
 
-                var handler = Task.Run(async () => response = await HandleAsync());
+                var handler = Task.Run(async () => response = await HandleAsync(request));
                 var elapsed = await TimedAction.RunAsync(handler);
 
                 Logger.LogTrace($"[PERF] {GetType().Name} completed in {elapsed.TotalMilliseconds:N0} ms.");
