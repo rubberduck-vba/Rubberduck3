@@ -17,8 +17,14 @@ namespace Rubberduck.InternalApi.Common
         public static async Task<TimeSpan> RunAsync(Task task)
         {
             var sw = Stopwatch.StartNew();
-            await task;
-            sw.Stop();
+            try
+            {
+                await task;
+            }
+            finally
+            {
+                sw.Stop();
+            }
             return sw.Elapsed;
         }
     }

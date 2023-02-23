@@ -1,6 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OmniSharp.Extensions.JsonRpc;
+using Rubberduck.Server.LocalDb.Internal.Model;
 using Rubberduck.Server.LocalDb.Properties;
+using Rubberduck.Server.LocalDb.RPC.Connect;
+using Rubberduck.Server.LocalDb.RPC.Disconnect;
+using Rubberduck.Server.LocalDb.RPC.Info;
+using Rubberduck.Server.LocalDb.RPC.Query;
+using Rubberduck.Server.LocalDb.RPC.Save;
 using System;
 using System.IO;
 using System.IO.Pipes;
@@ -11,59 +17,10 @@ namespace Rubberduck.Server.LocalDb.Configuration
 {
     internal static class IServiceCollectionExtensions
     {
-        internal static IServiceCollection ConfigureRubberduckServerApp(this IServiceCollection services, LocalDbServerCapabilities config, CancellationTokenSource cts)
-        {
-            return services
-                .AddRubberduckServerServices(config, cts)
-                .AddJsonRpcTargets()
-                .AddServerProxyServices()
-                .AddConsoleProxyServices()
+        public static IServiceCollection AddRubberduckServerServices(this IServiceCollection services, LocalDbServerCapabilities config, CancellationTokenSource cts) => 
+            services.AddJsonRpcServer(Settings.Default.JsonRpcServerName, ConfigureRPC)
+                    //.AddOtherServicesHere()
             ;
-        }
-
-        /// <summary>
-        /// Registers <c>IJsonRpcTarget</c> implementations (RPC endpoints).
-        /// </summary>
-        private static IServiceCollection AddJsonRpcTargets(this IServiceCollection services)
-        {
-            return services
-            ;
-        }
-
-        /// <summary>
-        /// Registers server proxy services.
-        /// </summary>
-        private static IServiceCollection AddServerProxyServices(this IServiceCollection services)
-        {
-            return services
-            ;
-        }
-
-        /// <summary>
-        /// Registers console proxy services.
-        /// </summary>
-        private static IServiceCollection AddConsoleProxyServices(this IServiceCollection services)
-        {
-            return services
-            ;
-        }
-
-        /// <summary>
-        /// Registers server-level common services as singletons.
-        /// </summary>
-        private static IServiceCollection AddRubberduckServerServices(this IServiceCollection services, LocalDbServerCapabilities config, CancellationTokenSource cts)
-        {
-            return services
-                .AddJsonRpcServer(Settings.Default.JsonRpcServerName, ConfigureRPC)
-            ;
-        }
-
-        private static (Stream input, Stream output) WithAsyncNamedPipeTransport(string name)
-        {
-            var input = new NamedPipeServerStream(name, PipeDirection.InOut, 1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
-            var output = new NamedPipeClientStream(".", name, PipeDirection.InOut, PipeOptions.Asynchronous);
-            return (input, output);
-        }
 
         private static void ConfigureRPC(JsonRpcServerOptions rpc)
         {
@@ -74,7 +31,23 @@ namespace Rubberduck.Server.LocalDb.Configuration
                .WithMaximumRequestTimeout(TimeSpan.FromSeconds(10))
                .WithInput(input)
                .WithOutput(output)
+               .AddHandler<InfoHandler>()
+               .AddHandler<ConnectHandler>()
+               .AddHandler<DisconnectHandler>()
+               .AddHandler<SaveHandler<IdentifierReference>>()
+               .AddHandler<SaveHandler<Local>>()
+               .AddHandler<SaveHandler<Member>>()
+               .AddHandler<SaveHandler<Module>>()
+               .AddHandler<SaveHandler<Parameter>>()
+               .AddHandler<SaveHandler<Project>>()
             ;
+        }
+
+        private static (Stream input, Stream output) WithAsyncNamedPipeTransport(string name)
+        {
+            var input = new NamedPipeServerStream(name, PipeDirection.InOut, 1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
+            var output = new NamedPipeClientStream(".", name, PipeDirection.InOut, PipeOptions.Asynchronous);
+            return (input, output);
         }
     }
 }

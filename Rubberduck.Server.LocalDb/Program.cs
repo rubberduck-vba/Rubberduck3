@@ -135,7 +135,7 @@ namespace Rubberduck.Server.LocalDb
         private static void ConfigureServices(IServiceCollection services, CancellationTokenSource cts)
         {
             var config = LocalDbServerCapabilities.Default;
-            services.ConfigureRubberduckServerApp(config, cts);
+            services.AddRubberduckServerServices(config, cts);
         }
     }
 }

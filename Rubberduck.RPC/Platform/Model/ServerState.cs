@@ -77,10 +77,6 @@ namespace Rubberduck.RPC.Platform.Model
         /// </summary>
         int Threads { get; }
         /// <summary>
-        /// Time elapsed since this server was started. <c>null</c> if the server wasn't started.
-        /// </summary>
-        TimeSpan? UpTime { get; }
-        /// <summary>
         /// Working set memory, in bytes.
         /// </summary>
         long WorkingSet { get; }
@@ -106,7 +102,6 @@ namespace Rubberduck.RPC.Platform.Model
             MessagesSent = info.MessagesSent;
             MessagesReceived = info.MessagesReceived;
             IsAlive = info.IsAlive;
-            UpTime = info.UpTime;
             Status = info.Status;
 
             Clients = info.Clients;

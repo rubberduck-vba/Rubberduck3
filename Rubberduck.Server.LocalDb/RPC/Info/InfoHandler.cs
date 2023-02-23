@@ -1,14 +1,40 @@
-﻿using OmniSharp.Extensions.JsonRpc;
-using System.Threading;
+﻿using Microsoft.Extensions.Logging;
+using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Platform.Model;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Server.LocalDb.RPC.Info
 {
-    public class InfoHandler : IJsonRpcRequestHandler<InfoRequest, InfoResult>
+    internal class InfoHandler : JsonRpcRequestHandler<InfoRequest, InfoResult>
     {
-        public Task<InfoResult> Handle(InfoRequest request, CancellationToken cancellationToken)
+        private readonly ServerState _serverState;
+
+        public InfoHandler(ILogger logger, ServerState serverState)
+            : base(logger)
         {
-            throw new System.NotImplementedException();
+            _serverState = serverState;
+        }
+
+        protected override async Task<InfoResult> HandleAsync(InfoRequest request)
+        {
+            var state = new InfoResult
+            {
+                Clients = _serverState.Clients,
+                GC = _serverState.GC,
+                IsAlive= _serverState.IsAlive,
+                MessagesReceived= _serverState.MessagesReceived,
+                MessagesSent= _serverState.MessagesSent,
+                Name= _serverState.Name,
+                PeakWorkingSet= _serverState.PeakWorkingSet,
+                ProcessId= _serverState.ProcessId,
+                StartTime= _serverState.StartTime,
+                Status= _serverState.Status,
+                Threads= _serverState.Threads,
+                Version= _serverState.Version,
+                WorkingSet = _serverState.WorkingSet
+            };
+
+            return await Task.FromResult(state);
         }
     }
 }
