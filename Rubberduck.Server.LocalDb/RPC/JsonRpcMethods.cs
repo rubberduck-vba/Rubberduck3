@@ -8,7 +8,8 @@ namespace Rubberduck.Server.LocalDb.RPC
 {
     internal static class JsonRpcMethods
     {
-        #region server
+
+    #region server
         /// <summary>
         /// Connects a client to the LocalDb server.
         /// </summary>
@@ -23,9 +24,9 @@ namespace Rubberduck.Server.LocalDb.RPC
         /// Gets information about the server.
         /// </summary>
         public const string Info = "info";
-        #endregion
+    #endregion
 
-        #region writing
+    #region writing
         /// <summary>
         /// Saves (insert/update) one or more project declarations to the database.
         /// </summary>
@@ -62,10 +63,17 @@ namespace Rubberduck.Server.LocalDb.RPC
         /// Saves (insert/update) one or more identifier references to the database.
         /// </summary>
         public const string SaveIdentifierReference = "save/identifierReference";
-        #endregion
+    #endregion
 
-        #region reading
+    #region reading
+
+        /// <summary>
+        /// Sends a plain SQL query to the database, for debugging.
+        /// </summary>
+        public const string DebugSqlSelect = "query/debug";
+
         /*TODO*/
-        #endregion
+        
+    #endregion
     }
 }

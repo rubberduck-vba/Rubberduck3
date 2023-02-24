@@ -1,18 +1,11 @@
-﻿using MediatR;
-using OmniSharp.Extensions.JsonRpc;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Logging;
+using Rubberduck.RPC.Platform;
 
 namespace Rubberduck.Server.LocalDb.RPC.Query
 {
-    public abstract class QueryHandler<T> : IJsonRpcRequestHandler<QueryRequest<T>, QueryResult<T>>
+    public abstract class QueryHandler<T> : JsonRpcRequestHandler<QueryRequest<T>, QueryResult<T>>
         where T : class, new()
     {
-        public async Task<QueryResult<T>> Handle(QueryRequest<T> request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
+        protected QueryHandler(ILogger logger) : base(logger) { }
     }
 }

@@ -1,4 +1,6 @@
-﻿using OmniSharp.Extensions.JsonRpc;
+﻿using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.JsonRpc;
+using Rubberduck.RPC.Platform;
 using Rubberduck.Server.LocalDb.Internal.Model;
 using Rubberduck.Server.LocalDb.Internal.Storage.Abstract;
 using System;
@@ -8,33 +10,28 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Server.LocalDb.RPC.Save
 {
-    public abstract class SaveHandler<T> : IJsonRpcRequestHandler<SaveRequest<T>, SaveResult>
-        where T : DbEntity, new()
+    public abstract class SaveHandler<TEntity> : JsonRpcRequestHandler<SaveRequest<TEntity>, SaveResult>
+        where TEntity : DbEntity, new()
     {
         private readonly IUnitOfWorkFactory _factory;
 
-        protected SaveHandler(IUnitOfWorkFactory factory)
+        protected SaveHandler(ILogger logger, IUnitOfWorkFactory factory)
+            : base(logger)
         {
             _factory = factory;
         }
 
-        public async Task<SaveResult> Handle(SaveRequest<T> request, CancellationToken cancellationToken)
+        protected async override Task<SaveResult> HandleAsync(SaveRequest<TEntity> request)
         {
-            try
+            using (var uow = _factory.CreateNew())
             {
-                using (var uow = _factory.CreateNew())
-                {
-                    var repo = uow.GetRepository<T>();
-                    var entities = request.Params.ToObject<T[]>();
-                    await Task.WhenAll(entities.Select(repo.SaveAsync));
-                }
+                var repo = uow.GetRepository<TEntity>();
+                var entities = request.Params.ToObject<TEntity[]>();
 
-                return new SaveResult { Success = true };
+                await Task.WhenAll(entities.Select(repo.SaveAsync));
             }
-            catch (Exception exception)
-            {
-                return new SaveResult { Success = false, Message = exception.ToString() };
-            }
+
+            return new SaveResult { Success = true };
         }
     }
 }

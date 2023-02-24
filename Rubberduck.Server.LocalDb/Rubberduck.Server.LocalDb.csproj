@@ -305,9 +305,12 @@
     <Compile Include="RPC\Connect\ConnectRequest.cs" />
     <Compile Include="RPC\Connect\ConnectResult.cs" />
     <Compile Include="RPC\JsonRpcMethods.cs" />
+    <Compile Include="RPC\Query.Debug\SqlQueryHandler.cs" />
+    <Compile Include="RPC\Query.Debug\QueryRequest.cs" />
     <Compile Include="RPC\Query\Abstract\QueryHandler.cs" />
     <Compile Include="RPC\Query\Abstract\QueryRequest.cs" />
     <Compile Include="RPC\Query\Abstract\QueryResult.cs" />
+    <Compile Include="RPC\Query\ProjectsQueryHandler.cs" />
     <Compile Include="RPC\Save\Abstract\SaveHandler.cs" />
     <Compile Include="RPC\Save\Abstract\SaveRequest.cs" />
     <Compile Include="RPC\Save\SaveIdentifierReferenceRequest.cs" />
