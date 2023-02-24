@@ -1,6 +1,4 @@
-﻿using Rubberduck.Parsing.Annotations;
-
-namespace Rubberduck.Parsing.Annotations.Concrete
+﻿namespace Rubberduck.Parsing.Annotations.Concrete
 {
     /// <summary>
     /// @IgnoreModule annotation, used by Rubberduck to filter inspection results module-wide.

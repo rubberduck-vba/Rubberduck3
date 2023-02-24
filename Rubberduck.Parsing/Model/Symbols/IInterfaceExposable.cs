@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Parsing.Model.Symbols
+﻿using Rubberduck.InternalApi.Model;
+
+namespace Rubberduck.Parsing.Model.Symbols
 {
     public interface IInterfaceExposable
     {

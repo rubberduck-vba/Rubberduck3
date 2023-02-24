@@ -671,4 +671,10 @@ Import abgebrochen.</value>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value>Die Auswahl ist keine Variable.</value>
   </data>
+  <data name="SelectionLocationPosition" xml:space="preserve">
+    <value>Z{0}S{1}</value>
+  </data>
+  <data name="SelectionLocationRange" xml:space="preserve">
+    <value>Z{0}S{1} - Z{2}S{3}</value>
+  </data>
 </root>

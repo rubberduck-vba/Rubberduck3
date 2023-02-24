@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Rewriter

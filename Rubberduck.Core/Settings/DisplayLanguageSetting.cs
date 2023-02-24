@@ -29,12 +29,12 @@ namespace Rubberduck.Settings
             }
             catch (CultureNotFoundException)
             {
-                culture = RubberduckUI.Culture;
+                culture = Resources.RubberduckUI.Culture;
                 Exists = false;
             }
 
             var resource = "Language_" + Code.Substring(0, 2).ToUpper();
-            Name = RubberduckUI.ResourceManager.GetString(resource, culture);
+            Name = Resources.RubberduckUI.ResourceManager.GetString(resource, culture);
         }
 
         [XmlIgnore]

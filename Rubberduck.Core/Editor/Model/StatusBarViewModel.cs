@@ -2,7 +2,6 @@
 using Rubberduck.UI.Abstract;
 using Rubberduck.VBEditor;
 using System;
-using System.Windows.Input;
 
 namespace Rubberduck.Core.Editor
 {

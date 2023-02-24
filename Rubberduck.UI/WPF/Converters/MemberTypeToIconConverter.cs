@@ -1,14 +1,9 @@
-﻿using Rubberduck.Parsing;
-using Rubberduck.Parsing.Model;
-using Rubberduck.Resources;
+﻿using Rubberduck.InternalApi.Model;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Media;
 using Icons = Rubberduck.Resources.MemberTypeIcons;
-//using Rubberduck.Parsing.Annotations.Concrete;
-//using Rubberduck.Parsing.Symbols;
-//using Rubberduck.Resources.CodeExplorer;
 
 namespace Rubberduck.UI.WPF.Converters
 {

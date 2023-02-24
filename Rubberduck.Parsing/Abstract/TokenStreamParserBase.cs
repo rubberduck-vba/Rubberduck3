@@ -8,7 +8,8 @@ using Rubberduck.Parsing.Model;
 
 namespace Rubberduck.Parsing.Abstract
 {
-    public abstract class TokenStreamParserBase : ITokenStreamParser
+    public abstract class TokenStreamParserBase<TParser> : ITokenStreamParser
+        where TParser : Parser
     {
         //protected static ILogger Logger = LogManager.GetCurrentClassLogger();
 
@@ -22,8 +23,18 @@ namespace Rubberduck.Parsing.Abstract
             _llErrorListenerFactory = llErrorListenerFactory;
         }
 
-        protected abstract IParseTree Parse(ITokenStream tokenStream, PredictionMode predictionMode, IParserErrorListener errorListener);
-
+        protected IParseTree Parse(ITokenStream tokenStream, PredictionMode predictionMode, IParserErrorListener errorListener)
+        {
+            var parser = GetParser(tokenStream);
+            parser.Interpreter.PredictionMode = predictionMode;
+            if (errorListener != null)
+            {
+                parser.AddErrorListener(errorListener);
+            }
+            return Parse(parser);
+        }
+        protected abstract TParser GetParser(ITokenStream tokenStream);
+        protected abstract IParseTree Parse(TParser parser);
         public IParseTree Parse(string moduleName, string projectId, CommonTokenStream tokenStream, CancellationToken token, CodeKind codeKind = CodeKind.RubberduckEditorModule, ParserMode parserMode = ParserMode.FallBackSllToLl)
         {
             switch (parserMode)

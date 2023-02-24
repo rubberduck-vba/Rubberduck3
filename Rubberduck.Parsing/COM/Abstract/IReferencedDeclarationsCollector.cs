@@ -6,6 +6,6 @@ namespace Rubberduck.Parsing.COM.Abstract
 {
     public interface IReferencedDeclarationsCollector
     {
-        IReadOnlyCollection<Declaration> CollectedDeclarations(ReferenceInfo reference);
+        IReadOnlyCollection<Declaration> ExtractDeclarations(ReferenceInfo reference);
     }
 }

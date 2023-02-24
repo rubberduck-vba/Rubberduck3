@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using Rubberduck.InternalApi.WindowsApi;
-using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.VBEditor.Events
 {

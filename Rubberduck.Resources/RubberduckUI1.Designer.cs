@@ -1977,6 +1977,24 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to L{0}C{1}.
+        /// </summary>
+        public static string SelectionLocationPosition {
+            get {
+                return ResourceManager.GetString("SelectionLocationPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to L{0}C{1} - L{2}C{3}.
+        /// </summary>
+        public static string SelectionLocationRange {
+            get {
+                return ResourceManager.GetString("SelectionLocationRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
         public static string Settings {

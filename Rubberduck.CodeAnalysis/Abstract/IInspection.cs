@@ -1,18 +1,13 @@
-﻿using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
+﻿using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Model;
 using Rubberduck.VBEditor;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using resx = Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.CodeAnalysis.Abstract

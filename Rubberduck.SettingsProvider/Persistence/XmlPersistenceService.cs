@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using MemoryStream = System.IO.MemoryStream;
 using Path = System.IO.Path;
 using StreamWriter = System.IO.StreamWriter;

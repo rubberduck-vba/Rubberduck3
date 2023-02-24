@@ -1,5 +1,6 @@
 ﻿using System.IO.Abstractions;
 using System.Text;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 

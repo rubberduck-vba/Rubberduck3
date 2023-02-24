@@ -1,6 +1,5 @@
-﻿using Rubberduck.Parsing.Annotations;
+﻿using Rubberduck.InternalApi.Model;
 using Rubberduck.VBEditor.SafeComWrappers;
-using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.Annotations.Concrete
 {

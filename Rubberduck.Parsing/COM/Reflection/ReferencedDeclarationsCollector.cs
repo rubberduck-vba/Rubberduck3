@@ -16,7 +16,7 @@ namespace Rubberduck.Parsing.COM.Reflection
         }
 
 
-        public abstract IReadOnlyCollection<Declaration> CollectedDeclarations(ReferenceInfo reference);
+        public abstract IReadOnlyCollection<Declaration> ExtractDeclarations(ReferenceInfo reference);
 
 
         protected IReadOnlyCollection<Declaration> LoadDeclarationsFromComProject(ComProject type, string projectId = null)

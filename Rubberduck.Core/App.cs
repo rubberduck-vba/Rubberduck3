@@ -11,12 +11,11 @@ using Rubberduck.InternalApi.UIContext;
 using Rubberduck.Resources;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
-using Rubberduck.UI.OfficeMenus;
 using Rubberduck.VersionCheck;
 using Application = System.Windows.Forms.Application;
 using System.Windows.Input;
-using Rubberduck.UI.OfficeMenus.MenuItems;
 using Infralution.Localization.Wpf;
+using Rubberduck.VBEditor.UI.OfficeMenus;
 
 namespace Rubberduck.Core
 {

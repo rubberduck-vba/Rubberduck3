@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Model.ComReflection
 {

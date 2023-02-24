@@ -1,3 +1,4 @@
+using Rubberduck.InternalApi.Model;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,7 +1,7 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using ICSharpCode.AvalonEdit.Document;
-using Rubberduck.Parsing;
+using Rubberduck.Parsing.Abstract;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Listeners;
 using Rubberduck.Parsing.Model;
@@ -15,17 +15,14 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Annotations;
 using System.Windows.Input;
 
 namespace Rubberduck.Core.Editor
 {
     public class CodePaneViewModel : ViewModelBase, ICodePaneViewModel
     {
-        //private readonly ICodeParserService _parser;
+        private readonly IModuleParser _parser;
         private readonly IEditorSettings _settings;
 
         private IParseTree _parseTree;
@@ -39,7 +36,6 @@ namespace Rubberduck.Core.Editor
             CloseCommand = new DelegateCommand(null, p => EditorShellContext.Current.Shell.UnloadModule((QualifiedModuleName)p)); // TODO handle sync to VBE when dirty
         }
 
-        private MemberListener _memberListener;
         private VBFoldingListener _foldingListener;
         private TokenStreamRewriter _rewriter;
 
@@ -52,33 +48,31 @@ namespace Rubberduck.Core.Editor
         {
             try
             {
-                _memberListener = new MemberListener();
-                _foldingListener = new VBFoldingListener(_settings.BlockFoldingSettings);
-                var listeners = new VBAParserBaseListener[]
-                { 
-                    _memberListener,
-                    _foldingListener,
-                };
+                //_foldingListener = new VBFoldingListener(_settings.BlockFoldingSettings);
+//                var listeners = new VBAParserBaseListener[]
+//                { 
+//                    _foldingListener,
+//                };
 
-                EditorShellContext.Current.Shell.Status.ParserState = "Parsing...";
+//                EditorShellContext.Current.Shell.Status.ParserState = "Parsing...";
                 
-                var sw = Stopwatch.StartNew();
-//                var result = await _parser.ParseAsync(ModuleInfo.Name, reader, listeners);
-                sw.Stop();
+//                var sw = Stopwatch.StartNew();
+////                var result = await _parser.ParseAsync(ModuleInfo.Name, reader, listeners);
+//                sw.Stop();
 
-//                _parseTree = result.ParseTree;
-//                _rewriter = result.Rewriter;
+////                _parseTree = result.ParseTree;
+////                _rewriter = result.Rewriter;
 
-//                SyntaxErrors = result.Errors.Select(e => new SyntaxErrorViewModel(e));
+////                SyntaxErrors = result.Errors.Select(e => new SyntaxErrorViewModel(e));
 
-                EditorShellContext.Current.Shell.Status.ParserState = $"Parse completed: {sw.ElapsedMilliseconds:N0}ms";
+//                EditorShellContext.Current.Shell.Status.ParserState = $"Parse completed: {sw.ElapsedMilliseconds:N0}ms";
 
-                var args = new ParseTreeEventArgs(_parseTree, _memberListener.Members, _foldingListener.Foldings, SyntaxErrors);
-                OnParseTreeChanged(args);
-                if (!args.SyntaxErrors.Any()) 
-                {
-                    OnParseTreeInspectionsRequested(args);
-                }
+                //var args = new ParseTreeEventArgs(_parseTree, null, _foldingListener.Foldings, SyntaxErrors);
+                //OnParseTreeChanged(args);
+                //if (!args.SyntaxErrors.Any()) 
+                //{
+                    //OnParseTreeInspectionsRequested(args);
+                //}
             }
             catch
             {
@@ -86,6 +80,7 @@ namespace Rubberduck.Core.Editor
             }
         }
 
+        /*
         private void OnParseTreeChanged(ParseTreeEventArgs e)
         {
             ParseTreeChanged?.Invoke(this, e);
@@ -95,6 +90,7 @@ namespace Rubberduck.Core.Editor
         {
             ParseTreeInspectionsRequested?.Invoke(this, e);
         }
+        */
 
         private IModuleInfoViewModel _moduleInfo;
         public IModuleInfoViewModel ModuleInfo
@@ -146,8 +142,8 @@ namespace Rubberduck.Core.Editor
         }
 
         public event EventHandler SelectedMemberProviderChanged;
-        public event EventHandler<ParseTreeEventArgs> ParseTreeChanged;
-        public event EventHandler<ParseTreeEventArgs> ParseTreeInspectionsRequested;
+        //public event EventHandler<ParseTreeEventArgs> ParseTreeChanged;
+        //public event EventHandler<ParseTreeEventArgs> ParseTreeInspectionsRequested;
 
         public ObservableCollection<IMemberProviderViewModel> MemberProviders { get; set; } 
 

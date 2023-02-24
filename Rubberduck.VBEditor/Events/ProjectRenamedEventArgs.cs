@@ -1,5 +1,3 @@
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-
 namespace Rubberduck.VBEditor.Events
 {
     public class ProjectRenamedEventArgs : ProjectEventArgs

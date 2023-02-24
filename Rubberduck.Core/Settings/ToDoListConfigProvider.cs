@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Controls;
 using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Settings

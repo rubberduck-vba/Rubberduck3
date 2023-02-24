@@ -19,5 +19,10 @@ namespace Rubberduck.VBEditor.Extensions
                 return codeModule.Equals(otherCodeModule);
             }
         }
+
+        public static int GetContentHash(this IVBComponent component)
+        {
+            return component?.ContentHash() ?? 0;
+        }
     }
 }

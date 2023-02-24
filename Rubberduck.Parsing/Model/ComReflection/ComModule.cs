@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization;
-using Rubberduck.Parsing.Model.Symbols;
 using Rubberduck.VBEditor.Utility;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
@@ -13,6 +12,7 @@ using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Utility;
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.Parsing.Model.ComReflection
 {

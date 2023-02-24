@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization;
-using Rubberduck.Parsing.Model.Symbols;
 using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
@@ -12,6 +11,7 @@ using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
 using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 using TYPELIBATTR = System.Runtime.InteropServices.ComTypes.TYPELIBATTR;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.Parsing.Model.ComReflection
 {

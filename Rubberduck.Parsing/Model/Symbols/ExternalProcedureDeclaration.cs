@@ -1,9 +1,9 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.VBEditor;
+﻿using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.Parsing.Model.Symbols
 {
@@ -35,7 +35,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                   declarationType,
                   offset,
                   false,
-                  asTypeContext,
+                  asTypeContext.AS() != null,
                   isUserDefined,
                   annotations,
                   attributes)

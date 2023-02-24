@@ -1,5 +1,4 @@
-﻿using Rubberduck.Parsing.Grammar;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.Model.Symbols
 {

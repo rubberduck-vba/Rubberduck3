@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.Parsing.COM.Abstract;
 using Rubberduck.Parsing.Model.ComReflection;
 using Rubberduck.Parsing.Model.Symbols;

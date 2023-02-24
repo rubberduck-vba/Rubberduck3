@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization;
-using Rubberduck.Parsing.Model.Symbols;
+using Rubberduck.InternalApi.Model;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 
 namespace Rubberduck.Parsing.Model.ComReflection

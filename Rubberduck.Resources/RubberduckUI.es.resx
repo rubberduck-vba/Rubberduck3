@@ -686,4 +686,10 @@ Importación cancelada.</value>
     <value>La selección no es una variable.</value>
     <comment>Utilizado tanto en Introducir parámetro como en Introducir campo</comment>
   </data>
+  <data name="SelectionLocationPosition" xml:space="preserve">
+    <value>L{0}C{1}</value>
+  </data>
+  <data name="SelectionLocationRange" xml:space="preserve">
+    <value>L{0}C{1} - L{2}C{3}</value>
+  </data>
 </root>

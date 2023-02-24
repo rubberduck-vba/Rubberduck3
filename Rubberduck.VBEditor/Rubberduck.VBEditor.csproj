@@ -70,25 +70,53 @@
     <Reference Include="EasyHook, Version=2.7.7097.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL">
       <HintPath>..\packages\EasyHook.2.7.7097\lib\net40\EasyHook.dll</HintPath>
     </Reference>
+    <Reference Include="MessagePack.Annotations, Version=2.4.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
+      <HintPath>..\packages\MessagePack.Annotations.2.4.59\lib\netstandard2.0\MessagePack.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.NET.StringTools, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.NET.StringTools.17.4.0\lib\net472\Microsoft.NET.StringTools.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.5.0.5\lib\net46\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.5.1.2\lib\net46\NLog.dll</HintPath>
     </Reference>
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Immutable, Version=1.2.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.7.1\lib\net461\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Abstractions, Version=17.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IO.Abstractions.17.2.3\lib\net461\System.IO.Abstractions.dll</HintPath>
+    <Reference Include="System.IO.Abstractions, Version=19.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Abstractions.19.1.18\lib\net461\System.IO.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -96,6 +124,12 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="TestableIO.System.IO.Abstractions, Version=19.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
+      <HintPath>..\packages\TestableIO.System.IO.Abstractions.19.1.18\lib\net461\TestableIO.System.IO.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="TestableIO.System.IO.Abstractions.Wrappers, Version=19.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
+      <HintPath>..\packages\TestableIO.System.IO.Abstractions.Wrappers.19.1.18\lib\net461\TestableIO.System.IO.Abstractions.Wrappers.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeString.cs" />
@@ -199,7 +233,6 @@
     <Compile Include="QualifiedModuleName.cs" />
     <Compile Include="QualifiedSelection.cs" />
     <Compile Include="ReferenceInfo.cs" />
-    <Compile Include="Resources\VBEEditorText.Designer.cs" />
     <Compile Include="SafeComWrappers\Abstract\HostApplicationBase.cs" />
     <Compile Include="SafeComWrappers\Abstract\IComCollection.cs" />
     <Compile Include="SafeComWrappers\Abstract\IComIndexedProperty.cs" />
@@ -257,7 +290,6 @@
     <Compile Include="SafeComWrappers\VB\Abstract\IWindow.cs" />
     <Compile Include="SafeComWrappers\VB\Abstract\IWindows.cs" />
     <Compile Include="SafeComWrappers\VB\Enums\CodePaneView.cs" />
-    <Compile Include="SafeComWrappers\VB\Enums\ComponentType.cs" />
     <Compile Include="SafeComWrappers\VB\Enums\EnvironmentMode.cs" />
     <Compile Include="SafeComWrappers\VB\Enums\MSAccessComponentType.cs" />
     <Compile Include="SafeComWrappers\VB\Enums\ProcKind.cs" />
@@ -268,15 +300,26 @@
     <Compile Include="SafeComWrappers\VB\Enums\VBEKind.cs" />
     <Compile Include="SafeComWrappers\VB\Enums\WindowKind.cs" />
     <Compile Include="SafeComWrappers\VB\Enums\WindowState.cs" />
-    <Compile Include="Selection.cs" />
     <Compile Include="SourceCodeHandling\CodeModuleComponentSourceCodeHandler.cs" />
     <Compile Include="SourceCodeHandling\CodePaneHandler.cs" />
-    <Compile Include="SourceCodeHandling\ComponentSourceCodeHandlerSourceCodeHandlerAdapter.cs" />
+    <Compile Include="SourceCodeHandling\SourceCodeHandlerComponentAdapter.cs" />
     <Compile Include="SourceCodeHandling\IComponentSourceCodeHandler.cs" />
     <Compile Include="SourceCodeHandling\ISourceCodeHandler.cs" />
     <Compile Include="SourceCodeHandling\ISourceCodeProvider.cs" />
     <Compile Include="SourceCodeHandling\ITempSourceFileHandler.cs" />
     <Compile Include="SourceCodeHandling\SourceFileHandlerComponentSourceCodeHandlerAdapter.cs" />
+    <Compile Include="UI\DockableToolwindowPresenter.cs" />
+    <Compile Include="UI\OfficeMenus\ComCommandBase.cs" />
+    <Compile Include="UI\OfficeMenus\CommandMenuItemBase.cs" />
+    <Compile Include="UI\OfficeMenus\IAppMenu.cs" />
+    <Compile Include="UI\OfficeMenus\ICommandMenuItem.cs" />
+    <Compile Include="UI\OfficeMenus\IMenuCommand.cs" />
+    <Compile Include="UI\OfficeMenus\IMenuItem.cs" />
+    <Compile Include="UI\OfficeMenus\RubberduckMenu\AboutCommandMenuItem.cs" />
+    <Compile Include="UI\OfficeMenus\IParentMenuItem.cs" />
+    <Compile Include="UI\OfficeMenus\ParentMenuItemBase.cs" />
+    <Compile Include="UI\OfficeMenus\RubberduckMenu\RubberduckParentMenu.cs" />
+    <Compile Include="UI\OfficeMenus\RubberduckMenu\ShowEditorCommandMenuItem.cs" />
     <Compile Include="Utility\AddComponentService.cs" />
     <Compile Include="Utility\DisposalActionContainer.cs" />
     <Compile Include="Utility\IAddComponentService.cs" />
@@ -310,15 +353,8 @@
     <Compile Include="WindowsApi\WindowType.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\VBEEditorText.cs.resx" />
-    <EmbeddedResource Include="Resources\VBEEditorText.de.resx" />
-    <EmbeddedResource Include="Resources\VBEEditorText.es.resx" />
-    <EmbeddedResource Include="Resources\VBEEditorText.fr.resx" />
-    <EmbeddedResource Include="Resources\VBEEditorText.it.resx" />
-    <EmbeddedResource Include="Resources\VBEEditorText.resx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj">
@@ -328,6 +364,10 @@
     <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
       <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
       <Name>Rubberduck.Resources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.UI\Rubberduck.UI.csproj">
+      <Project>{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}</Project>
+      <Name>Rubberduck.UI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -349,6 +389,9 @@
     <Content Include="EasyLoad64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UI\OfficeMenus\RubberduckMenu\MenuItems\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

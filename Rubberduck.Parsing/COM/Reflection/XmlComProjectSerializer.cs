@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using FileAccess = System.IO.FileAccess;
 using FileMode = System.IO.FileMode;
 using Stream = System.IO.Stream;

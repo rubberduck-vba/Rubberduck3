@@ -1,8 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
-using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Parsing.Annotations.Concrete
 {

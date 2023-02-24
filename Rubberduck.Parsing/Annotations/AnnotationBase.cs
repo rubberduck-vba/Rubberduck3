@@ -1,4 +1,4 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers;
+﻿using Rubberduck.InternalApi.Model;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,6 +28,8 @@ namespace Rubberduck.Parsing.Annotations
             AllowedArguments = allowedArguments;
             AllowedArgumentTypes = allowedArgumentTypes ?? new List<AnnotationArgumentType>();
         }
+
+        public virtual string Text { get; }
 
         public virtual IReadOnlyList<string> ProcessAnnotationArguments(IEnumerable<string> arguments) => arguments.ToList();
 

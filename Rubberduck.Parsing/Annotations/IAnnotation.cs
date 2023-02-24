@@ -1,4 +1,4 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers;
+﻿using Rubberduck.InternalApi.Model;
 using System;
 using System.Collections.Generic;
 
@@ -6,6 +6,11 @@ namespace Rubberduck.Parsing.Annotations
 {
     public interface IAnnotation
     {
+        /// <summary>
+        /// The text of the annotation context.
+        /// </summary>
+        string Text { get; }
+
         /// <summary>
         /// The name of the annotation (without the @ prefix).
         /// </summary>

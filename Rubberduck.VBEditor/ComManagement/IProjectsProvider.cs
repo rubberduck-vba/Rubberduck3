@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.ComManagement
@@ -11,8 +12,8 @@ namespace Rubberduck.VBEditor.ComManagement
         IEnumerable<(string ProjectId, IVBProject Project)> LockedProjects();
         IVBProject Project(string projectId);
         IVBComponents ComponentsCollection(string projectId);
-        IEnumerable<(QualifiedModuleName QualifiedModuleName, IVBComponent Component)> Components();
-        IEnumerable<(QualifiedModuleName QualifiedModuleName, IVBComponent Component)> Components(string projectId);
-        IVBComponent Component(QualifiedModuleName qualifiedModuleName);
+        IEnumerable<(IQualifiedModuleName QualifiedModuleName, IVBComponent Component)> Components();
+        IEnumerable<(IQualifiedModuleName QualifiedModuleName, IVBComponent Component)> Components(string projectId);
+        IVBComponent Component(IQualifiedModuleName qualifiedModuleName);
     }
 }

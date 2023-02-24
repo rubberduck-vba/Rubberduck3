@@ -2,6 +2,7 @@
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.Parsing.Model.ComReflection;
 
 namespace Rubberduck.Parsing.Model.Symbols
@@ -26,7 +27,6 @@ namespace Rubberduck.Parsing.Model.Symbols
                   DeclarationType.Project,
                   DocumentOffset.Invalid,
                   false,
-                  null,
                   isUserDefined)
         {
             _projectReferences = new List<ProjectReference>();
@@ -38,6 +38,14 @@ namespace Rubberduck.Parsing.Model.Symbols
             Guid = project.Guid;
             MajorVersion = project.MajorVersion;
             MinorVersion = project.MinorVersion;
+        }
+
+        public ProjectDeclaration(QualifiedMemberName qualifiedName, Guid guid, long majorVersion, long minorVersion)
+            : this(qualifiedName, qualifiedName.MemberName, false)
+        {
+            Guid = guid;
+            MajorVersion = majorVersion;
+            MinorVersion = minorVersion;
         }
 
         public Guid Guid { get; }

@@ -1,21 +1,15 @@
-﻿using ICSharpCode.AvalonEdit.Document;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Model;
+﻿using Rubberduck.InternalApi.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.WinForms;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.UI;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace Rubberduck.Core.Editor
 {
@@ -35,8 +29,8 @@ namespace Rubberduck.Core.Editor
             }
         }
 
-        private QualifiedModuleName _qualifiedModuleName;
-        public QualifiedModuleName QualifiedModuleName 
+        private IQualifiedModuleName _qualifiedModuleName;
+        public IQualifiedModuleName QualifiedModuleName 
         {
             get => _qualifiedModuleName;
             set

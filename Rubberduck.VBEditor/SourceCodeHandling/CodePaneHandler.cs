@@ -4,6 +4,7 @@ using System.Linq;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Diagnostics;
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.VBEditor.SourceCodeHandling
 {
@@ -16,7 +17,9 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             _projectsProvider = projectsProvider;
         }
 
-        public string SourceCode(QualifiedModuleName module)
+        public string StringSource(IQualifiedModuleName module) => SourceCode(module);
+
+        public string SourceCode(IQualifiedModuleName module)
         {
             var component = _projectsProvider.Component(module);
             if (component == null)
@@ -30,7 +33,21 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             }
         }
 
-        public void SetSelection(ICodeModule module, Selection selection)
+        public void SetSelection(IQualifiedModuleName module, Selection selection)
+        {
+            var component = _projectsProvider.Component(module);
+            if (component == null)
+            {
+                return;
+            }
+
+            using (var codeModule = component.CodeModule)
+            {
+                SetSelection(codeModule, selection);
+            }
+        }
+
+        private void SetSelection(ICodeModule module, Selection selection)
         {
             using (var pane = module.CodePane)
             {
@@ -38,7 +55,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             }
         }
 
-        public void SubstituteCode(ICodeModule module, CodeString newCode)
+        private void SubstituteCode(ICodeModule module, CodeString newCode)
         {
             try
             {
@@ -51,7 +68,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             }
         }
 
-        public void SubstituteCode(QualifiedModuleName module, CodeString newCode)
+        public void SubstituteCode(IQualifiedModuleName module, CodeString newCode)
         {
             var component = _projectsProvider.Component(module);
             if (component == null)
@@ -65,7 +82,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             }
         }
 
-        public void SubstituteCode(QualifiedModuleName module, string newCode)
+        public void SubstituteCode(IQualifiedModuleName module, string newCode)
         {
             var component = _projectsProvider.Component(module);
             if (component == null)
@@ -80,7 +97,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             }
         }
 
-        public CodeString Prettify(ICodeModule module, CodeString original)
+        private CodeString Prettify(ICodeModule module, CodeString original)
         {
             var originalCode = original.Code.Replace("\r", string.Empty).Split('\n');
             var originalPosition = original.CaretPosition.StartColumn;
@@ -144,7 +161,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             return GetPrettifiedCodeString(original, prettifiedPosition, prettifiedCode);
         }
 
-        public CodeString Prettify(QualifiedModuleName module, CodeString original)
+        public CodeString Prettify(IQualifiedModuleName module, CodeString original)
         {
             var component = _projectsProvider.Component(module);
             if (component == null)
@@ -173,7 +190,21 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
 
         private const string LineContinuation = " _";
 
-        public CodeString GetCurrentLogicalLine(ICodeModule module)
+        public CodeString GetCurrentLogicalLine(IQualifiedModuleName module)
+        {
+            var component = _projectsProvider.Component(module);
+            if (component == null)
+            {
+                return null;
+            }
+
+            using (var codeModule = component.CodeModule)
+            {
+                return GetCurrentLogicalLine(codeModule);
+            }
+        }
+
+        private CodeString GetCurrentLogicalLine(ICodeModule module)
         {
             Selection pSelection;
             using (var pane = module.CodePane)
@@ -249,6 +280,20 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
                         break;
                     }
                 }
+            }
+        }
+
+        public int GetContentHash(IQualifiedModuleName module)
+        {
+            var component = _projectsProvider.Component(module);
+            if (component == null)
+            {
+                return 0;
+            }
+
+            using (var codeModule = component.CodeModule)
+            {
+                return codeModule.ContentHash();
             }
         }
     }

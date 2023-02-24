@@ -4,7 +4,6 @@ using NLog;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO.Abstractions;
 using System.Reflection;
@@ -212,8 +211,8 @@ namespace Rubberduck
             }
             catch (Win32Exception)
             {
-                MessageBox.Show(RubberduckUI.RubberduckReloadFailure_Message,
-                    RubberduckUI.RubberduckReloadFailure_Title,
+                MessageBox.Show(Resources.RubberduckUI.RubberduckReloadFailure_Message,
+                    Resources.RubberduckUI.RubberduckReloadFailure_Title,
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             catch (Exception exception)
@@ -227,7 +226,7 @@ namespace Rubberduck
 #else
                     exception.Message.ToString(),
 #endif
-                    RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Resources.RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {

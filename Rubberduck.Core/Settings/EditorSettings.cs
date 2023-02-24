@@ -1,5 +1,4 @@
-﻿using Rubberduck.Core.Editor;
-using Rubberduck.Parsing.Listeners;
+﻿using Rubberduck.Parsing.Listeners;
 using Rubberduck.UI.Abstract;
 
 namespace Rubberduck.Settings

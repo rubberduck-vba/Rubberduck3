@@ -1,3 +1,4 @@
+using Rubberduck.InternalApi.Model;
 using System;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract

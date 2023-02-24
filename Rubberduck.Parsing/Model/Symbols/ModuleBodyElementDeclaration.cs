@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor;
 using static Rubberduck.Parsing.Grammar.VBAParser;
@@ -35,7 +36,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 type,
                 offset,
                 isArray,
-                asTypeContext,
+                asTypeContext?.AS() != null,
                 isUserDefined,
                 annotations,
                 attributes)

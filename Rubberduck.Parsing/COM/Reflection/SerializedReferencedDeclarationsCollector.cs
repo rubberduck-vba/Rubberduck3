@@ -15,7 +15,7 @@ namespace Rubberduck.Parsing.COM.Reflection
             _deserializer = deserializer;
         }
 
-        public override IReadOnlyCollection<Declaration> CollectedDeclarations(ReferenceInfo reference)
+        public override IReadOnlyCollection<Declaration> ExtractDeclarations(ReferenceInfo reference)
         {
             if (!_deserializer.SerializedVersionExists(reference))
             {

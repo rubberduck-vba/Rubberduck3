@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Parsing.Model
+﻿using Rubberduck.InternalApi.Model;
+
+namespace Rubberduck.Parsing.Model
 {
     public class ValuedMemberInfo : TypedMemberInfo
     {

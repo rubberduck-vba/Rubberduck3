@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.Common;
+using Rubberduck.InternalApi.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 

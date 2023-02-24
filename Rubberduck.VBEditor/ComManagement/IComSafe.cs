@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.ComManagement

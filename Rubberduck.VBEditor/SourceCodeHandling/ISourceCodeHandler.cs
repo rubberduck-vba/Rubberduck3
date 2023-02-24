@@ -1,42 +1,37 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+﻿using Rubberduck.InternalApi.Model;
+using System.IO;
 
 namespace Rubberduck.VBEditor.SourceCodeHandling
 {
     /// <summary>
     /// An object that can rewrite a module's contents.
     /// </summary>
-    public interface ISourceCodeHandler : ISourceCodeProvider
+    public interface ISourceCodeHandler<TContent> : ISourceCodeProvider<TContent>
     {
         /// <summary>
         /// Replaces the entire module's contents with the specified code.
         /// </summary>
-        void SubstituteCode(QualifiedModuleName module, string newCode);
+        void SubstituteCode(IQualifiedModuleName module, string newCode);
+        /// <summary>
+        /// Replaces one or more specific line(s) in the specified module.
+        /// </summary>
+        void SubstituteCode(IQualifiedModuleName module, CodeString newCode);
+        void SetSelection(IQualifiedModuleName module, Selection selection);
+        CodeString GetCurrentLogicalLine(IQualifiedModuleName module);
     }
 
     /// <summary>
     /// An object that can manipulate the code in the AvalonEdit editor.
     /// </summary>
-    public interface IEditorSourceCodeHandler : ISourceCodeHandler 
+    public interface IEditorSourceCodeHandler : ISourceCodeHandler<TextReader>
     {
-        /// <summary>
-        /// Replaces one or more specific line(s) in the specified module.
-        /// </summary>
-        void SubstituteCode(QualifiedModuleName module, CodeString newCode);
-        /// <summary>
     }
 
     /// <summary>
     /// An object that can manipulate the code in a CodePane.
     /// </summary>
-    public interface ICodePaneHandler : ISourceCodeHandler
+    public interface ICodePaneHandler : ISourceCodeHandler<string>
     {
-        /// <summary>
-        /// Replaces one or more specific line(s) in the specified module.
-        /// </summary>
-        void SubstituteCode(ICodeModule module, CodeString newCode);
-        void SetSelection(ICodeModule module, Selection selection);
-        CodeString Prettify(QualifiedModuleName module, CodeString original);
-        CodeString Prettify(ICodeModule module, CodeString original);
-        CodeString GetCurrentLogicalLine(ICodeModule module);
+        CodeString Prettify(IQualifiedModuleName module, CodeString original);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Model;
+﻿using Rubberduck.InternalApi.Model;
+using Rubberduck.Parsing.Model;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.Command.SyncPanel;
 using Rubberduck.VBEditor.ComManagement;

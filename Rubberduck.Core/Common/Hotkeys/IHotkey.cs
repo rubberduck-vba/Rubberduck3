@@ -1,5 +1,5 @@
 using System.Windows.Forms;
-using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.UI.OfficeMenus;
 
 namespace Rubberduck.Common.Hotkeys
 {

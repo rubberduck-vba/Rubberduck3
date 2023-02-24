@@ -1,4 +1,4 @@
-﻿using Antlr4.Runtime;
+﻿using Rubberduck.InternalApi.Model;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Model.ComReflection;
@@ -37,7 +37,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                   DeclarationType.Event,
                   offset,
                   isArray,
-                  asTypeContext,
+                  asTypeContext?.AS() != null,
                   isUserDefined,
                   annotations,
                   attributes)

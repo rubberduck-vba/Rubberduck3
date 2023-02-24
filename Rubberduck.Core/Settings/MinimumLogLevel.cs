@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-//using Rubberduck.UI.Settings;
+﻿//using Rubberduck.UI.Settings;
 
 namespace Rubberduck.Settings
 {

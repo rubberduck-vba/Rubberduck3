@@ -1,14 +1,11 @@
-﻿using Rubberduck.Parsing;
-using Rubberduck.VBEditor;
+﻿using Rubberduck.InternalApi.Model;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.UI.Abstract
 {
+    
     public interface IEditorShellViewModel : INotifyPropertyChanged, ITextDocumentProvider
     {
         ObservableCollection<ICodePaneViewModel> ModuleDocumentTabs { get; }
@@ -18,9 +15,10 @@ namespace Rubberduck.UI.Abstract
         IStatusBarViewModel Status { get; }
         IEnumerable<ISyntaxErrorViewModel> SyntaxErrors { get; }
 
-        ICodePaneViewModel GetModule(QualifiedModuleName module);
-        bool LoadModule(QualifiedModuleName module, string content, IMemberProviderViewModel vm);
-        bool UnloadModule(QualifiedModuleName module);
-        void ActivateModuleDocumentTab(QualifiedModuleName module);
+        ICodePaneViewModel GetModule(IQualifiedModuleName module);
+        bool LoadModule(IQualifiedModuleName module, string content, IMemberProviderViewModel vm);
+        bool UnloadModule(IQualifiedModuleName module);
+        void ActivateModuleDocumentTab(IQualifiedModuleName module);
     }
+    
 }

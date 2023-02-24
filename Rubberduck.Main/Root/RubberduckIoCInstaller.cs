@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Castle.Facilities.TypedFactory;
@@ -31,11 +29,7 @@ using System.IO.Abstractions;
 using Rubberduck.VBEditor.ComManagement.NonDisposalDecorators;
 using Rubberduck.InternalApi.UIContext;
 using System.Runtime.InteropServices;
-using Rubberduck.UI.OfficeMenus.MenuItems;
-using Rubberduck.UI.OfficeMenus;
-using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.Main.Extensions;
-using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.Core;
 using Rubberduck.UI.Command;
 using System.Windows.Input;
@@ -43,13 +37,12 @@ using Rubberduck.InternalApi.Common;
 using Rubberduck.Core.About;
 using Rubberduck.UI.Xaml.Controls;
 using Rubberduck.Core.Editor;
-using Rubberduck.UI.Abstract;
-using Rubberduck.Core.Editor.Tools;
 using Rubberduck.Parsing.Abstract;
 using System.IO;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.TokenStreamProviders;
+using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
+using Rubberduck.VBEditor.UI.OfficeMenus;
+using Rubberduck.VBEditor.UI;
 
 namespace Rubberduck.Root
 {
@@ -337,16 +330,16 @@ namespace Rubberduck.Root
 
         private void RegisterSourceCodeHandlers(IWindsorContainer container)
         {
-            container.Register(Component.For<ISourceCodeHandler>()
-                .ImplementedBy<ComponentSourceCodeHandlerSourceCodeHandlerAdapter>()
-                .DependsOn(Dependency.OnComponent<IComponentSourceCodeHandler, CodeModuleComponentSourceCodeHandler>())
-                .LifestyleSingleton()
-                .Named("CodeModuleSourceCodeHandler"));
-            container.Register(Component.For<ISourceCodeHandler>()
-                .ImplementedBy<ComponentSourceCodeHandlerSourceCodeHandlerAdapter>()
-                .DependsOn(Dependency.OnComponent<IComponentSourceCodeHandler, SourceFileHandlerComponentSourceCodeHandlerAdapter>())
-                .LifestyleSingleton()
-                .Named("SourceFileSourceCodeHandler"));
+            //container.Register(Component.For<ISourceCodeHandler<string>>()
+            //    .ImplementedBy<ComponentSourceCodeHandlerSourceCodeHandlerAdapter>()
+            //    .DependsOn(Dependency.OnComponent<IComponentSourceCodeHandler, CodeModuleComponentSourceCodeHandler>())
+            //    .LifestyleSingleton()
+            //    .Named("CodeModuleSourceCodeHandler"));
+            //container.Register(Component.For<ISourceCodeHandler>()
+            //    .ImplementedBy<ComponentSourceCodeHandlerSourceCodeHandlerAdapter>()
+            //    .DependsOn(Dependency.OnComponent<IComponentSourceCodeHandler, SourceFileHandlerComponentSourceCodeHandlerAdapter>())
+            //    .LifestyleSingleton()
+            //    .Named("SourceFileSourceCodeHandler"));
         }
 
         private void RegisterSpecialFactories(IWindsorContainer container)

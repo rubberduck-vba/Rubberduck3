@@ -1,5 +1,5 @@
 ﻿using Rubberduck.Settings;
-using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.UI.OfficeMenus;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor.Utility;
 using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using PARAMFLAG = System.Runtime.InteropServices.ComTypes.PARAMFLAG;

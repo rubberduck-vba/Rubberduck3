@@ -17,16 +17,15 @@ namespace Rubberduck.Parsing.Parsers
             _tokenStreamParser = tokenStreamParser;
         }
 
-        public (IParseTree tree, ITokenStream tokenStream) Parse(string moduleName, string projectId, string code, CancellationToken token,
-            CodeKind codeKind = CodeKind.SnippetCode, ParserMode parserMode = ParserMode.FallBackSllToLl)
+        public (IParseTree tree, ITokenStream tokenStream, LogicalLineStore logicalLines) Parse(string moduleName, string projectId, string content, CancellationToken token, CodeKind codeKind, ParserMode parserMode)
         {
             token.ThrowIfCancellationRequested();
-            var tokenStream = _tokenStreamProvider.Tokens(code);
+            var tokenStream = _tokenStreamProvider.Tokens(content);
 
             token.ThrowIfCancellationRequested();
 
             var tree = _tokenStreamParser.Parse(moduleName, projectId, tokenStream, token, codeKind, parserMode);
-            return (tree, tokenStream);
+            return (tree, tokenStream, null);
         }
     }
 }

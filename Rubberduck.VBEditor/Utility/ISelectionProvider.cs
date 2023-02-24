@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Rubberduck.InternalApi.Model;
+using System.Collections.Generic;
 
 namespace Rubberduck.VBEditor.Utility
 {

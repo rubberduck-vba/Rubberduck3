@@ -1,4 +1,4 @@
-﻿using Antlr4.Runtime;
+﻿using Rubberduck.InternalApi.Model;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Annotations.Concrete;
 using Rubberduck.Parsing.Grammar;
@@ -21,19 +21,20 @@ namespace Rubberduck.Parsing.Model.Symbols
         public const int MaxModuleNameLength = 31;
         public const int MaxMemberNameLength = 255;
 
+        #region constructors
         public Declaration(
             QualifiedMemberName qualifiedName,
             Declaration parentDeclaration,
             Declaration parentScope,
             string asTypeName,
             string typeHint,
-            bool isSelfAssigned,
+            bool isAutoAssigned,
             bool isWithEvents,
             Accessibility accessibility,
             DeclarationType declarationType,
             DocumentOffset offset,
             bool isArray,
-            VBAParser.AsTypeClauseContext asTypeContext,
+            bool hasExplicitAsTypeContext,
             bool isUserDefined = true,
             IEnumerable<IParseTreeAnnotation> annotations = null,
             Attributes attributes = null,
@@ -44,13 +45,13 @@ namespace Rubberduck.Parsing.Model.Symbols
                 parentScope?.Scope,
                 asTypeName,
                 typeHint,
-                isSelfAssigned,
+                isAutoAssigned,
                 isWithEvents,
                 accessibility,
                 declarationType,
                 offset,
                 isArray,
-                asTypeContext,
+                hasExplicitAsTypeContext,
                 isUserDefined,
                 annotations,
                 attributes)
@@ -70,7 +71,7 @@ namespace Rubberduck.Parsing.Model.Symbols
             Accessibility accessibility,
             DeclarationType declarationType,
             bool isArray,
-            VBAParser.AsTypeClauseContext asTypeContext,
+            bool hasExplicitAsTypeContext,
             bool isUserDefined = true,
             IEnumerable<IParseTreeAnnotation> annotations = null,
             Attributes attributes = null)
@@ -86,7 +87,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                   declarationType,
                   DocumentOffset.Invalid,
                   isArray,
-                  asTypeContext,
+                  hasExplicitAsTypeContext,
                   isUserDefined,
                   annotations,
                   attributes)
@@ -104,7 +105,7 @@ namespace Rubberduck.Parsing.Model.Symbols
             DeclarationType declarationType,
             DocumentOffset offset,
             bool isArray,
-            VBAParser.AsTypeClauseContext asTypeContext,
+            bool hasExplicitAsTypeClause,
             bool isUserDefined = true,
             IEnumerable<IParseTreeAnnotation> annotations = null,
             Attributes attributes = null)
@@ -138,15 +139,14 @@ namespace Rubberduck.Parsing.Model.Symbols
             IsArray = isArray;
             TypeHint = typeHint;
 
-            HasExplicitTypeClause = asTypeContext?.AS() != null;
+            HasExplicitTypeClause = hasExplicitAsTypeClause;
         }
 
         public Declaration(ComEnumeration enumeration, Declaration parent, QualifiedModuleName module) : this(
             module.QualifyMemberName(enumeration.Name),
             parent,
             parent,
-            "Long",
-            //Match the VBA default type declaration.  Technically these *can* be a LongLong on 64 bit systems, but would likely crash the VBE... 
+            Tokens.Long, //Match the VBA default type declaration.  Technically these *can* be a LongLong on 64 bit systems, but would likely crash the VBE... 
             null,
             false,
             false,
@@ -154,7 +154,7 @@ namespace Rubberduck.Parsing.Model.Symbols
             DeclarationType.Enumeration,
             DocumentOffset.Invalid,
             false,
-            null,
+            true,
             false,
             null,
             new Attributes()) { }
@@ -172,7 +172,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 DeclarationType.UserDefinedType,
                 DocumentOffset.Invalid,
                 false,
-                null,
+                true,
                 false,
                 null,
                 new Attributes()) { }
@@ -189,7 +189,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 DeclarationType.EnumerationMember,
                 DocumentOffset.Invalid,
                 false,
-                null,
+                true,
                 false,
                 null,
                 new Attributes()) { }
@@ -207,10 +207,11 @@ namespace Rubberduck.Parsing.Model.Symbols
                 field.Type,
                 DocumentOffset.Invalid,
                 false,
-                null,
+                true,
                 false,
                 null,
                 new Attributes()) { }
+        #endregion
 
         public static Declaration GetModuleParent(Declaration declaration)
         {
@@ -252,8 +253,6 @@ namespace Rubberduck.Parsing.Model.Symbols
         public QualifiedMemberName QualifiedMemberName { get; }
         public QualifiedModuleName QualifiedModuleName => QualifiedMemberName.QualifiedModuleName;
 
-        public ParserRuleContext Context { get; }
-        public ParserRuleContext AttributesPassContext { get; }
 
         private ConcurrentDictionary<IdentifierReference, int> _references = new ConcurrentDictionary<IdentifierReference, int>();
         public IEnumerable<IdentifierReference> References => _references.Keys;
@@ -290,10 +289,10 @@ namespace Rubberduck.Parsing.Model.Symbols
                 }
 
                 // fallback to description annotation; enables descriptions in document modules and non-synchronized members.
-                var descriptionAnnotation = Annotations.SingleOrDefault(a =>
-                    a.Annotation.GetType() == typeof(DescriptionAnnotation)
-                    || a.Annotation.GetType() == typeof(VariableDescriptionAnnotation)
-                    || a.Annotation.GetType() == typeof(ModuleDescriptionAnnotation));
+                var descriptionAnnotation = Annotations
+                    .SingleOrDefault(a => a.Annotation is DescriptionAnnotation 
+                                       || a.Annotation is VariableDescriptionAnnotation
+                                       || a.Annotation is ModuleDescriptionAnnotation);
 
                 if (descriptionAnnotation != null)
                 {
@@ -410,7 +409,7 @@ namespace Rubberduck.Parsing.Model.Symbols
         /// Gets a <c>Selection</c> representing the position of the declaration in the code module.
         /// </summary>
         /// <remarks>
-        /// Returns <c>default(Selection)</c> for module identifiers.
+        /// Returns <c>default(Selection)</c> (<c>Selection.Empty</c>) for module identifiers.
         /// </remarks>
         public Selection Selection { get; }
 

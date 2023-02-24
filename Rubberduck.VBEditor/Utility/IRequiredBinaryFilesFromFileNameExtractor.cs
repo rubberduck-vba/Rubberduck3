@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.VBEditor.Utility
 {

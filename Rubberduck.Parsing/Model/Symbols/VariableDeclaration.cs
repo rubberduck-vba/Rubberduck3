@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Antlr4.Runtime;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
@@ -37,7 +38,7 @@ namespace Rubberduck.Parsing.Model.Symbols
                 DeclarationType.Variable,
                 offset,
                 isArray,
-                asTypeContext,
+                asTypeContext?.AS() != null,
                 isUserDefined,
                 annotations,
                 attributes)

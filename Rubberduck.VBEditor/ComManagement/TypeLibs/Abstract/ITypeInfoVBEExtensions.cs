@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract
+﻿namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract
 {
     public interface ITypeInfoVBEExtensions
     {

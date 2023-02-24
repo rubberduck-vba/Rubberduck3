@@ -1,6 +1,4 @@
-﻿using Rubberduck.VBEditor;
-
-namespace Rubberduck.UI.Abstract
+﻿namespace Rubberduck.UI.Abstract
 {
     public interface IStatusBarViewModel
     {
@@ -24,10 +22,12 @@ namespace Rubberduck.UI.Abstract
         /// Gets/sets the current column of the caret position.
         /// </summary>
         int CaretColumn { get; set; }
+        /*
         /// <summary>
         /// Gets/sets the current qualified name at the caret position.
         /// </summary>
         QualifiedMemberName CodeLocation { get; set; }
+        */
         /// <summary>
         /// Gets/sets the number of issues (parsing/syntax errors and static code analysis) in the current editor pane.
         /// </summary>
