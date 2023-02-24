@@ -118,5 +118,30 @@ namespace Rubberduck.Server.LocalDb.Internal.Storage
                     throw new NotSupportedException();
             }
         }
+
+        public View<TEntity> GetView<TEntity>()
+            where TEntity : DbEntity
+        {
+            switch (typeof(TEntity))
+            {
+                case var t when t == typeof(ProjectInfo):
+                    return ProjectsView as View<TEntity>;
+
+                case var t when t == typeof(ModuleInfo):
+                    return ModulesView as View<TEntity>;
+
+                case var t when t == typeof(MemberInfo):
+                    return MembersView as View<TEntity>;
+
+                case var t when t == typeof(ParameterInfo):
+                    return ParametersView as View<TEntity>;
+
+                case var t when t == typeof(LocalInfo):
+                    return LocalsView as View<TEntity>;
+
+                default:
+                    throw new NotSupportedException();
+            }
+        }
     }
 }

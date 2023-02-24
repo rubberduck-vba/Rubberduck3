@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Text.Json.Serialization;
+using System.Threading;
 
 namespace Rubberduck.RPC.Platform.Model
 {
@@ -91,6 +92,9 @@ namespace Rubberduck.RPC.Platform.Model
     {
         private readonly ConcurrentDictionary<string, (ClientInfo Client, bool Initialized)> _clients = new ConcurrentDictionary<string, (ClientInfo, bool)>();
 
+        private int _received = 0;
+        private int _sent = 0;
+
         public ServerState() { }
 
         public ServerState(IServerState info)
@@ -115,6 +119,9 @@ namespace Rubberduck.RPC.Platform.Model
             ProcessId = info.ProcessId;
             StartTime = info.StartTime;
         }
+
+        public void OnMessageReceived() => Interlocked.Increment(ref _received);
+        public void OnMessageSent() => Interlocked.Increment(ref _sent);
 
         /// <summary>
         /// Adds the specified client to the server state.
@@ -182,10 +189,10 @@ namespace Rubberduck.RPC.Platform.Model
         public ClientInfo[] Clients { get; set; }
 
         [JsonPropertyName("sent")]
-        public int MessagesSent { get; set; }
+        public int MessagesSent { get => _sent; set => _sent = value; }
 
         [JsonPropertyName("received")]
-        public int MessagesReceived { get; set; }
+        public int MessagesReceived { get => _received; set => _received = value; }
 
         [JsonPropertyName("isAlive")]
         public bool IsAlive { get; set; }

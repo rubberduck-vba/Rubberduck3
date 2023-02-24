@@ -12,5 +12,6 @@ namespace Rubberduck.Server.LocalDb.Internal.Storage.Abstract
 
         void SaveChanges();
         Repository<TEntity> GetRepository<TEntity>() where TEntity : DbEntity;
+        View<TEntity> GetView<TEntity>() where TEntity : DbEntity;
     }
 }

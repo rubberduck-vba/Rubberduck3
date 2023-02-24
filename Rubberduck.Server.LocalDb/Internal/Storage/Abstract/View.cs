@@ -24,7 +24,7 @@ namespace Rubberduck.Server.LocalDb.Internal.Storage.Abstract
         protected abstract string Source { get; }
         protected string Columns { get; }
 
-        protected static string Quoted(string identifier) // TODO grab the Span<string> opportunity
+        protected static string Quoted(string identifier) 
         {
             var value = identifier ?? throw new ArgumentNullException(nameof(identifier));
 
@@ -52,5 +52,7 @@ namespace Rubberduck.Server.LocalDb.Internal.Storage.Abstract
             var sql = $"SELECT {Columns} FROM {Quoted(Source)} WHERE [Id] IN ({string.Join(",", ids)});";
             return await Database.QueryAsync<TEntity>(sql);
         }
+
+        public abstract Task<IEnumerable<TEntity>> GetByOptionsAsync<TOptions>(TOptions options) where TOptions : class;
     }
 }

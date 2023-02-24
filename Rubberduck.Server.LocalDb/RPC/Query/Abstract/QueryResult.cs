@@ -3,8 +3,8 @@ using System.Linq;
 
 namespace Rubberduck.Server.LocalDb.RPC.Query
 {
-    public class QueryResult<T> where T : class, new()
+    public class QueryResult<TResult> where TResult : class, new()
     {
-        public IEnumerable<T> Results { get; set; } = Enumerable.Empty<T>();
+        public IEnumerable<TResult> Results { get; set; } = Enumerable.Empty<TResult>();
     }
 }

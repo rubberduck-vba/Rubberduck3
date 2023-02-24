@@ -72,8 +72,45 @@ namespace Rubberduck.Server.LocalDb.RPC
         /// </summary>
         public const string DebugSqlSelect = "query/debug";
 
-        /*TODO*/
-        
-    #endregion
+        /// <summary>
+        /// Requests information about a particular project, by project ID.
+        /// </summary>
+        public const string QueryProjectInfo = "query/projectInfo";
+
+        /// <summary>
+        /// Requests information about all projects, for further server-side (in-memory) processing.
+        /// </summary>
+        public const string QueryProjects = "query/projects";
+
+        /// <summary>
+        /// Requests information about a particular module, by ID.
+        /// </summary>
+        public const string QueryModuleInfo = "query/moduleInfo";
+
+        /// <summary>
+        /// Requests information about all modules under a particular project ID, for further server-side (in-memory) processing.
+        /// </summary>
+        public const string QueryModules = "query/modules";
+
+        /// <summary>
+        /// Requests information about a particular member, by ID.
+        /// </summary>
+        public const string QueryMemberInfo = "query/memberInfo";
+
+        /// <summary>
+        /// Requests information about all members under a particular module ID, for further server-side (in-memory) processing.
+        /// </summary>
+        public const string QueryMembers = "query/members";
+
+        /// <summary>
+        /// Requests information about a particular member, by ID.
+        /// </summary>
+        public const string QueryParameterInfo = "query/parameterInfo";
+
+        /// <summary>
+        /// Requests information about all parameters under a particular member ID, for further server-side (in-memory) processing.
+        /// </summary>
+        public const string QueryParameters = "query/parameters";
+        #endregion
     }
 }

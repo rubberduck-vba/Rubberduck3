@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.JsonRpc;
 using Rubberduck.InternalApi.Common;
+using Rubberduck.RPC.Platform.Model;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace Rubberduck.RPC.Platform
 
         protected abstract Task<TResponse> HandleAsync(TRequest request);
 
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken)
+        public async virtual Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken)
         {
             try
             {
