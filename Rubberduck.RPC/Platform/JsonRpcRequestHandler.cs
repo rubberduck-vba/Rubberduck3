@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.JsonRpc;
 using Rubberduck.InternalApi.Common;
-using Rubberduck.RPC.Platform.Model;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

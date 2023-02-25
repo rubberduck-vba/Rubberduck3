@@ -1,16 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
-using OmniSharp.Extensions.JsonRpc;
 using Rubberduck.RPC.Platform;
-using Rubberduck.Server.LocalDb.Internal.Model;
+using Rubberduck.RPC.Platform.Model.LocalDb.Responses;
 using Rubberduck.Server.LocalDb.Internal.Storage.Abstract;
-using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Server.LocalDb.RPC.Save
 {
-    public abstract class SaveHandler<TEntity> : JsonRpcRequestHandler<SaveRequest<TEntity>, SaveResult>
+    public abstract class SaveHandler<TEntity> : JsonRpcRequestHandler<SaveRequest<TEntity>, SuccessResult>
         where TEntity : DbEntity, new()
     {
         private readonly IUnitOfWorkFactory _factory;
@@ -21,7 +18,7 @@ namespace Rubberduck.Server.LocalDb.RPC.Save
             _factory = factory;
         }
 
-        protected async override Task<SaveResult> HandleAsync(SaveRequest<TEntity> request)
+        protected async override Task<SuccessResult> HandleAsync(SaveRequest<TEntity> request)
         {
             using (var uow = _factory.CreateNew())
             {
@@ -31,7 +28,7 @@ namespace Rubberduck.Server.LocalDb.RPC.Save
                 await Task.WhenAll(entities.Select(repo.SaveAsync));
             }
 
-            return new SaveResult { Success = true };
+            return new SuccessResult { Success = true };
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Newtonsoft.Json.Linq;
 using OmniSharp.Extensions.JsonRpc.Server;
-using System.Text;
+using Rubberduck.RPC.Platform.Model.LocalDb.Responses;
 
 namespace Rubberduck.Server.LocalDb.RPC.Query
 {

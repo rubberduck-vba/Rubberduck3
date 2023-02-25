@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.RPC.LocalDb.Responses;
 using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Platform.Model;
 using System.Threading.Tasks;

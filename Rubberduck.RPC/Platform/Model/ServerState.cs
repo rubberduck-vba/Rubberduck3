@@ -1,5 +1,4 @@
-﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -52,7 +51,7 @@ namespace Rubberduck.RPC.Platform.Model
         /// <summary>
         /// The clients connected to this server.
         /// </summary>
-        ClientInfo[] Clients { get; }
+        RpcClientInfo[] Clients { get; }
         /// <summary>
         /// Whether the JsonRpcServer is alive and accepts client connections.
         /// </summary>
@@ -90,7 +89,7 @@ namespace Rubberduck.RPC.Platform.Model
     /// </summary>
     public class ServerState : BasicServerInfo, IServerState
     {
-        private readonly ConcurrentDictionary<string, (ClientInfo Client, bool Initialized)> _clients = new ConcurrentDictionary<string, (ClientInfo, bool)>();
+        private readonly ConcurrentDictionary<string, (RpcClientInfo Client, bool Initialized)> _clients = new ConcurrentDictionary<string, (RpcClientInfo, bool)>();
 
         private int _received = 0;
         private int _sent = 0;
@@ -128,7 +127,7 @@ namespace Rubberduck.RPC.Platform.Model
         /// </summary>
         /// <param name="client">The client to be added.</param>
         /// <returns><c>true<c/> if the client was successfully added.</returns>
-        public bool Connect(ClientInfo client)
+        public bool Connect(RpcClientInfo client)
         {
             var didConnect = false;
 
@@ -145,7 +144,7 @@ namespace Rubberduck.RPC.Platform.Model
         /// Removes from the server state the client associated to the specified client.
         /// </summary>
         /// <returns><c>true</c> if the client was successfully removed.</returns>
-        public bool Disconnect(string name, out ClientInfo client)
+        public bool Disconnect(string name, out RpcClientInfo client)
         {
             client = null;
             var didRemove = false;
@@ -186,7 +185,7 @@ namespace Rubberduck.RPC.Platform.Model
         public int Threads { get; set; }
 
         [JsonPropertyName("clients")]
-        public ClientInfo[] Clients { get; set; }
+        public RpcClientInfo[] Clients { get; set; }
 
         [JsonPropertyName("sent")]
         public int MessagesSent { get => _sent; set => _sent = value; }
