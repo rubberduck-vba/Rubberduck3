@@ -264,6 +264,7 @@
     <Compile Include="Platform\Exceptions\ServerExceptions\InvalidStateException.cs" />
     <Compile Include="Platform\Exceptions\ServerExceptions\ServerException.cs" />
     <Compile Include="Platform\Model\ClientState.cs" />
+    <Compile Include="Platform\Model\IQueryOptions.cs" />
     <Compile Include="Platform\Model\LocalDb\AnnotationBase.cs" />
     <Compile Include="Platform\Model\LocalDb\DbEntity.cs" />
     <Compile Include="Platform\Model\LocalDb\Declaration.cs" />
@@ -279,8 +280,10 @@
     <Compile Include="Platform\Model\LocalDb\Parameters\DisconnectParams.cs" />
     <Compile Include="Platform\Model\LocalDb\Project.cs" />
     <Compile Include="Platform\Model\LocalDb\ProjectSetting.cs" />
-    <Compile Include="Platform\Model\LocalDb\Responses\ConnectResult.cs" />
     <Compile Include="Platform\Model\LocalDb\Responses\InfoResult.cs" />
+    <Compile Include="Platform\Model\LocalDb\Responses\QueryResult.cs" />
+    <Compile Include="Platform\Model\LocalDb\Responses\SuccessResult.cs" />
+    <Compile Include="Platform\Model\RpcClientInfo.cs" />
     <Compile Include="Platform\Model\ServerState.cs" />
     <Compile Include="Platform\Model\ServerStatus.cs" />
     <Compile Include="Platform\JsonRpcRequestHandler.cs" />

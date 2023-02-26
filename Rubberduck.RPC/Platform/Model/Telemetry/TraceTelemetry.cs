@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Rubberduck.RPC.Telemetry
+namespace Rubberduck.RPC.Platform.Model.Telemetry
 {
     /// <summary>
     /// <strong>TraceTelemetry</strong> represents trace logs that can later be searched.

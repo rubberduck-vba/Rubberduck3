@@ -1,6 +1,6 @@
-﻿namespace Rubberduck.InternalApi.RPC.LocalDb.Model
+﻿namespace Rubberduck.RPC.Platform.Model.LocalDb
 {
-    internal class DeclarationAnnotation : AnnotationBase
+    public class DeclarationAnnotation : AnnotationBase
     {
         public int DeclarationId { get; set; }
     }

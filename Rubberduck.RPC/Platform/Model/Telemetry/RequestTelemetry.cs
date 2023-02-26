@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Rubberduck.RPC.Telemetry
+namespace Rubberduck.RPC.Platform.Model.Telemetry
 {
     /// <summary>
     /// <strong>RequestTelemetry</strong> represents the logical sequence of execution triggered by an external request to your application.

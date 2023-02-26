@@ -1,6 +1,6 @@
-﻿namespace Rubberduck.InternalApi.RPC.LocalDb.Model
+﻿namespace Rubberduck.RPC.Platform.Model.LocalDb
 {
-    internal class ProjectSetting
+    public class ProjectSetting
     {
         public int Id { get; set; }
         public int ProjectId { get; set; }

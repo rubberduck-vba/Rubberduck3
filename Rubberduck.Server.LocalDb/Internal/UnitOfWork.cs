@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using Dapper;
-using Rubberduck.Server.LocalDb.Internal.Model;
+using Rubberduck.RPC.Platform.Model;
+using Rubberduck.RPC.Platform.Model.LocalDb;
 using Rubberduck.Server.LocalDb.Internal.Storage.Abstract;
 
 namespace Rubberduck.Server.LocalDb.Internal.Storage
@@ -88,8 +89,7 @@ namespace Rubberduck.Server.LocalDb.Internal.Storage
             return await _db.QuerySingleOrDefaultAsync<TEntity>(sql, parameters);
         }
 
-        public Repository<TEntity> GetRepository<TEntity>()
-            where TEntity : DbEntity
+        public Repository<TEntity> GetRepository<TEntity>() where TEntity : DbEntity
         {
             switch (typeof(TEntity))
             {
@@ -119,8 +119,7 @@ namespace Rubberduck.Server.LocalDb.Internal.Storage
             }
         }
 
-        public View<TEntity> GetView<TEntity>()
-            where TEntity : DbEntity
+        public IQueryOptions<TEntity> GetView<TEntity>() where TEntity : DbEntity
         {
             switch (typeof(TEntity))
             {

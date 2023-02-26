@@ -3,7 +3,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using Rubberduck.Server.LocalDb.Internal.Model;
+using Rubberduck.RPC.Platform.Model.LocalDb;
 
 namespace Rubberduck.Server.LocalDb.Internal.Storage.Abstract
 {
@@ -37,12 +37,6 @@ namespace Rubberduck.Server.LocalDb.Internal.Storage.Abstract
         {
             var sql = $"SELECT [Id],{NonIdentityColumns} FROM {Quoted(Source)} WHERE [Id]=@id;";
             return await Database.QuerySingleOrDefaultAsync<TEntity>(sql, new { id });
-        }
-
-        public override async Task<IEnumerable<TEntity>> GetByIdAsync(IEnumerable<int> ids)
-        {
-            var sql = $"SELECT [Id],{NonIdentityColumns} FROM {Quoted(Source)} WHERE [Id] IN ({string.Join(",", ids)});";
-            return await Database.QueryAsync<TEntity>(sql);
         }
     }
 }

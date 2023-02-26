@@ -1,8 +1,8 @@
 ﻿using Rubberduck.InternalApi.Model;
 
-namespace Rubberduck.InternalApi.RPC.LocalDb.Model
+namespace Rubberduck.RPC.Platform.Model.LocalDb
 {
-    internal class Local : DbEntity
+    public class Local : DbEntity
     {
         public int DeclarationId { get; set; }
         public int IsAutoAssigned { get; set; }
@@ -10,7 +10,7 @@ namespace Rubberduck.InternalApi.RPC.LocalDb.Model
         public string ValueExpression { get; set; }
     }
 
-    internal class LocalInfo : Local
+    public class LocalInfo : Local
     {
         public DeclarationType DeclarationType { get; set; }
         public string IdentifierName { get; set; }

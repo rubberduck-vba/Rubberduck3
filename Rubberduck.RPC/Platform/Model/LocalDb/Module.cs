@@ -1,15 +1,17 @@
 ﻿using Rubberduck.InternalApi.Model;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace Rubberduck.InternalApi.RPC.LocalDb.Model
+namespace Rubberduck.RPC.Platform.Model.LocalDb
 {
-    internal class Module : DbEntity
+    public class Module : DbEntity
     {
         public int DeclarationId { get; set; }
         public string Folder { get; set; }
     }
 
-    internal class ModuleInfo : Module
+    public class ModuleInfo : Module
     {
         public DeclarationType DeclarationType { get; set; }
         public string IdentifierName { get; set; }
@@ -21,7 +23,7 @@ namespace Rubberduck.InternalApi.RPC.LocalDb.Model
         public string VBProjectId { get; set; }
     }
 
-    public class ModuleInfoRequestOptions
+    public class ModuleInfoRequestOptions : IQueryOption
     {
         /// <summary>
         /// If provided, results will be filtered for the provided declaration IDs
@@ -36,7 +38,7 @@ namespace Rubberduck.InternalApi.RPC.LocalDb.Model
         /// <summary>
         /// If provided, results will be filtered by the provided declaration types.
         /// </summary>
-        public DeclarationType[] DeclaraitonTypes { get; set; } = Array.Empty<DeclarationType>();
+        public DeclarationType[] DeclarationTypes { get; set; } = Array.Empty<DeclarationType>();
         /// <summary>
         /// If true (default), results will include user-defined items.
         /// </summary>
@@ -46,6 +48,36 @@ namespace Rubberduck.InternalApi.RPC.LocalDb.Model
         /// </summary>
         /// <remarks>This option takes precedence over <c>IncludeUserDefined</c> if the latter is <c>false</c> but the former is <c>true</c>.</remarks>
         public bool IsUserDefinedOnly { get; set; }
+
+        public string ToWhereClause()
+        {
+            var criterion = new List<string>();
+            if (DeclarationId.Any())
+            {
+                criterion.Add($" [DeclarationId] IN({string.Join(",", DeclarationId)}) ");
+            }
+
+            if (Folder.Any())
+            {
+                criterion.Add($" [Folder] IN ('{string.Join("','", Folder)}') ");
+            }
+
+            if (DeclarationTypes.Any())
+            {
+                criterion.Add($" [DeclarationType] IN ('{string.Join("','", DeclarationTypes)}') ");
+            }
+
+            if (!IncludeUserDefined)
+            {
+                criterion.Add($" [IsUserDefined] = 0 ");
+            }
+            else if (IsUserDefinedOnly)
+            {
+                criterion.Add($" [IsUserDefined] = 1 ");
+            }
+
+            return string.Join(" AND ", criterion);
+        }
     }
 
 }

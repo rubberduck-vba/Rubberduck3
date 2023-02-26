@@ -4,7 +4,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using Rubberduck.Server.LocalDb.Internal.Model;
+using Rubberduck.RPC.Platform.Model;
+using Rubberduck.RPC.Platform.Model.LocalDb;
 
 namespace Rubberduck.Server.LocalDb.Internal.Storage.Abstract
 {
@@ -47,12 +48,16 @@ namespace Rubberduck.Server.LocalDb.Internal.Storage.Abstract
             return await Database.QuerySingleOrDefaultAsync<TEntity>(sql, new { id });
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetByIdAsync(IEnumerable<int> ids)
+        public virtual async Task<IEnumerable<TEntity>> GetByIdAsync(params int[] ids)
         {
             var sql = $"SELECT {Columns} FROM {Quoted(Source)} WHERE [Id] IN ({string.Join(",", ids)});";
             return await Database.QueryAsync<TEntity>(sql);
         }
 
-        public abstract Task<IEnumerable<TEntity>> GetByOptionsAsync<TOptions>(TOptions options) where TOptions : class;
+        public virtual async Task<IEnumerable<TEntity>> GetByOptionsAsync<TOptions>(TOptions options) where TOptions : IQueryOption
+        {
+            var sql = $"SELECT {Columns} FROM {Quoted(Source)} WHERE {options.ToWhereClause()}";
+            return await Database.QueryAsync<TEntity>(sql);
+        }
     }
 }

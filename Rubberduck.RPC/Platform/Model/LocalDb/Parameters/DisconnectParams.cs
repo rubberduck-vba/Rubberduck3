@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.InternalApi.RPC.LocalDb.Parameters
+﻿namespace Rubberduck.RPC.Platform.Model.LocalDb.Parameters
 {
     public class DisconnectParams
     {

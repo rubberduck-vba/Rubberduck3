@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OmniSharp.Extensions.JsonRpc;
-using Rubberduck.Server.LocalDb.Internal.Model;
-using Rubberduck.Server.LocalDb.Internal.Storage;
+using Rubberduck.RPC.Platform.Model.LocalDb;
 using Rubberduck.Server.LocalDb.Properties;
 using Rubberduck.Server.LocalDb.RPC.Connect;
 using Rubberduck.Server.LocalDb.RPC.Disconnect;

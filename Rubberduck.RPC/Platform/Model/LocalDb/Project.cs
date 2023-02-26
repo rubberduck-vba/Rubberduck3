@@ -1,9 +1,10 @@
 ﻿using Rubberduck.InternalApi.Model;
 using System;
+using System.Collections.Generic;
 
-namespace Rubberduck.InternalApi.RPC.LocalDb.Model
+namespace Rubberduck.RPC.Platform.Model.LocalDb
 {
-    internal class Project : DbEntity
+    public class Project : DbEntity
     {
         public int OwnerProcessId { get; set; }
         public bool IsCheckedOut { get; set; }
@@ -16,7 +17,7 @@ namespace Rubberduck.InternalApi.RPC.LocalDb.Model
         public string Path { get; set; }
     }
 
-    internal class ProjectInfo : Project
+    public class ProjectInfo : Project
     {
         public DeclarationType DeclarationType { get; set; }
         public string IdentifierName { get; set; }
@@ -24,7 +25,7 @@ namespace Rubberduck.InternalApi.RPC.LocalDb.Model
         public bool IsUserDefined { get; set; }
     }
 
-    internal class ProjectInfoRequestOptions
+    public class ProjectInfoRequestOptions : IQueryOption
     {
         /// <summary>
         /// If provided, results will only include items owned or referenced by the specified process ID.
@@ -52,5 +53,17 @@ namespace Rubberduck.InternalApi.RPC.LocalDb.Model
         /// </summary>
         /// <remarks>This option takes precedence over <c>IncludeUserDefined</c> if the latter is <c>false</c> but the former is <c>true</c>.</remarks>
         public bool IsUserDefinedOnly { get; set; }
+
+        public string ToWhereClause()
+        {
+            var criterion = new List<string>();
+
+            if (OwnerProcessId.HasValue)
+            {
+
+            }
+
+            return string.Join(" AND ", criterion);
+        }
     }
 }

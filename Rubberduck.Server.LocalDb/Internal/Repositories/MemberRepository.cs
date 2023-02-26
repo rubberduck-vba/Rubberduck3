@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Threading.Tasks;
 using Dapper;
-using Rubberduck.Server.LocalDb.Internal.Model;
+using Rubberduck.RPC.Platform.Model.LocalDb;
 using Rubberduck.Server.LocalDb.Internal.Storage.Abstract;
 
 namespace Rubberduck.Server.LocalDb.Internal.Storage
@@ -23,7 +23,7 @@ namespace Rubberduck.Server.LocalDb.Internal.Storage
             "ValueExpression",
         };
 
-        public async Task<Member> GetByDeclarationId(int declarationId)
+        public async Task<Member> GetByDeclarationIdAsync(int declarationId)
         {
             return await Database.QuerySingleOrDefaultAsync($"SELECT [Id],{NonIdentityColumns} FROM {Source} WHERE [DeclarationId] = @declarationId;", new { declarationId });
         }

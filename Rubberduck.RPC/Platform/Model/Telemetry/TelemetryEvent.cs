@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Rubberduck.RPC.Telemetry
+namespace Rubberduck.RPC.Platform.Model.Telemetry
 {
     public abstract class TelemetryEvent
     {

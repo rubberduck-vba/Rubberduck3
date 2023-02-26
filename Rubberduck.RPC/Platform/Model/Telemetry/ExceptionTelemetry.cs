@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Rubberduck.RPC.Telemetry
+namespace Rubberduck.RPC.Platform.Model.Telemetry
 {
     /// <summary>
     /// <strong>ExceptionTelemetry</strong> represents any exception that occurred during execution of the monitored application.

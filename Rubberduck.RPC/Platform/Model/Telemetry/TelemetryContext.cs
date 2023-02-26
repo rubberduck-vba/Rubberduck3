@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Rubberduck.RPC.Telemetry
+namespace Rubberduck.RPC.Platform.Model.Telemetry
 {
     /// <summary>
     /// <strong>ContextTelemetry</strong> collects additional context information and is included in all telemetry events.

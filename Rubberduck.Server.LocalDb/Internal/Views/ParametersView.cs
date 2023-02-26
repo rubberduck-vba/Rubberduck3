@@ -2,7 +2,7 @@
 using System.Data;
 using System.Threading.Tasks;
 using Dapper;
-using Rubberduck.Server.LocalDb.Internal.Model;
+using Rubberduck.RPC.Platform.Model.LocalDb;
 using Rubberduck.Server.LocalDb.Internal.Storage.Abstract;
 
 namespace Rubberduck.Server.LocalDb.Internal.Storage
@@ -53,22 +53,27 @@ namespace Rubberduck.Server.LocalDb.Internal.Storage
             "VBProjectId",
         };
 
-        public async Task<IEnumerable<ParameterInfo>> GetByMemberDeclarationId(int id)
+        public async Task<IEnumerable<ParameterInfo>> GetByMemberDeclarationIdAsync(int id)
         {
             var sql = $"SELECT {Columns} FROM {Source} WHERE [MemberDeclarationId] = @id";
             return await Database.QueryAsync<ParameterInfo>(sql, id);
         }
 
-        public async Task<IEnumerable<ParameterInfo>> GetByModuleDeclarationId(int id)
+        public async Task<IEnumerable<ParameterInfo>> GetByModuleDeclarationIdAsync(int id)
         {
             var sql = $"SELECT {Columns} FROM {Source} WHERE [ModuleDeclarationId] = @id";
             return await Database.QueryAsync<ParameterInfo>(sql, id);
         }
 
-        public async Task<IEnumerable<ParameterInfo>> GetByProjectDeclarationId(int id)
+        public async Task<IEnumerable<ParameterInfo>> GetByProjectDeclarationIdAsync(int id)
         {
             var sql = $"SELECT {Columns} FROM {Source} WHERE [ProjectDeclarationId] = @id";
             return await Database.QueryAsync<ParameterInfo>(sql, id);
+        }
+
+        public override Task<IEnumerable<ParameterInfo>> GetByOptionsAsync<TOptions>(TOptions options)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

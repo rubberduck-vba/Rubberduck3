@@ -1,8 +1,8 @@
 ﻿using Rubberduck.InternalApi.Model;
 
-namespace Rubberduck.InternalApi.RPC.LocalDb.Model
+namespace Rubberduck.RPC.Platform.Model.LocalDb
 {
-    internal class Parameter : DbEntity
+    public class Parameter : DbEntity
     {
         public int DeclarationId { get; set; }
         public int Position { get; set; }
@@ -14,7 +14,7 @@ namespace Rubberduck.InternalApi.RPC.LocalDb.Model
         public string DefaultValue { get; set; }
     }
 
-    internal class ParameterInfo : Parameter
+    public class ParameterInfo : Parameter
     {
         public DeclarationType DeclarationType { get; set; }
         public string IdentifierName { get; set; }

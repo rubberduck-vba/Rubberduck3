@@ -1,6 +1,6 @@
-﻿namespace Rubberduck.InternalApi.RPC.LocalDb.Model
+﻿namespace Rubberduck.RPC.Platform.Model.LocalDb
 {
-    internal class DeclarationAttribute : DbEntity
+    public class DeclarationAttribute : DbEntity
     {
         public int DeclarationId { get; set; }
         public string AttributeName { get; set; }

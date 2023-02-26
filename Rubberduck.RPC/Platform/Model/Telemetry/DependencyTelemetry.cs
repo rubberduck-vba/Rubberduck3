@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Rubberduck.RPC.Telemetry
+namespace Rubberduck.RPC.Platform.Model.Telemetry
 {
     /// <summary>
     /// <strong>DependencyTelemetry</strong> represents an interaction of the monitored component with a remote component suhc as a SQL, HTTP, (or RPC) endpoint.

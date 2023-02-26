@@ -1,25 +1,23 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.Server.LocalDb.Internal.Model;
+using Rubberduck.RPC.Platform.Model;
+using Rubberduck.RPC.Platform.Model.LocalDb.Responses;
 using Rubberduck.Server.LocalDb.Internal.Storage.Abstract;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Server.LocalDb.RPC.Query
 {
-    internal class SelectQueryHandler<TEntity, TOptions> : QueryHandler<TEntity, TOptions>
-        where TEntity : DbEntity, new()
-        where TOptions : class, new()
+    internal class SelectQueryHandler<TResult, TOptions> : QueryHandler<TResult, TOptions>
+        where TResult : class, new()
+        where TOptions : class, IQueryOption, new()
     {
         public SelectQueryHandler(ILogger logger, IUnitOfWorkFactory factory) 
             : base(logger, factory)
         {
         }
 
-        protected async override Task<QueryResult<TEntity>> HandleAsync(QueryRequest<TEntity, TOptions> request, IUnitOfWork uow)
+        protected override Task<QueryResult<TResult>> HandleAsync(QueryRequest<TResult, TOptions> request, IUnitOfWork uow)
         {
-            var view = uow.GetView<TEntity>();
-            var results = await view.GetByOptionsAsync(request.Options);
-
-            return new QueryResult<TEntity> { Results = results };
+            throw new System.NotImplementedException();
         }
     }
 }

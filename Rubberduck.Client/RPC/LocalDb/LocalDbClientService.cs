@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Rubberduck.RPC.Platform.Model.LocalDb.Responses;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Client.RPC.LocalDb
@@ -13,6 +10,5 @@ namespace Rubberduck.Client.RPC.LocalDb
 
     public class LocalDbQueryService
     {
-        public async Task<ConnectResult>
     }
 }

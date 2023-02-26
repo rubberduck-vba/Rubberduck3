@@ -295,7 +295,6 @@
   <ItemGroup>
     <Compile Include="Configuration\IServiceCollectionExtensions.cs" />
     <Compile Include="Configuration\LocalDbServerCapabilities.cs" />
-    <Compile Include="Internal\Abstract\IQueryOptions.cs" />
     <Compile Include="RPC\Disconnect\DisconnectHandler.cs" />
     <Compile Include="RPC\Info\InfoHandler.cs" />
     <Compile Include="RPC\Disconnect\DisconnectRequest.cs" />
@@ -307,7 +306,6 @@
     <Compile Include="RPC\Query.Debug\QueryRequest.cs" />
     <Compile Include="RPC\Query\Abstract\QueryHandler.cs" />
     <Compile Include="RPC\Query\Abstract\SqlQueryRequest.cs" />
-    <Compile Include="RPC\Query\Abstract\QueryResult.cs" />
     <Compile Include="RPC\Query\Requests\ProjectInfoRequest.cs" />
     <Compile Include="RPC\Query\Requests\ProjectsRequest.cs" />
     <Compile Include="RPC\Query\SelectQueryHandler.cs" />
@@ -319,7 +317,6 @@
     <Compile Include="RPC\Save\SaveModuleRequest.cs" />
     <Compile Include="RPC\Save\SaveParameterRequest.cs" />
     <Compile Include="RPC\Save\SaveProjectRequest.cs" />
-    <Compile Include="RPC\Save\Abstract\SaveResult.cs" />
     <Compile Include="Internal\Abstract\IDbConnectionProvider.cs" />
     <Compile Include="Internal\Abstract\IUnitOfWork.cs" />
     <Compile Include="Internal\Abstract\IUnitOfWorkFactory.cs" />

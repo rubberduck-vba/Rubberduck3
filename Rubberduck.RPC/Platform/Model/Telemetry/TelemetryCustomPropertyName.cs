@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.RPC.Telemetry
+﻿namespace Rubberduck.RPC.Platform.Model.Telemetry
 {
     public enum TelemetryCustomPropertyName
     {

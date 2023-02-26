@@ -1,4 +1,5 @@
-﻿using Rubberduck.Server.LocalDb.Internal.Model;
+﻿using Rubberduck.RPC.Platform.Model;
+using Rubberduck.RPC.Platform.Model.LocalDb;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

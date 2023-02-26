@@ -1,6 +1,6 @@
-﻿namespace Rubberduck.InternalApi.RPC.LocalDb.Model
+﻿namespace Rubberduck.RPC.Platform.Model.LocalDb
 {
-    internal abstract class AnnotationBase : DbEntity
+    public abstract class AnnotationBase : DbEntity
     {
         public string AnnotationName { get; set; }
         public string AnnotationArgs { get; set; }

@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Platform.Model;
+using Rubberduck.RPC.Platform.Model.LocalDb.Responses;
 using System;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Server.LocalDb.RPC.Connect
 {
-    internal class ConnectHandler : JsonRpcRequestHandler<ConnectRequest, ConnectResult>
+    internal class ConnectHandler : JsonRpcRequestHandler<ConnectRequest, SuccessResult>
     {
         private readonly ServerState _serverState;
 
@@ -17,12 +17,12 @@ namespace Rubberduck.Server.LocalDb.RPC.Connect
             _serverState = serverState;
         }
 
-        protected override async Task<ConnectResult> HandleAsync(ConnectRequest request)
+        protected override async Task<SuccessResult> HandleAsync(ConnectRequest request)
         {
-            var client = request.Params.ToObject<ClientInfo>();
+            var client = request.Params.ToObject<RpcClientInfo>();
             if (_serverState.Connect(client))
             {
-                return await Task.FromResult(new ConnectResult());
+                return await Task.FromResult(new SuccessResult());
             }
 
             throw new ApplicationException("The operation failed.");

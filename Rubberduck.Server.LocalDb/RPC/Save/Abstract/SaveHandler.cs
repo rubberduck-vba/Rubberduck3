@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Platform.Model.LocalDb;
 using Rubberduck.RPC.Platform.Model.LocalDb.Responses;
 using Rubberduck.Server.LocalDb.Internal.Storage.Abstract;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace Rubberduck.Server.LocalDb.RPC.Save
                 await Task.WhenAll(entities.Select(repo.SaveAsync));
             }
 
-            return new SuccessResult { Success = true };
+            return new SuccessResult();
         }
     }
 }

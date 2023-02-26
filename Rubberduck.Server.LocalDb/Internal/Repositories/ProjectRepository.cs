@@ -1,7 +1,8 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 using Dapper;
-using Rubberduck.Server.LocalDb.Internal.Model;
+using Rubberduck.RPC.Platform.Model.LocalDb;
 using Rubberduck.Server.LocalDb.Internal.Storage.Abstract;
 
 namespace Rubberduck.Server.LocalDb.Internal.Storage
@@ -21,6 +22,11 @@ namespace Rubberduck.Server.LocalDb.Internal.Storage
             "MinorVersion",
             "Path",
         };
+
+        public override Task<IEnumerable<Project>> GetByOptionsAsync<TOptions>(TOptions options)
+        {
+            throw new System.NotImplementedException();
+        }
 
         public override async Task SaveAsync(Project entity)
         {

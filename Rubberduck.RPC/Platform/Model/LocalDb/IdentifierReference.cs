@@ -1,8 +1,8 @@
 ﻿using Rubberduck.InternalApi.Model;
 
-namespace Rubberduck.InternalApi.RPC.LocalDb.Model
+namespace Rubberduck.RPC.Platform.Model.LocalDb
 {
-    internal class IdentifierReference : DbEntity
+    public class IdentifierReference : DbEntity
     {
         public string TypeHint { get; set; }
 
@@ -31,7 +31,7 @@ namespace Rubberduck.InternalApi.RPC.LocalDb.Model
         public int IdentifierEndOffset { get; set; }
     }
 
-    internal class IdentifierReferenceInfo : IdentifierReference
+    public class IdentifierReferenceInfo : IdentifierReference
     {
         public DeclarationType ReferenceDeclarationType { get; set; }
         public string ReferenceIdentifierName { get; set; }
