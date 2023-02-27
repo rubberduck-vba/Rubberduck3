@@ -199,10 +199,6 @@
       <Project>{5E2588A5-2EF2-4267-952D-53AEC8F5F173}</Project>
       <Name>Rubberduck.InternalApi</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.RPC\Rubberduck.RPC.csproj">
-      <Project>{8D218701-AF68-4013-B9C0-108C1D162E11}</Project>
-      <Name>Rubberduck.RPC</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
