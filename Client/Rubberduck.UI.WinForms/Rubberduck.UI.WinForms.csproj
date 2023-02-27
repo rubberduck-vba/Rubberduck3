@@ -149,21 +149,21 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.UI.Xaml\Rubberduck.UI.Xaml.csproj">
+      <Project>{1192fa78-b73f-46bc-b98c-fd887a062a2c}</Project>
+      <Name>Rubberduck.UI.Xaml</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Shared\Rubberduck.UI\Rubberduck.UI.csproj">
+      <Project>{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}</Project>
+      <Name>Rubberduck.UI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Ducky.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Shared\Rubberduck.UI\Rubberduck.UI.csproj">
-      <Project>{fc5ecd51-175b-42d6-b46c-130b57aa1ebc}</Project>
-      <Name>Rubberduck.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.UI.Xaml\Rubberduck.UI.Xaml.csproj">
-      <Project>{1192fa78-b73f-46bc-b98c-fd887a062a2c}</Project>
-      <Name>Rubberduck.UI.Xaml</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

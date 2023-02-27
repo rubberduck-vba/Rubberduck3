@@ -87,17 +87,17 @@
     <Folder Include="ParseTreeInspections\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Client\Rubberduck.VBEditor\Rubberduck.VBEditor.csproj">
-      <Project>{030fde59-c347-4b81-ab80-5b4b80b757a0}</Project>
-      <Name>Rubberduck.VBEditor</Name>
+    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
+      <Project>{86502725-A9D2-47A8-B26A-5E7BC8A85D47}</Project>
+      <Name>Rubberduck.Parsing</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj">
       <Project>{ed65baad-743d-4144-aee2-8d956e6da599}</Project>
       <Name>Rubberduck.Resources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
-      <Project>{86502725-a9d2-47a8-b26a-5e7bc8a85d47}</Project>
-      <Name>Rubberduck.Parsing</Name>
+    <ProjectReference Include="..\..\..\..\Client\Rubberduck.VBEditor\Rubberduck.VBEditor.csproj">
+      <Project>{030FDE59-C347-4B81-AB80-5B4B80B757A0}</Project>
+      <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

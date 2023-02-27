@@ -166,47 +166,37 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="NLog.dll.nlog">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Ducky.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Server\LSP\Rubberduck\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
-      <Project>{86502725-a9d2-47a8-b26a-5e7bc8a85d47}</Project>
-      <Name>Rubberduck.Parsing</Name>
+    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
+      <Project>{7B04E66C-DD08-437F-8D43-EDDAC732DC53}</Project>
+      <Name>Rubberduck.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj">
-      <Project>{5e2588a5-2ef2-4267-952d-53aec8f5f173}</Project>
+      <Project>{5E2588A5-2EF2-4267-952D-53AEC8F5F173}</Project>
       <Name>Rubberduck.InternalApi</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Server\LSP\Rubberduck\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
+      <Project>{86502725-A9D2-47A8-B26A-5E7BC8A85D47}</Project>
+      <Name>Rubberduck.Parsing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj">
-      <Project>{ed65baad-743d-4144-aee2-8d956e6da599}</Project>
+      <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
       <Name>Rubberduck.Resources</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
       <Project>{e794cfc3-3d9f-400f-88d9-69e929d8e8af}</Project>
       <Name>Rubberduck.SettingsProvider</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Shared\Rubberduck.UI\Rubberduck.UI.csproj">
-      <Project>{fc5ecd51-175b-42d6-b46c-130b57aa1ebc}</Project>
-      <Name>Rubberduck.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
-      <Project>{7b04e66c-dd08-437f-8d43-eddac732dc53}</Project>
-      <Name>Rubberduck.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.UI.WinForms\Rubberduck.UI.WinForms.csproj">
-      <Project>{a1f54935-fe6d-4013-b618-5251de4466cf}</Project>
+      <Project>{A1F54935-FE6D-4013-B618-5251DE4466CF}</Project>
       <Name>Rubberduck.UI.WinForms</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.UI.Xaml\Rubberduck.UI.Xaml.csproj">
-      <Project>{1192fa78-b73f-46bc-b98c-fd887a062a2c}</Project>
+      <Project>{1192FA78-B73F-46BC-B98C-FD887A062A2C}</Project>
       <Name>Rubberduck.UI.Xaml</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Shared\Rubberduck.UI\Rubberduck.UI.csproj">
+      <Project>{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}</Project>
+      <Name>Rubberduck.UI</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEditor.VB6\Rubberduck.VBEditor.VB6.csproj">
       <Project>{f4b320f8-391d-4580-9aef-c70d9aea04d5}</Project>
@@ -217,9 +207,20 @@
       <Name>Rubberduck.VBEditor.VBA</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEditor\Rubberduck.VBEditor.csproj">
-      <Project>{030fde59-c347-4b81-ab80-5b4b80b757a0}</Project>
+      <Project>{030FDE59-C347-4B81-AB80-5B4B80B757A0}</Project>
       <Name>Rubberduck.VBEditor</Name>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="NLog.dll.nlog">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Ducky.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
