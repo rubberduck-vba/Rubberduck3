@@ -368,10 +368,6 @@
       <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
       <Name>Rubberduck.Resources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.RPC\Rubberduck.RPC.csproj">
-      <Project>{8D218701-AF68-4013-B9C0-108C1D162E11}</Project>
-      <Name>Rubberduck.RPC</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

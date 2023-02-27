@@ -192,12 +192,6 @@
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.VisualBasic.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Rubberduck.RPC\Rubberduck.RPC.csproj">
-      <Project>{8D218701-AF68-4013-B9C0-108C1D162E11}</Project>
-      <Name>Rubberduck.RPC</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
