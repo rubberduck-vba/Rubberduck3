@@ -288,6 +288,8 @@
     <Compile Include="Platform\Model\ServerStatus.cs" />
     <Compile Include="Platform\JsonRpcRequestHandler.cs" />
     <Compile Include="Platform\Model\SqlQuery.cs" />
+    <Compile Include="Platform\Proxy\LocalDb\ILocalDbQueryServiceProxy.cs" />
+    <Compile Include="Platform\Proxy\LocalDb\ILocalDbServerServiceProxy.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -330,6 +332,10 @@
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.VisualBasic.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Platform\Proxy\LSP\" />
+    <Folder Include="Platform\Proxy\Telemetry\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />

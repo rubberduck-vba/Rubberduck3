@@ -189,8 +189,6 @@
   <ItemGroup>
     <Compile Include="LSP\LspClientService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RPC\LocalDb\LocalDbClientService.cs" />
-    <Compile Include="RPC\Telemetry\TelemetryClientService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
