@@ -4,6 +4,7 @@ namespace Rubberduck.RPC.Platform.Model.LocalDb
 {
     public class Local : DbEntity
     {
+        public Declaration Declaration { get; set; }
         public int DeclarationId { get; set; }
         public int IsAutoAssigned { get; set; }
         public int IsImplicit { get; set; }

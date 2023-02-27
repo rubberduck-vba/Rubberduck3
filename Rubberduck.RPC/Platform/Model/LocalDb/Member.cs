@@ -4,6 +4,7 @@ namespace Rubberduck.RPC.Platform.Model.LocalDb
 {
     public class Member : DbEntity
     {
+        public Declaration Declaration { get; set; }
         public int DeclarationId { get; set; }
         public int? ImplementsDeclarationId { get; set; }
         public int Accessibility { get; set; }
@@ -11,6 +12,9 @@ namespace Rubberduck.RPC.Platform.Model.LocalDb
         public int IsWithEvents { get; set; }
         public int IsDimStmt { get; set; }
         public string ValueExpression { get; set; }
+
+        public Parameter[] Parameters { get; set; }
+        public Local[] Locals { get; set; }
     }
 
     public class MemberInfo : Member

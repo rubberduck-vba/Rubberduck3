@@ -7,8 +7,11 @@ namespace Rubberduck.RPC.Platform.Model.LocalDb
 {
     public class Module : DbEntity
     {
+        public Declaration Declaration { get; set; }
         public int DeclarationId { get; set; }
         public string Folder { get; set; }
+
+        public Member[] Members { get; set; }
     }
 
     public class ModuleInfo : Module

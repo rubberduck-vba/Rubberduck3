@@ -6,11 +6,16 @@ namespace Rubberduck.Server.RPC
 {
     public interface ILocalDbQueryServiceProxy
     {
-        Task<IEnumerable<ProjectInfo>> GetProjectsAsync(PrimaryKeyRequestOptions options);
-        Task<ProjectInfo> GetProjectAsync(ProjectInfoRequestOptions options);
+        Task<IEnumerable<ProjectInfo>> GetProjectsAsync(ProjectInfoRequestOptions options);
+        Task<ProjectInfo> GetProjectAsync(PrimaryKeyRequestOptions options);
 
-        Task<IEnumerable<ModuleInfo>> GetModulesAsync(PrimaryKeyRequestOptions options);
-        Task<ModuleInfo> GetModuleAsync(ModuleInfoRequestOptions options);
+        Task<IEnumerable<ModuleInfo>> GetModulesAsync(ModuleInfoRequestOptions options);
+        Task<ModuleInfo> GetModuleAsync(PrimaryKeyRequestOptions options);
+    }
 
+    public interface ILocalDbWriterServiceProxy
+    {
+        Task<ProjectInfo> SaveProjectAsync(ProjectInfo item);
+        Task SaveProjectsAsync(IEnumerable<ProjectInfo> items);
     }
 }

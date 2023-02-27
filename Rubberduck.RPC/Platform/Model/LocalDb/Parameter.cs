@@ -4,6 +4,7 @@ namespace Rubberduck.RPC.Platform.Model.LocalDb
 {
     public class Parameter : DbEntity
     {
+        public Declaration Declaration { get; set; }
         public int DeclarationId { get; set; }
         public int Position { get; set; }
         public int IsParamArray { get; set; }

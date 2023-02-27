@@ -9,12 +9,15 @@ namespace Rubberduck.RPC.Platform.Model.LocalDb
         public int OwnerProcessId { get; set; }
         public bool IsCheckedOut { get; set; }
 
+        public Declaration Declaration { get; set; }
         public int DeclarationId { get; set; }
         public string VBProjectId { get; set; }
         public string Guid { get; set; }
         public int? MajorVersion { get; set; }
         public int? MinorVersion { get; set; }
         public string Path { get; set; }
+
+        public Module[] Modules { get; set; }
     }
 
     public class ProjectInfo : Project
