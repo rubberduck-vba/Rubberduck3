@@ -41,7 +41,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.CodeAnalysis", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Server.LSP", "Rubberduck.Server\Rubberduck.Server.LSP.csproj", "{E87CC6DE-5C4F-4F90-B9DC-45D1D954FE82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Client.LSP", "Rubberduck.Client\Rubberduck.Client.LSP.csproj", "{F44DB5B3-6E55-4680-A22D-902A76D75C2D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Client", "Rubberduck.Client\Rubberduck.Client.csproj", "{F44DB5B3-6E55-4680-A22D-902A76D75C2D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.RPC", "Rubberduck.RPC\Rubberduck.RPC.csproj", "{8D218701-AF68-4013-B9C0-108C1D162E11}"
 EndProject

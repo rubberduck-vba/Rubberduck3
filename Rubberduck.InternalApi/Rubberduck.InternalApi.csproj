@@ -142,7 +142,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RPC\LocalDb\Parameters\DisconnectParams.cs" />
     <Compile Include="Common\ExperimentalAttribute.cs" />
     <Compile Include="Common\FileSystemProvider.cs" />
     <Compile Include="Common\IExportable.cs" />
@@ -161,18 +160,6 @@
     <Compile Include="SharedModel\QualifiedModuleName.cs" />
     <Compile Include="SharedModel\Selection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RPC\LocalDb\Model\Declaration.cs" />
-    <Compile Include="RPC\LocalDb\Model\DeclarationAnnotation.cs" />
-    <Compile Include="RPC\LocalDb\Model\DeclarationAttribute.cs" />
-    <Compile Include="RPC\LocalDb\Model\IdentifierReference.cs" />
-    <Compile Include="RPC\LocalDb\Model\Local.cs" />
-    <Compile Include="RPC\LocalDb\Model\LocationInfo.cs" />
-    <Compile Include="RPC\LocalDb\Model\Member.cs" />
-    <Compile Include="RPC\LocalDb\Model\Module.cs" />
-    <Compile Include="RPC\LocalDb\Model\Parameter.cs" />
-    <Compile Include="RPC\LocalDb\Parameters\ConnectParams.cs" />
-    <Compile Include="RPC\LocalDb\Model\Project.cs" />
-    <Compile Include="RPC\LocalDb\Model\ProjectSetting.cs" />
     <Compile Include="UIContext\IUiContextProvider.cs" />
     <Compile Include="UIContext\IUiDispatcher.cs" />
     <Compile Include="WindowsApi\EnumHelper.cs" />
@@ -199,12 +186,6 @@
       <Name>Rubberduck.Resources</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="RPC\LocalDb\Requests\Connect\" />
-    <Folder Include="RPC\LocalDb\Requests\Disconnect\" />
-    <Folder Include="RPC\LocalDb\Requests\Info\" />
-    <Folder Include="RPC\LocalDb\Requests\Query\" />
-    <Folder Include="RPC\LocalDb\Requests\Save\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

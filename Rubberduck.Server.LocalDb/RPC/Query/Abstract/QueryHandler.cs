@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Platform.Model;
+using Rubberduck.RPC.Platform.Model.LocalDb.Responses;
 using Rubberduck.Server.LocalDb.Internal.Storage.Abstract;
 using System;
 using System.Threading;
@@ -10,7 +12,7 @@ namespace Rubberduck.Server.LocalDb.RPC.Query
 {
     public abstract class QueryHandler<TResult, TOptions> : JsonRpcRequestHandler<QueryRequest<TResult, TOptions>, QueryResult<TResult>>
         where TResult : class, new()
-        where TOptions : class, new()
+        where TOptions : IQueryOption, new()
     {
         private readonly IUnitOfWorkFactory _factory;
 

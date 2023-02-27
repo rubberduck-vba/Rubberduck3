@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.RPC.Platform
+﻿namespace Rubberduck.RPC.Platform.Model
 {
     /// <summary>
     /// Describes the current state of a RPC client.

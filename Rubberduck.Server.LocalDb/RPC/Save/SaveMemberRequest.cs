@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using Rubberduck.InternalApi.RPC.DataServer;
+using Rubberduck.RPC.Platform.Model.LocalDb;
 
 namespace Rubberduck.Server.LocalDb.RPC.Save
 {

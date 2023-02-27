@@ -264,10 +264,33 @@
     <Compile Include="Platform\Exceptions\ServerExceptions\InvalidStateException.cs" />
     <Compile Include="Platform\Exceptions\ServerExceptions\ServerException.cs" />
     <Compile Include="Platform\Model\ClientState.cs" />
+    <Compile Include="Platform\Model\IQueryOptions.cs" />
+    <Compile Include="Platform\Model\LocalDb\AnnotationBase.cs" />
+    <Compile Include="Platform\Model\LocalDb\DbEntity.cs" />
+    <Compile Include="Platform\Model\LocalDb\Declaration.cs" />
+    <Compile Include="Platform\Model\LocalDb\DeclarationAnnotation.cs" />
+    <Compile Include="Platform\Model\LocalDb\DeclarationAttribute.cs" />
+    <Compile Include="Platform\Model\LocalDb\IdentifierReference.cs" />
+    <Compile Include="Platform\Model\LocalDb\IdentifierReferenceAnnotation.cs" />
+    <Compile Include="Platform\Model\LocalDb\Local.cs" />
+    <Compile Include="Platform\Model\LocalDb\Member.cs" />
+    <Compile Include="Platform\Model\LocalDb\Module.cs" />
+    <Compile Include="Platform\Model\LocalDb\Parameter.cs" />
+    <Compile Include="Platform\Model\LocalDb\Parameters\ConnectParams.cs" />
+    <Compile Include="Platform\Model\LocalDb\Parameters\DisconnectParams.cs" />
+    <Compile Include="Platform\Model\LocalDb\PrimaryKeyRequestOptions.cs" />
+    <Compile Include="Platform\Model\LocalDb\Project.cs" />
+    <Compile Include="Platform\Model\LocalDb\ProjectSetting.cs" />
+    <Compile Include="Platform\Model\LocalDb\Responses\InfoResult.cs" />
+    <Compile Include="Platform\Model\LocalDb\Responses\QueryResult.cs" />
+    <Compile Include="Platform\Model\LocalDb\Responses\SuccessResult.cs" />
+    <Compile Include="Platform\Model\RpcClientInfo.cs" />
     <Compile Include="Platform\Model\ServerState.cs" />
     <Compile Include="Platform\Model\ServerStatus.cs" />
     <Compile Include="Platform\JsonRpcRequestHandler.cs" />
     <Compile Include="Platform\Model\SqlQuery.cs" />
+    <Compile Include="Platform\Proxy\LocalDb\ILocalDbQueryServiceProxy.cs" />
+    <Compile Include="Platform\Proxy\LocalDb\ILocalDbServerServiceProxy.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -275,18 +298,18 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Platform\Exceptions\ServerExceptions\UnexpectedExitNotificationException.cs" />
-    <Compile Include="Telemetry\DependencyTelemetry.cs" />
-    <Compile Include="Telemetry\EventTelemetry.cs" />
-    <Compile Include="Telemetry\ExceptionTelemetry.cs" />
-    <Compile Include="Telemetry\MetricTelemetry.cs" />
-    <Compile Include="Telemetry\PageViewTelemetry.cs" />
-    <Compile Include="Telemetry\RequestTelemetry.cs" />
-    <Compile Include="Telemetry\TelemetryContext.cs" />
-    <Compile Include="Telemetry\TelemetryCustomPropertyName.cs" />
-    <Compile Include="Telemetry\TelemetryEvent.cs" />
-    <Compile Include="Telemetry\TelemetryEventName.cs" />
-    <Compile Include="Telemetry\TelemetryEventSeverityLevel.cs" />
-    <Compile Include="Telemetry\TraceTelemetry.cs" />
+    <Compile Include="Platform\Model\Telemetry\DependencyTelemetry.cs" />
+    <Compile Include="Platform\Model\Telemetry\EventTelemetry.cs" />
+    <Compile Include="Platform\Model\Telemetry\ExceptionTelemetry.cs" />
+    <Compile Include="Platform\Model\Telemetry\MetricTelemetry.cs" />
+    <Compile Include="Platform\Model\Telemetry\PageViewTelemetry.cs" />
+    <Compile Include="Platform\Model\Telemetry\RequestTelemetry.cs" />
+    <Compile Include="Platform\Model\Telemetry\TelemetryContext.cs" />
+    <Compile Include="Platform\Model\Telemetry\TelemetryCustomPropertyName.cs" />
+    <Compile Include="Platform\Model\Telemetry\TelemetryEvent.cs" />
+    <Compile Include="Platform\Model\Telemetry\TelemetryEventName.cs" />
+    <Compile Include="Platform\Model\Telemetry\TelemetryEventSeverityLevel.cs" />
+    <Compile Include="Platform\Model\Telemetry\TraceTelemetry.cs" />
     <Compile Include="ServerProcessClientHelper.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -310,6 +333,10 @@
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.VisualBasic.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Platform\Proxy\LSP\" />
+    <Folder Include="Platform\Proxy\Telemetry\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />

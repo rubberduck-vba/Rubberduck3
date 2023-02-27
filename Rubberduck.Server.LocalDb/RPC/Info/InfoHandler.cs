@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Platform.Model;
+using Rubberduck.RPC.Platform.Model.LocalDb.Responses;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Server.LocalDb.RPC.Info
@@ -17,7 +18,7 @@ namespace Rubberduck.Server.LocalDb.RPC.Info
 
         protected override async Task<InfoResult> HandleAsync(InfoRequest request)
         {
-            var state = new InfoResult
+            var state = new InfoResult`
             {
                 Clients = _serverState.Clients,
                 GC = _serverState.GC,
