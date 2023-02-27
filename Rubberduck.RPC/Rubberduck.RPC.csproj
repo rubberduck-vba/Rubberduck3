@@ -278,6 +278,7 @@
     <Compile Include="Platform\Model\LocalDb\Parameter.cs" />
     <Compile Include="Platform\Model\LocalDb\Parameters\ConnectParams.cs" />
     <Compile Include="Platform\Model\LocalDb\Parameters\DisconnectParams.cs" />
+    <Compile Include="Platform\Model\LocalDb\PrimaryKeyRequestOptions.cs" />
     <Compile Include="Platform\Model\LocalDb\Project.cs" />
     <Compile Include="Platform\Model\LocalDb\ProjectSetting.cs" />
     <Compile Include="Platform\Model\LocalDb\Responses\InfoResult.cs" />
