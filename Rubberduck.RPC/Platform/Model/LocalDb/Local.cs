@@ -9,6 +9,8 @@ namespace Rubberduck.RPC.Platform.Model.LocalDb
         public int IsAutoAssigned { get; set; }
         public int IsImplicit { get; set; }
         public string ValueExpression { get; set; }
+
+        public DeclarationAnnotation[] Annotations { get; set; }
     }
 
     public class LocalInfo : Local

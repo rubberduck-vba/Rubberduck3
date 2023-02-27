@@ -13,6 +13,8 @@ namespace Rubberduck.RPC.Platform.Model.LocalDb
         public int IsDimStmt { get; set; }
         public string ValueExpression { get; set; }
 
+        public DeclarationAnnotation[] Annotations { get; set; }
+        public DeclarationAttribute[] Attributes { get; set; }
         public Parameter[] Parameters { get; set; }
         public Local[] Locals { get; set; }
     }

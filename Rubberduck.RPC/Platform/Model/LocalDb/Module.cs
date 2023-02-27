@@ -11,6 +11,8 @@ namespace Rubberduck.RPC.Platform.Model.LocalDb
         public int DeclarationId { get; set; }
         public string Folder { get; set; }
 
+        public DeclarationAnnotation[] Annotations { get; set; }
+        public DeclarationAttribute[] Attributes { get; set; }
         public Member[] Members { get; set; }
     }
 

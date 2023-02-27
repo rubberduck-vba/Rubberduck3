@@ -13,6 +13,8 @@ namespace Rubberduck.RPC.Platform.Model.LocalDb
         public int IsByVal { get; set; }
         public int IsModifierImplicit { get; set; }
         public string DefaultValue { get; set; }
+
+        public DeclarationAnnotation[] Annotations { get; set; }
     }
 
     public class ParameterInfo : Parameter

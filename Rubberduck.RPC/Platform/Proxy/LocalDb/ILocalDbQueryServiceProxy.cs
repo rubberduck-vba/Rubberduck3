@@ -12,10 +12,4 @@ namespace Rubberduck.Server.RPC
         Task<IEnumerable<ModuleInfo>> GetModulesAsync(ModuleInfoRequestOptions options);
         Task<ModuleInfo> GetModuleAsync(PrimaryKeyRequestOptions options);
     }
-
-    public interface ILocalDbWriterServiceProxy
-    {
-        Task<ProjectInfo> SaveProjectAsync(ProjectInfo item);
-        Task SaveProjectsAsync(IEnumerable<ProjectInfo> items);
-    }
 }

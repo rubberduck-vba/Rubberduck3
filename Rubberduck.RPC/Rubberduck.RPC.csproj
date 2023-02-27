@@ -291,6 +291,7 @@
     <Compile Include="Platform\Model\SqlQuery.cs" />
     <Compile Include="Platform\Proxy\LocalDb\ILocalDbQueryServiceProxy.cs" />
     <Compile Include="Platform\Proxy\LocalDb\ILocalDbServerServiceProxy.cs" />
+    <Compile Include="Platform\Proxy\LocalDb\ILocalDbWriterServiceProxy.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
