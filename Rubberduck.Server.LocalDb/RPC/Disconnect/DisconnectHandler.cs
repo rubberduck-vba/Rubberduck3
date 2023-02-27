@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Platform.Model;
 using Rubberduck.RPC.Platform.Model.LocalDb.Responses;
@@ -20,7 +19,7 @@ namespace Rubberduck.Server.LocalDb.RPC.Disconnect
 
         protected override async Task<SuccessResult> HandleAsync(DisconnectRequest request)
         {
-            var client = request.Params.ToObject<ClientInfo>();
+            var client = request.Params.ToObject<RpcClientInfo>();
 
             if (_serverState.Disconnect(client.Name, out var disconnected))
             {
