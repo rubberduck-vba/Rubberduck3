@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using Rubberduck.Server.LocalDb.Internal.Model;
+using Rubberduck.RPC.Platform.Model.LocalDb;
 
 namespace Rubberduck.Server.LocalDb.RPC.Query
 {
