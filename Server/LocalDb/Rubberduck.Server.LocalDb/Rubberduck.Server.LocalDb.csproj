@@ -380,7 +380,6 @@
   <ItemGroup>
     <Analyzer Include="..\..\..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.3.3.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.BannedApiAnalyzers.dll" />
     <Analyzer Include="..\..\..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.3.3.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.BannedApiAnalyzers.dll" />
-    <Analyzer Include="..\..\..\packages\Microsoft.ServiceHub.Analyzers.4.1.112\analyzers\Microsoft.ServiceHub.Analyzers.dll" />
     <Analyzer Include="..\..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CSharp.dll" />
     <Analyzer Include="..\..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
