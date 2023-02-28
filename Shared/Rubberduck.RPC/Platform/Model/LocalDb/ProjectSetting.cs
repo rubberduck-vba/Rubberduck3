@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.RPC.Platform.Model.LocalDb
+﻿namespace Rubberduck.RPC.Platform.Model.Database
 {
     public class ProjectSetting
     {

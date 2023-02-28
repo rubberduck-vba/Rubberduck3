@@ -26,10 +26,10 @@ namespace Rubberduck.Server.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=RubberduckLocalDB.db;")]
-        public string LocalDB {
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=RubberduckDatabase.db;")]
+        public string Database {
             get {
-                return ((string)(this["LocalDB"]));
+                return ((string)(this["Database"]));
             }
         }
         

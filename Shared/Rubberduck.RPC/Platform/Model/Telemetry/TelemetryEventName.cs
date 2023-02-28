@@ -258,59 +258,59 @@
         #region range 4000-4999 [SQL] database server process telemetry
 
         /// <summary>
-        /// The LocalDb client console GUI client main window was displayed.
+        /// The Database client console GUI client main window was displayed.
         /// </summary>
         SQL_OnClientConsoleShown = 4000,
         /// <summary>
-        /// The LocalDb client console GUI client main window was minimized.
+        /// The Database client console GUI client main window was minimized.
         /// </summary>
         SQL_OnClientConsoleMinimized,
         /// <summary>
-        /// The LocalDb client console GUI client main window was maximized.
+        /// The Database client console GUI client main window was maximized.
         /// </summary>
         SQL_OnClientConsoleMaximized,
         /// <summary>
-        /// The LocalDb client console GUI client main window was closed/hidden.
+        /// The Database client console GUI client main window was closed/hidden.
         /// </summary>
         SQL_OnClientConsoleHidden,
         /// <summary>
-        /// The <c>RestartCommand</c> server command is being executed form the LocalDb console client.
+        /// The <c>RestartCommand</c> server command is being executed form the Database console client.
         /// </summary>
         SQL_OnClientConsoleRestartCommand,
         /// <summary>
-        /// The <c>ShutdownCommand</c> server command is being executed from the LocalDb console client.
+        /// The <c>ShutdownCommand</c> server command is being executed from the Database console client.
         /// </summary>
         SQL_OnClientConsoleShutdownCommand,
         /// <summary>
-        /// The <c>SaveAsCommand</c> client command is being executed in the LocalDb console client.
+        /// The <c>SaveAsCommand</c> client command is being executed in the Database console client.
         /// </summary>
         SQL_OnClientConsoleSaveAsCommand,
         /// <summary>
-        /// The <c>CopyCommand</c> client command is being executed in the LocalDb console client.
+        /// The <c>CopyCommand</c> client command is being executed in the Database console client.
         /// </summary>
         SQL_OnClientConsoleCopyCommand,
         /// <summary>
-        /// The <c>ClearCommand</c> client command is being executed in the LocalDb console client.
+        /// The <c>ClearCommand</c> client command is being executed in the Database console client.
         /// </summary>
         SQL_OnClientConsoleClearCommand,
         /// <summary>
-        /// The <c>SetTraceCommand</c> server command is being executed from the LocalDb console client.
+        /// The <c>SetTraceCommand</c> server command is being executed from the Database console client.
         /// </summary>
         SQL_OnClientConsoleSetTraceCommand,
         /// <summary>
-        /// The <c>Console</c> tab header was clicked in the LocalDb console client.
+        /// The <c>Console</c> tab header was clicked in the Database console client.
         /// </summary>
         SQL_OnClientConsoleTabHeaderClicked,
         /// <summary>
-        /// The <c>Telemetry</c> tab header was clicked in the LocalDb console client.
+        /// The <c>Telemetry</c> tab header was clicked in the Database console client.
         /// </summary>
         SQL_OnClientTelemetryTabHeaderClicked,
         /// <summary>
-        /// The <c>Settings</c> tab header was clicked in the LocalDb console client.
+        /// The <c>Settings</c> tab header was clicked in the Database console client.
         /// </summary>
         SQL_OnClientSettingsTabHeaderClicked,
         /// <summary>
-        /// SQL client/server settings were modified in the LocalDb console client.
+        /// SQL client/server settings were modified in the Database console client.
         /// </summary>
         SQL_OnClientConsoleSaveSettings,
 

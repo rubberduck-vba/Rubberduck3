@@ -25,10 +25,10 @@ namespace Rubberduck.RPC.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("..\\..\\..\\Rubberduck.Server.LocalDb\\bin\\Debug\\Rubberduck.Server.LocalDb.exe")]
-        public string ServerExecutable_LocalDb {
+        [global::System.Configuration.DefaultSettingValueAttribute("..\\..\\..\\Rubberduck.Server.Database\\bin\\Debug\\Rubberduck.Server.Database.exe")]
+        public string ServerExecutable_Database {
             get {
-                return ((string)(this["ServerExecutable_LocalDb"]));
+                return ((string)(this["ServerExecutable_Database"]));
             }
         }
         

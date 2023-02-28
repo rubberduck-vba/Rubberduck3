@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.RPC.Platform.Model.LocalDb.Parameters
+﻿namespace Rubberduck.RPC.Platform.Model.Database.Parameters
 {
     public class ConnectParams
     {

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Rubberduck.RPC.Platform.Model.LocalDb
+namespace Rubberduck.RPC.Platform.Model.Database
 {
     public class Module : DbEntity
     {

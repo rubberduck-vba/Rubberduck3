@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Rubberduck.RPC.Platform.Model.LocalDb
+namespace Rubberduck.RPC.Platform.Model.Database
 {
     public class Project : DbEntity
     {

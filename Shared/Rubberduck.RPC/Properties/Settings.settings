@@ -2,8 +2,8 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Rubberduck.RPC.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="ServerExecutable_LocalDb" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">..\..\..\Rubberduck.Server.LocalDb\bin\Debug\Rubberduck.Server.LocalDb.exe</Value>
+    <Setting Name="ServerExecutable_Database" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">..\..\..\Rubberduck.Server.Database\bin\Debug\Rubberduck.Server.Database.exe</Value>
     </Setting>
     <Setting Name="ServerExecutable_LSP" Type="System.String" Scope="Application">
       <Value Profile="(Default)">..\..\..\Rubberduck.Server.LSP\bin\Debug\Rubberduck.Server.LSP.exe</Value>

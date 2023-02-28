@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rubberduck.RPC.Platform.Model.LocalDb
+namespace Rubberduck.RPC.Platform.Model.Database
 {
     public abstract class DbEntity
     {

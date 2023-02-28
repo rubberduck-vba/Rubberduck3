@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.RPC.Platform.Model.LocalDb.Responses
+﻿namespace Rubberduck.RPC.Platform.Model.Database.Responses
 {
     public class SuccessResult
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Rubberduck.RPC.Platform.Model.LocalDb.Responses
+namespace Rubberduck.RPC.Platform.Model.Database.Responses
 {
     public class QueryResult<TResult> where TResult : class, new()
     {

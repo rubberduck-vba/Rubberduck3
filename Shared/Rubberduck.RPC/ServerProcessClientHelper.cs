@@ -12,16 +12,16 @@ namespace Rubberduck.RPC
     public static class ServerProcessClientHelper
     {
         /// <summary>
-        /// Starts the <c>Rubberduck.Server.LocalDb</c> server if it isn't started already.
+        /// Starts the <c>Rubberduck.Server.Database</c> server if it isn't started already.
         /// </summary>
         /// <param name="port"></param>
         /// <returns>Returns the server process, whether it was already running or the method call started it.</returns>
-        public static Process StartLocalDb(bool hidden = true)
+        public static Process StartDatabase(bool hidden = true)
         {
             Process serverProcess = null;
             try
             {
-                if (TryFindServerProcess(Settings.Default.ServerExecutable_LocalDb, out serverProcess))
+                if (TryFindServerProcess(Settings.Default.ServerExecutable_Database, out serverProcess))
                 {
                     Debug.WriteLine($"Found existing '{serverProcess.ProcessName}' process (ID {serverProcess.Id}).");
                     return serverProcess;
@@ -29,7 +29,7 @@ namespace Rubberduck.RPC
 
                 var info = new ProcessStartInfo
                 {
-                    FileName = Settings.Default.ServerExecutable_LocalDb,
+                    FileName = Settings.Default.ServerExecutable_Database,
                     Arguments = $"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -45,7 +45,7 @@ namespace Rubberduck.RPC
                 Debug.WriteLine(exception);
             }
 
-            return serverProcess ?? throw new InvalidOperationException("Could not start or find a localdb server process.");
+            return serverProcess ?? throw new InvalidOperationException("Could not start or find a Database server process.");
         }
 
         private static bool TryFindServerProcess(string name, out Process process)
