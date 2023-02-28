@@ -18,7 +18,7 @@ namespace Rubberduck.Server.LocalDb.RPC.Info
 
         protected override async Task<InfoResult> HandleAsync(InfoRequest request)
         {
-            var state = new InfoResult
+            var state = new InfoResult`
             {
                 Clients = _serverState.Clients,
                 GC = _serverState.GC,
