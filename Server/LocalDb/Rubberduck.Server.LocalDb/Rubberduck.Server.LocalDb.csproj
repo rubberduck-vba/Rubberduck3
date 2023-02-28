@@ -401,7 +401,6 @@
     <Error Condition="!Exists('..\..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\build\Microsoft.VisualStudio.Threading.Analyzers.targets'))" />
     <Error Condition="!Exists('..\..\..\packages\IsExternalInit.1.0.3\build\IsExternalInit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IsExternalInit.1.0.3\build\IsExternalInit.props'))" />
   </Target>
-  <Import Project="..\..\..\packages\Microsoft.VisualStudio.SDK.Analyzers.16.10.10\build\Microsoft.VisualStudio.SDK.Analyzers.targets" Condition="Exists('..\..\..\packages\Microsoft.VisualStudio.SDK.Analyzers.16.10.10\build\Microsoft.VisualStudio.SDK.Analyzers.targets')" />
   <Import Project="..\..\..\packages\Microsoft.VisualStudio.Setup.Configuration.Interop.3.4.2244\build\Microsoft.VisualStudio.Setup.Configuration.Interop.targets" Condition="Exists('..\..\..\packages\Microsoft.VisualStudio.Setup.Configuration.Interop.3.4.2244\build\Microsoft.VisualStudio.Setup.Configuration.Interop.targets')" />
   <Import Project="..\..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />
 </Project>
