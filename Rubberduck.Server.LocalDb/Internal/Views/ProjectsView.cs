@@ -1,4 +1,4 @@
-﻿using Rubberduck.RPC.Platform.Model.LocalDb;
+﻿using Rubberduck.RPC.Platform.Model.Database;
 using Rubberduck.Server.LocalDb.Internal.Storage.Abstract;
 using System;
 using System.Collections.Generic;

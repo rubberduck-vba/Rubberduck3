@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OmniSharp.Extensions.JsonRpc;
-using Rubberduck.RPC.Platform.Model.LocalDb;
+using OmniSharp.Extensions.LanguageServer.Shared;
+using Rubberduck.RPC.Platform.Model.Database;
 using Rubberduck.Server.LocalDb.Properties;
 using Rubberduck.Server.LocalDb.RPC.Connect;
 using Rubberduck.Server.LocalDb.RPC.Disconnect;
@@ -46,14 +47,16 @@ namespace Rubberduck.Server.LocalDb.Configuration
                .AddHandler<SaveHandler<DeclarationAnnotation>>()
                .AddHandler<SaveHandler<DeclarationAttribute>>()
 
-               .AddHandler<SelectQueryHandler<ProjectInfo, ProjectInfoRequestOptions>>()
+               .AddHandler<SelectQueryHandler<MemberInfo, MemberInfoRequestOptions>>()
                .AddHandler<SelectQueryHandler<ModuleInfo, ModuleInfoRequestOptions>>()
+               .AddHandler<SelectQueryHandler<ProjectInfo, ProjectInfoRequestOptions>>()
                ;
         }
 
         private static (Stream input, Stream output) WithAsyncNamedPipeTransport(string name)
         {
-            var input = new NamedPipeServerStream(name, PipeDirection.InOut, 1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
+            const int maxServerInstances = 1;
+            var input = new NamedPipeServerStream(name, PipeDirection.InOut, maxServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
             var output = new NamedPipeClientStream(".", name, PipeDirection.InOut, PipeOptions.Asynchronous);
             return (input, output);
         }

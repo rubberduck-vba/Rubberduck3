@@ -2,7 +2,7 @@
 using Rubberduck.InternalApi.Common;
 using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Platform.Model;
-using Rubberduck.RPC.Platform.Model.LocalDb.Responses;
+using Rubberduck.RPC.Platform.Model.Database.Responses;
 using Rubberduck.Server.LocalDb.Internal.Storage.Abstract;
 using System;
 using System.Threading;

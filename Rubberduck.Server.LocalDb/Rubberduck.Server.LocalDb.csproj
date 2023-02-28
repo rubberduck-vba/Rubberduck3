@@ -301,7 +301,6 @@
     <Compile Include="RPC\Info\InfoRequest.cs" />
     <Compile Include="RPC\Connect\ConnectHandler.cs" />
     <Compile Include="RPC\Connect\ConnectRequest.cs" />
-    <Compile Include="RPC\JsonRpcMethods.cs" />
     <Compile Include="RPC\Query.Debug\SqlQueryHandler.cs" />
     <Compile Include="RPC\Query.Debug\QueryRequest.cs" />
     <Compile Include="RPC\Query\Abstract\QueryHandler.cs" />

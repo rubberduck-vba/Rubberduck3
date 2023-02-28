@@ -192,11 +192,14 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\IServiceCollectionExtensions.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="RPC\Info\InfoHandler.cs" />
+    <Compile Include="RPC\Info\InfoRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -235,6 +238,10 @@
       <Project>{ed65baad-743d-4144-aee2-8d956e6da599}</Project>
       <Name>Rubberduck.Resources</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.RPC\Rubberduck.RPC.csproj">
+      <Project>{8D218701-AF68-4013-B9C0-108C1D162E11}</Project>
+      <Name>Rubberduck.RPC</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
@@ -245,9 +252,7 @@
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.VisualBasic.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Configuration\" />
     <Folder Include="Internal\" />
-    <Folder Include="RPC\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />

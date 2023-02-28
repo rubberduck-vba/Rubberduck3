@@ -1,13 +1,19 @@
-﻿using Rubberduck.RPC.Platform.Model.LocalDb;
-using Rubberduck.RPC.Platform.Model.LocalDb.Responses;
+﻿using OmniSharp.Extensions.JsonRpc;
+using Rubberduck.RPC.Platform;
+using Rubberduck.RPC.Platform.Model.Database;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Server.RPC
 {
     public interface ILocalDbWriterServiceProxy
     {
-        Task<SuccessResult> SaveProjectGraphAsync(Project graph);
-        Task<SuccessResult> SaveModuleGraphAsync(Module graph);
-        Task<SuccessResult> SaveMemberGraphAsync(Member graph);
+        [Method(JsonRpcMethods.Database.SaveProject, Direction.ClientToServer)]
+        Task SaveProjectGraphAsync(Project graph);
+        
+        [Method(JsonRpcMethods.Database.SaveModule, Direction.ClientToServer)]
+        Task SaveModuleGraphAsync(Module graph);
+        
+        [Method(JsonRpcMethods.Database.SaveMember, Direction.ClientToServer)]
+        Task SaveMemberGraphAsync(Member graph);
     }
 }

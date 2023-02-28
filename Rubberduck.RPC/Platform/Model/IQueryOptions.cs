@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Rubberduck.RPC.Platform.Model.LocalDb;
+using Rubberduck.RPC.Platform.Model.Database;
 
 namespace Rubberduck.RPC.Platform.Model
 {

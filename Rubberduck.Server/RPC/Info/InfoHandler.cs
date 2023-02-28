@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Platform.Model;
-using Rubberduck.RPC.Platform.Model.Database.Responses;
 using System.Threading.Tasks;
 
-namespace Rubberduck.Server.LocalDb.RPC.Info
+namespace Rubberduck.Server.LSP.RPC.Info
 {
     internal class InfoHandler : JsonRpcRequestHandler<InfoRequest, InfoResult>
     {

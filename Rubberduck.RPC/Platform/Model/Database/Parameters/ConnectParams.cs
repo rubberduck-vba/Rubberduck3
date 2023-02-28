@@ -1,8 +1,9 @@
-﻿namespace Rubberduck.RPC.Platform.Model.LocalDb.Parameters
+﻿namespace Rubberduck.RPC.Platform.Model.Database.Parameters
 {
     public class ConnectParams
     {
         public int ProcessId { get; set; }
         public string Name { get; set; }
+        public string Version { get; set; }  
     }
 }

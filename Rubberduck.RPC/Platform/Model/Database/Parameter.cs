@@ -1,19 +1,23 @@
 ﻿using Rubberduck.InternalApi.Model;
 
-namespace Rubberduck.RPC.Platform.Model.LocalDb
+namespace Rubberduck.RPC.Platform.Model.Database
 {
-    public class Local : DbEntity
+    public class Parameter : DbEntity
     {
         public Declaration Declaration { get; set; }
         public int DeclarationId { get; set; }
-        public int IsAutoAssigned { get; set; }
-        public int IsImplicit { get; set; }
-        public string ValueExpression { get; set; }
+        public int Position { get; set; }
+        public int IsParamArray { get; set; }
+        public int IsOptional { get; set; }
+        public int IsByRef { get; set; }
+        public int IsByVal { get; set; }
+        public int IsModifierImplicit { get; set; }
+        public string DefaultValue { get; set; }
 
         public DeclarationAnnotation[] Annotations { get; set; }
     }
 
-    public class LocalInfo : Local
+    public class ParameterInfo : Parameter
     {
         public DeclarationType DeclarationType { get; set; }
         public string IdentifierName { get; set; }

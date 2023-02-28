@@ -2,7 +2,7 @@
 using System.Data;
 using System.Threading.Tasks;
 using Dapper;
-using Rubberduck.RPC.Platform.Model.LocalDb;
+using Rubberduck.RPC.Platform.Model.Database;
 using Rubberduck.Server.LocalDb.Internal.Storage.Abstract;
 
 namespace Rubberduck.Server.LocalDb.Internal.Storage
