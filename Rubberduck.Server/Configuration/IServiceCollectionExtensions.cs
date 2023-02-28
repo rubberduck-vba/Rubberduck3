@@ -24,8 +24,7 @@ namespace Rubberduck.Server.LSP.Configuration
             
             lsp.WithInput(input)
                .WithOutput(output)
-
-               .AddHandler<InfoHandler>()
+               //add handlers here
             ;
         }
 
