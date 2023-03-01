@@ -24,7 +24,7 @@ namespace Rubberduck.RPC.Platform
         {
             try
             {
-                Logger.LogTrace($"Handling notification: {GetType().Name}");
+                Logger.LogTrace($"Handling request: {GetType().Name}");
                 TResponse response = default;
 
                 var handler = Task.Run(async () => response = await HandleAsync(request));
