@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.RPC.Platform
 {
-    public abstract class JsonRpcNotificationHandler<TNotification> : IJsonRpcNotificationHandler<TNotification> 
-        where TNotification : IRequest, IRequest<Unit>
+    public abstract class JsonRpcNotificationHandler<TParameter> : IJsonRpcNotificationHandler<TParameter> 
+        where TParameter : IRequest, IRequest<Unit>
     {
         protected JsonRpcNotificationHandler(ILogger logger)
         {
@@ -18,12 +18,12 @@ namespace Rubberduck.RPC.Platform
 
         protected ILogger Logger { get; }
 
-        protected abstract Task HandleAsync(TNotification notification);
+        protected abstract Task HandleAsync(TParameter parameter);
 
-        public async Task Handle(TNotification request, CancellationToken cancellationToken) => 
-            await ((IRequestHandler<TNotification, Unit>)this).Handle(request, cancellationToken);
+        async Task IRequestHandler<TParameter>.Handle(TParameter request, CancellationToken cancellationToken) 
+            => await ((IRequestHandler<TParameter, Unit>)this).Handle(request, cancellationToken);
 
-        async Task<Unit> IRequestHandler<TNotification, Unit>.Handle(TNotification request, CancellationToken cancellationToken)
+        async Task<Unit> IRequestHandler<TParameter, Unit>.Handle(TParameter request, CancellationToken cancellationToken)
         {
             try
             {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OmniSharp.Extensions.JsonRpc;
 using OmniSharp.Extensions.LanguageServer.Shared;
+using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Platform.Model.Database;
 using Rubberduck.Server.LocalDb.Properties;
 using Rubberduck.Server.LocalDb.RPC.Connect;
@@ -38,18 +39,18 @@ namespace Rubberduck.Server.LocalDb.Configuration
                .AddHandler<ConnectHandler>()
                .AddHandler<DisconnectHandler>()
                
-               .AddHandler<SaveHandler<IdentifierReference>>()
-               .AddHandler<SaveHandler<Local>>()
-               .AddHandler<SaveHandler<Member>>()
-               .AddHandler<SaveHandler<Module>>()
-               .AddHandler<SaveHandler<Parameter>>()
-               .AddHandler<SaveHandler<Project>>()
-               .AddHandler<SaveHandler<DeclarationAnnotation>>()
-               .AddHandler<SaveHandler<DeclarationAttribute>>()
+               .AddHandler<SaveNotificationHandler<IdentifierReference>>(JsonRpcMethods.Database.SaveIdentifierReference)
+               .AddHandler<SaveNotificationHandler<Local>>(JsonRpcMethods.Database.SaveLocal)
+               .AddHandler<SaveNotificationHandler<Member>>(JsonRpcMethods.Database.SaveMember)
+               .AddHandler<SaveNotificationHandler<Module>>(JsonRpcMethods.Database.SaveModule)
+               .AddHandler<SaveNotificationHandler<Parameter>>(JsonRpcMethods.Database.SaveParameter)
+               .AddHandler<SaveNotificationHandler<Project>>(JsonRpcMethods.Database.SaveProject)
+               .AddHandler<SaveNotificationHandler<DeclarationAnnotation>>(JsonRpcMethods.Database.QueryAnnotations)
+               .AddHandler<SaveNotificationHandler<DeclarationAttribute>>(JsonRpcMethods.Database.QueryAttributes)
 
-               .AddHandler<SelectQueryHandler<MemberInfo, MemberInfoRequestOptions>>()
-               .AddHandler<SelectQueryHandler<ModuleInfo, ModuleInfoRequestOptions>>()
-               .AddHandler<SelectQueryHandler<ProjectInfo, ProjectInfoRequestOptions>>()
+               .AddHandler<SelectQueryHandler<MemberInfo, MemberInfoRequestOptions>>(JsonRpcMethods.Database.QueryMemberInfo)
+               .AddHandler<SelectQueryHandler<ModuleInfo, ModuleInfoRequestOptions>>(JsonRpcMethods.Database.QueryModuleInfo)
+               .AddHandler<SelectQueryHandler<ProjectInfo, ProjectInfoRequestOptions>>(JsonRpcMethods.Database.QueryProjectInfo)
                ;
         }
 

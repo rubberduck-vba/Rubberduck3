@@ -302,20 +302,20 @@
     <Compile Include="RPC\Connect\ConnectHandler.cs" />
     <Compile Include="RPC\Connect\ConnectRequest.cs" />
     <Compile Include="RPC\Query.Debug\SqlQueryHandler.cs" />
-    <Compile Include="RPC\Query.Debug\QueryRequest.cs" />
+    <Compile Include="RPC\Query\Abstract\QueryRequest.cs" />
     <Compile Include="RPC\Query\Abstract\QueryHandler.cs" />
-    <Compile Include="RPC\Query\Abstract\SqlQueryRequest.cs" />
+    <Compile Include="RPC\Query.Debug\SqlQueryRequest.cs" />
     <Compile Include="RPC\Query\Requests\ProjectInfoRequest.cs" />
     <Compile Include="RPC\Query\Requests\ProjectsRequest.cs" />
     <Compile Include="RPC\Query\SelectQueryHandler.cs" />
-    <Compile Include="RPC\Save\Abstract\SaveHandler.cs" />
-    <Compile Include="RPC\Save\Abstract\SaveRequest.cs" />
-    <Compile Include="RPC\Save\SaveIdentifierReferenceRequest.cs" />
-    <Compile Include="RPC\Save\SaveLocalRequest.cs" />
-    <Compile Include="RPC\Save\SaveMemberRequest.cs" />
-    <Compile Include="RPC\Save\SaveModuleRequest.cs" />
-    <Compile Include="RPC\Save\SaveParameterRequest.cs" />
-    <Compile Include="RPC\Save\SaveProjectRequest.cs" />
+    <Compile Include="RPC\Save\Abstract\SaveNotificationHandler.cs" />
+    <Compile Include="RPC\Save\Abstract\SaveNotification.cs" />
+    <Compile Include="RPC\Save\SaveIdentifierReferenceNotification.cs" />
+    <Compile Include="RPC\Save\SaveLocalNotification.cs" />
+    <Compile Include="RPC\Save\SaveMemberNotification.cs" />
+    <Compile Include="RPC\Save\SaveModuleNotification.cs" />
+    <Compile Include="RPC\Save\SaveParameterNotification.cs" />
+    <Compile Include="RPC\Save\SaveProjectNotification.cs" />
     <Compile Include="Internal\Abstract\IDbConnectionProvider.cs" />
     <Compile Include="Internal\Abstract\IUnitOfWork.cs" />
     <Compile Include="Internal\Abstract\IUnitOfWorkFactory.cs" />
@@ -366,6 +366,10 @@
     <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
       <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
       <Name>Rubberduck.Resources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.RPC\Rubberduck.RPC.csproj">
+      <Project>{8D218701-AF68-4013-B9C0-108C1D162E11}</Project>
+      <Name>Rubberduck.RPC</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

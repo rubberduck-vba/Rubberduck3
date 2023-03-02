@@ -2,6 +2,7 @@
 using Rubberduck.RPC.Platform.Model;
 using Rubberduck.RPC.Platform.Model.Database.Responses;
 using Rubberduck.Server.LocalDb.Internal.Storage.Abstract;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Server.LocalDb.RPC.Query
@@ -15,7 +16,7 @@ namespace Rubberduck.Server.LocalDb.RPC.Query
         {
         }
 
-        protected override Task<QueryResult<TResult>> HandleAsync(QueryRequest<TResult, TOptions> request, IUnitOfWork uow)
+        protected override Task<QueryResult<TResult>> HandleAsync(QueryRequest<TResult, TOptions> request, IUnitOfWork uow, CancellationToken cancellationToken)
         {
             throw new System.NotImplementedException();
         }

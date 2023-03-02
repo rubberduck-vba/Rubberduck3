@@ -35,19 +35,19 @@ namespace Rubberduck.Server.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("3032")]
-        public int DefaultPort {
+        [global::System.Configuration.DefaultSettingValueAttribute("/Rubberduck.Server/LSP")]
+        public string JsonRpcServerPath {
             get {
-                return ((int)(this["DefaultPort"]));
+                return ((string)(this["JsonRpcServerPath"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("/Rubberduck.Server/LSP")]
-        public string JsonRpcServerPath {
+        [global::System.Configuration.DefaultSettingValueAttribute("Rubberduck.Server.LocalDb.RPC")]
+        public string DatabaseServerPipeName {
             get {
-                return ((string)(this["JsonRpcServerPath"]));
+                return ((string)(this["DatabaseServerPipeName"]));
             }
         }
     }

@@ -78,6 +78,16 @@
             public const string DebugSqlSelect = "query/debug";
 
             /// <summary>
+            /// Requests information about annotation comments.
+            /// </summary>
+            public const string QueryAnnotations = "query/annotations";
+
+            /// <summary>
+            /// Requests in formation about VB attributes.
+            /// </summary>
+            public const string QueryAttributes = "query/attributes";
+
+            /// <summary>
             /// Requests information about a particular project, by project ID.
             /// </summary>
             public const string QueryProjectInfo = "query/projectInfo";

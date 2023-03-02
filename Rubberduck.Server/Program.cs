@@ -1,9 +1,15 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using OmniSharp.Extensions.JsonRpc;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server.Capabilities;
+using Rubberduck.Server.LSP.Configuration;
+using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Rubberduck.Server
 {
@@ -13,66 +19,32 @@ namespace Rubberduck.Server
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        public static async Task<int> Main(string[] args)
         {
-            #region https://stackoverflow.com/a/229567/1188513
+            /*TODO accept command-line arguments*/
+            await StartAsync();
 
-            // get application GUID as defined in AssemblyInfo.cs
-            var appGuid = ((GuidAttribute)Assembly.GetExecutingAssembly()
-                .GetCustomAttributes(typeof(GuidAttribute), false)
-                .GetValue(0)).Value
-                .ToString();
-
-            // unique id for global mutex - Global prefix means it is global to the machine
-            var mutexId = $"Global\\{{{appGuid}}}";
-
-            // edited by Jeremy Wiebe to add example of setting up security for multi-user usage
-            // edited by 'Marc' to work also on localized systems (don't use just "Everyone") 
-            var allowEveryoneRule = new MutexAccessRule(
-                new SecurityIdentifier(WellKnownSidType.WorldSid, null),
-                MutexRights.FullControl,
-                AccessControlType.Allow);
-            var securitySettings = new MutexSecurity();
-            securitySettings.AddAccessRule(allowEveryoneRule);
-
-            // edited by MasonGZhwiti to prevent race condition on security settings via VanNguyen
-            using (var mutex = new Mutex(false, mutexId, out _, securitySettings))
-            {
-                // edited by acidzombie24
-                var hasHandle = false;
-                try
-                {
-                    try
-                    {
-                        // edited by acidzombie24
-                        hasHandle = mutex.WaitOne(5000, false);
-                        if (!hasHandle) throw new TimeoutException("Timeout waiting for exclusive access");
-                    }
-                    catch (AbandonedMutexException)
-                    {
-                        // Log the fact that the mutex was abandoned in another process,
-                        // it will still get acquired
-                        hasHandle = true;
-                    }
-
-                    // Perform your work here.
-                    Start();
-                }
-                finally
-                {
-                    // edited by acidzombie24, added if statement
-                    if (hasHandle)
-                    {
-                        mutex.ReleaseMutex();
-                    }
-                }
-            }
-            #endregion
+            return 0;
         }
 
-        private static void Start()
+        private static async Task StartAsync()
         {
-            //App.Main();
+            var tokenSource = new CancellationTokenSource();
+
+            var builder = Host.CreateDefaultBuilder()
+                .UseConsoleLifetime()
+                .ConfigureServices(provider => ConfigureServices(provider, tokenSource));
+
+            await builder.RunConsoleAsync(tokenSource.Token);
+        }
+
+        private static void ConfigureServices(IServiceCollection services, CancellationTokenSource cts)
+        {
+            var config = new ServerCapabilities
+            { 
+                /*TODO*/
+            };
+            services.AddRubberduckServerServices(config, cts);
         }
     }
 }

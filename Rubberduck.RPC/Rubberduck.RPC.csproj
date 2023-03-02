@@ -264,7 +264,9 @@
     <Compile Include="Platform\Exceptions\ServerExceptions\InvalidStateException.cs" />
     <Compile Include="Platform\Exceptions\ServerExceptions\ServerException.cs" />
     <Compile Include="Platform\JsonRpcMethods.cs" />
+    <Compile Include="Platform\JsonRpcNotificationHandler.cs" />
     <Compile Include="Platform\Model\ClientState.cs" />
+    <Compile Include="Platform\Model\Database\SaveParams.cs" />
     <Compile Include="Platform\Model\IQueryOptions.cs" />
     <Compile Include="Platform\Model\Database\AnnotationBase.cs" />
     <Compile Include="Platform\Model\Database\DbEntity.cs" />
@@ -277,8 +279,6 @@
     <Compile Include="Platform\Model\Database\Member.cs" />
     <Compile Include="Platform\Model\Database\Module.cs" />
     <Compile Include="Platform\Model\Database\Parameter.cs" />
-    <Compile Include="Platform\Model\Database\Parameters\ConnectParams.cs" />
-    <Compile Include="Platform\Model\Database\Parameters\DisconnectParams.cs" />
     <Compile Include="Platform\Model\Database\PrimaryKeyRequestOptions.cs" />
     <Compile Include="Platform\Model\Database\Project.cs" />
     <Compile Include="Platform\Model\Database\ProjectSetting.cs" />

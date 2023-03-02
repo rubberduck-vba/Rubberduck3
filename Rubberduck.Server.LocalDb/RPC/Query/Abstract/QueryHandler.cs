@@ -24,7 +24,7 @@ namespace Rubberduck.Server.LocalDb.RPC.Query
 
         protected override Task<QueryResult<TResult>> HandleAsync(QueryRequest<TResult, TOptions> request) => throw new NotSupportedException();
 
-        protected abstract Task<QueryResult<TResult>> HandleAsync(QueryRequest<TResult, TOptions> request, IUnitOfWork uow);
+        protected abstract Task<QueryResult<TResult>> HandleAsync(QueryRequest<TResult, TOptions> request, IUnitOfWork uow, CancellationToken cancellationToken);
 
         public sealed async override Task<QueryResult<TResult>> Handle(QueryRequest<TResult, TOptions> request, CancellationToken cancellationToken)
         {
@@ -32,10 +32,10 @@ namespace Rubberduck.Server.LocalDb.RPC.Query
             {
                 try
                 {
-                    Logger.LogTrace($"Handling notification: {GetType().Name}");
+                    Logger.LogTrace($"Handling request: {GetType().Name}");
                     QueryResult<TResult> response = default;
 
-                    var handler = Task.Run(async () => response = await HandleAsync(request, uow));
+                    var handler = Task.Run(async () => response = await HandleAsync(request, uow, cancellationToken));
                     var elapsed = await TimedAction.RunAsync(handler);
 
                     Logger.LogTrace($"[PERF] {GetType().Name} completed in {elapsed.TotalMilliseconds:N0} ms.");
