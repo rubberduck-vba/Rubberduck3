@@ -2,6 +2,7 @@
 using Rubberduck.InternalApi.WindowsApi;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using KeyPressEventArgs = Rubberduck.VBEditor.Events.KeyPressEventArgs;
 
 namespace Rubberduck.VBEditor.WindowsApi
 {

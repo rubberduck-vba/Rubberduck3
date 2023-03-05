@@ -1,5 +1,6 @@
 ﻿using System;
 using Rubberduck.VBEditor.Events;
+using KeyPressEventArgs = Rubberduck.VBEditor.Events.KeyPressEventArgs;
 
 namespace Rubberduck.VBEditor.WindowsApi
 {

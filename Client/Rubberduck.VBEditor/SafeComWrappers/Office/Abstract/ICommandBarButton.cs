@@ -1,6 +1,7 @@
 using Rubberduck.VBEditor.SafeComWrappers.Office;
 using System;
 using System.Drawing;
+using ButtonState = Rubberduck.VBEditor.SafeComWrappers.Office.ButtonState;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {

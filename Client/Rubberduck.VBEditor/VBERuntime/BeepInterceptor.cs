@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Timers;
 using EasyHook;
+using Timer = System.Timers.Timer;
 
 namespace Rubberduck.VBEditor.VbeRuntime
 {
