@@ -1,436 +1,60 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\..\packages\Antlr4.CodeGenerator.4.6.6\build\Antlr4.CodeGenerator.props" Condition="Exists('..\..\..\..\packages\Antlr4.CodeGenerator.4.6.6\build\Antlr4.CodeGenerator.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{86502725-A9D2-47A8-B26A-5E7BC8A85D47}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rubberduck.Parsing</RootNamespace>
-    <AssemblyName>Rubberduck.Parsing</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <NoWarn>3021;</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\Antlr4.Runtime.4.6.6\lib\net45\Antlr4.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.AvalonEdit">
-      <HintPath>..\Rubberduck.Core\bin\Debug\ICSharpCode.AvalonEdit.dll</HintPath>
-    </Reference>
-    <Reference Include="MessagePack.Annotations, Version=2.4.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\MessagePack.Annotations.2.4.59\lib\netstandard2.0\MessagePack.Annotations.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.NET.StringTools, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\Microsoft.NET.StringTools.17.4.0\lib\net472\Microsoft.NET.StringTools.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\NLog.5.1.2\lib\net46\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Collections.Immutable, Version=1.2.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\System.Collections.Immutable.1.7.1\lib\net461\System.Collections.Immutable.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.IO.Abstractions, Version=19.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\System.IO.Abstractions.19.1.18\lib\net461\System.IO.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="TestableIO.System.IO.Abstractions, Version=19.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\TestableIO.System.IO.Abstractions.19.1.18\lib\net461\TestableIO.System.IO.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="TestableIO.System.IO.Abstractions.Wrappers, Version=19.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\TestableIO.System.IO.Abstractions.Wrappers.19.1.18\lib\net461\TestableIO.System.IO.Abstractions.Wrappers.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Abstract\ICommonTokenStreamProvider.cs" />
-    <Compile Include="Abstract\ICompilationArgumentsCache.cs" />
-    <Compile Include="Abstract\ICompilationArgumentsProvider.cs" />
-    <Compile Include="Abstract\IExpression.cs" />
-    <Compile Include="Abstract\IModuleParser.cs" />
-    <Compile Include="Abstract\IParseCoordinator.cs" />
-    <Compile Include="Abstract\IParseRunner.cs" />
-    <Compile Include="Abstract\IParser.cs" />
-    <Compile Include="Abstract\IParsingStageService.cs" />
-    <Compile Include="Abstract\ITokenStreamParser.cs" />
-    <Compile Include="Abstract\ITokenStreamPreprocessor.cs" />
-    <Compile Include="Abstract\IValue.cs" />
-    <Compile Include="Abstract\ModuleState.cs" />
-    <Compile Include="Abstract\ParserState.cs" />
-    <Compile Include="Abstract\ParserStateManager.cs" />
-    <Compile Include="COM\ReferenceLoading\COMReferenceSynchronizerBase.cs" />
-    <Compile Include="COM\ReferenceLoading\ICOMReferenceSynchronizer.cs" />
-    <Compile Include="COM\ReferenceLoading\IProjectReferencesProvider.cs" />
-    <Compile Include="COM\ReferenceLoading\ReferencePriorityMap.cs" />
-    <Compile Include="Listeners\AttributeListener.cs" />
-    <Compile Include="Listeners\CombinedParseTreeListener.cs" />
-    <Compile Include="Listeners\CommentListener.cs" />
-    <Compile Include="Model\ModuleParseResults.cs" />
-    <Compile Include="Annotations\AnnotationBase.cs" />
-    <Compile Include="Listeners\AnnotationListener.cs" />
-    <Compile Include="Annotations\AttributeAnnotationExtensions.cs" />
-    <Compile Include="Annotations\AttributeAnnotationProvider.cs" />
-    <Compile Include="Annotations\Concrete\DefaultMemberAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\DescriptionAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\DescriptionAttributeAnnotationBase.cs" />
-    <Compile Include="Annotations\Concrete\EntryPointAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\EnumeratorMemberAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\ExcelHotKeyAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\ExposedModuleAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\FolderAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\IgnoreAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\IgnoreModuleAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\IgnoreTestAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\InterfaceAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\MemberAttributeAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\ModuleAttributeAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\ModuleCleanupAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\ModuleDescriptionAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\ModuleInitializeAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\NoIndentAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\ObsoleteAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\PredeclaredIdAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\TestCleanupAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\TestInitializeAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\TestMethodAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\TestModuleAnnotation.cs" />
-    <Compile Include="Annotations\Concrete\VariableDescriptionAnnotation.cs" />
-    <Compile Include="Annotations\FixedAttributeValueAnnotationBase.cs" />
-    <Compile Include="Annotations\FlexibleAttributeAnnotationBase.cs" />
-    <Compile Include="Annotations\FlexibleAttributeValueAnnotationBase.cs" />
-    <Compile Include="Annotations\IAnnotation.cs" />
-    <Compile Include="Annotations\IAnnotationFactory.cs" />
-    <Compile Include="Annotations\IAttributeAnnotation.cs" />
-    <Compile Include="Annotations\IAttributeAnnotationProvider.cs" />
-    <Compile Include="Annotations\InvalidAnnotationArgumentException.cs" />
-    <Compile Include="Annotations\IParseTreeAnnotation.cs" />
-    <Compile Include="Annotations\ITestAnnotation.cs" />
-    <Compile Include="Annotations\NotRecognizedAnnotation.cs" />
-    <Compile Include="Annotations\ParseTreeAnnotation.cs" />
-    <Compile Include="Annotations\VBAParserAnnotationFactory.cs" />
-    <Compile Include="DeclarationCaching\IDeclarationFinder.cs" />
-    <Compile Include="Expressions\AbsLibraryFunctionExpression.cs" />
-    <Compile Include="Expressions\BinaryDivisionExpression.cs" />
-    <Compile Include="Expressions\BinaryIntDivExpression.cs" />
-    <Compile Include="Expressions\BinaryMinusExpression.cs" />
-    <Compile Include="Expressions\BinaryMultiplicationExpression.cs" />
-    <Compile Include="Expressions\BinaryPlusExpression.cs" />
-    <Compile Include="Expressions\BoolValue.cs" />
-    <Compile Include="Expressions\ByteValue.cs" />
-    <Compile Include="Expressions\CBoolLibraryFunctionExpression.cs" />
-    <Compile Include="Expressions\CByteLibraryFunctionExpression.cs" />
-    <Compile Include="Expressions\CCurLibraryFunctionExpression.cs" />
-    <Compile Include="Expressions\CDateLibraryFunctionExpression.cs" />
-    <Compile Include="Expressions\CDblLibraryFunctionExpression.cs" />
-    <Compile Include="Expressions\CIntLibraryFunctionExpression.cs" />
-    <Compile Include="Expressions\CLngLibraryFunctionExpression.cs" />
-    <Compile Include="Expressions\CLngLngLibraryFunctionExpression.cs" />
-    <Compile Include="Expressions\CLngPtrLibraryFunctionExpression.cs" />
-    <Compile Include="Expressions\ConcatExpression.cs" />
-    <Compile Include="Expressions\ConditionalCompilationBlockExpression.cs" />
-    <Compile Include="Expressions\ConditionalCompilationConstantExpression.cs" />
-    <Compile Include="Expressions\ConditionalCompilationIfExpression.cs" />
-    <Compile Include="Expressions\ConstantExpression.cs" />
-    <Compile Include="Expressions\CSngLibraryFunctionExpression.cs" />
-    <Compile Include="Expressions\CStrLibraryFunctionExpression.cs" />
-    <Compile Include="Expressions\CVarLibraryFunctionExpression.cs" />
-    <Compile Include="Expressions\DateLiteralExpression.cs" />
-    <Compile Include="Expressions\DateValue.cs" />
-    <Compile Include="Expressions\DecimalValue.cs" />
-    <Compile Include="Expressions\EmptyValue.cs" />
-    <Compile Include="Abstract\Expression.cs" />
-    <Compile Include="Expressions\FixLibraryFunctionExpression.cs" />
-    <Compile Include="Expressions\HexNumberLiteralExpression.cs" />
-    <Compile Include="Expressions\IntLibraryFunctionExpression.cs" />
-    <Compile Include="Expressions\IsExpression.cs" />
-    <Compile Include="Expressions\LenBLibraryFunctionExpression.cs" />
-    <Compile Include="Expressions\LenLibraryFunctionExpression.cs" />
-    <Compile Include="Expressions\LikeExpression.cs" />
-    <Compile Include="Expressions\LivelinessExpression.cs" />
-    <Compile Include="Expressions\LogicalAndExpression.cs" />
-    <Compile Include="Expressions\LogicalEqualsExpression.cs" />
-    <Compile Include="Expressions\LogicalEqvExpression.cs" />
-    <Compile Include="Expressions\LogicalGreaterOrEqualsExpression.cs" />
-    <Compile Include="Expressions\LogicalGreaterThanExpression.cs" />
-    <Compile Include="Expressions\LogicalImpExpression.cs" />
-    <Compile Include="Expressions\LogicalLessOrEqualsExpression.cs" />
-    <Compile Include="Expressions\LogicalLessThanExpression.cs" />
-    <Compile Include="Expressions\LogicalNotEqualsExpression.cs" />
-    <Compile Include="Expressions\LogicalOrExpression.cs" />
-    <Compile Include="Expressions\LogicalXorExpression.cs" />
-    <Compile Include="Expressions\ModExpression.cs" />
-    <Compile Include="Expressions\NameExpression.cs" />
-    <Compile Include="Expressions\NumberLiteralExpression.cs" />
-    <Compile Include="Expressions\OctNumberLiteralExpression.cs" />
-    <Compile Include="Expressions\PowExpression.cs" />
-    <Compile Include="Expressions\SgnLibraryFunctionExpression.cs" />
-    <Compile Include="Expressions\StringLiteralExpression.cs" />
-    <Compile Include="Expressions\StringValue.cs" />
-    <Compile Include="Expressions\SymbolTable.cs" />
-    <Compile Include="Expressions\TokensValue.cs" />
-    <Compile Include="Expressions\UnaryMinusExpression.cs" />
-    <Compile Include="Expressions\UnaryNotExpression.cs" />
-    <Compile Include="Expressions\ValueType.cs" />
-    <Compile Include="Expressions\VBADateConstants.cs" />
-    <Compile Include="Expressions\VBALibrary.cs" />
-    <Compile Include="Abstract\TokenStreamParserBase.cs" />
-    <Compile Include="Model\QualifiedDocumentOffset.cs" />
-    <Compile Include="Parsers\Grammar\PartialExtensions\IAnnotatedContext.cs" />
-    <Compile Include="Parsers\Grammar\PartialExtensions\IAnnotatingContext.cs" />
-    <Compile Include="Parsers\Grammar\PartialExtensions\IIdentifierContext.cs" />
-    <Compile Include="Parsers\Grammar\PartialExtensions\VBAParserPartialExtensions.cs" />
-    <Compile Include="Parsers\VbeModuleParser.cs" />
-    <Compile Include="Parsers\TokenStreamParserStringParserAdapter.cs" />
-    <Compile Include="Parsers\VBACodeStringParser.cs" />
-    <Compile Include="Parsers\VBADateLiteralParser.cs" />
-    <Compile Include="Parsers\VBAExpressionParser.cs" />
-    <Compile Include="Parsers\VBALikePatternParser.cs" />
-    <Compile Include="Parsers\VBAPreprocessorParser.cs" />
-    <Compile Include="Parsers\VBATokenStreamParser.cs" />
-    <Compile Include="Abstract\IParsePassErrorListenerFactory.cs" />
-    <Compile Include="Abstract\IRubberduckParseErrorListener.cs" />
-    <Compile Include="Abstract\IRubberduckParserErrorListenerFactory.cs" />
-    <Compile Include="Exceptions\ExceptionErrorListener.cs" />
-    <Compile Include="Exceptions\ExceptionErrorListenerFactory.cs" />
-    <Compile Include="Exceptions\MainParseErrorListenerFactory.cs" />
-    <Compile Include="Exceptions\MainParseExceptionErrorListener.cs" />
-    <Compile Include="Exceptions\MainParseSyntaxErrorException.cs" />
-    <Compile Include="Exceptions\ParsePassErrorListenerBase.cs" />
-    <Compile Include="Exceptions\ParsePassExceptionErrorListener.cs" />
-    <Compile Include="Exceptions\ParsePassSyntaxErrorException.cs" />
-    <Compile Include="Exceptions\ParsePassSyntaxErrorInfo.cs" />
-    <Compile Include="Exceptions\PreprocessingParseErrorListenerFactory.cs" />
-    <Compile Include="Exceptions\PreprocessorExceptionErrorListener.cs" />
-    <Compile Include="Exceptions\PreprosessorSyntaxErrorException.cs" />
-    <Compile Include="Exceptions\RubberduckParseErrorListenerBase.cs" />
-    <Compile Include="Exceptions\SyntaxErrorException.cs" />
-    <Compile Include="Exceptions\SyntaxErrorInfo.cs" />
-    <Compile Include="Exceptions\SyntaxErrorNotificationListener.cs" />
-    <Compile Include="PreProcessing\CompilationArgumentsCache.cs" />
-    <Compile Include="PreProcessing\CompilationArgumentsProvider.cs" />
-    <Compile Include="PreProcessing\VBAPredefinedCompilationConstants.cs" />
-    <Compile Include="PreProcessing\VBAPreprocessor.cs" />
-    <Compile Include="PreProcessing\VBAPreprocessorVisitor.cs" />
-    <Compile Include="LogicalLineStore.cs" />
-    <Compile Include="Model\ComReflection\ComAlias.cs" />
-    <Compile Include="Model\ComReflection\ComBase.cs" />
-    <Compile Include="Model\ComReflection\ComCoClass.cs" />
-    <Compile Include="Model\ComReflection\ComDocumentation.cs" />
-    <Compile Include="Model\ComReflection\ComEnumeration.cs" />
-    <Compile Include="Model\ComReflection\ComEnumerationMember.cs" />
-    <Compile Include="Model\ComReflection\ComField.cs" />
-    <Compile Include="Model\ComReflection\ComInterface.cs" />
-    <Compile Include="Model\ComReflection\ComLibraryProvider.cs" />
-    <Compile Include="Model\ComReflection\ComMember.cs" />
-    <Compile Include="Model\ComReflection\ComModule.cs" />
-    <Compile Include="Model\ComReflection\ComParameter.cs" />
-    <Compile Include="Model\ComReflection\ComProject.cs" />
-    <Compile Include="Model\ComReflection\ComStruct.cs" />
-    <Compile Include="Model\ComReflection\ComType.cs" />
-    <Compile Include="Model\ComReflection\ComTypeName.cs" />
-    <Compile Include="Model\ComReflection\ComVariant.cs" />
-    <Compile Include="COM\Reflection\DeclarationsFromComProjectLoader.cs" />
-    <Compile Include="COM\Abstract\IComLibraryProvider.cs" />
-    <Compile Include="COM\Abstract\IComProjectDeserializer.cs" />
-    <Compile Include="COM\Abstract\IComProjectSerializationProvider.cs" />
-    <Compile Include="COM\Abstract\IDeclarationsFromComProjectLoader.cs" />
-    <Compile Include="COM\Abstract\IReferencedDeclarationsCollector.cs" />
-    <Compile Include="COM\Abstract\IUserComProjectProvider.cs" />
-    <Compile Include="COM\Abstract\IUserComProjectRepository.cs" />
-    <Compile Include="COM\Reflection\LibraryReferencedDeclarationsCollector.cs" />
-    <Compile Include="COM\Reflection\ReferencedDeclarationsCollector.cs" />
-    <Compile Include="COM\Reflection\SerializedReferencedDeclarationsCollector.cs" />
-    <Compile Include="COM\Reflection\UserProjectRepository.cs" />
-    <Compile Include="COM\Reflection\XmlComProjectSerializer.cs" />
-    <Compile Include="Model\Symbols\AliasDeclaration.cs" />
-    <Compile Include="Model\Symbols\ArgumentListArgumentType.cs" />
-    <Compile Include="Model\Symbols\ArgumentReference.cs" />
-    <Compile Include="Model\Symbols\Attributes.cs" />
-    <Compile Include="Model\Symbols\CallStatement.cs" />
-    <Compile Include="Model\Symbols\ClassModuleDeclaration.cs" />
-    <Compile Include="Model\Symbols\CommentExtensions.cs" />
-    <Compile Include="Model\Symbols\CommentNode.cs" />
-    <Compile Include="Model\Symbols\Declaration.cs" />
-    <Compile Include="Model\Symbols\DeclarationEnumerableExtensions.cs" />
-    <Compile Include="Model\Symbols\DeclarationEventArgs.cs" />
-    <Compile Include="Model\Symbols\DocumentModuleDeclaration.cs" />
-    <Compile Include="Model\Symbols\EventDeclaration.cs" />
-    <Compile Include="Model\Symbols\ExternalProcedureDeclaration.cs" />
-    <Compile Include="Model\Symbols\FunctionDeclaration.cs" />
-    <Compile Include="Model\Symbols\ICanBeDefaultMember.cs" />
-    <Compile Include="Model\Symbols\IDeclarationFinderFactory.cs" />
-    <Compile Include="Model\Symbols\Identifier.cs" />
-    <Compile Include="Model\Symbols\IdentifierReference.cs" />
-    <Compile Include="Model\Symbols\IInterfaceExposable.cs" />
-    <Compile Include="Model\Symbols\IParameterizedDeclaration.cs" />
-    <Compile Include="Model\Symbols\MemberProcessedEventArgs.cs" />
-    <Compile Include="Model\Symbols\ModuleBodyElementDeclaration.cs" />
-    <Compile Include="Model\Symbols\ModuleDeclaration.cs" />
-    <Compile Include="Model\Symbols\ParameterDeclaration.cs" />
-    <Compile Include="Model\Symbols\ProceduralModuleDeclaration.cs" />
-    <Compile Include="Model\Symbols\ProjectDeclaration.cs" />
-    <Compile Include="Model\Symbols\ProjectReference.cs" />
-    <Compile Include="Model\Symbols\PropertyDeclaration.cs" />
-    <Compile Include="Model\Symbols\PropertyGetDeclaration.cs" />
-    <Compile Include="Model\Symbols\PropertyLetDeclaration.cs" />
-    <Compile Include="Model\Symbols\PropertySetDeclaration.cs" />
-    <Compile Include="Model\Symbols\SquareBracketedNameComparer.cs" />
-    <Compile Include="Model\Symbols\SubroutineDeclaration.cs" />
-    <Compile Include="Model\Symbols\SymbolList.cs" />
-    <Compile Include="Model\Symbols\UnboundMemberDeclaration.cs" />
-    <Compile Include="Model\Symbols\ValuedDeclaration.cs" />
-    <Compile Include="Model\Symbols\VariableDeclaration.cs" />
-    <Compile Include="Extensions\VBABaseParserRuleContextExtensions.cs" />
-    <Compile Include="Parsers\Grammar\VBABaseLexer.cs" />
-    <Compile Include="Parsers\Grammar\VBABaseParser.cs" />
-    <Compile Include="ITextDocumentProvider.cs" />
-    <Compile Include="Listeners\BlockCompletionListener.cs" />
-    <Compile Include="Listeners\IBlockFoldingSettings.cs" />
-    <Compile Include="Model\BlockFoldingInfo.cs" />
-    <Compile Include="Model\CodeKind.cs" />
-    <Compile Include="Model\MemberInfo.cs" />
-    <Compile Include="Parsers\Grammar\VBABaseParserRuleContext.cs" />
-    <Compile Include="Model\Tokens.cs" />
-    <Compile Include="Model\NamedOffsetInfo.cs" />
-    <Compile Include="Model\ParameterInfo.cs" />
-    <Compile Include="ParserMode.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QualifiedContext.cs" />
-    <Compile Include="ReferenceManagement\ConcurrentFailedResolutionStore.cs" />
-    <Compile Include="ReferenceManagement\FailedResolutionStore.cs" />
-    <Compile Include="ReferenceManagement\IFailedResolutionStore.cs" />
-    <Compile Include="ReferenceManagement\IMutableFailedResolutionStore.cs" />
-    <Compile Include="Rewriter\IExecutableModuleRewriter.cs" />
-    <Compile Include="Rewriter\IModuleRewriter.cs" />
-    <Compile Include="Rewriter\IModuleRewriterFactory.cs" />
-    <Compile Include="Rewriter\ModuleRewriter.cs" />
-    <Compile Include="Rewriter\ModuleRewriterFactory.cs" />
-    <Compile Include="Rewriter\RewriterInfo\ArgumentRewriterInfoFinder.cs" />
-    <Compile Include="Rewriter\RewriterInfo\ConstantRewriterInfoFinder.cs" />
-    <Compile Include="Rewriter\RewriterInfo\DefaultRewriterInfoFinder.cs" />
-    <Compile Include="Rewriter\RewriterInfo\IRewriterInfoFinder.cs" />
-    <Compile Include="Rewriter\RewriterInfo\ParameterRewriterInfoFinder.cs" />
-    <Compile Include="Rewriter\RewriterInfo\RewriterInfo.cs" />
-    <Compile Include="Rewriter\RewriterInfo\RewriterInfoFinderBase.cs" />
-    <Compile Include="Rewriter\RewriterInfo\VariableRewriterInfoFinder.cs" />
-    <Compile Include="Parsers\TokenStreamProviders\StringTokenStreamProvider.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Parsers\TokenStreamProviders\TextReaderTokenStreamProvider.cs" />
-    <Compile Include="Parsers\TokenStreamProviders\CommonTokenStreamProvider.cs" />
-    <Compile Include="Model\TypedMemberInfo.cs" />
-    <Compile Include="Model\TypedNamedOffsetInfo.cs" />
-    <Compile Include="Model\ValuedMemberInfo.cs" />
-    <Compile Include="Listeners\VBFoldingListener.cs" />
-    <Compile Include="Extensions\TokenExtensions.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj">
-      <Project>{5E2588A5-2EF2-4267-952D-53AEC8F5F173}</Project>
-      <Name>Rubberduck.InternalApi</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\shared\Rubberduck.Resources\Rubberduck.Resources.csproj">
-      <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
-      <Name>Rubberduck.Resources</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
-      <Project>{E794CFC3-3D9F-400F-88D9-69E929D8E8AF}</Project>
-      <Name>Rubberduck.SettingsProvider</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Client\Rubberduck.VBEditor\Rubberduck.VBEditor.csproj">
-      <Project>{030FDE59-C347-4B81-AB80-5B4B80B757A0}</Project>
-      <Name>Rubberduck.VBEditor</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Antlr4 Include="Parsers\Grammar\VBALexer.g4">
-      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
-    </Antlr4>
-    <Antlr4 Include="Parsers\Grammar\VBAParser.g4">
-      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
-    </Antlr4>
-    <Antlr4 Include="Parsers\Grammar\VBAMemberParser.g4">
-      <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
-    </Antlr4>
-    <None Include="Annotations\Concrete\README.md" />
-    <Antlr4 Include="Parsers\Grammar\VBAConditionalCompilationParser.g4">
-      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
-    </Antlr4>
-    <Antlr4 Include="Parsers\Grammar\VBADate.g4">
-      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
-    </Antlr4>
-    <Antlr4 Include="Parsers\Grammar\VBALike.g4">
-      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
-    </Antlr4>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\Abstract\" />
-    <Folder Include="Settings\" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\..\..\packages\Antlr4.CodeGenerator.4.6.6\build\Antlr4.CodeGenerator.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\packages\Antlr4.CodeGenerator.4.6.6\build\Antlr4.CodeGenerator.props'))" />
-    <Error Condition="!Exists('..\..\..\..\packages\Antlr4.CodeGenerator.4.6.6\build\Antlr4.CodeGenerator.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\packages\Antlr4.CodeGenerator.4.6.6\build\Antlr4.CodeGenerator.targets'))" />
-  </Target>
-  <Import Project="..\..\..\..\packages\Antlr4.CodeGenerator.4.6.6\build\Antlr4.CodeGenerator.targets" Condition="Exists('..\..\..\..\packages\Antlr4.CodeGenerator.4.6.6\build\Antlr4.CodeGenerator.targets')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net48</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<LangVersion>Latest</LangVersion>
+		<Antlr4UseCSharpGenerator>True</Antlr4UseCSharpGenerator>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Parsers\TokenStreamParserAdapterWithPreprocessing.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Antlr4.CodeGenerator" Version="4.6.6">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
+	  <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
+	  <PackageReference Include="NLog" Version="5.1.2" />
+	  <PackageReference Include="System.IO.Abstractions" Version="19.1.18" />
+	  <PackageReference Include="System.Net.Http" Version="4.3.4" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\..\Client\Rubberduck.VBEditor\Rubberduck.VBEditor.csproj" />
+	  <ProjectReference Include="..\..\..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
+	  <ProjectReference Include="..\..\..\..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj" />
+	  <ProjectReference Include="..\..\..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Antlr4 Include="Parsers\Grammar\VBALexer.g4">
+			<Generator>MSBuild:Compile</Generator>
+			<CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+		</Antlr4>
+		<Antlr4 Include="Parsers\Grammar\VBAParser.g4">
+			<Generator>MSBuild:Compile</Generator>
+			<CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+		</Antlr4>
+		<Antlr4 Include="Parsers\Grammar\VBAMemberParser.g4">
+			<Generator>MSBuild:Compile</Generator>
+			<CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+		</Antlr4>
+		<Antlr4 Include="Parsers\Grammar\VBAConditionalCompilationParser.g4">
+			<Generator>MSBuild:Compile</Generator>
+			<CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+		</Antlr4>
+		<Antlr4 Include="Parsers\Grammar\VBADate.g4">
+			<Generator>MSBuild:Compile</Generator>
+			<CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+		</Antlr4>
+		<Antlr4 Include="Parsers\Grammar\VBALike.g4">
+			<Generator>MSBuild:Compile</Generator>
+			<CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+		</Antlr4>
+	</ItemGroup>
 </Project>

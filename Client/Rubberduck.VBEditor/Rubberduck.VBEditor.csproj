@@ -357,20 +357,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj">
-      <Project>{5E2588A5-2EF2-4267-952D-53AEC8F5F173}</Project>
-      <Name>Rubberduck.InternalApi</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj">
-      <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
-      <Name>Rubberduck.Resources</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Shared\Rubberduck.UI\Rubberduck.UI.csproj">
-      <Project>{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}</Project>
-      <Name>Rubberduck.UI</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="EasyHook32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -392,6 +378,20 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="UI\OfficeMenus\RubberduckMenu\MenuItems\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj">
+      <Project>{5e2588a5-2ef2-4267-952d-53aec8f5f173}</Project>
+      <Name>Rubberduck.InternalApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj">
+      <Project>{1d5c4d6a-b105-44e5-b4e1-ef75c3596083}</Project>
+      <Name>Rubberduck.Resources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Shared\Rubberduck.UI\Rubberduck.UI.csproj">
+      <Project>{d8a7bb2a-281c-4511-815e-2970112e1f53}</Project>
+      <Name>Rubberduck.UI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

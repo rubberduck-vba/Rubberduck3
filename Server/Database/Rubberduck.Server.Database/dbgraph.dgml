@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <DirectedGraph GraphDirection="LeftToRight" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
   <Nodes>
-    <Node Id="Database" Label="RubberduckLocalDB.db" Category="Database" Group="Expanded" />
+    <Node Id="Database" Label="RubberduckDatabase.db" Category="Database" Group="Expanded" />
     <Node Id="DeclarationAnnotations" Label="DeclarationAnnotations" Category="Table" Group="Collapsed" />
     <Node Id="DeclarationAnnotations_Id" Label="Id" Category="Field Primary" Description="bigint" />
     <Node Id="DeclarationAnnotations_DeclarationId" Label="DeclarationId" Category="Field Foreign" Description="bigint" />

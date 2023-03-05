@@ -79,8 +79,7 @@
     <Reference Include="ICSharpCode.AvalonEdit, Version=6.2.0.78, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\..\packages\AvalonEdit.6.2.0.78\lib\net462\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
-    <Reference Include="Infralution.Localization.Wpf, Version=3.3.0.0, Culture=neutral, PublicKeyToken=547ccae517a004b5, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Infralution.Localization.Wpf">
       <HintPath>..\..\libs\Infralution.Localization.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="MessagePack.Annotations, Version=2.4.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
@@ -223,20 +222,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj">
-      <Project>{5E2588A5-2EF2-4267-952D-53AEC8F5F173}</Project>
-      <Name>Rubberduck.InternalApi</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj">
-      <Project>{ed65baad-743d-4144-aee2-8d956e6da599}</Project>
-      <Name>Rubberduck.Resources</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Shared\Rubberduck.UI\Rubberduck.UI.csproj">
-      <Project>{fc5ecd51-175b-42d6-b46c-130b57aa1ebc}</Project>
-      <Name>Rubberduck.UI</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Ducky.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -245,6 +230,16 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj">
+      <Project>{5e2588a5-2ef2-4267-952d-53aec8f5f173}</Project>
+      <Name>Rubberduck.InternalApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Shared\Rubberduck.UI\Rubberduck.UI.csproj">
+      <Project>{d8a7bb2a-281c-4511-815e-2970112e1f53}</Project>
+      <Name>Rubberduck.UI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
