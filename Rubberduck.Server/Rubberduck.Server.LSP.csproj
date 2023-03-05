@@ -39,6 +39,9 @@
   <PropertyGroup>
     <StartupObject>Rubberduck.Server.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Ducky.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="MediatR, Version=12.0.0.0, Culture=neutral, PublicKeyToken=bb9a41a5e8aaa7e2, processorArchitecture=MSIL">
       <HintPath>..\packages\MediatR.12.0.0\lib\netstandard2.0\MediatR.dll</HintPath>
@@ -269,11 +272,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\IServiceCollectionExtensions.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
     <Compile Include="RPC\Info\InfoHandler.cs" />
     <Compile Include="RPC\Info\InfoRequest.cs" />
   </ItemGroup>
@@ -292,10 +290,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
@@ -329,6 +323,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Internal\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Ducky.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />

@@ -57,7 +57,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LSP", "LSP", "{125FBFDC-096
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LocalDb", "LocalDb", "{7064868F-67EB-4777-A08E-7C43FF5828E9}"
 	ProjectSection(SolutionItems) = preProject
-		Rubberduck.Data\RubberduckLocalDB.db = Rubberduck.Data\RubberduckLocalDB.db
+		Rubberduck.Data\Rubberduck.db = Rubberduck.Data\Rubberduck.db
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{41000D34-5491-49DB-A8F9-F7C7AA695470}"

@@ -200,7 +200,9 @@
       <Name>Rubberduck.InternalApi</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Telemetry\" />
+  </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CSharp.dll" />

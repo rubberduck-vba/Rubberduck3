@@ -21,7 +21,7 @@ namespace Rubberduck.RPC
             Process serverProcess = null;
             try
             {
-                if (TryFindServerProcess(Settings.Default.ServerExecutable_LocalDb, out serverProcess))
+                if (TryFindServerProcess(Settings.Default.DatabaseServerExecutableLocation, out serverProcess))
                 {
                     Debug.WriteLine($"Found existing '{serverProcess.ProcessName}' process (ID {serverProcess.Id}).");
                     return serverProcess;
@@ -29,7 +29,7 @@ namespace Rubberduck.RPC
 
                 var info = new ProcessStartInfo
                 {
-                    FileName = Settings.Default.ServerExecutable_LocalDb,
+                    FileName = Settings.Default.DatabaseServerExecutableLocation,
                     Arguments = $"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -72,7 +72,7 @@ namespace Rubberduck.RPC
         {
             var info = new ProcessStartInfo
             {
-                FileName = Settings.Default.ServerExecutable_LSP,
+                FileName = Settings.Default.LanguageServerExecutableLocation,
                 Arguments = $"",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -86,7 +86,7 @@ namespace Rubberduck.RPC
         {
             var info = new ProcessStartInfo
             {
-                FileName = Settings.Default.ServerExecutable_Telemetry,
+                FileName = Settings.Default.TelemetryServerExecutableLocation,
                 Arguments = $"",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,

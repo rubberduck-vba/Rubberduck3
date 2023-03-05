@@ -35,7 +35,7 @@ using Rubberduck.UI.Command;
 using System.Windows.Input;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.Core.About;
-using Rubberduck.UI.Xaml.Controls;
+//using Rubberduck.UI.Xaml.Controls;
 using Rubberduck.Core.Editor;
 using Rubberduck.Parsing.Abstract;
 using System.IO;
@@ -920,11 +920,12 @@ namespace Rubberduck.Root
         }
         
         private void RegisterDockableUserControls(IWindsorContainer container)
-        {
+        {/*
             container.Register(Classes.FromAssemblyContaining<EditorShellControl>()
                 .IncludeNonPublicTypes()
                 .BasedOn<IDockableUserControl>()
                 .LifestyleSingleton());
+            */
         }
 
         private void RegisterDockablePresenters(IWindsorContainer container)

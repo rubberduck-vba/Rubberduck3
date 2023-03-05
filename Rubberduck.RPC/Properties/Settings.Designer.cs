@@ -13,7 +13,7 @@ namespace Rubberduck.RPC.Properties {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.4.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
         
@@ -26,27 +26,91 @@ namespace Rubberduck.RPC.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("..\\..\\..\\Rubberduck.Server.LocalDb\\bin\\Debug\\Rubberduck.Server.LocalDb.exe")]
-        public string ServerExecutable_LocalDb {
+        public string DatabaseServerExecutableLocation {
             get {
-                return ((string)(this["ServerExecutable_LocalDb"]));
+                return ((string)(this["DatabaseServerExecutableLocation"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("..\\..\\..\\Rubberduck.Server.LSP\\bin\\Debug\\Rubberduck.Server.LSP.exe")]
-        public string ServerExecutable_LSP {
+        public string LanguageServerExecutableLocation {
             get {
-                return ((string)(this["ServerExecutable_LSP"]));
+                return ((string)(this["LanguageServerExecutableLocation"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("..\\..\\..\\Rubberduck.Server.Telemetry\\bin\\Debug\\Rubberduck.Server.Telemetry.exe")]
-        public string ServerExecutable_Telemetry {
+        public string TelemetryServerExecutableLocation {
             get {
-                return ((string)(this["ServerExecutable_Telemetry"]));
+                return ((string)(this["TelemetryServerExecutableLocation"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("./Rubberduck.Server.Database/RPC")]
+        public string DatabaseServerPipeName {
+            get {
+                return ((string)(this["DatabaseServerPipeName"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("./Rubberduck.Server/LSP")]
+        public string LanguageServerPipeName {
+            get {
+                return ((string)(this["LanguageServerPipeName"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("./Rubberduck.Server.Telemetry/RPC")]
+        public string TelemetryServerPipeName {
+            get {
+                return ((string)(this["TelemetryServerPipeName"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=Rubberduck.db;")]
+        public string DatabaseConnectionString {
+            get {
+                return ((string)(this["DatabaseConnectionString"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Rubberduck.Server..LSP")]
+        public string LanguageServerName {
+            get {
+                return ((string)(this["LanguageServerName"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Rubberduck.Server.Database")]
+        public string DatabaseServerName {
+            get {
+                return ((string)(this["DatabaseServerName"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Rubberduck.Server.Telemetry")]
+        public string TelemetryServername {
+            get {
+                return ((string)(this["TelemetryServername"]));
             }
         }
     }

@@ -2,14 +2,39 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Rubberduck.RPC.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="ServerExecutable_LocalDb" Type="System.String" Scope="Application">
+    <Setting Name="DatabaseServerExecutableLocation" Type="System.String" Scope="Application">
       <Value Profile="(Default)">..\..\..\Rubberduck.Server.LocalDb\bin\Debug\Rubberduck.Server.LocalDb.exe</Value>
     </Setting>
-    <Setting Name="ServerExecutable_LSP" Type="System.String" Scope="Application">
+    <Setting Name="LanguageServerExecutableLocation" Type="System.String" Scope="Application">
       <Value Profile="(Default)">..\..\..\Rubberduck.Server.LSP\bin\Debug\Rubberduck.Server.LSP.exe</Value>
     </Setting>
-    <Setting Name="ServerExecutable_Telemetry" Type="System.String" Scope="Application">
+    <Setting Name="TelemetryServerExecutableLocation" Type="System.String" Scope="Application">
       <Value Profile="(Default)">..\..\..\Rubberduck.Server.Telemetry\bin\Debug\Rubberduck.Server.Telemetry.exe</Value>
+    </Setting>
+    <Setting Name="DatabaseServerPipeName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">./Rubberduck.Server.Database/RPC</Value>
+    </Setting>
+    <Setting Name="LanguageServerPipeName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">./Rubberduck.Server/LSP</Value>
+    </Setting>
+    <Setting Name="TelemetryServerPipeName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">./Rubberduck.Server.Telemetry/RPC</Value>
+    </Setting>
+    <Setting Name="DatabaseConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;ConnectionString&gt;Data Source=Rubberduck.db;&lt;/ConnectionString&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=Rubberduck.db;</Value>
+    </Setting>
+    <Setting Name="LanguageServerName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Rubberduck.Server..LSP</Value>
+    </Setting>
+    <Setting Name="DatabaseServerName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Rubberduck.Server.Database</Value>
+    </Setting>
+    <Setting Name="TelemetryServername" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Rubberduck.Server.Telemetry</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -1,6 +1,8 @@
 ﻿using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OmniSharp.Extensions.JsonRpc;
+using Rubberduck.RPC.Platform;
 using Rubberduck.Server.LocalDb.Configuration;
 using System;
 using System.Linq;
@@ -123,19 +125,44 @@ namespace Rubberduck.Server.LocalDb
 
         private static async Task StartAsync()
         {
+            Splash();
+
             var tokenSource = new CancellationTokenSource();
 
             var builder = Host.CreateDefaultBuilder()
                 .UseConsoleLifetime()
                 .ConfigureServices(provider => ConfigureServices(provider, tokenSource));
 
+            var host = builder.Build();
+            var rpc = host.Services.GetService<IJsonRpcServer>();
+            
             await builder.RunConsoleAsync(tokenSource.Token);
         }
 
-        private static void ConfigureServices(IServiceCollection services, CancellationTokenSource cts)
+        private static void Splash()
+        {
+            Console.WriteLine(ServerSplash.GetRenderString());
+        }
+
+        private static void ConfigureServices(IServiceCollection services, CancellationTokenSource tokenSource)
         {
             var config = LocalDbServerCapabilities.Default;
-            services.AddRubberduckServerServices(config, cts);
+            services.AddRubberduckServerServices(config, tokenSource);
+        }
+    }
+
+    internal class Application
+    {
+        private readonly IJsonRpcServer _server;
+
+        public Application(IJsonRpcServer server)
+        {
+            _server = server;
+        }
+
+        public async Task StartAsync()
+        {
+            _server.SendNotification(JsonRpcMethods.Database.HeartBeat);
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Data;
 using Microsoft.Data.Sqlite;
 using Rubberduck.Server.LocalDb.Internal.Storage.Abstract;
-using Rubberduck.Server.LocalDb.Properties;
+using Rubberduck.RPC.Properties;
 
 namespace Rubberduck.Server.LocalDb.Internal.Storage
 {
@@ -11,7 +11,7 @@ namespace Rubberduck.Server.LocalDb.Internal.Storage
         private readonly Lazy<IDbConnection> _lazyConnection
             = new Lazy<IDbConnection>(() =>
             {
-                var connection = new SqliteConnection(Settings.Default.LocalDB);
+                var connection = new SqliteConnection(Settings.Default.DatabaseConnectionString);
                 connection.Open();
                 return connection;
             });

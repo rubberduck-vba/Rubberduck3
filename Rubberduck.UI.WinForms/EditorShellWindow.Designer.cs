@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.EditorShellHost = new System.Windows.Forms.Integration.ElementHost();
-            this.editorShellControl1 = new Rubberduck.UI.Xaml.Controls.EditorShellControl();
+            //this.editorShellControl1 = new Rubberduck.UI.Xaml.Controls.EditorShellControl();
             this.SuspendLayout();
             // 
             // EditorShellHost
@@ -39,7 +39,7 @@
             this.EditorShellHost.Name = "EditorShellHost";
             this.EditorShellHost.Size = new System.Drawing.Size(884, 699);
             this.EditorShellHost.TabIndex = 0;
-            this.EditorShellHost.Child = this.editorShellControl1;
+            //this.EditorShellHost.Child = this.editorShellControl1;
             // 
             // EditorShellWindow
             // 
@@ -55,6 +55,6 @@
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost EditorShellHost;
-        private Xaml.Controls.EditorShellControl editorShellControl1;
+        //private Xaml.Controls.EditorShellControl editorShellControl1;
     }
 }

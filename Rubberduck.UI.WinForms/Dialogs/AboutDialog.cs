@@ -12,7 +12,7 @@ namespace Rubberduck.UI.WinForms.Dialogs
 
         public AboutDialog(IAboutControlViewModel viewModel) : this()
         {
-            AboutControl1.DataContext = viewModel;
+            //AboutControl1.DataContext = viewModel;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

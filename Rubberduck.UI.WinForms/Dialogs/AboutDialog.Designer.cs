@@ -29,8 +29,10 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutDialog));
+
             this.AboutControlHost = new System.Windows.Forms.Integration.ElementHost();
-            this.AboutControl1 = new Rubberduck.UI.Xaml.Controls.AboutControl();
+
+            //this.AboutControl1 = new Rubberduck.UI.Xaml.Controls.AboutControl();
             this.SuspendLayout();
             // 
             // AboutControlHost
@@ -40,7 +42,7 @@
             this.AboutControlHost.Name = "AboutControlHost";
             this.AboutControlHost.Size = new System.Drawing.Size(790, 598);
             this.AboutControlHost.TabIndex = 0;
-            this.AboutControlHost.Child = this.AboutControl1;
+            //this.AboutControlHost.Child = this.AboutControl1;
             // 
             // AboutDialog
             // 
@@ -65,6 +67,6 @@
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost AboutControlHost;
-        private Xaml.Controls.AboutControl AboutControl1;
+        //private Xaml.Controls.AboutControl AboutControl1;
     }
 }

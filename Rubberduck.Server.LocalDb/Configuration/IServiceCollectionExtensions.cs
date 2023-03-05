@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OmniSharp.Extensions.JsonRpc;
-using OmniSharp.Extensions.LanguageServer.Shared;
 using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Platform.Model.Database;
-using Rubberduck.Server.LocalDb.Properties;
+using Rubberduck.RPC.Properties;
 using Rubberduck.Server.LocalDb.RPC.Connect;
 using Rubberduck.Server.LocalDb.RPC.Disconnect;
 using Rubberduck.Server.LocalDb.RPC.Info;
@@ -13,21 +12,20 @@ using System;
 using System.IO;
 using System.IO.Pipes;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Server.LocalDb.Configuration
 {
     internal static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddRubberduckServerServices(this IServiceCollection services, LocalDbServerCapabilities config, CancellationTokenSource cts) => 
-            services.AddJsonRpcServer(Settings.Default.JsonRpcServerName, ConfigureRPC)
+        public static IServiceCollection AddRubberduckServerServices(this IServiceCollection services, LocalDbServerCapabilities config, CancellationTokenSource cts) 
+            => services.AddJsonRpcServer(Settings.Default.DatabaseServerPipeName, ConfigureRPC)
                     //.AddOtherServicesHere()
             ;
 
         private static void ConfigureRPC(JsonRpcServerOptions rpc)
         {
-            var (input, output) = WithAsyncNamedPipeTransport(Settings.Default.JsonRpcPipeName);            
-            rpc.Concurrency = Settings.Default.MaxConcurrentRequests;
+            var (input, output) = WithAsyncNamedPipeTransport(Settings.Default.DatabaseServerPipeName);
+            rpc.Concurrency = 8;
 
             rpc.WithRequestProcessIdentifier(new ParallelRequestProcessIdentifier())
                .WithMaximumRequestTimeout(TimeSpan.FromSeconds(10))
@@ -51,7 +49,7 @@ namespace Rubberduck.Server.LocalDb.Configuration
                .AddHandler<SelectQueryHandler<MemberInfo, MemberInfoRequestOptions>>(JsonRpcMethods.Database.QueryMemberInfo)
                .AddHandler<SelectQueryHandler<ModuleInfo, ModuleInfoRequestOptions>>(JsonRpcMethods.Database.QueryModuleInfo)
                .AddHandler<SelectQueryHandler<ProjectInfo, ProjectInfoRequestOptions>>(JsonRpcMethods.Database.QueryProjectInfo)
-               ;
+            ;
         }
 
         private static (Stream input, Stream output) WithAsyncNamedPipeTransport(string name)

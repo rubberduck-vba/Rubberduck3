@@ -29,6 +29,11 @@
             public const string Info = "info";
 
             public const string SetTrace = "setTrace";
+
+            /// <summary>
+            /// A periodic server-to-client notification.
+            /// </summary>
+            public const string HeartBeat = "heartbeat";
             #endregion
 
             #region writing

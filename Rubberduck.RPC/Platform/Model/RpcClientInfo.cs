@@ -4,6 +4,8 @@ namespace Rubberduck.RPC.Platform.Model
 {
     public class RpcClientInfo
     {
+        public RpcClientInfo() { }
+
         public RpcClientInfo(ClientInfo rpcClient, int processId)
         {
             Name = rpcClient.Name;
