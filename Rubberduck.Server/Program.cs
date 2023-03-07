@@ -1,19 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MediatR.Registration;
 using OmniSharp.Extensions.JsonRpc;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server.Capabilities;
-using Rubberduck.RPC;
 using Rubberduck.RPC.Platform;
 using Rubberduck.RPC.Platform.Model;
 using Rubberduck.RPC.Properties;
 using Rubberduck.Server.LSP.Configuration;
-using Rubberduck.Server.RPC;
 using System;
 using System.Diagnostics;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Security.AccessControl;
-using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -40,14 +35,11 @@ namespace Rubberduck.Server
 
             var builder = Host.CreateDefaultBuilder()
                 .UseConsoleLifetime(options => options.SuppressStatusMessages = false)
-                .ConfigureServices(provider => ConfigureServices(provider, tokenSource));
+                .ConfigureServices(provider => ConfigureServices(provider, tokenSource))
+            ;
             
-            var host = builder.Build();
-            
+            var host = builder.Build();            
             var serverTask = host.RunAsync(tokenSource.Token);
-
-            var app = host.Services.GetService<Application>();
-            await app.RunAsync(tokenSource.Token);
 
             await serverTask;
         }
@@ -75,9 +67,9 @@ namespace Rubberduck.Server
 
     internal class Application
     {
-        private readonly IDatabaseServerServiceProxy _server;
+        private readonly IJsonRpcServer _server;
 
-        public Application(IDatabaseServerServiceProxy server)
+        public Application(IJsonRpcServer server)
         {
             _server = server;
         }
@@ -94,11 +86,10 @@ namespace Rubberduck.Server
                 Version = assemnbly.Version.ToString(3),
                 ProcessId = processId
             };
-            await _server.ConnectAsync(client);
-
+            _server.SendNotification(JsonRpcMethods.Database.Connect, client);
 
             Console.WriteLine($"Requesting database server info...");
-            var info = await _server.GetServerInfoAsync();
+            var info = await _server.SendRequest(JsonRpcMethods.Database.Info, client).Returning<InfoResult>(token);
 
             Console.WriteLine($"*** Rubberduck.Server.Database state @{DateTime.Now:u}:");
             Console.WriteLine($"Name: {info.Name}\tVersion: {info.Version}");

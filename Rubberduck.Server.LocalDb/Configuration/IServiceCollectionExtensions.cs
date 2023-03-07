@@ -18,7 +18,9 @@ namespace Rubberduck.Server.LocalDb.Configuration
     internal static class IServiceCollectionExtensions
     {
         public static IServiceCollection AddRubberduckServerServices(this IServiceCollection services, LocalDbServerCapabilities config, CancellationTokenSource cts) 
-            => services.AddJsonRpcServer(Settings.Default.DatabaseServerPipeName, ConfigureRPC)
+            => services
+                .AddJsonRpcServer(Settings.Default.DatabaseServerPipeName, ConfigureRPC)
+                .AddMediatR(ConfigureMediatR)
                     //.AddOtherServicesHere()
             ;
 
@@ -58,6 +60,11 @@ namespace Rubberduck.Server.LocalDb.Configuration
             var input = new NamedPipeServerStream(name, PipeDirection.InOut, maxServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
             var output = new NamedPipeClientStream(".", name, PipeDirection.InOut, PipeOptions.Asynchronous);
             return (input, output);
+        }
+
+        private static void ConfigureMediatR(MediatRServiceConfiguration settings)
+        {
+            settings.Lifetime = ServiceLifetime.Singleton;
         }
     }
 }
