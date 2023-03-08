@@ -1,14 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.DatabaseServer.Internal.Abstract;
 using Rubberduck.InternalApi.Common;
-using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Platform.Model;
-using Rubberduck.RPC.Platform.Model.Database.Responses;
-using Rubberduck.Server.LocalDb.Internal.Storage.Abstract;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using Rubberduck.ServerPlatform.RPC;
+using Rubberduck.ServerPlatform.RPC.DatabaseServer;
 
-namespace Rubberduck.Server.LocalDb.RPC.Query
+namespace Rubberduck.DatabaseServer.RPC.Query.Abstract
 {
     public abstract class QueryHandler<TResult, TOptions> : JsonRpcRequestHandler<QueryRequest<TResult, TOptions>, QueryResult<TResult>>
         where TResult : class, new()
@@ -22,9 +18,10 @@ namespace Rubberduck.Server.LocalDb.RPC.Query
             _factory = factory;
         }
 
-        protected override Task<QueryResult<TResult>> HandleAsync(QueryRequest<TResult, TOptions> request) => throw new NotSupportedException();
-
         protected abstract Task<QueryResult<TResult>> HandleAsync(QueryRequest<TResult, TOptions> request, IUnitOfWork uow, CancellationToken cancellationToken);
+
+        protected sealed override Task<QueryResult<TResult>> HandleAsync(QueryRequest<TResult, TOptions> request)
+            => Handle(request, CancellationToken.None);
 
         public sealed async override Task<QueryResult<TResult>> Handle(QueryRequest<TResult, TOptions> request, CancellationToken cancellationToken)
         {
@@ -33,7 +30,7 @@ namespace Rubberduck.Server.LocalDb.RPC.Query
                 try
                 {
                     Logger.LogTrace($"Handling request: {GetType().Name}");
-                    QueryResult<TResult> response = default;
+                    QueryResult<TResult> response = new QueryResult<TResult>();
 
                     var handler = Task.Run(async () => response = await HandleAsync(request, uow, cancellationToken));
                     var elapsed = await TimedAction.RunAsync(handler);

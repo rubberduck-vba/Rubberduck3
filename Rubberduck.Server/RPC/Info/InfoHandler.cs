@@ -1,10 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
-using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Platform.Model;
-using System.Threading.Tasks;
-
-namespace Rubberduck.Server.LSP.RPC.Info
+﻿namespace Rubberduck.Server.LSP.RPC.Info
 {
+    /*
     internal class InfoHandler : JsonRpcRequestHandler<InfoRequest, InfoResult>
     {
         private readonly ServerState _serverState;
@@ -37,4 +33,5 @@ namespace Rubberduck.Server.LSP.RPC.Info
             return await Task.FromResult(state);
         }
     }
+    */
 }

@@ -1,11 +1,11 @@
 ﻿using System.Data;
 using Dapper;
-using Rubberduck.RPC.Platform.Model;
-using Rubberduck.RPC.Platform.Model.Database;
+using Rubberduck.ServerPlatform.Model.Entities;
+using Rubberduck.ServerPlatform.RPC.DatabaseServer;
 
 namespace Rubberduck.DatabaseServer.Internal.Abstract
 {
-    public abstract class View<TEntity> : IQueryOptions<TEntity>
+    public abstract class View<TEntity>
         where TEntity : DbEntity
     {
         protected IDbConnection Database { get; }

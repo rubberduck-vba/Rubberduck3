@@ -1,47 +1,50 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OmniSharp.Extensions.JsonRpc;
-using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Platform.Model.Database;
-using Rubberduck.RPC.Properties;
+using Rubberduck.DatabaseServer.RPC;
+using Rubberduck.DatabaseServer.RPC.Query;
+using Rubberduck.ServerPlatform.Model.Entities;
+using Rubberduck.ServerPlatform.RPC;
 using System.IO.Pipes;
 
 namespace Rubberduck.DatabaseServer.Configuration
 {
     internal static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddRubberduckServerServices(this IServiceCollection services, LocalDbServerCapabilities config, CancellationTokenSource cts) 
-            => services
-                .AddJsonRpcServer(Settings.Default.DatabaseServerPipeName, ConfigureRPC)
+        public static IServiceCollection AddRubberduckServerServices(this IServiceCollection services, LocalDbServerCapabilities config, CancellationTokenSource cts)
+        {
+            //var server = JsonRpcServer.Create(ConfigureRPC);
+            
+            return services
+                        .AddJsonRpcServer(ServerPlatform.Settings.DatabaseServerName, ConfigureRPC)
                     //.AddOtherServicesHere()
-            ;
+                    ;
+        }
 
         private static void ConfigureRPC(JsonRpcServerOptions rpc)
         {
-            var (input, output) = WithAsyncNamedPipeTransport(Settings.Default.DatabaseServerPipeName);
+            var (input, output) = WithAsyncNamedPipeTransport(ServerPlatform.Settings.DatabaseServerPipeName);
             rpc.Concurrency = 8;
+            rpc.UseAssemblyAttributeScanning = true;
 
-            rpc.WithRequestProcessIdentifier(new ParallelRequestProcessIdentifier())
-               .WithMaximumRequestTimeout(TimeSpan.FromSeconds(10))
-
-               .WithInput(input)
+            rpc.WithInput(input)
                .WithOutput(output)
+               .WithActivityTracingStrategy(new CorrelationManagerTracingStrategy())
 
-               .AddHandler<InfoHandler>()
-               .AddHandler<ConnectHandler>()
-               .AddHandler<DisconnectHandler>()
+               //.AddHandler<InfoHandler>()
+               //.AddHandler<ConnectHandler>()
+               //.AddHandler<DisconnectHandler>()
                
-               .AddHandler<SaveNotificationHandler<IdentifierReference>>(JsonRpcMethods.Database.SaveIdentifierReference)
-               .AddHandler<SaveNotificationHandler<Local>>(JsonRpcMethods.Database.SaveLocal)
-               .AddHandler<SaveNotificationHandler<Member>>(JsonRpcMethods.Database.SaveMember)
-               .AddHandler<SaveNotificationHandler<Module>>(JsonRpcMethods.Database.SaveModule)
-               .AddHandler<SaveNotificationHandler<Parameter>>(JsonRpcMethods.Database.SaveParameter)
-               .AddHandler<SaveNotificationHandler<Project>>(JsonRpcMethods.Database.SaveProject)
-               .AddHandler<SaveNotificationHandler<DeclarationAnnotation>>(JsonRpcMethods.Database.QueryAnnotations)
-               .AddHandler<SaveNotificationHandler<DeclarationAttribute>>(JsonRpcMethods.Database.QueryAttributes)
-
-               .AddHandler<SelectQueryHandler<MemberInfo, MemberInfoRequestOptions>>(JsonRpcMethods.Database.QueryMemberInfo)
-               .AddHandler<SelectQueryHandler<ModuleInfo, ModuleInfoRequestOptions>>(JsonRpcMethods.Database.QueryModuleInfo)
-               .AddHandler<SelectQueryHandler<ProjectInfo, ProjectInfoRequestOptions>>(JsonRpcMethods.Database.QueryProjectInfo)
+               //.AddHandler<SaveNotificationHandler<IdentifierReference>>(JsonRpcMethods.Database.SaveIdentifierReference)
+               //.AddHandler<SaveNotificationHandler<Local>>(JsonRpcMethods.Database.SaveLocal)
+               //.AddHandler<SaveNotificationHandler<Member>>(JsonRpcMethods.Database.SaveMember)
+               //.AddHandler<SaveNotificationHandler<Module>>(JsonRpcMethods.Database.SaveModule)
+               //.AddHandler<SaveNotificationHandler<Parameter>>(JsonRpcMethods.Database.SaveParameter)
+               //.AddHandler<SaveNotificationHandler<Project>>(JsonRpcMethods.Database.SaveProject)
+               //.AddHandler<SaveNotificationHandler<DeclarationAnnotation>>(JsonRpcMethods.Database.QueryAnnotations)
+               //.AddHandler<SaveNotificationHandler<DeclarationAttribute>>(JsonRpcMethods.Database.QueryAttributes)
+               //.AddHandler<SelectQueryHandler<MemberInfo, MemberInfoRequestOptions>>(JsonRpcMethods.DatabaseServer.QueryMemberInfo)
+               //.AddHandler<SelectQueryHandler<ModuleInfo, ModuleInfoRequestOptions>>(JsonRpcMethods.DatabaseServer.QueryModuleInfo)
+               //.AddHandler<SelectQueryHandler<ProjectInfo, ProjectInfoRequestOptions>>(JsonRpcMethods.DatabaseServer.QueryProjectInfo)
             ;
         }
 
@@ -51,11 +54,6 @@ namespace Rubberduck.DatabaseServer.Configuration
             var input = new NamedPipeServerStream(name, PipeDirection.InOut, maxServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
             var output = new NamedPipeClientStream(".", name, PipeDirection.InOut, PipeOptions.Asynchronous);
             return (input, output);
-        }
-
-        private static void ConfigureMediatR(MediatRServiceConfiguration settings)
-        {
-            settings.Lifetime = ServiceLifetime.Singleton;
         }
     }
 }

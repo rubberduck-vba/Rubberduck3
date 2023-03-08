@@ -4,8 +4,13 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>warnings</Nullable>
+    <ApplicationIcon>Ducky.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Ducky.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.123" />
@@ -21,7 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
     <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj" />
-    <ProjectReference Include="..\Rubberduck.RPC\Rubberduck.RPC.csproj" />
+    <ProjectReference Include="..\Rubberduck.ServerPlatform\Rubberduck.ServerPlatform.csproj" />
   </ItemGroup>
 
 </Project>

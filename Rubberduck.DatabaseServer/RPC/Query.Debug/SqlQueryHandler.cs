@@ -1,9 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Platform.Model;
-using Rubberduck.RPC.Platform.Model.Database.Responses;
-using Rubberduck.Server.LocalDb.Internal.Storage.Abstract;
-using System.Threading.Tasks;
+using Rubberduck.DatabaseServer.Internal.Abstract;
+using Rubberduck.ServerPlatform.RPC;
+using Rubberduck.ServerPlatform.RPC.DatabaseServer;
 
 #if DEBUG
 namespace Rubberduck.Server.LocalDb.RPC.Query.Debug
@@ -21,10 +19,9 @@ namespace Rubberduck.Server.LocalDb.RPC.Query.Debug
 
         protected async override Task<QueryResult<TResult>> HandleAsync(SqlQueryRequest<TResult> request)
         {
-            var query = request.Params.ToObject<SqlQuery>();
             using (var uow = _factory.CreateNew())
             {
-                var results = await uow.QueryAsync<TResult>(query.RawSqlSelect, null);
+                var results = await uow.QueryAsync<TResult>(request.RawSqlQuery, null);
                 return await Task.FromResult(new QueryResult<TResult> { Results = results });
             }
         }

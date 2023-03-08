@@ -4,8 +4,10 @@ using Rubberduck.Resources.Registration;
 using System.Security.Principal;
 using System.Security.AccessControl;
 using Microsoft.Extensions.Hosting;
-using Rubberduck.RPC.Platform;
 using Rubberduck.DatabaseServer.Configuration;
+using Rubberduck.ServerPlatform.RPC;
+using Rubberduck.ServerPlatform;
+using System.Reflection;
 
 namespace Rubberduck.DatabaseServer
 {
@@ -20,8 +22,6 @@ namespace Rubberduck.DatabaseServer
         [STAThread]
         public static async Task<int> Main(string[] args)
         {
-            var context = SynchronizationContext.Current;
-
             #region Global Mutex https://stackoverflow.com/a/229567/1188513
 
             // get application GUID as defined in AssemblyInfo.cs
@@ -126,14 +126,15 @@ namespace Rubberduck.DatabaseServer
                 .ConfigureServices(provider => ConfigureServices(provider, tokenSource));
 
             var host = builder.Build();
-            var rpc = host.Services.GetService<IJsonRpcServer>();
+            await host.StartAsync(tokenSource.Token);
 
-            await builder.RunConsoleAsync(tokenSource.Token);
+            //var rpc = host.Services.GetService<JsonRpcServer>();
+            await host.WaitForShutdownAsync();
         }
 
         private static void Splash()
         {
-            Console.WriteLine(ServerSplash.GetRenderString());
+            Console.WriteLine(ServerSplash.GetRenderString(Assembly.GetExecutingAssembly().GetName()));
         }
 
         private static void ConfigureServices(IServiceCollection services, CancellationTokenSource tokenSource)
@@ -154,8 +155,7 @@ namespace Rubberduck.DatabaseServer
 
         public async Task StartAsync()
         {
-            _server.SendNotification(JsonRpcMethods.Database.HeartBeat);
+            _server.SendNotification(JsonRpcMethods.DatabaseServer.HeartBeat);
         }
     }
-
 }

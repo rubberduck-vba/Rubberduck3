@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using Rubberduck.RPC.Properties;
 using Rubberduck.DatabaseServer.Internal.Abstract;
 using Microsoft.Data.Sqlite;
 
@@ -10,7 +9,7 @@ namespace Rubberduck.DatabaseServer.Internal.Storage
         private readonly Lazy<IDbConnection> _lazyConnection
             = new Lazy<IDbConnection>(() =>
             {
-                var connection = new SqliteConnection(Settings.Default.DatabaseConnectionString);
+                var connection = new SqliteConnection(ServerPlatform.Settings.DatabaseServerConnectionString);
                 connection.Open();
                 return connection;
             });

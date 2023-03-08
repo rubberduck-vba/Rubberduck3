@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using Dapper;
-using Rubberduck.RPC.Platform.Model.Database;
+using Rubberduck.ServerPlatform.Model.Entities;
 using Rubberduck.DatabaseServer.Internal.Abstract;
 
 namespace Rubberduck.DatabaseServer.Internal.Storage

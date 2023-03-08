@@ -295,27 +295,6 @@
   <ItemGroup>
     <Compile Include="Configuration\IServiceCollectionExtensions.cs" />
     <Compile Include="Configuration\LocalDbServerCapabilities.cs" />
-    <Compile Include="RPC\Disconnect\DisconnectHandler.cs" />
-    <Compile Include="RPC\Info\InfoHandler.cs" />
-    <Compile Include="RPC\Disconnect\DisconnectRequest.cs" />
-    <Compile Include="RPC\Info\InfoRequest.cs" />
-    <Compile Include="RPC\Connect\ConnectHandler.cs" />
-    <Compile Include="RPC\Connect\ConnectRequest.cs" />
-    <Compile Include="RPC\Query.Debug\SqlQueryHandler.cs" />
-    <Compile Include="RPC\Query\Abstract\QueryRequest.cs" />
-    <Compile Include="RPC\Query\Abstract\QueryHandler.cs" />
-    <Compile Include="RPC\Query.Debug\SqlQueryRequest.cs" />
-    <Compile Include="RPC\Query\Requests\ProjectInfoRequest.cs" />
-    <Compile Include="RPC\Query\Requests\ProjectsRequest.cs" />
-    <Compile Include="RPC\Query\SelectQueryHandler.cs" />
-    <Compile Include="RPC\Save\Abstract\SaveNotificationHandler.cs" />
-    <Compile Include="RPC\Save\Abstract\SaveNotification.cs" />
-    <Compile Include="RPC\Save\SaveIdentifierReferenceNotification.cs" />
-    <Compile Include="RPC\Save\SaveLocalNotification.cs" />
-    <Compile Include="RPC\Save\SaveMemberNotification.cs" />
-    <Compile Include="RPC\Save\SaveModuleNotification.cs" />
-    <Compile Include="RPC\Save\SaveParameterNotification.cs" />
-    <Compile Include="RPC\Save\SaveProjectNotification.cs" />
     <Compile Include="Internal\Abstract\IDbConnectionProvider.cs" />
     <Compile Include="Internal\Abstract\IUnitOfWork.cs" />
     <Compile Include="Internal\Abstract\IUnitOfWorkFactory.cs" />

@@ -1,5 +1,5 @@
 ﻿using Rubberduck.DatabaseServer.Internal.Abstract;
-using Rubberduck.RPC.Platform.Model.Database;
+using Rubberduck.ServerPlatform.Model.Entities;
 using System.Data;
 
 namespace Rubberduck.DatabaseServer.Internal.Storage

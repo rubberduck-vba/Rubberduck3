@@ -1,5 +1,4 @@
-﻿using Rubberduck.RPC.Platform.Model;
-using Rubberduck.RPC.Platform.Model.Database;
+﻿using Rubberduck.ServerPlatform.Model.Entities;
 
 namespace Rubberduck.DatabaseServer.Internal.Abstract
 {
@@ -10,6 +9,6 @@ namespace Rubberduck.DatabaseServer.Internal.Abstract
 
         void SaveChanges();
         Repository<TEntity> GetRepository<TEntity>() where TEntity : DbEntity;
-        IQueryOptions<TEntity> GetView<TEntity>() where TEntity : DbEntity;
+        View<TEntity> GetView<TEntity>() where TEntity : DbEntity;
     }
 }

@@ -1,8 +1,7 @@
 ﻿using System.Data;
 using Dapper;
 using Rubberduck.DatabaseServer.Internal.Abstract;
-using Rubberduck.RPC.Platform.Model;
-using Rubberduck.RPC.Platform.Model.Database;
+using Rubberduck.ServerPlatform.Model.Entities;
 
 namespace Rubberduck.DatabaseServer.Internal.Storage
 {
@@ -116,7 +115,7 @@ namespace Rubberduck.DatabaseServer.Internal.Storage
             }
         }
 
-        public IQueryOptions<TEntity> GetView<TEntity>() where TEntity : DbEntity
+        public View<TEntity> GetView<TEntity>() where TEntity : DbEntity
         {
             switch (typeof(TEntity))
             {
