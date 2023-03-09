@@ -19,6 +19,11 @@ namespace Rubberduck.DatabaseServer.RPC.Save
             _factory = factory;
         }
 
+        public override Task<SaveResult> Handle(SaveParam<Member> request, CancellationToken cancellationToken)
+        {
+            return base.Handle(request, cancellationToken);
+        }
+
         protected async override Task<SaveResult> HandleAsync(SaveParam<Member> request)
         {
             var elapsed = await TimedAction.RunAsync(SaveEntitiesAsync(request.Entities));

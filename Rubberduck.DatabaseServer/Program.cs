@@ -117,7 +117,7 @@ namespace Rubberduck.DatabaseServer
 
         private static async Task StartAsync()
         {
-            Splash();
+            Console.WriteLine(ServerSplash.GetRenderString(Assembly.GetExecutingAssembly().GetName()));
 
             var tokenSource = new CancellationTokenSource();
 
@@ -128,13 +128,10 @@ namespace Rubberduck.DatabaseServer
             var host = builder.Build();
             await host.StartAsync(tokenSource.Token);
 
-            //var rpc = host.Services.GetService<JsonRpcServer>();
-            await host.WaitForShutdownAsync();
-        }
+            var app = host.Services.GetService<Application>();
+            await app.StartAsync();
 
-        private static void Splash()
-        {
-            Console.WriteLine(ServerSplash.GetRenderString(Assembly.GetExecutingAssembly().GetName()));
+            await host.WaitForShutdownAsync();
         }
 
         private static void ConfigureServices(IServiceCollection services, CancellationTokenSource tokenSource)

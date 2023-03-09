@@ -17,9 +17,6 @@ namespace Rubberduck.ServerPlatform.RPC
 
         protected abstract Task HandleAsync(TParameter parameter);
 
-        async Task IRequestHandler<TParameter>.Handle(TParameter request, CancellationToken cancellationToken) 
-            => await ((IRequestHandler<TParameter, Unit>)this).Handle(request, cancellationToken);
-
         async Task<Unit> IRequestHandler<TParameter, Unit>.Handle(TParameter request, CancellationToken cancellationToken)
         {
             try

@@ -14,7 +14,7 @@ namespace Rubberduck.DatabaseServer.RPC.Query
             : base(logger, factory)
         {
         }
-        
+
         protected async override Task<QueryResult<TEntity>> HandleAsync(QueryRequest<TEntity, TOptions> request, IUnitOfWork uow, CancellationToken cancellationToken)
         {
             var results = await uow.GetRepository<TEntity>().GetByOptionsAsync(request.Options);

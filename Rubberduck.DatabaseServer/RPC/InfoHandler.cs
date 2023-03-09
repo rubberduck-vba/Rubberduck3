@@ -17,6 +17,11 @@ namespace Rubberduck.DatabaseServer.RPC
             _serverState = serverState;
         }
 
+        public override Task<InfoResult> Handle(InfoRequest request, CancellationToken cancellationToken)
+        {
+            return base.Handle(request, cancellationToken);
+        }
+
         protected override async Task<InfoResult> HandleAsync(InfoRequest request)
         {
             var info = _serverState.GetServerProcessInfo();
