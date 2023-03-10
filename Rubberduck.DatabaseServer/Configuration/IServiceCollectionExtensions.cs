@@ -1,6 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OmniSharp.Extensions.JsonRpc;
+using Rubberduck.DatabaseServer.Internal.Abstract;
+using Rubberduck.DatabaseServer.Internal.HealthChecks;
+using Rubberduck.DatabaseServer.Internal.Storage;
 using Rubberduck.DatabaseServer.RPC;
+using Rubberduck.ServerPlatform.Services;
 using System.IO.Pipes;
 
 namespace Rubberduck.DatabaseServer.Configuration
@@ -16,6 +20,11 @@ namespace Rubberduck.DatabaseServer.Configuration
                     ConfigureRPC(options);
                 })
                 .AddSingleton<Application>()
+                .AddSingleton<IServerStateService, Application>()
+
+                .AddSingleton<IDbConnectionProvider, SqliteDbConnectionProvider>()
+                .AddSingleton<IUnitOfWorkFactory, UnitOfWorkFactory>()
+                .AddSingleton<IHealthCheckService, HealthCheckService>()
                 //.AddOtherServicesHere()
             ;
         }
@@ -24,14 +33,14 @@ namespace Rubberduck.DatabaseServer.Configuration
         {
             var (input, output) = WithAsyncNamedPipeTransport(ServerPlatform.Settings.DatabaseServerPipeName);
             rpc.Concurrency = 8;
-            rpc.UseAssemblyAttributeScanning = true;
-            
+
             rpc.WithInput(input)
                .WithOutput(output)
-
-               .AddHandler<InfoHandler>()
-               .AddHandler<ConnectHandler>()
-               .AddHandler<DisconnectHandler>()
+               .WithAssemblyAttributeScanning(true)
+               .WithAssemblies(typeof(Program).Assembly)
+               //.AddHandler<InfoHandler>()
+               //.AddHandler<ConnectHandler>()
+               //.AddHandler<DisconnectHandler>()
 
                 //.AddHandler<SaveNotificationHandler<IdentifierReference>>(JsonRpcMethods.Database.SaveIdentifierReference)
                 //.AddHandler<SaveNotificationHandler<Local>>(JsonRpcMethods.Database.SaveLocal)

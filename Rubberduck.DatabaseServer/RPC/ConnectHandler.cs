@@ -12,7 +12,7 @@ namespace Rubberduck.DatabaseServer.RPC
     {
         private readonly IServerStateService _serverState;
 
-        public ConnectHandler(ILogger logger, IServerStateService serverState)
+        public ConnectHandler(ILogger<ConnectHandler> logger, IServerStateService serverState)
             : base(logger)
         {
             _serverState = serverState;

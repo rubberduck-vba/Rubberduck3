@@ -10,7 +10,7 @@ namespace Rubberduck.DatabaseServer.RPC.Query
         where TEntity : DbEntity, new()
         where TOptions : class, IQueryOption, new()
     {
-        public SelectQueryHandler(ILogger logger, IUnitOfWorkFactory factory) 
+        public SelectQueryHandler(ILogger<SelectQueryHandler<TEntity, TOptions>> logger, IUnitOfWorkFactory factory) 
             : base(logger, factory)
         {
         }

@@ -12,7 +12,7 @@ namespace Rubberduck.Server.LocalDb.RPC.Query.Debug
     {
         private readonly IUnitOfWorkFactory _factory;
 
-        public SqlQueryHandler(ILogger logger, IUnitOfWorkFactory factory) 
+        public SqlQueryHandler(ILogger<SqlQueryHandler<TResult>> logger, IUnitOfWorkFactory factory) 
             : base(logger) 
         {
             _factory = factory;

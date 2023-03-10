@@ -13,7 +13,7 @@ namespace Rubberduck.DatabaseServer.RPC.Save
     {
         private readonly IUnitOfWorkFactory _factory;
 
-        public SaveMemberNotificationHandler(ILogger logger, IUnitOfWorkFactory factory)
+        public SaveMemberNotificationHandler(ILogger<SaveMemberNotificationHandler> logger, IUnitOfWorkFactory factory)
             : base(logger)
         {
             _factory = factory;

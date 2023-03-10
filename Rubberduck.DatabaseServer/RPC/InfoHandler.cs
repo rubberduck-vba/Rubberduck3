@@ -11,15 +11,10 @@ namespace Rubberduck.DatabaseServer.RPC
     {
         private readonly IServerStateService _serverState;
 
-        public InfoHandler(ILogger logger, IServerStateService serverState)
+        public InfoHandler(ILogger<InfoHandler> logger, IServerStateService serverState)
             : base(logger)
         {
             _serverState = serverState;
-        }
-
-        public override Task<InfoResult> Handle(InfoRequest request, CancellationToken cancellationToken)
-        {
-            return base.Handle(request, cancellationToken);
         }
 
         protected override async Task<InfoResult> HandleAsync(InfoRequest request)

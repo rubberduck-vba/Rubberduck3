@@ -55,5 +55,11 @@ namespace Rubberduck.DatabaseServer.Internal.Abstract
             var sql = $"SELECT {Columns} FROM {Quoted(Source)} WHERE {options.ToWhereClause()}";
             return await Database.QueryAsync<TEntity>(sql);
         }
+
+        public virtual async Task<int> GetCountAsync()
+        {
+            var sql = $"SELECT COUNT(*) FROM {Quoted(Source)}";
+            return await Database.QuerySingleAsync<int>(sql);
+        }
     }
 }

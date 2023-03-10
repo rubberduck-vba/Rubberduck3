@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OmniSharp.Extensions.JsonRpc;
 using Rubberduck.Resources.Registration;
 using System.Security.Principal;
 using System.Security.AccessControl;
 using Microsoft.Extensions.Hosting;
 using Rubberduck.DatabaseServer.Configuration;
-using Rubberduck.ServerPlatform.RPC;
 using Rubberduck.ServerPlatform;
 using System.Reflection;
+using Microsoft.Extensions.Logging.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Rubberduck.DatabaseServer
 {
@@ -123,12 +123,16 @@ namespace Rubberduck.DatabaseServer
 
             var builder = Host.CreateDefaultBuilder()
                 .UseConsoleLifetime()
+                .ConfigureLogging((context, logging) => 
+                {
+                    logging.AddConsole();
+                })
                 .ConfigureServices(provider => ConfigureServices(provider, tokenSource));
 
             var host = builder.Build();
             await host.StartAsync(tokenSource.Token);
 
-            var app = host.Services.GetService<Application>();
+            var app = host.Services.GetRequiredService<Application>();            
             await app.StartAsync();
 
             await host.WaitForShutdownAsync();
@@ -138,21 +142,6 @@ namespace Rubberduck.DatabaseServer
         {
             var config = LocalDbServerCapabilities.Default;
             services.AddRubberduckServerServices(config, tokenSource);
-        }
-    }
-
-    internal class Application
-    {
-        private readonly IJsonRpcServer _server;
-
-        public Application(IJsonRpcServer server)
-        {
-            _server = server;
-        }
-
-        public async Task StartAsync()
-        {
-            _server.SendNotification(JsonRpcMethods.DatabaseServer.HeartBeat);
         }
     }
 }
