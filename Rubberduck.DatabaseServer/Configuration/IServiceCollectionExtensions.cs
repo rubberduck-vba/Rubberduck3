@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OmniSharp.Extensions.JsonRpc;
+using Microsoft.Data.Sqlite;
 using Rubberduck.DatabaseServer.Internal.Abstract;
 using Rubberduck.DatabaseServer.Internal.HealthChecks;
 using Rubberduck.DatabaseServer.Internal.Storage;

@@ -3,6 +3,7 @@ using Rubberduck.ServerPlatform.RPC;
 using Rubberduck.ServerPlatform.Services;
 using Rubberduck.ServerPlatform.Model;
 using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Common;
 
 namespace Rubberduck.DatabaseServer
 {
@@ -14,6 +15,7 @@ namespace Rubberduck.DatabaseServer
 
         public Application(ILogger<Application> logger, IJsonRpcServer server, IHealthCheckService healthCheckService)
         {
+            _logger = logger;
             _server = server;
             _healthCheckService = healthCheckService;
         }
@@ -41,7 +43,13 @@ namespace Rubberduck.DatabaseServer
 
         private async Task StartDatabaseAsync()
         {
-            var reports = await _healthCheckService.RunHealthChecksAsync();
+            var reports = Enumerable.Empty<HealthCheckReport>();
+            var elapsed = TimedAction.Run(() =>
+            {
+                reports = _healthCheckService.RunHealthChecksAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            });
+
+            _logger.LogInformation("Healthchecks completed in {elapsed} ms", elapsed.TotalMilliseconds);
             foreach (var report in reports)
             {
                 if (report.IsSuccess)
@@ -49,10 +57,15 @@ namespace Rubberduck.DatabaseServer
                     _logger.LogInformation($"{report.HealthCheck} {report.Message} ({report.Items.Count()} items)");
                     foreach (var item in report.Items)
                     {
-                        _logger.LogInformation($"\t*{item.Name} | {item.ValueDescription}: {item.Value}");
+                        _logger.LogInformation("\t•{Name} | {ValueDescription}: {Value}", item.Name, item.ValueDescription, item.Value);
                     }
                 }
+                else
+                {
+                    _logger.LogError("\t•{Message}\n{Exception}", report.Message, report.Exception);
+                }
             }
+
         }
     }
 }

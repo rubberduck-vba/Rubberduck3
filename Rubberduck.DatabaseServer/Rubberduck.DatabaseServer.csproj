@@ -20,6 +20,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
     <PackageReference Include="SQLite" Version="3.13.0" />
+    <PackageReference Include="SQLitePCLRaw.core" Version="2.1.4" />
+    <PackageReference Include="SQLitePCLRaw.provider.winsqlite3" Version="2.1.4" />
     <PackageReference Include="System.Threading.AccessControl" Version="7.0.1" />
   </ItemGroup>
 

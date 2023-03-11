@@ -10,6 +10,7 @@ namespace Rubberduck.DatabaseServer.Internal.Storage
             = new Lazy<IDbConnection>(() =>
             {
                 var connection = new SqliteConnection(ServerPlatform.Settings.DatabaseServerConnectionString);
+                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
                 connection.Open();
                 return connection;
             });

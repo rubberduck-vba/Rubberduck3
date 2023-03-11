@@ -132,10 +132,25 @@ namespace Rubberduck.DatabaseServer
             var host = builder.Build();
             await host.StartAsync(tokenSource.Token);
 
-            var app = host.Services.GetRequiredService<Application>();            
-            await app.StartAsync();
+            var canStart = false;
 
-            await host.WaitForShutdownAsync();
+            try
+            {
+                var app = host.Services.GetRequiredService<Application>();
+                await app.StartAsync();
+
+                canStart = true;
+            }
+            catch (Exception exception)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine($"FATAL: {exception}");
+            }
+
+            if (canStart)
+            {
+                await host.WaitForShutdownAsync();
+            }
         }
 
         private static void ConfigureServices(IServiceCollection services, CancellationTokenSource tokenSource)
