@@ -43,11 +43,7 @@ namespace Rubberduck.DatabaseServer
 
         private async Task StartDatabaseAsync()
         {
-            var reports = Enumerable.Empty<HealthCheckReport>();
-            var elapsed = TimedAction.Run(() =>
-            {
-                reports = _healthCheckService.RunHealthChecksAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-            });
+            var (elapsed, reports) = await TimedAction.RunAsync(() => _healthCheckService.RunHealthChecksAsync());
 
             _logger.LogInformation("Healthchecks completed in {elapsed} ms", elapsed.TotalMilliseconds);
             foreach (var report in reports)
