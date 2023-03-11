@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OmniSharp.Extensions.JsonRpc;
-using Microsoft.Data.Sqlite;
 using Rubberduck.DatabaseServer.Internal.Abstract;
 using Rubberduck.DatabaseServer.Internal.HealthChecks;
 using Rubberduck.DatabaseServer.Internal.Storage;
-using Rubberduck.DatabaseServer.RPC;
 using Rubberduck.ServerPlatform.Services;
 using System.IO.Pipes;
 
@@ -14,7 +12,7 @@ namespace Rubberduck.DatabaseServer.Configuration
     {
         public static IServiceCollection AddRubberduckServerServices(this IServiceCollection services, LocalDbServerCapabilities config, CancellationTokenSource cts)
         {
-            return services
+            return ConfigureHealthChecks(services)
                 .AddJsonRpcServer(ServerPlatform.Settings.DatabaseServerName, options =>
                 {
                     options.Services = services;
@@ -25,8 +23,14 @@ namespace Rubberduck.DatabaseServer.Configuration
 
                 .AddSingleton<IDbConnectionProvider, SqliteDbConnectionProvider>()
                 .AddSingleton<IUnitOfWorkFactory, UnitOfWorkFactory>()
+            ;
+        }
+
+        private static IServiceCollection ConfigureHealthChecks(IServiceCollection services)
+        {
+            return services
                 .AddSingleton<IHealthCheckService, HealthCheckService>()
-                //.AddOtherServicesHere()
+                .AddSingleton<HealthCheck, CheckProjects>()
             ;
         }
 
@@ -39,21 +43,6 @@ namespace Rubberduck.DatabaseServer.Configuration
                .WithOutput(output)
                .WithAssemblyAttributeScanning(true)
                .WithAssemblies(typeof(Program).Assembly)
-               //.AddHandler<InfoHandler>()
-               //.AddHandler<ConnectHandler>()
-               //.AddHandler<DisconnectHandler>()
-
-                //.AddHandler<SaveNotificationHandler<IdentifierReference>>(JsonRpcMethods.Database.SaveIdentifierReference)
-                //.AddHandler<SaveNotificationHandler<Local>>(JsonRpcMethods.Database.SaveLocal)
-                //.AddHandler<SaveNotificationHandler<Member>>(JsonRpcMethods.Database.SaveMember)
-                //.AddHandler<SaveNotificationHandler<Module>>(JsonRpcMethods.Database.SaveModule)
-                //.AddHandler<SaveNotificationHandler<Parameter>>(JsonRpcMethods.Database.SaveParameter)
-                //.AddHandler<SaveNotificationHandler<Project>>(JsonRpcMethods.Database.SaveProject)
-                //.AddHandler<SaveNotificationHandler<DeclarationAnnotation>>(JsonRpcMethods.Database.QueryAnnotations)
-                //.AddHandler<SaveNotificationHandler<DeclarationAttribute>>(JsonRpcMethods.Database.QueryAttributes)
-                //.AddHandler<SelectQueryHandler<MemberInfo, MemberInfoRequestOptions>>(JsonRpcMethods.DatabaseServer.QueryMemberInfo)
-                //.AddHandler<SelectQueryHandler<ModuleInfo, ModuleInfoRequestOptions>>(JsonRpcMethods.DatabaseServer.QueryModuleInfo)
-                //.AddHandler<SelectQueryHandler<ProjectInfo, ProjectInfoRequestOptions>>(JsonRpcMethods.DatabaseServer.QueryProjectInfo)
             ;
         }
 

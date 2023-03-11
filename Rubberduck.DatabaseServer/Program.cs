@@ -151,6 +151,10 @@ namespace Rubberduck.DatabaseServer
             {
                 await host.WaitForShutdownAsync();
             }
+            else
+            {
+                tokenSource.Cancel();
+            }
         }
 
         private static void ConfigureServices(IServiceCollection services, CancellationTokenSource tokenSource)

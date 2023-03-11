@@ -6,7 +6,7 @@ using Rubberduck.InternalApi.Common;
 namespace Rubberduck.ServerPlatform.RPC
 {
     public abstract class JsonRpcNotificationHandler<TParameter> : IJsonRpcNotificationHandler<TParameter> 
-        where TParameter : IRequest, IRequest<Unit>
+        where TParameter : IRequest
     {
         protected JsonRpcNotificationHandler(ILogger logger)
         {

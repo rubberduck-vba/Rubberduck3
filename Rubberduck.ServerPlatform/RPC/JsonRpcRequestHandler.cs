@@ -5,6 +5,12 @@ using Rubberduck.InternalApi.Common;
 
 namespace Rubberduck.ServerPlatform.RPC
 {
+    public abstract class JsonRpcRequestHandler<TRequest> : JsonRpcRequestHandler<TRequest, Unit>
+        where TRequest : IRequest
+    {
+        protected JsonRpcRequestHandler(ILogger logger) : base(logger) { }
+    }
+
     public abstract class JsonRpcRequestHandler<TRequest, TResponse> : IJsonRpcRequestHandler<TRequest, TResponse>
         where TRequest : IRequest, IRequest<TResponse>
     {
