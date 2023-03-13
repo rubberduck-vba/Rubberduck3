@@ -3,6 +3,8 @@ using OmniSharp.Extensions.JsonRpc;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Server;
 using Rubberduck.ServerPlatform.Model;
+using Rubberduck.ServerPlatform.RPC;
+using Rubberduck.ServerPlatform.RPC.DatabaseServer;
 using System.IO.Pipes;
 
 namespace Rubberduck.LanguageServer.Configuration
@@ -11,7 +13,7 @@ namespace Rubberduck.LanguageServer.Configuration
     {
         public static IServiceCollection AddRubberduckServerServices(this IServiceCollection services, ServerCapabilities config, CancellationTokenSource tokenSource) => 
             services
-                //.AddLanguageServer(ConfigureLSP)
+                .AddLanguageServer(ConfigureLSP)
                 .AddJsonRpcServer(ServerPlatform.Settings.DatabaseServerPipeName, ConfigureDbClient)
                 .ConfigureDbClientServices()
                 //.AddOtherServicesHere()
@@ -29,18 +31,21 @@ namespace Rubberduck.LanguageServer.Configuration
             lsp.WithInput(input)
                .WithOutput(output)
 
-               //add LSP handlers here
+               //add LSP handlers here?
 
                .OnStarted(async (server, token) =>
                {
-                   var info = new ClientProcessInfo 
+                   var request = new ConnectRequest
                    {
-                       Name = name,
-                       Version = version,
-                       ProcessId = 0
+                       ClientInfo = new ClientProcessInfo
+                       {
+                           Name = name,
+                           Version = version,
+                           ProcessId = 0
+                       }
                    };
-                   //var db = server.GetService<IDatabaseServerServiceProxy>();
-                   //await db.ConnectAsync(info);
+                   var db = server.GetRequiredService<IJsonRpcServer>();
+                   await db.SendRequest(JsonRpcMethods.DatabaseServer.Connect, request).Returning<ConnectResult>(token);
                });
             ;
         }
@@ -70,16 +75,16 @@ namespace Rubberduck.LanguageServer.Configuration
 
         private static (Stream input, Stream output) WithAsyncServerNamedPipeTransport(string name)
         {
-            var input = new NamedPipeServerStream(name, PipeDirection.InOut, 16, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
-            var output = new NamedPipeClientStream(".", name, PipeDirection.InOut, PipeOptions.Asynchronous);
-            return (input, output);
+            var input = new NamedPipeServerStream(name, PipeDirection.InOut);
+            //var output = new NamedPipeClientStream(".", name);
+            return (input, input);
         }
 
         private static (Stream input, Stream output) WithAsyncClientNamedPipeTransport(string name)
         {
-            var input = new NamedPipeClientStream(".", name, PipeDirection.InOut, PipeOptions.Asynchronous);
-            var output = new NamedPipeServerStream(name, PipeDirection.InOut, 16, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
-            return (input, output);
+            var input = new NamedPipeClientStream(".", name);
+            //var output = new NamedPipeServerStream(name);
+            return (input, input);
         }
     }
 }

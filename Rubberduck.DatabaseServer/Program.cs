@@ -6,7 +6,6 @@ using Microsoft.Extensions.Hosting;
 using Rubberduck.DatabaseServer.Configuration;
 using Rubberduck.ServerPlatform;
 using System.Reflection;
-using Microsoft.Extensions.Logging.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Rubberduck.DatabaseServer
@@ -137,7 +136,7 @@ namespace Rubberduck.DatabaseServer
             try
             {
                 var app = host.Services.GetRequiredService<Application>();
-                await app.StartAsync();
+                await app.StartAsync(tokenSource.Token);
 
                 canStart = true;
             }

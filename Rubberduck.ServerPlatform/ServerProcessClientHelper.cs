@@ -3,6 +3,7 @@ using System.Reflection;
 
 namespace Rubberduck.ServerPlatform
 {
+
     /// <summary>
     /// A helper class to start a server process from a client.
     /// </summary>
@@ -13,7 +14,7 @@ namespace Rubberduck.ServerPlatform
         /// </summary>
         /// <param name="port"></param>
         /// <returns>Returns the server process, whether it was already running or the method call started it.</returns>
-        public static Process StartLocalDb(bool hidden = true)
+        public static Process StartDatabaseServer(bool hidden = true)
         {
             Process serverProcess = null;
             Exception originalException;
@@ -67,7 +68,7 @@ namespace Rubberduck.ServerPlatform
             }
         }
 
-        public static Process StartLSP()
+        public static Process StartLanguageServer()
         {
             var info = new ProcessStartInfo
             {
@@ -81,7 +82,7 @@ namespace Rubberduck.ServerPlatform
             return Process.Start(info);
         }
 
-        public static Process StartTelemetry()
+        public static Process StartTelemetryServer()
         {
             var info = new ProcessStartInfo
             {

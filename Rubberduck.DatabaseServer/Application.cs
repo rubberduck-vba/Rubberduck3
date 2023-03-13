@@ -4,25 +4,18 @@ using Rubberduck.ServerPlatform.Services;
 using Rubberduck.ServerPlatform.Model;
 using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Common;
+using Rubberduck.ServerPlatform;
+using System.Collections.Concurrent;
 
 namespace Rubberduck.DatabaseServer
 {
-    internal class Application : IServerStateService
+    internal class ServerStateService : IServerStateService
     {
-        private readonly ILogger _logger;
-        private readonly IJsonRpcServer _server;
-        private readonly IHealthCheckService _healthCheckService;
-
-        public Application(ILogger<Application> logger, IJsonRpcServer server, IHealthCheckService healthCheckService)
-        {
-            _logger = logger;
-            _server = server;
-            _healthCheckService = healthCheckService;
-        }
+        private readonly ConcurrentDictionary<string, ClientProcessInfo> _clients = new ConcurrentDictionary<string, ClientProcessInfo>();
 
         public bool AddClient(ClientProcessInfo client)
         {
-            throw new NotImplementedException();
+            return _clients.TryAdd(client.Name, client) || _clients.ContainsKey(client.Name);
         }
 
         public ServerProcessInfo GetServerProcessInfo()
@@ -32,10 +25,26 @@ namespace Rubberduck.DatabaseServer
 
         public bool RemoveClient(ClientProcessInfo client)
         {
-            throw new NotImplementedException();
+            return _clients.Remove(client.Name, out _) || !_clients.ContainsKey(client.Name);
+        }
+    }
+
+    internal class Application : IServerApplication
+    {
+        private readonly ILogger _logger;
+        private readonly IServerStateService _state;
+        private readonly IJsonRpcServer _server;
+        private readonly IHealthCheckService _healthCheckService;
+
+        public Application(ILogger<Application> logger, IJsonRpcServer server, IHealthCheckService healthCheckService, IServerStateService state)
+        {
+            _logger = logger;
+            _state = state;
+            _server = server;
+            _healthCheckService = healthCheckService;
         }
 
-        public async Task StartAsync()
+        public async Task StartAsync(CancellationToken token)
         {
             _server.SendNotification(JsonRpcMethods.DatabaseServer.HeartBeat);
             await StartDatabaseAsync();

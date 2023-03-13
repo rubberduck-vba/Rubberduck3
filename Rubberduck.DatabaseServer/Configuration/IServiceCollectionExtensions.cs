@@ -3,6 +3,7 @@ using OmniSharp.Extensions.JsonRpc;
 using Rubberduck.DatabaseServer.Internal.Abstract;
 using Rubberduck.DatabaseServer.Internal.HealthChecks;
 using Rubberduck.DatabaseServer.Internal.Storage;
+using Rubberduck.DatabaseServer.RPC;
 using Rubberduck.ServerPlatform.Services;
 using System.IO.Pipes;
 
@@ -19,7 +20,7 @@ namespace Rubberduck.DatabaseServer.Configuration
                     ConfigureRPC(options);
                 })
                 .AddSingleton<Application>()
-                .AddSingleton<IServerStateService, Application>()
+                .AddSingleton<IServerStateService, ServerStateService>()
 
                 .AddSingleton<IDbConnectionProvider, SqliteDbConnectionProvider>()
                 .AddSingleton<IUnitOfWorkFactory, UnitOfWorkFactory>()
@@ -43,14 +44,14 @@ namespace Rubberduck.DatabaseServer.Configuration
                .WithOutput(output)
                .WithAssemblyAttributeScanning(true)
                .WithAssemblies(typeof(Program).Assembly)
+               .WithHandler<ConnectHandler>()
             ;
         }
 
         private static (Stream input, Stream output) WithAsyncNamedPipeTransport(string name)
         {
-            const int maxServerInstances = 1;
-            var input = new NamedPipeServerStream(name, PipeDirection.InOut, maxServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
-            var output = new NamedPipeClientStream(".", name, PipeDirection.InOut, PipeOptions.Asynchronous);
+            var input = new NamedPipeServerStream(name);
+            var output = new NamedPipeClientStream(".", name);
             return (input, output);
         }
     }
