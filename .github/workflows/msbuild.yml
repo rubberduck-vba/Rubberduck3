@@ -44,10 +44,10 @@ jobs:
     
     - name: Upload Artifact for debugging
       if: github.event_name == 'pull_request'
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
-        name: Rubberduck.Server.exe
-        path: Server/LSP/Rubberduck.Server.LSP/bin/Release/Rubberduck.Server.exe
+        name: Rubberduck.Server
+        path: Server/LSP/Rubberduck.Server.LSP/bin/Release/
 
     - name: Create Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
