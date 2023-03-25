@@ -47,7 +47,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Rubberduck.Server.exe
-        path: Rubberduck3/Server/LSP/Rubberduck.Server.LSP/bin/Release/Rubberduck.Server.exe
+        path: Server/LSP/Rubberduck.Server.LSP/bin/Release/Rubberduck.Server.exe
 
     - name: Create Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
