@@ -7,12 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
-  # Path to the solution file relative to the root of the project.
   SOLUTION_FILE_PATH: .
-
-  # Configuration type to build.
-  # You can convert this to a build matrix if you need coverage of multiple configuration types.
-  # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
   BUILD_CONFIGURATION: Release
 
 permissions:
@@ -28,12 +23,54 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
+    - name: Cache NuGet packages
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.nuget/packages
+          !~/.nuget/packages/**/content*
+          !~/.nuget/packages/**/contentFiles*
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      # Add additional options to the MSBuild command line here (like platform or verbosity level).
-      # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Create Release
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.sha }}
+        release_name: Release ${{ github.sha }}
+        draft: false
+        prerelease: true
+
+    - name: Upload Release Assets
+      if: steps.create_release.conclusion == 'success'
+      run: |
+        $outputFolder = Join-Path ${{ env.GITHUB_WORKSPACE }} "path\to\your\default\build\folder"
+        $files = Get-ChildItem -Path $outputFolder -Recurse -File
+        foreach ($file in $files) {
+          $filePath = $file.FullName
+          $fileMimeType = (Get-Item $filePath | Get-FileMimeType)
+          echo "Uploading $filePath with MIME type $fileMimeType"
+          $args = @{
+            "upload_url" = "${{ steps.create_release.outputs.upload_url }}"
+            "asset_path" = "$filePath"
+            "asset_name" = $file.Name
+            "asset_content_type" = "$fileMimeType"
+          }
+          gh release upload @args
+        }
+      shell: pwsh
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
