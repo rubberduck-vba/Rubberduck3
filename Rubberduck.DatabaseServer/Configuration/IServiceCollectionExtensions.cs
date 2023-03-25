@@ -11,13 +11,13 @@ namespace Rubberduck.DatabaseServer.Configuration
 {
     internal static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddRubberduckServerServices(this IServiceCollection services, LocalDbServerCapabilities config, CancellationTokenSource cts)
+        public static IServiceCollection AddRubberduckServerServices(this IServiceCollection services, LocalDbServerCapabilities config, NamedPipeServerStream pipe, CancellationTokenSource cts)
         {
             return ConfigureHealthChecks(services)
                 .AddJsonRpcServer(ServerPlatform.Settings.DatabaseServerName, options =>
                 {
                     options.Services = services;
-                    ConfigureRPC(options);
+                    ConfigureRPC(options, pipe);
                 })
                 .AddSingleton<Application>()
                 .AddSingleton<IServerStateService, ServerStateService>()
@@ -35,24 +35,14 @@ namespace Rubberduck.DatabaseServer.Configuration
             ;
         }
 
-        private static void ConfigureRPC(JsonRpcServerOptions rpc)
-        {
-            var (input, output) = WithAsyncNamedPipeTransport(ServerPlatform.Settings.DatabaseServerPipeName);
+        private static void ConfigureRPC(JsonRpcServerOptions rpc, NamedPipeServerStream pipe)
+        {            
             rpc.Concurrency = 8;
 
-            rpc.WithInput(input)
-               .WithOutput(output)
-               .WithAssemblyAttributeScanning(true)
-               .WithAssemblies(typeof(Program).Assembly)
+            rpc.WithInput(pipe)
+               .WithOutput(pipe)
                .WithHandler<ConnectHandler>()
             ;
-        }
-
-        private static (Stream input, Stream output) WithAsyncNamedPipeTransport(string name)
-        {
-            var input = new NamedPipeServerStream(name);
-            var output = new NamedPipeClientStream(".", name);
-            return (input, output);
         }
     }
 }

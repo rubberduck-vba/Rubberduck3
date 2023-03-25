@@ -52,16 +52,11 @@ namespace Rubberduck.LanguageServer.Configuration
 
         private static void ConfigureDbClient(JsonRpcServerOptions rpc)
         {
-            var (input, output) = WithAsyncClientNamedPipeTransport(ServerPlatform.Settings.DatabaseServerPipeName);
-            var assemblies = new[]
-            {
-                typeof(Program).Assembly,
-            };
-            
-            rpc.UseAssemblyAttributeScanning = true;
-            rpc.WithInput(input)
-               .WithOutput(output)
-               .WithAssemblies(assemblies)
+            var pipe = new NamedPipeClientStream(".", ServerPlatform.Settings.DatabaseServerPipeName, PipeDirection.InOut);
+
+            pipe.Connect(200);
+            rpc.WithOutput(pipe)
+               .WithInput(pipe)
             ;
         }
 
@@ -76,14 +71,6 @@ namespace Rubberduck.LanguageServer.Configuration
         private static (Stream input, Stream output) WithAsyncServerNamedPipeTransport(string name)
         {
             var input = new NamedPipeServerStream(name, PipeDirection.InOut);
-            //var output = new NamedPipeClientStream(".", name);
-            return (input, input);
-        }
-
-        private static (Stream input, Stream output) WithAsyncClientNamedPipeTransport(string name)
-        {
-            var input = new NamedPipeClientStream(".", name);
-            //var output = new NamedPipeServerStream(name);
             return (input, input);
         }
     }

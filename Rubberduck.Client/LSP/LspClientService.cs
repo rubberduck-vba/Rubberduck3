@@ -85,7 +85,7 @@ namespace Rubberduck.Client.LSP
                         ColorProvider = new Supports<ColorProviderCapability> { Value = new ColorProviderCapability() },
                         Completion = new Supports<CompletionCapability> { Value = new CompletionCapability() },
                         Declaration = new Supports<DeclarationCapability> { Value = new DeclarationCapability() },
-                        //Definition = null, // we cannot support multiple definitions per declaration
+                        //Definition = null, // we do not support multiple definitions per declaration for now (issue #51)
                         DocumentHighlight = new Supports<DocumentHighlightCapability> { Value = new DocumentHighlightCapability() },
                         DocumentLink = new Supports<DocumentLinkCapability> { Value = new DocumentLinkCapability() },
                         DocumentSymbol = new Supports<DocumentSymbolCapability> { Value = new DocumentSymbolCapability() },

@@ -61,11 +61,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Server.Telemetry
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Telemetry", "Telemetry", "{9DF5E94E-6F5F-4808-8DA3-698A34EFD021}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.DatabaseServer", "Rubberduck.DatabaseServer\Rubberduck.DatabaseServer.csproj", "{E948AD55-355F-4D89-8C4D-7B6617C49FA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.DatabaseServer", "Rubberduck.DatabaseServer\Rubberduck.DatabaseServer.csproj", "{E948AD55-355F-4D89-8C4D-7B6617C49FA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.ServerPlatform", "Rubberduck.ServerPlatform\Rubberduck.ServerPlatform.csproj", "{FB8BA750-68F8-4503-8D79-10081B497A87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.ServerPlatform", "Rubberduck.ServerPlatform\Rubberduck.ServerPlatform.csproj", "{FB8BA750-68F8-4503-8D79-10081B497A87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.LanguageServer", "Rubberduck.LanguageServer\Rubberduck.LanguageServer.csproj", "{AC455F78-2B8C-4349-B858-A47D6B243640}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.LanguageServer", "Rubberduck.LanguageServer\Rubberduck.LanguageServer.csproj", "{AC455F78-2B8C-4349-B858-A47D6B243640}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -7,6 +7,7 @@ using Rubberduck.DatabaseServer.Configuration;
 using Rubberduck.ServerPlatform;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
+using System.IO.Pipes;
 
 namespace Rubberduck.DatabaseServer
 {
@@ -119,47 +120,52 @@ namespace Rubberduck.DatabaseServer
             Console.WriteLine(ServerSplash.GetRenderString(Assembly.GetExecutingAssembly().GetName()));
 
             var tokenSource = new CancellationTokenSource();
+            using (var pipe = new NamedPipeServerStream(ServerPlatform.Settings.DatabaseServerPipeName, PipeDirection.InOut))
+            {
+                var builder = Host.CreateDefaultBuilder()
+                    .UseConsoleLifetime()
+                    .ConfigureLogging((context, logging) =>
+                    {
+                        logging.AddConsole();
+                    })
+                    .ConfigureServices(provider => ConfigureServices(provider, pipe, tokenSource));
 
-            var builder = Host.CreateDefaultBuilder()
-                .UseConsoleLifetime()
-                .ConfigureLogging((context, logging) => 
+                var host = builder.Build();
+                await host.StartAsync(tokenSource.Token);
+
+                var canStart = false;
+
+                try
                 {
-                    logging.AddConsole();
-                })
-                .ConfigureServices(provider => ConfigureServices(provider, tokenSource));
+                    var app = host.Services.GetRequiredService<Application>();
+                    await app.StartAsync(tokenSource.Token);
 
-            var host = builder.Build();
-            await host.StartAsync(tokenSource.Token);
+                    canStart = true;
+                }
+                catch (Exception exception)
+                {
+                    canStart = false;
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine($"FATAL: {exception}");
+                }
 
-            var canStart = false;
-
-            try
-            {
-                var app = host.Services.GetRequiredService<Application>();
-                await app.StartAsync(tokenSource.Token);
-
-                canStart = true;
-            }
-            catch (Exception exception)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine($"FATAL: {exception}");
-            }
-
-            if (canStart)
-            {
-                await host.WaitForShutdownAsync();
-            }
-            else
-            {
-                tokenSource.Cancel();
+                if (canStart)
+                {
+                    Console.WriteLine("Awaiting client connection...");
+                    await pipe.WaitForConnectionAsync(tokenSource.Token);
+                    await host.WaitForShutdownAsync(tokenSource.Token);
+                }
+                else
+                {
+                    tokenSource.Cancel();
+                }
             }
         }
 
-        private static void ConfigureServices(IServiceCollection services, CancellationTokenSource tokenSource)
+        private static void ConfigureServices(IServiceCollection services, NamedPipeServerStream pipe, CancellationTokenSource tokenSource)
         {
             var config = LocalDbServerCapabilities.Default;
-            services.AddRubberduckServerServices(config, tokenSource);
+            services.AddRubberduckServerServices(config, pipe, tokenSource);
         }
     }
 }

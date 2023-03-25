@@ -33,10 +33,10 @@ namespace Rubberduck.DatabaseServer
     {
         private readonly ILogger _logger;
         private readonly IServerStateService _state;
-        private readonly IJsonRpcServer _server;
+        private readonly JsonRpcServer _server;
         private readonly IHealthCheckService _healthCheckService;
 
-        public Application(ILogger<Application> logger, IJsonRpcServer server, IHealthCheckService healthCheckService, IServerStateService state)
+        public Application(ILogger<Application> logger, JsonRpcServer server, IHealthCheckService healthCheckService, IServerStateService state)
         {
             _logger = logger;
             _state = state;
@@ -46,31 +46,30 @@ namespace Rubberduck.DatabaseServer
 
         public async Task StartAsync(CancellationToken token)
         {
-            _server.SendNotification(JsonRpcMethods.DatabaseServer.HeartBeat);
-            await StartDatabaseAsync();
+            //_server.SendNotification(JsonRpcMethods.DatabaseServer.HeartBeat);
+            await StartDatabaseAsync(token);
         }
 
-        private async Task StartDatabaseAsync()
+        private async Task StartDatabaseAsync(CancellationToken token)
         {
-            var (elapsed, reports) = await TimedAction.RunAsync(() => _healthCheckService.RunHealthChecksAsync());
+            //var (elapsed, reports) = await TimedAction.RunAsync(() => _healthCheckService.RunHealthChecksAsync());
 
-            _logger.LogInformation("Healthchecks completed in {elapsed} ms", elapsed.TotalMilliseconds);
-            foreach (var report in reports)
-            {
-                if (report.IsSuccess)
-                {
-                    _logger.LogInformation($"{report.HealthCheck} {report.Message} ({report.Items.Count()} items)");
-                    foreach (var item in report.Items)
-                    {
-                        _logger.LogInformation("\t•{Name} | {ValueDescription}: {Value}", item.Name, item.ValueDescription, item.Value);
-                    }
-                }
-                else
-                {
-                    _logger.LogError("\t•{Message}\n{Exception}", report.Message, report.Exception);
-                }
-            }
-
+            //_logger.LogInformation("Healthchecks completed in {elapsed} ms", elapsed.TotalMilliseconds);
+            //foreach (var report in reports)
+            //{
+            //    if (report.IsSuccess)
+            //    {
+            //        _logger.LogInformation($"{report.HealthCheck} {report.Message} ({report.Items.Count()} items)");
+            //        foreach (var item in report.Items)
+            //        {
+            //            _logger.LogInformation("\t•{Name} | {ValueDescription}: {Value}", item.Name, item.ValueDescription, item.Value);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        _logger.LogError("\t•{Message}\n{Exception}", report.Message, report.Exception);
+            //    }
+            //}
         }
     }
 }

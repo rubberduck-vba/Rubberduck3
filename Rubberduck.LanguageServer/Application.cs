@@ -4,16 +4,15 @@ using Rubberduck.ServerPlatform;
 using Rubberduck.ServerPlatform.Model;
 using Rubberduck.ServerPlatform.RPC;
 using Rubberduck.ServerPlatform.RPC.DatabaseServer;
-using System.Diagnostics;
 
 namespace Rubberduck.LanguageServer
 {
     internal class Application : IServerApplication
     {
         private readonly ILanguageServer _languageServer;
-        private readonly IJsonRpcServer _databaseServer;
+        private readonly JsonRpcServer _databaseServer;
         
-        public Application(ILanguageServer languageServer, IJsonRpcServer databaseServer)
+        public Application(ILanguageServer languageServer, JsonRpcServer databaseServer)
         {
             _languageServer = languageServer;
             _databaseServer = databaseServer;
@@ -21,11 +20,14 @@ namespace Rubberduck.LanguageServer
 
         public async Task StartAsync(CancellationToken token)
         {
-            var processId = Process.GetCurrentProcess().Id;
+            var processId = Environment.ProcessId;
             var assemnbly = typeof(Application).Assembly.GetName() ?? throw new InvalidOperationException("Could not retrieve assembly name/version.");
 
             ServerProcessClientHelper.StartDatabaseServer(hidden: false);
 
+            Console.WriteLine($"Initializing database server...");
+            await _databaseServer.Initialize(token);
+            
             Console.WriteLine($"Connecting...");
             var client = new ClientProcessInfo
             {
@@ -33,8 +35,8 @@ namespace Rubberduck.LanguageServer
                 Version = assemnbly.Version?.ToString(3),
                 ProcessId = processId
             };
-            
-            _ = await _databaseServer.SendRequest(JsonRpcMethods.DatabaseServer.Connect, client).Returning<ConnectResult>(token);
+
+            var connect = await _databaseServer.SendRequest(JsonRpcMethods.DatabaseServer.Connect, client).Returning<ConnectResult>(token);
 
             Console.WriteLine($"Requesting database server info...");
             var info = (await _databaseServer.SendRequest(JsonRpcMethods.DatabaseServer.Info, client).Returning<InfoResult>(token)).ServerInfo;

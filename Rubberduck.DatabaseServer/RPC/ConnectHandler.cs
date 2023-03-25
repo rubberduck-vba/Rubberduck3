@@ -7,7 +7,6 @@ using Rubberduck.ServerPlatform.Services;
 
 namespace Rubberduck.DatabaseServer.RPC
 {
-    [Method(JsonRpcMethods.DatabaseServer.Connect, Direction.ClientToServer)]
     internal class ConnectHandler : JsonRpcRequestHandler<ConnectRequest, ConnectResult>
     {
         private readonly IServerStateService _serverState;
@@ -17,6 +16,10 @@ namespace Rubberduck.DatabaseServer.RPC
         {
             _serverState = serverState;
         }
+
+        [Method(JsonRpcMethods.DatabaseServer.Connect, Direction.ClientToServer)]
+        public override Task<ConnectResult> Handle(ConnectRequest request, CancellationToken cancellationToken)
+            => base.Handle(request, cancellationToken);
 
         protected override async Task<ConnectResult> HandleAsync(ConnectRequest request)
         {
