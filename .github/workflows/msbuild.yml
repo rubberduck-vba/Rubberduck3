@@ -21,7 +21,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v1
 
     - name: Cache NuGet packages
       uses: actions/cache@v2
@@ -52,12 +52,12 @@ jobs:
         tag_name: ${{ github.sha }}
         release_name: Release ${{ github.sha }}
         draft: false
-        prerelease: true
+        prerelease: false
 
     - name: Upload Release Assets
       if: steps.create_release.conclusion == 'success'
       run: |
-        $outputFolder = Join-Path ${{ env.GITHUB_WORKSPACE }} "path\to\your\default\build\folder"
+        $outputFolder = Join-Path ${{ env.GITHUB_WORKSPACE }} "${{env.SOLUTION_FILE_PATH}}\bin\Release"
         $files = Get-ChildItem -Path $outputFolder -Recurse -File
         foreach ($file in $files) {
           $filePath = $file.FullName
