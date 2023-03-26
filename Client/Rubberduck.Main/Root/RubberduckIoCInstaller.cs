@@ -26,7 +26,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.VbeRuntime;
 using System.IO.Abstractions;
-using Rubberduck.VBEditor.ComManagement.NonDisposalDecorators;
+using Rubberduck.VBEditor.ComManagement.NonDisposingDecorators;
 using Rubberduck.InternalApi.UIContext;
 using System.Runtime.InteropServices;
 using Rubberduck.Main.Extensions;
@@ -1148,10 +1148,10 @@ namespace Rubberduck.Root
         {
             //note: We register safe com wrappers inside non-disposal decorators to ensure that the disposal is not executed by CW on some random thread.
             //Instead, the disposal will happen via the ComSafe on the thread executing the add in termination.
-            container.Register(Component.For<IVBE>().Instance(new VbeNonDisposalDecorator<IVBE>(_vbe)));
-            container.Register(Component.For<IAddIn>().Instance(new AddInNonDisposalDecorator<IAddIn>(_addin)));
+            container.Register(Component.For<IVBE>().Instance(new VbeNonDisposingDecorator<IVBE>(_vbe)));
+            container.Register(Component.For<IAddIn>().Instance(new AddInNonDisposingDecorator<IAddIn>(_addin)));
             //note: This registration makes Castle Windsor inject _vbe_CommandBars in all ICommandBars Parent properties.
-            container.Register(Component.For<ICommandBars>().Instance(new CommandBarsNonDisposalDecorator<ICommandBars>(_vbe.CommandBars)));
+            container.Register(Component.For<ICommandBars>().Instance(new CommandBarsNonDisposingDecorator<ICommandBars>(_vbe.CommandBars)));
         }
     }
 }

@@ -1,12 +1,12 @@
 ﻿using Rubberduck.InternalApi.Model;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.VBEditor.ComManagement.NonDisposalDecorators
+namespace Rubberduck.VBEditor.ComManagement.NonDisposingDecorators
 {
-    public class VBComponentNonDisposalDecorator<T> : NonDisposalDecoratorBase<T>, IVBComponent
+    public class VBComponentNonDisposingDecorator<T> : NonDisposingDecoratorBase<T>, IVBComponent
         where T : IVBComponent
     {
-        public VBComponentNonDisposalDecorator(T component)
+        public VBComponentNonDisposingDecorator(T component)
             : base(component)
         { }
 

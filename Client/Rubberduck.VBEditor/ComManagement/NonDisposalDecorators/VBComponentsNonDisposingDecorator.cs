@@ -6,12 +6,12 @@ using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.VBEditor.ComManagement.NonDisposalDecorators
+namespace Rubberduck.VBEditor.ComManagement.NonDisposingDecorators
 {
-    public class VBComponentsNonDisposalDecorator<T> : NonDisposalDecoratorBase<T>, IVBComponents
+    public class VBComponentsNonDisposingDecorator<T> : NonDisposingDecoratorBase<T>, IVBComponents
         where T : IVBComponents
     {
-        public VBComponentsNonDisposalDecorator(T components)
+        public VBComponentsNonDisposingDecorator(T components)
             : base(components)
         { }
 

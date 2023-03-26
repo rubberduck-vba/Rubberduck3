@@ -2,12 +2,12 @@
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
 
-namespace Rubberduck.VBEditor.ComManagement.NonDisposalDecorators
+namespace Rubberduck.VBEditor.ComManagement.NonDisposingDecorators
 {
-    public class VbeNonDisposalDecorator<T> : NonDisposalDecoratorBase<T>, IVBE
+    public class VbeNonDisposingDecorator<T> : NonDisposingDecoratorBase<T>, IVBE
         where T: IVBE
     {
-        public VbeNonDisposalDecorator(T vbe)
+        public VbeNonDisposingDecorator(T vbe)
             : base(vbe)
         {}
 

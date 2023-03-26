@@ -4,12 +4,12 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office;
 
-namespace Rubberduck.VBEditor.ComManagement.NonDisposalDecorators
+namespace Rubberduck.VBEditor.ComManagement.NonDisposingDecorators
 {
-    public class CommandBarsNonDisposalDecorator<T> : NonDisposalDecoratorBase<T>, ICommandBars
+    public class CommandBarsNonDisposingDecorator<T> : NonDisposingDecoratorBase<T>, ICommandBars
         where T : ICommandBars
     {
-        public CommandBarsNonDisposalDecorator(T commandBars)
+        public CommandBarsNonDisposingDecorator(T commandBars)
             : base(commandBars)
         { }
 

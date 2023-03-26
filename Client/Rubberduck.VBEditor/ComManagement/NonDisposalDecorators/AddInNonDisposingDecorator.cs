@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.VBEditor.ComManagement.NonDisposalDecorators
+namespace Rubberduck.VBEditor.ComManagement.NonDisposingDecorators
 {
-    public class AddInNonDisposalDecorator<T> : NonDisposalDecoratorBase<T>, IAddIn
+    public class AddInNonDisposingDecorator<T> : NonDisposingDecoratorBase<T>, IAddIn
         where T : IAddIn
     {
-        public AddInNonDisposalDecorator(T addIn)
+        public AddInNonDisposingDecorator(T addIn)
             : base(addIn)
         { }
 

@@ -9,18 +9,15 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Primitives;
+using System.Threading;
 
 namespace Rubberduck.Client.LSP
 {
     public class LspClientService
     {
-        // placeholder code for now...
-
-        public void Initialize()
+        public async Task InitializeAsync(CancellationToken token)
         {
-            var assembly = Assembly.GetExecutingAssembly().GetName();
-            var clientProcess = Process.GetCurrentProcess();
-
             var lsp = LanguageClient.Create(new LanguageClientOptions
             {
                 ClientInfo = new ClientInfo
@@ -110,10 +107,9 @@ namespace Rubberduck.Client.LSP
                     Experimental = null /*TODO*/,
                     ExtensionData = null /*TODO*/,
                 },
-
             });
 
+            await lsp.Initialize(token);
         }
-
     }
 }

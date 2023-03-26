@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using NLog;
-using Rubberduck.VBEditor.ComManagement.NonDisposalDecorators;
+using Rubberduck.VBEditor.ComManagement.NonDisposingDecorators;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -203,14 +203,14 @@ namespace Rubberduck.VBEditor.ComManagement
         public IVBProjects ProjectsCollection()
         {
             return _projectsCollection != null 
-                ? new VBProjectsNonDisposalDecorator<IVBProjects>(_projectsCollection) 
+                ? new VBProjectsNonDisposingDecorator<IVBProjects>(_projectsCollection) 
                 : null;
         }
 
         public IEnumerable<(string ProjectId, IVBProject Project)> Projects()
         {
             return EvaluateWithinReadLock(() => _projects
-                        .Select(kvp => (kvp.Key, new VBProjectNonDisposalDecorator<IVBProject>(kvp.Value) as IVBProject))
+                        .Select(kvp => (kvp.Key, new VBProjectNonDisposingDecorator<IVBProject>(kvp.Value) as IVBProject))
                         .ToList()) 
                    ?? new List<(string, IVBProject)>();
         }
@@ -218,7 +218,7 @@ namespace Rubberduck.VBEditor.ComManagement
         public IEnumerable<(string ProjectId, IVBProject Project)> LockedProjects()
         {
             return EvaluateWithinReadLock(() => _lockedProjects
-                        .Select(kvp => (kvp.Key, new VBProjectNonDisposalDecorator<IVBProject>(kvp.Value) as IVBProject))
+                        .Select(kvp => (kvp.Key, new VBProjectNonDisposingDecorator<IVBProject>(kvp.Value) as IVBProject))
                         .ToList()) 
                    ?? new List<(string, IVBProject)>();
         }
@@ -254,7 +254,7 @@ namespace Rubberduck.VBEditor.ComManagement
             }
 
             return EvaluateWithinReadLock(() => _projects.TryGetValue(projectId, out var project) 
-                ? new VBProjectNonDisposalDecorator<IVBProject>(project)
+                ? new VBProjectNonDisposingDecorator<IVBProject>(project)
                 : null);
         }
 
@@ -266,14 +266,14 @@ namespace Rubberduck.VBEditor.ComManagement
             }
 
             return EvaluateWithinReadLock(() => _componentsCollections.TryGetValue(projectId, out var componentsCollection) 
-                ? new VBComponentsNonDisposalDecorator<IVBComponents>(componentsCollection)
+                ? new VBComponentsNonDisposingDecorator<IVBComponents>(componentsCollection)
                 : null);
         }
 
         public IEnumerable<(IQualifiedModuleName QualifiedModuleName, IVBComponent Component)> Components()
         {
             return EvaluateWithinReadLock(() => _components
-                        .Select(kvp => (kvp.Key as IQualifiedModuleName, new VBComponentNonDisposalDecorator<IVBComponent>(kvp.Value) as IVBComponent))
+                        .Select(kvp => (kvp.Key as IQualifiedModuleName, new VBComponentNonDisposingDecorator<IVBComponent>(kvp.Value) as IVBComponent))
                         .ToList()) 
                    ?? new List<(IQualifiedModuleName, IVBComponent)>();
         }
@@ -281,7 +281,7 @@ namespace Rubberduck.VBEditor.ComManagement
         public IEnumerable<(IQualifiedModuleName QualifiedModuleName, IVBComponent Component)> Components(string projectId)
         {
             return EvaluateWithinReadLock(() => _components.Where(kvp => kvp.Key.ProjectId.Equals(projectId))
-                       .Select(kvp => (kvp.Key as IQualifiedModuleName, new VBComponentNonDisposalDecorator<IVBComponent>(kvp.Value) as IVBComponent))
+                       .Select(kvp => (kvp.Key as IQualifiedModuleName, new VBComponentNonDisposingDecorator<IVBComponent>(kvp.Value) as IVBComponent))
                        .ToList())
                    ?? new List<(IQualifiedModuleName, IVBComponent)>();
         }
@@ -289,7 +289,7 @@ namespace Rubberduck.VBEditor.ComManagement
         public IVBComponent Component(IQualifiedModuleName qualifiedModuleName)
         {
             return EvaluateWithinReadLock(() => _components.TryGetValue(qualifiedModuleName, out var component) 
-                ? new VBComponentNonDisposalDecorator<IVBComponent>(component) as IVBComponent
+                ? new VBComponentNonDisposingDecorator<IVBComponent>(component) as IVBComponent
                 : null);
         }
 
