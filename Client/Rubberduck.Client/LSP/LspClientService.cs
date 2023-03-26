@@ -2,14 +2,9 @@
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Primitives;
 using System.Threading;
 
 namespace Rubberduck.Client.LSP
@@ -18,12 +13,15 @@ namespace Rubberduck.Client.LSP
     {
         public async Task InitializeAsync(CancellationToken token)
         {
+            var process = Process.GetCurrentProcess();
+            var assembly = (Assembly.GetCallingAssembly() ?? Assembly.GetExecutingAssembly())?.GetName();
+            
             var lsp = LanguageClient.Create(new LanguageClientOptions
             {
                 ClientInfo = new ClientInfo
                 {
-                    //Name = $"[{assembly.Name}]:{clientProcess.Id}",
-                    //Version = assembly.Version.ToString(3)
+                    Name = $"[{assembly?.Name}]:{process.Id}",
+                    Version = assembly?.Version.ToString(3)
                 },
                 ClientCapabilities = new ClientCapabilities
                 {

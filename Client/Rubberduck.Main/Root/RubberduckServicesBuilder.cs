@@ -37,7 +37,6 @@ namespace Rubberduck.Root
         private readonly IServiceCollection _services = new ServiceCollection();
 
         public IServiceProvider Build() => _services.BuildServiceProvider();
-
         public RubberduckServicesBuilder WithAddIn(IVBE vbe, IAddIn addin)
         {
             _services.AddSingleton<IVBE>(vbe);

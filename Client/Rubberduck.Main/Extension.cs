@@ -26,6 +26,7 @@ using Rubberduck.VersionCheck;
 using Rubberduck.InternalApi.WindowsApi;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.WinForms;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Rubberduck
 {
@@ -44,13 +45,13 @@ namespace Rubberduck
     {
         private IVBE _vbe;
         private IAddIn _addin;
-        private IVbeNativeApi _vbeNativeApi;
-        private IBeepInterceptor _beepInterceptor;
         private IFileSystem _fileSystem;
         private bool _isInitialized;
         private bool _isBeginShutdownExecuted;
 
         private GeneralSettings _initialSettings;
+
+        private IServiceScope _serviceScope;
 
         private IWindsorContainer _container;
         private App _app;
@@ -66,14 +67,6 @@ namespace Rubberduck
                 _vbe = RootComWrapperFactory.GetVbeWrapper(Application);
                 _addin = RootComWrapperFactory.GetAddInWrapper(AddInInst);
                 _addin.Object = this;
-
-                _vbeNativeApi = new VbeNativeApiAccessor();
-                _beepInterceptor = new BeepInterceptor(_vbeNativeApi);
-                _fileSystem = new FileSystem();
-
-                VbeProvider.Initialize(_vbe, _vbeNativeApi, _beepInterceptor);
-                VbeNativeServices.HookEvents(_vbe);
-
                 SetAddInObject();
 
                 switch (ConnectMode)
@@ -243,15 +236,29 @@ namespace Rubberduck
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
 
                 model?.UpdateStatus("Initializing IoC container...");
-                _container = new WindsorContainer().Install(new RubberduckIoCInstaller(_vbe, _addin, _initialSettings, _vbeNativeApi, _beepInterceptor));
+                var services = new RubberduckServicesBuilder()
+                    .WithAddIn(_vbe, _addin)
+                    .WithAssemblyInfo()
+                    .WithFileSystem(_vbe)
+                    .WithNativeServices(_vbe)
+                    .WithParser()
+                    .WithCommands()
+                    .WithRubberduckEditor()
+                    .Build();
+
+                //_container = new WindsorContainer().Install(new RubberduckIoCInstaller(_vbe, _addin, _initialSettings, _vbeNativeApi, _beepInterceptor));
 
                 model?.UpdateStatus("Resolving dependencies...");
-                _app = _container.Resolve<App>();
+                _serviceScope = services.CreateScope();
+                _app = _serviceScope.ServiceProvider.GetRequiredService<App>(); //_container.Resolve<App>();
 
                 model?.UpdateStatus("Starting add-in...");
                 _app.Startup();
 
-                model?.UpdateStatus("Rubberduck is ready");
+                model?.UpdateStatus("Starting language server...");
+                
+
+                model?.UpdateStatus("Rubberduck is ready. Are you?");
                 _isInitialized = true;
             }
             catch (Exception e)
@@ -334,8 +341,10 @@ namespace Rubberduck
                 if (_container != null)
                 {
                     _logger.Trace("Disposing IoC container...");
-                    _container.Dispose();
-                    _container = null;
+                    _serviceScope.Dispose();
+                    _serviceScope = null;
+                    //_container.Dispose();
+                    //_container = null;
                 }
             }
             catch (Exception e)
