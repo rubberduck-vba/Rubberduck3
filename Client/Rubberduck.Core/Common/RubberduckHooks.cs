@@ -40,7 +40,7 @@ namespace Rubberduck.Common
         }
 
         public void HookHotkeys()
-        {
+        {/*
             Detach();
             _hooks.Clear();
 
@@ -60,6 +60,7 @@ namespace Rubberduck.Common
 
                 Attach();
             }
+            */
         }
 
         public IEnumerable<IAttachable> Hooks => _hooks;
@@ -81,6 +82,7 @@ namespace Rubberduck.Common
 
         public void Attach()
         {
+            /*
             if (IsAttached)
             {
                 return;
@@ -99,10 +101,12 @@ namespace Rubberduck.Common
             {
                 Logger.Error(exception);
             }
+            */
         }
 
         public void Detach()
         {
+            /*
             if (!IsAttached)
             {
                 return;
@@ -121,6 +125,7 @@ namespace Rubberduck.Common
                 Logger.Error(exception);
             }
             IsAttached = false;
+            */
         }
 
         private void hook_MessageReceived(object sender, HookEventArgs e)
@@ -140,9 +145,11 @@ namespace Rubberduck.Common
             OnMessageReceived(sender, e);
         }
 
+        /*
         public override int SubClassProc(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, IntPtr dwRefData)
         {
             var suppress = false;
+
             switch ((WM)msg)
             {
                 case WM.HOTKEY:
@@ -175,6 +182,7 @@ namespace Rubberduck.Common
             }
             return suppress ? 0 : base.SubClassProc(hWnd, msg, wParam, lParam, uIdSubclass, dwRefData);
         }
+        */
 
         private bool HandleHotkeyMessage(IntPtr wParam)
         {

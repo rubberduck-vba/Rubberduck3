@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace Rubberduck.Client.LSP
+namespace Rubberduck.Client
 {
     public class LspClientService
     {
@@ -15,9 +15,10 @@ namespace Rubberduck.Client.LSP
         {
             var process = Process.GetCurrentProcess();
             var assembly = (Assembly.GetCallingAssembly() ?? Assembly.GetExecutingAssembly())?.GetName();
-            
+
             var lsp = LanguageClient.Create(new LanguageClientOptions
             {
+                
                 ClientInfo = new ClientInfo
                 {
                     Name = $"[{assembly?.Name}]:{process.Id}",

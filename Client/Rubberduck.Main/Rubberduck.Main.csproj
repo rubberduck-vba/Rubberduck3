@@ -120,6 +120,10 @@
       <Project>{3EE4CCB7-42FC-49D2-8221-88A2FEF2F762}</Project>
       <Name>Rubberduck.Interaction</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Client\Rubberduck.Client.csproj">
+      <Project>{F44DB5B3-6E55-4680-A22D-902A76D75C2D}</Project>
+      <Name>Rubberduck.Client</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
       <Project>{7B04E66C-DD08-437F-8D43-EDDAC732DC53}</Project>
       <Name>Rubberduck.Core</Name>

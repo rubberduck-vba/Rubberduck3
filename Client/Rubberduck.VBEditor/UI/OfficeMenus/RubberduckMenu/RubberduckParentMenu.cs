@@ -5,10 +5,14 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu
 {
     public class RubberduckParentMenu : ParentMenuItemBase
     {
-        public RubberduckParentMenu(IEnumerable<IMenuItem> items, int beforeIndex, IUiDispatcher dispatcher) 
-            : base(dispatcher, "RubberduckMenu", items, beforeIndex)
+        public RubberduckParentMenu(IUiDispatcher dispatcher) 
+            : base(dispatcher)
         {
         }
+
+        public override int? BeforeIndex { get; set; }
+
+        public override string ResourceKey { get; } = "RubberduckMenu";
 
         public enum ItemDisplayOrder
         {

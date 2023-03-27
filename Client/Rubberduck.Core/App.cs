@@ -16,6 +16,9 @@ using Application = System.Windows.Forms.Application;
 using System.Windows.Input;
 using Infralution.Localization.Wpf;
 using Rubberduck.VBEditor.UI.OfficeMenus;
+using System.Threading;
+using Rubberduck.Client;
+using Rubberduck.UI.Command;
 
 namespace Rubberduck.Core
 {
@@ -30,6 +33,8 @@ namespace Rubberduck.Core
         private readonly IVersionCheckService _version;
         private readonly ICommand _checkVersionCommand;
 
+        private readonly LspClientService _lsp;
+
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private Configuration _config;
@@ -37,11 +42,12 @@ namespace Rubberduck.Core
 
         public App(IMessageBox messageBox,
             IConfigurationService<Configuration> configService,
-            IParentMenuItem appMenus,
+            IAppMenu appMenus,
             IRubberduckHooks hooks,
             IVersionCheckService version,
-            ICommand checkVersionCommand,
-            IFileSystem filesystem)
+            VersionCheckCommand checkVersionCommand,
+            IFileSystem filesystem,
+            LspClientService languageServer)
         {
             _messageBox = messageBox;
             _configService = configService;
@@ -52,6 +58,8 @@ namespace Rubberduck.Core
 
             _configService.SettingsChanged += _configService_SettingsChanged;
             _filesystem = filesystem;
+
+            _lsp = languageServer;
 
             UiContextProvider.Initialize();
         }
@@ -156,6 +164,9 @@ namespace Rubberduck.Core
             _appMenus.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts            
             _appMenus.Localize();
+
+            var tokenSource = new CancellationTokenSource();
+            _lsp.InitializeAsync(tokenSource.Token).Wait();
 
             if (_config.UserSettings.GeneralSettings.CanCheckVersion)
             {

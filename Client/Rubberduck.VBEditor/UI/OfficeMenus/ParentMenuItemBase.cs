@@ -15,19 +15,22 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
 {
     public abstract class ParentMenuItemBase : IParentMenuItem
     {
-        private readonly string _key;
-        private readonly int? _beforeIndex;
-        private readonly IDictionary<IMenuItem, ICommandBarControl> _items;
+        private readonly IDictionary<IMenuItem, ICommandBarControl> _items = new Dictionary<IMenuItem, ICommandBarControl>();
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         protected readonly IUiDispatcher _uiDispatcher;
 
-        protected ParentMenuItemBase(IUiDispatcher dispatcher, string key, IEnumerable<IMenuItem> items, int? beforeIndex = null)
+        protected ParentMenuItemBase(IUiDispatcher dispatcher)
         {
-            _key = key;
-            _beforeIndex = beforeIndex;
-            _items = items.ToDictionary(item => item, item => null as ICommandBarControl);
             _uiDispatcher = dispatcher;
         }
+
+        public void AddItem(IMenuItem item, ICommandBarControl msoControl)
+        {
+            _items.Add(item, msoControl);
+        }
+
+        public abstract string ResourceKey { get; }
+        public virtual int? BeforeIndex { get; set; }
 
         private ICommandBarControls _parent;
         public ICommandBarControls Parent
@@ -51,9 +54,7 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
             }
         }
 
-        public string Key => Item?.Tag;
-
-        public Func<string> Caption { get { return () => Key == null ? null : RubberduckMenus.ResourceManager.GetString(Key, CultureInfo.CurrentUICulture); } }
+        public Func<string> Caption { get { return () => ResourceKey == null ? null : RubberduckMenus.ResourceManager.GetString(ResourceKey, CultureInfo.CurrentUICulture); } }
 
         public virtual string ToolTipKey { get; set; }
         public virtual Func<string> ToolTipText
@@ -97,9 +98,9 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
                 return;
             }
 
-            Item =  Parent.AddPopup(_beforeIndex);                
+            Item =  Parent.AddPopup(BeforeIndex);                
 
-            Item.Tag = _key;            
+            Item.Tag = ResourceKey;            
 
             foreach (var item in _items.Keys.OrderBy(item => item.DisplayOrder))
             {
@@ -112,7 +113,7 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
 
         public void RemoveMenu()
         {
-            Logger.Debug($"Removing menu {_key}.");
+            Logger.Debug($"Removing menu {ResourceKey}.");
             RemoveChildren();
             Item?.Delete();
 

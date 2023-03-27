@@ -16,15 +16,15 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
 
         public IMenuCommand Command { get; }
 
-        public abstract string Key { get; }
+        public abstract string ResourceKey { get; }
 
         public virtual Func<string> Caption
         {
             get
             {
-                return () => string.IsNullOrEmpty(Key)
+                return () => string.IsNullOrEmpty(ResourceKey)
                     ? string.Empty
-                    : RubberduckMenus.ResourceManager.GetString(Key, CultureInfo.CurrentUICulture);
+                    : RubberduckMenus.ResourceManager.GetString(ResourceKey, CultureInfo.CurrentUICulture);
             }
         }
 

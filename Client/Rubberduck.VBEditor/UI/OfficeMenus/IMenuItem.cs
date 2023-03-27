@@ -4,7 +4,7 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
 {
     public interface IMenuItem
     {
-        string Key { get; }
+        string ResourceKey { get; }
         Func<string> Caption { get; }
         Func<string> ToolTipText { get; }
         bool BeginGroup { get; }

@@ -8,7 +8,7 @@
         {
         }
 
-        public override string Key => "RubberduckMenu_About";
+        public override string ResourceKey => "RubberduckMenu_About";
         public override bool BeginGroup => true;
         public override int DisplayOrder => (int)RubberduckParentMenu.ItemDisplayOrder.About;
 

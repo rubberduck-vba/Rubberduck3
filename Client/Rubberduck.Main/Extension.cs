@@ -95,9 +95,10 @@ namespace Rubberduck
 
         private Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
         {
-            var folderPath = _fileSystem.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
-            var assemblyPath = _fileSystem.Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
-            if (!_fileSystem.File.Exists(assemblyPath))
+            var fileSystem = _serviceScope.ServiceProvider.GetRequiredService<IFileSystem>();
+            var folderPath = fileSystem.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+            var assemblyPath = fileSystem.Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
+            if (!fileSystem.File.Exists(assemblyPath))
             {
                 return null;
             }
@@ -153,51 +154,30 @@ namespace Rubberduck
                     return;
                 }
 
-                var pathProvider = PersistencePathProvider.Instance;
-                var configLoader = new XmlPersistenceService<GeneralSettings>(pathProvider, _fileSystem);
-                var configProvider = new GeneralConfigProvider(configLoader);
+                var services = new RubberduckServicesBuilder()
+                    .WithAddIn(_vbe, _addin)
+                    .WithApplication()
+                    .WithAssemblyInfo()
+                    .WithFileSystem(_vbe)
+                    .WithSettingsProvider()
+                    .WithNativeServices(_vbe)
+                    .WithParser()
+                    .WithCommands()
+                    .WithMsoCommandBarMenu()
+                    .WithVersionCheck()
+                    .WithRubberduckEditor()
+                    .WithLanguageServer()
+                    .Build();
+                _serviceScope = services.CreateScope();
 
-                _initialSettings = configProvider.Read();
-                if (_initialSettings != null)
-                {
-                    try
-                    {
-                        var cultureInfo = CultureInfo.GetCultureInfo(_initialSettings.Language.Code);
-                        CultureInfo.CurrentUICulture = cultureInfo;
-                        Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = cultureInfo;
-                    }
-                    catch (CultureNotFoundException)
-                    {
-                    }
-
-                    try
-                    {
-                        if (_initialSettings.SetDpiUnaware)
-                        {
-                            SHCore.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.Process_DPI_Unaware);
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        Debug.Assert(false, "Could not set DPI awareness.");
-                    }
-                }
-                else
-                {
-                    Debug.Assert(false, "Settings could not be initialized.");
-                }
+                InitializeSettings();
 
                 if (_initialSettings?.CanShowSplash ?? false)
                 {
-                    var currentVersion = GetType().Assembly.GetName().Version;
-                    var versionCheckService = new VersionCheckService(null, currentVersion);
-
+                    var versionCheckService = _serviceScope.ServiceProvider.GetRequiredService<IVersionCheckService>();
                     splashModel = new SplashViewModel(versionCheckService);
-                    splashModel.UpdateStatus("Open-Source VBIDE Add-In");
 
-                    splash = new Splash(splashModel);
-                    splash.Show();
-                    splash.Refresh();
+                    splash = ShowSplash(splashModel);
                 }
 
                 Startup(splashModel);
@@ -227,6 +207,52 @@ namespace Rubberduck
             }
         }
 
+        private Splash ShowSplash(ISplashViewModel model)
+        {
+            model.UpdateStatus("Open-Source VBIDE Add-In");
+            var splash = new Splash(model);
+
+            splash.Show();
+            splash.Refresh();
+
+            return splash;
+        }
+
+        private void InitializeSettings()
+        {
+            var configProvider = _serviceScope.ServiceProvider.GetService<GeneralConfigProvider>();
+
+            _initialSettings = configProvider.Read();
+            if (_initialSettings != null)
+            {
+                try
+                {
+                    var cultureInfo = CultureInfo.GetCultureInfo(_initialSettings.Language.Code);
+                    CultureInfo.CurrentUICulture = cultureInfo;
+                    Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = cultureInfo;
+                }
+                catch (CultureNotFoundException)
+                {
+                }
+
+                try
+                {
+                    if (_initialSettings.SetDpiUnaware)
+                    {
+                        SHCore.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.Process_DPI_Unaware);
+                    }
+                }
+                catch (Exception)
+                {
+                    Debug.Assert(false, "Could not set DPI awareness.");
+                }
+            }
+            else
+            {
+                Debug.Assert(false, "Settings could not be initialized.");
+            }
+        }
+
         private void Startup(ISplashViewModel model)
         {
             try
@@ -236,20 +262,10 @@ namespace Rubberduck
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
 
                 model?.UpdateStatus("Initializing IoC container...");
-                var services = new RubberduckServicesBuilder()
-                    .WithAddIn(_vbe, _addin)
-                    .WithAssemblyInfo()
-                    .WithFileSystem(_vbe)
-                    .WithNativeServices(_vbe)
-                    .WithParser()
-                    .WithCommands()
-                    .WithRubberduckEditor()
-                    .Build();
 
                 //_container = new WindsorContainer().Install(new RubberduckIoCInstaller(_vbe, _addin, _initialSettings, _vbeNativeApi, _beepInterceptor));
 
                 model?.UpdateStatus("Resolving dependencies...");
-                _serviceScope = services.CreateScope();
                 _app = _serviceScope.ServiceProvider.GetRequiredService<App>(); //_container.Resolve<App>();
 
                 model?.UpdateStatus("Starting add-in...");

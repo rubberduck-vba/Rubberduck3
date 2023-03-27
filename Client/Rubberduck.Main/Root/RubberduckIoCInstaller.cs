@@ -515,19 +515,6 @@ namespace Rubberduck.Root
             return controls.Count;
         }
 
-        private ICommandBarControls MainCommandBarControls(string commandBarName)
-        {
-            ICommandBarControls controls;
-            using (var commandBars = _vbe.CommandBars)
-            {
-                using (var menuBar = commandBars[commandBarName])
-                {
-                    controls = menuBar.Controls;
-                }
-            }
-            return controls;
-        }
-
         private ICommandBarControls MainCommandBarControls(int commandBarIndex)
         {
             ICommandBarControls controls;

@@ -10,7 +10,7 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
         {
         }
 
-        public override string Key => "RubberduckMenu_ShowEditor";
+        public override string ResourceKey => "RubberduckMenu_ShowEditor";
         public override bool BeginGroup => false;
         public override int DisplayOrder => (int)RubberduckParentMenu.ItemDisplayOrder.ShowEditor;
 
