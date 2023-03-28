@@ -17,7 +17,6 @@ using System.Windows.Input;
 using Infralution.Localization.Wpf;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 using System.Threading;
-using Rubberduck.Client;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.Core
@@ -33,8 +32,6 @@ namespace Rubberduck.Core
         private readonly IVersionCheckService _version;
         private readonly ICommand _checkVersionCommand;
 
-        private readonly LspClientService _lsp;
-
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private Configuration _config;
@@ -46,8 +43,7 @@ namespace Rubberduck.Core
             IRubberduckHooks hooks,
             IVersionCheckService version,
             VersionCheckCommand checkVersionCommand,
-            IFileSystem filesystem,
-            LspClientService languageServer)
+            IFileSystem filesystem)
         {
             _messageBox = messageBox;
             _configService = configService;
@@ -58,8 +54,6 @@ namespace Rubberduck.Core
 
             _configService.SettingsChanged += _configService_SettingsChanged;
             _filesystem = filesystem;
-
-            _lsp = languageServer;
 
             UiContextProvider.Initialize();
         }
@@ -166,7 +160,8 @@ namespace Rubberduck.Core
             _appMenus.Localize();
 
             var tokenSource = new CancellationTokenSource();
-            _lsp.InitializeAsync(tokenSource.Token).Wait();
+
+            // initialize LSP here?
 
             if (_config.UserSettings.GeneralSettings.CanCheckVersion)
             {

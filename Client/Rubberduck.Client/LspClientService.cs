@@ -9,6 +9,13 @@ using System.Threading;
 
 namespace Rubberduck.Client
 {
+    public static class LanguageServerInfo
+    {
+        public static string ExecutablePath { get; } // TODO
+        public static string PipeName { get; } = "/RD3/LanguageServer/Pipe";
+        public static string ServerName { get; } = "Rubberduck.LanguageServer";
+    }
+
     public class LspClientService
     {
         public async Task InitializeAsync(CancellationToken token)
