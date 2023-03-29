@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using Rubberduck.RPC.Platform.Model.Database;
+using Rubberduck.ServerPlatform.Platform.Model.Database;
 
 namespace Rubberduck.Server.Database.RPC.Save
 {

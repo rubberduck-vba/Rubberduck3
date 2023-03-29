@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Platform.Model;
-using Rubberduck.RPC.Platform.Model.Database.Responses;
+using Rubberduck.ServerPlatform.Platform;
+using Rubberduck.ServerPlatform.Platform.Model;
+using Rubberduck.ServerPlatform.Platform.Model.Database.Responses;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Server.Database.RPC.Info

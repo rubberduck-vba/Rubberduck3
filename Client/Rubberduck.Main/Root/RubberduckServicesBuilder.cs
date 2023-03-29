@@ -14,8 +14,6 @@ using Rubberduck.Core.Editor.Tools;
 using Rubberduck.Core.WebApi;
 using Rubberduck.Interaction.MessageBox;
 using Rubberduck.InternalApi.UIContext;
-using Rubberduck.Parsing.Abstract;
-using Rubberduck.Parsing.TokenStreamProviders;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI;
@@ -384,7 +382,7 @@ namespace Rubberduck.Root
 
         public RubberduckServicesBuilder WithParser()
         {
-            _services.AddSingleton<ICommonTokenStreamProvider<TextReader>, TextReaderTokenStreamProvider>();
+            //_services.AddSingleton<ICommonTokenStreamProvider<TextReader>, TextReaderTokenStreamProvider>();
 
             return this;
         }

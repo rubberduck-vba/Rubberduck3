@@ -1,10 +1,7 @@
-﻿using Rubberduck.RPC.Properties;
-using System;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Reflection;
 
-namespace Rubberduck.RPC
+namespace Rubberduck.ServerPlatform
 {
     /// <summary>
     /// A helper class to start a server process from a client.
@@ -21,7 +18,7 @@ namespace Rubberduck.RPC
             Process serverProcess = null;
             try
             {
-                if (TryFindServerProcess(Settings.Default.ServerExecutable_Database, out serverProcess))
+                if (TryFindServerProcess(Settings.DatabaseServerExecutableLocation, out serverProcess))
                 {
                     Debug.WriteLine($"Found existing '{serverProcess.ProcessName}' process (ID {serverProcess.Id}).");
                     return serverProcess;
@@ -29,7 +26,7 @@ namespace Rubberduck.RPC
 
                 var info = new ProcessStartInfo
                 {
-                    FileName = Settings.Default.ServerExecutable_Database,
+                    FileName = Settings.DatabaseServerExecutableLocation,
                     Arguments = $"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -72,7 +69,7 @@ namespace Rubberduck.RPC
         {
             var info = new ProcessStartInfo
             {
-                FileName = Settings.Default.ServerExecutable_LSP,
+                FileName = Settings.LanguageServerExecutableLocation,
                 Arguments = $"",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -86,7 +83,7 @@ namespace Rubberduck.RPC
         {
             var info = new ProcessStartInfo
             {
-                FileName = Settings.Default.ServerExecutable_Telemetry,
+                FileName = Settings.TelemetryServerExecutableLocation,
                 Arguments = $"",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,

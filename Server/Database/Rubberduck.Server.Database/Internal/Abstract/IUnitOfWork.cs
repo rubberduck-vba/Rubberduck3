@@ -1,5 +1,5 @@
-﻿using Rubberduck.RPC.Platform.Model;
-using Rubberduck.RPC.Platform.Model.Database;
+﻿using Rubberduck.ServerPlatform.Platform.Model;
+using Rubberduck.ServerPlatform.Platform.Model.Database;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

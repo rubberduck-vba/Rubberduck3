@@ -37,9 +37,6 @@ using Rubberduck.InternalApi.Common;
 using Rubberduck.Core.About;
 using Rubberduck.UI.Xaml.Controls;
 using Rubberduck.Core.Editor;
-using Rubberduck.Parsing.Abstract;
-using System.IO;
-using Rubberduck.Parsing.TokenStreamProviders;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 using Rubberduck.VBEditor.UI;
@@ -83,7 +80,7 @@ namespace Rubberduck.Root
             RegisterAppWithSpecialDependencies(container);
             RegisterUnitTestingComSide(container);
 
-            container.Register(Component.For<ICommonTokenStreamProvider<TextReader>>().ImplementedBy<TextReaderTokenStreamProvider>().LifestyleSingleton());
+            //container.Register(Component.For<ICommonTokenStreamProvider<TextReader>>().ImplementedBy<TextReaderTokenStreamProvider>().LifestyleSingleton());
 
             container.Register(Component.For<Version>()
                      .UsingFactoryMethod(() => Assembly.GetExecutingAssembly().GetName().Version)

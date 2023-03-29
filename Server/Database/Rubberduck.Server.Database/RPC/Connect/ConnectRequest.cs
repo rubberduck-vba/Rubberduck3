@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Newtonsoft.Json.Linq;
 using OmniSharp.Extensions.JsonRpc.Server;
-using Rubberduck.RPC.Platform.Model.Database.Responses;
+using Rubberduck.ServerPlatform.Platform.Model.Database.Responses;
 
 namespace Rubberduck.Server.Database.RPC.Connect
 {

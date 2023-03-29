@@ -248,10 +248,6 @@
       <Project>{5E2588A5-2EF2-4267-952D-53AEC8F5F173}</Project>
       <Name>Rubberduck.InternalApi</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\server\LSP\Rubberduck\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
-      <Project>{86502725-A9D2-47A8-B26A-5E7BC8A85D47}</Project>
-      <Name>Rubberduck.Parsing</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\shared\Rubberduck.Resources\Rubberduck.Resources.csproj">
       <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
       <Name>Rubberduck.Resources</Name>
