@@ -256,6 +256,10 @@
       <Project>{E794CFC3-3D9F-400F-88D9-69E929D8E8AF}</Project>
       <Name>Rubberduck.SettingsProvider</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Client\Rubberduck.Client.csproj">
+      <Project>{36e18087-fe84-4e3a-9c65-07ca0fd7d303}</Project>
+      <Name>Rubberduck.Client</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.UI.WinForms\Rubberduck.UI.WinForms.csproj">
       <Project>{A1F54935-FE6D-4013-B618-5251DE4466CF}</Project>
       <Name>Rubberduck.UI.WinForms</Name>

@@ -1,6 +1,6 @@
-﻿namespace Rubberduck.ServerPlatform
+﻿namespace Rubberduck.InternalApi
 {
-    public static class Settings
+    public static class ServerPlatformSettings
     {
         public static readonly string DatabaseServerConnectionString = "Data Source=Rubberduck.db;";
 

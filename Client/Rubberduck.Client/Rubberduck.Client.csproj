@@ -11,4 +11,7 @@
   <ItemGroup>
     <PackageReference Include="OmniSharp.Extensions.LanguageClient" Version="0.19.7" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
+  </ItemGroup>
 </Project>

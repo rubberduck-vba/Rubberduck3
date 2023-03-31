@@ -1,10 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using ICSharpCode.AvalonEdit.Document;
-using Rubberduck.Parsing.Abstract;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Listeners;
-using Rubberduck.Parsing.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.Command;
@@ -12,7 +8,6 @@ using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,7 +17,7 @@ namespace Rubberduck.Core.Editor
 {
     public class CodePaneViewModel : ViewModelBase, ICodePaneViewModel
     {
-        private readonly IModuleParser _parser;
+        //private readonly IModuleParser _parser;
         private readonly IEditorSettings _settings;
 
         private IParseTree _parseTree;
@@ -36,12 +31,12 @@ namespace Rubberduck.Core.Editor
             CloseCommand = new DelegateCommand(null, p => EditorShellContext.Current.Shell.UnloadModule((QualifiedModuleName)p)); // TODO handle sync to VBE when dirty
         }
 
-        private VBFoldingListener _foldingListener;
+        //private VBFoldingListener _foldingListener;
         private TokenStreamRewriter _rewriter;
 
         public ICommand CloseCommand { get; }
 
-        public IEnumerable<BlockFoldingInfo> Foldings => _foldingListener?.Foldings ?? Enumerable.Empty<BlockFoldingInfo>();
+        //public IEnumerable<BlockFoldingInfo> Foldings => _foldingListener?.Foldings ?? Enumerable.Empty<BlockFoldingInfo>();
         public IStatusBarViewModel Status => EditorShellContext.Current.Shell.Status;
 
         public async Task ParseAsync(TextReader reader)

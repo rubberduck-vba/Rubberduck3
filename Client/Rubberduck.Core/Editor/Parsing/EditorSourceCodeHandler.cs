@@ -1,5 +1,4 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
-using Rubberduck.Parsing;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.InternalApi.Model;
@@ -7,6 +6,7 @@ using System;
 using System.IO;
 using System.Linq;
 using RubberduckUI.Extensions;
+using Rubberduck.UI.Abstract;
 
 namespace Rubberduck.Core.Editor
 {

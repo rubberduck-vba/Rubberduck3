@@ -1,8 +1,6 @@
-﻿using Rubberduck.Parsing.Listeners;
-
-namespace Rubberduck.Settings
+﻿namespace Rubberduck.Settings
 {
-    public class BlockFoldingSettings : IBlockFoldingSettings
+    public class BlockFoldingSettings //: IBlockFoldingSettings
     {
         public bool FoldModuleHeader { get; set; } = true;
         public bool FoldModuleAttributes { get; set; } = true;

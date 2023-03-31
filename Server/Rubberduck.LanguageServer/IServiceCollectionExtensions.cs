@@ -2,6 +2,7 @@
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Server;
+using Rubberduck.InternalApi;
 using System;
 using System.IO.Pipes;
 using System.Threading;
@@ -19,7 +20,7 @@ namespace Rubberduck.LanguageServer.Configuration
 
         private static void ConfigureLSP(LanguageServerOptions lsp)
         {
-            var pipeStream = new NamedPipeServerStream(ServerPlatform.Settings.LanguageServerPipeName, PipeDirection.InOut);
+            var pipeStream = new NamedPipeServerStream(ServerPlatformSettings.LanguageServerPipeName, PipeDirection.InOut);
 
             var assembly = typeof(Program).Assembly.GetName();
             var name = assembly.Name ?? throw new InvalidOperationException();

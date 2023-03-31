@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi;
+using System;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -66,7 +67,7 @@ namespace Rubberduck.ServerPlatform
             }
         }
 
-        public static Process StartLSP()
+        public static Process StartLanguageServer()
         {
             var info = new ProcessStartInfo
             {

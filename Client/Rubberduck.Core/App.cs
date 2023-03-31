@@ -147,6 +147,7 @@ namespace Rubberduck.Core
 
         public void Startup()
         {
+
             EnsureLogFolderPathExists();
             EnsureTempPathExists();
             ApplyCultureConfig();
@@ -162,6 +163,7 @@ namespace Rubberduck.Core
             var tokenSource = new CancellationTokenSource();
 
             // initialize LSP here?
+
 
             if (_config.UserSettings.GeneralSettings.CanCheckVersion)
             {
