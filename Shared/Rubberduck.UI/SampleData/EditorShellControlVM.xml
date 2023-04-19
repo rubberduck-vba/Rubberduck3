@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<EditorShellViewModel>
+  <ModuleDocumentTabs>
+    <ICodePaneViewModel>
+      <ModuleInfo>
+        <Name> "Module1" </Name>
+        <QualifiedModuleName>
+          <ComponentType> 1 </ComponentType>
+          <ProjectID> "Project1" </ProjectID>
+          <IsParsable> true </IsParsable>
+          <Name> "Project1" </Name>
+          <ComponentName> "Module1" </ComponentName>
+          <ProjectName> "Project1" </ProjectName>
+          <ProjectPath> "C:\Documents\Project1" </ProjectPath>
+        </QualifiedModuleName>
+      </ModuleInfo>
+    </ICodePaneViewModel>
+    <ICodePaneViewModel>
+      <ModuleInfo>
+        <Name> "Module2" </Name>
+        <QualifiedModuleName>
+          <ComponentType> 1 </ComponentType>
+          <ProjectID> "Project1" </ProjectID>
+          <IsParsable> true </IsParsable>
+          <Name> "Project1" </Name>
+          <ComponentName> "Module2" </ComponentName>
+          <ProjectName> "Project1" </ProjectName>
+          <ProjectPath> "C:\Documents\Project1" </ProjectPath>
+        </QualifiedModuleName>
+      </ModuleInfo>
+    </ICodePaneViewModel>
+  </ModuleDocumentTabs>
+  <SelectedModuleDocumentTab>
+    <ModuleInfo>
+      <Name> "Module1" </Name>
+      <QualifiedModuleName>
+        <ComponentType> 1 </ComponentType>
+        <ProjectID> "Project1" </ProjectID>
+        <IsParsable> true </IsParsable>
+        <Name> "Project1" </Name>
+        <ComponentName> "Module1" </ComponentName>
+        <ProjectName> "Project1" </ProjectName>
+        <ProjectPath> "C:\Documents\Project1" </ProjectPath>
+      </QualifiedModuleName>
+    </ModuleInfo>
+  </SelectedModuleDocumentTab>
+  <ToolTabs>
+    <IShellToolTab>
+      <Name> "ToolTab1" </Name>
+      <ViewModel> 
+        
+      </ViewModel>
+      <IShellToolTabSetting> 
+        
+      </IShellToolTabSetting>
+    </IShellToolTab>
+  </ToolTabs>
+  <SelectedToolTab>
+    <Name> "ToolTab1" </Name>
+    <ViewModel>
+
+    </ViewModel>
+  </SelectedToolTab>
+</EditorShellViewModel>
+
+<!--
+    public interface IQualifiedModuleName : IEquatable<IQualifiedModuleName>
+    {
+        ComponentType ComponentType { get; }
+        string ProjectId { get; }
+        bool IsParsable { get; }
+        string Name { get; }
+        string ComponentName { get; }
+        string ProjectName { get; }
+        string ProjectPath { get; }
+    }
+-->
+
+
+<!--
+    public interface IShellToolTab
+    {
+        string Name { get; }
+        object ViewModel { get; }
+        IShellToolTabSetting Settings { get; }
+    }
+-->
+
+
+<!--
+    public interface IModuleInfoViewModel : INotifyPropertyChanged
+    {
+        IQualifiedModuleName QualifiedModuleName { get; set; }
+        string Name { get; set; }
+        ModuleType ModuleType { get; set; }
+
+        /// <summary>
+        /// The FolderAnnotation value for this module, if present.
+        /// </summary>
+        string Folder { get; set; }
+        /// <summary>
+        /// The last known caret location for this module.
+        /// </summary>
+        Selection EditorPosition { get; set; }
+    }
+-->
+
+<!-- 
+    public interface ICodePaneViewModel : INotifyPropertyChanged
+    {
+        IModuleInfoViewModel ModuleInfo { get; set; }
+
+        TextDocument Document { get; set; }
+        string Content { get; set; }
+        ObservableCollection<IMemberProviderViewModel> MemberProviders { get; }
+        IMemberProviderViewModel SelectedMemberProvider { get; set; }
+        event EventHandler SelectedMemberProviderChanged;
+        IEditorSettings EditorSettings { get; }
+
+        IEnumerable<ISyntaxErrorViewModel> SyntaxErrors { get; }
+        IStatusBarViewModel Status { get; }
+
+        ICommand CloseCommand { get; }
+    }
+-->
+<!--
+  ObservableCollection<ICodePaneViewModel> ModuleDocumentTabs { get; }
+  ICodePaneViewModel SelectedModuleDocumentTab { get; set; }
+  IEnumerable<IShellToolTab> ToolTabs { get; }
+  IShellToolTab SelectedToolTab { get; set; }
+  IStatusBarViewModel Status { get; }
+  IEnumerable<ISyntaxErrorViewModel> SyntaxErrors { get; }
+
+  ICodePaneViewModel GetModule(IQualifiedModuleName module);
+  bool LoadModule(IQualifiedModuleName module, string content, IMemberProviderViewModel vm);
+  bool UnloadModule(IQualifiedModuleName module);
+  void ActivateModuleDocumentTab(IQualifiedModuleName module);
+-->

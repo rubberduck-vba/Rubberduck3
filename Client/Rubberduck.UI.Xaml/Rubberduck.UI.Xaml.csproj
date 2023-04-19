@@ -238,6 +238,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Ducky.ico" />
+    <Compile Include="SampleData\StatusBarDesignViewModel.cs" />
+    <Compile Include="SampleData\EditorShellDesignViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Themes\" />

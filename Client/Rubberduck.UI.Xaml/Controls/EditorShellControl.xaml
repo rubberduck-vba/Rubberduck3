@@ -4,10 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vm="clr-namespace:Rubberduck.UI.Abstract;assembly=Rubberduck.UI"
-             xmlns:local="clr-namespace:Rubberduck.UI.Xaml.Controls" 
+             xmlns:local="clr-namespace:Rubberduck.UI.Xaml.Controls"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance {x:Type vm:IEditorShellViewModel}, IsDesignTimeCreatable=False}"
-             d:DesignHeight="600" d:DesignWidth="800">
+             d:DataContext="{d:DesignInstance {x:Type local:EditorShellDesignViewModel}, IsDesignTimeCreatable=True}"
+             d:DesignHeight="300" d:DesignWidth="800">
+    <!--d:DataContext="{d:DesignInstance {x:Type vm:IEditorShellViewModel}, IsDesignTimeCreatable=False}"-->
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -24,7 +26,7 @@
     <!-- TODO Dragablz -->
     <Grid Margin="2">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" /> <!-- document panel -->
+            <RowDefinition x:Name="DocumentPanel" Height="*" /> <!-- document panel -->
             <RowDefinition Height="Auto" /> <!-- bottom panel -->
             <RowDefinition Height="Auto" /> <!-- status bar -->
         </Grid.RowDefinitions>
@@ -39,7 +41,7 @@
 
         <TabControl ItemsSource="{Binding ToolTabs}" 
                     SelectedItem="{Binding SelectedToolTab}"
-                    TabStripPlacement="Bottom">
+                    TabStripPlacement="Bottom" SelectionChanged="TabControl_SelectionChanged">
             <TabControl.ItemTemplate>
                 <DataTemplate DataType="vm:IShellToolTab">
                     <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
@@ -55,7 +57,7 @@
 
         <GridSplitter Grid.Column="1" Width="3" />
 
-        <TabControl Grid.Column="2" ItemsSource="{Binding ModuleDocumentTabs}" SelectedItem="{Binding SelectedModuleDocumentTab}">
+        <TabControl Name="DocumentTabs" Grid.Column="2" ItemsSource="{Binding ModuleDocumentTabs}" SelectedItem="{Binding SelectedModuleDocumentTab}">
             <TabControl.Background>
                 <ImageBrush ImageSource="{StaticResource FaintDucky}" Stretch="UniformToFill" TileMode="None" />
             </TabControl.Background>
