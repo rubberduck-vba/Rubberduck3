@@ -26,7 +26,7 @@
     <!-- TODO Dragablz -->
     <Grid Margin="2">
         <Grid.RowDefinitions>
-            <RowDefinition x:Name="DocumentPanel" Height="*" /> <!-- document panel -->
+            <RowDefinition Height="*" /> <!-- document panel -->
             <RowDefinition Height="Auto" /> <!-- bottom panel -->
             <RowDefinition Height="Auto" /> <!-- status bar -->
         </Grid.RowDefinitions>
@@ -66,8 +66,7 @@
                     <DockPanel MinWidth="72">
                         <TextBlock Text="{Binding ModuleInfo.Name}" VerticalAlignment="Center" />
                         <Button HorizontalAlignment="Right" ToolTip="Close" Cursor="Hand"
-                                Command="{Binding CloseCommand}" CommandParameter="{Binding ModuleInfo.QualifiedModuleName}">
-                            <!-- TODO get tooltip from localized resources -->
+                                Command="{Binding CloseCommand}" CommandParameter="{Binding ModuleInfo.QualifiedModuleName}"> <!-- TODO get tooltip from localized resources -->
                             <Button.Template>
                                 <ControlTemplate>
                                     <Image Source="{DynamicResource CloseIcon}" Height="16" Width="16" />
