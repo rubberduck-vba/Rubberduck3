@@ -1,50 +1,59 @@
-﻿using System.Collections.Generic;
+﻿using Rubberduck.InternalApi.Model;
+using Rubberduck.UI.Abstract;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 
 namespace Rubberduck.UI.Xaml.Controls
 {
-    internal class EditorShellDesignViewModel
+    internal class EditorShellDesignViewModel : IEditorShellViewModel
     {
-        public ObservableCollection<CodePaneDesignViewModel> ModuleDocumentTabs { get; set; } = new ObservableCollection<CodePaneDesignViewModel>
+        public ObservableCollection<ICodePaneViewModel> ModuleDocumentTabs { get; set; } = new ObservableCollection<ICodePaneViewModel>
         {
             new CodePaneDesignViewModel { ModuleInfo = new ModuleInfoDesignViewModel { Name = "Module1" }},
-            new CodePaneDesignViewModel { ModuleInfo = new ModuleInfoDesignViewModel { Name = "Module2" }}
+            new CodePaneDesignViewModel { ModuleInfo = new ModuleInfoDesignViewModel { Name = "Class1" }}
         };
 
-        public CodePaneDesignViewModel SelectedModuleDocumentTab { get; set; } = new CodePaneDesignViewModel();
-
-        public IEnumerable<ShellToolTabDesignViewModel> ToolTabs { get; set; } = new ObservableCollection<ShellToolTabDesignViewModel>
+        public ICodePaneViewModel SelectedModuleDocumentTab
         {
-            new ShellToolTabDesignViewModel { Name = "Tooltab 1"},
-            new ShellToolTabDesignViewModel { Name = "Tooltab 2"}
+            get => ModuleDocumentTabs.FirstOrDefault();
+            set => ModuleDocumentTabs.Select(m => m == value);
+        }
+
+        public IEnumerable<IShellToolTab> ToolTabs { get; set; } = new ObservableCollection<IShellToolTab>
+        {
+            new ShellToolTabDesignViewModel { Name = "Left tooltab 1"},
+            new ShellToolTabDesignViewModel { Name = "Left tooltab 2"}
+//            new ShellToolTabDesignViewModel { Name = "Right tooltab 1", Settings = new ShellToolTabSettingDesignViewModel { TabPanelLocation = ToolTabLocation.RightPanel } } //TODO : filtering doesn't send this to the right
         };
 
-        public ShellToolTabDesignViewModel SelectedToolTab { get; set; } = new ShellToolTabDesignViewModel();
+        public IShellToolTab SelectedToolTab
+        {
+            get => ToolTabs.FirstOrDefault();
+            set => ToolTabs.Select(m => m == value);
+        }
+        public IStatusBarViewModel Status { get; set; } = new StatusBarDesignViewModel();
 
-        public StatusBarDesignViewModel Status { get; set; } = new StatusBarDesignViewModel();
-
+        public IEnumerable<ISyntaxErrorViewModel> SyntaxErrors => throw new System.NotImplementedException();
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void ActivateModuleDocumentTab(IQualifiedModuleName module) => throw new System.NotImplementedException();
+        public ICodePaneViewModel GetModule(IQualifiedModuleName module) => throw new System.NotImplementedException();
+        public bool LoadModule(IQualifiedModuleName module, string content, IMemberProviderViewModel vm) => throw new System.NotImplementedException();
+        public bool UnloadModule(IQualifiedModuleName module) => throw new System.NotImplementedException();
     }
 
-    internal class CodePaneDesignViewModel
+    internal class ShellToolTabDesignViewModel : IShellToolTab
     {
-        public ModuleInfoDesignViewModel ModuleInfo { get; set; } = new ModuleInfoDesignViewModel();
+        public string Name { get; set; }
+        public object ViewModel { get; set; } = new SyncPanelDesignViewModel() as ISyncPanelViewModel; //new SyncPanelDesignViewModel(); //TODO : work out why can't use this, should be type ISyncPanelViewModel/SyncPanelDesignViewModel
+        public IShellToolTabSetting Settings { get; set; } = new ShellToolTabSettingDesignViewModel();
     }
 
-    internal class ModuleInfoDesignViewModel
-    {
-        public object QualifiedModuleName { get; set; } = new object();
-        public string Name { get; set; } = "Module1";
-    }
-
-    internal class ShellToolTabDesignViewModel
-    {
-        public string Name { get; set; } = "ToolTab1";
-        public object ViewModel { get; set; } = new object();
-        public ShellToolTabSettingDesignViewModel Settings { get; set; } = new ShellToolTabSettingDesignViewModel();
-    }
-
-    internal class ShellToolTabSettingDesignViewModel
+    internal class ShellToolTabSettingDesignViewModel : IShellToolTabSetting
     {
         public bool IsVisible { get; set; } = true;
+        public ToolTabLocation TabPanelLocation { get; set; } = ToolTabLocation.LeftPanel;
+        public bool IsLoadedAtStartup { get; set; } = true;
     }
 }

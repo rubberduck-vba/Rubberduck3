@@ -1,6 +1,8 @@
-﻿namespace Rubberduck.UI.Xaml.Controls
+﻿using Rubberduck.UI.Abstract;
+
+namespace Rubberduck.UI.Xaml.Controls
 {
-    internal class StatusBarDesignViewModel
+    internal class StatusBarDesignViewModel : IStatusBarViewModel
     {
         public int DocumentLines { get; set; } = 100;
         public int DocumentLength { get; set; } = 1000;
