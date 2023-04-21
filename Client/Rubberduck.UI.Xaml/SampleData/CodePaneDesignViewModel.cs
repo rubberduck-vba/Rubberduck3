@@ -21,7 +21,7 @@ namespace Rubberduck.UI.Xaml.Controls
         };
         public IMemberProviderViewModel SelectedMemberProvider { 
             get => MemberProviders.FirstOrDefault();
-            set => MemberProviders.Select(m => m == value); 
+            set { }
         }
         public string Content { get; set; } = "Sub MySub()\n    Debug.Print \"Hello World\"\nEnd Sub";
         public IEditorSettings EditorSettings { get; set; } = new EditorSettingsDesignViewModel();
@@ -62,7 +62,7 @@ namespace Rubberduck.UI.Xaml.Controls
         public IMemberInfoViewModel CurrentMember
         {
             get => Members.FirstOrDefault();
-            set => Members.Select(m => m == value);
+            set { }
         }
         public ICollection<IMemberInfoViewModel> Members { get; set; } = new Collection<IMemberInfoViewModel>
         {

@@ -18,20 +18,20 @@ namespace Rubberduck.UI.Xaml.Controls
         public ICodePaneViewModel SelectedModuleDocumentTab
         {
             get => ModuleDocumentTabs.FirstOrDefault();
-            set => ModuleDocumentTabs.Select(m => m == value);
+            set { }
         }
 
         public IEnumerable<IShellToolTab> ToolTabs { get; set; } = new ObservableCollection<IShellToolTab>
         {
             new ShellToolTabDesignViewModel { Name = "Left tooltab 1"},
             new ShellToolTabDesignViewModel { Name = "Left tooltab 2"}
-//            new ShellToolTabDesignViewModel { Name = "Right tooltab 1", Settings = new ShellToolTabSettingDesignViewModel { TabPanelLocation = ToolTabLocation.RightPanel } } //TODO : filtering doesn't send this to the right
+//            new ShellToolTabDesignViewModel { Name = "Right tooltab 1", Settings = new ShellToolTabSettingDesignViewModel { TabPanelLocation = ToolTabLocation.RightPanel } } //Note : filtering doesn't send this to the right panel in the designer
         };
 
         public IShellToolTab SelectedToolTab
         {
             get => ToolTabs.FirstOrDefault();
-            set => ToolTabs.Select(m => m == value);
+            set { }
         }
         public IStatusBarViewModel Status { get; set; } = new StatusBarDesignViewModel();
 
@@ -46,7 +46,7 @@ namespace Rubberduck.UI.Xaml.Controls
     internal class ShellToolTabDesignViewModel : IShellToolTab
     {
         public string Name { get; set; }
-        public object ViewModel { get; set; } = new SyncPanelDesignViewModel() as ISyncPanelViewModel; //new SyncPanelDesignViewModel(); //TODO : work out why can't use this, should be type ISyncPanelViewModel/SyncPanelDesignViewModel
+        public object ViewModel { get; set; } = new SyncPanelDesignViewModel() as ISyncPanelViewModel;
         public IShellToolTabSetting Settings { get; set; } = new ShellToolTabSettingDesignViewModel();
     }
 
