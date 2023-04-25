@@ -1,5 +1,9 @@
 ﻿using Rubberduck.UI.Abstract;
 
+///<summary>
+///This file provides design-time data for the <see cref="StatusBarControl.xaml"/> control.
+///This is only to support working in the XAML designer and nothing in this file should be used otherwise.
+///</summary>
 namespace Rubberduck.UI.Xaml.Controls
 {
     internal class StatusBarDesignViewModel : IStatusBarViewModel
