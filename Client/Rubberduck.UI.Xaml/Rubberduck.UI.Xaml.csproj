@@ -235,9 +235,17 @@
       <Project>{fc5ecd51-175b-42d6-b46c-130b57aa1ebc}</Project>
       <Name>Rubberduck.UI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.VBEditor\Rubberduck.VBEditor.csproj">
+      <Project>{030FDE59-C347-4B81-AB80-5B4B80B757A0}</Project>
+      <Name>Rubberduck.VBEditor</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Ducky.ico" />
+    <Compile Include="SampleData\SyncPanelDesignViewModel.cs" />
+    <Compile Include="SampleData\CodePaneDesignViewModel.cs" />
+    <Compile Include="SampleData\StatusBarDesignViewModel.cs" />
+    <Compile Include="SampleData\EditorShellDesignViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Themes\" />

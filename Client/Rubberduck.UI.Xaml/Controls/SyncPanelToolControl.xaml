@@ -6,12 +6,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.UI.Xaml.Controls" 
              xmlns:ui="clr-namespace:Rubberduck.UI.WPF;assembly=Rubberduck.UI"
-             xmlns:vm="clr-namespace:Rubberduck.UI.Abstract;assembly=Rubberduck.UI" 
+             xmlns:vm="clr-namespace:Rubberduck.UI.Abstract;assembly=Rubberduck.UI"
              xmlns:converters="clr-namespace:Rubberduck.UI.WPF.Converters;assembly=Rubberduck.UI"
              mc:Ignorable="d"
              MinWidth="200"
-             d:DesignHeight="600" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance {x:Type vm:ISyncPanelToolTab}, IsDesignTimeCreatable=False}">
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance {x:Type local:SyncPanelDesignViewModel}, IsDesignTimeCreatable=True}">
+    <!--d:DataContext="{d:DesignInstance {x:Type vm:ISyncPanelToolTab}, IsDesignTimeCreatable=False}">-->
+
     <UserControl.Resources>
         <converters:ModuleSyncStateToIconConverter x:Key="SyncStateIconConverter" />
         <BitmapImage x:Key="RefreshIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-left.png" />
@@ -39,7 +41,7 @@
 
         <ListView Grid.Row="1" ItemsSource="{Binding VBIDEModules}" SelectedItem="{Binding SelectedVBIDEModule}">
             <ListView.ItemTemplate>
-                <DataTemplate DataType="vm:SyncPanelModuleViewModel">
+                <DataTemplate DataType="vm:ISyncPanelModuleViewModel">
                     <DockPanel HorizontalAlignment="Left" MinWidth="{Binding ElementName=root, Path=MinWidth}">
                         <Image Margin="2,0" Height="16" Width="16" ToolTip="{Binding State}" Source="{Binding State, Converter={StaticResource SyncStateIconConverter}}" />
                         <TextBlock Margin="2,0" Text="{Binding QualifiedModuleName.ComponentName}" VerticalAlignment="Center" />

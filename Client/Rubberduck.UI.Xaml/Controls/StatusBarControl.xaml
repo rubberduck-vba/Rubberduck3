@@ -6,8 +6,9 @@
              xmlns:vm="clr-namespace:Rubberduck.UI.Abstract;assembly=Rubberduck.UI"
              xmlns:local="clr-namespace:Rubberduck.UI.Xaml.Controls" 
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance {x:Type vm:IStatusBarViewModel}, IsDesignTimeCreatable=False}"
+             d:DataContext="{d:DesignInstance {x:Type local:StatusBarDesignViewModel}, IsDesignTimeCreatable=True}"
              d:DesignHeight="24" d:DesignWidth="800" VerticalContentAlignment="Center">
+    <!--d:DataContext="{d:DesignInstance {x:Type vm:IStatusBarViewModel}, IsDesignTimeCreatable=False}"-->
     <UserControl.Resources>
         <BitmapImage x:Key="ErrorIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
         <BitmapImage x:Key="ReadyIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick.png" />
