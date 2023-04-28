@@ -7,7 +7,7 @@ param (
     [string]$targetMajorVersion
 )
 
-################################ Script starts at line 563 ################################
+################################ Script starts at line 532 ################################
 
 
 $HKLMClsidPath = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\"
@@ -16,8 +16,8 @@ $HKCRClsidPath = "Registry::HKEY_CLASSES_ROOT\CLSID\"
 $extensionClsid = "69E0F697-43F0-3B33-B105-9B8188A6F040"
 $dockableToolWindowClsid = "69E0F699-43F0-3B33-B105-9B8188A6F040"
 
-$rd3Version = "3.0.0.0"
-$rd2Version = "2.5.2.0"
+$script:rd3Version = "3.0.0.0"
+$script:rd2Version = "2.5.2.0"
 
 #There are currently(4/23) 2 registry keys to be added for RD3: 
 #Rubberduck.Extension and Rubberduck.DockableToolWindow
@@ -327,37 +327,6 @@ function New-RegistryKeyModelFromRegistryKey($registryKey){
     }
 
     New-RdRegistryKeyModel $registryKey $properties
-}
-
-function TryGetRegistryKeyModelsFromFile([ref]$models, $filePath = $null){
-    $models = @()
-    $modelsFilepath = Get-CachedRD3KeyValuesFilepath $filepath
-
-    $content = Get-Content $modelsFilepath
-    if ($null -eq $content -or ($content.Trim() -eq "")){
-        $false
-        return
-    }
-    
-    try {
-        $jsonObjs = $content | ConvertFrom-Json
-    }
-    catch {
-        $false
-        return
-    }
-
-    foreach ($obj in $jsonObjs){
-        $model = (Convert-MaybeJsonToRegistryKeyModel $obj)
-        if ($null -eq $model){
-            $models = @()
-            $False
-            return
-        } else {
-            $models += $model
-        }
-    }
-    $True
 }
 
 function New-MaybeRegistryKeyModelsFromFile($filePath = $null){
@@ -683,5 +652,3 @@ See operations that 'would have' taken place to setup for RD3 with the most desc
 ...\SetRegistryForRDVersion.ps1 rd3
 Allow the script to make changes to the registry to setup RD3 with limited descriptive content
 #>
-
-
