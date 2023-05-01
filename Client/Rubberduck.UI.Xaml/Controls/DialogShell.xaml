@@ -1,0 +1,98 @@
+﻿<UserControl x:Class="Rubberduck.UI.Xaml.Controls.DialogShell"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:Rubberduck.UI.Abstract;assembly=Rubberduck.UI"
+             xmlns:local="clr-namespace:Rubberduck.UI.Xaml.Controls"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance {x:Type local:DialogShellDesignViewModel}, IsDesignTimeCreatable=True}"
+             d:DesignHeight="300" d:DesignWidth="600">
+    <!--d:DataContext="{d:DesignInstance {x:Type vm:IDialogShellViewModel}, IsDesignTimeCreatable=False}"-->
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="TextBlock">
+                <Style.Setters>
+                    <Setter Property="Foreground" Value="{StaticResource CaptionDarkBrush}" />
+                </Style.Setters>
+            </Style>
+            <Style x:Key="TitleLabelStyle" TargetType="TextBlock">
+                <Style.Setters>
+                    <Setter Property="FontSize" Value="16" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                    <Setter Property="Foreground" Value="{StaticResource CaptionDarkBrush}" />
+                </Style.Setters>
+            </Style>
+            <Style x:Key="MoreInformationStyle" TargetType="Expander">
+                <Style.Setters>
+                    <Setter Property="Foreground" Value="{StaticResource CaptionDarkBrush}" />
+                </Style.Setters>
+            </Style>            
+            <Style x:Key="ButtonStyle" TargetType="Button">
+                <Style.Setters>
+                    <Setter Property="FontWeight" Value="Bold" />
+                    <Setter Property="Foreground" Value="{StaticResource CaptionDarkBrush}" />
+                    <Setter Property="Padding" Value="5" />
+                </Style.Setters>
+            </Style>
+            <Style x:Key="OptionsTextStyle" TargetType="CheckBox">
+                <Style.Setters>
+                    <Setter Property="FontSize" Value="11" />
+                    <Setter Property="Foreground" Value="{StaticResource CaptionDarkBrush}" />
+                </Style.Setters>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid x:Name="TitleLabelRow" Grid.Row="0">
+            <StackPanel Margin="8,3,8,0" Orientation="Horizontal">
+                <Image Source="{Binding IconSource}" Height="16" />
+                <TextBlock Text="{Binding TitleLabelText}" Style="{StaticResource TitleLabelStyle}" Margin="10,0,0,0" />
+            </StackPanel>
+        </Grid>
+        <Grid x:Name="InstructionsRow" Grid.Row="1" Margin="20,3,20,0">
+            <TextBlock Text="{Binding InstructionsLabelText}" />
+        </Grid>
+        <Border x:Name="ContentsArea" Grid.Row="2" Margin="20,3,20,0" BorderThickness="1" BorderBrush="{StaticResource HighlightBorderActiveBrush}">
+            <ContentControl Content="{Binding MainContentControl}" />
+        </Border>
+        <Grid x:Name="MoreInformationRow" Grid.Row="3" Margin="20,3,20,0" MaxHeight="200">
+            <Expander Header="More information" ExpandDirection="Down" IsExpanded="False" Style="{StaticResource MoreInformationStyle}" d:IsExpanded="True" >
+                <!--<ScrollViewer>-->
+                    <TextBlock Text="{Binding MoreInformationText}" TextWrapping="Wrap" />
+                <!--</ScrollViewer>-->
+            </Expander>
+        </Grid>
+        <Grid x:Name="SeparatorRow" Grid.Row="4">
+            <Separator Margin="10,5,10,5" />
+        </Grid>
+        <Grid x:Name="BottomSection" Grid.Row="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <CheckBox x:Name="OptionCheckbox" Margin="20,10,10,10" Style="{StaticResource OptionsTextStyle}"
+                Content="{Binding OptionLabelText}" Checked="HandleOptionChecked" Unchecked="HandleOptionUnchecked" />
+            </Grid>
+            <Grid Grid.Column="1" HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <Button Margin="10,10,10,10" Content="{Binding CancelButtonText}" IsCancel="True" Visibility="{Binding HasCancelButton, Converter={StaticResource BoolToVisibility}}" Style="{StaticResource ButtonStyle}" />
+                    <Button Margin="10,10,10,10" Content="{Binding DefaultButtonText}" IsDefault="True" Style="{StaticResource ButtonStyle}" Background="{StaticResource DefaultButtonBackgroundBrush}" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -138,6 +138,9 @@
     <Compile Include="Controls\ConsoleControl.xaml.cs">
       <DependentUpon>ConsoleControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DialogShell.xaml.cs">
+      <DependentUpon>DialogShell.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\EditorShellControl.xaml.cs">
       <DependentUpon>EditorShellControl.xaml</DependentUpon>
     </Compile>
@@ -174,6 +177,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\ConsoleControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DialogShell.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -242,6 +249,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Ducky.ico" />
+    <Compile Include="SampleData\DialogShellDesignViewModel.cs" />
     <Compile Include="SampleData\SyncPanelDesignViewModel.cs" />
     <Compile Include="SampleData\CodePaneDesignViewModel.cs" />
     <Compile Include="SampleData\StatusBarDesignViewModel.cs" />

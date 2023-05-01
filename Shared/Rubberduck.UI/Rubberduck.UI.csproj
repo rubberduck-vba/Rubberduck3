@@ -142,6 +142,7 @@
     <Compile Include="Abstract\Editor\Tools\SyncPanel\IShellToolTabProvider.cs" />
     <Compile Include="Abstract\Editor\Tools\SyncPanel\ISyncPanelModuleViewModelProvider.cs" />
     <Compile Include="Abstract\Editor\Tools\SyncPanel\ISyncPanelToolTab.cs" />
+    <Compile Include="Abstract\Editor\IDialogShellViewModel.cs" />
     <Compile Include="Command\AsyncDelegateCommand.cs" />
     <Compile Include="Command\SyncPanel\ILoadCommand.cs" />
     <Compile Include="Command\SyncPanel\IOpenCommand.cs" />
