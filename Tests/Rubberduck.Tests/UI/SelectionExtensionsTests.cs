@@ -4,7 +4,7 @@ using RubberduckUI.Extensions;
 
 namespace Rubberduck.Tests.UI
 {
-    [TestClass]
+    [TestFixture]
     public class SelectionExtensionsTests
     {
         private TextDocument GetTestDocument()
@@ -21,7 +21,7 @@ End Sub
         }
 
 
-        [TestMethod]
+        [Test]
         public void ToTextEditorSelection_Home()
         {
             var selection = Selection.Home;
@@ -33,7 +33,7 @@ End Sub
             Assert.AreEqual(1, length);
         }
 
-        [TestMethod]
+        [Test]
         public void ToTextEditorSelection_Multiline()
         {
             var startColumn = 10;
