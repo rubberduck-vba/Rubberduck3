@@ -18,6 +18,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="TestableIO.System.IO.Abstractions" Version="19.1.18" />
+    <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="19.1.18" />
+    <PackageReference Include="TestableIO.System.IO.Abstractions.Wrappers" Version="19.1.18" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <PrivateAssets>all</PrivateAssets>
@@ -26,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Client\Rubberduck.Client\Rubberduck.Client.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.UI\Rubberduck.UI.csproj" />
     <ProjectReference Include="..\..\Client\Rubberduck.VBEditor\Rubberduck.VBEditor.csproj" />
   </ItemGroup>
