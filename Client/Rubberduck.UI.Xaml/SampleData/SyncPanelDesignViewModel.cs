@@ -7,6 +7,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 
+///<summary>
+///This file provides design-time data for the <see cref="SyncPanelToolControl.xaml"/> control.
+///This is only to support working in the XAML designer and nothing in this file should be used otherwise.
+///</summary>
 namespace Rubberduck.UI.Xaml.Controls
 {
     internal class SyncPanelDesignViewModel : ISyncPanelViewModel

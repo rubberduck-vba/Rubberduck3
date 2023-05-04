@@ -5,6 +5,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 
+///<summary>
+///This file provides design-time data for the <see cref="EditorShellControl.xaml"/> control.
+///This is only to support working in the XAML designer and nothing in this file should be used otherwise.
+///</summary>
 namespace Rubberduck.UI.Xaml.Controls
 {
     internal class EditorShellDesignViewModel : IEditorShellViewModel
