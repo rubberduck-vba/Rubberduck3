@@ -195,6 +195,7 @@
     <Compile Include="WPF\Converters\MemberTypeToIconConverter.cs" />
     <Compile Include="WPF\Converters\MillisecondToTimeMagnitudeConverter.cs" />
     <Compile Include="WPF\Converters\ModuleSyncStateToIconConverter.cs" />
+    <Compile Include="WPF\Converters\DialogTypeToIconConverter.cs" />
     <Compile Include="WPF\Converters\ModuleTypeToIconConverter.cs" />
     <Compile Include="WPF\Converters\NonZeroToBooleanConverter.cs" />
     <Compile Include="WPF\Converters\NonZeroToVisibilityConverter.cs" />

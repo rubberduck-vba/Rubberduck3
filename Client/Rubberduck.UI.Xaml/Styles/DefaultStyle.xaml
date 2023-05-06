@@ -153,6 +153,6 @@
     <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
     <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
     <converters:SelectedItemToBooleanConverter x:Key="HasSelectedItems"/>
-
+    <converters:DialogTypeToIconConverter x:Key="DialogTypeToImage" />
 
 </ResourceDictionary>

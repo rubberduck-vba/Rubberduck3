@@ -114,6 +114,11 @@
     <Compile Include="About\AboutUI.Designer.cs" />
     <Compile Include="About\AboutUI.fr.Designer.cs" />
     <Compile Include="ApplicationConstants.cs" />
+    <Compile Include="DialogTypeIcons.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DialogTypeIcons.resx</DependentUpon>
+    </Compile>
     <Compile Include="Inspections\InspectionInfo.de.Designer.cs" />
     <Compile Include="Inspections\InspectionInfo.Designer.cs" />
     <Compile Include="Inspections\InspectionInfo.fr.Designer.cs" />
@@ -157,6 +162,10 @@
     <EmbeddedResource Include="About\AboutUI.fr.resx" />
     <EmbeddedResource Include="About\AboutUI.it.resx" />
     <EmbeddedResource Include="About\AboutUI.resx" />
+    <EmbeddedResource Include="DialogTypeIcons.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>DialogTypeIcons.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Inspections\InspectionInfo.cs.resx" />
     <EmbeddedResource Include="Inspections\InspectionInfo.de.resx" />
     <EmbeddedResource Include="Inspections\InspectionInfo.es.resx" />
@@ -493,6 +502,7 @@
     <Resource Include="Icons\Fugue\socket.png" />
     <Resource Include="Icons\Fugue\user-silhouette.png" />
     <Resource Include="Icons\Fugue\user-medium-silhouette.png" />
+    <None Include="Resources\Error.png" />
     <Content Include="Splash.png" />
   </ItemGroup>
   <ItemGroup>

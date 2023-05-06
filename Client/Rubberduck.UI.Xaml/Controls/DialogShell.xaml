@@ -36,12 +36,14 @@
                     <Setter Property="FontWeight" Value="Bold" />
                     <Setter Property="Foreground" Value="{StaticResource CaptionDarkBrush}" />
                     <Setter Property="Padding" Value="5" />
+                    <Setter Property="Margin" Value="5,10" />
                 </Style.Setters>
             </Style>
             <Style x:Key="OptionsTextStyle" TargetType="CheckBox">
                 <Style.Setters>
                     <Setter Property="FontSize" Value="11" />
                     <Setter Property="Foreground" Value="{StaticResource CaptionDarkBrush}" />
+                    <Setter Property="Margin" Value="20,10,10,10" />
                 </Style.Setters>
             </Style>
         </ResourceDictionary>
@@ -58,15 +60,20 @@
         </Grid.RowDefinitions>
         <Grid x:Name="TitleLabelRow" Grid.Row="0">
             <StackPanel Margin="8,3,8,0" Orientation="Horizontal">
-                <Image Source="{Binding IconSource}" Height="16" />
+                <Image Source="{Binding IconSource, Converter={StaticResource DialogTypeToImage}}" Height="16" />
                 <TextBlock Text="{Binding TitleLabelText}" Style="{StaticResource TitleLabelStyle}" Margin="10,0,0,0" />
             </StackPanel>
         </Grid>
         <Grid x:Name="InstructionsRow" Grid.Row="1" Margin="20,3,20,0">
             <TextBlock Text="{Binding InstructionsLabelText}" />
         </Grid>
-        <Border x:Name="ContentsArea" Grid.Row="2" Margin="20,3,20,0" BorderThickness="1" BorderBrush="{StaticResource HighlightBorderActiveBrush}">
-            <ContentControl Content="{Binding MainContentControl}" />
+        <Border x:Name="ContentsArea" Grid.Row="2" Margin="20,3,20,0" BorderThickness="1" BorderBrush="{StaticResource HighlightBorderActiveBrush}" MinHeight="{Binding ClientAreaMinHeight}" >
+            <StackPanel>
+                <ScrollViewer Visibility="{Binding MainContentIsInput, Converter={StaticResource BoolToHiddenVisibility}}" >
+                    <TextBlock Text="{Binding ContentsText}" />
+                </ScrollViewer>
+                <TextBox Visibility="{Binding MainContentIsInput, Converter={StaticResource BoolToVisibility}}" />
+            </StackPanel>    
         </Border>
         <Grid x:Name="MoreInformationRow" Grid.Row="3" Margin="20,3,20,0" MaxHeight="200">
             <Expander Header="More information" ExpandDirection="Down" IsExpanded="False" Style="{StaticResource MoreInformationStyle}" d:IsExpanded="True" >
@@ -84,13 +91,13 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">
-                <CheckBox x:Name="OptionCheckbox" Margin="20,10,10,10" Style="{StaticResource OptionsTextStyle}"
-                Content="{Binding OptionLabelText}" Checked="HandleOptionChecked" Unchecked="HandleOptionUnchecked" />
+                <CheckBox x:Name="OptionCheckbox" Style="{StaticResource OptionsTextStyle}"
+                Content="{Binding OptionLabelText}" />
             </Grid>
             <Grid Grid.Column="1" HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal">
-                    <Button Margin="10,10,10,10" Content="{Binding CancelButtonText}" IsCancel="True" Visibility="{Binding HasCancelButton, Converter={StaticResource BoolToVisibility}}" Style="{StaticResource ButtonStyle}" />
-                    <Button Margin="10,10,10,10" Content="{Binding DefaultButtonText}" IsDefault="True" Style="{StaticResource ButtonStyle}" Background="{StaticResource DefaultButtonBackgroundBrush}" />
+                    <Button Content="{Binding CancelButtonText}" IsCancel="True" Visibility="{Binding HasCancelButton, Converter={StaticResource BoolToVisibility}}" Style="{StaticResource ButtonStyle}" />
+                    <Button Content="{Binding DefaultButtonText}" IsDefault="True" Style="{StaticResource ButtonStyle}" Background="{StaticResource DefaultButtonBackgroundBrush}" />
                 </StackPanel>
             </Grid>
         </Grid>

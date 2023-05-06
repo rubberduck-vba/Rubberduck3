@@ -21,23 +21,16 @@ namespace Rubberduck.UI.Xaml.Controls
     /// </summary>
     public partial class DialogShell : UserControl
     {
-        public DialogShell(IDialogShellViewModel viewModel)
+        public DialogShell()
         {
-            DataContext = viewModel;
             InitializeComponent();
         }
 
+        public DialogShell(IDialogShellViewModel viewModel) : this()
+        {
+            DataContext = viewModel;
+        }
+
         private IDialogShellViewModel ViewModel => DataContext as IDialogShellViewModel;
-
-
-        private void HandleOptionChecked(object sender, RoutedEventArgs e)
-        {
-            ViewModel.OptionIsChecked = true;
-        }
-
-        private void HandleOptionUnchecked(object sender, RoutedEventArgs e)
-        {
-            ViewModel.OptionIsChecked = false;
-        }
     }
 }
