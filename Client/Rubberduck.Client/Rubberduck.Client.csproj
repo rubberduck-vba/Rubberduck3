@@ -197,7 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LSP\LspClientService.cs" />
-    <Compile Include="LSP\WorkspaceInfo.cs" />
+    <Compile Include="LSP\DotRdFolderInfo.cs" />
     <Compile Include="LSP\WorkspaceService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -7,12 +7,12 @@ namespace Rubberduck.Client.LSP
 {
     /// <summary>
     /// Provides readonly access to host document properties and
-    /// IDirectoryInfo objects for key Workspace directories.
+    /// IDirectoryInfo objects for key DotRdFolder directories.
     /// </summary>
-    public interface IWorkspaceInfo
+    public interface IDotRdFolderInfo
     {
         /// <summary>
-        /// Read only Absolute path to the host document of the Workspace.
+        /// Read only Absolute path to the host document of the DotRdFolder.
         /// </summary>
         string HostDocumentPath { get; }
 
@@ -47,13 +47,13 @@ namespace Rubberduck.Client.LSP
 
     /// <summary>
     /// Provides readonly access to host document properties and
-    /// IDirectoryInfo objects for Workspace directories.
+    /// IDirectoryInfo objects for DotRdFolder directories.
     /// </summary>
     /// <remarks>
     /// Initializes objects based on the host document path. It 
-    /// does not perform IO operation on the file system.
+    /// does not perform IO operations on the file system.
     /// </remarks>
-    public struct WorkspaceInfo : IWorkspaceInfo
+    public struct DotRdFolderInfo : IDotRdFolderInfo
     {
         private const string wsFoldersName = "WorkspaceFolders";
 
@@ -63,7 +63,7 @@ namespace Rubberduck.Client.LSP
         private readonly Func<string, IDirectoryInfo> _dirInfoFactoryFunc;
 
         /// <summary>
-        /// Creates a WorkspaceInfo struct based on the absolute path to a host document.
+        /// Creates a DotRdFolderInfo struct based on the absolute path to a host document.
         /// Other parameters should be left 'null' unless injecting a fake 
         /// object for testing.
         /// </summary>
@@ -71,7 +71,7 @@ namespace Rubberduck.Client.LSP
         /// <param name="fileSystem">Optional: should be omitted except for injecting test fakes</param>
         /// <param name="dirInfoFunc">Optional: should be omitted except for injecting test fakes</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public WorkspaceInfo(string hostDocumentPath, 
+        public DotRdFolderInfo(string hostDocumentPath, 
             IFileSystem fileSystem = null, 
             Func<string, IDirectoryInfo> dirInfoFunc = null)
         {

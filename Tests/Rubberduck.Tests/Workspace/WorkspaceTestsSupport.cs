@@ -6,13 +6,13 @@ namespace Rubberduck.Tests.Workspace
 {
     public class WorkspaceTestsSupport
     {
-        public static IWorkspaceInfo GetWorkspaceInfoFake(
+        public static IDotRdFolderInfo GetWorkspaceInfoFake(
             string hostDocPath, bool allPathsExist = false,
             IFileSystem? fileSystem = null)
         {
-            var wsInfoReal = new WorkspaceInfo(hostDocPath, fileSystem);
+            var wsInfoReal = new DotRdFolderInfo(hostDocPath, fileSystem);
 
-            var wsInfoFake = new WorkspaceInfo(hostDocPath, fileSystem,
+            var wsInfoFake = new DotRdFolderInfo(hostDocPath, fileSystem,
                 (s) => Mock.Of<IDirectoryInfo>());
 
             var directoryInfoPairs
@@ -37,7 +37,7 @@ namespace Rubberduck.Tests.Workspace
                     .Returns(allPathsExist);
             }
 
-            return wsInfoFake as IWorkspaceInfo;
+            return wsInfoFake as IDotRdFolderInfo;
         }
 
         public static IFileSystem SetupFileSystemStubToAvoidFileNotFoundException(string hostDoc)

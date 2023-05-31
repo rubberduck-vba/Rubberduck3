@@ -20,7 +20,7 @@ namespace Rubberduck.Tests.Workspace
             //Act
             //Assert
             Assert.Throws<ArgumentNullException>(
-                () => new WorkspaceInfo(argValue));
+                () => new DotRdFolderInfo(argValue));
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace Rubberduck.Tests.Workspace
             //Act
             //Assert
             Assert.Throws<FileNotFoundException>(
-                () => new WorkspaceInfo("NotAnExistingPath.accdb", fs));
+                () => new DotRdFolderInfo("NotAnExistingPath.accdb", fs));
         }
 
         [Theory]
@@ -50,7 +50,7 @@ namespace Rubberduck.Tests.Workspace
                 = @"C:\users\duck\MyProjects\TestExcel\TestExcel.xlsm";
 
             var IDirInfoTestsActualAccessors
-                = new Dictionary<int, Func<WorkspaceInfo, string>>()
+                = new Dictionary<int, Func<DotRdFolderInfo, string>>()
                 {
                     [0] = (ws) => ws.HostDocumentName,
                     [1] = (ws) => ws.WorkspaceDirectoryInfo.Name,
@@ -63,7 +63,7 @@ namespace Rubberduck.Tests.Workspace
                 .SetupFileSystemStubToAvoidFileNotFoundException(hostDoc);
 
             //Act
-            var wsInfo = new WorkspaceInfo(hostDoc, fs);
+            var wsInfo = new DotRdFolderInfo(hostDoc, fs);
 
             //Assert
             var actual 

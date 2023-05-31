@@ -10,7 +10,7 @@ namespace Rubberduck.Client.LSP
         /// to create/initialize LSP WorkspaceFolder objects
         /// </summary>
         public static (string Name, string Folderpath)[] GetWorkspaceFolderTuples(
-            IWorkspaceInfo wsInfo)
+            IDotRdFolderInfo wsInfo)
         {
             return new (string Name, string Folderpath)[]
             {
@@ -25,7 +25,7 @@ namespace Rubberduck.Client.LSP
         /// Creates the .rd folder structure for a given host document.
         /// If the .rd folder and path(s) already exist, the function does nothing.
         /// </summary>
-        public static void SetupDotRdFolder(IWorkspaceInfo wsInfo)
+        public static void SetupDotRdFolder(IDotRdFolderInfo wsInfo)
         {
             if (!wsInfo.WorkingRepoInfo.Exists)
             {
