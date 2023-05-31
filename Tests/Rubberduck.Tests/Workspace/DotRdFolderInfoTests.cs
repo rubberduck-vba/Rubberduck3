@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Tests.Workspace
 {
-    public class DotRdFolderTests
+    public class DotRdFolderInfoTests
     {
         [Theory]
         [InlineData(null)]
@@ -59,7 +59,7 @@ namespace Rubberduck.Tests.Workspace
                     [4] = (ws) => ws.WorkingRepoInfo.FullName,
                 };
 
-            var fs = WorkspaceTestsSupport
+            var fs = DotRdFolderTestsSupport
                 .SetupFileSystemStubToAvoidFileNotFoundException(hostDoc);
 
             //Act

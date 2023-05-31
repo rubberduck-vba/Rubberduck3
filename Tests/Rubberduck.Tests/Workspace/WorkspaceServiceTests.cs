@@ -20,14 +20,14 @@ namespace Rubberduck.Tests.WorkspaceServiceTests
             var hostDocPath =
                 @"C:\users\duck\MyProjects\TestExcel\TestExcel.xlsm";
 
-            var fs = WorkspaceTestsSupport
+            var fs = DotRdFolderTestsSupport
                 .SetupFileSystemStubToAvoidFileNotFoundException(hostDocPath);
             
-            var wsInfoStub = WorkspaceTestsSupport
-                .GetWorkspaceInfoFake(hostDocPath, fileSystem: fs);
+            var rdInfoStub = DotRdFolderTestsSupport
+                .GetDotRdFolderInfoFake(hostDocPath, fileSystem: fs);
 
             //Act
-            var wsFolders = WorkspaceService.GetWorkspaceFolderTuples(wsInfoStub);
+            var wsFolders = WorkspaceService.GetWorkspaceFolderTuples(rdInfoStub);
 
             //Assert
             Assert.Equal(2, wsFolders.Length);

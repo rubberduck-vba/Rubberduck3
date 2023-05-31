@@ -4,25 +4,25 @@ using System.IO.Abstractions;
 
 namespace Rubberduck.Tests.Workspace
 {
-    public class WorkspaceTestsSupport
+    public class DotRdFolderTestsSupport
     {
-        public static IDotRdFolderInfo GetWorkspaceInfoFake(
+        public static IDotRdFolderInfo GetDotRdFolderInfoFake(
             string hostDocPath, bool allPathsExist = false,
             IFileSystem? fileSystem = null)
         {
-            var wsInfoReal = new DotRdFolderInfo(hostDocPath, fileSystem);
+            var rdInfoReal = new DotRdFolderInfo(hostDocPath, fileSystem);
 
-            var wsInfoFake = new DotRdFolderInfo(hostDocPath, fileSystem,
+            var rdInfoFake = new DotRdFolderInfo(hostDocPath, fileSystem,
                 (s) => Mock.Of<IDirectoryInfo>());
 
             var directoryInfoPairs
                 = new (IDirectoryInfo fake, IDirectoryInfo real)[]
                 {
-                    (wsInfoFake.DotRdInfo, wsInfoReal.DotRdInfo),
-                    (wsInfoFake.WorkspaceDirectoryInfo,
-                        wsInfoReal.WorkspaceDirectoryInfo),
-                    (wsInfoFake.WorkingRepoInfo, wsInfoReal.WorkingRepoInfo),
-                    (wsInfoFake.SavedRepoInfo, wsInfoReal.SavedRepoInfo)
+                    (rdInfoFake.DotRdInfo, rdInfoReal.DotRdInfo),
+                    (rdInfoFake.WorkspaceDirectoryInfo,
+                        rdInfoReal.WorkspaceDirectoryInfo),
+                    (rdInfoFake.WorkingRepoInfo, rdInfoReal.WorkingRepoInfo),
+                    (rdInfoFake.SavedRepoInfo, rdInfoReal.SavedRepoInfo)
                 };
 
             foreach (var (fake, real) in directoryInfoPairs)
@@ -37,7 +37,7 @@ namespace Rubberduck.Tests.Workspace
                     .Returns(allPathsExist);
             }
 
-            return wsInfoFake as IDotRdFolderInfo;
+            return rdInfoFake as IDotRdFolderInfo;
         }
 
         public static IFileSystem SetupFileSystemStubToAvoidFileNotFoundException(string hostDoc)
