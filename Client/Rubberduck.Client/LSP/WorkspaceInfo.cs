@@ -1,5 +1,6 @@
 ﻿using Rubberduck.InternalApi.Common;
 using System;
+using System.IO;
 using System.IO.Abstractions;
 
 namespace Rubberduck.Client.LSP
@@ -79,12 +80,16 @@ namespace Rubberduck.Client.LSP
                 throw new ArgumentNullException(nameof(hostDocumentPath));
             }
 
+            _fileSystem = fileSystem ?? new FileSystem();
+            if (!_fileSystem.File.Exists(hostDocumentPath))
+            {
+                throw new FileNotFoundException(hostDocumentPath, nameof(hostDocumentPath));
+            }
+
             _hostDocumentPath = hostDocumentPath;
             
             _dirInfoFactoryFunc = dirInfoFunc
                 ?? ((s) => new FileSystem().DirectoryInfo.New(s));
-
-            _fileSystem = fileSystem ?? new FileSystem();
 
             var hostDocumentFileInfo = _fileSystem.FileInfo.New(_hostDocumentPath);
 
