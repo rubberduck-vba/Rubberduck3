@@ -20,8 +20,11 @@ namespace Rubberduck.Tests.WorkspaceServiceTests
             //Arrange
             var hostDoc = @"C:\users\duck\MyProjects\TestExcel\TestExcel.xlsm";
 
+            var fs = WorkspaceTestsSupport
+                .SetupFileSystemStubToAvoidFileNotFoundException(hostDoc);
+            
             var mockWorkspaceInfo 
-                = WorkspaceTestsSupport.GetWorkspaceInfoFake(hostDoc);
+                = WorkspaceTestsSupport.GetWorkspaceInfoFake(hostDoc, fileSystem: fs);
             Mock.Get(mockWorkspaceInfo.WorkingRepoInfo).Setup<bool>(di => di.Exists)
                 .Returns(workingExists);
             Mock.Get(mockWorkspaceInfo.SavedRepoInfo).Setup<bool>(di => di.Exists)
@@ -44,8 +47,10 @@ namespace Rubberduck.Tests.WorkspaceServiceTests
             //Arrange
             var hostDoc = @"C:\users\duck\MyProjects\TestExcel\TestExcel.xlsm";
 
+            var fs = WorkspaceTestsSupport
+                .SetupFileSystemStubToAvoidFileNotFoundException(hostDoc);
             var mockWorkspaceInfo
-                = WorkspaceTestsSupport.GetWorkspaceInfoFake(hostDoc, true);
+                = WorkspaceTestsSupport.GetWorkspaceInfoFake(hostDoc, true, fs);
 
             //Act
             WorkspaceService.SetupDotRdFolder(mockWorkspaceInfo);
@@ -64,8 +69,10 @@ namespace Rubberduck.Tests.WorkspaceServiceTests
             //Arrange
             var hostDoc = @"C:\users\duck\MyProjects\TestExcel\TestExcel.xlsm";
 
+            var fs = WorkspaceTestsSupport
+                .SetupFileSystemStubToAvoidFileNotFoundException(hostDoc);
             var mockWorkspaceInfo
-                = WorkspaceTestsSupport.GetWorkspaceInfoFake(hostDoc);
+                = WorkspaceTestsSupport.GetWorkspaceInfoFake(hostDoc, fileSystem: fs);
 
             //Act
             WorkspaceService.SetupDotRdFolder(mockWorkspaceInfo);
