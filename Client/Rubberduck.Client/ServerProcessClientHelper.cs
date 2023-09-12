@@ -1,6 +1,7 @@
 ﻿using Rubberduck.InternalApi;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 
 namespace Rubberduck.ServerPlatform
@@ -20,7 +21,7 @@ namespace Rubberduck.ServerPlatform
             Process serverProcess = null;
             try
             {
-                if (TryFindServerProcess(ServerPlatformSettings.DatabaseServerExecutableLocation, out serverProcess))
+                if (TryFindServerProcess(ServerPlatformSettings.DatabaseServerExecutable, out serverProcess))
                 {
                     Debug.WriteLine($"Found existing '{serverProcess.ProcessName}' process (ID {serverProcess.Id}).");
                     return serverProcess;
@@ -28,7 +29,7 @@ namespace Rubberduck.ServerPlatform
 
                 var info = new ProcessStartInfo
                 {
-                    FileName = ServerPlatformSettings.DatabaseServerExecutableLocation,
+                    FileName = ServerPlatformSettings.DatabaseServerExecutable,
                     Arguments = $"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -69,15 +70,21 @@ namespace Rubberduck.ServerPlatform
 
         public static Process StartLanguageServer()
         {
+            var root = Directory.GetParent(Assembly.GetExecutingAssembly().Location)
+                .Parent // bin
+                .Parent // Rubberduck.Main
+                .Parent // Client
+                .Parent; // Rubberduck3
             var info = new ProcessStartInfo
             {
-                FileName = ServerPlatformSettings.LanguageServerExecutableLocation,
+                FileName = Path.Combine(root.ToString(), ServerPlatformSettings.LanguageServerExecutable),
                 Arguments = $"",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true,
             };
+
             return Process.Start(info);
         }
 
@@ -85,7 +92,7 @@ namespace Rubberduck.ServerPlatform
         {
             var info = new ProcessStartInfo
             {
-                FileName = ServerPlatformSettings.TelemetryServerExecutableLocation,
+                FileName = ServerPlatformSettings.TelemetryServerExecutable,
                 Arguments = $"",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,

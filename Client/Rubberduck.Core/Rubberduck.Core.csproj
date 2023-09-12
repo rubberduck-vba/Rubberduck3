@@ -154,6 +154,7 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="About\AboutCommand.cs" />
+    <Compile Include="Editor\Commands\CodeCommand.cs" />
     <Compile Include="Editor\Commands\EditorShellCommand.cs" />
     <Compile Include="Editor\Commands\IEditorShellCommand.cs" />
     <Compile Include="Editor\Commands\LoadCommand.cs" />

@@ -2,13 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Castle.Facilities.TypedFactory;
-using Castle.MicroKernel.ModelBuilder.Inspectors;
-using Castle.MicroKernel.Registration;
-using Component = Castle.MicroKernel.Registration.Component;
-using Castle.MicroKernel.Resolvers.SpecializedResolvers;
-using Castle.MicroKernel.SubSystems.Configuration;
-using Castle.Windsor;
+//using Component = Castle.MicroKernel.Registration.Component;
 using Rubberduck.Common;
 using Rubberduck.Common.Hotkeys;
 using Rubberduck.Settings;
@@ -42,7 +36,7 @@ using Rubberduck.VBEditor.UI.OfficeMenus;
 using Rubberduck.VBEditor.UI;
 
 namespace Rubberduck.Root
-{
+{/*
     [ComVisible(false)]
     internal class RubberduckIoCInstaller : IWindsorInstaller
     {
@@ -1138,4 +1132,5 @@ namespace Rubberduck.Root
             container.Register(Component.For<ICommandBars>().Instance(new CommandBarsNonDisposingDecorator<ICommandBars>(_vbe.CommandBars)));
         }
     }
+    */
 }

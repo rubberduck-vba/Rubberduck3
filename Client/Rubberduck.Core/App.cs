@@ -18,6 +18,7 @@ using Infralution.Localization.Wpf;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 using System.Threading;
 using Rubberduck.UI.Command;
+using Rubberduck.ServerPlatform;
 
 namespace Rubberduck.Core
 {
@@ -29,6 +30,8 @@ namespace Rubberduck.Core
         private readonly IConfigurationService<Configuration> _configService;
         private readonly IAppMenu _appMenus;
         private readonly IRubberduckHooks _hooks;
+
+        // TODO move to update server
         private readonly IVersionCheckService _version;
         private readonly ICommand _checkVersionCommand;
 
@@ -154,7 +157,7 @@ namespace Rubberduck.Core
 
             LogRubberduckStart();
             UpdateLoggingLevel();
-            
+
             CheckForLegacyIndenterSettings();
             _appMenus.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts            

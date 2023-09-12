@@ -32,12 +32,31 @@ namespace Rubberduck.LanguageServer.Configuration
                 Version = version
             };
 
+            IObserver<WorkDoneProgressReport>? workDone = null!;
+
             lsp.WithInput(pipeStream)
                .WithOutput(pipeStream)
                .WithServerInfo(info)
-               .OnInitialize((server, request, token) => 
+               .OnInitialize(async (server, request, token) => 
                {
-                   // keep this info around, it describes everything the server needs to know about the client.
+                   var manager = server.WorkDoneManager.For(
+                       request, new WorkDoneProgressBegin
+                       {
+                           Title = "Server is starting...",
+                           Percentage = 10,
+                       }
+                   );
+                   workDone = manager;
+
+                   manager.OnNext(
+                       new WorkDoneProgressReport
+                       {
+                           Percentage = 20,
+                           Message = "Initializing..."
+                       }
+                   );
+
+                   // keep this info around, it describes everything the server needs to know about the client:
 
                    /*
                    request.ClientInfo;
@@ -46,16 +65,63 @@ namespace Rubberduck.LanguageServer.Configuration
                    request.ProcessId;
                    request.Capabilities;
                    */
-                   return Task.CompletedTask;
+
+                   // use manager.OnNext to notify LSP client of progress.
+
+                   manager.OnNext(
+                       new WorkDoneProgressReport
+                       {
+                           Percentage = 50,
+                           Message = "Awaiting client initialization..."
+                       }
+                   );
+
+                   await Task.CompletedTask;
                })
-               //add LSP handlers here?
+
+               .OnInitialized(async (server, request, response, token) =>
+               {
+                   workDone.OnNext(
+                        new WorkDoneProgressReport
+                        {
+                            Percentage = 60,
+                            Message = "Initializing workspace..."
+                        }
+                    );
+
+                   // TODO
+
+                   workDone.OnNext(
+                        new WorkDoneProgressReport
+                        {
+                            Percentage = 100,
+                            Message = "Completed."
+                        }
+                    );
+
+                   workDone.OnCompleted();
+                   (workDone as IDisposable)?.Dispose();
+                   workDone = null;
+
+                   await Task.CompletedTask;
+               })
 
                .OnStarted((server, token) =>
                {
                    // synchronize workspace and proceed with the initial parse run
+                   using (var manager = server.WorkDoneManager.Create(new WorkDoneProgressBegin 
+                       { 
+                           Title = "",
+                           Message = "",
+                           Cancellable = true
+                       }))
+                   {
 
+                   }
                    return Task.CompletedTask;
                })
+
+            // add LSP handlers here
             ;
         }
     }

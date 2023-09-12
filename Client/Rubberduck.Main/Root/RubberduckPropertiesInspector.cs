@@ -1,6 +1,6 @@
-﻿using Castle.Core;
-using Castle.MicroKernel;
-using Castle.MicroKernel.ModelBuilder;
+﻿//using Castle.Core;
+//using Castle.MicroKernel;
+//using Castle.MicroKernel.ModelBuilder;
 using Rubberduck.Main.Extensions;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
@@ -11,6 +11,7 @@ using System.Reflection;
 
 namespace Rubberduck.Root
 {
+    /*
     // Loosely based on https://github.com/castleproject/Windsor/blob/36fbebd9a471f88b43044f39704dc5f19e669e6f/src/Castle.Windsor/MicroKernel/ModelBuilder/Inspectors/PropertiesDependenciesModelInspector.cs
     internal class RubberduckPropertiesInspector : IContributeComponentModelConstruction
     {
@@ -48,4 +49,5 @@ namespace Rubberduck.Root
             return targetType.GetProperties(bindingFlags).ToList();
         }
     }
+    */
 }

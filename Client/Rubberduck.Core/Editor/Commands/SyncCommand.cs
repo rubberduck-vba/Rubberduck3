@@ -18,12 +18,24 @@ namespace Rubberduck.Core.Editor.Commands
             _projectsProvider = projectsProvider;
             _sourceCodeHandler = sourceCodeHandler;
 
-            AddToCanExecuteEvaluation(param => 
-            // TODO rephrase this abomination
-                param is ISyncPanelModuleViewModel moduleVM 
-                    ? EditorShellContext.Current.Shell.ModuleDocumentTabs.Any(tab =>
-                        tab.ModuleInfo.QualifiedModuleName.Equals(((ISyncPanelModuleViewModel)param).QualifiedModuleName))
-                    : param is ISyncPanelViewModel vm ? vm.VBIDEModules.Any(m => m.SyncCommand.CanExecute(m)) : false);
+            AddToCanExecuteEvaluation(StaticCanExecute);
+        }
+
+        private static bool StaticCanExecute(object param)
+        {
+            if (param is ISyncPanelModuleViewModel moduleVM)
+            {
+                return EditorShellContext.Current.Shell
+                    .ModuleDocumentTabs
+                    .Any(tab => tab.ModuleInfo.QualifiedModuleName.Equals(((ISyncPanelModuleViewModel)param).QualifiedModuleName));
+            }
+
+            if (param is ISyncPanelViewModel vm)
+            {
+                return vm.VBIDEModules.Any(m => m.SyncCommand.CanExecute(m));
+            }
+
+            return false;
         }
 
         protected override void ExecuteInternal(IEditorShellViewModel shell, ISyncPanelModuleViewModel param)

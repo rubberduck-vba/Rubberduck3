@@ -4,10 +4,10 @@
     {
         public static readonly string DatabaseServerConnectionString = "Data Source=Rubberduck.db;";
 
-        public static readonly string DatabaseServerExecutableLocation = @"..\..\..\..\Rubberduck.DatabaseServer\bin\Debug\net6.0\Rubberduck.DatabaseServer.exe";
-        public static readonly string LanguageServerExecutableLocation = @"..\..\..\..\Rubberduck.LanguageServer\bin\Debug\net6.0\Rubberduck.LanguageServer.exe";
-        public static readonly string TelemetryServerExecutableLocation = @"..\..\..\..\Rubberduck.TelemetryServer\bin\Debug\net6.0\Rubberduck.TelemetryServer.exe";
-        public static readonly string UpdateServerExecutableLocation = @"..\..\..\..\Rubberduck.UpdateServer\bin\Debug\net6.0\Rubberduck.UpdateServer.exe";
+        public static readonly string DatabaseServerExecutable = "Rubberduck.DatabaseServer.exe";
+        public static readonly string LanguageServerExecutable = "Rubberduck.LanguageServer.exe";
+        public static readonly string TelemetryServerExecutable = "Rubberduck.TelemetryServer.exe";
+        public static readonly string UpdateServerExecutable = "Rubberduck.UpdateServer.exe";
 
         public static readonly string DatabaseServerPipeName = @"\\.\Rubberduck.DatabaseServer\RPC";
         public static readonly string LanguageServerPipeName = @"\\.\Rubberduck.LanguageServer\RPC";
