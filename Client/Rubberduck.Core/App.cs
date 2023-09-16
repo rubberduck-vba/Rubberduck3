@@ -19,6 +19,7 @@ using Rubberduck.VBEditor.UI.OfficeMenus;
 using System.Threading;
 using Rubberduck.UI.Command;
 using Rubberduck.ServerPlatform;
+using System.Threading.Tasks;
 
 namespace Rubberduck.Core
 {
@@ -55,21 +56,21 @@ namespace Rubberduck.Core
             _version = version;
             _checkVersionCommand = checkVersionCommand;
 
-            _configService.SettingsChanged += _configService_SettingsChanged;
+            _configService.SettingsChanged += HandleConfigServiceSettingsChanged;
             _filesystem = filesystem;
 
             UiContextProvider.Initialize();
         }
 
-        private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)
+        private async void HandleConfigServiceSettingsChanged(object sender, ConfigurationChangedEventArgs e)
         {
-            _config = _configService.Read();
+            _config = await _configService.ReadAsync();
             _hooks.HookHotkeys();
             UpdateLoggingLevel();
 
             if (e.LanguageChanged)
             {
-                ApplyCultureConfig();
+                await ApplyCultureConfigAsync();
             }
         }
 
@@ -136,7 +137,7 @@ namespace Rubberduck.Core
         /// log level set to Trace (0) but once it's installed and has
         /// ran without problem, it should be set to None (6)
         /// </summary>
-        private void UpdateLoggingLevelOnShutdown()
+        private async Task UpdateLoggingLevelOnShutdownAsync()
         {
             if (_config.UserSettings.GeneralSettings.UserEditedLogLevel ||
                 _config.UserSettings.GeneralSettings.MinimumLogLevel != LogLevel.Trace.Ordinal)
@@ -145,20 +146,19 @@ namespace Rubberduck.Core
             }
 
             _config.UserSettings.GeneralSettings.MinimumLogLevel = LogLevel.Off.Ordinal;
-            _configService.Save(_config);
+            await _configService.SaveAsync(_config);
         }
 
-        public void Startup()
+        public async Task StartupAsync()
         {
-
             EnsureLogFolderPathExists();
             EnsureTempPathExists();
-            ApplyCultureConfig();
+            await ApplyCultureConfigAsync();
 
             LogRubberduckStart();
             UpdateLoggingLevel();
 
-            CheckForLegacyIndenterSettings();
+            await CheckForLegacyIndenterSettingsAsync();
             _appMenus.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts            
             _appMenus.Localize();
@@ -174,14 +174,14 @@ namespace Rubberduck.Core
             }            
         }
 
-        public void Shutdown()
+        public async Task ShutdownAsync()
         {
             try
             {
                 Debug.WriteLine("App calling Hooks.Detach.");
                 _hooks.Detach();
 
-                UpdateLoggingLevelOnShutdown();
+                await UpdateLoggingLevelOnShutdownAsync();
             }
             catch
             {
@@ -189,9 +189,9 @@ namespace Rubberduck.Core
             }
         }
 
-        private void ApplyCultureConfig()
+        private async Task ApplyCultureConfigAsync()
         {
-            _config = _configService.Read();
+            _config = await _configService.ReadAsync();
 
             var currentCulture = Resources.RubberduckUI.Culture;
             try
@@ -207,7 +207,7 @@ namespace Rubberduck.Core
                 // not accessing resources here, because setting resource culture literally just failed.
                 _messageBox.NotifyWarn(exception.Message, "Rubberduck");
                 _config.UserSettings.GeneralSettings.Language.Code = currentCulture.Name;
-                _configService.Save(_config);
+                await _configService.SaveAsync(_config);
             }
         }
 
@@ -219,7 +219,7 @@ namespace Rubberduck.Core
                     prop.CanWrite && prop.Name.Equals("Culture") && prop.PropertyType == typeof(CultureInfo) &&
                     (prop.SetMethod?.IsStatic ?? false)));
 
-            if (localizers == null)
+            if (localizers is null)
             {
                 return;
             }
@@ -231,7 +231,7 @@ namespace Rubberduck.Core
             }
         }
 
-        private void CheckForLegacyIndenterSettings()
+        private async Task CheckForLegacyIndenterSettingsAsync()
         {
             try
             {
@@ -247,7 +247,7 @@ namespace Rubberduck.Core
                     //_config.UserSettings.IndenterSettings.LoadLegacyFromRegistry();
                 }
                 _config.UserSettings.GeneralSettings.IsSmartIndenterPrompted = true;
-                _configService.Save(_config);
+                await _configService.SaveAsync(_config);
             }
             catch (Exception e)
             {
@@ -292,7 +292,7 @@ namespace Rubberduck.Core
 
             if (_configService != null)
             {
-                _configService.SettingsChanged -= _configService_SettingsChanged;
+                _configService.SettingsChanged -= HandleConfigServiceSettingsChanged;
             }
 
             UiDispatcher.Shutdown();

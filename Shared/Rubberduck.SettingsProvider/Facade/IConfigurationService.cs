@@ -1,32 +1,68 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Rubberduck.SettingsProvider
 {
     public interface IConfigurationService<T>
     {
-        T Read();
-        T ReadDefaults();
+        Task<T> ReadAsync();
+        Task<T> ReadDefaultsAsync();
 
-        void Save(T settings);
-        T Import(string fileName);
-        void Export(string fileName);
+        Task SaveAsync(T settings);
+        Task<T> ImportAsync(string fileName);
+        Task ExportAsync(string fileName);
 
         event EventHandler<ConfigurationChangedEventArgs> SettingsChanged;
     }
 
+    [Flags]
+    public enum TrackedSettingValue
+    {
+        None,
+        DisplayLanguage = 1,
+        RunInspectionOnSuccessfulParse = 2,
+        InspectionSettings = 4,
+        CompletionSettings = 8,
+    }
+
     public class ConfigurationChangedEventArgs : EventArgs
     {
-        public bool LanguageChanged { get; }
-        public bool InspectionSettingsChanged { get; }
-        public bool RunInspectionsOnReparse { get; }
-        public bool AutoCompleteSettingsChanged { get; }
+        public TrackedSettingValue ChangedSettings { get; }
+        public bool LanguageChanged => ChangedSettings.HasFlag(TrackedSettingValue.DisplayLanguage);
+        public bool InspectionSettingsChanged => ChangedSettings.HasFlag(TrackedSettingValue.InspectionSettings);
+        public bool RunInspectionsOnReparse => ChangedSettings.HasFlag(TrackedSettingValue.RunInspectionOnSuccessfulParse);
+        public bool AutoCompleteSettingsChanged => ChangedSettings.HasFlag(TrackedSettingValue.CompletionSettings);
+
+        public ConfigurationChangedEventArgs(TrackedSettingValue changedSettings = TrackedSettingValue.None)
+        {
+            ChangedSettings = changedSettings;
+        }
 
         public ConfigurationChangedEventArgs(bool runInspections, bool languageChanged, bool inspectionSettingsChanged, bool autoCompleteSettingsChanged)
         {
-            AutoCompleteSettingsChanged = autoCompleteSettingsChanged;
-            RunInspectionsOnReparse = runInspections;
-            LanguageChanged = languageChanged;
-            InspectionSettingsChanged = inspectionSettingsChanged;
+            var changedSettings = TrackedSettingValue.None;
+
+            if (runInspections)
+            {
+                changedSettings |= TrackedSettingValue.RunInspectionOnSuccessfulParse;
+            }
+
+            if (languageChanged)
+            {
+                changedSettings |= TrackedSettingValue.DisplayLanguage;
+            }
+
+            if (inspectionSettingsChanged)
+            {
+                changedSettings |= TrackedSettingValue.InspectionSettings;
+            }
+
+            if (autoCompleteSettingsChanged)
+            {
+                changedSettings |= TrackedSettingValue.CompletionSettings;
+            }
+
+            ChangedSettings = changedSettings;
         }
     }
 }

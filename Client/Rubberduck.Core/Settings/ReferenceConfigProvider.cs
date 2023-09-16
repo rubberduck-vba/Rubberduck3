@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO.Abstractions;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Rubberduck.Resources.Registration;
 using Rubberduck.SettingsProvider;
@@ -21,7 +22,7 @@ namespace Rubberduck.Settings
         private bool _listening;
 
         public ReferenceConfigProvider(
-            IPersistenceService<ReferenceSettings> persister, 
+            IAsyncPersistenceService<ReferenceSettings> persister, 
             IEnvironmentProvider environment, 
             IVbeEvents events,
             IFileSystem filesystem)
@@ -32,20 +33,19 @@ namespace Rubberduck.Settings
             _filesystem = filesystem;
             _hostApplication = _filesystem.Path.GetFileName(Application.ExecutablePath).ToUpperInvariant();
 
-            var settings = Read();
-            _listening = settings.AddToRecentOnReferenceEvents;
-            if (_listening && _events != null)
-            {
-                _events.ProjectReferenceAdded += ReferenceAddedHandler;
-            }
+            // FIXME move IO out of ctor
+
+            //var settings = ReadAsync();
+            //_listening = settings.AddToRecentOnReferenceEvents;
+            //if (_listening && _events != null)
+            //{
+            //    _events.ProjectReferenceAdded += HandleReferenceAdded;
+            //}
         }
 
-        public override ReferenceSettings ReadDefaults()
+        public async override Task<ReferenceSettings> ReadDefaultsAsync()
         {
-            var defaults = new ReferenceSettings
-            {
-                RecentReferencesTracked = 20
-            };
+            var defaults = ReferenceSettings.Default;
 
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             defaults.PinReference(new ReferenceInfo(new Guid(RubberduckGuid.RubberduckTypeLibGuid), string.Empty, string.Empty, version.Major, version.Minor));
@@ -73,36 +73,36 @@ namespace Rubberduck.Settings
                 }
             }
 
-            return defaults;
+            return await Task.FromResult(defaults);
         }
 
-        public override void Save(ReferenceSettings settings)
+        public async override Task SaveAsync(ReferenceSettings settings)
         {
             if (_listening && _events != null && !settings.AddToRecentOnReferenceEvents)
             {
-                _events.ProjectReferenceAdded -= ReferenceAddedHandler;
+                _events.ProjectReferenceAdded -= HandleReferenceAdded;
                 _listening = false;
             }
 
             if (_listening && _events != null && !settings.AddToRecentOnReferenceEvents)
             {
-                _events.ProjectReferenceAdded += ReferenceAddedHandler;
+                _events.ProjectReferenceAdded += HandleReferenceAdded;
                 _listening = true;
             }
             OnSettingsChanged();
-            PersistValue(settings);
+            await PersistValueAsync(settings);
         }
 
-        private void ReferenceAddedHandler(object sender, ReferenceEventArgs e)
+        private async void HandleReferenceAdded(object sender, ReferenceEventArgs e)
         {
             if (e is null || e.Reference.Equals(ReferenceInfo.Empty))
             {
                 return;
             }
 
-            var settings = Read();
+            var settings = await ReadAsync();
             settings.TrackUsage(e.Reference, e.Type == ReferenceKind.Project ? _hostApplication : null);
-            Save(settings);
+            await SaveAsync(settings);
         }
 
         public void Dispose()
@@ -121,7 +121,7 @@ namespace Rubberduck.Settings
 
             if (disposing && _listening)
             {
-                _events.ProjectReferenceAdded -= ReferenceAddedHandler;
+                _events.ProjectReferenceAdded -= HandleReferenceAdded;
             }
 
             _disposed = true;

@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Core.WebApi.Model;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Core.WebApi
@@ -10,6 +11,10 @@ namespace Rubberduck.Core.WebApi
         private static readonly string FeatureEndpoint = "Feature";
         private static readonly string FeatureItemEndpoint = "FeatureItem";
         private static readonly string TagsEndpoint = "Tags";
+
+        public PublicApiClient(HttpClient client) : base(client)
+        {
+        }
 
         public async Task<IEnumerable<Tag>> GetLatestTagsAsync()
         {

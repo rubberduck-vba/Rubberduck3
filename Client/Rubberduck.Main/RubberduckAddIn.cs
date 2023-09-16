@@ -24,6 +24,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Rubberduck.ServerPlatform;
 using Rubberduck.InternalApi;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Rubberduck
 {
@@ -35,7 +36,7 @@ namespace Rubberduck
         /// <remarks>
         /// Some hosts connect VBE add-ins in different ways, more or less compliant with how IDTExtensibility2 intended it.
         /// </remarks>
-        void Initialize();
+        Task InitializeAsync();
 
         /// <summary>
         /// Shuts down the add-in. Any subsequent invocation should be no-op.
@@ -76,7 +77,7 @@ namespace Rubberduck
             _addin.Object = new VBETypeLibsAPI_Object(_vbe);
         }
 
-        public void Initialize()
+        public async Task InitializeAsync()
         {
             if (_isInitialized)
             {
@@ -105,9 +106,10 @@ namespace Rubberduck
                     .WithRubberduckEditor()
                     .WithLanguageServer()
                     .Build();
-                _serviceScope = services.CreateScope();
+                var scope = services.CreateScope();
+                _serviceScope = scope;
 
-                InitializeSettings();
+                await InitializeSettingsAsync(scope);
 
                 if (_initialSettings?.CanShowSplash ?? false)
                 {
@@ -117,7 +119,7 @@ namespace Rubberduck
                     splash = ShowSplash(splashModel);
                 }
 
-                Startup(splashModel);
+                await StartupAsync(splashModel);
             }
             catch (Win32Exception)
             {
@@ -155,12 +157,12 @@ namespace Rubberduck
             return splash;
         }
 
-        private void InitializeSettings()
+        private async Task InitializeSettingsAsync(IServiceScope scope)
         {
-            var configProvider = _serviceScope.ServiceProvider.GetService<GeneralConfigProvider>();
+            var configProvider = scope.ServiceProvider.GetRequiredService<GeneralConfigProvider>();
+            _initialSettings = await configProvider.ReadAsync();
 
-            _initialSettings = configProvider.Read();
-            if (_initialSettings != null)
+            if (_initialSettings is object)
             {
                 try
                 {
@@ -170,6 +172,7 @@ namespace Rubberduck
                 }
                 catch (CultureNotFoundException)
                 {
+                    // will load "invariant" (en-US) resources
                 }
 
                 try
@@ -190,7 +193,7 @@ namespace Rubberduck
             }
         }
 
-        private void Startup(ISplashViewModel model)
+        private async Task StartupAsync(IStatusUpdate statusViewModel)
         {
             try
             {
@@ -198,19 +201,19 @@ namespace Rubberduck
                 currentDomain.UnhandledException += HandleAppDomainException;
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
 
-                model?.UpdateStatus("Registering components...");
+                statusViewModel?.UpdateStatus("Registering components...");
 
                 //_container = new WindsorContainer().Install(new RubberduckIoCInstaller(_vbe, _addin, _initialSettings, _vbeNativeApi, _beepInterceptor));
 
-                model?.UpdateStatus("Resolving services...");
+                statusViewModel?.UpdateStatus("Resolving services...");
                 _app = _serviceScope.ServiceProvider.GetRequiredService<App>(); //_container.Resolve<App>();
 
-                model?.UpdateStatus("Starting add-in...");
-                _app.Startup();
+                statusViewModel?.UpdateStatus("Starting add-in...");
+                _app.StartupAsync();
 
-                model?.UpdateStatus("Starting language server...");
-                var server = new LanguageServerProcess();
-                server.Start(hidden: false);
+                statusViewModel?.UpdateStatus("Starting language server...");
+                var server = new LanguageServerProcess(_serviceScope.ServiceProvider);
+                var serverProcessId = await server.StartAsync(hidden: false);
 
                 _isInitialized = true;
             }
@@ -268,7 +271,7 @@ namespace Rubberduck
                 if (_app != null)
                 {
                     _logger.Trace("Initiating App.Shutdown...");
-                    _app.Shutdown();
+                    _app.ShutdownAsync().ConfigureAwait(false).GetAwaiter().GetResult();
                     _app = null;
                 }
             }

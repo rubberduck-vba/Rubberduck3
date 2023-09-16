@@ -1,82 +1,78 @@
 ﻿using Rubberduck.Settings;
 using System;
+using System.Threading.Tasks;
 
 namespace Rubberduck.SettingsProvider
 {
     public class ConfigurationServiceBase<T> : IConfigurationService<T>
         where T : class, new()
     {
-        private readonly IPersistenceService<T> _persister;
+        private readonly IAsyncPersistenceService<T> _persister;
         protected readonly IDefaultSettings<T> Defaults;
 
         private readonly object valueLock = new object();
         protected T CurrentValue;
 
-        public ConfigurationServiceBase(IPersistenceService<T> persister, IDefaultSettings<T> defaultSettings)
+        public ConfigurationServiceBase(IAsyncPersistenceService<T> persister, IDefaultSettings<T> defaultSettings)
         {
             _persister = persister;
             Defaults = defaultSettings;
         }
 
-        protected void OnSettingsChanged()
+        protected void OnSettingsChanged(TrackedSettingValue trackedSettings = TrackedSettingValue.None)
         {
-            var eventArgs = new ConfigurationChangedEventArgs(false, false, false, false);
+            var eventArgs = new ConfigurationChangedEventArgs(trackedSettings);
             SettingsChanged?.Invoke(this, eventArgs);
         }
 
         public event EventHandler<ConfigurationChangedEventArgs> SettingsChanged;
 
-        protected T LoadCacheValue()
+        protected async Task<T> LoadCacheValueAsync()
         {
-            lock(valueLock)
+            var fromStorage = await _persister.LoadAsync();
+            if (CurrentValue is null)
             {
-                if (CurrentValue == null)
-                {
-                    T defaults = ReadDefaults();
-                    T newValue = _persister.Load() ?? defaults;
-                    CurrentValue = newValue;
-                }
-                return CurrentValue;
+                T defaults = await ReadDefaultsAsync();
+                T newValue = fromStorage ?? defaults;
+                CurrentValue = newValue;
             }
+            return CurrentValue;
         }
 
-        public virtual T Read()
+        public virtual async Task<T> ReadAsync()
         {
-            return LoadCacheValue();
+            return await LoadCacheValueAsync();
         }
 
-        public virtual T ReadDefaults()
+        public async virtual Task<T> ReadDefaultsAsync()
         {
-            return Defaults?.Default;
+            return await Task.FromResult(Defaults?.Default);
         }
 
-        protected void PersistValue(T settings)
+        protected async Task PersistValueAsync(T settings)
         {
-            lock (valueLock)
-            {
-                // purge current value
-                CurrentValue = null;
-                _persister.Save(settings);
-            }
+            // purge current value
+            CurrentValue = null;
+            await _persister.SaveAsync(settings);
         }
 
-        public virtual void Save(T settings)
+        public async virtual Task SaveAsync(T settings)
         {
-            PersistValue(settings);
+            await PersistValueAsync(settings);
             OnSettingsChanged();
         }
 
-        public virtual T Import(string path)
+        public async virtual Task<T> ImportAsync(string path)
         {
-            T loaded = _persister.Load(path);
-            Save(loaded);
-            return Read();
+            T loaded = await _persister.LoadAsync(path);
+            await SaveAsync(loaded);
+            return await ReadAsync();
         }
 
-        public virtual void Export(string path)
+        public async virtual Task ExportAsync(string path)
         {
-            T current = Read();
-            _persister.Save(current, path);
+            T current = await ReadAsync();
+            await _persister.SaveAsync(current, path);
         }
     }
 }

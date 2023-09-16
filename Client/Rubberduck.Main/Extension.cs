@@ -38,7 +38,7 @@ namespace Rubberduck
                         // normal execution path - don't initialize just yet, wait for OnStartupComplete to be called by the host.
                         break;
                     case ext_ConnectMode.ext_cm_AfterStartup:
-                        _rubberduck.Initialize();
+                        _rubberduck.InitializeAsync().ConfigureAwait(false).GetAwaiter().GetResult();
                         break;
                 }
             }
@@ -50,7 +50,7 @@ namespace Rubberduck
 
         public void OnStartupComplete(ref Array custom)
         {
-            _rubberduck.Initialize();
+            _rubberduck.InitializeAsync().ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         public void OnBeginShutdown(ref Array custom)

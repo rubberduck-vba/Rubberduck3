@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using NLog;
 
 namespace Rubberduck.UI.Command
@@ -24,9 +25,9 @@ namespace Rubberduck.UI.Command
             return _canExecute == null || _canExecute.Invoke(parameter);
         }
 
-        protected override void OnExecute(object parameter)
+        protected async override Task OnExecuteAsync(object parameter)
         {
-            _execute.Invoke(parameter);
+            await Task.Run(() => _execute.Invoke(parameter));
         }
     }
 }

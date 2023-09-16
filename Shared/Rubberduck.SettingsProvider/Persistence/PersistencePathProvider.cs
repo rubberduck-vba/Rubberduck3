@@ -15,9 +15,7 @@ namespace Rubberduck.SettingsProvider
         // Disallow instancing of the class except via static method
         private PersistencePathProvider() { }
 
-        public string DataRootPath => Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "Rubberduck");
+        public string DataRootPath { get; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck");
 
         public string DataFolderPath(string folderName)
         {

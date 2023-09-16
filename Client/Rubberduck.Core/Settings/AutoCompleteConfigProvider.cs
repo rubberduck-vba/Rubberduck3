@@ -4,7 +4,7 @@ namespace Rubberduck.Settings
 {
     public class AutoCompleteConfigProvider : ConfigurationServiceBase<AutoCompleteSettings>
     {
-        public AutoCompleteConfigProvider(IPersistenceService<AutoCompleteSettings> persister)
+        public AutoCompleteConfigProvider(IAsyncPersistenceService<AutoCompleteSettings> persister)
             : base(persister, null /*new DefaultSettings<AutoCompleteSettings, Properties.Settings>()*/) { }
     }
 }

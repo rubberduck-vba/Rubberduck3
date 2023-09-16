@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.SettingsProvider
+﻿using System.Threading.Tasks;
+
+namespace Rubberduck.SettingsProvider
 {
     /// <summary>
     /// An interface exposing persistent storage for a serializable type.
@@ -21,5 +23,15 @@
     {
         void Save(T settings, string path = null);
         T Load(string path = null);
+    }
+
+    public interface IAsyncPersistenceService<T> : IPersistenceService<T>
+        where T : new()
+    {
+        Task SaveAsync(T settings);
+        Task<T> LoadAsync();
+
+        Task SaveAsync(T settings, string path);
+        Task<T> LoadAsync(string path);
     }
 }

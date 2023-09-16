@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Settings
@@ -7,18 +8,18 @@ namespace Rubberduck.Settings
     {
         private readonly IEnumerable<HotkeySetting> _defaultHotkeys;
 
-        public HotkeyConfigProvider(IPersistenceService<HotkeySettings> persister)
+        public HotkeyConfigProvider(IAsyncPersistenceService<HotkeySettings> persister)
             : base(persister, null /*new DefaultSettings<HotkeySettings, Properties.Settings>()*/)
         {
             //_defaultHotkeys = new DefaultSettings<HotkeySetting, Properties.Settings>().Defaults;
         }
 
-        public override HotkeySettings Read()
+        public async override Task<HotkeySettings> ReadAsync()
         {
             var prototype = new HotkeySettings(_defaultHotkeys);
 
             // Loaded settings don't contain defaults, so we need to use the `Settings` property to combine user settings with defaults.
-            var loaded = LoadCacheValue();
+            var loaded = await LoadCacheValueAsync();
             if (loaded != null)
             {
                 prototype.Settings = loaded.Settings;
@@ -27,9 +28,9 @@ namespace Rubberduck.Settings
             return prototype;
         }
 
-        public override HotkeySettings ReadDefaults()
+        public async override Task<HotkeySettings> ReadDefaultsAsync()
         {
-            return new HotkeySettings(_defaultHotkeys);
+            return await Task.FromResult(new HotkeySettings(_defaultHotkeys));
         }
     }
 }

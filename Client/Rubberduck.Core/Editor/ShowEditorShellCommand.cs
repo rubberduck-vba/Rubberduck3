@@ -1,6 +1,7 @@
 ﻿using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.UI.OfficeMenus;
+using System.Threading.Tasks;
 
 namespace Rubberduck.Core.Editor
 {
@@ -14,9 +15,10 @@ namespace Rubberduck.Core.Editor
             _presenter = presenter;
         }
 
-        protected override void OnExecute(object parameter)
+        protected async override Task OnExecuteAsync(object parameter)
         {
             _presenter?.Show();
+            await Task.CompletedTask;
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Rubberduck.SettingsProvider
         {
             var doc = GetConfigurationDoc(path);
             var node = GetNodeByName(doc, typeof(T).Name);
-            if (node == null)
+            if (node is null)
             {
                 return default;
             }
@@ -44,7 +44,6 @@ namespace Rubberduck.SettingsProvider
             }
         }
 
-        //This is fine. StreamWriter disposes the MemoryStream, but calling twice is a NOP.
         protected override void Write(T toSerialize, string path)
         {
             var doc = GetConfigurationDoc(path);
@@ -56,7 +55,7 @@ namespace Rubberduck.SettingsProvider
                 serializer.Serialize(writer, toSerialize, EmptyNamespace);
                 var settings = XElement.Parse(OutputEncoding.GetString(stream.ToArray()), LoadOptions.SetBaseUri);
 
-                if (node != null)
+                if (node is object)
                 {
                     node.ReplaceWith(settings);
                 }

@@ -4,6 +4,7 @@ using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
 using Rubberduck.Settings;
 using Rubberduck.Interaction.MessageBox;
+using System.Threading.Tasks;
 
 namespace Rubberduck.UI.Command
 {
@@ -22,10 +23,11 @@ namespace Rubberduck.UI.Command
             _config = config;
         }
 
-        protected override async void OnExecute(object parameter)
+        protected override async Task OnExecuteAsync(object parameter)
         {
-            var settings = _config.Read().UserSettings.GeneralSettings;
+            var settings = (await _config.ReadAsync()).UserSettings.GeneralSettings;
             Logger.Info("Executing version check...");
+
             await _versionCheck
                 .GetLatestVersionAsync(settings)
                 .ContinueWith(t =>

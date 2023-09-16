@@ -5,6 +5,7 @@ using Rubberduck.UI.WinForms.Dialogs;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 using Rubberduck.VersionCheck;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace Rubberduck.Core.About
 {
@@ -25,13 +26,14 @@ namespace Rubberduck.Core.About
         private readonly IWebNavigator _web;
         private readonly IMessageBox _messageBox;
 
-        protected override void OnExecute(object parameter)
+        protected async override Task OnExecuteAsync(object parameter)
         {
             var vm = new AboutControlViewModel(_versionService, _web, _messageBox);
             using (var window = new AboutDialog(vm))
             {
                 window.ShowDialog();
             }
+            await Task.CompletedTask;
         }
     }
 }

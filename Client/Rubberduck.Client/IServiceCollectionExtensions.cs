@@ -53,7 +53,7 @@ namespace Rubberduck.Client
                            .WithContentModifiedSupport(true)
                            .WithWorkspaceFolder(workspace)
                            .WithClientCapabilities(capabilities)
-                           .WithInitializationOptions(new { /* TODO add host app info */ })
+                           .WithInitializationOptions(client)
                            .EnableProgressTokens()
                            .EnableWorkspaceFolders()
                     ;

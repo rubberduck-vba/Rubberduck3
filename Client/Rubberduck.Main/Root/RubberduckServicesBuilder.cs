@@ -36,6 +36,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
+using System.Net.Http;
 using System.Reflection;
 
 namespace Rubberduck.Root
@@ -60,8 +61,8 @@ namespace Rubberduck.Root
             where TCommandInterface : class, IMenuCommand
             where TCommandImpl : class, TCommandInterface
         {
-            _services.AddTransient<TMenuItem>();
-            _services.AddSingleton<TCommandInterface, TCommandImpl>();
+            _services.AddScoped<TMenuItem>();
+            _services.AddScoped<TCommandInterface, TCommandImpl>();
 
             return this;
         }
@@ -74,21 +75,21 @@ namespace Rubberduck.Root
         public IServiceProvider Build() => _services.BuildServiceProvider();
         public RubberduckServicesBuilder WithAddIn(IVBE vbe, IAddIn addin)
         {
-            _services.AddSingleton<IVBE>(vbe);
-            _services.AddSingleton<IAddIn>(addin);
-            _services.AddSingleton<ICommandBars>(new CommandBarsNonDisposingDecorator<ICommandBars>(vbe.CommandBars));
-            
+            _services.AddScoped<IVBE>(provider => vbe);
+            _services.AddScoped<IAddIn>(provider => addin);
+            _services.AddScoped<ICommandBars>(provider => new CommandBarsNonDisposingDecorator<ICommandBars>(vbe.CommandBars));
+
             var repository = new ProjectsRepository(vbe);
-            _services.AddSingleton<IProjectsProvider>(repository);
-            //_services.AddSingleton<IProjectsRepository>(repository);
+            _services.AddScoped<IProjectsProvider>(provider => repository);
+            //_services.AddScoped<IProjectsRepository>(repository);
 
             return this;
         }
 
         public RubberduckServicesBuilder WithApplication()
         {
-            _services.AddSingleton<App>();
-            _services.AddSingleton<IConfigurationService<Configuration>, ConfigurationLoader>();
+            _services.AddScoped<App>();
+            _services.AddScoped<IConfigurationService<Configuration>, ConfigurationLoader>();
             return this;
         }
 
@@ -351,56 +352,56 @@ namespace Rubberduck.Root
 
         public RubberduckServicesBuilder WithMsoCommandBarMenu()
         {
-            _services.AddTransient<IAppMenu, RubberduckParentMenu>();
+            _services.AddScoped<IAppMenu, RubberduckParentMenu>();
 
             return this;
         }
 
         public RubberduckServicesBuilder WithRubberduckEditor()
         {
-            _services.AddSingleton<IDockablePresenter, EditorShellDockablePresenter>();
-            _services.AddSingleton<IEditorShellWindowProvider, EditorShellWindowProvider>();
+            _services.AddScoped<IDockablePresenter, EditorShellDockablePresenter>();
+            _services.AddScoped<IEditorShellWindowProvider, EditorShellWindowProvider>();
 
-            _services.AddSingleton<IEditorShellViewModel, EditorShellViewModel>();
-            _services.AddSingleton<IShellToolTabProvider, ShellToolTabProvider>();
-            _services.AddSingleton<IStatusBarViewModel, StatusBarViewModel>();
+            _services.AddScoped<IEditorShellViewModel, EditorShellViewModel>();
+            _services.AddScoped<IShellToolTabProvider, ShellToolTabProvider>();
+            _services.AddScoped<IStatusBarViewModel, StatusBarViewModel>();
 
-            _services.AddSingleton<ISyncPanelToolTab, SyncPanelToolTab>();
-            _services.AddSingleton<ISyncPanelViewModel, SyncPanelViewModel>();
-            _services.AddSingleton<ISyncPanelModuleViewModelProvider, SyncPanelModuleViewModelProvider>();
+            _services.AddScoped<ISyncPanelToolTab, SyncPanelToolTab>();
+            _services.AddScoped<ISyncPanelViewModel, SyncPanelViewModel>();
+            _services.AddScoped<ISyncPanelModuleViewModelProvider, SyncPanelModuleViewModelProvider>();
 
             return this;
         }
 
         public RubberduckServicesBuilder WithAssemblyInfo()
         {
-            _services.AddSingleton<Version>(_ => Assembly.GetExecutingAssembly().GetName().Version);
-            _services.AddSingleton<IOperatingSystem, WindowsOperatingSystem>();
+            _services.AddScoped<Version>(_ => Assembly.GetExecutingAssembly().GetName().Version);
+            _services.AddScoped<IOperatingSystem, WindowsOperatingSystem>();
 
             return this;
         }
 
         public RubberduckServicesBuilder WithParser()
         {
-            //_services.AddSingleton<ICommonTokenStreamProvider<TextReader>, TextReaderTokenStreamProvider>();
+            //_services.AddScoped<ICommonTokenStreamProvider<TextReader>, TextReaderTokenStreamProvider>();
 
             return this;
         }
 
         public RubberduckServicesBuilder WithFileSystem(IVBE vbe)
         {
-            _services.AddSingleton<IFileSystem, FileSystem>();
-            _services.AddSingleton<ITempSourceFileHandler>(vbe.TempSourceFileHandler);
-            _services.AddSingleton<IPersistencePathProvider>(PersistencePathProvider.Instance);
+            _services.AddScoped<IFileSystem, FileSystem>();
+            _services.AddScoped<ITempSourceFileHandler>(provider => vbe.TempSourceFileHandler);
+            _services.AddScoped<IPersistencePathProvider>(provider => PersistencePathProvider.Instance);
 
             return this;
         }
 
         public RubberduckServicesBuilder WithSettingsProvider()
         {
-            _services.AddSingleton<GeneralConfigProvider>();
-            _services.AddSingleton<IConfigurationService<GeneralSettings>, GeneralConfigProvider>();
-            _services.AddSingleton<IPersistenceService<GeneralSettings>, XmlPersistenceService<GeneralSettings>>();
+            _services.AddScoped<GeneralConfigProvider>();
+            _services.AddScoped<IConfigurationService<GeneralSettings>, GeneralConfigProvider>();
+            _services.AddScoped<IPersistenceService<GeneralSettings>, XmlPersistenceService<GeneralSettings>>();
 
             // TODO refactor settings / simplify abstractions
 
@@ -410,38 +411,39 @@ namespace Rubberduck.Root
         public RubberduckServicesBuilder WithNativeServices(IVBE vbe)
         {
             var nativeApi = new VbeNativeApiAccessor();
-            _services.AddSingleton<IVbeNativeApi>(nativeApi);
-            _services.AddSingleton<IBeepInterceptor>(new BeepInterceptor(nativeApi));
-            _services.AddSingleton<IVbeEvents>(VbeEvents.Initialize(vbe));
-            _services.AddSingleton<IVBETypeLibsAPI, VBETypeLibsAPI>();
+            _services.AddScoped<IVbeNativeApi>(provider => nativeApi);
+            _services.AddScoped<IBeepInterceptor>(provider => new BeepInterceptor(nativeApi));
+            _services.AddScoped<IVbeEvents>(provider => VbeEvents.Initialize(vbe));
+            _services.AddScoped<IVBETypeLibsAPI, VBETypeLibsAPI>();
 
-            _services.AddSingleton<IUiDispatcher, UiDispatcher>();
-            _services.AddSingleton<IUiContextProvider>(UiContextProvider.Instance());
+            _services.AddScoped<IUiDispatcher, UiDispatcher>();
+            _services.AddScoped<IUiContextProvider>(provider => UiContextProvider.Instance());
 
-            _services.AddSingleton<IRubberduckHooks, RubberduckHooks>();
-            _services.AddSingleton<HotkeyFactory>();
+            _services.AddScoped<IRubberduckHooks, RubberduckHooks>();
+            _services.AddScoped<HotkeyFactory>();
 
             return this;
         }
 
         public RubberduckServicesBuilder WithVersionCheck()
         {
-            _services.AddSingleton<VersionCheckCommand>();
-            _services.AddSingleton<IPublicApiClient, PublicApiClient>();
-            _services.AddSingleton<IVersionCheckService>(provider => new VersionCheckService(provider.GetRequiredService<IPublicApiClient>(), Assembly.GetExecutingAssembly().GetName().Version));
+            _services.AddScoped<VersionCheckCommand>();
+            _services.AddScoped<HttpClient>();
+            _services.AddScoped<IPublicApiClient, PublicApiClient>();
+            _services.AddScoped<IVersionCheckService>(provider => new VersionCheckService(provider.GetRequiredService<IPublicApiClient>(), Assembly.GetExecutingAssembly().GetName().Version));
 
             return this;
         }
 
         public RubberduckServicesBuilder WithCommands()
         {
-            _services.AddSingleton<IShowEditorShellCommand, ShowEditorShellCommand>();
-            _services.AddSingleton<ShowEditorShellCommandMenuItem>();
+            _services.AddScoped<IShowEditorShellCommand, ShowEditorShellCommand>();
+            _services.AddScoped<ShowEditorShellCommandMenuItem>();
 
-            _services.AddSingleton<IAboutCommand, AboutCommand>();
-            _services.AddSingleton<AboutCommandMenuItem>();
-            _services.AddSingleton<IWebNavigator, WebNavigator>();
-            _services.AddSingleton<IMessageBox, FormsMessageBox>(); // TODO implement a WpfMessageBox
+            _services.AddScoped<IAboutCommand, AboutCommand>();
+            _services.AddScoped<AboutCommandMenuItem>();
+            _services.AddScoped<IWebNavigator, WebNavigator>();
+            _services.AddScoped<IMessageBox, FormsMessageBox>(); // TODO implement a WpfMessageBox
 
             return this;
         }

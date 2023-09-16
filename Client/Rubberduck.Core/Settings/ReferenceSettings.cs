@@ -52,6 +52,8 @@ namespace Rubberduck.Settings
             _pinned = new List<HostPins>(PinnedProjectReferences.Select(recent => new HostPins(recent.Key, recent.Value)));
         }
 
+        public static ReferenceSettings Default { get; } = new ReferenceSettings { RecentReferencesTracked = 20 };
+
         public ReferenceSettings() { }
 
         public ReferenceSettings(ReferenceSettings other)

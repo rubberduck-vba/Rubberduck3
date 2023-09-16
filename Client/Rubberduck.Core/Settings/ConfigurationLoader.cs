@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Rubberduck.SettingsProvider;
 //using Rubberduck.SmartIndenter;
 //using Rubberduck.UnitTesting.Settings;
@@ -6,7 +7,6 @@ using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Settings
 {
-
     public class ConfigurationLoader : IConfigurationService<Configuration>
     {
         private readonly IConfigurationService<GeneralSettings> _generalProvider;
@@ -42,29 +42,43 @@ namespace Rubberduck.Settings
         /// Loads the configuration from Rubberduck.config xml file.
         /// </summary>
         // marked virtual for Mocking
-        public virtual Configuration Read()
+        public async virtual Task<Configuration> ReadAsync()
         {
+            var readerTasks = new[]
+            {
+                _generalProvider.ReadAsync(),
+                //...
+            };
+            await Task.WhenAll(readerTasks);
+
             var config = new Configuration
             {
                 UserSettings = new UserSettings
                 (
-                    _generalProvider.Read(),
+                    readerTasks[0].Result,
                     null, //_hotkeyProvider.Read(),
                     null, //_autoCompleteProvider.Read(),
                     null, //_todoProvider.Read(),
                     null  //_windowProvider.Read()
                 )
-            };            
+            };
             return config;
         }
 
-        public Configuration ReadDefaults()
+        public async Task<Configuration> ReadDefaultsAsync()
         {
+            var readerTasks = new[]
+            {
+                _generalProvider.ReadDefaultsAsync(),
+                //...
+            };
+            await Task.WhenAll(readerTasks);
+
             return new Configuration
             {
                 UserSettings = new UserSettings
                 (
-                    _generalProvider.ReadDefaults(),
+                    readerTasks[0].Result,
                     null, //_hotkeyProvider.ReadDefaults(),
                     null, //_autoCompleteProvider.ReadDefaults(),
                     null, //_todoProvider.ReadDefaults(),
@@ -73,9 +87,10 @@ namespace Rubberduck.Settings
             };
         }
         
-        public void Save(Configuration toSerialize)
+        public async Task SaveAsync(Configuration toSerialize)
         {
-            var langChanged = _generalProvider.Read().Language.Code != toSerialize.UserSettings.GeneralSettings.Language.Code;
+            var generalSettings = await _generalProvider.ReadAsync();
+            var langChanged = generalSettings.Language.Code != toSerialize.UserSettings.GeneralSettings.Language.Code;
             //var oldInspectionSettings = _inspectionProvider.Read().CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
             //var newInspectionSettings = toSerialize.UserSettings.CodeInspectionSettings.CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
             //var inspectionsChanged = !oldInspectionSettings.SequenceEqual(newInspectionSettings);
@@ -85,7 +100,7 @@ namespace Rubberduck.Settings
             //var newAutoCompleteSettings = toSerialize.UserSettings.AutoCompleteSettings;
             //var autoCompletesChanged = oldAutoCompleteSettings?.Equals(newAutoCompleteSettings) ?? false;
 
-            _generalProvider.Save(toSerialize.UserSettings.GeneralSettings);
+            await _generalProvider.SaveAsync(toSerialize.UserSettings.GeneralSettings);
             //_hotkeyProvider.Save(toSerialize.UserSettings.HotkeySettings);
             //_autoCompleteProvider.Save(toSerialize.UserSettings.AutoCompleteSettings);
             //_todoProvider.Save(toSerialize.UserSettings.ToDoListSettings);
@@ -103,13 +118,20 @@ namespace Rubberduck.Settings
             SettingsChanged?.Invoke(this, e);
         }
 
-        public Configuration Import(string fileName)
+        public async Task<Configuration> ImportAsync(string fileName)
         {
+            var importTasks = new[]
+            {
+                _generalProvider.ImportAsync(fileName),
+                //...
+            };
+            await Task.WhenAll(importTasks);
+
             return new Configuration
             {
                 UserSettings = new UserSettings
                 (
-                    _generalProvider.Import(fileName),
+                    importTasks[0].Result,
                     null, //_hotkeyProvider.Import(fileName),
                     null, //_autoCompleteProvider.Import(fileName),
                     null, //_todoProvider.Import(fileName),
@@ -118,9 +140,14 @@ namespace Rubberduck.Settings
             };
         }
 
-        public void Export(string fileName)
+        public async Task ExportAsync(string fileName)
         {
-            _generalProvider.Export(fileName);
+            var exportTasks = new[]
+            {
+                _generalProvider.ExportAsync(fileName),
+                //...
+            };
+            await Task.WhenAll(exportTasks);
             //_hotkeyProvider.Export(fileName);
             //_autoCompleteProvider.Export(fileName);
             //_todoProvider.Export(fileName);

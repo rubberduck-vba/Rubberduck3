@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Core.Editor.Commands
+﻿using System.Threading.Tasks;
+
+namespace Rubberduck.Core.Editor.Commands
 {
     /// <summary>
     /// A command that notifies the language server about a code edit.
@@ -16,9 +18,9 @@
 
         //}
 
-        protected sealed override void OnExecute(object parameter)
+        protected sealed async override Task OnExecuteAsync(object parameter)
         {
-            base.OnExecute(parameter);
+            await base.OnExecuteAsync(parameter);
         }
     }
 }

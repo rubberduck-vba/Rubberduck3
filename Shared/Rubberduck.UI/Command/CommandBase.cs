@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using NLog;
 using Rubberduck.InternalApi.Common;
@@ -22,7 +23,7 @@ namespace Rubberduck.UI.Command
         }
 
         protected ILogger Logger { get; }
-        protected abstract void OnExecute(object parameter);
+        protected abstract Task OnExecuteAsync(object parameter);
 
         protected Func<object, bool> CanExecuteCondition { get; private set; }
         protected Func<object, bool> OnExecuteCondition { get; private set; }
@@ -89,7 +90,7 @@ namespace Rubberduck.UI.Command
                         return;
                     }
 
-                    OnExecute(parameter);
+                    OnExecuteAsync(parameter).ConfigureAwait(false).GetAwaiter().GetResult();
                 });
                 Logger.Trace($"{GetType().Name}.Execute completed in {elapsed.TotalMilliseconds}ms.");
             }
