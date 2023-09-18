@@ -48,11 +48,11 @@ namespace Rubberduck.LanguageServer
             var services = new ServiceCollection();
             var provider = new DefaultServiceProviderFactory().CreateServiceProvider(services);
 
-            var server = OmniSharpLanguageServer.PreInit(ConfigureLanguageServer);
+            var server = OmniSharpLanguageServer.PreInit(options => ConfigureLanguageServer(options, tokenSource));
             await server.WaitForExit;
         }
 
-        private static void ConfigureLanguageServer(LanguageServerOptions options)
+        private static void ConfigureLanguageServer(LanguageServerOptions options, CancellationTokenSource tokenSource)
         {
             // example LSP server: https://github.com/OmniSharp/csharp-language-server-protocol/blob/master/sample/SampleServer/Program.cs
 
@@ -156,6 +156,7 @@ namespace Rubberduck.LanguageServer
                     var pipe = new NamedPipeServerStream(pipeOptions.PipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte);
                     options.WithInput(pipe.UsePipeReader())
                            .WithOutput(pipe.UsePipeWriter());
+                    pipe.WaitForConnection();
                     break;
 
                 default:

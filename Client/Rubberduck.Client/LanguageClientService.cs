@@ -77,7 +77,7 @@ namespace Rubberduck.Client
             switch (transport)
             {
                 case TransportType.Pipe:
-                    var pipe = new NamedPipeClientStream(".", string.IsNullOrWhiteSpace(pipeName) ? $"{pipeName}__{clientProcessId}" : pipeName, PipeDirection.InOut);
+                    var pipe = new NamedPipeClientStream(".", string.IsNullOrWhiteSpace(pipeName) ? $"Rubberduck.LSP.Pipe__{clientProcessId}" : pipeName, PipeDirection.InOut);
                     pipe.Connect(Convert.ToInt32(TimeSpan.FromSeconds(10).TotalMilliseconds));
                     options.WithInput(pipe.UsePipeReader());
                     options.WithOutput(pipe.UsePipeWriter());
