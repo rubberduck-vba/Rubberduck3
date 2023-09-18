@@ -105,6 +105,10 @@ namespace Rubberduck.LanguageServer
                    .WithHandler<DidDeleteFileHandler>()
                    .WithHandler<DidRenameFileHandler>()
                    .WithHandler<ExecuteCommandHandler>()
+                   .WithHandler<SymbolInformationHandler>()
+                   .WithHandler<WorkspaceDiagnosticHandler>()
+                   .WithHandler<WorkspaceSymbolResolveHandler>()
+                   .WithHandler<WorkspaceSymbolsHandler>()
 
                    // TextDocument
                    .WithHandler<CallHierarchyHandler>()
