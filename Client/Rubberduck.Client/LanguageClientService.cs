@@ -24,10 +24,32 @@ namespace Rubberduck.Client
 {
     public class LanguageClientService
     {
-        public Process StartServerProcess(int clientProcessId, TransportType transport)
+        public Process StartServerProcess(TransportType transport, bool verbose, int clientProcessId = default, string pipeName = default)
         {
             var server = new LanguageServerProcess();
-            return server.Start(args: $"--transport {transport} --client {clientProcessId}");
+            var args = string.Empty;
+            switch (transport)
+            {
+                case TransportType.StdIO:
+                    args = $"StdIO";
+                    break;
+                case TransportType.Pipe:
+                    args = $"Pipe --client {clientProcessId}";
+                    if (!string.IsNullOrWhiteSpace(pipeName))
+                    {
+                        args += $" --name \"{pipeName}\"";
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            if (verbose)
+            {
+                args += " --verbose";
+            }
+
+            return server.Start(hidden: true, args);
         }
 
         public async Task StartLanguageClientAsync(IServiceProvider provider, CancellationToken token)
@@ -36,15 +58,15 @@ namespace Rubberduck.Client
             await client.Initialize(token);
         }
 
-        public void Configure(Assembly clientAssembly, Process serverProcess, IServiceCollection services)
+        public void Configure(Assembly clientAssembly, Process serverProcess, IServiceCollection services, TransportType transport)
         {
             //var info = clientAssembly.ToClientInfo();
             //services.AddLanguageClient(info.Name, options => ConfigureLanguageClient(options, services, serverProcess, clientAssembly));
-            services.AddSingleton<ILanguageClient>(provider => LanguageClient.Create(options => ConfigureLanguageClient(options, services, serverProcess, clientAssembly)))
+            services.AddSingleton<ILanguageClient>(provider => LanguageClient.Create(options => ConfigureLanguageClient(options, services, serverProcess, clientAssembly, transport)))
                 ;
         }
 
-        private void ConfigureLanguageClient(LanguageClientOptions options, IServiceCollection services, Process serverProcess, Assembly clientAssembly)
+        private void ConfigureLanguageClient(LanguageClientOptions options, IServiceCollection services, Process serverProcess, Assembly clientAssembly, TransportType transport, string pipeName = default)
         {
             var info = clientAssembly.ToClientInfo();
             var workspace = new DirectoryInfo(clientAssembly.Location).ToWorkspaceFolder();
@@ -52,17 +74,27 @@ namespace Rubberduck.Client
             var traceLevel = InitializeTrace.Verbose;
 
             var clientProcessId = Process.GetCurrentProcess().Id;
-            var pipe = new NamedPipeClientStream(".", $"Rubberduck.LSP.Pipe#{clientProcessId}", PipeDirection.InOut);
-            pipe.Connect(Convert.ToInt32(TimeSpan.FromSeconds(10).TotalMilliseconds));
+            switch (transport)
+            {
+                case TransportType.Pipe:
+                    var pipe = new NamedPipeClientStream(".", string.IsNullOrWhiteSpace(pipeName) ? $"{pipeName}__{clientProcessId}" : pipeName, PipeDirection.InOut);
+                    pipe.Connect(Convert.ToInt32(TimeSpan.FromSeconds(10).TotalMilliseconds));
+                    options.WithInput(pipe.UsePipeReader());
+                    options.WithOutput(pipe.UsePipeWriter());
+                    break;
+                case TransportType.StdIO:
+                    options.WithInput(serverProcess.StandardOutput.BaseStream);
+                    options.WithOutput(serverProcess.StandardInput.BaseStream);
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
 
             options.Services = services;
             options
                 .WithClientInfo(info)
                 .WithClientCapabilities(clientCapabilities)
-                .WithRootUri(workspace.Uri)
                 .WithWorkspaceFolder(workspace)
-                .WithInput(pipe.UsePipeReader())
-                .WithOutput(pipe.UsePipeWriter())
                 .WithContentModifiedSupport(true)
                 .WithTrace(traceLevel)
                 .OnLogMessage((param, token) =>
@@ -184,9 +216,6 @@ namespace Rubberduck.Client
                             DidCreate = supported,
                             DidDelete = supported,
                             DidRename = supported,
-                            WillCreate = supported,
-                            WillDelete = supported,
-                            WillRename = supported
                         }
                     },
                     WorkspaceEdit = new Supports<WorkspaceEditCapability>
@@ -381,7 +410,5 @@ namespace Rubberduck.Client
 
             return capabilities;
         }
-
-        
     }
 }

@@ -100,8 +100,8 @@ namespace Rubberduck.Root
 
         public RubberduckServicesBuilder WithLanguageClient(TransportType transport)
         {
-            var serverProcess = _client.StartServerProcess(Process.GetCurrentProcess().Id, transport);
-            _client.Configure(GetType().Assembly, serverProcess, _services);
+            var serverProcess = _client.StartServerProcess(transport, verbose: true, clientProcessId: Process.GetCurrentProcess().Id);
+            _client.Configure(GetType().Assembly, serverProcess, _services, transport);
             return this;
         }
 
