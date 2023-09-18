@@ -86,11 +86,6 @@ namespace Rubberduck.Root
             return this;
         }
 
-        public async Task InitializeLanguageClientAsync(IServiceProvider provider, CancellationToken token)
-        {
-            await _client.StartLanguageClientAsync(provider, token);
-        }
-
         public RubberduckServicesBuilder WithApplication()
         {
             _services.AddScoped<App>();
@@ -101,7 +96,7 @@ namespace Rubberduck.Root
         public RubberduckServicesBuilder WithLanguageClient(TransportType transport)
         {
             var serverProcess = _client.StartServerProcess(transport, verbose: true, clientProcessId: Process.GetCurrentProcess().Id);
-            _client.Configure(GetType().Assembly, serverProcess, _services, transport);
+            _client.ConfigureAsync(GetType().Assembly, serverProcess, _services, transport).ConfigureAwait(false).GetAwaiter().GetResult();
             return this;
         }
 

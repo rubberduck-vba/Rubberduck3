@@ -106,13 +106,12 @@ namespace Rubberduck
                     .WithMsoCommandBarMenu()
                     .WithVersionCheck()
                     .WithRubberduckEditor()
-                    .WithLanguageClient(ServerPlatform.TransportType.Pipe);
+                    .WithLanguageClient(ServerPlatform.TransportType.StdIO);
 
                 var provider = builder.Build();
                 var scope = provider.CreateScope();
                 _serviceScope = scope;
 
-                await builder.InitializeLanguageClientAsync(provider, tokenSource.Token);
                 await InitializeSettingsAsync(scope);
 
                 if (_initialSettings?.CanShowSplash ?? false)

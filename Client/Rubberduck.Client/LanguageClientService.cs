@@ -52,22 +52,19 @@ namespace Rubberduck.Client
             return server.Start(hidden: true, args);
         }
 
-        public async Task StartLanguageClientAsync(IServiceProvider provider, CancellationToken token)
-        {
-            var client = provider.GetRequiredService<ILanguageClient>();
-            await client.Initialize(token);
-        }
-
-        public void Configure(Assembly clientAssembly, Process serverProcess, IServiceCollection services, TransportType transport)
+        public async Task ConfigureAsync(Assembly clientAssembly, Process serverProcess, IServiceCollection services, TransportType transport)
         {
             //var info = clientAssembly.ToClientInfo();
             //services.AddLanguageClient(info.Name, options => ConfigureLanguageClient(options, services, serverProcess, clientAssembly));
-            services.AddSingleton<ILanguageClient>(provider => LanguageClient.Create(options => ConfigureLanguageClient(options, services, serverProcess, clientAssembly, transport)))
-                ;
+            var options = ConfigureLanguageClient(services, serverProcess, clientAssembly, transport);
+            var client = await LanguageClient.From(options, services.BuildServiceProvider());
+            services.AddSingleton<ILanguageClient>(provider => client);
         }
 
-        private void ConfigureLanguageClient(LanguageClientOptions options, IServiceCollection services, Process serverProcess, Assembly clientAssembly, TransportType transport, string pipeName = default)
+        private LanguageClientOptions ConfigureLanguageClient(IServiceCollection services, Process serverProcess, Assembly clientAssembly, TransportType transport, string pipeName = default)
         {
+            var options = new LanguageClientOptions();
+
             var info = clientAssembly.ToClientInfo();
             var workspace = new DirectoryInfo(clientAssembly.Location).ToWorkspaceFolder();
             var clientCapabilities = GetClientCapabilities();
@@ -90,13 +87,30 @@ namespace Rubberduck.Client
                     throw new NotSupportedException();
             }
 
-            options.Services = services;
             options
                 .WithClientInfo(info)
                 .WithClientCapabilities(clientCapabilities)
                 .WithWorkspaceFolder(workspace)
                 .WithContentModifiedSupport(true)
                 .WithTrace(traceLevel)
+                .OnInitialize(async (client, param, token) =>
+                {
+                    // TODO
+                    Debug.WriteLine($"ACK: Initialize");
+                    await Task.CompletedTask;
+                })
+                .OnInitialized(async (client, param, response, token) =>
+                {
+                    // TODO
+                    Debug.WriteLine($"ACK: Initialized");
+                    await Task.CompletedTask;
+                })
+                .OnStarted(async (client, token) =>
+                {
+                    // TODO
+                    Debug.WriteLine($"ACK: Started");
+                    await Task.CompletedTask;
+                })
                 .OnLogMessage((param, token) =>
                 {
                     // TODO actually log these
@@ -170,6 +184,8 @@ namespace Rubberduck.Client
                     await Task.CompletedTask;
                 })
             ;
+
+            return options;
         }
 
         private ClientCapabilities GetClientCapabilities()
