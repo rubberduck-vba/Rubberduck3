@@ -55,12 +55,12 @@ namespace Rubberduck
 
         public void OnBeginShutdown(ref Array custom)
         {
-            _rubberduck.Shutdown();
+            _rubberduck.ShutdownAsync().ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)
         {
-            _rubberduck.Shutdown();
+            _rubberduck.ShutdownAsync().ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         public void OnAddInsUpdate(ref Array custom) { /* no-op / unhandled */ }

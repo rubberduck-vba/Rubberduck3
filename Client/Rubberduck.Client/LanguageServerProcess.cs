@@ -1,7 +1,5 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Client;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.InternalApi;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,16 +7,12 @@ namespace Rubberduck.ServerPlatform
 {
     public class LanguageServerProcess : ServerProcess<ILanguageClient>
     {
-        public LanguageServerProcess(IServiceProvider provider) : base(provider)
-        {
-        }
+        protected override string RelativePath => @"Server\Rubberduck.LanguageServer";
+        protected override string ExecutableFileName { get; } = ServerPlatformSettings.LanguageServerExecutable;
 
-        public override string Path { get; } = ServerPlatformSettings.LanguageServerExecutable;
-
-        protected async override Task StartAsync(ILanguageClient client)
+        protected async override Task InitializeAsync(ILanguageClient client, CancellationToken token)
         {
-            var cts = new CancellationTokenSource(10000);
-            await client.Initialize(cts.Token);
+            await client.Initialize(token);
         }
     }
 }

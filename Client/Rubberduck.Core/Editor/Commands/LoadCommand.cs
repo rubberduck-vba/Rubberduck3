@@ -20,7 +20,7 @@ namespace Rubberduck.Core.Editor.Commands
             AddToCanExecuteEvaluation(p => p != null && ((ISyncPanelModuleViewModel)p).ModuleType != ModuleType.None);
         }
 
-        private static IDictionary<ComponentType, ModuleType> _moduleTypeByComponentType = new Dictionary<ComponentType, ModuleType>
+        private static readonly IDictionary<ComponentType, ModuleType> _moduleTypeByComponentType = new Dictionary<ComponentType, ModuleType>
         {
             [ComponentType.Document] = ModuleType.DocumentModule,
             [ComponentType.StandardModule] = ModuleType.StandardModule,

@@ -10,7 +10,7 @@ namespace Rubberduck.SettingsProvider
         private readonly IAsyncPersistenceService<T> _persister;
         protected readonly IDefaultSettings<T> Defaults;
 
-        private readonly object valueLock = new object();
+        //private readonly object valueLock = new object();
         protected T CurrentValue;
 
         public ConfigurationServiceBase(IAsyncPersistenceService<T> persister, IDefaultSettings<T> defaultSettings)

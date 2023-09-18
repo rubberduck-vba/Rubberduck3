@@ -279,7 +279,7 @@ namespace Rubberduck.Settings
         }
 
         [DataContract]
-        private struct HostUsages
+        private readonly struct HostUsages
         {
             public string Host { get; }
             public List<ReferenceUsage> Usages { get; }
@@ -298,7 +298,7 @@ namespace Rubberduck.Settings
         }
 
         [DataContract]
-        private struct HostPins
+        private readonly struct HostPins
         {
             public string Host { get; }
             public List<ReferenceInfo> Pins { get; }

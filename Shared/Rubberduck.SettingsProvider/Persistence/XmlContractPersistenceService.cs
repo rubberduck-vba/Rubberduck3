@@ -28,7 +28,7 @@ namespace Rubberduck.SettingsProvider
         {
             try
             {
-                using (var stream = FileSystem.FileStream.Create(filePath, FileMode.Open, FileAccess.Read))
+                using (var stream = FileSystem.FileStream.New(filePath, FileMode.Open, FileAccess.Read))
                 using (var reader = XmlReader.Create(stream))
                 {
                     var serializer = new DataContractSerializer(typeof(T));
@@ -44,7 +44,7 @@ namespace Rubberduck.SettingsProvider
         protected override void Write(T toSerialize, string filePath)
         {
             // overwriting on write is intentional, we only expect this to be used for References settings
-            using (var stream = FileSystem.FileStream.Create(filePath, FileMode.Create, FileAccess.Write))
+            using (var stream = FileSystem.FileStream.New(filePath, FileMode.Create, FileAccess.Write))
             using (var writer = XmlWriter.Create(stream, OutputXmlSettings))
             {
                 var serializer = new DataContractSerializer(typeof(T), SerializerSettings);

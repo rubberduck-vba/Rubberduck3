@@ -20,7 +20,7 @@ namespace Rubberduck.Core.Editor
         //private readonly IModuleParser _parser;
         private readonly IEditorSettings _settings;
 
-        private IParseTree _parseTree;
+        //private IParseTree _parseTree;
 
         public CodePaneViewModel(/*ICodeParserService parser,*/ IEditorSettings settings, IEnumerable<IMemberProviderViewModel> memberProviders)
         {
@@ -32,48 +32,48 @@ namespace Rubberduck.Core.Editor
         }
 
         //private VBFoldingListener _foldingListener;
-        private TokenStreamRewriter _rewriter;
+        //private TokenStreamRewriter _rewriter;
 
         public ICommand CloseCommand { get; }
 
         //public IEnumerable<BlockFoldingInfo> Foldings => _foldingListener?.Foldings ?? Enumerable.Empty<BlockFoldingInfo>();
         public IStatusBarViewModel Status => EditorShellContext.Current.Shell.Status;
 
-        public async Task ParseAsync(TextReader reader)
-        {
-            try
-            {
-                //_foldingListener = new VBFoldingListener(_settings.BlockFoldingSettings);
-//                var listeners = new VBAParserBaseListener[]
-//                { 
-//                    _foldingListener,
-//                };
+//        public async Task ParseAsync(TextReader reader)
+//        {
+//            try
+//            {
+//                //_foldingListener = new VBFoldingListener(_settings.BlockFoldingSettings);
+////                var listeners = new VBAParserBaseListener[]
+////                { 
+////                    _foldingListener,
+////                };
 
-//                EditorShellContext.Current.Shell.Status.ParserState = "Parsing...";
+////                EditorShellContext.Current.Shell.Status.ParserState = "Parsing...";
                 
-//                var sw = Stopwatch.StartNew();
-////                var result = await _parser.ParseAsync(ModuleInfo.Name, reader, listeners);
-//                sw.Stop();
+////                var sw = Stopwatch.StartNew();
+//////                var result = await _parser.ParseAsync(ModuleInfo.Name, reader, listeners);
+////                sw.Stop();
 
-////                _parseTree = result.ParseTree;
-////                _rewriter = result.Rewriter;
+//////                _parseTree = result.ParseTree;
+//////                _rewriter = result.Rewriter;
 
-////                SyntaxErrors = result.Errors.Select(e => new SyntaxErrorViewModel(e));
+//////                SyntaxErrors = result.Errors.Select(e => new SyntaxErrorViewModel(e));
 
-//                EditorShellContext.Current.Shell.Status.ParserState = $"Parse completed: {sw.ElapsedMilliseconds:N0}ms";
+////                EditorShellContext.Current.Shell.Status.ParserState = $"Parse completed: {sw.ElapsedMilliseconds:N0}ms";
 
-                //var args = new ParseTreeEventArgs(_parseTree, null, _foldingListener.Foldings, SyntaxErrors);
-                //OnParseTreeChanged(args);
-                //if (!args.SyntaxErrors.Any()) 
-                //{
-                    //OnParseTreeInspectionsRequested(args);
-                //}
-            }
-            catch
-            {
-                EditorShellContext.Current.Shell.Status.ParserState = "Unexpected error";
-            }
-        }
+//                //var args = new ParseTreeEventArgs(_parseTree, null, _foldingListener.Foldings, SyntaxErrors);
+//                //OnParseTreeChanged(args);
+//                //if (!args.SyntaxErrors.Any()) 
+//                //{
+//                    //OnParseTreeInspectionsRequested(args);
+//                //}
+//            }
+//            catch
+//            {
+//                EditorShellContext.Current.Shell.Status.ParserState = "Unexpected error";
+//            }
+//        }
 
         /*
         private void OnParseTreeChanged(ParseTreeEventArgs e)

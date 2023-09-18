@@ -27,12 +27,6 @@ namespace Rubberduck.SettingsProvider
 
     public class ConfigurationChangedEventArgs : EventArgs
     {
-        public TrackedSettingValue ChangedSettings { get; }
-        public bool LanguageChanged => ChangedSettings.HasFlag(TrackedSettingValue.DisplayLanguage);
-        public bool InspectionSettingsChanged => ChangedSettings.HasFlag(TrackedSettingValue.InspectionSettings);
-        public bool RunInspectionsOnReparse => ChangedSettings.HasFlag(TrackedSettingValue.RunInspectionOnSuccessfulParse);
-        public bool AutoCompleteSettingsChanged => ChangedSettings.HasFlag(TrackedSettingValue.CompletionSettings);
-
         public ConfigurationChangedEventArgs(TrackedSettingValue changedSettings = TrackedSettingValue.None)
         {
             ChangedSettings = changedSettings;
@@ -64,5 +58,11 @@ namespace Rubberduck.SettingsProvider
 
             ChangedSettings = changedSettings;
         }
+
+        public TrackedSettingValue ChangedSettings { get; }
+        public bool DisplayLanguageChanged => ChangedSettings.HasFlag(TrackedSettingValue.DisplayLanguage);
+        public bool RunInspectionsOnReparseChanged => ChangedSettings.HasFlag(TrackedSettingValue.RunInspectionOnSuccessfulParse);
+        public bool InspectionSettingsChanged => ChangedSettings.HasFlag(TrackedSettingValue.InspectionSettings);
+        public bool AutoCompleteSettingsChanged => ChangedSettings.HasFlag(TrackedSettingValue.CompletionSettings);
     }
 }

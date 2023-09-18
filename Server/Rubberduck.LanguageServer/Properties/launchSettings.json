@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "Rubberduck.LanguageServer": {
+      "commandName": "Project"
+    }
+  }
+}

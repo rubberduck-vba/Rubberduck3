@@ -11,15 +11,15 @@ namespace Rubberduck.UI.Command
     public class VersionCheckCommand : CommandBase
     {
         private readonly IVersionCheckService _versionCheck;
-        private readonly IMessageBox _prompt;
-        private readonly IWebNavigator _webNavigator;
-        IConfigurationService<Configuration> _config;
+        //private readonly IMessageBox _prompt;
+        //private readonly IWebNavigator _webNavigator;
+        private readonly IConfigurationService<Configuration> _config;
 
-        public VersionCheckCommand(IVersionCheckService versionCheck, IMessageBox prompt, IWebNavigator web, IConfigurationService<Configuration> config)
+        public VersionCheckCommand(IVersionCheckService versionCheck, /*IMessageBox prompt, IWebNavigator web,*/ IConfigurationService<Configuration> config)
         {
             _versionCheck = versionCheck;
-            _prompt = prompt;
-            _webNavigator = web;
+            //_prompt = prompt;
+            //_webNavigator = web;
             _config = config;
         }
 
@@ -44,27 +44,27 @@ namespace Rubberduck.UI.Command
 
                         if (proceed)
                         {
-                            PromptAndBrowse(t.Result, settings.IncludePreRelease);
+                            //PromptAndBrowse(t.Result, settings.IncludePreRelease);
                         }
                     }
                 });
         }
 
-        private void PromptAndBrowse(Version latestVersion, bool includePreRelease)
-        {
-            //var buildType = includePreRelease 
-            //    ? RubberduckUI.VersionCheck_BuildType_PreRelease 
-            //    : RubberduckUI.VersionCheck_BuildType_Release;
-            //var prompt = string.Format(RubberduckUI.VersionCheck_NewVersionAvailable, _versionCheck.CurrentVersion, latestVersion, buildType);
-            //if (!_prompt.Question(prompt, RubberduckUI.Rubberduck))
-            //{
-            //    return;
-            //}
+        //private void PromptAndBrowse(Version latestVersion, bool includePreRelease)
+        //{
+        //    //var buildType = includePreRelease 
+        //    //    ? RubberduckUI.VersionCheck_BuildType_PreRelease 
+        //    //    : RubberduckUI.VersionCheck_BuildType_Release;
+        //    //var prompt = string.Format(RubberduckUI.VersionCheck_NewVersionAvailable, _versionCheck.CurrentVersion, latestVersion, buildType);
+        //    //if (!_prompt.Question(prompt, RubberduckUI.Rubberduck))
+        //    //{
+        //    //    return;
+        //    //}
 
-            //var url = new Uri(includePreRelease
-            //    ? "https://github.com/rubberduck-vba/Rubberduck/releases"
-            //    : "https://github.com/rubberduck-vba/Rubberduck/releases/latest");
-            //_webNavigator.Navigate(url);
-        }
+        //    //var url = new Uri(includePreRelease
+        //    //    ? "https://github.com/rubberduck-vba/Rubberduck/releases"
+        //    //    : "https://github.com/rubberduck-vba/Rubberduck/releases/latest");
+        //    //_webNavigator.Navigate(url);
+        //}
     }
 }

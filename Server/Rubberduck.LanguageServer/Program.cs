@@ -1,206 +1,169 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server.Capabilities;
-using Rubberduck.LanguageServer.Configuration;
 using Rubberduck.ServerPlatform;
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Threading;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
-using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
-using Rubberduck.ServerPlatform.Model.LocalDb;
+using OmniSharp.Extensions.LanguageServer.Server;
+using Rubberduck.LanguageServer.Handlers;
+using Microsoft.Extensions.Logging;
+using Rubberduck.LanguageServer.Services;
+using Rubberduck.LanguageServer.Model;
+using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.LanguageServer;
+using System.IO.Pipelines;
+using System.Diagnostics;
+using System.IO.Pipes;
+using Nerdbank.Streams;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 
 namespace Rubberduck.LanguageServer
 {
+
     public static class Program
     {
+        private static TransportOptions _options = ServerArgs.Default;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         public static async Task<int> Main(string[] args)
         {
-            /*TODO accept command-line arguments*/
+            await SetServerOptionsAsync(args);
             await StartAsync();
-
             return 0;
+        }
+
+        private static async Task SetServerOptionsAsync(string[] args)
+        {
+            _options = await ServerArgs.ParseAsync(args);
         }
 
         private static async Task StartAsync()
         {
-            Console.WriteLine(ServerSplash.GetRenderString(Assembly.GetExecutingAssembly().GetName()));
-
             var tokenSource = new CancellationTokenSource();
+            var services = new ServiceCollection();
+            var provider = new DefaultServiceProviderFactory().CreateServiceProvider(services);
 
-            var builder = Host.CreateDefaultBuilder()
-                .UseConsoleLifetime()
-                .ConfigureLogging((context, logging) =>
-                {
-                    logging.AddConsole();
-                })
-                .ConfigureServices(provider => ConfigureServices(provider, tokenSource))
-            ;
-
-            var host = builder.Build();
-            await host.RunAsync(tokenSource.Token);
+            var server = OmniSharpLanguageServer.PreInit(ConfigureLanguageServer);
+            await server.WaitForExit;
         }
 
-        private static void ConfigureServices(IServiceCollection services, CancellationTokenSource tokenSource)
+        private static void ConfigureLanguageServer(LanguageServerOptions options)
         {
             // example LSP server: https://github.com/OmniSharp/csharp-language-server-protocol/blob/master/sample/SampleServer/Program.cs
-            var config = new ServerCapabilities
+
+            var assembly = typeof(Program).Assembly.GetName();
+            var name = assembly.Name ?? throw new InvalidOperationException();
+            var version = assembly.Version?.ToString(3);
+
+            var info = new ServerInfo
             {
-                Workspace = new WorkspaceServerCapabilities
-                {
-                    WorkspaceFolders = new DidChangeWorkspaceFolderRegistrationOptions.StaticOptions
-                    {
-                        Supported = true,
-                        ChangeNotifications = true,
-                    },
-                    FileOperations = new FileOperationsWorkspaceServerCapabilities
-                    {
-                        DidCreate = new DidCreateFileRegistrationOptions.StaticOptions
-                        {
-                            // TODO define filters
-                        },
-                        DidDelete = new DidDeleteFileRegistrationOptions.StaticOptions
-                        // TODO define filters
-                        {
-                        },
-                        DidRename = new DidRenameFileRegistrationOptions.StaticOptions
-                        {
-                            // TODO define filters
-                        },
-                        WillCreate = new WillCreateFileRegistrationOptions.StaticOptions
-                        {
-                            // TODO define filters
-                        },
-                        WillDelete = new WillDeleteFileRegistrationOptions.StaticOptions
-                        {
-                            // TODO define filters
-                        },
-                        WillRename = new WillRenameFileRegistrationOptions.StaticOptions
-                        {
-                            // TODO define filters
-                        },
-                    },
-                    ExtensionData = new Dictionary<string, JToken>()
-                },
-                WorkspaceSymbolProvider = new WorkspaceSymbolRegistrationOptions.StaticOptions { WorkDoneProgress = true },
-                TextDocumentSync = new TextDocumentSync(TextDocumentSyncKind.Full)
-                {
-                    Options = new TextDocumentSyncOptions
-                    {
-                        Change = TextDocumentSyncKind.Full,
-                        OpenClose = true,
-                        Save = true,
-                        WillSave = true,
-                        WillSaveWaitUntil = true
-                    },
-                },
-                SemanticTokensProvider = new SemanticTokensRegistrationOptions.StaticOptions
-                {
-                    Id = "RD3.LanguageServer.SemanticTokens",
-                    WorkDoneProgress = true,
-                    Full = new SemanticTokensCapabilityRequestFull { Delta = false },
-                    Range = new SemanticTokensCapabilityRequestRange { },
-                    Legend = new SemanticTokensLegend
-                    {
-                        TokenModifiers = new[]
-                        {
-                            SemanticTokenModifier.Declaration,
-                            SemanticTokenModifier.DefaultLibrary,
-                            SemanticTokenModifier.Documentation,
-                            SemanticTokenModifier.Deprecated,
-                            SemanticTokenModifier.Abstract,
-                            SemanticTokenModifier.Static,
-                        },
-                        TokenTypes = new[]
-                        {
-                            SemanticTokenType.Class,
-                            SemanticTokenType.Comment,
-                            SemanticTokenType.Enum,
-                            SemanticTokenType.EnumMember,
-                            SemanticTokenType.Event,
-                            SemanticTokenType.Function,
-                            SemanticTokenType.Interface,
-                            SemanticTokenType.Keyword,
-                            SemanticTokenType.Label,
-                            SemanticTokenType.Method,
-                            SemanticTokenType.Number,
-                            SemanticTokenType.Modifier,
-                            SemanticTokenType.Operator,
-                            SemanticTokenType.Parameter,
-                            SemanticTokenType.Property,
-                            SemanticTokenType.String,
-                            SemanticTokenType.Struct,
-                            SemanticTokenType.Type,
-                            SemanticTokenType.Variable,
-                        }
-                    }
-                },
-                DocumentSymbolProvider = new DocumentSymbolRegistrationOptions.StaticOptions
-                {
-                    WorkDoneProgress = true,
-                    Label = "TODO",
-                },
-                DocumentHighlightProvider = new DocumentHighlightRegistrationOptions.StaticOptions { WorkDoneProgress = true },
-                DocumentFormattingProvider = new DocumentFormattingRegistrationOptions.StaticOptions { WorkDoneProgress = true },
-                DocumentLinkProvider = new DocumentLinkRegistrationOptions.StaticOptions { WorkDoneProgress = true, ResolveProvider = true },
-                DocumentOnTypeFormattingProvider = new DocumentOnTypeFormattingRegistrationOptions.StaticOptions { WorkDoneProgress = true, FirstTriggerCharacter = "\n" },
-                DocumentRangeFormattingProvider = new DocumentRangeFormattingRegistrationOptions.StaticOptions { WorkDoneProgress = true },
-                CallHierarchyProvider = new CallHierarchyRegistrationOptions.StaticOptions { WorkDoneProgress = true, Id = "RD3.LanguageServer.CallHierarchy" }, // TODO
-                CodeActionProvider = new CodeActionRegistrationOptions.StaticOptions 
-                { 
-                    WorkDoneProgress= true,
-                    ResolveProvider = true,
-                    CodeActionKinds = new[]
-                    {
-                        CodeActionKind.Source,
-                        CodeActionKind.QuickFix,
-                        CodeActionKind.Refactor,
-                        CodeActionKind.RefactorExtract,
-                        CodeActionKind.RefactorInline,
-                        CodeActionKind.RefactorRewrite,
-                    }
-                },
-                CodeLensProvider = new CodeLensRegistrationOptions.StaticOptions { ResolveProvider = true, WorkDoneProgress = true },
-                ColorProvider = new DocumentColorRegistrationOptions.StaticOptions { WorkDoneProgress = true, Id = "RD3.LanguageServer.Color" },
-                CompletionProvider = new CompletionRegistrationOptions.StaticOptions
-                {
-                    WorkDoneProgress = true,
-                    ResolveProvider= true,
-                    //TriggerCharacters = new[] {"."},
-                    //AllCommitCharacters = new[] { "\t", "\n", " " },
-                },
-                DeclarationProvider = new DeclarationRegistrationOptions.StaticOptions { WorkDoneProgress = true, Id = "RD3.LanguageServer.Declaration" },
-                ExecuteCommandProvider = new ExecuteCommandRegistrationOptions.StaticOptions 
-                { 
-                    WorkDoneProgress = true,
-                    //Commands = new[] { "" }, // TODO
-                },
-                Experimental = new Dictionary<string, JToken>(),
-                ExtensionData = new Dictionary<string, JToken>(),
-                FoldingRangeProvider = new FoldingRangeRegistrationOptions.StaticOptions { WorkDoneProgress =true, Id = "RD3.LanguageServer.FoldingRange" },
-                HoverProvider = new HoverRegistrationOptions.StaticOptions { WorkDoneProgress = true },
-                ImplementationProvider = new ImplementationRegistrationOptions.StaticOptions { WorkDoneProgress = true, Id = "RD3.LanguageServer.Implementation" },
-                ReferencesProvider = new ReferenceRegistrationOptions.StaticOptions { WorkDoneProgress = true },
-                RenameProvider = new RenameRegistrationOptions.StaticOptions { PrepareProvider = true, WorkDoneProgress = true, Id = "RD3.LanguageServer.Rename" },
-                SelectionRangeProvider = new SelectionRangeRegistrationOptions.StaticOptions { WorkDoneProgress = true, Id = "RD3.LanguageServer.SelectionRange" },
-                SignatureHelpProvider = new SignatureHelpRegistrationOptions.StaticOptions 
-                {
-                    WorkDoneProgress = true,
-                    TriggerCharacters = new string[] { "(", "," },
-                    //RetriggerCharacters = new string[] { "(", "," }, // TODO
-                },
-               /* TODO */
+                Name = name,
+                Version = version
             };
 
-            services.AddRubberduckServerServices(config, tokenSource);
+            options.WithLoggerFactory(new LoggerFactory())
+                   .AddDefaultLoggingProvider()
+                   .WithServerInfo(info)
+                   .WithServices(ConfigureServices)
+
+                   .OnInitialize(async (server, request, token) =>
+                   {
+                       token.ThrowIfCancellationRequested();
+                       // TODO
+                       await Task.CompletedTask;
+                   })
+                   .OnInitialized(async (server, request, response, token) =>
+                   {
+                       token.ThrowIfCancellationRequested();
+                       // TODO
+                       await Task.CompletedTask;
+                   })
+                   .OnStarted(async (languageServer, token) =>
+                   {
+                       token.ThrowIfCancellationRequested();
+                       // TODO
+                       await Task.CompletedTask;
+                   })
+
+                   // General
+                   .WithHandler<ShutdownHandler>()
+                   .WithHandler<ExitHandler>()
+
+                   // Server
+                   .WithHandler<SetTraceHandler>()
+
+                   // Workspace
+                   .WithHandler<DidChangeConfigurationHandler>()
+                   .WithHandler<DidChangeWatchedFileHandler>()
+                   .WithHandler<DidChangeWorkspaceFoldersHandler>()
+                   .WithHandler<DidCreateFileHandler>()
+                   .WithHandler<DidDeleteFileHandler>()
+                   .WithHandler<DidRenameFileHandler>()
+                   .WithHandler<ExecuteCommandHandler>()
+
+                   // TextDocument
+                   .WithHandler<CallHierarchyHandler>()
+                   .WithHandler<CodeActionHandler>()
+                   .WithHandler<CodeActionResolveHandler>()
+                   .WithHandler<CodeLensHandler>()
+                   .WithHandler<ColorPresentationHandler>()
+                   .WithHandler<CompletionHandler>()
+                   .WithHandler<DeclarationHandler>()
+                   .WithHandler<DefinitionHandler>()
+                   .WithHandler<DocumentColorHandler>()
+                   .WithHandler<DocumentDiagnosticHandler>()
+                   .WithHandler<DocumentFormattingHandler>()
+                   .WithHandler<DocumentHighlightHandler>()
+                   .WithHandler<DocumentOnTypeFormattingHandler>()
+                   .WithHandler<DocumentRangeFormattingHandler>()
+                   .WithHandler<DocumentSymbolHandler>()
+                   .WithHandler<FoldingRangeHandler>()
+                   .WithHandler<HoverHandler>()
+                   .WithHandler<ImplementationHandler>()
+                   .WithHandler<PrepareRenameHandler>()
+                   .WithHandler<ReferencesHandler>()
+                   .WithHandler<RenameHandler>()
+                   .WithHandler<SelectionRangeHandler>()
+                   .WithHandler<SemanticTokensHandler>()
+                   .WithHandler<SemanticTokensFullHandler>()
+                   .WithHandler<SignatureHelpHandler>()
+                   .WithHandler<TextDocumentSyncHandler>()
+                   .WithHandler<TypeDefinitionHandler>()
+                   .WithHandler<TypeHierarchyHandler>()
+
+
+            ;
+
+            switch (_options.TransportType)
+            {
+                case TransportType.StdIO:
+                    
+                    options.WithInput(Console.OpenStandardInput())
+                           .WithOutput(Console.OpenStandardOutput());
+                    break;
+
+                case TransportType.Pipe:
+                    var pipeOptions = (PipeTransportOptions)_options;
+                    var pipe = new NamedPipeServerStream(pipeOptions.PipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte);
+                    options.WithInput(pipe.UsePipeReader())
+                           .WithOutput(pipe.UsePipeWriter());
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Transport type '{_options.TransportType}' is not supported.");
+            }
+        }
+
+        private static void ConfigureServices(IServiceCollection services)
+        {
+            services.AddSingleton<SupportedLanguage, VisualBasicForApplicationsLanguage>();
+            services.AddSingleton<DocumentContentStore>();
+            services.AddSingleton<TextDocumentSyncHandler>();
         }
     }
 }

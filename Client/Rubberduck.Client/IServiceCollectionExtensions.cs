@@ -1,15 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using OmniSharp.Extensions.JsonRpc;
-using OmniSharp.Extensions.LanguageServer.Client;
-using OmniSharp.Extensions.LanguageServer.Protocol.Client;
-using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using Rubberduck.InternalApi;
-using System.IO.Pipelines;
-using System.IO.Pipes;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Client
 {
@@ -35,29 +25,6 @@ namespace Rubberduck.Client
                 Name = folder.Name,
                 Uri = folder.FullName 
             };
-        }
-    }
-
-    public static class IServiceCollectionExtensions
-    {
-        public static IServiceCollection ConfigureLanguageClient(this IServiceCollection services, ClientInfo client, ClientCapabilities capabilities, WorkspaceFolder workspace)
-        {
-            var pipe = new NamedPipeClientStream(".", ServerPlatformSettings.LanguageServerPipeName, PipeDirection.InOut);
-            return services
-                .AddLanguageClient(options =>
-                {
-                    options.Services = services;
-                    options.WithInput(pipe)
-                           .WithOutput(pipe)
-                           .WithClientInfo(client)
-                           .WithContentModifiedSupport(true)
-                           .WithWorkspaceFolder(workspace)
-                           .WithClientCapabilities(capabilities)
-                           .WithInitializationOptions(client)
-                           .EnableProgressTokens()
-                           .EnableWorkspaceFolders()
-                    ;
-                });
         }
     }
 }

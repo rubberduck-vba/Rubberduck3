@@ -14,200 +14,16 @@ using ICSharpCode.AvalonEdit.Rendering;
 using Rubberduck.UI.Abstract;
 using System.Threading;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Editing;
-using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.UI.Xaml.Controls
 {
-    public class CompletionInfo : ICompletionData
-    {
-        public CompletionInfo(IMemberInfoViewModel memberInfo)
-        {
-            Text = memberInfo.Name;
-            Content = memberInfo.Name; // TODO make a nice XAML control for this
-        }
-
-        public ImageSource Image { get; }
-
-        public string Text { get; }
-
-        public object Content { get; }
-
-        public object Description { get; }
-
-        public double Priority { get; }
-
-        public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
-        {
-            textArea.Document.Replace(completionSegment, Text);
-        }
-    }
-
-    public interface IEnterKeyStrategy
-    {
-        bool IsActive { get; set; }
-        bool HandleEvent(TextDocument document, ref int caretOffset);
-    }
-
-    public class MemberEditor
-    {
-        public static MemberType GetMemberType(string line)
-        {
-            if (line.StartsWith("Private", StringComparison.InvariantCultureIgnoreCase))
-            {
-                switch (line.Substring(8, 4).ToLowerInvariant())
-                {
-                    case "cons":
-                        return MemberType.ConstPrivate;
-                    case "enum":
-                        return MemberType.EnumPrivate;
-                    case "even":
-                        return MemberType.EventPrivate;
-                    case "func":
-                        return MemberType.FunctionPrivate;
-                    case "sub ":
-                        return MemberType.ProcedurePrivate;
-                    case "type":
-                        return MemberType.UserDefinedTypePrivate;
-                    case "prop":
-                        switch (line.Substring(17, 3).ToLowerInvariant())
-                        {
-                            case "get":
-                                return MemberType.PropertyGetPrivate;
-                            case "let":
-                                return MemberType.PropertyLetPrivate;
-                            case "set":
-                                return MemberType.PropertySetPrivate;
-                            default:
-                                return MemberType.None;
-                        }
-                    default:
-                        return MemberType.FieldPrivate;
-                }
-            }
-            else if (line.StartsWith("Friend", StringComparison.InvariantCultureIgnoreCase))
-            {
-                switch (line.Substring(7, 4).ToLowerInvariant())
-                {
-                    case "cons":
-                        return MemberType.ConstFriend;
-                    case "enum":
-                        return MemberType.EnumFriend;
-                    case "even":
-                        return MemberType.EventFriend;
-                    case "func":
-                        return MemberType.FunctionFriend;
-                    case "sub ":
-                        return MemberType.ProcedureFriend;
-                    case "type":
-                        return MemberType.UserDefinedTypeFriend;
-                    case "prop":
-                        switch (line.Substring(16, 3).ToLowerInvariant())
-                        {
-                            case "get":
-                                return MemberType.PropertyGetFriend;
-                            case "let":
-                                return MemberType.PropertyLetFriend;
-                            case "set":
-                                return MemberType.PropertySetFriend;
-                            default:
-                                return MemberType.None;
-                        }
-                    default:
-                        return MemberType.FieldFriend;
-                }
-            }
-            else
-            {
-                switch (line.Substring(0, 4).ToLowerInvariant())
-                {
-                    case "cons":
-                        return MemberType.Const;
-                    case "enum":
-                        return MemberType.Enum;
-                    case "even":
-                        return MemberType.Event;
-                    case "func":
-                        return MemberType.Function;
-                    case "sub ":
-                        return MemberType.Procedure;
-                    case "type":
-                        return MemberType.UserDefinedType;
-                    case "prop":
-                        switch (line.Substring(16, 3).ToLowerInvariant())
-                        {
-                            case "get":
-                                return MemberType.PropertyGet;
-                            case "let":
-                                return MemberType.PropertyLet;
-                            case "set":
-                                return MemberType.PropertySet;
-                            default:
-                                return MemberType.None;
-                        }
-                    case "dim ":
-                        return MemberType.Field;
-
-                    default:
-                        return MemberType.None;
-                }
-            }
-        }
-    }
-
-    public class KeepCurrentLineTogetherEnterKeyStrategy : IEnterKeyStrategy
-    {
-        public bool IsActive { get; set; } = true; // TODO make it configurable
-
-        private static HashSet<MemberType> ApplicableMemberTypes = new HashSet<MemberType>(new []
-        {
-            MemberType.Procedure,
-            MemberType.ProcedurePrivate,
-            MemberType.ProcedureFriend,
-            MemberType.Function,
-            MemberType.FunctionPrivate,
-            MemberType.FunctionFriend,
-            MemberType.PropertyGet,
-            MemberType.PropertyGetPrivate,
-            MemberType.PropertyGetFriend,
-            MemberType.PropertyLet,
-            MemberType.PropertyLetPrivate,
-            MemberType.PropertyLetFriend,
-            MemberType.PropertySet,
-            MemberType.PropertySetPrivate,
-            MemberType.PropertySetFriend,
-        });
-
-        public bool HandleEvent(TextDocument document, ref int caretOffset)
-        {
-            var offset = caretOffset;
-            var line = document.GetText(document.GetLineByOffset(offset));
-            if (string.IsNullOrWhiteSpace(line))
-            {
-                return false;
-            }
-            var type = MemberEditor.GetMemberType(line);
-
-            var nextChar = document.GetCharAt(offset); 
-            if (nextChar == '(' && ApplicableMemberTypes.Contains(type))
-            {
-                var currentLine = document.GetLineByOffset(offset);
-                var nextLineOffset = currentLine.NextLine.Offset; // TODO account for indentation
-                caretOffset = nextLineOffset;
-                return true;
-            }
-
-            return false;
-        }
-    }
-
     /// <summary>
     /// Interaction logic for RubberduckEditorControl.xaml
     /// </summary>
     public partial class RubberduckEditorControl : UserControl
     {
         private readonly Timer _timer;
-        private readonly FoldingManager _foldingManager;
+        //private readonly FoldingManager _foldingManager;
         private readonly ITextMarkerService _textMarkerService;
 
         private CompletionWindow _completionWindow = null;
@@ -224,7 +40,7 @@ namespace Rubberduck.UI.Xaml.Controls
             EditorPane.TextArea.TextEntering += TextArea_TextEntering;
             EditorPane.TextArea.TextEntered += TextArea_TextEntered;
 
-            _foldingManager = FoldingManager.Install(EditorPane.TextArea);
+            //_foldingManager = FoldingManager.Install(EditorPane.TextArea);
 
             var markerService = new TextMarkerService(EditorPane.Document);
             Initialize(markerService);
@@ -338,6 +154,7 @@ namespace Rubberduck.UI.Xaml.Controls
             {
                 //await ViewModel.ParseAsync(reader);
             }
+            await Task.CompletedTask;
         }
 
         private void ResetIdleTimer() => _timer.Change((int)((ViewModel?.EditorSettings?.IdleTimeoutSeconds * 1000) ?? Timeout.Infinite), Timeout.Infinite);
@@ -478,10 +295,7 @@ namespace Rubberduck.UI.Xaml.Controls
             EditorPane.TextArea.TextView.BackgroundRenderers.Add(service);
             EditorPane.TextArea.TextView.LineTransformers.Add(service);
             var services = (IServiceContainer)EditorPane.Document.ServiceProvider.GetService(typeof(IServiceContainer));
-            if (services != null)
-            {
-                services.AddService(typeof(ITextMarkerService), service);
-            }
+            services?.AddService(typeof(ITextMarkerService), service);
         }
 
         private void OnTextChanged(object sender, EventArgs e)

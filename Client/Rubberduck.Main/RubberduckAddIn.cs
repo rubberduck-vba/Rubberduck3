@@ -21,10 +21,10 @@ using Rubberduck.InternalApi.WindowsApi;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.WinForms;
 using Microsoft.Extensions.DependencyInjection;
-using Rubberduck.ServerPlatform;
 using Rubberduck.InternalApi;
 using System.IO;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Rubberduck
 {
@@ -44,7 +44,7 @@ namespace Rubberduck
         /// <remarks>
         /// Some hosts disconnect VBE add-ins in different ways, more or less compliant with how IDTExtensibility2 intended it.
         /// </remarks>
-        void Shutdown();
+        Task ShutdownAsync();
     }
 
     internal class RubberduckAddIn : IVBIDEAddIn
@@ -92,7 +92,9 @@ namespace Rubberduck
 
             try
             {
-                var services = new RubberduckServicesBuilder()
+                var tokenSource = new CancellationTokenSource();
+
+                var builder = new RubberduckServicesBuilder()
                     .WithAddIn(_vbe, _addin)
                     .WithApplication()
                     .WithAssemblyInfo()
@@ -104,16 +106,20 @@ namespace Rubberduck
                     .WithMsoCommandBarMenu()
                     .WithVersionCheck()
                     .WithRubberduckEditor()
-                    .WithLanguageServer()
-                    .Build();
-                var scope = services.CreateScope();
+                    .WithLanguageClient(ServerPlatform.TransportType.StdIO);
+
+                var provider = builder.Build();
+                var scope = provider.CreateScope();
                 _serviceScope = scope;
 
+                await builder.InitializeLanguageClientAsync(provider, tokenSource.Token);
                 await InitializeSettingsAsync(scope);
 
                 if (_initialSettings?.CanShowSplash ?? false)
                 {
+                    //TODO start update server process instead
                     var versionCheckService = _serviceScope.ServiceProvider.GetRequiredService<IVersionCheckService>();
+                    //TODO pass a version string instead
                     splashModel = new SplashViewModel(versionCheckService);
 
                     splash = ShowSplash(splashModel);
@@ -201,20 +207,12 @@ namespace Rubberduck
                 currentDomain.UnhandledException += HandleAppDomainException;
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
 
-                statusViewModel?.UpdateStatus("Registering components...");
-
-                //_container = new WindsorContainer().Install(new RubberduckIoCInstaller(_vbe, _addin, _initialSettings, _vbeNativeApi, _beepInterceptor));
-
                 statusViewModel?.UpdateStatus("Resolving services...");
-                _app = _serviceScope.ServiceProvider.GetRequiredService<App>(); //_container.Resolve<App>();
+                _app = _serviceScope.ServiceProvider.GetRequiredService<App>();
 
                 statusViewModel?.UpdateStatus("Starting add-in...");
-                _app.StartupAsync();
-
-                statusViewModel?.UpdateStatus("Starting language server...");
-                var server = new LanguageServerProcess(_serviceScope.ServiceProvider);
-                var serverProcessId = await server.StartAsync(hidden: false);
-
+                await _app.StartupAsync();
+                
                 _isInitialized = true;
             }
             catch (Exception e)
@@ -224,7 +222,7 @@ namespace Rubberduck
             }
         }
 
-        public void Shutdown()
+        public async Task ShutdownAsync()
         {
             if (!_isInitialized)
             {
@@ -271,7 +269,7 @@ namespace Rubberduck
                 if (_app != null)
                 {
                     _logger.Trace("Initiating App.Shutdown...");
-                    _app.ShutdownAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                    await _app.ShutdownAsync();
                     _app = null;
                 }
             }

@@ -30,9 +30,8 @@ namespace Rubberduck.Core
         private readonly IMessageBox _messageBox;
         private readonly IConfigurationService<Configuration> _configService;
         private readonly IAppMenu _appMenus;
-        private readonly IRubberduckHooks _hooks;
 
-        // TODO move to update server
+        // TODO move version check to update server
         private readonly IVersionCheckService _version;
         private readonly ICommand _checkVersionCommand;
 
@@ -44,7 +43,6 @@ namespace Rubberduck.Core
         public App(IMessageBox messageBox,
             IConfigurationService<Configuration> configService,
             IAppMenu appMenus,
-            IRubberduckHooks hooks,
             IVersionCheckService version,
             VersionCheckCommand checkVersionCommand,
             IFileSystem filesystem)
@@ -52,7 +50,6 @@ namespace Rubberduck.Core
             _messageBox = messageBox;
             _configService = configService;
             _appMenus = appMenus;
-            _hooks = hooks;
             _version = version;
             _checkVersionCommand = checkVersionCommand;
 
@@ -65,10 +62,9 @@ namespace Rubberduck.Core
         private async void HandleConfigServiceSettingsChanged(object sender, ConfigurationChangedEventArgs e)
         {
             _config = await _configService.ReadAsync();
-            _hooks.HookHotkeys();
             UpdateLoggingLevel();
 
-            if (e.LanguageChanged)
+            if (e.DisplayLanguageChanged)
             {
                 await ApplyCultureConfigAsync();
             }
@@ -106,7 +102,7 @@ namespace Rubberduck.Core
         {
             try
             {
-                var tempFolder = _filesystem.DirectoryInfo.FromDirectoryName(ApplicationConstants.RUBBERDUCK_TEMP_PATH);
+                var tempFolder = _filesystem.DirectoryInfo.New(ApplicationConstants.RUBBERDUCK_TEMP_PATH);
                 foreach (var file in tempFolder.GetFiles())
                 {
                     try
@@ -160,12 +156,7 @@ namespace Rubberduck.Core
 
             await CheckForLegacyIndenterSettingsAsync();
             _appMenus.Initialize();
-            _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts            
             _appMenus.Localize();
-
-            var tokenSource = new CancellationTokenSource();
-
-            // initialize LSP here?
 
 
             if (_config.UserSettings.GeneralSettings.CanCheckVersion)
@@ -178,9 +169,6 @@ namespace Rubberduck.Core
         {
             try
             {
-                Debug.WriteLine("App calling Hooks.Detach.");
-                _hooks.Detach();
-
                 await UpdateLoggingLevelOnShutdownAsync();
             }
             catch

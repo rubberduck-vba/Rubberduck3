@@ -12,13 +12,14 @@ namespace Rubberduck.UI.Command
         {
             _execute = execute;
             _canExecute = canExecute ?? ((o) => Task.FromResult(true));
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        //private bool SpecialEvaluateCanExecute(object parameter)
-        //{
-        //    return _canExecute is null 
-        //        || _canExecute.Invoke(parameter).ConfigureAwait(false).GetAwaiter().GetResult();
-        //}
+        private bool SpecialEvaluateCanExecute(object parameter)
+        {
+            return _canExecute is null
+                || _canExecute.Invoke(parameter).ConfigureAwait(false).GetAwaiter().GetResult();
+        }
 
         protected async override Task OnExecuteAsync(object parameter)
         {

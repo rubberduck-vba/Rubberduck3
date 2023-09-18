@@ -1,79 +1,50 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server;
-using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using IOPath = System.IO.Path;
 
 namespace Rubberduck.ServerPlatform
 {
     public abstract class ServerProcess<TServer>
     {
-        private readonly TServer _server;
+        protected virtual string RelativePath { get; } = string.Empty;
+        protected abstract string ExecutableFileName { get; }
 
-        protected ServerProcess(IServiceProvider provider)
+        protected abstract Task InitializeAsync(TServer server, CancellationToken token);
+
+        public virtual Process Start(bool hidden = true, string args = null)
         {
-            _server = provider.GetRequiredService<TServer>();
-            
-        }
+            var root = Directory.GetParent(Assembly.GetExecutingAssembly().Location)
+#if DEBUG
+                .Parent // bin
+                .Parent // Rubberduck.Main
+                .Parent // Client
+                .Parent // Rubberduck3
+#endif
+            ;
+            var path = Path.Combine(root.FullName, RelativePath
+#if DEBUG
+                , @"bin\Debug\net6.0"
+#endif
+            );
 
-        public abstract string Path { get; }
-
-        protected abstract Task StartAsync(TServer server);
-
-        public virtual async Task<int> StartAsync(bool hidden = true, string args = null)
-        {
-            if (TryFindServerProcess(IOPath.GetFileNameWithoutExtension(Path), out var process))
+            var filename = Path.Combine(path, ExecutableFileName);
+            var info = new ProcessStartInfo
             {
-                return process.Id;
-            }
-            else
-            {
-                var root = Directory.GetParent(Assembly.GetExecutingAssembly().Location)
-                    .Parent // bin
-                    .Parent // Rubberduck.Main
-                    .Parent // Client
-                    .Parent; // Rubberduck3
+                FileName = filename,
+                WorkingDirectory = Path.GetDirectoryName(filename),
+                Arguments = args,
+                UseShellExecute = false,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                //RedirectStandardError = true,
+                CreateNoWindow = hidden,
+            };
 
-                var path = IOPath.Combine(root.FullName, @"Server\Rubberduck.LanguageServer\bin\Debug\net6.0", Path);
-                var info = new ProcessStartInfo
-                {
-                    FileName = path,
-                    Arguments = args,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = hidden,
-                };
-
-                process = Process.Start(info);
-            }
-
-            await StartAsync(_server);
-            return process.Id;
-        }
-
-        protected bool TryFindServerProcess(string name, out Process process)
-        {
-            process = null;
-
-            try
-            {
-                var matches = Process.GetProcessesByName(name);
-                if (matches.Length > 0)
-                {
-                    Debug.Assert(matches.Length == 1);
-                }
-                process = matches[0];
-                return process != null;
-            }
-            catch
-            {
-                return false;
-            }
+            var process = Process.Start(info);
+            return process;
         }
     }
 }

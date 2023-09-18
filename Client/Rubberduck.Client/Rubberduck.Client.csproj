@@ -4,12 +4,12 @@
 <LangVersion>10.0</LangVersion>
 <ApplicationIcon>Ducky.ico</ApplicationIcon>
 </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <ItemGroup>
     <Content Include="Ducky.ico" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OmniSharp.Extensions.LanguageClient" Version="0.19.7" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+    <PackageReference Include="OmniSharp.Extensions.LanguageClient" Version="0.19.8" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
