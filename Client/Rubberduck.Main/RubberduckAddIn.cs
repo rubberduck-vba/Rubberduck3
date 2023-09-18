@@ -106,7 +106,7 @@ namespace Rubberduck
                     .WithMsoCommandBarMenu()
                     .WithVersionCheck()
                     .WithRubberduckEditor()
-                    .WithLanguageClient(ServerPlatform.TransportType.StdIO);
+                    .WithLanguageClient(ServerPlatform.TransportType.Pipe);
 
                 var provider = builder.Build();
                 var scope = provider.CreateScope();
