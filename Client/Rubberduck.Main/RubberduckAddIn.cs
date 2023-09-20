@@ -133,13 +133,14 @@ namespace Rubberduck
 
                 await InitializeSettingsAsync(scope);
 
+                var version = GetVersionString();
                 if (_initialSettings?.CanShowSplash ?? false)
                 {
-                    splashModel = new SplashViewModel(GetVersionString());
+                    splashModel = new SplashViewModel(version);
                     splash = ShowSplash(splashModel);
                 }
 
-                await StartupAsync(splashModel);
+                await StartupAsync(splashModel, version);
             }
             catch (Win32Exception)
             {
@@ -213,7 +214,7 @@ namespace Rubberduck
             }
         }
 
-        private async Task StartupAsync(IStatusUpdate statusViewModel)
+        private async Task StartupAsync(IStatusUpdate statusViewModel, string version)
         {
             try
             {
@@ -227,7 +228,7 @@ namespace Rubberduck
 
                 statusViewModel?.UpdateStatus("Starting add-in...");
 
-                await _app.StartupAsync();
+                await _app.StartupAsync(version);
 
                 statusViewModel?.UpdateStatus("Starting language server...");
 

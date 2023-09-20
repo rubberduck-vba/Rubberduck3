@@ -29,10 +29,6 @@ namespace Rubberduck.Core
         private readonly IConfigurationService<Configuration> _configService;
         private readonly IAppMenu _appMenus;
 
-        // TODO move version check to update server
-        private readonly IVersionCheckService _version;
-        private readonly ICommand _checkVersionCommand;
-
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private Configuration _config;
@@ -41,15 +37,11 @@ namespace Rubberduck.Core
         public App(IMessageBox messageBox,
             IConfigurationService<Configuration> configService,
             IAppMenu appMenus,
-            IVersionCheckService version,
-            VersionCheckCommand checkVersionCommand,
             IFileSystem filesystem)
         {
             _messageBox = messageBox;
             _configService = configService;
             _appMenus = appMenus;
-            _version = version;
-            _checkVersionCommand = checkVersionCommand;
 
             _configService.SettingsChanged += HandleConfigServiceSettingsChanged;
             _filesystem = filesystem;
@@ -136,24 +128,18 @@ namespace Rubberduck.Core
             await _configService.SaveAsync(_config);
         }
 
-        public async Task StartupAsync()
+        public async Task StartupAsync(string version)
         {
             EnsureLogFolderPathExists();
             EnsureTempPathExists();
             await ApplyCultureConfigAsync();
 
-            LogRubberduckStart();
+            LogRubberduckStart(version);
             UpdateLoggingLevel();
 
             await CheckForLegacyIndenterSettingsAsync();
             _appMenus.Initialize();
             _appMenus.Localize();
-
-
-            if (_config.UserSettings.GeneralSettings.CanCheckVersion)
-            {
-                _checkVersionCommand.Execute(null);
-            }            
         }
 
         public async Task ShutdownAsync()
@@ -234,9 +220,8 @@ namespace Rubberduck.Core
             }
         }
 
-        public void LogRubberduckStart()
+        public void LogRubberduckStart(string version)
         {
-            var version = _version.CurrentVersion;
             GlobalDiagnosticsContext.Set("RubberduckVersion", version.ToString());
 
             var headers = new List<string>
