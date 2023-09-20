@@ -24,7 +24,7 @@ namespace Rubberduck.Client
 {
     public class LanguageClientService
     {
-        public Process StartServerProcess(TransportType transport, bool verbose, int clientProcessId = default, string pipeName = default)
+        public static Process StartServerProcess(TransportType transport, bool verbose, int clientProcessId = default, string pipeName = default)
         {
             var server = new LanguageServerProcess();
             var args = string.Empty;
@@ -52,40 +52,31 @@ namespace Rubberduck.Client
             return server.Start(hidden: true, args);
         }
 
-        public async Task ConfigureAsync(Assembly clientAssembly, Process serverProcess, IServiceCollection services, TransportType transport)
+        public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, NamedPipeClientStream pipe, InitializeTrace traceLevel)
         {
-            //var info = clientAssembly.ToClientInfo();
-            //services.AddLanguageClient(info.Name, options => ConfigureLanguageClient(options, services, serverProcess, clientAssembly));
-            var options = ConfigureLanguageClient(services, serverProcess, clientAssembly, transport);
-            var client = await LanguageClient.From(options, services.BuildServiceProvider());
-            services.AddSingleton<ILanguageClient>(provider => client);
+            var options = ConfigureLanguageClient(clientAssembly, traceLevel);
+            options.WithInput(pipe.UsePipeReader());
+            options.WithOutput(pipe.UsePipeWriter());
+
+            return options;
         }
 
-        private LanguageClientOptions ConfigureLanguageClient(IServiceCollection services, Process serverProcess, Assembly clientAssembly, TransportType transport, string pipeName = default)
+        public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, Process serverProcess, InitializeTrace traceLevel)
+        {
+            var options = ConfigureLanguageClient(clientAssembly, traceLevel);
+            options.WithInput(serverProcess.StandardOutput.BaseStream);
+            options.WithOutput(serverProcess.StandardInput.BaseStream);
+
+            return options;
+        }
+
+        private static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, InitializeTrace traceLevel)
         {
             var options = new LanguageClientOptions();
 
             var info = clientAssembly.ToClientInfo();
             var workspace = new DirectoryInfo(clientAssembly.Location).ToWorkspaceFolder();
             var clientCapabilities = GetClientCapabilities();
-            var traceLevel = InitializeTrace.Verbose;
-
-            var clientProcessId = Process.GetCurrentProcess().Id;
-            switch (transport)
-            {
-                case TransportType.Pipe:
-                    var pipe = new NamedPipeClientStream(".", string.IsNullOrWhiteSpace(pipeName) ? $"Rubberduck.LSP.Pipe__{clientProcessId}" : pipeName, PipeDirection.InOut);
-                    pipe.Connect(Convert.ToInt32(TimeSpan.FromSeconds(10).TotalMilliseconds));
-                    options.WithInput(pipe.UsePipeReader());
-                    options.WithOutput(pipe.UsePipeWriter());
-                    break;
-                case TransportType.StdIO:
-                    options.WithInput(serverProcess.StandardOutput.BaseStream);
-                    options.WithOutput(serverProcess.StandardInput.BaseStream);
-                    break;
-                default:
-                    throw new NotSupportedException();
-            }
 
             options
                 .WithClientInfo(info)
@@ -188,7 +179,7 @@ namespace Rubberduck.Client
             return options;
         }
 
-        private ClientCapabilities GetClientCapabilities()
+        private static ClientCapabilities GetClientCapabilities()
         {
             var supported = new Supports<bool> { Value = true };
             var capabilities = new ClientCapabilities

@@ -1,7 +1,25 @@
-﻿using System.Linq;
+﻿using System.IO.Abstractions;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Rubberduck.InternalApi.Extensions
 {
+    internal static class IFileSystemExtensions
+    {
+        public static bool TryDelete(this IFileInfo file)
+        {
+            try
+            {
+                file.Delete();
+                return true;
+            }
+            catch 
+            { 
+                return false;
+            }
+        }
+    }
+
     public static class FolderExtensions
     {
         public const char FolderDelimiter = '.';

@@ -1,7 +1,6 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO.Abstractions;
 using System.Linq;
@@ -16,10 +15,9 @@ using Application = System.Windows.Forms.Application;
 using System.Windows.Input;
 using Infralution.Localization.Wpf;
 using Rubberduck.VBEditor.UI.OfficeMenus;
-using System.Threading;
 using Rubberduck.UI.Command;
-using Rubberduck.ServerPlatform;
 using System.Threading.Tasks;
+using Rubberduck.InternalApi.Extensions;
 
 namespace Rubberduck.Core
 {
@@ -105,14 +103,7 @@ namespace Rubberduck.Core
                 var tempFolder = _filesystem.DirectoryInfo.New(ApplicationConstants.RUBBERDUCK_TEMP_PATH);
                 foreach (var file in tempFolder.GetFiles())
                 {
-                    try
-                    {
-                        file.Delete();
-                    }
-                    catch
-                    {
-                        // do not throw
-                    }
+                    file.TryDelete();
                 }
             }
             catch

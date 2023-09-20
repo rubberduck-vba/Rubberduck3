@@ -25,6 +25,12 @@ using Rubberduck.InternalApi;
 using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
+using Rubberduck.Client;
+using OmniSharp.Extensions.LanguageServer.Client;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using System.IO.Pipes;
+using Microsoft.Extensions.Primitives;
+using OmniSharp.Extensions.LanguageServer.Protocol.General;
 
 namespace Rubberduck
 {
@@ -61,6 +67,10 @@ namespace Rubberduck
 
         private App _app;
 
+        private CancellationTokenSource _tokenSource = new CancellationTokenSource();
+        private Process _serverProcess;
+        private LanguageClient _languageClient;
+
         internal RubberduckAddIn(IDTExtensibility2 extAddin, IVBE vbeWrapper, IAddIn addinWrapper)
         {
             _vbe = vbeWrapper;
@@ -75,6 +85,18 @@ namespace Rubberduck
         {
             // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
             _addin.Object = new VBETypeLibsAPI_Object(_vbe);
+        }
+
+        public static string GetVersionString()
+        {
+            var isDebugBuild = false;
+#if DEBUG
+            isDebugBuild = true;
+#endif
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            return isDebugBuild
+                ? $"{version.Major}.{version.Minor}.{version.Build}.x (debug)"
+                : version.ToString();
         }
 
         public async Task InitializeAsync()
@@ -101,12 +123,9 @@ namespace Rubberduck
                     .WithFileSystem(_vbe)
                     .WithSettingsProvider()
                     .WithNativeServices(_vbe)
-                    .WithParser()
                     .WithCommands()
                     .WithMsoCommandBarMenu()
-                    .WithVersionCheck()
-                    .WithRubberduckEditor()
-                    .WithLanguageClient(ServerPlatform.TransportType.StdIO);
+                    .WithRubberduckEditor();
 
                 var provider = builder.Build();
                 var scope = provider.CreateScope();
@@ -116,11 +135,7 @@ namespace Rubberduck
 
                 if (_initialSettings?.CanShowSplash ?? false)
                 {
-                    //TODO start update server process instead
-                    var versionCheckService = _serviceScope.ServiceProvider.GetRequiredService<IVersionCheckService>();
-                    //TODO pass a version string instead
-                    splashModel = new SplashViewModel(versionCheckService);
-
+                    splashModel = new SplashViewModel(GetVersionString());
                     splash = ShowSplash(splashModel);
                 }
 
@@ -207,11 +222,38 @@ namespace Rubberduck
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
 
                 statusViewModel?.UpdateStatus("Resolving services...");
+
                 _app = _serviceScope.ServiceProvider.GetRequiredService<App>();
 
                 statusViewModel?.UpdateStatus("Starting add-in...");
+
                 await _app.StartupAsync();
-                
+
+                statusViewModel?.UpdateStatus("Starting language server...");
+
+                var transport = _initialSettings.LanguageServerProtocolTransport;
+                var clientProcessId = Process.GetCurrentProcess().Id;
+                _serverProcess = LanguageClientService.StartServerProcess(transport, verbose: true, clientProcessId);
+
+                statusViewModel?.UpdateStatus("Starting language client...");
+
+                LanguageClientOptions clientOptions;
+                switch (transport)
+                {
+                    case ServerPlatform.TransportType.StdIO:
+                        clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _serverProcess, InitializeTrace.Verbose);
+                        break;
+                    case ServerPlatform.TransportType.Pipe:
+                        var pipe = new NamedPipeClientStream(".", $"{_initialSettings.TranspoprtPipeName}__{Process.GetCurrentProcess().Id}", PipeDirection.InOut, PipeOptions.Asynchronous);
+                        clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), pipe, InitializeTrace.Verbose);
+                        break;
+                    default:
+                        throw new NotSupportedException();
+                }
+
+                _languageClient = LanguageClient.Create(clientOptions);
+                await _languageClient.Initialize(_tokenSource.Token);
+
                 _isInitialized = true;
             }
             catch (Exception e)
@@ -229,6 +271,19 @@ namespace Rubberduck
             }
 
             _logger.Info("Rubberduck is shutting down...");
+
+            try
+            {
+                if (_languageClient != null)
+                {
+                    _logger.Trace("Sending LSP shutdown notification...");
+                    _languageClient.SendShutdown(new ShutdownParams());
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+            }
 
             try
             {
@@ -289,7 +344,47 @@ namespace Rubberduck
             catch (Exception e)
             {
                 _logger.Error(e);
-                //throw; // <<~ uncomment to crash the process
+            }
+
+            try
+            {
+                if (_languageClient != null)
+                {
+                    _logger.Trace("Sending LSP exit notification...");
+                    _languageClient.SendExit(new ExitParams());
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+            }
+
+            try
+            {
+                if (_serverProcess != null)
+                {
+                    _logger.Trace("Disposing language server process...");
+                    _serverProcess.Dispose();
+                    _serverProcess = null;
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+            }
+
+            try
+            {
+                if (_languageClient != null)
+                {
+                    _logger.Trace("Disposing language client...");
+                    _languageClient.Dispose();
+                    _languageClient = null;
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
             }
 
             try
@@ -304,9 +399,8 @@ namespace Rubberduck
             }
             catch (Exception e)
             {
-                _logger.Error(e);
                 _logger.Warn("Exception disposing the ComSafe has been swallowed.");
-                //throw; // <<~ uncomment to crash the process
+                _logger.Error(e);
             }
 
             try

@@ -93,13 +93,6 @@ namespace Rubberduck.Root
             return this;
         }
 
-        public RubberduckServicesBuilder WithLanguageClient(TransportType transport)
-        {
-            var serverProcess = _client.StartServerProcess(transport, verbose: true, clientProcessId: Process.GetCurrentProcess().Id);
-            _client.ConfigureAsync(GetType().Assembly, serverProcess, _services, transport).ConfigureAwait(false).GetAwaiter().GetResult();
-            return this;
-        }
-
         public RubberduckServicesBuilder WithMsoCommandBarMenu()
         {
             _services.AddScoped<IAppMenu, RubberduckParentMenu>();
@@ -127,13 +120,6 @@ namespace Rubberduck.Root
         {
             _services.AddScoped<Version>(_ => Assembly.GetExecutingAssembly().GetName().Version);
             _services.AddScoped<IOperatingSystem, WindowsOperatingSystem>();
-
-            return this;
-        }
-
-        public RubberduckServicesBuilder WithParser()
-        {
-            //_services.AddScoped<ICommonTokenStreamProvider<TextReader>, TextReaderTokenStreamProvider>();
 
             return this;
         }
@@ -171,16 +157,6 @@ namespace Rubberduck.Root
 
             _services.AddScoped<IRubberduckHooks, RubberduckHooks>();
             _services.AddScoped<HotkeyFactory>();
-
-            return this;
-        }
-
-        public RubberduckServicesBuilder WithVersionCheck()
-        {
-            _services.AddScoped<VersionCheckCommand>();
-            _services.AddScoped<HttpClient>();
-            _services.AddScoped<IPublicApiClient, PublicApiClient>();
-            _services.AddScoped<IVersionCheckService>(provider => new VersionCheckService(provider.GetRequiredService<IPublicApiClient>(), Assembly.GetExecutingAssembly().GetName().Version));
 
             return this;
         }

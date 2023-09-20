@@ -5,9 +5,9 @@ namespace Rubberduck.Core.Splash
 {
     public class SplashViewModel : ViewModelBase, ISplashViewModel
     {
-        public SplashViewModel(IVersionCheckService versionCheck)
+        public SplashViewModel(string version)
         {
-            Version = $"v{versionCheck.VersionString}";
+            Version = version;
         }
 
         public string Version { get; }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml.Serialization;
 using Rubberduck.Common;
 using Rubberduck.Resources;
+using Rubberduck.ServerPlatform;
 
 namespace Rubberduck.Settings
 {
@@ -22,6 +23,9 @@ namespace Rubberduck.Settings
         int MinimumLogLevel { get; set; }
         bool SetDpiUnaware { get; set; }
         bool EnableFolderDragAndDrop { get; set; }
+        TransportType LanguageServerProtocolTransport { get; set; }
+        string TranspoprtPipeName { get; set; }
+
         List<ExperimentalFeature> EnableExperimentalFeatures { get; set; }
     }
 
@@ -76,6 +80,9 @@ namespace Rubberduck.Settings
 
         public bool SetDpiUnaware { get; set; }
         public bool EnableFolderDragAndDrop { get; set; }
+
+        public TransportType LanguageServerProtocolTransport { get; set; }
+        public string TranspoprtPipeName { get; set; } = "Rubberduck.LSP.Pipe";
 
         public List<ExperimentalFeature> EnableExperimentalFeatures { get; set; } = new List<ExperimentalFeature>();
 

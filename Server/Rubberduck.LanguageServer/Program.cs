@@ -48,7 +48,7 @@ namespace Rubberduck.LanguageServer
             var services = new ServiceCollection();
             var provider = new DefaultServiceProviderFactory().CreateServiceProvider(services);
 
-            var server = OmniSharpLanguageServer.PreInit(options => ConfigureLanguageServer(options, tokenSource));
+            var server = OmniSharpLanguageServer.Create(options => ConfigureLanguageServer(options, tokenSource));
             await server.WaitForExit;
         }
 
@@ -153,10 +153,9 @@ namespace Rubberduck.LanguageServer
 
                 case TransportType.Pipe:
                     var pipeOptions = (PipeTransportOptions)_options;
-                    var pipe = new NamedPipeServerStream(pipeOptions.PipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte);
+                    var pipe = new NamedPipeServerStream(pipeOptions.PipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, System.IO.Pipes.PipeOptions.Asynchronous);
                     options.WithInput(pipe.UsePipeReader())
                            .WithOutput(pipe.UsePipeWriter());
-                    pipe.WaitForConnection();
                     break;
 
                 default:
@@ -167,8 +166,6 @@ namespace Rubberduck.LanguageServer
         private static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<SupportedLanguage, VisualBasicForApplicationsLanguage>();
-            services.AddSingleton<DocumentContentStore>();
-            services.AddSingleton<TextDocumentSyncHandler>();
         }
     }
 }
