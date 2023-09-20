@@ -31,6 +31,8 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using System.IO.Pipes;
 using Microsoft.Extensions.Primitives;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
+using Rubberduck.ServerPlatform;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 
 namespace Rubberduck
 {
@@ -131,7 +133,7 @@ namespace Rubberduck
                 var scope = provider.CreateScope();
                 _serviceScope = scope;
 
-                await InitializeSettingsAsync(scope);
+                await InitializeSettingsAsync(scope).ConfigureAwait(false);
 
                 var version = GetVersionString();
                 if (_initialSettings?.CanShowSplash ?? false)
@@ -140,7 +142,7 @@ namespace Rubberduck
                     splash = ShowSplash(splashModel);
                 }
 
-                await StartupAsync(splashModel, version);
+                await StartupAsync(splashModel, version).ConfigureAwait(false);
             }
             catch (Win32Exception)
             {
@@ -228,14 +230,14 @@ namespace Rubberduck
 
                 statusViewModel?.UpdateStatus("Starting add-in...");
 
-                await _app.StartupAsync(version);
+                await _app.StartupAsync(version).ConfigureAwait(false);
 
                 statusViewModel?.UpdateStatus("Starting language server...");
 
                 var transport = _initialSettings.LanguageServerProtocolTransport;
                 var clientProcessId = Process.GetCurrentProcess().Id;
-                _serverProcess = LanguageClientService.StartServerProcess(transport, verbose: true, clientProcessId);
-
+                _serverProcess = LanguageClientService.StartServerProcess(new LanguageServerProcess(), transport, verbose: true, clientProcessId);
+                
                 statusViewModel?.UpdateStatus("Starting language client...");
 
                 LanguageClientOptions clientOptions;
@@ -253,8 +255,9 @@ namespace Rubberduck
                 }
 
                 _languageClient = LanguageClient.Create(clientOptions);
-                await _languageClient.Initialize(_tokenSource.Token);
+                _languageClient.Initialize(_tokenSource.Token).ConfigureAwait(false);
 
+                _languageClient.SendLanguageProtocolInitialized(new InitializedParams());
                 _isInitialized = true;
             }
             catch (Exception e)
@@ -324,7 +327,7 @@ namespace Rubberduck
                 if (_app != null)
                 {
                     _logger.Trace("Initiating App.Shutdown...");
-                    await _app.ShutdownAsync();
+                    await _app.ShutdownAsync().ConfigureAwait(false);
                     _app = null;
                 }
             }

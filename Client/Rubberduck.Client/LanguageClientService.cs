@@ -3,7 +3,6 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,19 +13,18 @@ using System.Linq;
 using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
-using System;
-using System.Threading;
 using System.Threading.Tasks;
 using System.IO.Pipes;
 using Nerdbank.Streams;
+using OmniSharp.Extensions.LanguageServer.Protocol.General;
 
 namespace Rubberduck.Client
 {
     public class LanguageClientService
     {
-        public static Process StartServerProcess(TransportType transport, bool verbose, int clientProcessId = default, string pipeName = default)
+        public static Process StartServerProcess<TServer>(TServer server, TransportType transport, bool verbose, int clientProcessId = default, string pipeName = default)
+            where TServer : IServerProcess
         {
-            var server = new LanguageServerProcess();
             var args = string.Empty;
             switch (transport)
             {
@@ -49,7 +47,7 @@ namespace Rubberduck.Client
                 args += " --verbose";
             }
 
-            return server.Start(hidden: true, args);
+            return server.Start(transport, hidden: true, args);
         }
 
         public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, NamedPipeClientStream pipe, InitializeTrace traceLevel)

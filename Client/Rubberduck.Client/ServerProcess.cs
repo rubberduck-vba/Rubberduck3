@@ -7,14 +7,19 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.ServerPlatform
 {
-    public abstract class ServerProcess<TServer>
+    public interface IServerProcess
+    {
+        Process Start(TransportType transport, bool hidden = true, string args = null);
+    }
+
+    public abstract class ServerProcess<TServer> : IServerProcess
     {
         protected virtual string RelativePath { get; } = string.Empty;
         protected abstract string ExecutableFileName { get; }
 
         protected abstract Task InitializeAsync(TServer server, CancellationToken token);
 
-        public virtual Process Start(bool hidden = true, string args = null)
+        public virtual Process Start(TransportType transport, bool hidden = true, string args = null)
         {
             var root = Directory.GetParent(Assembly.GetExecutingAssembly().Location)
 #if DEBUG
@@ -36,12 +41,15 @@ namespace Rubberduck.ServerPlatform
                 FileName = filename,
                 WorkingDirectory = Path.GetDirectoryName(filename),
                 Arguments = args,
-                UseShellExecute = false,
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-                //RedirectStandardError = true,
                 CreateNoWindow = hidden,
-            };
+                UseShellExecute = false,
+        };
+
+            if (transport == TransportType.StdIO)
+            {
+                info.RedirectStandardInput = true;
+                info.RedirectStandardOutput = true;
+            }
 
             var process = Process.Start(info);
             return process;

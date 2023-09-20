@@ -29,7 +29,7 @@ namespace Rubberduck.SettingsProvider
 
         protected async Task<T> LoadCacheValueAsync()
         {
-            var fromStorage = await _persister.LoadAsync();
+            var fromStorage = _persister.Load();
             if (CurrentValue is null)
             {
                 T defaults = await ReadDefaultsAsync();

@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server.Capabilities;
+using NLog;
+using NLog.Extensions.Logging;
 using Rubberduck.ServerPlatform;
 using System;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Threading;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
@@ -12,12 +12,12 @@ using Rubberduck.LanguageServer.Handlers;
 using Microsoft.Extensions.Logging;
 using Rubberduck.LanguageServer.Services;
 using Rubberduck.LanguageServer.Model;
-using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.LanguageServer;
-using System.IO.Pipelines;
 using System.Diagnostics;
 using System.IO.Pipes;
 using Nerdbank.Streams;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server;
+using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.LanguageServer;
+using System.Reactive.Threading.Tasks;
+using System.Reactive;
 
 namespace Rubberduck.LanguageServer
 {
@@ -32,8 +32,12 @@ namespace Rubberduck.LanguageServer
         [STAThread]
         public static async Task<int> Main(string[] args)
         {
-            await SetServerOptionsAsync(args);
-            await StartAsync();
+            Debugger.Launch();
+            using (var tokenSource = new CancellationTokenSource())
+            {
+                await SetServerOptionsAsync(args);
+                await StartAsync(tokenSource);
+            }
             return 0;
         }
 
@@ -42,14 +46,19 @@ namespace Rubberduck.LanguageServer
             _options = await ServerArgs.ParseAsync(args);
         }
 
-        private static async Task StartAsync()
+        private static async Task StartAsync(CancellationTokenSource tokenSource)
         {
-            var tokenSource = new CancellationTokenSource();
             var services = new ServiceCollection();
             var provider = new DefaultServiceProviderFactory().CreateServiceProvider(services);
 
-            var server = OmniSharpLanguageServer.Create(options => ConfigureLanguageServer(options, tokenSource));
+            var server = OmniSharpLanguageServer.Create(options => ConfigureLanguageServer(options, tokenSource), provider);
             await server.WaitForExit;
+        }
+
+        private static void ConfigureServices(IServiceCollection services)
+        {
+            services.AddSingleton<SupportedLanguage, VisualBasicForApplicationsLanguage>();
+            services.AddSingleton<DocumentContentStore>();
         }
 
         private static void ConfigureLanguageServer(LanguageServerOptions options, CancellationTokenSource tokenSource)
@@ -66,26 +75,28 @@ namespace Rubberduck.LanguageServer
                 Version = version
             };
 
-            options.WithLoggerFactory(new LoggerFactory())
-                   .AddDefaultLoggingProvider()
+            options.WithLoggerFactory(new NLogLoggerFactory(new NLogLoggerProvider()))
                    .WithServerInfo(info)
                    .WithServices(ConfigureServices)
 
                    .OnInitialize(async (server, request, token) =>
                    {
                        token.ThrowIfCancellationRequested();
-                       // TODO
+                       server.GetRequiredService<Microsoft.Extensions.Logging.ILogger>().LogInformation("Initialize request received");
+                       // TODO?
                        await Task.CompletedTask;
                    })
                    .OnInitialized(async (server, request, response, token) =>
                    {
                        token.ThrowIfCancellationRequested();
+                       server.GetRequiredService<Microsoft.Extensions.Logging.ILogger>().LogInformation("Client confirmed reception of InitializeResult");
                        // TODO
                        await Task.CompletedTask;
                    })
-                   .OnStarted(async (languageServer, token) =>
+                   .OnStarted(async (server, token) =>
                    {
                        token.ThrowIfCancellationRequested();
+                       server.GetRequiredService<Microsoft.Extensions.Logging.ILogger>().LogInformation("Language server started");
                        // TODO
                        await Task.CompletedTask;
                    })
@@ -161,11 +172,6 @@ namespace Rubberduck.LanguageServer
                 default:
                     throw new NotSupportedException($"Transport type '{_options.TransportType}' is not supported.");
             }
-        }
-
-        private static void ConfigureServices(IServiceCollection services)
-        {
-            services.AddSingleton<SupportedLanguage, VisualBasicForApplicationsLanguage>();
         }
     }
 }
