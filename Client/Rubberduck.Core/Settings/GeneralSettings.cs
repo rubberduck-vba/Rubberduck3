@@ -81,7 +81,7 @@ namespace Rubberduck.Settings
         public bool SetDpiUnaware { get; set; }
         public bool EnableFolderDragAndDrop { get; set; }
 
-        public TransportType LanguageServerProtocolTransport { get; set; }
+        public TransportType LanguageServerProtocolTransport { get; set; } = TransportType.Pipe;
         public string TranspoprtPipeName { get; set; } = "Rubberduck.LSP.Pipe";
 
         public List<ExperimentalFeature> EnableExperimentalFeatures { get; set; } = new List<ExperimentalFeature>();

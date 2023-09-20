@@ -72,6 +72,7 @@ namespace Rubberduck
         private CancellationTokenSource _tokenSource = new CancellationTokenSource();
         private Process _serverProcess;
         private LanguageClient _languageClient;
+        private NamedPipeClientStream _pipeStream;
 
         internal RubberduckAddIn(IDTExtensibility2 extAddin, IVBE vbeWrapper, IAddIn addinWrapper)
         {
@@ -243,20 +244,23 @@ namespace Rubberduck
                 LanguageClientOptions clientOptions;
                 switch (transport)
                 {
-                    case ServerPlatform.TransportType.StdIO:
+                    case TransportType.StdIO:
                         clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _serverProcess, InitializeTrace.Verbose);
                         break;
-                    case ServerPlatform.TransportType.Pipe:
-                        var pipe = new NamedPipeClientStream(".", $"{_initialSettings.TranspoprtPipeName}__{Process.GetCurrentProcess().Id}", PipeDirection.InOut, PipeOptions.Asynchronous);
-                        clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), pipe, InitializeTrace.Verbose);
+                    case TransportType.Pipe:
+                        _pipeStream = new NamedPipeClientStream(".", $"{_initialSettings.TranspoprtPipeName}__{Process.GetCurrentProcess().Id}", PipeDirection.InOut, PipeOptions.Asynchronous);
+                        await _pipeStream.ConnectAsync().ConfigureAwait(false);
+                        clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _pipeStream, InitializeTrace.Verbose);
                         break;
                     default:
                         throw new NotSupportedException();
                 }
 
                 _languageClient = LanguageClient.Create(clientOptions);
-                _languageClient.Initialize(_tokenSource.Token).ConfigureAwait(false);
 
+                var initTimeoutToken = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                await _languageClient.Initialize(initTimeoutToken.Token).ConfigureAwait(false);
+                
                 _languageClient.SendLanguageProtocolInitialized(new InitializedParams());
                 _isInitialized = true;
             }
@@ -356,6 +360,20 @@ namespace Rubberduck
                 {
                     _logger.Trace("Sending LSP exit notification...");
                     _languageClient.SendExit(new ExitParams());
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+            }
+
+            try
+            {
+                if (_pipeStream != null)
+                {
+                    _logger.Trace("Disposing pipe stream...");
+                    _pipeStream.Dispose();
+                    _pipeStream = null;
                 }
             }
             catch (Exception e)
