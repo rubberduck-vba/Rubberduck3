@@ -248,7 +248,7 @@ namespace Rubberduck
                         clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _serverProcess, InitializeTrace.Verbose);
                         break;
                     case TransportType.Pipe:
-                        _pipeStream = new NamedPipeClientStream(".", $"{_initialSettings.TranspoprtPipeName}__{Process.GetCurrentProcess().Id}", PipeDirection.InOut, PipeOptions.Asynchronous);
+                        _pipeStream = new NamedPipeClientStream(".", $"{_initialSettings.LanguageServerPipeName}__{Process.GetCurrentProcess().Id}", PipeDirection.InOut, PipeOptions.Asynchronous);
                         await _pipeStream.ConnectAsync().ConfigureAwait(false);
                         clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _pipeStream, InitializeTrace.Verbose);
                         break;

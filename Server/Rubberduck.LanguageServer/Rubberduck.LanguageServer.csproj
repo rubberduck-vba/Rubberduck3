@@ -27,4 +27,10 @@
     <ProjectReference Include="..\..\Shared\Rubberduck.RPC\Rubberduck.ServerPlatform.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

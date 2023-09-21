@@ -9,6 +9,15 @@ using Rubberduck.ServerPlatform;
 
 namespace Rubberduck.Settings
 {
+    public class ServerPlatformSetting
+    {
+        public string Name { get; set; }
+        public string Path { get; set; }
+        public TransportType TransportType { get; set; }
+        public string ServerPipeName { get; set; }
+        public int Port { get; set; }
+    }
+
     public interface IGeneralSettings 
     {
         DisplayLanguageSetting Language { get; set; }
@@ -23,9 +32,7 @@ namespace Rubberduck.Settings
         int MinimumLogLevel { get; set; }
         bool SetDpiUnaware { get; set; }
         bool EnableFolderDragAndDrop { get; set; }
-        TransportType LanguageServerProtocolTransport { get; set; }
-        string TranspoprtPipeName { get; set; }
-
+        List<ServerPlatformSetting> ServerPlatform { get; set; }
         List<ExperimentalFeature> EnableExperimentalFeatures { get; set; }
     }
 
@@ -81,9 +88,7 @@ namespace Rubberduck.Settings
         public bool SetDpiUnaware { get; set; }
         public bool EnableFolderDragAndDrop { get; set; }
 
-        public TransportType LanguageServerProtocolTransport { get; set; } = TransportType.Pipe;
-        public string TranspoprtPipeName { get; set; } = "Rubberduck.LSP.Pipe";
-
+        public List<ServerPlatformSetting> ServerPlatform { get; set; } = new List<ServerPlatformSetting>();
         public List<ExperimentalFeature> EnableExperimentalFeatures { get; set; } = new List<ExperimentalFeature>();
 
         public GeneralSettings()

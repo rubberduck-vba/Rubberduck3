@@ -12,6 +12,10 @@
         /// </summary>
         Pipe,
 
-        //RawSocket
+        /// <summary>
+        /// Client/server messages are exchanged over raw socket.
+        /// </summary>
+        /// <remarks>Firewall rules may prevent opening the port, even in RPC-reserved ranges.</remarks>
+        RawSocket,
     }
 }

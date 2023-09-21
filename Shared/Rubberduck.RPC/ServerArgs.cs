@@ -1,4 +1,6 @@
 ﻿using CommandLine;
+using Rubberduck.InternalApi;
+using System.IO.Pipes;
 
 namespace Rubberduck.ServerPlatform
 {
@@ -12,8 +14,16 @@ namespace Rubberduck.ServerPlatform
         public TransportType TransportType { get; }
 
 
-        [Option('v', "verbose", HelpText = "Whether to output verbose messages.")]
+        [Option('v', "verbose", SetName = "TraceLevel", HelpText = "Whether to output verbose messages.")]
         public bool Verbose { get; set; }
+
+        [Option('s', "silent", SetName = "TraceLevel", HelpText = "Whether or not to enable trace logging.")]
+        public bool Silent { get; set; }
+
+        /// <summary>
+        /// Gets a string that corresponds to the <c>InitializeTrace</c> value for the specified <c>Verbose</c> and <c>Silent</c> switch arguments.
+        /// </summary>
+        public string TraceLevel => Silent ? "Off" : Verbose ? "Verbose" : "Messages";
     }
 
     [Verb("Pipe")]
@@ -21,12 +31,18 @@ namespace Rubberduck.ServerPlatform
     {
         public PipeTransportOptions() : base(TransportType.Pipe) { }
 
-        [Option('n', "Name", Default = "Rubberduck.LSP.Pipe", HelpText = "The name of the transport pipe.")]
-        public string Name { get; set; }
-
         [Option('c', "client", Required = true, HelpText = "The process ID of the client that starts and owns this server.")]
         public int ClientProcessId { get; set; }
 
+        [Option('n', "Name", Default = ServerPlatformSettings.LanguageServerDefaultPipeName, HelpText = "The name of the transport pipe.")]
+        public string Name { get; set; }
+
+        [Option('m', "Mode", Default = PipeTransmissionMode.Byte, HelpText = "The pipe's transmission mode. Use 'Message' for RPC-level trace debugging.")]
+        public PipeTransmissionMode Mode { get; set; }
+
+        /// <summary>
+        /// The actual name of the pipe stream concatenates the <c>Name</c> with the <c>ClientProcessId</c> to ensure different hosts/instances use dedicated channels.
+        /// </summary>
         public string PipeName => $"{Name}__{ClientProcessId}";
     }
 
