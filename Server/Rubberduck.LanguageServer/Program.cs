@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Reflection;
 
 namespace Rubberduck.LanguageServer
 {
@@ -13,6 +14,8 @@ namespace Rubberduck.LanguageServer
         [STAThread]
         public static async Task<int> Main(string[] args)
         {
+            Console.WriteLine(ServerSplash.GetRenderString(Assembly.GetExecutingAssembly().GetName()));
+
             using (var tokenSource = new CancellationTokenSource())
             {
                 var options = await ServerArgs.ParseAsync(args);

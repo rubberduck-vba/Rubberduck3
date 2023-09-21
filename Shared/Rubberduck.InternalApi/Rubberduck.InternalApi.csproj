@@ -134,7 +134,8 @@
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\FolderExtensions.cs" />
     <Compile Include="Extensions\ReadOnlyListExtensions.cs" />
-    <Compile Include="ServerPlatformSettings.cs" />
+    <Compile Include="ServerPlatform\ServerPlatformSettings.cs" />
+    <Compile Include="ServerPlatform\TransportType.cs" />
     <Compile Include="SharedModel\Accessibility.cs" />
     <Compile Include="SharedModel\ComponentType.cs" />
     <Compile Include="SharedModel\DeclarationType.cs" />

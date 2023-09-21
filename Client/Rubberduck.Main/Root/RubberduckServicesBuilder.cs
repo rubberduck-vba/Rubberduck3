@@ -1,6 +1,5 @@
 ﻿//using IndenterSettings = Rubberduck.SmartIndenter.IndenterSettings;
 using Microsoft.Extensions.DependencyInjection;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.Client;
 using Rubberduck.Common;
 using Rubberduck.Common.Hotkeys;
@@ -8,15 +7,12 @@ using Rubberduck.Core;
 using Rubberduck.Core.About;
 using Rubberduck.Core.Editor;
 using Rubberduck.Core.Editor.Tools;
-using Rubberduck.Core.WebApi;
 using Rubberduck.Interaction.MessageBox;
 using Rubberduck.InternalApi.UIContext;
-using Rubberduck.ServerPlatform;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
-using Rubberduck.UI.Command;
 using Rubberduck.UI.WinForms;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.ComManagement.NonDisposingDecorators;
@@ -29,14 +25,9 @@ using Rubberduck.VBEditor.UI;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 using Rubberduck.VBEditor.VbeRuntime;
-using Rubberduck.VersionCheck;
 using System;
-using System.Diagnostics;
 using System.IO.Abstractions;
-using System.Net.Http;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Root
 {

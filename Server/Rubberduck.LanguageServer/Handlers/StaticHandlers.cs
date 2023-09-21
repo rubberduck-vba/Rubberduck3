@@ -11,25 +11,35 @@ namespace Rubberduck.LanguageServer.Handlers
     {
         public static async Task HandleAsync(ILanguageServer server, InitializeParams request, CancellationToken token)
         {
+            var logger = server.GetRequiredService<ILogger<ServerApp>>();
+            logger.LogInformation("Initialize request received!");
+
             token.ThrowIfCancellationRequested();
-            server.GetRequiredService<ILogger<ServerApp>>().LogInformation("Initialize request received");
-            // TODO?
+            // TODO store request.ClientInfo in server state.
+            // TODO stotre request.Capabilities in server state (NOTE: may change with dynamic registration (also TODO! :D)).
+            // TODO store request.WorkspaceFolders in server state (NOTE: replaces obsolete RootPath/RootUri properties)
+            // TODO process any request.InitializationOptions object
+            // TODO validate that the request.ProcessId matches the client process ID passed via command-line, if supplied (required for pipe transport).            
             await Task.CompletedTask;
         }
 
         public static async Task HandleAsync(ILanguageServer server, InitializeParams request, InitializeResult response, CancellationToken token)
         {
+            var logger = server.GetRequiredService<ILogger<ServerApp>>();
+            logger.LogInformation("Client confirmed reception of InitializeResult");
+
             token.ThrowIfCancellationRequested();
-            server.GetRequiredService<ILogger<ServerApp>>().LogInformation("Client confirmed reception of InitializeResult");
-            // TODO
+            // TODO populate response?
             await Task.CompletedTask;
         }
 
         public static async Task HandleAsync(ILanguageServer server, CancellationToken token)
         {
+            var logger = server.GetRequiredService<ILogger<ServerApp>>();
+            logger.LogInformation("Language server is started.");
+
             token.ThrowIfCancellationRequested();
-            server.GetRequiredService<ILogger<ServerApp>>().LogInformation("Language server started");
-            // TODO
+            // TODO start processing server state asynchronously, notify client accordingly.
             await Task.CompletedTask;
         }
     }

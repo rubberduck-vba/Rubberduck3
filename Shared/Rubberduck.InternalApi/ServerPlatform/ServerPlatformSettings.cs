@@ -1,7 +1,10 @@
-﻿namespace Rubberduck.InternalApi
+﻿namespace Rubberduck.InternalApi.ServerPlatform
 {
     public static class ServerPlatformSettings
     {
+        public const TransportType DefaultTransportType = TransportType.Pipe;
+        public const string DefaultTraceLevel = "Verbose";
+
         public const string DatabaseServerConnectionString = "Data Source=Rubberduck.db;";
 
         public const string DatabaseServerExecutable = "Rubberduck.DatabaseServer.exe";

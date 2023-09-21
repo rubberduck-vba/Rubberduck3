@@ -1,11 +1,11 @@
-﻿using System.Diagnostics;
+﻿using Rubberduck.InternalApi.ServerPlatform;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Rubberduck.ServerPlatform
+namespace Rubberduck.Client
 {
     public interface IServerProcess
     {
@@ -16,8 +16,6 @@ namespace Rubberduck.ServerPlatform
     {
         protected virtual string RelativePath { get; } = string.Empty;
         protected abstract string ExecutableFileName { get; }
-
-        protected abstract Task InitializeAsync(TServer server, CancellationToken token);
 
         public virtual Process Start(TransportType transport, bool hidden = true, string args = null)
         {

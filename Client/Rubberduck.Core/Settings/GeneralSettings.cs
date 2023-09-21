@@ -4,18 +4,20 @@ using System.Configuration;
 using System.Linq;
 using System.Xml.Serialization;
 using Rubberduck.Common;
+using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.Resources;
-using Rubberduck.ServerPlatform;
 
 namespace Rubberduck.Settings
 {
     public class ServerPlatformSetting
     {
-        public string Name { get; set; }
+        public string DisplayName { get; set; }
+        public bool IsEnabled { get; set; }
         public string Path { get; set; }
         public TransportType TransportType { get; set; }
         public string ServerPipeName { get; set; }
         public int Port { get; set; }
+        public string TraceLevel { get; set; }
     }
 
     public interface IGeneralSettings 

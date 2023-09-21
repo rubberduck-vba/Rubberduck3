@@ -1,5 +1,5 @@
 ﻿using CommandLine;
-using Rubberduck.InternalApi;
+using Rubberduck.InternalApi.ServerPlatform;
 using System.IO.Pipes;
 
 namespace Rubberduck.ServerPlatform

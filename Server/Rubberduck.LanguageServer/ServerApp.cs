@@ -1,18 +1,21 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Nerdbank.Streams;
 using NLog.Extensions.Logging;
-using Rubberduck.ServerPlatform;
 using System;
+using System.IO.Pipes;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Threading;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Server;
 using Rubberduck.LanguageServer.Handlers;
-using Microsoft.Extensions.Logging;
 using Rubberduck.LanguageServer.Services;
 using Rubberduck.LanguageServer.Model;
-using System.IO.Pipes;
-using Nerdbank.Streams;
+using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.ServerPlatform;
 using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.LanguageServer;
+using NLog.LayoutRenderers.Wrappers;
 
 namespace Rubberduck.LanguageServer
 {
@@ -22,6 +25,7 @@ namespace Rubberduck.LanguageServer
         private readonly CancellationTokenSource _tokenSource = new();
 
         private ILogger<ServerApp>? _logger;
+        private NamedPipeServerStream? _pipe;
 
         public ServerApp(TransportOptions options)
         {
@@ -37,10 +41,11 @@ namespace Rubberduck.LanguageServer
             using (var scope = provider.CreateScope())
             {
                 _logger = scope.ServiceProvider.GetRequiredService<ILogger<ServerApp>>();
+                _logger.LogInformation("Rubberduck 3.0 Language Server v{0}", Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString(3) ?? "0.x");
                 _logger.LogInformation("Starting language server...");
                 _logger.LogDebug($"Startup configuration:: TraceLevel='{_options.TraceLevel}' TransportType='{_options.TransportType}'");
 
-                var server = OmniSharpLanguageServer.Create(options => ConfigureLanguageServer(options, _tokenSource), provider);
+                var server = OmniSharpLanguageServer.Create(ConfigureLanguageServer, provider);
                 
                 _logger.LogInformation("Language server is ready. Awaiting client connection...");
                 await server.WaitForExit;
@@ -55,10 +60,10 @@ namespace Rubberduck.LanguageServer
 
         private void ConfigureLogging(ILoggingBuilder builder)
         {
-            builder.AddNLog("NLog.config");
+            builder.AddNLog("NLog.config"); // mind: release would deploy all executables to a single folder, so NLog.config is shared!
         }
 
-        private void ConfigureLanguageServer(LanguageServerOptions options, CancellationTokenSource tokenSource)
+        private void ConfigureLanguageServer(LanguageServerOptions options)
         {
             // example LSP server: https://github.com/OmniSharp/csharp-language-server-protocol/blob/master/sample/SampleServer/Program.cs
 
@@ -152,7 +157,6 @@ namespace Rubberduck.LanguageServer
 
         private void ConfigureStdIO(LanguageServerOptions options)
         {
-            var ioOptions = (StandardInOutTransportOptions)_options;
             _logger?.LogInformation($"Configuring language server transport to use standard input/output streams...");
 
             options.WithInput(Console.OpenStandardInput())
@@ -164,9 +168,9 @@ namespace Rubberduck.LanguageServer
             var ioOptions = (PipeTransportOptions)_options;
 
             _logger?.LogInformation($"Configuring language server transport to use a named pipe stream (mode: {ioOptions.Mode})...");
-            var pipe = new NamedPipeServerStream(ioOptions.PipeName, PipeDirection.InOut, 1, ioOptions.Mode, PipeOptions.Asynchronous);
-            options.WithInput(pipe.UsePipeReader())
-                   .WithOutput(pipe.UsePipeWriter());
+            _pipe = new NamedPipeServerStream(ioOptions.PipeName, PipeDirection.InOut, 1, ioOptions.Mode, PipeOptions.Asynchronous, 512, 512);
+            options.WithInput(_pipe.UsePipeReader())
+                   .WithOutput(_pipe.UsePipeWriter());
         }
 
         public void Dispose()
@@ -174,9 +178,16 @@ namespace Rubberduck.LanguageServer
             if (!_tokenSource.IsCancellationRequested)
             {
                 _tokenSource.Cancel();
-                _logger?.LogWarning("CancellationTokenSource was not cancelled; token may be disposed before ongoing operations ");
+                _logger?.LogWarning("CancellationTokenSource was not cancelled; token may be disposed before ongoing operations.");
             }
             _tokenSource.Dispose();
+
+            if (_pipe is object)
+            {
+                _logger?.LogDebug("Disposing NamedPipeServerStream...");
+                _pipe.Dispose();
+                _pipe = null;
+            }
         }
 
         public class UnsupportedTransportTypeException : NotSupportedException

@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.ServerPlatform
+﻿namespace Rubberduck.InternalApi.ServerPlatform
 {
     public enum TransportType
     {
@@ -12,10 +12,6 @@
         /// </summary>
         Pipe,
 
-        /// <summary>
-        /// Client/server messages are exchanged over raw socket.
-        /// </summary>
-        /// <remarks>Firewall rules may prevent opening the port, even in RPC-reserved ranges.</remarks>
-        RawSocket,
+        //RawSocket
     }
 }

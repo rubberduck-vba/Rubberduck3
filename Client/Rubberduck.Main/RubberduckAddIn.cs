@@ -1,38 +1,34 @@
 ﻿using Extensibility;
+using Microsoft.Extensions.DependencyInjection;
 using NLog;
+using OmniSharp.Extensions.LanguageServer.Client;
+using OmniSharp.Extensions.LanguageServer.Protocol.General;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO.Abstractions;
+using System.IO.Pipes;
+using System.Linq;
 using System.Reflection;
-using System.Windows.Threading;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Threading;
+using Rubberduck.Client;
 using Rubberduck.Core;
 using Rubberduck.Core.Splash;
+using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.Root;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VersionCheck;
 using Rubberduck.InternalApi.WindowsApi;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.WinForms;
-using Microsoft.Extensions.DependencyInjection;
-using Rubberduck.InternalApi;
-using System.IO;
-using System.Threading.Tasks;
-using System.Threading;
-using Rubberduck.Client;
-using OmniSharp.Extensions.LanguageServer.Client;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using System.IO.Pipes;
-using Microsoft.Extensions.Primitives;
-using OmniSharp.Extensions.LanguageServer.Protocol.General;
-using Rubberduck.ServerPlatform;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 
 namespace Rubberduck
 {
@@ -235,9 +231,12 @@ namespace Rubberduck
 
                 statusViewModel?.UpdateStatus("Starting language server...");
 
-                var transport = _initialSettings.LanguageServerProtocolTransport;
+                var transportSettings = _initialSettings.ServerPlatform.SingleOrDefault(e => e.IsEnabled);
+                var transport = transportSettings?.TransportType ?? ServerPlatformSettings.DefaultTransportType;
+                var traceLevel = (InitializeTrace)Enum.Parse(typeof(InitializeTrace), transportSettings?.TraceLevel ?? ServerPlatformSettings.DefaultTraceLevel, ignoreCase: true);
+
                 var clientProcessId = Process.GetCurrentProcess().Id;
-                _serverProcess = LanguageClientService.StartServerProcess(new LanguageServerProcess(), transport, verbose: true, clientProcessId);
+                _serverProcess = LanguageClientService.StartServerProcess(new LanguageServerProcess(), transport, traceLevel, clientProcessId);
                 
                 statusViewModel?.UpdateStatus("Starting language client...");
 
@@ -248,9 +247,14 @@ namespace Rubberduck
                         clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _serverProcess, InitializeTrace.Verbose);
                         break;
                     case TransportType.Pipe:
-                        _pipeStream = new NamedPipeClientStream(".", $"{_initialSettings.LanguageServerPipeName}__{Process.GetCurrentProcess().Id}", PipeDirection.InOut, PipeOptions.Asynchronous);
+
+                        var name = transportSettings?.ServerPipeName ?? ServerPlatformSettings.LanguageServerDefaultPipeName;
+
+                        _pipeStream = new NamedPipeClientStream(".", $"{name}__{Process.GetCurrentProcess().Id}", PipeDirection.InOut, PipeOptions.Asynchronous);
                         await _pipeStream.ConnectAsync().ConfigureAwait(false);
+
                         clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _pipeStream, InitializeTrace.Verbose);
+
                         break;
                     default:
                         throw new NotSupportedException();
@@ -258,10 +262,9 @@ namespace Rubberduck
 
                 _languageClient = LanguageClient.Create(clientOptions);
 
-                var initTimeoutToken = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-                await _languageClient.Initialize(initTimeoutToken.Token).ConfigureAwait(false);
-                
-                _languageClient.SendLanguageProtocolInitialized(new InitializedParams());
+                await _languageClient.Initialize(_tokenSource.Token).ConfigureAwait(false);
+
+                statusViewModel?.UpdateStatus("Language server connection established.");
                 _isInitialized = true;
             }
             catch (Exception e)

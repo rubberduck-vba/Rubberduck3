@@ -7,7 +7,6 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using Rubberduck.ServerPlatform;
 using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
 using System.Linq;
 using OmniSharp.Extensions.LanguageServer.Protocol.Window;
@@ -16,13 +15,16 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using System.Threading.Tasks;
 using System.IO.Pipes;
 using Nerdbank.Streams;
+using Rubberduck.InternalApi.ServerPlatform;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Rubberduck.Client
 {
     public class LanguageClientService
     {
-        public static Process StartServerProcess<TServer>(TServer server, TransportType transport, bool verbose, int clientProcessId = default, string pipeName = default)
+        public static Process StartServerProcess<TServer>(TServer server, TransportType transport, InitializeTrace traceLevel, int clientProcessId = default, string pipeName = default)
             where TServer : IServerProcess
         {
             var args = string.Empty;
@@ -42,9 +44,13 @@ namespace Rubberduck.Client
                     break;
             }
 
-            if (verbose)
+            if (traceLevel == InitializeTrace.Verbose)
             {
                 args += " --verbose";
+            }
+            else if(traceLevel == InitializeTrace.Off)
+            {
+                args += " --silent";
             }
 
             return server.Start(transport, hidden: true, args);
@@ -84,25 +90,27 @@ namespace Rubberduck.Client
                 .WithTrace(traceLevel)
                 .OnInitialize(async (client, param, token) =>
                 {
-                    // TODO
-                    Debug.WriteLine($"ACK: Initialize");
+                    var logger = client.GetRequiredService<ILogger<LanguageClientService>>();
                     await Task.CompletedTask;
                 })
                 .OnInitialized(async (client, param, response, token) =>
                 {
-                    // TODO
-                    Debug.WriteLine($"ACK: Initialized");
+                    var logger = client.GetRequiredService<ILogger<LanguageClientService>>();
+                    logger.LogInformation("Sending Initialized notification...");
+
+                    client.SendLanguageProtocolInitialized(new InitializedParams());
                     await Task.CompletedTask;
                 })
                 .OnStarted(async (client, token) =>
                 {
-                    // TODO
-                    Debug.WriteLine($"ACK: Started");
+                    var logger = client.GetRequiredService<ILogger<LanguageClientService>>();
+                    logger.LogInformation("Ready.");
                     await Task.CompletedTask;
                 })
                 .OnLogMessage((param, token) =>
                 {
-                    // TODO actually log these
+                    //var logger = client.GetRequiredService<ILogger<LanguageClientService>>(); /* well isn't this interesting! */
+                    //logger.LogInformation("Sending Initialized notification...");
                     Debug.WriteLine($"[{param.Type}] {param.Message}");
                 })
                 .OnWorkDoneProgressCreate(async (param, token) =>
@@ -130,7 +138,7 @@ namespace Rubberduck.Client
                 })
                 .OnLogTrace((param, token) =>
                 {
-                    // TODO actually log these
+                    // TODO surface messages to "console" message window
                     switch (traceLevel)
                     {
                         case InitializeTrace.Off:
