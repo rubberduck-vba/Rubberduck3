@@ -2,7 +2,7 @@
 {
     public static class ServerPlatformSettings
     {
-        public const TransportType DefaultTransportType = TransportType.Pipe;
+        public const TransportType DefaultTransportType = TransportType.StdIO;
         public const string DefaultTraceLevel = "Verbose";
 
         public const string DatabaseServerConnectionString = "Data Source=Rubberduck.db;";

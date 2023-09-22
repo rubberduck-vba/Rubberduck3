@@ -58,25 +58,26 @@ namespace Rubberduck.Client
 
         public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, NamedPipeClientStream pipe, InitializeTrace traceLevel)
         {
-            var options = ConfigureLanguageClient(clientAssembly, traceLevel);
+            var options = new LanguageClientOptions();
             options.WithInput(pipe.UsePipeReader());
             options.WithOutput(pipe.UsePipeWriter());
 
+            ConfigureLanguageClient(options, clientAssembly, traceLevel);
             return options;
         }
 
         public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, Process serverProcess, InitializeTrace traceLevel)
         {
-            var options = ConfigureLanguageClient(clientAssembly, traceLevel);
+            var options = new LanguageClientOptions();
             options.WithInput(serverProcess.StandardOutput.BaseStream);
             options.WithOutput(serverProcess.StandardInput.BaseStream);
 
+            ConfigureLanguageClient(options, clientAssembly, traceLevel);
             return options;
         }
 
-        private static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, InitializeTrace traceLevel)
+        private static LanguageClientOptions ConfigureLanguageClient(LanguageClientOptions options, Assembly clientAssembly, InitializeTrace traceLevel)
         {
-            var options = new LanguageClientOptions();
 
             var info = clientAssembly.ToClientInfo();
             var workspace = new DirectoryInfo(clientAssembly.Location).ToWorkspaceFolder();
@@ -85,34 +86,11 @@ namespace Rubberduck.Client
             options
                 .WithClientInfo(info)
                 .WithClientCapabilities(clientCapabilities)
+                .WithTrace(traceLevel)
+                //.WithInitializationOptions(new object()) // TODO send any relevant info here
                 .WithWorkspaceFolder(workspace)
                 .WithContentModifiedSupport(true)
-                .WithTrace(traceLevel)
-                .OnInitialize(async (client, param, token) =>
-                {
-                    var logger = client.GetRequiredService<ILogger<LanguageClientService>>();
-                    await Task.CompletedTask;
-                })
-                .OnInitialized(async (client, param, response, token) =>
-                {
-                    var logger = client.GetRequiredService<ILogger<LanguageClientService>>();
-                    logger.LogInformation("Sending Initialized notification...");
-
-                    client.SendLanguageProtocolInitialized(new InitializedParams());
-                    await Task.CompletedTask;
-                })
-                .OnStarted(async (client, token) =>
-                {
-                    var logger = client.GetRequiredService<ILogger<LanguageClientService>>();
-                    logger.LogInformation("Ready.");
-                    await Task.CompletedTask;
-                })
-                .OnLogMessage((param, token) =>
-                {
-                    //var logger = client.GetRequiredService<ILogger<LanguageClientService>>(); /* well isn't this interesting! */
-                    //logger.LogInformation("Sending Initialized notification...");
-                    Debug.WriteLine($"[{param.Type}] {param.Message}");
-                })
+                /*
                 .OnWorkDoneProgressCreate(async (param, token) =>
                 {
                     // TODO store WorkDoneProgress token
@@ -180,6 +158,7 @@ namespace Rubberduck.Client
                     // TODO ??
                     await Task.CompletedTask;
                 })
+                */
             ;
 
             return options;

@@ -41,15 +41,15 @@ namespace Rubberduck.Client
                 Arguments = args,
                 CreateNoWindow = hidden,
                 UseShellExecute = false,
-        };
 
-            if (transport == TransportType.StdIO)
-            {
-                info.RedirectStandardInput = true;
-                info.RedirectStandardOutput = true;
-            }
+                // conditional on TransportType.StdIO?
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+            };
 
-            var process = Process.Start(info);
+            var process = new Process { StartInfo = info };
+            process.Start();
+            
             return process;
         }
     }

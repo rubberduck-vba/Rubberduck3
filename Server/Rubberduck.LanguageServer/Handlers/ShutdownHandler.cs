@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.LanguageServer.Handlers
 {
+
     public class ShutdownHandler : ShutdownHandlerBase
     {
         public async override Task<Unit> Handle(ShutdownParams request, CancellationToken cancellationToken)

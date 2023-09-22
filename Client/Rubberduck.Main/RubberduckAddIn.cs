@@ -67,8 +67,9 @@ namespace Rubberduck
 
         private CancellationTokenSource _tokenSource = new CancellationTokenSource();
         private Process _serverProcess;
-        private LanguageClient _languageClient;
         private NamedPipeClientStream _pipeStream;
+
+        private LanguageClient _languageClient;
 
         internal RubberduckAddIn(IDTExtensibility2 extAddin, IVBE vbeWrapper, IAddIn addinWrapper)
         {
@@ -240,31 +241,27 @@ namespace Rubberduck
                 
                 statusViewModel?.UpdateStatus("Starting language client...");
 
-                LanguageClientOptions clientOptions;
+                Action<LanguageClientOptions> setClientOptions;
                 switch (transport)
                 {
                     case TransportType.StdIO:
-                        clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _serverProcess, InitializeTrace.Verbose);
+                        setClientOptions = options => LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _serverProcess, InitializeTrace.Verbose);
                         break;
                     case TransportType.Pipe:
-
                         var name = transportSettings?.ServerPipeName ?? ServerPlatformSettings.LanguageServerDefaultPipeName;
-
                         _pipeStream = new NamedPipeClientStream(".", $"{name}__{Process.GetCurrentProcess().Id}", PipeDirection.InOut, PipeOptions.Asynchronous);
-                        await _pipeStream.ConnectAsync().ConfigureAwait(false);
-
-                        clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _pipeStream, InitializeTrace.Verbose);
-
+                        setClientOptions = options => LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _pipeStream, InitializeTrace.Verbose);
                         break;
                     default:
                         throw new NotSupportedException();
                 }
 
-                _languageClient = LanguageClient.Create(clientOptions);
+                _languageClient = LanguageClient.Create(setClientOptions);
 
-                await _languageClient.Initialize(_tokenSource.Token).ConfigureAwait(false);
+                statusViewModel?.UpdateStatus("Initializing language server protocol...");
+                await _languageClient.Initialize(_tokenSource.Token);
 
-                statusViewModel?.UpdateStatus("Language server connection established.");
+                statusViewModel?.UpdateStatus("Connection established.");
                 _isInitialized = true;
             }
             catch (Exception e)
@@ -377,6 +374,20 @@ namespace Rubberduck
                     _logger.Trace("Disposing pipe stream...");
                     _pipeStream.Dispose();
                     _pipeStream = null;
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+            }
+
+            try
+            {
+                if (_languageClient != null)
+                {
+                    _logger.Trace("Disposing language client...");
+                    _languageClient.SendExit();
+                    _languageClient.Dispose();
                 }
             }
             catch (Exception e)

@@ -19,7 +19,7 @@ namespace Rubberduck.LanguageServer
             using (var tokenSource = new CancellationTokenSource())
             {
                 var options = await ServerArgs.ParseAsync(args);
-                await new ServerApp(options).RunAsync();
+                await new ServerApp(options, tokenSource).RunAsync();
             }
             return 0;
         }
