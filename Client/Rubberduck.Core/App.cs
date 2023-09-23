@@ -19,6 +19,7 @@ using Rubberduck.UI.Command;
 using System.Threading.Tasks;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.Core.Settings;
 
 namespace Rubberduck.Core
 {
@@ -103,7 +104,7 @@ namespace Rubberduck.Core
 
         private void UpdateLoggingLevel()
         {
-            LogLevelHelper.SetMinimumLogLevel(LogLevel.FromOrdinal(_config.UserSettings.GeneralSettings.MinimumLogLevel));
+            //LogLevelHelper.SetMinimumLogLevel(LogLevel.FromOrdinal(_config.UserSettings.GeneralSettings.MinimumLogLevel));
         }
 
         /// <summary>
@@ -114,14 +115,15 @@ namespace Rubberduck.Core
         /// </summary>
         private async Task UpdateLoggingLevelOnShutdownAsync()
         {
-            if (_config.UserSettings.GeneralSettings.UserEditedLogLevel ||
-                _config.UserSettings.GeneralSettings.MinimumLogLevel != LogLevel.Trace.Ordinal)
-            {
-                return;
-            }
+            //if (_config.UserSettings.GeneralSettings.UserEditedLogLevel ||
+            //    _config.UserSettings.GeneralSettings.MinimumLogLevel != LogLevel.Trace.Ordinal)
+            //{
+            //    return;
+            //}
 
-            _config.UserSettings.GeneralSettings.MinimumLogLevel = LogLevel.Off.Ordinal;
-            await _settingsService.SaveAsync(_config);
+            //_config.UserSettings.GeneralSettings.MinimumLogLevel = LogLevel.Off.Ordinal;
+            //await _settingsService.SaveAsync(_config);
+            await Task.CompletedTask;
         }
 
         public async Task StartupAsync(string version)
@@ -165,8 +167,10 @@ namespace Rubberduck.Core
                 Logger.Error(exception, "Error Setting Culture for Rubberduck");
                 // not accessing resources here, because setting resource culture literally just failed.
                 _messageBox.NotifyWarn(exception.Message, "Rubberduck");
-                _config.UserSettings.GeneralSettings.Language.Code = currentCulture.Name;
-                await _settingsService.SaveAsync(_config);
+
+                var vm = new RubberduckSettingsViewModel(_settingsService.Value);
+                vm.Locale = currentCulture.Name;
+                await _settingsService.WriteToFileAsync(vm.ToSettings());
             }
         }
 
@@ -195,7 +199,7 @@ namespace Rubberduck.Core
             try
             {
                 Logger.Trace("Checking for legacy Smart Indenter settings.");
-                if (_config.UserSettings.GeneralSettings.IsSmartIndenterPrompted /*||
+                if (_settingsService.Value.IsSmartIndenterPrompted /*||
                     !_config.UserSettings.IndenterSettings.LegacySettingsExist()*/)
                 {
                     return;
@@ -205,8 +209,10 @@ namespace Rubberduck.Core
                     Logger.Trace("Attempting to load legacy Smart Indenter settings.");
                     //_config.UserSettings.IndenterSettings.LoadLegacyFromRegistry();
                 }
-                _config.UserSettings.GeneralSettings.IsSmartIndenterPrompted = true;
-                await _settingsService.SaveAsync(_config);
+
+                var vm = new RubberduckSettingsViewModel(_settingsService.Value);
+                vm.IsSmartIndenterPrompted = true;
+                await _settingsService.WriteToFileAsync(vm.ToSettings());
             }
             catch (Exception e)
             {
@@ -250,7 +256,7 @@ namespace Rubberduck.Core
 
             if (_settingsService != null)
             {
-                _settingsService.SettingsChanged -= HandleConfigServiceSettingsChanged;
+                _settingsService.SettingsChanged -= HandleSettingsServiceSettingsChanged;
             }
 
             UiDispatcher.Shutdown();
