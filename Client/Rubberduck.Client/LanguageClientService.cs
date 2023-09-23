@@ -167,6 +167,8 @@ namespace Rubberduck.Client
         private static ClientCapabilities GetClientCapabilities()
         {
             var supported = new Supports<bool> { Value = true };
+            var notSupported = new Supports<bool> { Value = false };
+
             var capabilities = new ClientCapabilities
             {
                 /* GENERAL */
@@ -278,7 +280,7 @@ namespace Rubberduck.Client
                             }
                         }
                     },
-                    CodeLens = null, // for now anyway
+                    CodeLens = null, // planned post-3.0
                     ColorProvider = new Supports<ColorProviderCapability> { Value = new ColorProviderCapability() },
                     Completion = new Supports<CompletionCapability>
                     {
@@ -320,7 +322,7 @@ namespace Rubberduck.Client
                     {
                         Value = new DeclarationCapability { LinkSupport = supported }
                     },
-                    Definition = null,
+                    Definition = null, // declaration vs definition is unclear
                     DocumentHighlight = new Supports<DocumentHighlightCapability> { Value = new DocumentHighlightCapability() },
                     DocumentLink = new Supports<DocumentLinkCapability> { Value = new DocumentLinkCapability { TooltipSupport = supported } },
                     DocumentSymbol = new Supports<DocumentSymbolCapability>
@@ -333,6 +335,10 @@ namespace Rubberduck.Client
                             SymbolKind = new SymbolKindCapabilityOptions { ValueSet = new Container<SymbolKind>(SymbolKind.Array, SymbolKind.Boolean, SymbolKind.Class, SymbolKind.Constant, SymbolKind.Enum, SymbolKind.EnumMember, SymbolKind.Event, SymbolKind.Field, SymbolKind.File, SymbolKind.Function, SymbolKind.Interface, SymbolKind.Method, SymbolKind.Module, SymbolKind.Number, SymbolKind.Null, SymbolKind.Object, SymbolKind.Operator, SymbolKind.Package, SymbolKind.Property, SymbolKind.String, SymbolKind.Struct, SymbolKind.Variable) }
                         }
                     },
+                    Diagnostic = new Supports<DiagnosticWorkspaceClientCapabilities> { Value = new DiagnosticWorkspaceClientCapabilities 
+                    {
+                        RefreshSupport = supported,
+                    } },
                     FoldingRange = new Supports<FoldingRangeCapability>
                     {
                         Value = new FoldingRangeCapability
@@ -344,7 +350,6 @@ namespace Rubberduck.Client
                     Formatting = new Supports<DocumentFormattingCapability> { Value = new DocumentFormattingCapability() },
                     Hover = new Supports<HoverCapability> { Value = new HoverCapability { ContentFormat = new Container<MarkupKind>(MarkupKind.Markdown) } },
                     Implementation = new Supports<ImplementationCapability> { Value = new ImplementationCapability { LinkSupport = supported } },
-                    LinkedEditingRange = null, // for now
                     OnTypeFormatting = new Supports<DocumentOnTypeFormattingCapability> { Value = new DocumentOnTypeFormattingCapability() },
                     PublishDiagnostics = new Supports<PublishDiagnosticsCapability> { Value = new PublishDiagnosticsCapability() },
                     References = new Supports<ReferenceCapability> { Value = new ReferenceCapability() },
@@ -357,7 +362,10 @@ namespace Rubberduck.Client
                             PrepareSupportDefaultBehavior = PrepareSupportDefaultBehavior.Identifier,
                         }
                     },
-                    RangeFormatting = new Supports<DocumentRangeFormattingCapability> { Value = new DocumentRangeFormattingCapability() },
+                    RangeFormatting = new Supports<DocumentRangeFormattingCapability>
+                    {
+                        Value = new DocumentRangeFormattingCapability()
+                    },
                     SignatureHelp = new Supports<SignatureHelpCapability>
                     {
                         Value = new SignatureHelpCapability
@@ -390,8 +398,29 @@ namespace Rubberduck.Client
                             //TokenTypes = new Container<SemanticTokenType>(SemanticTokenType...)
                         }
                     },
+                    SelectionRange = new Supports<SelectionRangeCapability>
+                    {
+                        Value = new SelectionRangeCapability
+                        {
+                            LineFoldingOnly = supported,
+                            RangeLimit = 10000,
+                        },
+                    },
+                    Synchronization = new Supports<TextSynchronizationCapability>
+                    {
+                        Value = new TextSynchronizationCapability
+                        {
+                            DidSave = true,
+                            WillSave = false,
+                            WillSaveWaitUntil = false,
+                        }
+                    },
                     TypeDefinition = new Supports<TypeDefinitionCapability> { Value = new TypeDefinitionCapability { LinkSupport = supported } },
-                    ExtensionData = new Dictionary<string, JToken>()
+                    ExtensionData = new Dictionary<string, JToken>(),
+                    TypeHierarchy = new Supports<TypeHierarchyCapability>
+                    {
+                        Value = new TypeHierarchyCapability()
+                    },
                 },
 
                 /* OTHER */

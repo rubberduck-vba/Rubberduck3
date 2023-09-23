@@ -176,7 +176,6 @@ namespace Rubberduck.LanguageServer
             _logger?.LogInformation($"Configuring language server transport to use a named pipe stream (mode: {ioOptions.Mode})...");
 
             _pipe = new NamedPipeServerStream(ioOptions.PipeName, PipeDirection.InOut, 1, ioOptions.Mode, PipeOptions.Asynchronous);
-
             options.WithInput(_pipe.UsePipeReader());
             options.WithOutput(_pipe.UsePipeWriter());
         }

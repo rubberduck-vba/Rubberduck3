@@ -241,22 +241,23 @@ namespace Rubberduck
                 
                 statusViewModel?.UpdateStatus("Starting language client...");
 
-                Action<LanguageClientOptions> setClientOptions;
+                LanguageClientOptions clientOptions;
                 switch (transport)
                 {
                     case TransportType.StdIO:
-                        setClientOptions = options => LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _serverProcess, InitializeTrace.Verbose);
+                        clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _serverProcess, InitializeTrace.Verbose);
                         break;
                     case TransportType.Pipe:
                         var name = transportSettings?.ServerPipeName ?? ServerPlatformSettings.LanguageServerDefaultPipeName;
                         _pipeStream = new NamedPipeClientStream(".", $"{name}__{Process.GetCurrentProcess().Id}", PipeDirection.InOut, PipeOptions.Asynchronous);
-                        setClientOptions = options => LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _pipeStream, InitializeTrace.Verbose);
+                        await _pipeStream.ConnectAsync(Convert.ToInt32(TimeSpan.FromSeconds(10).TotalMilliseconds));
+                        clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _pipeStream, InitializeTrace.Verbose);
                         break;
                     default:
                         throw new NotSupportedException();
                 }
 
-                _languageClient = LanguageClient.Create(setClientOptions);
+                _languageClient = LanguageClient.Create(clientOptions, _serviceScope.ServiceProvider);
 
                 statusViewModel?.UpdateStatus("Initializing language server protocol...");
                 await _languageClient.Initialize(_tokenSource.Token);
