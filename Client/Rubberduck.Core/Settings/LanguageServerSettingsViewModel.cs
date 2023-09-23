@@ -21,7 +21,7 @@ namespace Rubberduck.Core.Settings
             TraceLevel = settings.TraceLevel;
         }
 
-        public string Path { get; set }
+        public string Path { get; set; }
 
         public TransportType TransportType { get; set; }
         public string PipeName { get; set; }
