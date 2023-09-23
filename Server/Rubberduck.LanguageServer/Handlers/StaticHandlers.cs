@@ -16,7 +16,7 @@ namespace Rubberduck.LanguageServer.Handlers
 
             token.ThrowIfCancellationRequested();
             // TODO store request.ClientInfo in server state.
-            // TODO stotre request.Capabilities in server state (NOTE: may change with dynamic registration (also TODO! :D)).
+            // TODO store request.Capabilities in server state (NOTE: may change with dynamic registration (also TODO! :D)).
             // TODO store request.WorkspaceFolders in server state (NOTE: replaces obsolete RootPath/RootUri properties)
             // TODO process any request.InitializationOptions object
             // TODO validate that the request.ProcessId matches the client process ID passed via command-line, if supplied (required for pipe transport).            

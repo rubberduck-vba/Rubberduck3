@@ -1,7 +1,7 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using System.Reflection;
 
-namespace Rubberduck.Client
+namespace Rubberduck.Client.Extensions
 {
     public static class AssemblyExtensions
     {
@@ -12,18 +12,6 @@ namespace Rubberduck.Client
             {
                 Name = name.Name,
                 Version = name.Version.ToString(3)
-            };
-        }
-    }
-
-    public static class FolderExtensions
-    {
-        public static WorkspaceFolder ToWorkspaceFolder(this System.IO.DirectoryInfo folder)
-        {
-            return new WorkspaceFolder
-            {
-                Name = folder.Name,
-                Uri = folder.FullName 
             };
         }
     }

@@ -1,23 +1,21 @@
-﻿using Rubberduck.InternalApi.ServerPlatform;
+﻿using Rubberduck.SettingsProvider.Model;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Client
 {
     public interface IServerProcess
     {
-        Process Start(TransportType transport, bool hidden = true, string args = null);
+        Process Start(long clientProcessId, IProcessStartInfoArgumentProvider settings);
     }
 
     public abstract class ServerProcess<TServer> : IServerProcess
     {
-        protected virtual string RelativePath { get; } = string.Empty;
+        protected virtual string GetRelativePath(IProcessStartInfoArgumentProvider settings) => settings.Path;
         protected abstract string ExecutableFileName { get; }
 
-        public virtual Process Start(TransportType transport, bool hidden = true, string args = null)
+        public virtual Process Start(long clientProcessId, IProcessStartInfoArgumentProvider settings)
         {
             var root = Directory.GetParent(Assembly.GetExecutingAssembly().Location)
 #if DEBUG
@@ -27,7 +25,7 @@ namespace Rubberduck.Client
                 .Parent // Rubberduck3
 #endif
             ;
-            var path = Path.Combine(root.FullName, RelativePath
+            var path = Path.Combine(root.FullName, settings.Path
 #if DEBUG
                 , @"bin\Debug\net6.0"
 #endif
@@ -38,11 +36,10 @@ namespace Rubberduck.Client
             {
                 FileName = filename,
                 WorkingDirectory = Path.GetDirectoryName(filename),
-                Arguments = args,
-                CreateNoWindow = hidden,
+                Arguments = settings.ToProcessStartInfoArguments(clientProcessId),
+                CreateNoWindow = true,
                 UseShellExecute = false,
 
-                // conditional on TransportType.StdIO?
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
             };

@@ -1,11 +1,12 @@
 ﻿using System;
-using MemoryStream = System.IO.MemoryStream;
-using Path = System.IO.Path;
-using StreamWriter = System.IO.StreamWriter;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using System.IO.Abstractions;
+
+using MemoryStream = System.IO.MemoryStream;
+using StreamWriter = System.IO.StreamWriter;
+using Path = System.IO.Path;
 
 namespace Rubberduck.SettingsProvider
 {

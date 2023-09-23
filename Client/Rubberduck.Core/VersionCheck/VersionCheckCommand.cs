@@ -28,26 +28,23 @@ namespace Rubberduck.UI.Command
             var settings = (await _config.ReadAsync()).UserSettings.GeneralSettings;
             Logger.Info("Executing version check...");
 
-            await _versionCheck
-                .GetLatestVersionAsync(settings)
-                .ContinueWith(t =>
-                {
-                    if (_versionCheck.CurrentVersion < t.Result)
-                    {
-                        var proceed = true;
-                        if (_versionCheck.IsDebugBuild || !settings.IncludePreRelease)
-                        {
-                            // if the latest version has a revision number and isn't a pre-release build,
-                            // avoid prompting since we can't know if the build already includes the latest version.
-                            proceed = t.Result.Revision == 0;
-                        }
+            var latest = await _versionCheck.GetLatestVersionAsync(settings);
 
-                        if (proceed)
-                        {
-                            //PromptAndBrowse(t.Result, settings.IncludePreRelease);
-                        }
-                    }
-                });
+            if (_versionCheck.CurrentVersion < latest)
+            {
+                var proceed = true;
+                if (_versionCheck.IsDebugBuild || !settings.IncludePreRelease)
+                {
+                    // if the latest version has a revision number and isn't a pre-release build,
+                    // avoid prompting since we can't know if the build already includes the latest version.
+                    proceed = latest.Revision == 0;
+                }
+
+                if (proceed)
+                {
+                    //PromptAndBrowse(t.Result, settings.IncludePreRelease);
+                }
+            }
         }
 
         //private void PromptAndBrowse(Version latestVersion, bool includePreRelease)

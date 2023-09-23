@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO.Abstractions;
 using System.IO.Pipes;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,40 +20,22 @@ using Rubberduck.Core;
 using Rubberduck.Core.Splash;
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.Root;
-using Rubberduck.Settings;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.InternalApi.WindowsApi;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.WinForms;
+using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider;
 
 namespace Rubberduck
 {
-    internal interface IVBIDEAddIn
-    {
-        /// <summary>
-        /// Initializes the add-in. Any subsequent invocation should be no-op.
-        /// </summary>
-        /// <remarks>
-        /// Some hosts connect VBE add-ins in different ways, more or less compliant with how IDTExtensibility2 intended it.
-        /// </remarks>
-        Task InitializeAsync();
-
-        /// <summary>
-        /// Shuts down the add-in. Any subsequent invocation should be no-op.
-        /// </summary>
-        /// <remarks>
-        /// Some hosts disconnect VBE add-ins in different ways, more or less compliant with how IDTExtensibility2 intended it.
-        /// </remarks>
-        Task ShutdownAsync();
-    }
-
     internal class RubberduckAddIn : IVBIDEAddIn
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private GeneralSettings _initialSettings;
+
+        private RubberduckSettings _initialSettings;
 
         private IVBE _vbe;
         private IAddIn _addin;
@@ -134,7 +115,7 @@ namespace Rubberduck
                 await InitializeSettingsAsync(scope).ConfigureAwait(false);
 
                 var version = GetVersionString();
-                if (_initialSettings?.CanShowSplash ?? false)
+                if (_initialSettings.ShowSplash)
                 {
                     splashModel = new SplashViewModel(version);
                     splash = ShowSplash(splashModel);
@@ -180,38 +161,31 @@ namespace Rubberduck
 
         private async Task InitializeSettingsAsync(IServiceScope scope)
         {
-            var configProvider = scope.ServiceProvider.GetRequiredService<GeneralConfigProvider>();
-            _initialSettings = await configProvider.ReadAsync();
+            var configProvider = scope.ServiceProvider.GetRequiredService<SettingsService<RubberduckSettings>>();
+            _initialSettings = await configProvider.ReadFromFileAsync();
 
-            if (_initialSettings is object)
+            try
             {
-                try
-                {
-                    var cultureInfo = CultureInfo.GetCultureInfo(_initialSettings.Language.Code);
-                    CultureInfo.CurrentUICulture = cultureInfo;
-                    Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = cultureInfo;
-                }
-                catch (CultureNotFoundException)
-                {
-                    // will load "invariant" (en-US) resources
-                }
+                var cultureInfo = CultureInfo.GetCultureInfo(_initialSettings.Locale);
+                CultureInfo.CurrentUICulture = cultureInfo;
+                Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = cultureInfo;
+            }
+            catch (CultureNotFoundException)
+            {
+                // will load "invariant" (en-US) resources
+            }
 
-                try
-                {
-                    if (_initialSettings.SetDpiUnaware)
-                    {
-                        SHCore.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.Process_DPI_Unaware);
-                    }
-                }
-                catch (Exception)
-                {
-                    Debug.Assert(false, "Could not set DPI awareness.");
-                }
-            }
-            else
-            {
-                Debug.Assert(false, "Settings could not be initialized.");
-            }
+            //try
+            //{
+            //    if (_initialSettings.SetDpiUnaware)
+            //    {
+            //        SHCore.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.Process_DPI_Unaware);
+            //    }
+            //}
+            //catch (Exception)
+            //{
+            //    Debug.Assert(false, "Could not set DPI awareness.");
+            //}
         }
 
         private async Task StartupAsync(IStatusUpdate statusViewModel, string version)
@@ -232,27 +206,26 @@ namespace Rubberduck
 
                 statusViewModel?.UpdateStatus("Starting language server...");
 
-                var transportSettings = _initialSettings.ServerPlatform.SingleOrDefault(e => e.IsEnabled);
-                var transport = transportSettings?.TransportType ?? ServerPlatformSettings.DefaultTransportType;
-                var traceLevel = (InitializeTrace)Enum.Parse(typeof(InitializeTrace), transportSettings?.TraceLevel ?? ServerPlatformSettings.DefaultTraceLevel, ignoreCase: true);
-
+                var settings = LanguageServerSettings.Default;
                 var clientProcessId = Process.GetCurrentProcess().Id;
-                _serverProcess = LanguageClientService.StartServerProcess(new LanguageServerProcess(), transport, traceLevel, clientProcessId);
+                _serverProcess = new LanguageServerProcess().Start(clientProcessId, settings);
                 
                 statusViewModel?.UpdateStatus("Starting language client...");
 
                 LanguageClientOptions clientOptions;
-                switch (transport)
+                switch (settings.TransportType)
                 {
                     case TransportType.StdIO:
                         clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _serverProcess, InitializeTrace.Verbose);
                         break;
+
                     case TransportType.Pipe:
-                        var name = transportSettings?.ServerPipeName ?? ServerPlatformSettings.LanguageServerDefaultPipeName;
+                        var name = settings.PipeName ?? ServerPlatformSettings.LanguageServerDefaultPipeName;
                         _pipeStream = new NamedPipeClientStream(".", $"{name}__{Process.GetCurrentProcess().Id}", PipeDirection.InOut, PipeOptions.Asynchronous);
                         await _pipeStream.ConnectAsync(Convert.ToInt32(TimeSpan.FromSeconds(10).TotalMilliseconds));
                         clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _pipeStream, InitializeTrace.Verbose);
                         break;
+
                     default:
                         throw new NotSupportedException();
                 }

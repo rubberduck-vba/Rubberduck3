@@ -96,6 +96,7 @@
     <Compile Include="ComClientLibrary\UI\DockableWindowHost.cs" />
     <Compile Include="ComClientLibrary\UI\IOleWrapper.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="IVBIDEAddIn.cs" />
     <Compile Include="Root\FixedGenericAppender.cs" />
     <Compile Include="Root\RootComWrapperFactory.cs" />
     <Compile Include="Root\RubberduckIoCInstaller.cs" />
@@ -122,6 +123,10 @@
       <Project>{3EE4CCB7-42FC-49D2-8221-88A2FEF2F762}</Project>
       <Name>Rubberduck.Interaction</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
+      <Project>{e794cfc3-3d9f-400f-88d9-69e929d8e8af}</Project>
+      <Name>Rubberduck.SettingsProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Client\Rubberduck.Client.csproj">
       <Project>{36e18087-fe84-4e3a-9c65-07ca0fd7d303}</Project>
       <Name>Rubberduck.Client</Name>
@@ -137,10 +142,6 @@
     <ProjectReference Include="..\..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj">
       <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
       <Name>Rubberduck.Resources</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
-      <Project>{e794cfc3-3d9f-400f-88d9-69e929d8e8af}</Project>
-      <Name>Rubberduck.SettingsProvider</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.UI.WinForms\Rubberduck.UI.WinForms.csproj">
       <Project>{A1F54935-FE6D-4013-B618-5251DE4466CF}</Project>

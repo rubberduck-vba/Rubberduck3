@@ -19,43 +19,13 @@ using Rubberduck.InternalApi.ServerPlatform;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Rubberduck.SettingsProvider.Model;
+using Rubberduck.Client.Extensions;
 
 namespace Rubberduck.Client
 {
     public class LanguageClientService
     {
-        public static Process StartServerProcess<TServer>(TServer server, TransportType transport, InitializeTrace traceLevel, int clientProcessId = default, string pipeName = default)
-            where TServer : IServerProcess
-        {
-            var args = string.Empty;
-            switch (transport)
-            {
-                case TransportType.StdIO:
-                    args = $"StdIO";
-                    break;
-                case TransportType.Pipe:
-                    args = $"Pipe --client {clientProcessId}";
-                    if (!string.IsNullOrWhiteSpace(pipeName))
-                    {
-                        args += $" --name \"{pipeName}\"";
-                    }
-                    break;
-                default:
-                    break;
-            }
-
-            if (traceLevel == InitializeTrace.Verbose)
-            {
-                args += " --verbose";
-            }
-            else if(traceLevel == InitializeTrace.Off)
-            {
-                args += " --silent";
-            }
-
-            return server.Start(transport, hidden: true, args);
-        }
-
         public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, NamedPipeClientStream pipe, InitializeTrace traceLevel)
         {
             var options = new LanguageClientOptions();
@@ -71,6 +41,11 @@ namespace Rubberduck.Client
             var options = new LanguageClientOptions();
             options.WithInput(serverProcess.StandardOutput.BaseStream);
             options.WithOutput(serverProcess.StandardInput.BaseStream);
+
+            options.DisableDynamicRegistration();
+            options.EnableProgressTokens();
+            options.EnableWorkspaceFolders();
+            options.WithSerializer(new OmniSharp.Extensions.LanguageServer.Protocol.Serialization.LspSerializer(ClientVersion.Lsp3));
 
             ConfigureLanguageClient(options, clientAssembly, traceLevel);
             return options;
@@ -167,7 +142,7 @@ namespace Rubberduck.Client
         private static ClientCapabilities GetClientCapabilities()
         {
             var supported = new Supports<bool> { Value = true };
-            var notSupported = new Supports<bool> { Value = false };
+            //var notSupported = new Supports<bool> { Value = false };
 
             var capabilities = new ClientCapabilities
             {

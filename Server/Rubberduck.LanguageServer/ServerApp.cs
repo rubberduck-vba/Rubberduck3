@@ -14,19 +14,96 @@ using Rubberduck.LanguageServer.Services;
 using Rubberduck.LanguageServer.Model;
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.ServerPlatform;
+using System.Globalization;
+using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
+using System.Linq;
+using System.Collections.Generic;
 using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.LanguageServer;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
+using Newtonsoft.Json.Linq;
+using System.Reactive;
 
 namespace Rubberduck.LanguageServer
 {
+    public interface IServerStateWriter
+    {
+        void Initialize(InitializeParams param);
+    }
+
+    public class LanguageServerState : IServerStateWriter
+    {
+        private readonly ILogger _logger;
+
+        public LanguageServerState(ILogger<LanguageServerState> logger)
+        {
+            _logger = logger;
+
+            _clientInfo = default!;
+            _capabilities = default!;
+            _processId = default!;
+            _locale = default!;
+            _workspaceFolders = default!;
+        }
+
+        private ClientInfo _clientInfo;
+        public ClientInfo ClientInfo => _clientInfo;
+
+        private ClientCapabilities _capabilities;
+        public ClientCapabilities ClientCapabilities => _capabilities;
+
+        private long _processId;
+        public long ClientProcessId => _processId;
+
+        //private object? _options;
+        // TODO expose
+
+        private CultureInfo _locale;
+        public CultureInfo Locale => _locale;
+
+        private InitializeTrace _traceLevel;
+        public InitializeTrace TraceLevel => _traceLevel;
+
+        private Container<WorkspaceFolder> _workspaceFolders;
+        public IEnumerable<WorkspaceFolder> Workspacefolders => _workspaceFolders;
+
+        public void Initialize(InitializeParams param)
+        {
+            _clientInfo = param.ClientInfo ?? throw new ArgumentNullException(nameof(param.ClientInfo));
+            _capabilities = param.Capabilities ?? throw new ArgumentNullException(nameof(param.Capabilities));
+            _processId = param.ProcessId ?? throw new ArgumentNullException(nameof(param.ProcessId));
+            _workspaceFolders = param.WorkspaceFolders ?? throw new ArgumentNullException(nameof(param.WorkspaceFolders));
+
+            _locale = ToCultureInfo(param.Locale);
+            _traceLevel = param.Trace;
+
+            //_options = param.InitializationOptions; // TODO
+        }
+
+        private CultureInfo ToCultureInfo(string? locale)
+        {
+            try
+            {
+                var name = locale ?? throw new ArgumentNullException(nameof(locale));
+                return CultureInfo.GetCultureInfo(locale);
+            }
+            catch
+            {
+                _logger.LogWarning("Could not set locale from initialization parameters.");
+                return CultureInfo.InvariantCulture;
+            }
+        }
+    }
+
     public sealed class ServerApp : IDisposable
     {
         private readonly TransportOptions _options;
         private readonly CancellationTokenSource _tokenSource;
 
-        private ILogger<ServerApp>? _logger;
         private NamedPipeServerStream? _pipe;
 
-        private OmniSharpLanguageServer? _languageServer;
+        private ILogger<ServerApp> _logger = default!;
+        private OmniSharpLanguageServer _languageServer = default!;
+        private LanguageServerState _serverState = default!;
 
         public ServerApp(TransportOptions options, CancellationTokenSource tokenSource)
         {
@@ -48,6 +125,7 @@ namespace Rubberduck.LanguageServer
                 _logger.LogDebug($"Startup configuration:: TraceLevel='{_options.TraceLevel}' TransportType='{_options.TransportType}'");
 
                 _languageServer = await OmniSharpLanguageServer.From(options => ConfigureLanguageServer(options), provider, _tokenSource.Token);
+                _serverState = new(scope.ServiceProvider.GetRequiredService<ILogger<LanguageServerState>>());
 
                 _logger.LogInformation("Awaiting client connection...");
                 await _languageServer.WaitForExit;
@@ -56,6 +134,9 @@ namespace Rubberduck.LanguageServer
 
         private void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<LanguageServerState>();
+            services.AddSingleton<IServerStateWriter>(provider => provider.GetRequiredService<LanguageServerState>());
+
             services.AddScoped<SupportedLanguage, VisualBasicForApplicationsLanguage>();
             services.AddScoped<DocumentContentStore>();
         }
@@ -85,17 +166,38 @@ namespace Rubberduck.LanguageServer
                 .WithServerInfo(info)
                 .WithServices(ConfigureServices)
 
-            //.OnInitialize(StaticHandlers.HandleAsync)
-            //.OnInitialized(StaticHandlers.HandleAsync)
-            //.OnStarted(StaticHandlers.HandleAsync)
+                .OnInitialize(async (ILanguageServer server, InitializeParams request, CancellationToken token) =>
+                {
+                    _logger.LogInformation("Received Initialize request.");
+                    token.ThrowIfCancellationRequested();
+
+                    _serverState.Initialize(request);
+                    await Task.CompletedTask;
+                })
+
+                .OnInitialized(async (ILanguageServer server, InitializeParams request, InitializeResult response, CancellationToken token) =>
+                {
+                    _logger.LogInformation("Received Initialized notification.");
+                    token.ThrowIfCancellationRequested();
+
+                    await Task.CompletedTask;
+                })
+
+                .OnStarted(async (ILanguageServer server, CancellationToken token) =>
+                {
+                    _logger.LogInformation("Language server started.");
+                    token.ThrowIfCancellationRequested();
+
+                    // TODO start synchronizing documents
+
+                    await Task.CompletedTask;
+                })
 
 
-                .WithHandler<InitializedHandler>()
+                //.WithHandler<InitializedHandler>()
                 .WithHandler<ShutdownHandler>()
                 .WithHandler<ExitHandler>()
-            /*/ Server
                 .WithHandler<SetTraceHandler>()
-            */
 
             /*/ Workspace
                 .WithHandler<DidChangeConfigurationHandler>()
@@ -193,7 +295,7 @@ namespace Rubberduck.LanguageServer
             {
                 _logger?.LogDebug("Disposing LanguageServer...");
                 _languageServer.Dispose();
-                _languageServer = null;
+                _languageServer = null!;
             }
         }
 
