@@ -99,10 +99,10 @@ namespace Rubberduck
 
                 var builder = new RubberduckServicesBuilder()
                     .WithAddIn(_vbe, _addin)
+                    .WithSettingsProviders()
                     .WithApplication()
                     .WithAssemblyInfo()
                     .WithFileSystem(_vbe)
-                    .WithSettingsProvider()
                     .WithNativeServices(_vbe)
                     .WithCommands()
                     .WithMsoCommandBarMenu()
@@ -161,7 +161,7 @@ namespace Rubberduck
 
         private async Task InitializeSettingsAsync(IServiceScope scope)
         {
-            var configProvider = scope.ServiceProvider.GetRequiredService<SettingsService<RubberduckSettings>>();
+            var configProvider = scope.ServiceProvider.GetRequiredService<ISettingsService<RubberduckSettings>>();
             _initialSettings = await configProvider.ReadFromFileAsync();
 
             try

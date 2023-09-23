@@ -7,8 +7,13 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.SettingsProvider.Model
 {
-    public readonly struct RubberduckSettings : IEquatable<RubberduckSettings>
+    public readonly struct RubberduckSettings : IDefaultSettingsProvider<RubberduckSettings>, IEquatable<RubberduckSettings>
     {
+        public static RubberduckSettings Default { get; } = new RubberduckSettings
+        {
+            // TODO
+        };
+
         public string Locale { get; init; }
         public bool ShowSplash { get; init; }
         public bool IsSmartIndenterPrompted { get; init; }
@@ -20,6 +25,8 @@ namespace Rubberduck.SettingsProvider.Model
 
         public LanguageServerSettings LanguageServerSettings { get; init; }
         public UpdateServerSettings UpdateServerSettings { get; init; }
+
+        RubberduckSettings IDefaultSettingsProvider<RubberduckSettings>.Default => RubberduckSettings.Default;
 
         public bool Equals(RubberduckSettings other)
         {

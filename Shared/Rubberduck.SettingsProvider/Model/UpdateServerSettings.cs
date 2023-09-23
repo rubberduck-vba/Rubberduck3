@@ -2,7 +2,7 @@
 
 namespace Rubberduck.SettingsProvider.Model
 {
-    public readonly struct UpdateServerSettings : IProcessStartInfoArgumentProvider, IEquatable<UpdateServerSettings>
+    public readonly struct UpdateServerSettings : IProcessStartInfoArgumentProvider, IDefaultSettingsProvider<UpdateServerSettings>, IEquatable<UpdateServerSettings>
     {
         public static UpdateServerSettings Default { get; } = new UpdateServerSettings
         {
@@ -11,6 +11,8 @@ namespace Rubberduck.SettingsProvider.Model
             RubberduckWebApiBaseUrl = "https://api.rubberduckvba.com/api/v1",
             Path = @".\",
         };
+
+        UpdateServerSettings IDefaultSettingsProvider<UpdateServerSettings>.Default => UpdateServerSettings.Default;
 
         public bool CheckVersionOnStartup { get; init; }
         public bool IncludePreReleases { get; init; }

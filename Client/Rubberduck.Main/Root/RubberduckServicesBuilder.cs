@@ -72,6 +72,8 @@ namespace Rubberduck.Root
             _services.AddScoped<IAddIn>(provider => addin);
             _services.AddScoped<ICommandBars>(provider => new CommandBarsNonDisposingDecorator<ICommandBars>(vbe.CommandBars));
 
+            _services.AddLogging();
+
             var repository = new ProjectsRepository(vbe);
             _services.AddScoped<IProjectsProvider>(provider => repository);
             //_services.AddScoped<IProjectsRepository>(repository);
@@ -91,6 +93,10 @@ namespace Rubberduck.Root
             _services.AddScoped<ISettingsProvider<RubberduckSettings>, SettingsService<RubberduckSettings>>();
             _services.AddScoped<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
             _services.AddScoped<ISettingsProvider<UpdateServerSettings>, SettingsService<UpdateServerSettings>>();
+
+            _services.AddScoped<IDefaultSettingsProvider<RubberduckSettings>>(provider => RubberduckSettings.Default);
+            _services.AddScoped<IDefaultSettingsProvider<LanguageServerSettings>>(provider => LanguageServerSettings.Default);
+            _services.AddScoped<IDefaultSettingsProvider<UpdateServerSettings>>(provider => UpdateServerSettings.Default);
             return this;
         }
 
@@ -129,17 +135,6 @@ namespace Rubberduck.Root
             _services.AddScoped<IFileSystem, FileSystem>();
             _services.AddScoped<ITempSourceFileHandler>(provider => vbe.TempSourceFileHandler);
             _services.AddScoped<IPersistencePathProvider>(provider => PersistencePathProvider.Instance);
-
-            return this;
-        }
-
-        public RubberduckServicesBuilder WithSettingsProvider()
-        {
-            _services.AddScoped<GeneralConfigProvider>();
-            _services.AddScoped<IConfigurationService<GeneralSettings>, GeneralConfigProvider>();
-            _services.AddScoped<IAsyncPersistenceService<GeneralSettings>, XmlPersistenceService<GeneralSettings>>();
-
-            // TODO refactor settings / simplify abstractions
 
             return this;
         }

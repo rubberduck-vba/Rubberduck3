@@ -23,7 +23,7 @@ namespace Rubberduck.SettingsProvider.Model
         string ToProcessStartInfoArguments(long clientProcessId);
     }
 
-    public readonly struct LanguageServerSettings : IProcessStartInfoArgumentProvider, IEquatable<LanguageServerSettings>
+    public readonly struct LanguageServerSettings : IProcessStartInfoArgumentProvider, IDefaultSettingsProvider<LanguageServerSettings>, IEquatable<LanguageServerSettings>
     {
         public static LanguageServerSettings Default { get; } = new LanguageServerSettings
         {
@@ -33,6 +33,8 @@ namespace Rubberduck.SettingsProvider.Model
             PipeName = "Rubberduck.LanguageServer.Pipe",
             Path = @".\",
         };
+
+        LanguageServerSettings IDefaultSettingsProvider<LanguageServerSettings>.Default => LanguageServerSettings.Default;
 
         public string Path { get; init; }
 
