@@ -71,7 +71,14 @@ namespace Rubberduck.SettingsProvider
                 var elapsed = await TimedAction.RunAsync(Task.Run(() =>
                 {
                     var content = _fileSystem.File.ReadAllText(_path);
-                    Value = JsonSerializer.Deserialize<TSettings>(content, _options);
+                    if (!string.IsNullOrWhiteSpace(content))
+                    {
+                        Value = JsonSerializer.Deserialize<TSettings>(content, _options);
+                    }
+                    else
+                    {
+                        _logger.LogWarning($"File was found, but no content was loaded.");
+                    }
                 }));
                 _logger.LogTrace($"PERF: Reading and deserializing file '{_path}' took {elapsed.TotalMilliseconds}ms.");
             }

@@ -11,7 +11,14 @@ namespace Rubberduck.SettingsProvider.Model
     {
         public static RubberduckSettings Default { get; } = new RubberduckSettings
         {
-            // TODO
+            Locale = "en-US",
+            LogLevel = LogLevel.Trace,
+            ShowSplash = true,
+            IsDefaultLogLevelChanged = false,
+            IsSmartIndenterPrompted = false,
+            FeatureSwitches = Array.Empty<FeatureSwitch>(),
+            UpdateServerSettings = UpdateServerSettings.Default,
+            LanguageServerSettings = LanguageServerSettings.Default,
         };
 
         public string Locale { get; init; }
