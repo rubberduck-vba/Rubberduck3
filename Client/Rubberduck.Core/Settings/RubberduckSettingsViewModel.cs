@@ -1,4 +1,5 @@
-﻿using Rubberduck.Core.WebApi;
+﻿using Microsoft.Extensions.Logging;
+using Rubberduck.Core.WebApi;
 using Rubberduck.SettingsProvider.Model;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace Rubberduck.Core.Settings
             Locale = _settings.Locale;
             ShowSplash = _settings.ShowSplash;
             IsSmartIndenterPrompted = _settings.IsSmartIndenterPrompted;
+            LogLevel = _settings.LogLevel;
 
             FeatureSwitches = _settings.FeatureSwitches.Select(e => new FeatureSwitchViewModel(e)).ToList();
             LanguageServerSettings = new LanguageServerSettingsViewModel(_settings.LanguageServerSettings);
@@ -28,6 +30,7 @@ namespace Rubberduck.Core.Settings
         public string Locale { get; set; }
         public bool ShowSplash { get; set; }
         public bool IsSmartIndenterPrompted { get; set; }
+        public LogLevel LogLevel { get; set; }
 
         public List<FeatureSwitchViewModel> FeatureSwitches { get; }
 
@@ -41,6 +44,7 @@ namespace Rubberduck.Core.Settings
                 Locale = this.Locale,
                 ShowSplash = this.ShowSplash,
                 IsSmartIndenterPrompted = this.IsSmartIndenterPrompted,
+                LogLevel = this.LogLevel,
                 FeatureSwitches = this.FeatureSwitches.Select(e => e.ToSettings()).ToArray(),
                 LanguageServerSettings = this.LanguageServerSettings.ToSettings(),
                 UpdateServerSettings = this.UpdateServerSettings.ToSettings(),

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,10 @@ namespace Rubberduck.SettingsProvider.Model
         public string Locale { get; init; }
         public bool ShowSplash { get; init; }
         public bool IsSmartIndenterPrompted { get; init; }
-        
+
+        public LogLevel LogLevel { get; init; }
+        public bool IsDefaultLogLevelChanged { get; init; }
+
         public FeatureSwitch[] FeatureSwitches { get; init; }
 
         public LanguageServerSettings LanguageServerSettings { get; init; }
@@ -22,7 +26,9 @@ namespace Rubberduck.SettingsProvider.Model
             var switches = this.FeatureSwitches;
             return string.Equals(Locale, other.Locale, StringComparison.InvariantCultureIgnoreCase)
                 && ShowSplash == other.ShowSplash
+                && LogLevel == other.LogLevel
                 && IsSmartIndenterPrompted == other.IsSmartIndenterPrompted
+                && IsDefaultLogLevelChanged == other.IsDefaultLogLevelChanged
                 && LanguageServerSettings.Equals(other.LanguageServerSettings)
                 && UpdateServerSettings.Equals(other.UpdateServerSettings)
                 && FeatureSwitches.All(e => other.FeatureSwitches.Contains(e))
@@ -43,7 +49,9 @@ namespace Rubberduck.SettingsProvider.Model
             var hash = new HashCode();
             hash.Add(Locale.ToLowerInvariant());
             hash.Add(ShowSplash);
+            hash.Add(LogLevel);
             hash.Add(IsSmartIndenterPrompted);
+            hash.Add(IsDefaultLogLevelChanged);
             hash.Add(LanguageServerSettings);
             hash.Add(UpdateServerSettings);
             foreach (var item in FeatureSwitches)

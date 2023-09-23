@@ -1,5 +1,4 @@
-﻿using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Abstractions;
@@ -20,6 +19,7 @@ using System.Threading.Tasks;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.Core.Settings;
+using Microsoft.Extensions.Logging;
 
 namespace Rubberduck.Core
 {
@@ -31,14 +31,16 @@ namespace Rubberduck.Core
         private readonly ISettingsService<RubberduckSettings> _settingsService;
         private readonly IAppMenu _appMenus;
 
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger<App> _logger;
         private readonly IFileSystem _filesystem;
 
-        public App(IMessageBox messageBox,
+        public App(ILogger<App> logger,
+            IMessageBox messageBox,
             ISettingsService<RubberduckSettings> settingsService,
             IAppMenu appMenus,
             IFileSystem filesystem)
         {
+            _logger = logger;
             _messageBox = messageBox;
             _settingsService = settingsService;
             _appMenus = appMenus;
@@ -49,13 +51,22 @@ namespace Rubberduck.Core
             UiContextProvider.Initialize();
         }
 
+#pragma warning disable VSTHRD100 // Avoid async void methods
         private async void HandleSettingsServiceSettingsChanged(object sender, SettingsChangedEventArgs<RubberduckSettings> e)
         {
-            if (!string.Equals(e.OldValue.Locale, e.NewValue.Locale, StringComparison.InvariantCultureIgnoreCase))
+            try
             {
-                await ApplyCultureConfigAsync();
+                if (!string.Equals(e.OldValue.Locale, e.NewValue.Locale, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    await ApplyCultureConfigAsync();
+                }
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception, "Error handling SettingsChanged event.");
             }
         }
+#pragma warning restore VSTHRD100 // Avoid async void methods
 
         #region TODO move to something like ShellEnvironment.cs
         private void EnsureLogFolderPathExists()
@@ -115,15 +126,14 @@ namespace Rubberduck.Core
         /// </summary>
         private async Task UpdateLoggingLevelOnShutdownAsync()
         {
-            //if (_config.UserSettings.GeneralSettings.UserEditedLogLevel ||
-            //    _config.UserSettings.GeneralSettings.MinimumLogLevel != LogLevel.Trace.Ordinal)
-            //{
-            //    return;
-            //}
+            if (_settingsService.Value.IsDefaultLogLevelChanged || _settingsService.Value.LogLevel != LogLevel.Trace)
+            {
+                return;
+            }
 
-            //_config.UserSettings.GeneralSettings.MinimumLogLevel = LogLevel.Off.Ordinal;
-            //await _settingsService.SaveAsync(_config);
-            await Task.CompletedTask;
+            var vm = new RubberduckSettingsViewModel(_settingsService.Value);
+            vm.LogLevel = LogLevel.None;
+            await _settingsService.WriteToFileAsync(vm.ToSettings());
         }
 
         public async Task StartupAsync(string version)
@@ -164,7 +174,7 @@ namespace Rubberduck.Core
             }
             catch (CultureNotFoundException exception)
             {
-                Logger.Error(exception, "Error Setting Culture for Rubberduck");
+                _logger.LogError(exception, "Error Setting Culture for Rubberduck");
                 // not accessing resources here, because setting resource culture literally just failed.
                 _messageBox.NotifyWarn(exception.Message, "Rubberduck");
 
@@ -198,7 +208,7 @@ namespace Rubberduck.Core
         {
             try
             {
-                Logger.Trace("Checking for legacy Smart Indenter settings.");
+                _logger.LogTrace("Checking for legacy Smart Indenter settings.");
                 if (_settingsService.Value.IsSmartIndenterPrompted /*||
                     !_config.UserSettings.IndenterSettings.LegacySettingsExist()*/)
                 {
@@ -206,7 +216,7 @@ namespace Rubberduck.Core
                 }
                 if (_messageBox.Question(Resources.RubberduckUI.SmartIndenter_LegacySettingPrompt, "Rubberduck"))
                 {
-                    Logger.Trace("Attempting to load legacy Smart Indenter settings.");
+                    _logger.LogTrace("Attempting to load legacy Smart Indenter settings.");
                     //_config.UserSettings.IndenterSettings.LoadLegacyFromRegistry();
                 }
 
@@ -222,7 +232,7 @@ namespace Rubberduck.Core
 
         public void LogRubberduckStart(string version)
         {
-            GlobalDiagnosticsContext.Set("RubberduckVersion", version.ToString());
+            //GlobalDiagnosticsContext.Set("RubberduckVersion", version.ToString());
 
             var headers = new List<string>
             {
@@ -243,7 +253,7 @@ namespace Rubberduck.Core
                 headers.Add("\tHost could not be determined.");
             }
 
-            LogLevelHelper.SetDebugInfo(string.Join(Environment.NewLine, headers));
+            _logger.LogInformation(string.Join(Environment.NewLine, headers));
         }
 
         private bool _disposed;
