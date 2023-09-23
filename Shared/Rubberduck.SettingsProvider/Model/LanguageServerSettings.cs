@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.ServerPlatform;
+using System;
 using System.Text;
 
 namespace Rubberduck.SettingsProvider.Model
@@ -22,7 +23,7 @@ namespace Rubberduck.SettingsProvider.Model
         string ToProcessStartInfoArguments(long clientProcessId);
     }
 
-    public readonly struct LanguageServerSettings : IProcessStartInfoArgumentProvider
+    public readonly struct LanguageServerSettings : IProcessStartInfoArgumentProvider, IEquatable<LanguageServerSettings>
     {
         public static LanguageServerSettings Default { get; } = new LanguageServerSettings
         {
@@ -75,6 +76,29 @@ namespace Rubberduck.SettingsProvider.Model
             }
 
             return builder.ToString();
+        }
+
+        public bool Equals(LanguageServerSettings other)
+        {
+            return other.TraceLevel == TraceLevel
+                && other.TransportType == TransportType
+                && other.Mode == Mode
+                && string.Equals(other.PipeName, PipeName, StringComparison.InvariantCultureIgnoreCase)
+                && string.Equals(other.Path, Path, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is null || obj.GetType() != GetType())
+            {
+                return false;
+            }
+            return Equals((LanguageServerSettings)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(TraceLevel, TransportType, Mode, PipeName.ToLowerInvariant(), Path.ToLowerInvariant());
         }
     }
 }

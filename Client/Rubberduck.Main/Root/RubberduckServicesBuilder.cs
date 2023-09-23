@@ -11,6 +11,7 @@ using Rubberduck.Interaction.MessageBox;
 using Rubberduck.InternalApi.UIContext;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
+using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.WinForms;
@@ -26,6 +27,7 @@ using Rubberduck.VBEditor.UI.OfficeMenus;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 using Rubberduck.VBEditor.VbeRuntime;
 using System;
+using System.Configuration;
 using System.IO.Abstractions;
 using System.Reflection;
 
@@ -80,14 +82,21 @@ namespace Rubberduck.Root
         public RubberduckServicesBuilder WithApplication()
         {
             _services.AddScoped<App>();
-            _services.AddScoped<IConfigurationService<Configuration>, ConfigurationLoader>();
+            _services.AddScoped<ISettingsService<RubberduckSettings>, SettingsService<RubberduckSettings>>();
+            return this;
+        }
+
+        public RubberduckServicesBuilder WithSettingsProviders()
+        {
+            _services.AddScoped<ISettingsProvider<RubberduckSettings>, SettingsService<RubberduckSettings>>();
+            _services.AddScoped<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
+            _services.AddScoped<ISettingsProvider<UpdateServerSettings>, SettingsService<UpdateServerSettings>>();
             return this;
         }
 
         public RubberduckServicesBuilder WithMsoCommandBarMenu()
         {
             _services.AddScoped<IAppMenu, RubberduckParentMenu>();
-
             return this;
         }
 

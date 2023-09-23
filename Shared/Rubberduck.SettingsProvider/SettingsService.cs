@@ -8,7 +8,15 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.SettingsProvider
 {
-    public class SettingsService<TSettings>
+    public interface ISettingsService<TSettings> : ISettingsProvider<TSettings>
+    {
+        event EventHandler<SettingsChangedEventArgs<TSettings>> SettingsChanged;
+
+        Task<TSettings> ReadFromFileAsync();
+        Task WriteToFileAsync(TSettings settings);
+    }
+
+    public class SettingsService<TSettings> : ISettingsService<TSettings>
     {
         private readonly ILogger _logger;
         private readonly IFileSystem _fileSystem;
@@ -30,13 +38,29 @@ namespace Rubberduck.SettingsProvider
             _path = _fileSystem.Path.Combine($"{typeof(TSettings).Name}.json"); // TODO put the %userappdata% special folder in there
         }
 
+        public event EventHandler<SettingsChangedEventArgs<TSettings>> SettingsChanged;
+
+        private void OnSettingsChanged(TSettings oldValue)
+        {
+            var args = new SettingsChangedEventArgs<TSettings>(oldValue, _cached);
+            SettingsChanged?.Invoke(this, args);
+        }
+
         public TSettings Value
         {
             get => _cached;
             private set
             {
-                _cached = value;
-                _logger.LogTrace($"Cached new {typeof(TSettings)} value.");
+                if (!_cached.Equals(value))
+                {
+                    _cached = value;
+                    _logger.LogTrace($"Cached new {typeof(TSettings).Name} value.");
+                    OnSettingsChanged(value);
+                }
+                else
+                {
+                    _logger.LogTrace($"{typeof(TSettings).Name} value is unchanged.");
+                }
             }
         }
 

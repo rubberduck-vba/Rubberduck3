@@ -18,6 +18,7 @@ using Rubberduck.VBEditor.UI.OfficeMenus;
 using Rubberduck.UI.Command;
 using System.Threading.Tasks;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.SettingsProvider.Model;
 
 namespace Rubberduck.Core
 {
@@ -26,35 +27,30 @@ namespace Rubberduck.Core
         private static readonly string _title = "Rubberduck";
 
         private readonly IMessageBox _messageBox;
-        private readonly IConfigurationService<Configuration> _configService;
+        private readonly ISettingsService<RubberduckSettings> _settingsService;
         private readonly IAppMenu _appMenus;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        private Configuration _config;
         private readonly IFileSystem _filesystem;
 
         public App(IMessageBox messageBox,
-            IConfigurationService<Configuration> configService,
+            ISettingsService<RubberduckSettings> settingsService,
             IAppMenu appMenus,
             IFileSystem filesystem)
         {
             _messageBox = messageBox;
-            _configService = configService;
+            _settingsService = settingsService;
             _appMenus = appMenus;
 
-            _configService.SettingsChanged += HandleConfigServiceSettingsChanged;
+            _settingsService.SettingsChanged += HandleSettingsServiceSettingsChanged;
             _filesystem = filesystem;
 
             UiContextProvider.Initialize();
         }
 
-        private async void HandleConfigServiceSettingsChanged(object sender, ConfigurationChangedEventArgs e)
+        private async void HandleSettingsServiceSettingsChanged(object sender, SettingsChangedEventArgs<RubberduckSettings> e)
         {
-            _config = await _configService.ReadAsync();
-            UpdateLoggingLevel();
-
-            if (e.DisplayLanguageChanged)
+            if (!string.Equals(e.OldValue.Locale, e.NewValue.Locale, StringComparison.InvariantCultureIgnoreCase))
             {
                 await ApplyCultureConfigAsync();
             }
@@ -125,7 +121,7 @@ namespace Rubberduck.Core
             }
 
             _config.UserSettings.GeneralSettings.MinimumLogLevel = LogLevel.Off.Ordinal;
-            await _configService.SaveAsync(_config);
+            await _settingsService.SaveAsync(_config);
         }
 
         public async Task StartupAsync(string version)
@@ -156,12 +152,10 @@ namespace Rubberduck.Core
 
         private async Task ApplyCultureConfigAsync()
         {
-            _config = await _configService.ReadAsync();
-
             var currentCulture = Resources.RubberduckUI.Culture;
             try
             {
-                CultureManager.UICulture = CultureInfo.GetCultureInfo(_config.UserSettings.GeneralSettings.Language.Code);
+                CultureManager.UICulture = CultureInfo.GetCultureInfo(_settingsService.Value.Locale);
                 LocalizeResources(CultureManager.UICulture);
 
                 _appMenus.Localize();
@@ -172,7 +166,7 @@ namespace Rubberduck.Core
                 // not accessing resources here, because setting resource culture literally just failed.
                 _messageBox.NotifyWarn(exception.Message, "Rubberduck");
                 _config.UserSettings.GeneralSettings.Language.Code = currentCulture.Name;
-                await _configService.SaveAsync(_config);
+                await _settingsService.SaveAsync(_config);
             }
         }
 
@@ -212,7 +206,7 @@ namespace Rubberduck.Core
                     //_config.UserSettings.IndenterSettings.LoadLegacyFromRegistry();
                 }
                 _config.UserSettings.GeneralSettings.IsSmartIndenterPrompted = true;
-                await _configService.SaveAsync(_config);
+                await _settingsService.SaveAsync(_config);
             }
             catch (Exception e)
             {
@@ -254,9 +248,9 @@ namespace Rubberduck.Core
                 return;
             }
 
-            if (_configService != null)
+            if (_settingsService != null)
             {
-                _configService.SettingsChanged -= HandleConfigServiceSettingsChanged;
+                _settingsService.SettingsChanged -= HandleConfigServiceSettingsChanged;
             }
 
             UiDispatcher.Shutdown();
