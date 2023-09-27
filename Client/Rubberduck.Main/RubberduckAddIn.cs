@@ -346,7 +346,7 @@ namespace Rubberduck
                 if (_pipeStream != null)
                 {
                     _logger.Trace("Disposing pipe stream...");
-                    _pipeStream.Dispose();
+                    await _pipeStream.DisposeAsync();
                     _pipeStream = null!;
                 }
             }
