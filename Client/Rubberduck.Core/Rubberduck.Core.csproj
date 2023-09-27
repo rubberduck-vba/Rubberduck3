@@ -30,7 +30,7 @@
   <ItemGroup>
     <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
     <PackageReference Include="System.IO.Abstractions" Version="19.2.69" />
     <PackageReference Include="System.Management" Version="7.0.2" />
   </ItemGroup>

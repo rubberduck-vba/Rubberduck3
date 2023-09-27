@@ -360,7 +360,7 @@ namespace Rubberduck.Client
                                 SymbolKind.Variable) }
                         }
                     },
-                    Diagnostic = new() { Value = new() { RefreshSupport = supported } },
+                    Diagnostic = new() { Value = new() { RelatedDocumentSupport = supported } },
                     FoldingRange = new()
                     {
                         Value = new()

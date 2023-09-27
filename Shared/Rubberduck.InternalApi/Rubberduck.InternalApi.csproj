@@ -30,7 +30,7 @@
     <PackageReference Include="Microsoft.Bcl.HashCode">
       <Version>1.1.1</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="System.IO.Abstractions">
       <Version>19.2.69</Version>
