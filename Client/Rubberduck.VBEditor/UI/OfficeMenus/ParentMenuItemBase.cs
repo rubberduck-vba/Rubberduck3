@@ -4,19 +4,16 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog;
-using Rubberduck.InternalApi.UIContext;
 using Rubberduck.Resources.Menus;
-using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
+using Rubberduck.Unmanaged.UIContext;
 
 namespace Rubberduck.VBEditor.UI.OfficeMenus
 {
     public abstract class ParentMenuItemBase : IParentMenuItem
     {
         private readonly IDictionary<IMenuItem, ICommandBarControl> _items = new Dictionary<IMenuItem, ICommandBarControl>();
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        //private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         protected readonly IUiDispatcher _uiDispatcher;
 
         protected ParentMenuItemBase(IUiDispatcher dispatcher)
@@ -113,7 +110,6 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
 
         public void RemoveMenu()
         {
-            Logger.Debug($"Removing menu {ResourceKey}.");
             RemoveChildren();
             Item?.Delete();
 
@@ -152,10 +148,10 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
                             {
                                 value.IsEnabled = commandItem.EvaluateCanExecute(parameter);
                             }
-                            catch (Exception exception)
+                            catch (Exception)
                             {
                                 value.IsEnabled = false;
-                                Logger.Error(exception, "Could not evaluate availability of commmand menu item {0}.", value.Tag ?? "{Unknown}");
+                                //Logger.Error(exception, "Could not evaluate availability of commmand menu item {0}.", value.Tag ?? "{Unknown}");
                             }
                         });
                         break;
@@ -213,7 +209,7 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
                 return;
             }
 
-            Logger.Debug("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), e.Caption, e.TargetHashCode);
+            //Logger.Debug("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), e.Caption, e.TargetHashCode);
             item.Command.Execute(null);
         }
     }

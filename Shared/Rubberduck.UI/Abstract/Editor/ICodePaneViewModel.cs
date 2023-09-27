@@ -1,5 +1,7 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using Rubberduck.InternalApi.Model;
+using Rubberduck.Unmanaged.Model;
+using Rubberduck.Unmanaged.Model.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

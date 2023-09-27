@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Office.Interop.Access;
-using NLog;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Model;
+using Rubberduck.Unmanaged.Model.Abstract;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
@@ -28,7 +30,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             });
         }
 
-        public override HostDocument GetDocument(QualifiedModuleName moduleName)
+        public override HostDocument? GetDocument(IQualifiedModuleName moduleName)
         {
             try
             {
@@ -54,13 +56,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     }
                 }
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 //Log and ignore
-                _logger.Log(LogLevel.Info, ex, $"Failed to get host document {moduleName.ToString()}");
+                //_logger.Log(LogLevel.Info, ex, $"Failed to get host document {moduleName.ToString()}");
             }
 
-            return null;
+            return null!;
         }
 
         public override IEnumerable<HostDocument> GetDocuments()
@@ -93,12 +95,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return list;
         }
 
-        public override bool CanOpenDocumentDesigner(QualifiedModuleName moduleName)
+        public override bool CanOpenDocumentDesigner(IQualifiedModuleName moduleName)
         {
             return GetDocument(moduleName) != null;
         }
 
-        public override bool TryOpenDocumentDesigner(QualifiedModuleName moduleName)
+        public override bool TryOpenDocumentDesigner(IQualifiedModuleName moduleName)
         {
             try
             {
@@ -150,9 +152,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.Log(LogLevel.Info, ex, $"Unable to open the document in design view for {moduleName.ToString()}");
+                //_logger.Log(LogLevel.Info, ex, $"Unable to open the document in design view for {moduleName.ToString()}");
             }
 
             return false;
@@ -197,7 +199,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return DocumentState.Inaccessible;
         }
 
-        private HostDocument LoadHostDocument(QualifiedModuleName moduleName, string className, SafeIDispatchWrapper<AccessObject> accessObject)
+        private HostDocument LoadHostDocument(IQualifiedModuleName moduleName, string className, SafeIDispatchWrapper<AccessObject> accessObject)
         {
             var state = DocumentState.Inaccessible;
             if (!accessObject.Target.IsLoaded)

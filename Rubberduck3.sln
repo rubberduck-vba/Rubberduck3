@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32319.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Main", "Client\Rubberduck.Main\Rubberduck.Main.csproj", "{EA66AB03-FEDA-4148-964D-797603F3A6C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Main", "Client\Rubberduck.Main\Rubberduck.Main.csproj", "{EA66AB03-FEDA-4148-964D-797603F3A6C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.VBEditor", "Client\Rubberduck.VBEditor\Rubberduck.VBEditor.csproj", "{030FDE59-C347-4B81-AB80-5B4B80B757A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.VBEditor", "Client\Rubberduck.VBEditor\Rubberduck.VBEditor.csproj", "{030FDE59-C347-4B81-AB80-5B4B80B757A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.VBEditor.VBA", "Client\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj", "{4CCD023C-A503-4BC7-9E9A-A509B4A16D41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.VBEditor.VBA", "Client\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj", "{4CCD023C-A503-4BC7-9E9A-A509B4A16D41}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.VBEditor.VB6", "Client\Rubberduck.VBEditor.VB6\Rubberduck.VBEditor.VB6.csproj", "{F4B320F8-391D-4580-9AEF-C70D9AEA04D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.InternalApi", "Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj", "{5E2588A5-2EF2-4267-952D-53AEC8F5F173}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.InternalApi", "Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj", "{5E2588A5-2EF2-4267-952D-53AEC8F5F173}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Resources", "Shared\Rubberduck.Resources\Rubberduck.Resources.csproj", "{ED65BAAD-743D-4144-AEE2-8D956E6DA599}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Resources", "Shared\Rubberduck.Resources\Rubberduck.Resources.csproj", "{ED65BAAD-743D-4144-AEE2-8D956E6DA599}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{29672418-530B-44AF-B95E-76EA20E96F44}"
 	ProjectSection(SolutionItems) = preProject
@@ -21,17 +21,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.SettingsProvider", "Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj", "{E794CFC3-3D9F-400F-88D9-69E929D8E8AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.SettingsProvider", "Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj", "{E794CFC3-3D9F-400F-88D9-69E929D8E8AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Core", "Client\Rubberduck.Core\Rubberduck.Core.csproj", "{7B04E66C-DD08-437F-8D43-EDDAC732DC53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Core", "Client\Rubberduck.Core\Rubberduck.Core.csproj", "{7B04E66C-DD08-437F-8D43-EDDAC732DC53}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.UI", "Shared\Rubberduck.UI\Rubberduck.UI.csproj", "{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.UI", "Shared\Rubberduck.UI\Rubberduck.UI.csproj", "{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Interaction", "Shared\Rubberduck.Interaction\Rubberduck.Interaction.csproj", "{3EE4CCB7-42FC-49D2-8221-88A2FEF2F762}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Interaction", "Shared\Rubberduck.Interaction\Rubberduck.Interaction.csproj", "{3EE4CCB7-42FC-49D2-8221-88A2FEF2F762}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.UI.Xaml", "Client\Rubberduck.UI.Xaml\Rubberduck.UI.Xaml.csproj", "{1192FA78-B73F-46BC-B98C-FD887A062A2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.UI.Xaml", "Client\Rubberduck.UI.Xaml\Rubberduck.UI.Xaml.csproj", "{1192FA78-B73F-46BC-B98C-FD887A062A2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.UI.WinForms", "Client\Rubberduck.UI.WinForms\Rubberduck.UI.WinForms.csproj", "{A1F54935-FE6D-4013-B618-5251DE4466CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.UI.WinForms", "Client\Rubberduck.UI.WinForms\Rubberduck.UI.WinForms.csproj", "{A1F54935-FE6D-4013-B618-5251DE4466CF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Tests", "Tests\Rubberduck.Tests\Rubberduck.Tests.csproj", "{561B2738-7BFE-4974-B1CE-E5D910C770B3}"
 EndProject
@@ -46,6 +46,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Client", "Client\Rubberduck.Client\Rubberduck.Client.csproj", "{36E18087-FE84-4E3A-9C65-07CA0FD7D303}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.LanguageServer", "Server\Rubberduck.LanguageServer\Rubberduck.LanguageServer.csproj", "{F05E5168-3EF4-4D6A-8C68-A6722E013EE4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Unmanaged", "Rubberduck.UnmanagedWrappers\Rubberduck.Unmanaged.csproj", "{815051EA-F30A-49A7-B6D4-9A8CFEE96157}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -181,6 +183,14 @@ Global
 		{F05E5168-3EF4-4D6A-8C68-A6722E013EE4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F05E5168-3EF4-4D6A-8C68-A6722E013EE4}.Release|x64.ActiveCfg = Release|x64
 		{F05E5168-3EF4-4D6A-8C68-A6722E013EE4}.Release|x64.Build.0 = Release|x64
+		{815051EA-F30A-49A7-B6D4-9A8CFEE96157}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{815051EA-F30A-49A7-B6D4-9A8CFEE96157}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{815051EA-F30A-49A7-B6D4-9A8CFEE96157}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{815051EA-F30A-49A7-B6D4-9A8CFEE96157}.Debug|x64.Build.0 = Debug|Any CPU
+		{815051EA-F30A-49A7-B6D4-9A8CFEE96157}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{815051EA-F30A-49A7-B6D4-9A8CFEE96157}.Release|Any CPU.Build.0 = Release|Any CPU
+		{815051EA-F30A-49A7-B6D4-9A8CFEE96157}.Release|x64.ActiveCfg = Release|Any CPU
+		{815051EA-F30A-49A7-B6D4-9A8CFEE96157}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -201,6 +211,7 @@ Global
 		{8D218701-AF68-4013-B9C0-108C1D162E11} = {3CD71E77-0A37-4ACB-8651-2F874EA29AE2}
 		{36E18087-FE84-4E3A-9C65-07CA0FD7D303} = {C3F2A120-EFE1-4BF4-A4AE-EAF6882F8521}
 		{F05E5168-3EF4-4D6A-8C68-A6722E013EE4} = {3CD71E77-0A37-4ACB-8651-2F874EA29AE2}
+		{815051EA-F30A-49A7-B6D4-9A8CFEE96157} = {C3F2A120-EFE1-4BF4-A4AE-EAF6882F8521}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17B5E48B-DCFD-45F2-A672-3505C8225149}

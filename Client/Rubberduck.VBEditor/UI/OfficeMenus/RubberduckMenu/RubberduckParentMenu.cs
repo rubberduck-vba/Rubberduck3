@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.InternalApi.UIContext;
+using Rubberduck.Unmanaged.UIContext;
 
 namespace Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu
 {

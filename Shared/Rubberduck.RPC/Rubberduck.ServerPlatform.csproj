@@ -1,10 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>warnings</Nullable>
-    <Platforms>AnyCPU;x64</Platforms>
+    <Version>0.0.1</Version>
+    <TargetFramework>net7.0</TargetFramework>
+    <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

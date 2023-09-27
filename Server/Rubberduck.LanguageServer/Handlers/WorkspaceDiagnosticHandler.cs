@@ -27,7 +27,7 @@ namespace Rubberduck.LanguageServer.Handlers
             var filter = new TextDocumentFilter
             {
                 Language = language.Id,
-                Pattern = string.Join(';', language.FileTypes.Select(fileType => $"**/{fileType}").ToArray())
+                Pattern = string.Join(";", language.FileTypes.Select(fileType => $"**/{fileType}").ToArray())
             };
             _selector = new TextDocumentSelector(filter);
         }
@@ -36,9 +36,11 @@ namespace Rubberduck.LanguageServer.Handlers
         {
             cancellationToken.ThrowIfCancellationRequested();
             // TODO
-            var result = null as WorkspaceDiagnosticReport;
+            //var result = WorkspaceDiagnosticReport.From(...);
 
-            return await Task.FromResult(result);
+#pragma warning disable CS8603 // Possible null reference return. // TODO remove
+            return await Task.FromResult(default(WorkspaceDiagnosticReport));
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         protected override DiagnosticsRegistrationOptions CreateRegistrationOptions(DiagnosticWorkspaceClientCapabilities capability, ClientCapabilities clientCapabilities)

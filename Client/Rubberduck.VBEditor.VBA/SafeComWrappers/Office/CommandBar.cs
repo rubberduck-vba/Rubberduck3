@@ -1,5 +1,6 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.Office;
+﻿using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
 using System;
 using MSO = Microsoft.Office.Core;
 
@@ -17,7 +18,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
 
         public bool IsBuiltIn => !IsWrappingNullReference && Target.BuiltIn;
 
-        public ICommandBarControls Controls => new CommandBarControls(IsWrappingNullReference ? null : Target.Controls);
+        public ICommandBarControls Controls => new CommandBarControls((IsWrappingNullReference ? null : Target.Controls)!);
 
         public bool IsEnabled
         {
@@ -121,12 +122,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
 
         public ICommandBarControl FindControl(int id)
         {
-            return new CommandBarControl(IsWrappingNullReference ? null : Target.FindControl(Id: id));
+            return new CommandBarControl((IsWrappingNullReference ? null : Target.FindControl(Id: id))!);
         }
 
         public ICommandBarControl FindControl(ControlType type, int id)
         {
-            return new CommandBarControl(IsWrappingNullReference ? null : Target.FindControl(type, id));
+            return new CommandBarControl((IsWrappingNullReference ? null : Target.FindControl(type, id))!);
         }
 
         public void Delete()
@@ -148,9 +149,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
                     && ReferenceEquals(other.Target.Parent, Target.Parent));
         }
 
-        public bool Equals(ICommandBar other)
+        public bool Equals(ICommandBar? other)
         {
-            return Equals(other as SafeComWrapper<MSO.CommandBar>);
+            return Equals((other as SafeComWrapper<MSO.CommandBar>)!);
         }
 
         public override int GetHashCode()

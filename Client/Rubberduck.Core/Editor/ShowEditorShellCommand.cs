@@ -1,5 +1,5 @@
 ﻿using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.Events;
+using Rubberduck.Unmanaged.Abstract;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 using System.Threading.Tasks;
 

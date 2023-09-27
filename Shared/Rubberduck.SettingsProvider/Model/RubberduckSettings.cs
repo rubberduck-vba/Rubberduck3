@@ -14,7 +14,7 @@ namespace Rubberduck.SettingsProvider.Model
             Locale = "en-US",
             LogLevel = LogLevel.Trace,
             ShowSplash = true,
-            IsDefaultLogLevelChanged = false,
+            IsInitialLogLevelChanged = false,
             IsSmartIndenterPrompted = false,
             FeatureSwitches = Array.Empty<FeatureSwitch>(),
             UpdateServerSettings = UpdateServerSettings.Default,
@@ -26,7 +26,7 @@ namespace Rubberduck.SettingsProvider.Model
         public bool IsSmartIndenterPrompted { get; init; }
 
         public LogLevel LogLevel { get; init; }
-        public bool IsDefaultLogLevelChanged { get; init; }
+        public bool IsInitialLogLevelChanged { get; init; }
 
         public FeatureSwitch[] FeatureSwitches { get; init; }
 
@@ -42,7 +42,7 @@ namespace Rubberduck.SettingsProvider.Model
                 && ShowSplash == other.ShowSplash
                 && LogLevel == other.LogLevel
                 && IsSmartIndenterPrompted == other.IsSmartIndenterPrompted
-                && IsDefaultLogLevelChanged == other.IsDefaultLogLevelChanged
+                && IsInitialLogLevelChanged == other.IsInitialLogLevelChanged
                 && LanguageServerSettings.Equals(other.LanguageServerSettings)
                 && UpdateServerSettings.Equals(other.UpdateServerSettings)
                 && FeatureSwitches.All(e => other.FeatureSwitches.Contains(e))
@@ -65,7 +65,7 @@ namespace Rubberduck.SettingsProvider.Model
             hash.Add(ShowSplash);
             hash.Add(LogLevel);
             hash.Add(IsSmartIndenterPrompted);
-            hash.Add(IsDefaultLogLevelChanged);
+            hash.Add(IsInitialLogLevelChanged);
             hash.Add(LanguageServerSettings);
             hash.Add(UpdateServerSettings);
             foreach (var item in FeatureSwitches)

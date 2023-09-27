@@ -1,10 +1,10 @@
-﻿using Extensibility;
-using NLog;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Rubberduck.Resources.Registration;
 using Rubberduck.Root;
+using Microsoft.Extensions.Logging;
+using Extensibility;
 
 namespace Rubberduck
 {
@@ -21,8 +21,8 @@ namespace Rubberduck
     ]
     public class Extension : IDTExtensibility2
     {
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private IVBIDEAddIn _rubberduck;
+        private ILogger? _logger = null; // TODO
+        private IVBIDEAddIn? _rubberduck;
 
         public void OnConnection(object Application, ext_ConnectMode ConnectMode, object AddInInst, ref Array custom)
         {
@@ -44,23 +44,23 @@ namespace Rubberduck
             }
             catch (Exception e)
             {
-                _logger.Error(e);
+                _logger?.LogError(e, e.Message);
             }
         }
 
         public void OnStartupComplete(ref Array custom)
         {
-            _rubberduck.InitializeAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            _rubberduck!.InitializeAsync().ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         public void OnBeginShutdown(ref Array custom)
         {
-            _rubberduck.ShutdownAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            _rubberduck!.ShutdownAsync().ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)
         {
-            _rubberduck.ShutdownAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            _rubberduck!.ShutdownAsync().ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         public void OnAddInsUpdate(ref Array custom) { /* no-op / unhandled */ }

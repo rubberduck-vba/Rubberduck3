@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Events;
+using Rubberduck.Unmanaged.Model;
 using VB = Microsoft.Vbe.Interop;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -14,14 +17,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
         }
 
-        public event EventHandler<ReferenceEventArgs> ItemAdded;
-        public event EventHandler<ReferenceEventArgs> ItemRemoved;
+        public event EventHandler<ReferenceEventArgs> ItemAdded = delegate { };
+        public event EventHandler<ReferenceEventArgs> ItemRemoved = delegate { };
         
         public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public IVBProject Parent => new VBProject(IsWrappingNullReference ? null : Target.Parent);
+        public IVBProject Parent => new VBProject((IsWrappingNullReference ? null : Target.Parent)!);
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE => new VBE((IsWrappingNullReference ? null : Target.VBE)!);
 
         void VB._dispReferences_Events.ItemRemoved(VB.Reference reference)
         {
@@ -39,16 +42,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public IReference this[object index] => new Reference(IsWrappingNullReference ? null : Target.Item(index));
+        public IReference this[object index] => new Reference((IsWrappingNullReference ? null : Target.Item(index))!);
 
         public IReference AddFromGuid(string guid, int major, int minor)
         {
-            return new Reference(IsWrappingNullReference ? null : Target.AddFromGuid(guid, major, minor));
+            return new Reference((IsWrappingNullReference ? null : Target.AddFromGuid(guid, major, minor))!);
         }
 
         public IReference AddFromFile(string path)
         {
-            return new Reference(IsWrappingNullReference ? null : Target.AddFromFile(path));
+            return new Reference((IsWrappingNullReference ? null : Target.AddFromFile(path))!);
         }
 
         public void Remove(IReference reference)
@@ -65,7 +68,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         IEnumerator IEnumerable.GetEnumerator()
         {
             return IsWrappingNullReference
-                ? (IEnumerator) new List<IEnumerable>().GetEnumerator()
+                ? new List<IEnumerable>().GetEnumerator()
                 : ((IEnumerable<IReference>) this).GetEnumerator();
         }
 
@@ -74,9 +77,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target.Parent, Parent.Target));
         }
 
-        public bool Equals(IReferences other)
+        public bool Equals(IReferences? other)
         {
-            return Equals(other as SafeComWrapper<VB.References>);
+            return Equals((other as SafeComWrapper<VB.References>)!);
         }
 
         public override int GetHashCode()

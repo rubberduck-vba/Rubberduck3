@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
+using Rubberduck.Unmanaged.Model;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Settings

@@ -1,9 +1,10 @@
 ﻿using Rubberduck.UI.Abstract;
 using Rubberduck.UI.Command.SyncPanel;
-using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.InternalApi.Model;
 using System.Collections.Generic;
+using Rubberduck.Unmanaged.Abstract.SourceCodeProvider;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Model;
 
 namespace Rubberduck.Core.Editor.Commands
 {

@@ -4,6 +4,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Model;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Model;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor.Utility

@@ -5,13 +5,13 @@ namespace Rubberduck.Interaction.MessageBox
 {
     public class MessageBoxViewModel
     {
-        public string Message { get; set; }
-        public string Caption { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public string Caption { get; set; } = string.Empty;
 
         public Forms.MessageBoxButtons Buttons { get; set; } = Forms.MessageBoxButtons.OK;
         public Forms.MessageBoxIcon Icon { get; set; } = Forms.MessageBoxIcon.Information;
      
-        public ConfirmationOutcome? Result { get; set; } 
+        public ConfirmationOutcome? Result { get; set; }
     }
 
     public class FormsMessageBox : IMessageBox

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Rubberduck.Core.Editor.Tools
 {
-    public class ShellToolTabProvider : IShellToolTabProvider
+    class ShellToolTabProvider : IShellToolTabProvider
     {
         private readonly ISyncPanelToolTab _syncPanel;
         // TODO add new tool tabs here

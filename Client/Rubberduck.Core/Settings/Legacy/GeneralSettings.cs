@@ -72,18 +72,18 @@ namespace Rubberduck.Settings
             get => _logLevel;
             set
             {
-                if (value < LogLevelHelper.MinLogLevel())
-                {
-                    _logLevel = LogLevelHelper.MinLogLevel();
-                }
-                else if (value > LogLevelHelper.MaxLogLevel())
-                {
-                    _logLevel = LogLevelHelper.MaxLogLevel();
-                }
-                else
-                {
+                //if (value < LogLevelHelper.MinLogLevel())
+                //{
+                //    _logLevel = LogLevelHelper.MinLogLevel();
+                //}
+                //else if (value > LogLevelHelper.MaxLogLevel())
+                //{
+                //    _logLevel = LogLevelHelper.MaxLogLevel();
+                //}
+                //else
+                //{
                     _logLevel = value;
-                }               
+                //}               
             }
         }
 

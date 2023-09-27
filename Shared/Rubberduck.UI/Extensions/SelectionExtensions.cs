@@ -1,5 +1,6 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using Rubberduck.InternalApi.Model;
+using Rubberduck.Unmanaged.Model;
 
 namespace RubberduckUI.Extensions
 {

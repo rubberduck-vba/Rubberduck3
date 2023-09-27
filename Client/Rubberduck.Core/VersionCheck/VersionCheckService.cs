@@ -5,16 +5,20 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.VersionCheck
 {
     public class VersionCheckService : IVersionCheckService
     {
+        private readonly ISettingsProvider<UpdateServerSettings> _settingsProvider;
         private readonly IPublicApiClient _api;
 
         /// <param name="version">That would be the version of the assembly for the <c>_Extension</c> class.</param>
-        public VersionCheckService(IPublicApiClient api, Version version)
+        public VersionCheckService(ISettingsProvider<UpdateServerSettings> settingsProvider, IPublicApiClient api, Version version)
         {
+            _settingsProvider = settingsProvider;
             _api = api;
 
             CurrentVersion = version;
@@ -26,9 +30,9 @@ namespace Rubberduck.VersionCheck
                 : version.ToString();
         }
 
-        private Tag _latestTag;
+        private Tag? _latestTag;
 
-        public async Task<Version> GetLatestVersionAsync(GeneralSettings settings, CancellationToken token = default)
+        public async Task<Version?> GetLatestVersionAsync(CancellationToken token = default)
         {
             if (_latestTag != default) 
             { 
@@ -38,10 +42,11 @@ namespace Rubberduck.VersionCheck
             try
             {
                 var latestTags = await _api.GetLatestTagsAsync();
+                var settings = _settingsProvider.Value.Settings;
 
                 _latestTag = latestTags
                     .Where(tag => tag != null 
-                        && (!tag.IsPreRelease || settings.IncludePreRelease))
+                        && (!tag.IsPreRelease || settings.IncludePreReleases))
                     .OrderByDescending(tag => tag.Version)
                     .FirstOrDefault();
 

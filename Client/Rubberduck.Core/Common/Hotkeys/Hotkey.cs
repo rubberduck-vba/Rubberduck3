@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Rubberduck.InternalApi.WindowsApi;
-using NLog;
 using Rubberduck.UI.Command;
+using Rubberduck.Unmanaged.WindowsApi;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 
 namespace Rubberduck.Common.Hotkeys
@@ -12,7 +11,7 @@ namespace Rubberduck.Common.Hotkeys
     public class Hotkey : IHotkey
     {
         private readonly IntPtr _hWndVbe;
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        //private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public Hotkey(IntPtr hWndVbe, string key, IMenuCommand command, Keys secondKey = Keys.None)
         {
@@ -72,14 +71,14 @@ namespace Rubberduck.Common.Hotkeys
             if (!User32.UnregisterHotKey(_hWndVbe, new IntPtr(HotkeyInfo.HookId)))
             {
                 var error = Marshal.GetLastWin32Error();
-                Logger.Warn($"Error calling UnregisterHotKey on hokey with id {HotkeyInfo.HookId} for command of type {Command.GetType()}; the error was {error}; going to delete the atom anyway... The memory may leak.");
+                //Logger.Warn($"Error calling UnregisterHotKey on hokey with id {HotkeyInfo.HookId} for command of type {Command.GetType()}; the error was {error}; going to delete the atom anyway... The memory may leak.");
             }
             Kernel32.SetLastError(Kernel32.ERROR_SUCCESS);
             Kernel32.GlobalDeleteAtom(HotkeyInfo.HookId);
             var lastError = Marshal.GetLastWin32Error();
             if (lastError != Kernel32.ERROR_SUCCESS)
             {
-                Logger.Warn($"Error calling DeleteGlobalAtom; the error was {lastError}, the id {HotkeyInfo.HookId} and the type of the associated command {Command.GetType()}.");
+                //Logger.Warn($"Error calling DeleteGlobalAtom; the error was {lastError}, the id {HotkeyInfo.HookId} and the type of the associated command {Command.GetType()}.");
             }
 
             HotkeyInfo = new HotkeyInfo(0, Combo);
@@ -97,19 +96,19 @@ namespace Rubberduck.Common.Hotkeys
             var error = Marshal.GetLastWin32Error();
             if (hookId == 0)
             {               
-                Logger.Warn($"Error calling GlobalAddAtom; the error was {error}; aborting the HookKey operation...");    
+                //Logger.Warn($"Error calling GlobalAddAtom; the error was {error}; aborting the HookKey operation...");    
                 return;
             }
 
             var success = User32.RegisterHotKey(_hWndVbe, new IntPtr(hookId), shift, (uint)key);
             if (!success)
             {
-                Logger.Debug("Hotkey was not registered", key);
+                //Logger.Debug("Hotkey was not registered", key);
                 return;
             }
 
             HotkeyInfo = new HotkeyInfo(hookId, Combo);
-            Logger.Trace($"Hotkey for the associated command {Command.GetType()} was registered with id {HotkeyInfo.HookId}");
+            //Logger.Trace($"Hotkey for the associated command {Command.GetType()} was registered with id {HotkeyInfo.HookId}");
         }
 
         private void SetCommandShortcutText()

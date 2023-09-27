@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using VB = Microsoft.Vbe.Interop;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -15,11 +16,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE => new VBE((IsWrappingNullReference ? null : Target.VBE)!);
 
-        public IWindow Parent => new Window(IsWrappingNullReference ? null : Target.Parent);
+        public IWindow Parent => new Window((IsWrappingNullReference ? null : Target.Parent)!);
 
-        public IWindow this[object index] => new Window(IsWrappingNullReference ? null : Target.Item(index));
+        public IWindow this[object index] => new Window((IsWrappingNullReference ? null : Target.Item(index))!);
 
         public void Remove(IWindow window)
         {
@@ -56,9 +57,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-        public bool Equals(ILinkedWindows other)
+        public bool Equals(ILinkedWindows? other)
         {
-            return Equals(other as SafeComWrapper<VB.LinkedWindows>);
+            return Equals((other as SafeComWrapper<VB.LinkedWindows>)!);
         }
 
         public override int GetHashCode()

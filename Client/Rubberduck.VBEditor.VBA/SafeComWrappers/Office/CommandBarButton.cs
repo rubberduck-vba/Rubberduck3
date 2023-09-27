@@ -2,8 +2,10 @@ using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using Microsoft.CSharp.RuntimeBinder;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.Office;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
+using Rubberduck.VBEditor.UI.OfficeMenus;
 using MSO = Microsoft.Office.Core;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -83,8 +85,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
             }
         }
 
-        public Image Picture { get; set; }
-        public Image Mask { get; set; }
+        public Image? Picture { get; set; }
+        public Image? Mask { get; set; }
 
         public void ApplyIcon()
         {
@@ -266,7 +268,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
             _control.Execute();
         }
         
-        public bool Equals(ICommandBarControl other)
+        public bool Equals(ICommandBarControl? other)
         {
             return _control.Equals(other);
         }
@@ -282,7 +284,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
         }
 
         private readonly object _eventLock = new object();
-        private event EventHandler<CommandBarButtonClickEventArgs> _click;
+        private event EventHandler<CommandBarButtonClickEventArgs>? _click;
         public event EventHandler<CommandBarButtonClickEventArgs> Click
         {
             add
@@ -330,7 +332,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
             }
         }
 
-        public event EventHandler Disposing;
+        public event EventHandler? Disposing;
         protected override void Dispose(bool disposing)
         {
             Disposing?.Invoke(this, EventArgs.Empty);

@@ -1,4 +1,5 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+﻿using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using VB = Microsoft.Vbe.Interop;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -22,7 +23,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public bool Equals(IUserForm other)
         {
-            return Equals(other as SafeComWrapper<VB.Forms.UserForm>);
+            return Equals((other as SafeComWrapper<VB.Forms.UserForm>)!);
         }
 
         public override int GetHashCode()

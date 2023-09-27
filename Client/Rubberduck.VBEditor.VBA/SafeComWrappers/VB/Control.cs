@@ -1,4 +1,5 @@
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using VB = Microsoft.Vbe.Interop;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -22,9 +23,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-        public bool Equals(IControl other)
+        public bool Equals(IControl? other)
         {
-            return Equals(other as SafeComWrapper<VB.Forms.Control>);
+            return Equals((other as SafeComWrapper<VB.Forms.Control>)!);
         }
 
         public override int GetHashCode()

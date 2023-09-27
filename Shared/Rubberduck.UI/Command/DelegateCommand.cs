@@ -1,7 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using NLog;
+using Microsoft.Extensions.Logging;
+//using NLog;
 
 namespace Rubberduck.UI.Command
 {

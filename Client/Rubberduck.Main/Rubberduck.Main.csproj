@@ -1,123 +1,28 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EA66AB03-FEDA-4148-964D-797603F3A6C7}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rubberduck.Main</RootNamespace>
-    <AssemblyName>Rubberduck</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <RuntimeIdentifier>win;win</RuntimeIdentifier>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <RegisterForComInterop>false</RegisterForComInterop>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
+    <Version>3.0.0</Version>
+    <TargetFramework>net7.0</TargetFramework>
+    <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <Platforms>AnyCPU</Platforms>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Runtime.Remoting" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
+    <Content Include="Ducky.ico" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="ComClientLibrary\UI\DockableWindowHost.cs" />
-    <Compile Include="ComClientLibrary\UI\IOleWrapper.cs" />
-    <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="IVBIDEAddIn.cs" />
-    <Compile Include="Root\FixedGenericAppender.cs" />
-    <Compile Include="Root\RootComWrapperFactory.cs" />
-    <Compile Include="Root\RubberduckIoCInstaller.cs" />
-    <Compile Include="Root\RubberduckPropertiesInspector.cs" />
-    <Compile Include="Root\RubberduckServicesBuilder.cs" />
-    <Compile Include="Root\VbeProvider.cs" />
-    <Compile Include="Extension.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RubberduckAddIn.cs" />
+    <None Include="app.config" />
+    <None Include="NLog.dll.nlog">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="Microsoft.Office.Core">
-      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>8</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Rubberduck.Interaction\Rubberduck.Interaction.csproj">
       <Project>{3EE4CCB7-42FC-49D2-8221-88A2FEF2F762}</Project>
@@ -155,10 +60,6 @@
       <Project>{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}</Project>
       <Name>Rubberduck.UI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.VBEditor.VB6\Rubberduck.VBEditor.VB6.csproj">
-      <Project>{f4b320f8-391d-4580-9aef-c70d9aea04d5}</Project>
-      <Name>Rubberduck.VBEditor.VB6</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj">
       <Project>{4ccd023c-a503-4bc7-9e9a-a509b4a16d41}</Project>
       <Name>Rubberduck.VBEditor.VBA</Name>
@@ -169,48 +70,51 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </ProjectReference>
   </ItemGroup>
+
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="NLog.dll.nlog">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>8</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
+
   <ItemGroup>
-    <Content Include="Ducky.ico" />
-  </ItemGroup>
-  <ItemGroup>
+    <PackageReference Include="IsExternalInit" Version="1.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+    <PackageReference Include="NLog">
+      <Version>5.2.4</Version>
+    </PackageReference>
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.4" />
+    <PackageReference Include="System.Text.Json" Version="6.0.0" />
     <PackageReference Include="Antlr4.Runtime">
       <Version>4.6.6</Version>
-    </PackageReference>
-    <PackageReference Include="IsExternalInit">
-      <Version>1.0.3</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="MessagePack.Annotations">
-      <Version>2.5.124</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Bcl.HashCode">
-      <Version>1.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection">
       <Version>6.0.0</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions">
-      <Version>6.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="NLog">
-      <Version>5.2.4</Version>
-    </PackageReference>
     <PackageReference Include="System.IO.Abstractions">
       <Version>19.2.69</Version>
     </PackageReference>
-    <PackageReference Include="System.Reflection.Emit">
-      <Version>4.7.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Reflection.Emit.Lightweight">
-      <Version>4.7.0</Version>
+    <PackageReference Include="Microsoft.Bcl.HashCode">
+      <Version>1.1.1</Version>
     </PackageReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <ItemGroup>
+    <Reference Include="Extensibility">
+      <HintPath>..\..\libs\extensibility.dll</HintPath>
+      <Aliases>VBExt</Aliases>
+    </Reference>
+  </ItemGroup>
+
 </Project>

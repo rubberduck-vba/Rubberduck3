@@ -3,23 +3,17 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Abstractions;
 using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Interaction.MessageBox;
-using Rubberduck.InternalApi.UIContext;
 using Rubberduck.Resources;
-using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
-using Rubberduck.VersionCheck;
 using Application = System.Windows.Forms.Application;
-using System.Windows.Input;
-using Infralution.Localization.Wpf;
 using Rubberduck.VBEditor.UI.OfficeMenus;
-using Rubberduck.UI.Command;
 using System.Threading.Tasks;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.Core.Settings;
 using Microsoft.Extensions.Logging;
+using Rubberduck.Unmanaged.UIContext;
 
 namespace Rubberduck.Core
 {
@@ -56,7 +50,7 @@ namespace Rubberduck.Core
         {
             try
             {
-                if (!string.Equals(e.OldValue.Locale, e.NewValue.Locale, StringComparison.InvariantCultureIgnoreCase))
+                if (!string.Equals(e.OldValue.Locale, e.Value.Locale, StringComparison.InvariantCultureIgnoreCase))
                 {
                     await ApplyCultureConfigAsync();
                 }
@@ -103,7 +97,7 @@ namespace Rubberduck.Core
                 var tempFolder = _filesystem.DirectoryInfo.New(ApplicationConstants.RUBBERDUCK_TEMP_PATH);
                 foreach (var file in tempFolder.GetFiles())
                 {
-                    file.TryDelete();
+                    file.Delete();
                 }
             }
             catch
@@ -126,14 +120,19 @@ namespace Rubberduck.Core
         /// </summary>
         private async Task UpdateLoggingLevelOnShutdownAsync()
         {
-            if (_settingsService.Value.IsDefaultLogLevelChanged || _settingsService.Value.LogLevel != LogLevel.Trace)
+            var currentSettings = _settingsService.Value;
+            if (currentSettings.Settings.IsInitialLogLevelChanged || currentSettings.Settings.LogLevel != LogLevel.Trace)
             {
                 return;
             }
 
-            var vm = new RubberduckSettingsViewModel(_settingsService.Value);
-            vm.LogLevel = LogLevel.None;
-            await _settingsService.WriteToFileAsync(vm.ToSettings());
+            var vm = new RubberduckSettingsViewModel(currentSettings.Settings)
+            {
+                LogLevel = LogLevel.None
+            };
+
+            _settingsService.TrySetValue(vm.ToSettings(), currentSettings.Token);
+            await _settingsService.WriteToFileAsync();
         }
 
         public async Task StartupAsync(string version)
@@ -165,10 +164,12 @@ namespace Rubberduck.Core
         private async Task ApplyCultureConfigAsync()
         {
             var currentCulture = Resources.RubberduckUI.Culture;
+            var currentSettings = _settingsService.Value;
+
             try
             {
-                CultureManager.UICulture = CultureInfo.GetCultureInfo(_settingsService.Value.Locale);
-                LocalizeResources(CultureManager.UICulture);
+                var uiCulture = CultureInfo.GetCultureInfo(currentSettings.Settings.Locale);
+                LocalizeResources(uiCulture);
 
                 _appMenus.Localize();
             }
@@ -178,9 +179,13 @@ namespace Rubberduck.Core
                 // not accessing resources here, because setting resource culture literally just failed.
                 _messageBox.NotifyWarn(exception.Message, "Rubberduck");
 
-                var vm = new RubberduckSettingsViewModel(_settingsService.Value);
-                vm.Locale = currentCulture.Name;
-                await _settingsService.WriteToFileAsync(vm.ToSettings());
+                var vm = new RubberduckSettingsViewModel(currentSettings.Settings)
+                {
+                    Locale = currentCulture.Name
+                };
+
+                _settingsService.TrySetValue(vm.ToSettings(), currentSettings.Token);
+                await _settingsService.WriteToFileAsync();
             }
         }
 
@@ -208,8 +213,9 @@ namespace Rubberduck.Core
         {
             try
             {
+                var currentSettings = _settingsService.Value;
                 _logger.LogTrace("Checking for legacy Smart Indenter settings.");
-                if (_settingsService.Value.IsSmartIndenterPrompted /*||
+                if (currentSettings.Settings.IsSmartIndenterPrompted /*||
                     !_config.UserSettings.IndenterSettings.LegacySettingsExist()*/)
                 {
                     return;
@@ -220,9 +226,13 @@ namespace Rubberduck.Core
                     //_config.UserSettings.IndenterSettings.LoadLegacyFromRegistry();
                 }
 
-                var vm = new RubberduckSettingsViewModel(_settingsService.Value);
-                vm.IsSmartIndenterPrompted = true;
-                await _settingsService.WriteToFileAsync(vm.ToSettings());
+                var vm = new RubberduckSettingsViewModel(currentSettings.Settings)
+                {
+                    IsSmartIndenterPrompted = true
+                };
+
+                _settingsService.TrySetValue(vm.ToSettings(), currentSettings.Token);
+                await _settingsService.WriteToFileAsync();
             }
             catch (Exception e)
             {

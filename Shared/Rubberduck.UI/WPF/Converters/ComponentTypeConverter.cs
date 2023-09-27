@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.Model;
+using Rubberduck.Unmanaged.Model;
 using System;
 using System.Globalization;
 using System.Windows.Data;

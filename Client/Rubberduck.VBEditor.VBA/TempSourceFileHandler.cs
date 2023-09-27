@@ -1,9 +1,9 @@
 ﻿using System.IO.Abstractions;
 using System.Text;
-using Rubberduck.InternalApi.Common;
 using Rubberduck.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SourceCodeHandling;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SourceCodeProvider;
 
 namespace Rubberduck.VBEditor.VBA
 {
@@ -19,9 +19,7 @@ namespace Rubberduck.VBEditor.VBA
             }
             var fileName = component.ExportAsSourceFile(ApplicationConstants.RUBBERDUCK_TEMP_PATH, true, false);
 
-            return _fileSystem.File.Exists(fileName) 
-                ? fileName 
-                : null;         
+            return _fileSystem.File.Exists(fileName) ? fileName : null!;
         }
 
         public IVBComponent ImportAndCleanUp(IVBComponent component, string fileName)
@@ -31,7 +29,7 @@ namespace Rubberduck.VBEditor.VBA
                 return component;
             }
 
-            IVBComponent newComponent = null;
+            IVBComponent newComponent = null!;
             using (var components = component.Collection)
             {
                 components.Remove(component);
@@ -55,7 +53,7 @@ namespace Rubberduck.VBEditor.VBA
             var fileName = Export(component);
             if (fileName == null || !_fileSystem.File.Exists(fileName))
             {
-                return null;
+                return null!;
             }
 
             var code = _fileSystem.File.ReadAllText(fileName, Encoding.Default);

@@ -162,52 +162,52 @@ namespace Rubberduck.Client
                     ApplyEdit = supported,
                     WorkspaceFolders = supported,
 
-                    CodeLens = new Supports<CodeLensWorkspaceClientCapabilities>
+                    CodeLens = new()
                     {
-                        Value = new CodeLensWorkspaceClientCapabilities { RefreshSupport = supported }
+                        Value = new() { RefreshSupport = supported }
                     },
-                    DidChangeConfiguration = new Supports<DidChangeConfigurationCapability>
+                    DidChangeConfiguration = new()
                     {
-                        Value = new DidChangeConfigurationCapability()
+                        Value = new()
                     },
-                    DidChangeWatchedFiles = new Supports<DidChangeWatchedFilesCapability>
+                    DidChangeWatchedFiles = new()
                     {
-                        Value = new DidChangeWatchedFilesCapability()
+                        Value = new()
                     },
-                    ExecuteCommand = new Supports<ExecuteCommandCapability>
+                    ExecuteCommand = new()
                     {
-                        Value = new ExecuteCommandCapability()
+                        Value = new()
                     },
-                    FileOperations = new Supports<FileOperationsWorkspaceClientCapabilities>
+                    FileOperations = new()
                     {
-                        Value = new FileOperationsWorkspaceClientCapabilities
+                        Value = new()
                         {
                             DidCreate = supported,
                             DidDelete = supported,
                             DidRename = supported,
                         }
                     },
-                    WorkspaceEdit = new Supports<WorkspaceEditCapability>
+                    WorkspaceEdit = new()
                     {
-                        Value = new WorkspaceEditCapability
+                        Value = new()
                         {
-                            ChangeAnnotationSupport = new WorkspaceEditSupportCapabilitiesChangeAnnotationSupport { GroupsOnLabel = supported },
+                            ChangeAnnotationSupport = new() { GroupsOnLabel = supported },
                             DocumentChanges = supported,
                             FailureHandling = FailureHandlingKind.TextOnlyTransactional,
                             //NormalizesLineEndings = supported,
                             //ResourceOperations = supported
                         }
                     },
-                    SemanticTokens = new Supports<SemanticTokensWorkspaceCapability>
+                    SemanticTokens = new()
                     {
-                        Value = new SemanticTokensWorkspaceCapability { RefreshSupport = true }
+                        Value = new() { RefreshSupport = true }
                     },
-                    Symbol = new Supports<WorkspaceSymbolCapability>
+                    Symbol = new()
                     {
-                        Value = new WorkspaceSymbolCapability
+                        Value = new()
                         {
-                            TagSupport = new Supports<TagSupportCapabilityOptions> { Value = new TagSupportCapabilityOptions { ValueSet = new Container<SymbolTag>(SymbolTag.Deprecated) } },
-                            SymbolKind = new SymbolKindCapabilityOptions { ValueSet = new Container<SymbolKind>(SymbolKind.Array, SymbolKind.Boolean, SymbolKind.Class, SymbolKind.Constant, SymbolKind.Enum, SymbolKind.EnumMember, SymbolKind.Event, SymbolKind.Field, SymbolKind.File, SymbolKind.Function, SymbolKind.Interface, SymbolKind.Method, SymbolKind.Module, SymbolKind.Number, SymbolKind.Null, SymbolKind.Object, SymbolKind.Operator, SymbolKind.Package, SymbolKind.Property, SymbolKind.String, SymbolKind.Struct, SymbolKind.Variable) }
+                            TagSupport = new() { Value = new() { ValueSet = new Container<SymbolTag>(SymbolTag.Deprecated) } },
+                            SymbolKind = new() { ValueSet = new Container<SymbolKind>(SymbolKind.Array, SymbolKind.Boolean, SymbolKind.Class, SymbolKind.Constant, SymbolKind.Enum, SymbolKind.EnumMember, SymbolKind.Event, SymbolKind.Field, SymbolKind.File, SymbolKind.Function, SymbolKind.Interface, SymbolKind.Method, SymbolKind.Module, SymbolKind.Number, SymbolKind.Null, SymbolKind.Object, SymbolKind.Operator, SymbolKind.Package, SymbolKind.Property, SymbolKind.String, SymbolKind.Struct, SymbolKind.Variable) }
                         }
                     },
                     ExtensionData = new Dictionary<string, JToken>()
@@ -218,12 +218,12 @@ namespace Rubberduck.Client
                 Window = new WindowClientCapabilities
                 {
                     WorkDoneProgress = supported,
-                    ShowDocument = new Supports<ShowDocumentClientCapabilities> { Value = new ShowDocumentClientCapabilities { Support = supported } },
-                    ShowMessage = new Supports<ShowMessageRequestClientCapabilities>
+                    ShowDocument = new() { Value = new() { Support = supported } },
+                    ShowMessage = new()
                     {
-                        Value = new ShowMessageRequestClientCapabilities
+                        Value = new()
                         {
-                            MessageActionItem = new ShowMessageRequestMessageActionItemClientCapabilities { AdditionalPropertiesSupport = supported }
+                            MessageActionItem = new() { AdditionalPropertiesSupport = supported }
                         }
                     },
                     ExtensionData = new Dictionary<string, JToken>()
@@ -231,37 +231,39 @@ namespace Rubberduck.Client
 
                 /* DOCUMENT */
 
-                TextDocument = new TextDocumentClientCapabilities
+                TextDocument = new()
                 {
-                    CallHierarchy = new Supports<CallHierarchyCapability> { Value = new CallHierarchyCapability() },
-                    CodeAction = new Supports<CodeActionCapability>
+                    CallHierarchy = new() { Value = new() },
+                    CodeAction = new()
                     {
-                        Value = new CodeActionCapability
+                        Value = new()
                         {
-                            CodeActionLiteralSupport = new CodeActionLiteralSupportOptions
+                            CodeActionLiteralSupport = new()
                             {
-                                CodeActionKind = new CodeActionKindCapabilityOptions
+                                CodeActionKind = new()
                                 {
-                                    ValueSet = new Container<CodeActionKind>()
+                                    ValueSet = new Container<CodeActionKind>(/*TODO*/)
                                 }
                             },
                             DataSupport = supported,
                             DisabledSupport = supported,
                             IsPreferredSupport = supported,
                             HonorsChangeAnnotations = supported,
-                            ResolveSupport = new CodeActionCapabilityResolveSupportOptions
+                            ResolveSupport = new()
                             {
-                                Properties = new Container<string>(nameof(CodeAction.Command), nameof(CodeAction.Data))
+                                Properties = new Container<string>(
+                                    nameof(CodeAction.Command), 
+                                    nameof(CodeAction.Data))
                             }
                         }
                     },
                     CodeLens = null, // planned post-3.0
-                    ColorProvider = new Supports<ColorProviderCapability> { Value = new ColorProviderCapability() },
-                    Completion = new Supports<CompletionCapability>
+                    ColorProvider = new() { Value = new() },
+                    Completion = new()
                     {
-                        Value = new CompletionCapability
+                        Value = new()
                         {
-                            CompletionItem = new CompletionItemCapabilityOptions
+                            CompletionItem = new()
                             {
                                 CommitCharactersSupport = supported,
                                 DeprecatedSupport = supported,
@@ -269,133 +271,170 @@ namespace Rubberduck.Client
                                 PreselectSupport = supported,
                                 ResolveAdditionalTextEditsSupport = supported,
                                 SnippetSupport = supported,
-                                TagSupport = new Supports<CompletionItemTagSupportCapabilityOptions>
+                                TagSupport = new()
                                 {
-                                    Value = new CompletionItemTagSupportCapabilityOptions
+                                    Value = new()
                                     {
                                         ValueSet = new Container<CompletionItemTag>(CompletionItemTag.Deprecated)
                                     }
                                 },
                                 DocumentationFormat = new Container<MarkupKind>(MarkupKind.Markdown),
-                                InsertTextModeSupport = new CompletionItemInsertTextModeSupportCapabilityOptions
+                                InsertTextModeSupport = new()
                                 {
                                     ValueSet = new Container<InsertTextMode>(InsertTextMode.AdjustIndentation)
                                 },
-                                ResolveSupport = new CompletionItemCapabilityResolveSupportOptions
+                                ResolveSupport = new()
                                 {
-                                    Properties = new Container<string>(nameof(CompletionItem.Data), nameof(CompletionItem.Detail), nameof(CompletionItem.Documentation), nameof(CompletionItem.Command)),
+                                    Properties = new Container<string>(
+                                        nameof(CompletionItem.Data), 
+                                        nameof(CompletionItem.Detail), 
+                                        nameof(CompletionItem.Documentation), 
+                                        nameof(CompletionItem.Command)),
                                 }
                             },
                             ContextSupport = supported,
-                            CompletionItemKind = new CompletionItemKindCapabilityOptions
+                            CompletionItemKind = new()
                             {
-                                ValueSet = new Container<CompletionItemKind>(CompletionItemKind.Class, CompletionItemKind.Color, CompletionItemKind.Constant, CompletionItemKind.Enum, CompletionItemKind.EnumMember, CompletionItemKind.Event, CompletionItemKind.Field, CompletionItemKind.File, CompletionItemKind.Folder, CompletionItemKind.Function, CompletionItemKind.Interface, CompletionItemKind.Keyword, CompletionItemKind.Method, CompletionItemKind.Module, CompletionItemKind.Operator, CompletionItemKind.Property, CompletionItemKind.Reference, CompletionItemKind.Snippet, CompletionItemKind.Struct, CompletionItemKind.Text, CompletionItemKind.Value, CompletionItemKind.Variable)
+                                ValueSet = new Container<CompletionItemKind>(
+                                    CompletionItemKind.Class, 
+                                    CompletionItemKind.Color, 
+                                    CompletionItemKind.Constant, 
+                                    CompletionItemKind.Enum, 
+                                    CompletionItemKind.EnumMember, 
+                                    CompletionItemKind.Event, 
+                                    CompletionItemKind.Field, 
+                                    CompletionItemKind.File, 
+                                    CompletionItemKind.Folder, 
+                                    CompletionItemKind.Function, 
+                                    CompletionItemKind.Interface, 
+                                    CompletionItemKind.Keyword, 
+                                    CompletionItemKind.Method, 
+                                    CompletionItemKind.Module, 
+                                    CompletionItemKind.Operator, 
+                                    CompletionItemKind.Property, 
+                                    CompletionItemKind.Reference, 
+                                    CompletionItemKind.Snippet, 
+                                    CompletionItemKind.Struct, 
+                                    CompletionItemKind.Text, 
+                                    CompletionItemKind.Value, 
+                                    CompletionItemKind.Variable)
                             }
                         }
                     },
-                    Declaration = new Supports<DeclarationCapability>
+                    Declaration = new()
                     {
-                        Value = new DeclarationCapability { LinkSupport = supported }
+                        Value = new() { LinkSupport = supported }
                     },
                     Definition = null, // declaration vs definition is unclear
-                    DocumentHighlight = new Supports<DocumentHighlightCapability> { Value = new DocumentHighlightCapability() },
-                    DocumentLink = new Supports<DocumentLinkCapability> { Value = new DocumentLinkCapability { TooltipSupport = supported } },
-                    DocumentSymbol = new Supports<DocumentSymbolCapability>
+                    DocumentHighlight = new() { Value = new() },
+                    DocumentLink = new() { Value = new() { TooltipSupport = supported } },
+                    DocumentSymbol = new()
                     {
-                        Value = new DocumentSymbolCapability
+                        Value = new()
                         {
                             HierarchicalDocumentSymbolSupport = supported,
                             LabelSupport = supported,
-                            TagSupport = new TagSupportCapabilityOptions { ValueSet = new Container<SymbolTag>(SymbolTag.Deprecated) },
-                            SymbolKind = new SymbolKindCapabilityOptions { ValueSet = new Container<SymbolKind>(SymbolKind.Array, SymbolKind.Boolean, SymbolKind.Class, SymbolKind.Constant, SymbolKind.Enum, SymbolKind.EnumMember, SymbolKind.Event, SymbolKind.Field, SymbolKind.File, SymbolKind.Function, SymbolKind.Interface, SymbolKind.Method, SymbolKind.Module, SymbolKind.Number, SymbolKind.Null, SymbolKind.Object, SymbolKind.Operator, SymbolKind.Package, SymbolKind.Property, SymbolKind.String, SymbolKind.Struct, SymbolKind.Variable) }
+                            TagSupport = new() { ValueSet = new Container<SymbolTag>(SymbolTag.Deprecated) },
+                            SymbolKind = new() { ValueSet = new Container<SymbolKind>(
+                                SymbolKind.Array, 
+                                SymbolKind.Boolean, 
+                                SymbolKind.Class, 
+                                SymbolKind.Constant, 
+                                SymbolKind.Enum, 
+                                SymbolKind.EnumMember, 
+                                SymbolKind.Event, 
+                                SymbolKind.Field, 
+                                SymbolKind.File, 
+                                SymbolKind.Function, 
+                                SymbolKind.Interface, 
+                                SymbolKind.Method, 
+                                SymbolKind.Module, 
+                                SymbolKind.Number, 
+                                SymbolKind.Null, 
+                                SymbolKind.Object, 
+                                SymbolKind.Operator, 
+                                SymbolKind.Package, 
+                                SymbolKind.Property, 
+                                SymbolKind.String, 
+                                SymbolKind.Struct, 
+                                SymbolKind.Variable) }
                         }
                     },
-                    Diagnostic = new Supports<DiagnosticWorkspaceClientCapabilities> { Value = new DiagnosticWorkspaceClientCapabilities 
+                    Diagnostic = new() { Value = new() { RefreshSupport = supported } },
+                    FoldingRange = new()
                     {
-                        RefreshSupport = supported,
-                    } },
-                    FoldingRange = new Supports<FoldingRangeCapability>
-                    {
-                        Value = new FoldingRangeCapability
+                        Value = new()
                         {
                             LineFoldingOnly = false,
                             RangeLimit = 10000 // no module can exceed 10K LOC
                         }
                     },
-                    Formatting = new Supports<DocumentFormattingCapability> { Value = new DocumentFormattingCapability() },
-                    Hover = new Supports<HoverCapability> { Value = new HoverCapability { ContentFormat = new Container<MarkupKind>(MarkupKind.Markdown) } },
-                    Implementation = new Supports<ImplementationCapability> { Value = new ImplementationCapability { LinkSupport = supported } },
-                    OnTypeFormatting = new Supports<DocumentOnTypeFormattingCapability> { Value = new DocumentOnTypeFormattingCapability() },
-                    PublishDiagnostics = new Supports<PublishDiagnosticsCapability> { Value = new PublishDiagnosticsCapability() },
-                    References = new Supports<ReferenceCapability> { Value = new ReferenceCapability() },
-                    Rename = new Supports<RenameCapability>
+                    Formatting = new() { Value = new() },
+                    Hover = new() { Value = new() { ContentFormat = new Container<MarkupKind>(MarkupKind.Markdown) } },
+                    Implementation = new() { Value = new() { LinkSupport = supported } },
+                    OnTypeFormatting = new() { Value = new() },
+                    PublishDiagnostics = new() { Value = new() },
+                    References = new() { Value = new() },
+                    Rename = new()
                     {
-                        Value = new RenameCapability
+                        Value = new()
                         {
                             PrepareSupport = supported,
                             //HonorsChangeAnnotations = supported,
-                            PrepareSupportDefaultBehavior = PrepareSupportDefaultBehavior.Identifier,
+                            PrepareSupportDefaultBehavior = PrepareSupportDefaultBehavior.Identifier
                         }
                     },
-                    RangeFormatting = new Supports<DocumentRangeFormattingCapability>
+                    RangeFormatting = new() { Value = new() },
+                    SignatureHelp = new()
                     {
-                        Value = new DocumentRangeFormattingCapability()
-                    },
-                    SignatureHelp = new Supports<SignatureHelpCapability>
-                    {
-                        Value = new SignatureHelpCapability
+                        Value = new()
                         {
                             ContextSupport = supported,
-                            SignatureInformation = new SignatureInformationCapabilityOptions
+                            SignatureInformation = new()
                             {
                                 ActiveParameterSupport = supported,
                                 DocumentationFormat = new Container<MarkupKind>(MarkupKind.Markdown),
-                                ParameterInformation = new SignatureParameterInformationCapabilityOptions
-                                {
-                                    LabelOffsetSupport = supported,
-                                }
+                                ParameterInformation = new() { LabelOffsetSupport = supported }
                             }
                         }
                     },
-                    SemanticTokens = new Supports<SemanticTokensCapability>
+                    SemanticTokens = new()
                     {
-                        Value = new SemanticTokensCapability
+                        Value = new()
                         {
                             Formats = new Container<SemanticTokenFormat>(SemanticTokenFormat.Defaults),
                             MultilineTokenSupport = supported,
                             OverlappingTokenSupport = false,
-                            Requests = new SemanticTokensCapabilityRequests
+                            Requests = new()
                             {
-                                Full = new Supports<SemanticTokensCapabilityRequestFull> { Value = new SemanticTokensCapabilityRequestFull { Delta = false } },
-                                Range = new Supports<SemanticTokensCapabilityRequestRange> { Value = new SemanticTokensCapabilityRequestRange() }
+                                Full = new() { Value = new() { Delta = false } },
+                                //Range = new() { Value = new() }
                             },
                             //TokenModifiers = new Container<SemanticTokenModifier>(SemanticTokenModifier...) /* TODO FIGURE THIS ONE OUT */
                             //TokenTypes = new Container<SemanticTokenType>(SemanticTokenType...)
                         }
                     },
-                    SelectionRange = new Supports<SelectionRangeCapability>
+                    SelectionRange = new()
                     {
-                        Value = new SelectionRangeCapability
+                        Value = new()
                         {
                             LineFoldingOnly = supported,
                             RangeLimit = 10000,
                         },
                     },
-                    Synchronization = new Supports<TextSynchronizationCapability>
+                    Synchronization = new()
                     {
-                        Value = new TextSynchronizationCapability
+                        Value = new()
                         {
                             DidSave = true,
                             WillSave = false,
                             WillSaveWaitUntil = false,
                         }
                     },
-                    TypeDefinition = new Supports<TypeDefinitionCapability> { Value = new TypeDefinitionCapability { LinkSupport = supported } },
+                    TypeDefinition = new() { Value = new() { LinkSupport = supported } },
+                    TypeHierarchy = new() { Value = new TypeHierarchyCapability() },
+
                     ExtensionData = new Dictionary<string, JToken>(),
-                    TypeHierarchy = new Supports<TypeHierarchyCapability>
-                    {
-                        Value = new TypeHierarchyCapability()
-                    },
                 },
 
                 /* OTHER */

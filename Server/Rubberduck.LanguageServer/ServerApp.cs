@@ -22,6 +22,7 @@ using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.Langu
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Newtonsoft.Json.Linq;
 using System.Reactive;
+using System.Linq.Expressions;
 
 namespace Rubberduck.LanguageServer
 {
@@ -30,53 +31,88 @@ namespace Rubberduck.LanguageServer
         void Initialize(InitializeParams param);
     }
 
-    public class LanguageServerState : IServerStateWriter
+    public class InvalidInitializeParamsException : ArgumentException
     {
-        private readonly ILogger _logger;
+        public static void ThrowIfNull(InitializeParams param, params Func<InitializeParams, (string, object?)>[] requiredValues)
+        {
+            foreach (var requiredValue in requiredValues)
+            {
+                var (property, value) = requiredValue.Invoke(param);
+                if (value is null)
+                {
+                    throw new InvalidInitializeParamsException(property);
+                }
+            }
+        }
 
-        public LanguageServerState(ILogger<LanguageServerState> logger)
+        private InvalidInitializeParamsException(string property)
+            : base($"Property '{property}' cannot be null") { }
+    }
+
+    public class ServerStateNotInitializedException : InvalidOperationException { }
+
+    public class LanguageServerState : LanguageServerState<object>
+    {
+        public LanguageServerState(ILogger<LanguageServerState> logger) : base(logger) { }
+    }
+
+    public class LanguageServerState<TOptions> : IServerStateWriter
+        where TOptions : new()
+    {
+        public LanguageServerState(ILogger logger)
         {
             _logger = logger;
 
-            _clientInfo = default!;
-            _capabilities = default!;
-            _processId = default!;
-            _locale = default!;
-            _workspaceFolders = default!;
+            _clientInfo = default;
+            _capabilities = default;
+            _processId = default;
+            _locale = default;
+            _workspaceFolders = default;
+            _options = default;
         }
 
-        private ClientInfo _clientInfo;
-        public ClientInfo ClientInfo => _clientInfo;
+        private readonly ILogger _logger;
+        protected ILogger Logger => _logger;
 
-        private ClientCapabilities _capabilities;
-        public ClientCapabilities ClientCapabilities => _capabilities;
+        private ClientInfo? _clientInfo;
+        public ClientInfo ClientInfo => _clientInfo ?? throw new ServerStateNotInitializedException();
 
-        private long _processId;
-        public long ClientProcessId => _processId;
+        private ClientCapabilities? _capabilities;
+        public ClientCapabilities ClientCapabilities => _capabilities ?? throw new ServerStateNotInitializedException();
 
-        //private object? _options;
-        // TODO expose
+        private long? _processId;
+        public long ClientProcessId => _processId ?? throw new ServerStateNotInitializedException();
 
-        private CultureInfo _locale;
-        public CultureInfo Locale => _locale;
+        private TOptions? _options;
+        public TOptions Options => _options ?? throw new ServerStateNotInitializedException();
 
-        private InitializeTrace _traceLevel;
-        public InitializeTrace TraceLevel => _traceLevel;
+        private CultureInfo? _locale;
+        public CultureInfo Locale => _locale ?? throw new ServerStateNotInitializedException();
 
-        private Container<WorkspaceFolder> _workspaceFolders;
-        public IEnumerable<WorkspaceFolder> Workspacefolders => _workspaceFolders;
+        private InitializeTrace? _traceLevel;
+        public InitializeTrace TraceLevel => _traceLevel ?? throw new ServerStateNotInitializedException();
+
+        private Container<WorkspaceFolder>? _workspaceFolders;
+        public IEnumerable<WorkspaceFolder> Workspacefolders => _workspaceFolders ?? throw new ServerStateNotInitializedException();
 
         public void Initialize(InitializeParams param)
         {
-            _clientInfo = param.ClientInfo ?? throw new ArgumentNullException(nameof(param.ClientInfo));
-            _capabilities = param.Capabilities ?? throw new ArgumentNullException(nameof(param.Capabilities));
-            _processId = param.ProcessId ?? throw new ArgumentNullException(nameof(param.ProcessId));
-            _workspaceFolders = param.WorkspaceFolders ?? throw new ArgumentNullException(nameof(param.WorkspaceFolders));
+            InvalidInitializeParamsException.ThrowIfNull(param,
+                e => (nameof(e.ClientInfo), e.ClientInfo),
+                e => (nameof(e.Capabilities), e.Capabilities),
+                e => (nameof(e.Locale), e.Locale),
+                e => (nameof(e.ProcessId), e.ProcessId),
+                e => (nameof(e.WorkspaceFolders), e.WorkspaceFolders)
+            );
 
-            _locale = ToCultureInfo(param.Locale);
-            _traceLevel = param.Trace;
+            _capabilities = param.Capabilities!;
+            _clientInfo = param.ClientInfo!;
+            _locale = ToCultureInfo(param.Locale!);
+            _processId = param.ProcessId!.Value;
+            _traceLevel = param.Trace!;
+            _workspaceFolders = param.WorkspaceFolders!;
 
-            //_options = param.InitializationOptions; // TODO
+            _options = (TOptions)(param.InitializationOptions ?? new());
         }
 
         private CultureInfo ToCultureInfo(string? locale)
@@ -117,25 +153,27 @@ namespace Rubberduck.LanguageServer
             services.AddLogging(ConfigureLogging);
 
             var provider = new DefaultServiceProviderFactory().CreateServiceProvider(services);
-            using (var scope = provider.CreateScope())
-            {
-                _logger = scope.ServiceProvider.GetRequiredService<ILogger<ServerApp>>();
-                _logger.LogInformation("Rubberduck 3.0 Language Server v{0}", Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString(3) ?? "0.x");
-                _logger.LogInformation("Starting language server...");
-                _logger.LogDebug($"Startup configuration:: TraceLevel='{_options.TraceLevel}' TransportType='{_options.TransportType}'");
+            using var scope = provider.CreateScope();
+            
+            _logger = scope.ServiceProvider.GetRequiredService<ILogger<ServerApp>>();
+            _logger.LogInformation("Rubberduck 3.0 Language Server v{version}", Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString(3) ?? "0.x");
+            _logger.LogInformation("Starting language server...");
+            _logger.LogDebug("Startup configuration:: TraceLevel='{traceLevel}' TransportType='{transportType}'", _options.TraceLevel, _options.TransportType);
 
-                _languageServer = await OmniSharpLanguageServer.From(options => ConfigureLanguageServer(options), provider, _tokenSource.Token);
-                _serverState = new(scope.ServiceProvider.GetRequiredService<ILogger<LanguageServerState>>());
+            _languageServer = await OmniSharpLanguageServer.From(options => ConfigureLanguageServer(options), provider, _tokenSource.Token);
+            _serverState = new(scope.ServiceProvider.GetRequiredService<ILogger<LanguageServerState>>());
 
-                _logger.LogInformation("Awaiting client connection...");
-                await _languageServer.WaitForExit;
-            }
+            _logger.LogInformation("Awaiting client connection...");
+            
+            await _languageServer.WaitForExit;
         }
 
         private void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<LanguageServerState>();
             services.AddSingleton<IServerStateWriter>(provider => provider.GetRequiredService<LanguageServerState>());
+
+            
 
             services.AddScoped<SupportedLanguage, VisualBasicForApplicationsLanguage>();
             services.AddScoped<DocumentContentStore>();
@@ -259,7 +297,7 @@ namespace Rubberduck.LanguageServer
                     break;
 
                 default:
-                    _logger?.LogWarning($"An unsupported transport type was specified.");
+                    _logger?.LogWarning("An unsupported transport type was specified.");
                     throw new UnsupportedTransportTypeException(_options.TransportType);
             }
         }
@@ -275,7 +313,7 @@ namespace Rubberduck.LanguageServer
         private void ConfigurePipe(LanguageServerOptions options)
         {
             var ioOptions = (PipeTransportOptions)_options;
-            _logger?.LogInformation($"Configuring language server transport to use a named pipe stream (mode: {ioOptions.Mode})...");
+            _logger?.LogInformation("Configuring language server transport to use a named pipe stream (mode: {mode})...", ioOptions.Mode);
 
             _pipe = new NamedPipeServerStream(ioOptions.PipeName, PipeDirection.InOut, 1, ioOptions.Mode, PipeOptions.Asynchronous);
             options.WithInput(_pipe.UsePipeReader());
@@ -284,14 +322,14 @@ namespace Rubberduck.LanguageServer
 
         public void Dispose()
         {
-            if (_pipe is object)
+            if (_pipe is not null)
             {
                 _logger?.LogDebug("Disposing NamedPipeServerStream...");
                 _pipe.Dispose();
                 _pipe = null;
             }
 
-            if (_languageServer is object)
+            if (_languageServer is not null)
             {
                 _logger?.LogDebug("Disposing LanguageServer...");
                 _languageServer.Dispose();

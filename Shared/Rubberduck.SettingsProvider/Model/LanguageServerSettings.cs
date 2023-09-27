@@ -1,14 +1,28 @@
 ﻿using Rubberduck.InternalApi.ServerPlatform;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Rubberduck.SettingsProvider.Model
 {
+    public static class TraceLevelExtensions
+    {
+        private static readonly IDictionary<ServerTraceLevel, TraceLevel> _map = new Dictionary<ServerTraceLevel, TraceLevel>
+        {
+            [ServerTraceLevel.Off] = TraceLevel.Off,
+            [ServerTraceLevel.Verbose] = TraceLevel.Verbose,
+            [ServerTraceLevel.Message] = TraceLevel.Info,
+        };
+
+        public static TraceLevel ToTraceLevel(this ServerTraceLevel value) => _map[value];
+    }
+
     public enum ServerTraceLevel
     {
-        Verbose,
+        Off = 0,
+        Verbose = 4,
         Message,
-        Off
     }
 
     public enum MessageMode

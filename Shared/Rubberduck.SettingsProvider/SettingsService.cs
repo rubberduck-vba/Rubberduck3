@@ -1,7 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Common;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.SettingsProvider.Model;
 using System;
+using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.IO.Abstractions;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -9,92 +13,188 @@ using System.Threading.Tasks;
 namespace Rubberduck.SettingsProvider
 {
     public interface ISettingsService<TSettings> : ISettingsProvider<TSettings>
+        where TSettings : struct
     {
         event EventHandler<SettingsChangedEventArgs<TSettings>> SettingsChanged;
-
-        Task<TSettings> ReadFromFileAsync();
-        Task WriteToFileAsync(TSettings settings);
+        Task<(Guid Token, TSettings Settings)> ReadFromFileAsync();
+        Task WriteToFileAsync();
     }
 
     public class SettingsService<TSettings> : ISettingsService<TSettings>
+        where TSettings : struct
     {
+        private static readonly string _root = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        private static readonly JsonSerializerOptions _options = new() { PropertyNameCaseInsensitive = true };
+
         private readonly ILogger _logger;
         private readonly IFileSystem _fileSystem;
         private readonly TSettings _default;
-
         private readonly string _path;
 
-        private static readonly JsonSerializerOptions _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        private readonly ConcurrentDictionary<Guid, TSettings> _valueCache = new();
+        private readonly ConcurrentStack<Guid> _tokens = new();
 
-        private TSettings _cached;
+        private readonly IServiceProvider _services;
 
-        public SettingsService(ILogger<SettingsService<TSettings>> logger, IFileSystem fileSystem, IDefaultSettingsProvider<TSettings> defaultSettings) 
+        public SettingsService(ILogger<SettingsService<TSettings>> logger,
+            IServiceProvider serviceProvider,
+            IFileSystem fileSystem,
+            IDefaultSettingsProvider<TSettings> defaultSettings)
         {
+            _services = serviceProvider;
             _logger = logger;
             _fileSystem = fileSystem;
-            _default = defaultSettings.Default;
-            _cached = _default;
 
-            _path = _fileSystem.Path.Combine($"{typeof(TSettings).Name}.json"); // TODO put the %userappdata% special folder in there
+            _path = _fileSystem.Path.Combine(_root, "\\Rubberduck", $"\\{typeof(TSettings).Name}.json");
+
+            _default = defaultSettings.Default;
+
+            DefaultToken = Guid.NewGuid();
+            CacheDefault();
         }
 
-        public event EventHandler<SettingsChangedEventArgs<TSettings>> SettingsChanged;
+        public event EventHandler<SettingsChangedEventArgs<TSettings>>? SettingsChanged;
 
-        private void OnSettingsChanged(TSettings oldValue)
+        public Guid DefaultToken { get; }
+
+        private void OnSettingsChanged(TSettings oldValue, TSettings newValue, Guid token)
         {
-            var args = new SettingsChangedEventArgs<TSettings>(oldValue, _cached);
+            var args = new SettingsChangedEventArgs<TSettings>(oldValue, newValue, token);
             SettingsChanged?.Invoke(this, args);
         }
 
-        public TSettings Value
+        public async Task ClearCacheAsync()
         {
-            get => _cached;
-            private set
+            _tokens.Clear();
+            _valueCache.Clear();
+            CacheDefault();
+            await ReadFromFileAsync();
+        }
+
+        private void CacheDefault()
+        {
+            _tokens.Push(DefaultToken);
+            _valueCache[DefaultToken] = _default;
+        }
+
+        public (Guid Token, TSettings Settings) Value
+        {
+            get
             {
-                if (!_cached.Equals(value))
-                {
-                    _cached = value;
-                    _logger.LogTrace($"Cached new {typeof(TSettings).Name} value.");
-                    OnSettingsChanged(value);
-                }
-                else
-                {
-                    _logger.LogTrace($"{typeof(TSettings).Name} value is unchanged.");
-                }
+                var token = CurrentToken;
+                var value = _valueCache[token];
+                return (token, value);
             }
         }
 
-        public async Task<TSettings> ReadFromFileAsync()
+        public Guid CurrentToken
+        {
+            get
+            {
+                if (_tokens.TryPeek(out var token))
+                {
+                    return token;
+                }
+                throw new InvalidOperationException("No token is set.");
+            }
+        }
+
+        public bool TryGetValue(Guid token, out TSettings value) => _valueCache.TryGetValue(token, out value);
+
+        public bool TrySetValue(TSettings value, Guid token)
+        {
+            var serverSettings = _services.GetRequiredService<ISettingsProvider<LanguageServerSettings>>();
+            var traceLevel = serverSettings.Value.Settings.TraceLevel.ToTraceLevel();
+
+            var didChange = false;
+            var oldToken = CurrentToken;
+
+            if (_valueCache.TryGetValue(oldToken, out var oldValue))
+            {
+                if (Guid.Equals(token, oldToken))
+                {
+                    // if tokens match, caller was working off the same "current" we're looking at.
+
+                    if (!_valueCache[token].Equals(value))
+                    {
+                        // different values at the specified token means settings did change and we're getting a new token.
+                        var newToken = Guid.NewGuid();
+
+                        _valueCache[newToken] = value;
+                        _tokens.Push(newToken);
+
+                        _logger.LogTrace($"Cached new {typeof(TSettings).Name} value.", $"new token: {newToken}.", traceLevel);
+                        didChange = true;
+                    }
+                }
+                else
+                {
+                    _logger.LogDebug("A stale token was provided; value will not be set.");
+                    didChange = false;
+                }
+
+                if (didChange)
+                {
+                    Debug.Assert(!oldValue.Equals(value), "BUG: 'didChange' flag is set, but 'oldValue.Equals(value)' returned 'true'.");
+                    var newToken = CurrentToken;
+
+                    Debug.Assert(oldToken.Equals(newToken), "BUG: 'didChange' flag is set, but 'token.Equals(newToken)' returned 'false'.");
+                    OnSettingsChanged(oldValue, value, newToken);
+                }
+            }
+            else
+            {
+                // the "old" token should be mapped to an existing current / "old" value.
+                // we should consider the token as stale rather than invalid in this case
+                // because an unmapped token could be because cache was cleared since token retrieval.
+                _logger.LogDebug("A stale or otherwise invalid token was provided; value will not be set.");
+            }
+            return didChange;
+        }
+
+        public async Task<(Guid Token, TSettings Settings)> ReadFromFileAsync()
         {
             try
             {
-                var elapsed = await TimedAction.RunAsync(Task.Run(() =>
+                if (_fileSystem.File.Exists(_path))
                 {
-                    var content = _fileSystem.File.ReadAllText(_path);
-                    if (!string.IsNullOrWhiteSpace(content))
+
+                    var elapsed = await TimedAction.RunAsync(Task.Run(() =>
                     {
-                        Value = JsonSerializer.Deserialize<TSettings>(content, _options);
-                    }
-                    else
-                    {
-                        _logger.LogWarning($"File was found, but no content was loaded.");
-                    }
-                }));
-                _logger.LogTrace($"PERF: Reading and deserializing file '{_path}' took {elapsed.TotalMilliseconds}ms.");
+                        var content = _fileSystem.File.ReadAllText(_path);
+                        if (!string.IsNullOrWhiteSpace(content))
+                        {
+                            var newValue = JsonSerializer.Deserialize<TSettings>(content, _options);
+                            var newToken = Guid.NewGuid();
+                            _tokens.Push(newToken);
+                            TrySetValue(newValue, newToken);
+                        }
+                        else
+                        {
+                            _logger.LogWarning($"File was found, but no content was loaded.");
+                        }
+                    }));
+                    _logger.LogTrace($"PERF: Reading and deserializing file '{_path}' took {elapsed.TotalMilliseconds}ms.");
+                }
+                else
+                {
+                    _logger.LogWarning($"Settings file '{_path}' does not exist and will be created from defaults.");
+                    await WriteToFileAsync();
+                }
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                _logger.LogError(e, $"Error reading from file '{_path}'. Returning cached/default settings.");
+                _logger.LogError(exception, $"Error reading from file '{_path}'. Returning cached/default settings.");
             }
 
             return Value;
         }
 
-        public async Task WriteToFileAsync(TSettings settings)
+        public async Task WriteToFileAsync()
         {
             try
             {
-                Value = settings;
+                var settings = Value;
                 var elapsed = await TimedAction.RunAsync(Task.Run(() =>
                 {
                     var content = JsonSerializer.Serialize(settings);
@@ -102,9 +202,9 @@ namespace Rubberduck.SettingsProvider
                 }));
                 _logger.LogTrace($"PERF: Serializing and writing content to file '{_path}' took {elapsed.TotalMilliseconds}ms.");
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                _logger.LogError(e, $"Error writing to file '{_path}'.");
+                _logger.LogError(exception, $"Error writing to file '{_path}'.");
 
             }
         }

@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using NLog;
+using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Common;
 
 namespace Rubberduck.UI.Command
@@ -15,14 +15,14 @@ namespace Rubberduck.UI.Command
     {
         private static readonly List<MethodBase> ExceptionTargetSites = new List<MethodBase>();
 
-        protected CommandBase(ILogger logger = null)
+        protected CommandBase(ILogger? logger = null)
         {
-            Logger = logger ?? LogManager.GetLogger(GetType().FullName);
+            Logger = logger;
             CanExecuteCondition = (parameter => true);
             OnExecuteCondition = (parameter => true);
         }
 
-        protected ILogger Logger { get; }
+        protected ILogger? Logger { get; }
         protected abstract Task OnExecuteAsync(object parameter);
 
         protected Func<object, bool> CanExecuteCondition { get; private set; }
@@ -63,12 +63,12 @@ namespace Rubberduck.UI.Command
             {
                 var result = false;
                 var elapsed = TimedAction.Run(() => result = CanExecuteCondition(parameter));
-                Logger.Trace($"{GetType().Name}.CanExecute completed in {elapsed.TotalMilliseconds}ms.");
+                //Logger?.LogPerformance($"{GetType().Name}.CanExecute completed in {elapsed.TotalMilliseconds}ms.");
                 return result;
             }
             catch (Exception exception)
             {
-                Logger.Error(exception);
+                //Logger.LogError(exception);
 
                 if (!ExceptionTargetSites.Contains(exception.TargetSite))
                 {
@@ -92,11 +92,11 @@ namespace Rubberduck.UI.Command
 
                     OnExecuteAsync(parameter).ConfigureAwait(false).GetAwaiter().GetResult();
                 });
-                Logger.Trace($"{GetType().Name}.Execute completed in {elapsed.TotalMilliseconds}ms.");
+                //Logger.Trace($"{GetType().Name}.Execute completed in {elapsed.TotalMilliseconds}ms.");
             }
             catch (Exception exception)
             {
-                Logger.Error(exception);
+                //Logger.Error(exception);
 
                 if (!ExceptionTargetSites.Contains(exception.TargetSite))
                 {
@@ -107,7 +107,7 @@ namespace Rubberduck.UI.Command
 
         public string ShortcutText { get; set; }
 
-        public event EventHandler CanExecuteChanged
+        public event EventHandler? CanExecuteChanged
         {
             add => CommandManager.RequerySuggested += value;
             remove => CommandManager.RequerySuggested -= value;

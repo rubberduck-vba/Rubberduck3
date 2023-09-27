@@ -1,13 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <Version>0.0.1</Version>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>disable</ImplicitUsings>
+    <TargetFramework>net7.0</TargetFramework>
+    <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+    <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <Platforms>AnyCPU</Platforms>
     <OutputType>Exe</OutputType>
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
-    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +20,8 @@
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
     <PackageReference Include="NLog" Version="5.2.4" />
     <PackageReference Include="NLog.Extensions.Logging" Version="5.3.4" />
     <PackageReference Include="OmniSharp.Extensions.LanguageProtocol" Version="0.19.8" />
@@ -26,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Rubberduck.RPC\Rubberduck.ServerPlatform.csproj" />
+    <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
   </ItemGroup>
 
   <ItemGroup>

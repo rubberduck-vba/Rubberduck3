@@ -1,6 +1,7 @@
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using System.Collections;
 using System.Collections.Generic;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -15,13 +16,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE => new VBE((IsWrappingNullReference ? null : Target.VBE)!);
 
-        public IApplication Application => new Application(IsWrappingNullReference ? null : Target.Application);
+        public IApplication Application => new Application((IsWrappingNullReference ? null : Target.Application)!);
 
-        public object Parent => IsWrappingNullReference ? null : Target.Parent;
+        public object Parent => (IsWrappingNullReference ? null : Target.Parent)!;
 
-        public IProperty this[object index] => new Property(IsWrappingNullReference ? null : Target.Item(index));
+        public IProperty this[object index] => new Property((IsWrappingNullReference ? null : Target.Item(index))!);
 
         IEnumerator<IProperty> IEnumerable<IProperty>.GetEnumerator()
         {
@@ -31,18 +32,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         IEnumerator IEnumerable.GetEnumerator()
         {
             return IsWrappingNullReference
-                ? (IEnumerator) new List<IEnumerable>().GetEnumerator()
+                ? new List<IEnumerable>().GetEnumerator()
                 : ((IEnumerable<IProperty>) this).GetEnumerator();
         }
 
-        public override bool Equals(ISafeComWrapper<VB.Properties> other)
+        public override bool Equals(ISafeComWrapper<VB.Properties>? other)
         {
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-        public bool Equals(IProperties other)
+        public bool Equals(IProperties? other)
         {
-            return Equals(other as SafeComWrapper<VB.Properties>);
+            return Equals((other as SafeComWrapper<VB.Properties>)!);
         }
 
         public override int GetHashCode()

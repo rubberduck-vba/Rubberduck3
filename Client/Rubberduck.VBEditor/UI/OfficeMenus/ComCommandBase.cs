@@ -1,4 +1,4 @@
-﻿using Rubberduck.VBEditor.Events;
+﻿using Rubberduck.Unmanaged.Abstract;
 
 namespace Rubberduck.UI.Command
 {

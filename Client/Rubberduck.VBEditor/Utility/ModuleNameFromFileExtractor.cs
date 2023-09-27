@@ -3,8 +3,9 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
 using Rubberduck.InternalApi.Common;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.VBEditor.Utility
 {

@@ -20,14 +20,14 @@ using Rubberduck.Core;
 using Rubberduck.Core.Splash;
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.Root;
-using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.ComManagement.TypeLibs;
-using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.WinForms;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Events;
+using Rubberduck.Unmanaged.TypeLibs;
 
 namespace Rubberduck
 {
@@ -37,20 +37,18 @@ namespace Rubberduck
 
         private RubberduckSettings _initialSettings;
 
-        private IVBE _vbe;
-        private IAddIn _addin;
-
-        private IServiceScope _serviceScope;
+        private IVBE _vbe = null!;
+        private IAddIn _addin = null!;
+        private IServiceScope _serviceScope = null!;
+        private App _app = null!;
 
         private bool _isInitialized;
 
-        private App _app;
+        private readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
+        private Process? _serverProcess;
+        private NamedPipeClientStream? _pipeStream;
 
-        private CancellationTokenSource _tokenSource = new CancellationTokenSource();
-        private Process _serverProcess;
-        private NamedPipeClientStream _pipeStream;
-
-        private LanguageClient _languageClient;
+        private LanguageClient? _languageClient;
 
         internal RubberduckAddIn(IDTExtensibility2 extAddin, IVBE vbeWrapper, IAddIn addinWrapper)
         {
@@ -74,7 +72,7 @@ namespace Rubberduck
 #if DEBUG
             isDebugBuild = true;
 #endif
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            var version = Assembly.GetExecutingAssembly().GetName().Version!;
             return isDebugBuild
                 ? $"{version.Major}.{version.Minor}.{version.Build}.x (debug)"
                 : version.ToString();
@@ -90,8 +88,8 @@ namespace Rubberduck
                 return;
             }
 
-            Splash splash = null;
-            ISplashViewModel splashModel = null;
+            Splash? splash = null;
+            ISplashViewModel? splashModel = null;
 
             try
             {
@@ -162,7 +160,9 @@ namespace Rubberduck
         private async Task InitializeSettingsAsync(IServiceScope scope)
         {
             var configProvider = scope.ServiceProvider.GetRequiredService<ISettingsService<RubberduckSettings>>();
-            _initialSettings = await configProvider.ReadFromFileAsync();
+            var currentSettings = await configProvider.ReadFromFileAsync();
+            
+            _initialSettings = currentSettings.Settings;
 
             try
             {
@@ -188,7 +188,7 @@ namespace Rubberduck
             //}
         }
 
-        private async Task StartupAsync(IStatusUpdate statusViewModel, string version)
+        private async Task StartupAsync(IStatusUpdate? statusViewModel, string version)
         {
             try
             {
@@ -306,7 +306,7 @@ namespace Rubberduck
                 {
                     _logger.Trace("Initiating App.Shutdown...");
                     await _app.ShutdownAsync().ConfigureAwait(false);
-                    _app = null;
+                    _app = null!;
                 }
             }
             catch (Exception e)
@@ -320,7 +320,7 @@ namespace Rubberduck
                 {
                     _logger.Trace("Disposing service scope...");
                     _serviceScope.Dispose();
-                    _serviceScope = null;
+                    _serviceScope = null!;
                 }
             }
             catch (Exception e)
@@ -347,7 +347,7 @@ namespace Rubberduck
                 {
                     _logger.Trace("Disposing pipe stream...");
                     _pipeStream.Dispose();
-                    _pipeStream = null;
+                    _pipeStream = null!;
                 }
             }
             catch (Exception e)
@@ -375,7 +375,7 @@ namespace Rubberduck
                 {
                     _logger.Trace("Disposing language server process...");
                     _serverProcess.Dispose();
-                    _serverProcess = null;
+                    _serverProcess = null!;
                 }
             }
             catch (Exception e)
@@ -389,7 +389,7 @@ namespace Rubberduck
                 {
                     _logger.Trace("Disposing language client...");
                     _languageClient.Dispose();
-                    _languageClient = null;
+                    _languageClient = null!;
                 }
             }
             catch (Exception e)
@@ -401,8 +401,8 @@ namespace Rubberduck
             {
                 _logger.Trace("Disposing COM safe...");
                 ComSafeManager.DisposeAndResetComSafe();
-                _addin = null;
-                _vbe = null;
+                _addin = null!;
+                _vbe = null!;
 
                 _isInitialized = false;
                 _logger.Info("No exceptions were thrown.");
@@ -450,7 +450,7 @@ namespace Rubberduck
             var assemblyPath = fileSystem.Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
             if (!fileSystem.File.Exists(assemblyPath))
             {
-                return null;
+                return null!;
             }
 
             var assembly = Assembly.LoadFile(assemblyPath);

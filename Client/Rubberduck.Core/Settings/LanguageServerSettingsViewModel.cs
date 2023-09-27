@@ -5,15 +5,11 @@ namespace Rubberduck.Core.Settings
 {
     public class LanguageServerSettingsViewModel : ISettingsViewModel<LanguageServerSettings>
     {
-        private readonly LanguageServerSettings _settings;
-
         public LanguageServerSettingsViewModel()
             : this(LanguageServerSettings.Default) { }
 
         public LanguageServerSettingsViewModel(LanguageServerSettings settings)
         {
-            _settings= settings;
-
             Path = settings.Path;
             TransportType = settings.TransportType;
             PipeName = settings.PipeName;

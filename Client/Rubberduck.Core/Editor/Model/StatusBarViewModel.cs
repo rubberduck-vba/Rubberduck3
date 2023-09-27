@@ -1,11 +1,11 @@
 ﻿using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
-using Rubberduck.VBEditor;
+using Rubberduck.Unmanaged.Model;
 using System;
 
 namespace Rubberduck.Core.Editor
 {
-    public class StatusBarViewModel : ViewModelBase, IStatusBarViewModel
+    class StatusBarViewModel : ViewModelBase, IStatusBarViewModel
     {
         private int _documentLines;
         public int DocumentLines 

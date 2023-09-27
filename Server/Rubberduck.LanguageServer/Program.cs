@@ -16,11 +16,9 @@ namespace Rubberduck.LanguageServer
         {
             Console.WriteLine(ServerSplash.GetRenderString(Assembly.GetExecutingAssembly().GetName()));
 
-            using (var tokenSource = new CancellationTokenSource())
-            {
-                var options = await ServerArgs.ParseAsync(args);
-                await new ServerApp(options, tokenSource).RunAsync();
-            }
+            using var tokenSource = new CancellationTokenSource();
+            var options = await ServerArgs.ParseAsync(args);
+            await new ServerApp(options, tokenSource).RunAsync();
             return 0;
         }
     }

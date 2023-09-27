@@ -56,7 +56,7 @@ namespace Rubberduck.UI.WPF
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private static IHighlightingDefinition LoadHighlighter(string resource)
         {
@@ -65,7 +65,7 @@ namespace Rubberduck.UI.WPF
             {
                 if (stream is null)
                 {
-                    return null;
+                    return null!;
                 }
 
                 using (var reader = new XmlTextReader(stream))

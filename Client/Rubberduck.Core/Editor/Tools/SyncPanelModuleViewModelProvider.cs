@@ -1,7 +1,9 @@
 ﻿using Rubberduck.InternalApi.Model;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.Command.SyncPanel;
-using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Model;
+using Rubberduck.Unmanaged.Model.Abstract;
 
 namespace Rubberduck.Core.Editor.Tools
 {

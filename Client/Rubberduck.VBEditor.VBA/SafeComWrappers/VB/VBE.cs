@@ -4,15 +4,15 @@ using Path = System.IO.Path;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office12;
-using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.VBA;
-using Rubberduck.VBEditor.WindowsApi;
 using VB = Microsoft.Vbe.Interop;
-using Rubberduck.VBEditor.SafeComWrappers.Office;
-using Rubberduck.InternalApi.Model;
-using Rubberduck.InternalApi.WindowsApi;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SourceCodeProvider;
+using Rubberduck.Unmanaged.Model;
+using Rubberduck.Unmanaged.WindowsApi;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
@@ -33,7 +33,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public ICodePane ActiveCodePane
         {
-            get => new CodePane(IsWrappingNullReference ? null : Target.ActiveCodePane);
+            get => new CodePane((IsWrappingNullReference ? null : Target.ActiveCodePane)!);
             set => SetActiveCodePane(value);
         }
 
@@ -76,7 +76,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IVBProject ActiveVBProject
         {
-            get => new VBProject(IsWrappingNullReference ? null : Target.ActiveVBProject);
+            get => new VBProject((IsWrappingNullReference ? null : Target.ActiveVBProject)!);
             set
             {
                 if (!IsWrappingNullReference)
@@ -86,13 +86,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public IWindow ActiveWindow => new Window(IsWrappingNullReference ? null : Target.ActiveWindow);
+        public IWindow ActiveWindow => new Window((IsWrappingNullReference ? null : Target.ActiveWindow)!);
 
-        public IAddIns AddIns => new AddIns(IsWrappingNullReference ? null : Target.Addins);
+        public IAddIns AddIns => new AddIns((IsWrappingNullReference ? null : Target.Addins)!);
 
-        public ICodePanes CodePanes => new CodePanes(IsWrappingNullReference ? null : Target.CodePanes);
+        public ICodePanes CodePanes => new CodePanes((IsWrappingNullReference ? null : Target.CodePanes)!);
 
-        public ICommandBars CommandBars => new CommandBars(IsWrappingNullReference ? null : Target.CommandBars);
+        public ICommandBars CommandBars => new CommandBars((IsWrappingNullReference ? null : Target.CommandBars)!);
 
         public IWindow MainWindow
         {
@@ -100,29 +100,29 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 try
                 {
-                    return new Window(IsWrappingNullReference ? null : Target.MainWindow);
+                    return new Window((IsWrappingNullReference ? null : Target.MainWindow)!);
                 }
                 catch (InvalidComObjectException)
                 {
-                    return null;
+                    return null!;
                 }
             }
         }
 
-        public IVBComponent SelectedVBComponent => new VBComponent(IsWrappingNullReference ? null : Target.SelectedVBComponent);
+        public IVBComponent SelectedVBComponent => new VBComponent((IsWrappingNullReference ? null : Target.SelectedVBComponent)!);
 
-        public IVBProjects VBProjects => new VBProjects(IsWrappingNullReference ? null : Target.VBProjects);
+        public IVBProjects VBProjects => new VBProjects((IsWrappingNullReference ? null : Target.VBProjects)!);
 
-        public IWindows Windows => new Windows(IsWrappingNullReference ? null : Target.Windows);
+        public IWindows Windows => new Windows((IsWrappingNullReference ? null : Target.Windows)!);
        
         public override bool Equals(ISafeComWrapper<VB.VBE> other)
         {
             return IsEqualIfNull(other) || (other != null && other.Target.Version == Version);
         }
 
-        public bool Equals(IVBE other)
+        public bool Equals(IVBE? other)
         {
-            return Equals(other as SafeComWrapper<VB.VBE>);
+            return Equals((other as SafeComWrapper<VB.VBE>)!);
         }
 
         public override int GetHashCode()
@@ -210,7 +210,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {"SLDWORKS.EXE", typeof(SolidWorksApp)},
         };
 
-        private static IHostApplication _host = null;
+        private static IHostApplication _host = null!;
 
         /// <summary> Returns the type of Office Application that is hosting the VBE. </summary>
         public IHostApplication HostApplication()
@@ -223,16 +223,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
             var host = Path.GetFileName(System.Windows.Forms.Application.ExecutablePath).ToUpperInvariant();
 
-            if (HostAppMap.ContainsKey(host))
+            if (HostAppMap.TryGetValue(host, out var hostAppType))
             {
-                _host = (IHostApplication)Activator.CreateInstance(HostAppMap[host], this);
+                _host = (IHostApplication)Activator.CreateInstance(hostAppType, this)!;
                 return _host;
             }
 
             //Guessing the above will work like 99.9999% of the time for supported applications.
             using (var project = ActiveVBProject)
             {
-                IHostApplication result = null;
+                IHostApplication result = null!;
                 if (project.IsWrappingNullReference)
                 {
                     const int ctlViewHost = 106;
@@ -242,7 +242,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                         {
                             if (hostAppControl.IsWrappingNullReference)
                             {
-                                result = null;
+                                result = null!;
                             }
                             else
                             {
@@ -282,7 +282,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                                         result = new SolidWorksApp(this);
                                         break;
                                     default:
-                                        result = null;
+                                        result = null!;
                                         break;
                                 }
                             }
@@ -335,14 +335,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                                 result = new SolidWorksApp(this);
                                 break;
                             default:
-                                result = null;
+                                result = null!;
                                 break;
                         }
                     }
                 }
 
-                _host = result;
-                return result;
+                _host = result!;
+                return result!;
             }
         }
 
@@ -364,13 +364,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 try
                 {
-                    return Windows.FirstOrDefault(win => win.Caption == mdiChildCaption.ToString());
+                    return Windows.FirstOrDefault(win => win.Caption == mdiChildCaption.ToString())!;
                 }
                 catch
                 {
                 }
             }
-            return null;
+            return null!;
         }
         
         public QualifiedSelection? GetActiveSelection()

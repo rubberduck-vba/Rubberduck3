@@ -5,6 +5,9 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.Settings;
 using Rubberduck.Interaction.MessageBox;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Rubberduck.SettingsProvider.Model;
+using System.Threading;
 
 namespace Rubberduck.UI.Command
 {
@@ -13,9 +16,9 @@ namespace Rubberduck.UI.Command
         private readonly IVersionCheckService _versionCheck;
         //private readonly IMessageBox _prompt;
         //private readonly IWebNavigator _webNavigator;
-        private readonly IConfigurationService<Configuration> _config;
+        private readonly ISettingsProvider<UpdateServerSettings> _config;
 
-        public VersionCheckCommand(IVersionCheckService versionCheck, /*IMessageBox prompt, IWebNavigator web,*/ IConfigurationService<Configuration> config)
+        public VersionCheckCommand(IVersionCheckService versionCheck, /*IMessageBox prompt, IWebNavigator web,*/ ISettingsProvider<UpdateServerSettings> config)
         {
             _versionCheck = versionCheck;
             //_prompt = prompt;
@@ -25,15 +28,15 @@ namespace Rubberduck.UI.Command
 
         protected override async Task OnExecuteAsync(object parameter)
         {
-            var settings = (await _config.ReadAsync()).UserSettings.GeneralSettings;
-            Logger.Info("Executing version check...");
+            var config = _config.Value;
+            Logger.LogInformation("Executing version check...");
 
-            var latest = await _versionCheck.GetLatestVersionAsync(settings);
+            var latest = await _versionCheck.GetLatestVersionAsync(CancellationToken.None);
 
             if (_versionCheck.CurrentVersion < latest)
             {
                 var proceed = true;
-                if (_versionCheck.IsDebugBuild || !settings.IncludePreRelease)
+                if (_versionCheck.IsDebugBuild || !config.Settings.IncludePreReleases)
                 {
                     // if the latest version has a revision number and isn't a pre-release build,
                     // avoid prompting since we can't know if the build already includes the latest version.

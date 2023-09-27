@@ -2,9 +2,9 @@
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.SyncPanel;
-using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Events;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -26,7 +26,7 @@ namespace Rubberduck.Core.Editor.Tools
             projects.ProjectRemoved += Projects_ProjectRemoved;
             projects.ProjectRenamed += Projects_ProjectRenamed;
 
-            ReloadCommand = new DelegateCommand(null, ExecuteReloadCommand);
+            ReloadCommand = new DelegateCommand(null!, ExecuteReloadCommand);
             SyncCommand = syncCommand;
         }
 

@@ -4,6 +4,7 @@ using ICSharpCode.AvalonEdit.Document;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.Command;
+using Rubberduck.Unmanaged.Model.Abstract;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace Rubberduck.Core.Editor
             _settings = settings;
 
             MemberProviders = new ObservableCollection<IMemberProviderViewModel>(memberProviders);
-            CloseCommand = new DelegateCommand(null, p => EditorShellContext.Current.Shell.UnloadModule((QualifiedModuleName)p)); // TODO handle sync to VBE when dirty
+            CloseCommand = new DelegateCommand(null, p => EditorShellContext.Current.Shell.UnloadModule((IQualifiedModuleName)p)); // TODO handle sync to VBE when dirty
         }
 
         //private VBFoldingListener _foldingListener;

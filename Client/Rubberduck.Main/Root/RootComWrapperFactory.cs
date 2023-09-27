@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VB6;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Root
@@ -15,7 +14,7 @@ namespace Rubberduck.Root
         {
             var vbeProviders = new HashSet<ISafeComWrapperProvider<IVBE>>
             {
-                new VB6VBEProvider(),
+                //new VB6VBEProvider(),
                 new VBAVBEProvider()
             };
             var factory = new VBEFactory(vbeProviders);
@@ -27,7 +26,7 @@ namespace Rubberduck.Root
         {
             var addInProviders = new HashSet<ISafeComWrapperProvider<IAddIn>>
             {
-                new VB6AddInProvider(),
+                //new VB6AddInProvider(),
                 new VBAAddInProvider()
             };
             var factory = new AddInFactory(addInProviders);

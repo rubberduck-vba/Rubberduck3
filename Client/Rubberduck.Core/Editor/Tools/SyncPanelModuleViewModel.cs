@@ -2,6 +2,7 @@
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.Command.SyncPanel;
+using Rubberduck.Unmanaged.Model.Abstract;
 using System.Windows.Input;
 
 namespace Rubberduck.Core.Editor.Tools

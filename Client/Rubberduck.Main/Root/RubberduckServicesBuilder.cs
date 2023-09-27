@@ -1,6 +1,6 @@
 ﻿//using IndenterSettings = Rubberduck.SmartIndenter.IndenterSettings;
 using Microsoft.Extensions.DependencyInjection;
-using Rubberduck.Client;
+using Microsoft.Extensions.Logging;
 using Rubberduck.Common;
 using Rubberduck.Common.Hotkeys;
 using Rubberduck.Core;
@@ -8,26 +8,26 @@ using Rubberduck.Core.About;
 using Rubberduck.Core.Editor;
 using Rubberduck.Core.Editor.Tools;
 using Rubberduck.Interaction.MessageBox;
-using Rubberduck.InternalApi.UIContext;
-using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.WinForms;
-using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.ComManagement.NonDisposingDecorators;
-using Rubberduck.VBEditor.ComManagement.TypeLibs;
-using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
-using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SourceCodeHandling;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
+using Rubberduck.Unmanaged.Abstract.SourceCodeProvider;
+using Rubberduck.Unmanaged.Events;
+using Rubberduck.Unmanaged.NonDisposingDecorators;
+using Rubberduck.Unmanaged.TypeLibs;
+using Rubberduck.Unmanaged.TypeLibs.Abstract;
+using Rubberduck.Unmanaged.UIContext;
+using Rubberduck.Unmanaged.VBERuntime;
 using Rubberduck.VBEditor.UI;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
-using Rubberduck.VBEditor.VbeRuntime;
 using System;
-using System.Configuration;
 using System.IO.Abstractions;
 using System.Reflection;
 
@@ -63,7 +63,6 @@ namespace Rubberduck.Root
     internal class RubberduckServicesBuilder
     {
         private readonly IServiceCollection _services = new ServiceCollection();
-        private readonly LanguageClientService _client = new LanguageClientService();
 
         public IServiceProvider Build() => _services.BuildServiceProvider();
         public RubberduckServicesBuilder WithAddIn(IVBE vbe, IAddIn addin)
@@ -74,9 +73,8 @@ namespace Rubberduck.Root
 
             _services.AddLogging();
 
-            var repository = new ProjectsRepository(vbe);
-            _services.AddScoped<IProjectsProvider>(provider => repository);
-            //_services.AddScoped<IProjectsRepository>(repository);
+            _services.AddScoped<IProjectsRepository>(provider => new ProjectsRepository(vbe, provider.GetRequiredService<ILogger<ProjectsRepository>>()));
+            _services.AddScoped<IProjectsProvider>(provider => provider.GetRequiredService<IProjectsRepository>());
 
             return this;
         }
@@ -134,7 +132,6 @@ namespace Rubberduck.Root
         {
             _services.AddScoped<IFileSystem, FileSystem>();
             _services.AddScoped<ITempSourceFileHandler>(provider => vbe.TempSourceFileHandler);
-            _services.AddScoped<IPersistencePathProvider>(provider => PersistencePathProvider.Instance);
 
             return this;
         }
@@ -143,7 +140,7 @@ namespace Rubberduck.Root
         {
             var nativeApi = new VbeNativeApiAccessor();
             _services.AddScoped<IVbeNativeApi>(provider => nativeApi);
-            _services.AddScoped<IBeepInterceptor>(provider => new BeepInterceptor(nativeApi));
+            //_services.AddScoped<IBeepInterceptor>(provider => new BeepInterceptor(nativeApi));
             _services.AddScoped<IVbeEvents>(provider => VbeEvents.Initialize(vbe));
             _services.AddScoped<IVBETypeLibsAPI, VBETypeLibsAPI>();
 

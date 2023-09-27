@@ -1,6 +1,7 @@
-﻿using Rubberduck.InternalApi.Model;
-using Rubberduck.UI.Abstract;
-using Rubberduck.VBEditor.ComManagement;
+﻿using Rubberduck.UI.Abstract;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Model;
+using Rubberduck.Unmanaged.Model.Abstract;
 using System.Linq;
 
 namespace Rubberduck.Core.Editor

@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.Model;
+using Rubberduck.Unmanaged.Model.Abstract;
 using System.ComponentModel;
 using System.Windows.Input;
 

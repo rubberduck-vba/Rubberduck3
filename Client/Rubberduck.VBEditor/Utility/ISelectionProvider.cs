@@ -1,4 +1,6 @@
 ﻿using Rubberduck.InternalApi.Model;
+using Rubberduck.Unmanaged.Model;
+using Rubberduck.Unmanaged.Model.Abstract;
 using System.Collections.Generic;
 
 namespace Rubberduck.VBEditor.Utility
@@ -8,9 +10,9 @@ namespace Rubberduck.VBEditor.Utility
         /// <summary>
         /// Gets the QualifiedModuleName for the component that is currently selected in the Project Explorer.
         /// </summary>
-        QualifiedModuleName ProjectExplorerSelection();
+        IQualifiedModuleName ProjectExplorerSelection();
         QualifiedSelection? ActiveSelection();
-        ICollection<QualifiedModuleName> OpenModules();
-        Selection? Selection(QualifiedModuleName module);
+        ICollection<IQualifiedModuleName> OpenModules();
+        Selection? Selection(IQualifiedModuleName module);
     }
 }

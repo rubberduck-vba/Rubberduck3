@@ -1,8 +1,10 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Rubberduck.InternalApi.Model;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Model;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using VB = Microsoft.Vbe.Interop;
+using Rubberduck.Unmanaged.Model.Abstract;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
@@ -15,11 +17,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
         }
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE => new VBE((IsWrappingNullReference ? null : Target.VBE)!);
 
-        public IVBComponent Parent => new VBComponent(IsWrappingNullReference ? null : Target.Parent);
+        public IVBComponent Parent => new VBComponent((IsWrappingNullReference ? null : Target.Parent)!);
 
-        public ICodePane CodePane => new CodePane(IsWrappingNullReference ? null : Target.CodePane);
+        public ICodePane CodePane => new CodePane((IsWrappingNullReference ? null : Target.CodePane)!);
 
         public int CountOfDeclarationLines => IsWrappingNullReference ? 0 : Target.CountOfDeclarationLines;
 
@@ -74,7 +76,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public QualifiedModuleName QualifiedModuleName
+        public IQualifiedModuleName QualifiedModuleName
         {
             get
             {
@@ -127,12 +129,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 Target.InsertLines(line, content);
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // "too many line continuations" is one possible cause for a COMException here.
                 // deleting the only line in a module is another.
                 // we can log the exception, but really we're just intentionally swallowing it.
-                _logger.Warn(e, $"{nameof(InsertLines)} failed.");
+                //_logger.Warn(e, $"{nameof(InsertLines)} failed.");
             }
         }
 
@@ -147,12 +149,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     Target.DeleteLines(startLine, count);
 
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     // "too many line continuations" is one possible cause for a COMException here.
                     // deleting the only line in a module is another.
                     // we can log the exception, but really we're just intentionally swallowing it.
-                    _logger.Warn(e, $"{nameof(DeleteLines)} failed.");
+                    //_logger.Warn(e, $"{nameof(DeleteLines)} failed.");
                 }
             }
         }
@@ -176,12 +178,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // "too many line continuations" is one possible cause for a COMException here.
                 // deleting the only line in a module is another.
                 // we can log the exception, but really we're just intentionally swallowing it.
-                _logger.Warn(e, $"{nameof(ReplaceLine)} failed.");
+                //_logger.Warn(e, $"{nameof(ReplaceLine)} failed.");
             }
         }
 
@@ -231,9 +233,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-        public bool Equals(ICodeModule other)
+        public bool Equals(ICodeModule? other)
         {
-            return Equals(other as SafeComWrapper<VB.CodeModule>);
+            return Equals((other as SafeComWrapper<VB.CodeModule>)!);
         }
 
         public override int GetHashCode()

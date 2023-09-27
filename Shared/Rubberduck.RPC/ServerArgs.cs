@@ -1,6 +1,9 @@
 ﻿using CommandLine;
 using Rubberduck.InternalApi.ServerPlatform;
+using System;
 using System.IO.Pipes;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Rubberduck.ServerPlatform
 {
@@ -35,10 +38,10 @@ namespace Rubberduck.ServerPlatform
         public int ClientProcessId { get; set; }
 
         [Option('n', "Name", Default = ServerPlatformSettings.LanguageServerDefaultPipeName, HelpText = "The name of the transport pipe.")]
-        public string Name { get; set; }
+        public string Name { get; set; } = ServerPlatformSettings.LanguageServerDefaultPipeName;
 
         [Option('m', "Mode", Default = PipeTransmissionMode.Byte, HelpText = "The pipe's transmission mode. Use 'Message' for RPC-level trace debugging.")]
-        public PipeTransmissionMode Mode { get; set; }
+        public PipeTransmissionMode Mode { get; set; } = PipeTransmissionMode.Byte;
 
         /// <summary>
         /// The actual name of the pipe stream concatenates the <c>Name</c> with the <c>ClientProcessId</c> to ensure different hosts/instances use dedicated channels.
@@ -70,7 +73,7 @@ namespace Rubberduck.ServerPlatform
                 throw new ArgumentOutOfRangeException(nameof(args), "One or more errors have occurred parsing the specified command-line arguments. Process will be terminated.");
             }
 
-            return parserResult.Value as TransportOptions;
+            return (TransportOptions)parserResult.Value;
         }
 
         private static void ConfigureParser(ParserSettings settings)

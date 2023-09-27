@@ -1,7 +1,8 @@
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -16,12 +17,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public object Parent // todo: verify if this could be 'public Application Parent' instead
+        public object? Parent // todo: verify if this could be 'public Application Parent' instead
             => IsWrappingNullReference ? null : Target.Parent;
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE => new VBE((IsWrappingNullReference ? null : Target.VBE)!);
 
-        public IAddIn this[object index] => new AddIn(IsWrappingNullReference ? null : Target.Item(index));
+        public IAddIn this[object index] => new AddIn((IsWrappingNullReference ? null : Target.Item(index))!);
 
         public void Update()
         {
@@ -33,9 +34,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target.Parent, Parent));
         }
 
-        public bool Equals(IAddIns other)
+        public bool Equals(IAddIns? other)
         {
-            return Equals(other as ISafeComWrapper<VB.Addins>);
+            return Equals((other as ISafeComWrapper<VB.Addins>)!);
         }
 
         public override int GetHashCode()

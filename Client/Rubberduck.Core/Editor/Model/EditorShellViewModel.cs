@@ -2,6 +2,7 @@
 using Rubberduck.InternalApi.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
+using Rubberduck.Unmanaged.Model.Abstract;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -9,7 +10,7 @@ using System.Linq;
 
 namespace Rubberduck.Core.Editor
 {
-    public class EditorShellViewModel : ViewModelBase, IEditorShellViewModel, INotifyCollectionChanged
+    class EditorShellViewModel : ViewModelBase, IEditorShellViewModel, INotifyCollectionChanged
     {
         private readonly IEditorShellContext _context;
         private readonly IDictionary<IQualifiedModuleName, ICodePaneViewModel> _modules = new Dictionary<IQualifiedModuleName, ICodePaneViewModel>();
@@ -20,7 +21,7 @@ namespace Rubberduck.Core.Editor
 
             var tabs = toolTabsProvider.GetShellToolTabs();
             ToolTabs = new ObservableCollection<IShellToolTab>(tabs);
-            SelectedToolTab = ToolTabs.FirstOrDefault();
+            SelectedToolTab = ToolTabs.FirstOrDefault()!;
 
             _context = new EditorShellContext(this);
         }

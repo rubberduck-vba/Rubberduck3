@@ -1,4 +1,5 @@
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using System;
 using VB = Microsoft.Vbe.Interop;
 
@@ -12,16 +13,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
         }
 
-        public string Version => IsWrappingNullReference ? null : Target.Version;
+        public string? Version => IsWrappingNullReference ? null : Target.Version;
 
         public override bool Equals(ISafeComWrapper<VB.Application> other)
         {
             return IsEqualIfNull(other) || (other != null && other.Target.Version == Version);
         }
 
-        public bool Equals(IApplication other)
+        public bool Equals(IApplication? other)
         {
-            return Equals(other as SafeComWrapper<VB.Application>);
+            return Equals((other as SafeComWrapper<VB.Application>)!);
         }
 
         public override int GetHashCode()

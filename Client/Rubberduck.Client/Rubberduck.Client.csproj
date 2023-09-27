@@ -1,9 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-<PropertyGroup>
-<TargetFramework>net480</TargetFramework>
-<LangVersion>10.0</LangVersion>
-<ApplicationIcon>Ducky.ico</ApplicationIcon>
-</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <Platforms>AnyCPU</Platforms>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
   <ItemGroup>
     <Content Include="Ducky.ico" />
   </ItemGroup>

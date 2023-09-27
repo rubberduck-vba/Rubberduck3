@@ -29,7 +29,7 @@ namespace Rubberduck.LanguageServer.Handlers
             var filter = new TextDocumentFilter
             {
                 Language = language.Id,
-                Pattern = string.Join(';', language.FileTypes.Select(fileType => $"**/{fileType}").ToArray())
+                Pattern = string.Join(";", language.FileTypes.Select(fileType => $"**/{fileType}").ToArray())
             };
             _selector = new TextDocumentSelector(filter);
         }

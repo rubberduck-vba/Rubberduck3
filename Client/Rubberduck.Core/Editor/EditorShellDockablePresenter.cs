@@ -1,8 +1,11 @@
-﻿using Rubberduck.InternalApi.Model;
+﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.WinForms;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Model;
+using Rubberduck.Unmanaged.Model.Abstract;
 using Rubberduck.VBEditor.UI;
 using System;
 using System.Collections.Generic;
@@ -313,8 +316,8 @@ namespace Rubberduck.Core.Editor
 
     public class EditorShellDockablePresenter : DockableToolwindowPresenter
     {
-        public EditorShellDockablePresenter(IVBE vbe, IAddIn addin, IEditorShellWindowProvider viewFactory) 
-            : base(vbe, addin, viewFactory.Create())
+        public EditorShellDockablePresenter(IVBE vbe, IAddIn addin, IEditorShellWindowProvider viewFactory, ILogger<EditorShellDockablePresenter> logger) 
+            : base(vbe, addin, viewFactory.Create(), logger)
         {
         }
     }

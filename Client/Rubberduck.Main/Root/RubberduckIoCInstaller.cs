@@ -1,39 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-//using Component = Castle.MicroKernel.Registration.Component;
-using Rubberduck.Common;
-using Rubberduck.Common.Hotkeys;
-using Rubberduck.Settings;
-using Rubberduck.SettingsProvider;
-using GeneralSettings = Rubberduck.Settings.GeneralSettings;
+﻿//using Component = Castle.MicroKernel.Registration.Component;
 //using IndenterSettings = Rubberduck.SmartIndenter.IndenterSettings;
-using Rubberduck.UI;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.ComManagement.TypeLibs;
-using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
-using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.Utility;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SourceCodeHandling;
-using Rubberduck.VBEditor.VbeRuntime;
-using System.IO.Abstractions;
-using Rubberduck.VBEditor.ComManagement.NonDisposingDecorators;
-using Rubberduck.InternalApi.UIContext;
-using System.Runtime.InteropServices;
-using Rubberduck.Main.Extensions;
-using Rubberduck.Core;
-using Rubberduck.UI.Command;
-using System.Windows.Input;
-using Rubberduck.InternalApi.Common;
-using Rubberduck.Core.About;
-using Rubberduck.UI.Xaml.Controls;
-using Rubberduck.Core.Editor;
-using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
-using Rubberduck.VBEditor.UI.OfficeMenus;
-using Rubberduck.VBEditor.UI;
 
 namespace Rubberduck.Root
 {/*

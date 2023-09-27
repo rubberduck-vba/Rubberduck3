@@ -45,12 +45,6 @@
                     <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
                 </DataTemplate>
             </TabControl.ItemTemplate>
-            <TabControl.ContentTemplate>
-                <!-- TODO template selector -->
-                <DataTemplate>
-                    <local:SyncPanelToolControl DataContext="{Binding ViewModel}" />
-                </DataTemplate>
-            </TabControl.ContentTemplate>
         </TabControl>
 
         <GridSplitter Grid.Column="1" Width="3" />

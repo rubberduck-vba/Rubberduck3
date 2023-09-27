@@ -51,7 +51,7 @@ namespace Rubberduck.LanguageServer.Handlers
                     {
                         Pattern = new FileOperationPattern
                         {
-                            Glob = string.Join(';', _language.FileTypes.Select(fileType => $"**/{fileType}").ToArray()),
+                            Glob = string.Join(";", _language.FileTypes.Select(fileType => $"**/{fileType}").ToArray()),
                             Matches = FileOperationPatternKind.File,
                             Options = new FileOperationPatternOptions { IgnoreCase = true }
                         }

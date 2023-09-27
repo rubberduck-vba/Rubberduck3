@@ -1,8 +1,8 @@
 ﻿using Rubberduck.InternalApi.Model;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.Command.SyncPanel;
-using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.SourceCodeHandling;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SourceCodeProvider;
 using System;
 using System.Linq;
 
