@@ -28,6 +28,7 @@ using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Events;
 using Rubberduck.Unmanaged.TypeLibs;
+using Rubberduck.Unmanaged.WindowsApi;
 
 namespace Rubberduck
 {
@@ -175,17 +176,17 @@ namespace Rubberduck
                 // will load "invariant" (en-US) resources
             }
 
-            //try
-            //{
-            //    if (_initialSettings.SetDpiUnaware)
-            //    {
-            //        SHCore.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.Process_DPI_Unaware);
-            //    }
-            //}
-            //catch (Exception)
-            //{
-            //    Debug.Assert(false, "Could not set DPI awareness.");
-            //}
+            try
+            {
+                if (_initialSettings.SetDpiUnaware)
+                {
+                    SHCore.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.Process_DPI_Unaware);
+                }
+            }
+            catch (Exception)
+            {
+                Debug.Assert(false, "Could not set DPI awareness.");
+            }
         }
 
         private async Task StartupAsync(IStatusUpdate? statusViewModel, string version)
@@ -202,7 +203,7 @@ namespace Rubberduck
 
                 statusViewModel?.UpdateStatus("Starting add-in...");
 
-                await _app.StartupAsync(version).ConfigureAwait(false);
+                await _app.StartupAsync(version);
 
                 statusViewModel?.UpdateStatus("Starting language server...");
 
@@ -210,6 +211,7 @@ namespace Rubberduck
                 var clientProcessId = Process.GetCurrentProcess().Id;
                 _serverProcess = new LanguageServerProcess().Start(clientProcessId, settings);
                 
+                await Task.Delay(TimeSpan.FromSeconds(2));
                 statusViewModel?.UpdateStatus("Starting language client...");
 
                 LanguageClientOptions clientOptions;
@@ -222,7 +224,7 @@ namespace Rubberduck
                     case TransportType.Pipe:
                         var name = settings.PipeName ?? ServerPlatformSettings.LanguageServerDefaultPipeName;
                         _pipeStream = new NamedPipeClientStream(".", $"{name}__{Process.GetCurrentProcess().Id}", PipeDirection.InOut, PipeOptions.Asynchronous);
-                        await _pipeStream.ConnectAsync(Convert.ToInt32(TimeSpan.FromSeconds(10).TotalMilliseconds));
+                        await _pipeStream.ConnectAsync(Convert.ToInt32(TimeSpan.FromSeconds(10).TotalMilliseconds)); // stuck here
                         clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _pipeStream, InitializeTrace.Verbose);
                         break;
 
@@ -233,7 +235,7 @@ namespace Rubberduck
                 _languageClient = LanguageClient.Create(clientOptions, _serviceScope.ServiceProvider);
 
                 statusViewModel?.UpdateStatus("Initializing language server protocol...");
-                await _languageClient.Initialize(_tokenSource.Token);
+                await _languageClient.Initialize(_tokenSource.Token); // stuck here
 
                 statusViewModel?.UpdateStatus("Connection established.");
                 _isInitialized = true;
@@ -261,16 +263,6 @@ namespace Rubberduck
                     _logger.Trace("Sending LSP shutdown notification...");
                     _languageClient.SendShutdown(new ShutdownParams());
                 }
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-            }
-
-            try
-            {
-                _logger.Trace("Unhooking VBENativeServices events...");
-                VbeNativeServices.UnhookEvents();
             }
             catch (Exception e)
             {
@@ -443,8 +435,12 @@ namespace Rubberduck
             }
         }
 
-        private Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
+        private Assembly? LoadFromSameFolder(object? sender, ResolveEventArgs? args)
         {
+            if (args is null)
+            {
+                return null!;
+            }
             var fileSystem = _serviceScope.ServiceProvider.GetRequiredService<IFileSystem>();
             var folderPath = fileSystem.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
             var assemblyPath = fileSystem.Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");

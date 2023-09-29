@@ -1,9 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.SettingsProvider.Model
 {
@@ -14,8 +11,9 @@ namespace Rubberduck.SettingsProvider.Model
             Locale = "en-US",
             LogLevel = LogLevel.Trace,
             ShowSplash = true,
+            SetDpiUnaware = false,
             IsInitialLogLevelChanged = false,
-            IsSmartIndenterPrompted = false,
+            IsSmartIndenterPrompted = true,
             FeatureSwitches = Array.Empty<FeatureSwitch>(),
             UpdateServerSettings = UpdateServerSettings.Default,
             LanguageServerSettings = LanguageServerSettings.Default,
@@ -23,6 +21,7 @@ namespace Rubberduck.SettingsProvider.Model
 
         public string Locale { get; init; }
         public bool ShowSplash { get; init; }
+        public bool SetDpiUnaware { get; init; }
         public bool IsSmartIndenterPrompted { get; init; }
 
         public LogLevel LogLevel { get; init; }
@@ -41,6 +40,7 @@ namespace Rubberduck.SettingsProvider.Model
             return string.Equals(Locale, other.Locale, StringComparison.InvariantCultureIgnoreCase)
                 && ShowSplash == other.ShowSplash
                 && LogLevel == other.LogLevel
+                && SetDpiUnaware == other.SetDpiUnaware
                 && IsSmartIndenterPrompted == other.IsSmartIndenterPrompted
                 && IsInitialLogLevelChanged == other.IsInitialLogLevelChanged
                 && LanguageServerSettings.Equals(other.LanguageServerSettings)
@@ -49,7 +49,7 @@ namespace Rubberduck.SettingsProvider.Model
                 && other.FeatureSwitches.All(e => switches.Contains(e));
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null || obj.GetType() != GetType())
             {
@@ -64,6 +64,7 @@ namespace Rubberduck.SettingsProvider.Model
             hash.Add(Locale.ToLowerInvariant());
             hash.Add(ShowSplash);
             hash.Add(LogLevel);
+            hash.Add(SetDpiUnaware);
             hash.Add(IsSmartIndenterPrompted);
             hash.Add(IsInitialLogLevelChanged);
             hash.Add(LanguageServerSettings);
