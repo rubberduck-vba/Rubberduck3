@@ -7,20 +7,11 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
-using System.Linq;
-using OmniSharp.Extensions.LanguageServer.Protocol.Window;
-using OmniSharp.Extensions.LanguageServer.Protocol.Client;
-using OmniSharp.Extensions.LanguageServer.Protocol.Document;
-using System.Threading.Tasks;
 using System.IO.Pipes;
 using Nerdbank.Streams;
-using Rubberduck.InternalApi.ServerPlatform;
-using OmniSharp.Extensions.LanguageServer.Protocol.General;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Rubberduck.SettingsProvider.Model;
 using Rubberduck.Client.Extensions;
+using Rubberduck.Client.Handlers;
+using System;
 
 namespace Rubberduck.Client
 {
@@ -58,82 +49,35 @@ namespace Rubberduck.Client
             var workspace = new DirectoryInfo(clientAssembly.Location).ToWorkspaceFolder();
             var clientCapabilities = GetClientCapabilities();
 
+            var initializationOptions = new 
+            {
+                Timestamp = DateTime.Now,
+                // TODO
+            };
+
             options
                 .WithClientInfo(info)
                 .WithClientCapabilities(clientCapabilities)
                 .WithTrace(traceLevel)
-                //.WithInitializationOptions(new object()) // TODO send any relevant info here
+                .WithInitializationOptions(initializationOptions)
                 .WithWorkspaceFolder(workspace)
                 .WithContentModifiedSupport(true)
-                /*
-                .OnWorkDoneProgressCreate(async (param, token) =>
-                {
-                    // TODO store WorkDoneProgress token
-                    await Task.CompletedTask;
-                })
-                .OnProgress(async (param, token) =>
-                {
-                    // TODO actually handle these
-                    Debug.WriteLine($"{param.Value}");
-                    await Task.CompletedTask;
-                })
-                .OnShowMessage(async (param, token) =>
-                {
-                    // TODO show in a message box
-                    Debug.WriteLine($"[{param.Type}] {param.Message}");
-                    await Task.CompletedTask;
-                })
-                .OnShowMessageRequest(async (param, token) =>
-                {
-                    // TODO setup and display message box prompt
-                    // TODO return message action item
-                    return await Task.FromResult(param.Actions.FirstOrDefault());
-                })
-                .OnLogTrace((param, token) =>
-                {
-                    // TODO surface messages to "console" message window
-                    switch (traceLevel)
-                    {
-                        case InitializeTrace.Off:
-                            break;
-                        case InitializeTrace.Messages:
-                            Debug.WriteLine($"[TRACE] {param.Message}");
-                            break;
-                        case InitializeTrace.Verbose:
-                            Debug.WriteLine($"[TRACE] {param.Message} | {param.Verbose}");
-                            break;
-                    }
-                })
-                .OnApplyWorkspaceEdit(async (param, token) =>
-                {
-                    // TODO actually apply worksapce edit
-                    var response = new ApplyWorkspaceEditResponse
-                    {
-                        Applied = false,
-                    };
-                    return await Task.FromResult(response);
-                })
-                .OnTelemetryEvent(async (param, token) =>
-                {
-                    // TODO relay data to telemetry server
-                    await Task.CompletedTask;
-                })
-                .OnWorkspaceFolders(async (param, token) =>
-                {
-                    // TODO return actual client workspace folders
-                    return await Task.FromResult(new Container<WorkspaceFolder>(workspace));
-                })
-                .OnPublishDiagnostics(async (param, token) =>
-                {
-                    // TODO refresh diagnostics for the specified document URI
-                    await Task.CompletedTask;
-                })
-                .OnSemanticTokensRefresh(async (param, token) =>
-                {
-                    // TODO ??
-                    await Task.CompletedTask;
-                })
-                */
+
+                .WithHandler<WorkspaceFoldersHandler>()
+                .WithHandler<WorkDoneProgressCreateHandler>()
+                .WithHandler<WorkDoneProgressCancelHandler>()
+                .WithHandler<WorkDoneProgressHandler>()
+
+                .WithHandler<LogTraceHandler>()
+                .WithHandler<LogMessageHandler>()
+                .WithHandler<ShowMessageHandler>()
+                .WithHandler<ShowMessageRequestHandler>()
+
+                .WithHandler<ApplyWorkspaceEditHandler>()
+                .WithHandler<PublishDiagnosticsHandler>()
+                .WithHandler<SemanticTokensRefreshHandler>()
+
+                .WithHandler<TelemetryEventHandler>()
             ;
 
             return options;
@@ -366,7 +310,7 @@ namespace Rubberduck.Client
                         Value = new()
                         {
                             LineFoldingOnly = false,
-                            RangeLimit = 10000 // no module can exceed 10K LOC
+                            RangeLimit = 10000 // VBA will not compile a module that exceeds 10K LOC
                         }
                     },
                     Formatting = new() { Value = new() },
