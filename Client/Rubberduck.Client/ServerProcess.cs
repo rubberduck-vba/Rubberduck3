@@ -17,17 +17,19 @@ namespace Rubberduck.Client
 
         public virtual Process Start(long clientProcessId, IProcessStartInfoArgumentProvider settings)
         {
-            var root = Directory.GetParent(Assembly.GetExecutingAssembly().Location)
+            var root = Directory.GetParent(Assembly.GetExecutingAssembly().Location)!
 #if DEBUG
-                .Parent // bin
-                .Parent // Rubberduck.Main
-                .Parent // Client
-                .Parent // Rubberduck3
+                .Parent! // net7.0
+                .Parent! // Debug
+                .Parent! // bin
+                .Parent! // Rubberduck.Main
+                .Parent! // Client
+                .Parent! // Rubberduck3
 #endif
             ;
-            var path = Path.Combine(root.FullName, settings.Path
+            var path = Path.Combine(root!.FullName
 #if DEBUG
-                , @"bin\Debug\net6.0"
+                , @"Server\Rubberduck.LanguageServer\bin\Debug\net7.0\win-x64"
 #endif
             );
 

@@ -7,14 +7,14 @@
     <LangVersion>10.0</LangVersion>
     <Nullable>disable</Nullable>
     <Platforms>AnyCPU</Platforms>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
     <!-- keep WindowsApi namespace types internal -->
-    <InternalsVisibleTo Include="Rubberduck.Main" />
+    <InternalsVisibleTo Include="Rubberduck" />
     <InternalsVisibleTo Include="Rubberduck.Core" />
     <InternalsVisibleTo Include="Rubberduck.VBEditor" />
-    <InternalsVisibleTo Include="Rubberduck.VBEditor.VB6" />
     <InternalsVisibleTo Include="Rubberduck.VBEditor.VBA" />
   </ItemGroup>
 

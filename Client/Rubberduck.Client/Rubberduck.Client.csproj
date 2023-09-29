@@ -6,9 +6,10 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
-    <Platforms>AnyCPU</Platforms>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+    <Platforms>AnyCPU</Platforms>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Ducky.ico" />

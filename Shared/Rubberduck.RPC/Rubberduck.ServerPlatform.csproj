@@ -8,6 +8,7 @@
     <RuntimeIdentifier>win-x86</RuntimeIdentifier>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <Platforms>AnyCPU</Platforms>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>

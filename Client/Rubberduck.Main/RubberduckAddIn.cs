@@ -111,7 +111,7 @@ namespace Rubberduck
                 var scope = provider.CreateScope();
                 _serviceScope = scope;
 
-                await InitializeSettingsAsync(scope).ConfigureAwait(false);
+                InitializeSettings(scope);
 
                 var version = GetVersionString();
                 if (_initialSettings.ShowSplash)
@@ -158,10 +158,10 @@ namespace Rubberduck
             return splash;
         }
 
-        private async Task InitializeSettingsAsync(IServiceScope scope)
+        private void InitializeSettings(IServiceScope scope)
         {
             var configProvider = scope.ServiceProvider.GetRequiredService<ISettingsService<RubberduckSettings>>();
-            var currentSettings = await configProvider.ReadFromFileAsync();
+            var currentSettings = configProvider.ReadFromFile();
             
             _initialSettings = currentSettings.Settings;
 
@@ -203,7 +203,7 @@ namespace Rubberduck
 
                 statusViewModel?.UpdateStatus("Starting add-in...");
 
-                await _app.StartupAsync(version);
+                _app.Startup(version);
 
                 statusViewModel?.UpdateStatus("Starting language server...");
 
@@ -211,7 +211,6 @@ namespace Rubberduck
                 var clientProcessId = Process.GetCurrentProcess().Id;
                 _serverProcess = new LanguageServerProcess().Start(clientProcessId, settings);
                 
-                await Task.Delay(TimeSpan.FromSeconds(2));
                 statusViewModel?.UpdateStatus("Starting language client...");
 
                 LanguageClientOptions clientOptions;
@@ -297,7 +296,7 @@ namespace Rubberduck
                 if (_app != null)
                 {
                     _logger.Trace("Initiating App.Shutdown...");
-                    await _app.ShutdownAsync().ConfigureAwait(false);
+                    _app.Shutdown();
                     _app = null!;
                 }
             }

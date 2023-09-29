@@ -45,7 +45,7 @@ namespace Rubberduck.SettingsProvider.Model
             TraceLevel = ServerTraceLevel.Verbose,
             Mode = MessageMode.Message,
             PipeName = "Rubberduck.LanguageServer.Pipe",
-            Path = @".\",
+            Path = @"",
         };
 
         LanguageServerSettings IDefaultSettingsProvider<LanguageServerSettings>.Default => LanguageServerSettings.Default;

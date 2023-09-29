@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.Resources;
 using Rubberduck.SettingsProvider.Model;
 using System;
 using System.Collections.Concurrent;
@@ -16,14 +17,13 @@ namespace Rubberduck.SettingsProvider
         where TSettings : struct
     {
         event EventHandler<SettingsChangedEventArgs<TSettings>> SettingsChanged;
-        Task<(Guid Token, TSettings Settings)> ReadFromFileAsync();
-        Task WriteToFileAsync();
+        (Guid Token, TSettings Settings) ReadFromFile();
+        void WriteToFile();
     }
 
     public class SettingsService<TSettings> : ISettingsService<TSettings>
         where TSettings : struct
     {
-        private static readonly string _root = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         private static readonly JsonSerializerOptions _options = new() { PropertyNameCaseInsensitive = true };
 
         private readonly ILogger _logger;
@@ -35,6 +35,7 @@ namespace Rubberduck.SettingsProvider
         private readonly ConcurrentStack<Guid> _tokens = new();
 
         private readonly IServiceProvider _services;
+        LanguageServerSettings ServerSettings => _services.GetRequiredService<ISettingsProvider<LanguageServerSettings>>().Value.Settings;
 
         public SettingsService(ILogger<SettingsService<TSettings>> logger,
             IServiceProvider serviceProvider,
@@ -45,7 +46,8 @@ namespace Rubberduck.SettingsProvider
             _logger = logger;
             _fileSystem = fileSystem;
 
-            _path = _fileSystem.Path.Combine(_root, "\\Rubberduck", $"\\{typeof(TSettings).Name}.json");
+            var root = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            _path = _fileSystem.Path.Combine(root, "Rubberduck", $"{typeof(TSettings).Name}.json");
 
             _default = defaultSettings.Default;
 
@@ -63,12 +65,12 @@ namespace Rubberduck.SettingsProvider
             SettingsChanged?.Invoke(this, args);
         }
 
-        public async Task ClearCacheAsync()
+        public void ClearCache()
         {
             _tokens.Clear();
             _valueCache.Clear();
             CacheDefault();
-            await ReadFromFileAsync();
+            ReadFromFile();
         }
 
         private void CacheDefault()
@@ -103,8 +105,7 @@ namespace Rubberduck.SettingsProvider
 
         public bool TrySetValue(TSettings value, Guid token)
         {
-            var serverSettings = _services.GetRequiredService<ISettingsProvider<LanguageServerSettings>>();
-            var traceLevel = serverSettings.Value.Settings.TraceLevel.ToTraceLevel();
+            var traceLevel = ServerSettings.TraceLevel.ToTraceLevel();
 
             var didChange = false;
             var oldToken = CurrentToken;
@@ -152,60 +153,85 @@ namespace Rubberduck.SettingsProvider
             return didChange;
         }
 
-        public async Task<(Guid Token, TSettings Settings)> ReadFromFileAsync()
+        private string RootPath => ApplicationConstants.RUBBERDUCK_FOLDER_PATH;
+
+        public (Guid Token, TSettings Settings) ReadFromFile()
         {
+            var traceLevel = ServerSettings.TraceLevel.ToTraceLevel();
+            _logger.LogTrace("Reading settings from file...", _path, traceLevel);
+
             try
             {
-                if (_fileSystem.File.Exists(_path))
+                var path = _path;
+                var root = RootPath;
+                if (!_fileSystem.Directory.Exists(root))
                 {
+                    _fileSystem.Directory.CreateDirectory(root);
+                    _logger.LogInformation("Root application folder was created.", root, traceLevel);
+                }
 
-                    var elapsed = await TimedAction.RunAsync(Task.Run(() =>
+                if (_fileSystem.File.Exists(path))
+                {
+                    if (TimedAction.TryRun(async () =>
                     {
-                        var content = _fileSystem.File.ReadAllText(_path);
-                        if (!string.IsNullOrWhiteSpace(content))
+                        await Task.Run(() =>
                         {
-                            var newValue = JsonSerializer.Deserialize<TSettings>(content, _options);
-                            var newToken = Guid.NewGuid();
-                            _tokens.Push(newToken);
-                            TrySetValue(newValue, newToken);
-                        }
-                        else
-                        {
-                            _logger.LogWarning($"File was found, but no content was loaded.");
-                        }
-                    }));
-                    _logger.LogTrace($"PERF: Reading and deserializing file '{_path}' took {elapsed.TotalMilliseconds}ms.");
+                            var content = _fileSystem.File.ReadAllText(path);
+                            if (!string.IsNullOrWhiteSpace(content))
+                            {
+                                var newValue = JsonSerializer.Deserialize<TSettings>(content, _options);
+                                var newToken = Guid.NewGuid();
+                                _tokens.Push(newToken);
+                                TrySetValue(newValue, newToken);
+                            }
+                            else
+                            {
+                                _logger.LogWarning($"File was found, but no content was loaded.");
+                            }
+                        });
+                    }, out var elapsed, out var exception))
+                    {
+                        _logger.LogPerformance("Deserialized settings from file.", elapsed, traceLevel);
+                    }
+                    else if (exception != default)
+                    {
+                        _logger.LogError(exception, traceLevel);
+                    }
                 }
                 else
                 {
                     _logger.LogWarning($"Settings file '{_path}' does not exist and will be created from defaults.");
-                    await WriteToFileAsync();
+                    WriteToFile();
                 }
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, $"Error reading from file '{_path}'. Returning cached/default settings.");
+                _logger.LogError(exception, $"Error reading from file '{_path}'. Using cached/default settings.");
+                throw;
             }
 
             return Value;
         }
 
-        public async Task WriteToFileAsync()
+        public void WriteToFile()
         {
-            try
-            {
-                var settings = Value;
-                var elapsed = await TimedAction.RunAsync(Task.Run(() =>
-                {
-                    var content = JsonSerializer.Serialize(settings);
-                    _fileSystem.File.Create(_path);
-                }));
-                _logger.LogTrace($"PERF: Serializing and writing content to file '{_path}' took {elapsed.TotalMilliseconds}ms.");
-            }
-            catch (Exception exception)
-            {
-                _logger.LogError(exception, $"Error writing to file '{_path}'.");
+            var traceLevel = ServerSettings.TraceLevel.ToTraceLevel();
+            _logger.LogTrace("Writing to settings file...", _path, traceLevel);
 
+                var settings = Value;
+                var path = _path;
+                var fileSystem = _fileSystem;
+
+                if (TimedAction.TryRun(async () => {
+                        var content = JsonSerializer.Serialize(settings.Settings);
+                        await Task.Run(() => fileSystem.File.Create(path));
+                    }, out var elapsed, out var exception))
+                {
+                    _logger.LogPerformance($"Serializing and writing content to file '{_path}' completed.", elapsed, traceLevel);
+                }
+                else if (exception != default)
+                {
+                    _logger.LogError(exception, traceLevel);
             }
         }
     }

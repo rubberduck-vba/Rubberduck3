@@ -58,7 +58,7 @@ namespace Rubberduck.InternalApi.Extensions
         public static void LogPerformance(this ILogger logger, string message, TimeSpan elapsed, LogPerformanceOptions options, TraceLevel level)
         {
             var logLevel = options.GetLogLevel(elapsed);
-            logger.Log(logLevel, message, $"Elapsed: {elapsed:hh:MM:ss.000}", level);
+            logger.Log(logLevel, message, $"Elapsed: {elapsed}", level);
         }
 
         /// <summary>

@@ -43,10 +43,10 @@ namespace Rubberduck.LanguageServer.Handlers
             _settings = settings;
         }
 
-        public async override Task<Unit> Handle(DidCreateFileParams request, CancellationToken cancellationToken)
+        public override Task<Unit> Handle(DidCreateFileParams request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var elapsed = await TimedAction.RunAsync(
+            var elapsed = TimedAction.Run(() =>
                 Task.WhenAll(request.Files.Select(file =>
                     Task.Run(() =>
                     {
@@ -54,13 +54,13 @@ namespace Rubberduck.LanguageServer.Handlers
                         _contentStore.AddOrUpdate(file.Uri, new DocumentContent(content));
                         _server.Window.LogInfo($"File '{file.Uri}' was added to content store.");
                     })
-                ))
+                )).Wait()
             );
 
             var traceLevel = _settings.Value.Settings.TraceLevel.ToTraceLevel();
             _logger.LogPerformance("Finished reading content from created files.", elapsed, traceLevel);
 
-            return Unit.Value;
+            return Task.FromResult(Unit.Value);
         }
 
         protected override DidCreateFileRegistrationOptions CreateRegistrationOptions(FileOperationsWorkspaceClientCapabilities capability, ClientCapabilities clientCapabilities)

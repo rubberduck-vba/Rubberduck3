@@ -4,10 +4,10 @@
     <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
     <RuntimeIdentifier>win-x86</RuntimeIdentifier>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU</Platforms>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>

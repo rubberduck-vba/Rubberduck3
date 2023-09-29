@@ -23,6 +23,6 @@ namespace Rubberduck.SettingsProvider
         /// <summary>
         /// Clears cached settings and tokens, resetting to defaults.
         /// </summary>
-        Task ClearCacheAsync();
+        void ClearCache();
     }
 }

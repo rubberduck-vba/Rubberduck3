@@ -45,14 +45,13 @@ namespace Rubberduck.Core
             UiContextProvider.Initialize();
         }
 
-#pragma warning disable VSTHRD100 // Avoid async void methods
-        private async void HandleSettingsServiceSettingsChanged(object sender, SettingsChangedEventArgs<RubberduckSettings> e)
+        private void HandleSettingsServiceSettingsChanged(object? sender, SettingsChangedEventArgs<RubberduckSettings>? e)
         {
             try
             {
-                if (!string.Equals(e.OldValue.Locale, e.Value.Locale, StringComparison.InvariantCultureIgnoreCase))
+                if (e is not null && !string.Equals(e.OldValue.Locale, e.Value.Locale, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    await ApplyCultureConfigAsync();
+                    ApplyCultureConfig();
                 }
             }
             catch (Exception exception)
@@ -60,7 +59,6 @@ namespace Rubberduck.Core
                 _logger.LogError(exception, "Error handling SettingsChanged event.");
             }
         }
-#pragma warning restore VSTHRD100 // Avoid async void methods
 
         #region TODO move to something like ShellEnvironment.cs
         private void EnsureLogFolderPathExists()
@@ -118,7 +116,7 @@ namespace Rubberduck.Core
         /// log level set to Trace (0) but once it's installed and has
         /// ran without problem, it should be set to None (6)
         /// </summary>
-        private async Task UpdateLoggingLevelOnShutdownAsync()
+        private void UpdateLoggingLevelOnShutdown()
         {
             var currentSettings = _settingsService.Value;
             if (currentSettings.Settings.IsInitialLogLevelChanged || currentSettings.Settings.LogLevel != LogLevel.Trace)
@@ -132,28 +130,28 @@ namespace Rubberduck.Core
             };
 
             _settingsService.TrySetValue(vm.ToSettings(), currentSettings.Token);
-            await _settingsService.WriteToFileAsync();
+            _settingsService.WriteToFile();
         }
 
-        public async Task StartupAsync(string version)
+        public void Startup(string version)
         {
             EnsureLogFolderPathExists();
             EnsureTempPathExists();
-            await ApplyCultureConfigAsync();
+            ApplyCultureConfig();
 
             LogRubberduckStart(version);
-            UpdateLoggingLevel();
+            //UpdateLoggingLevel();
 
-            await CheckForLegacyIndenterSettingsAsync();
+            //CheckForLegacyIndenterSettings();
             _appMenus.Initialize();
             _appMenus.Localize();
         }
 
-        public async Task ShutdownAsync()
+        public void Shutdown()
         {
             try
             {
-                await UpdateLoggingLevelOnShutdownAsync();
+                UpdateLoggingLevelOnShutdown();
             }
             catch
             {
@@ -161,7 +159,7 @@ namespace Rubberduck.Core
             }
         }
 
-        private async Task ApplyCultureConfigAsync()
+        private void ApplyCultureConfig()
         {
             var currentCulture = Resources.RubberduckUI.Culture;
             var currentSettings = _settingsService.Value;
@@ -185,14 +183,14 @@ namespace Rubberduck.Core
                 };
 
                 _settingsService.TrySetValue(vm.ToSettings(), currentSettings.Token);
-                await _settingsService.WriteToFileAsync();
+                _settingsService.WriteToFile();
             }
         }
 
         private static void LocalizeResources(CultureInfo culture)
         {
             var localizers = AppDomain.CurrentDomain.GetAssemblies()
-                .SingleOrDefault(assembly => assembly.GetName().Name == "Rubberduck.Resources")
+                .SingleOrDefault(assembly => assembly.GetName()?.Name == "Rubberduck.Resources")
                 ?.DefinedTypes.SelectMany(type => type.DeclaredProperties.Where(prop =>
                     prop.CanWrite && prop.Name.Equals("Culture") && prop.PropertyType == typeof(CultureInfo) &&
                     (prop.SetMethod?.IsStatic ?? false)));
@@ -205,11 +203,11 @@ namespace Rubberduck.Core
             var args = new object[] { culture };
             foreach (var localizer in localizers)
             {
-                localizer.SetMethod.Invoke(null, args);
+                localizer.SetMethod!.Invoke(null, args);
             }
         }
 
-        private async Task CheckForLegacyIndenterSettingsAsync()
+        private void CheckForLegacyIndenterSettings()
         {
             try
             {
@@ -232,7 +230,7 @@ namespace Rubberduck.Core
                 };
 
                 _settingsService.TrySetValue(vm.ToSettings(), currentSettings.Token);
-                await _settingsService.WriteToFileAsync();
+                _settingsService.WriteToFile();
             }
             catch (Exception e)
             {
