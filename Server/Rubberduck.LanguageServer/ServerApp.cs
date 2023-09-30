@@ -100,15 +100,15 @@ namespace Rubberduck.LanguageServer
             InvalidInitializeParamsException.ThrowIfNull(param,
                 e => (nameof(e.ClientInfo), e.ClientInfo),
                 e => (nameof(e.Capabilities), e.Capabilities),
-                e => (nameof(e.Locale), e.Locale),
-                e => (nameof(e.ProcessId), e.ProcessId),
+                //e => (nameof(e.Locale), e.Locale),
+                //e => (nameof(e.ProcessId), e.ProcessId),
                 e => (nameof(e.WorkspaceFolders), e.WorkspaceFolders)
             );
 
             _capabilities = param.Capabilities!;
             _clientInfo = param.ClientInfo!;
-            _locale = ToCultureInfo(param.Locale!);
-            _processId = param.ProcessId!.Value;
+            //_locale = ToCultureInfo(param.Locale!);
+            //_processId = param.ProcessId!.Value;
             _traceLevel = param.Trace!;
             _workspaceFolders = param.WorkspaceFolders!;
 
@@ -119,7 +119,12 @@ namespace Rubberduck.LanguageServer
         {
             try
             {
-                var name = locale ?? throw new ArgumentNullException(nameof(locale));
+                if (locale is null)
+                {
+                    _logger.LogWarning("Could not set locale from initialization parameters.");
+                    return CultureInfo.InvariantCulture;
+                }
+
                 return CultureInfo.GetCultureInfo(locale);
             }
             catch
@@ -160,8 +165,8 @@ namespace Rubberduck.LanguageServer
             _logger.LogInformation("Starting language server...");
             _logger.LogDebug("Startup configuration:: TraceLevel='{traceLevel}' TransportType='{transportType}'", _options.TraceLevel, _options.TransportType);
 
-            _languageServer = await OmniSharpLanguageServer.From(options => ConfigureLanguageServer(options), provider, _tokenSource.Token);
             _serverState = new(scope.ServiceProvider.GetRequiredService<ILogger<LanguageServerState>>());
+            _languageServer = await OmniSharpLanguageServer.From(options => ConfigureLanguageServer(options), provider, _tokenSource.Token);
 
             _logger.LogInformation("Awaiting client connection...");
             
@@ -204,31 +209,35 @@ namespace Rubberduck.LanguageServer
                 .WithServerInfo(info)
                 .WithServices(ConfigureServices)
 
-                .OnInitialize(async (ILanguageServer server, InitializeParams request, CancellationToken token) =>
+                .OnInitialize((ILanguageServer server, InitializeParams request, CancellationToken token) =>
                 {
                     _logger.LogInformation("Received Initialize request.");
                     token.ThrowIfCancellationRequested();
 
                     _serverState.Initialize(request);
-                    await Task.CompletedTask;
+                    _logger.LogInformation("Completed Initialize request.");
+                    return Task.CompletedTask;
                 })
 
-                .OnInitialized(async (ILanguageServer server, InitializeParams request, InitializeResult response, CancellationToken token) =>
+                .OnInitialized((ILanguageServer server, InitializeParams request, InitializeResult response, CancellationToken token) =>
                 {
                     _logger.LogInformation("Received Initialized notification.");
+                    _logger.LogInformation($"Token Cancelled: {token.IsCancellationRequested}");
                     token.ThrowIfCancellationRequested();
 
-                    await Task.CompletedTask;
+                    _logger.LogInformation("Completed OnInitialized request.");
+                    return Task.CompletedTask;
                 })
 
-                .OnStarted(async (ILanguageServer server, CancellationToken token) =>
+                .OnStarted((ILanguageServer server, CancellationToken token) =>
                 {
                     _logger.LogInformation("Language server started.");
                     token.ThrowIfCancellationRequested();
 
                     // TODO start synchronizing documents
 
-                    await Task.CompletedTask;
+                    _logger.LogInformation("Completed OnStarted request.");
+                    return Task.CompletedTask;
                 })
 
 
