@@ -222,7 +222,6 @@ namespace Rubberduck.LanguageServer
                 .OnInitialized((ILanguageServer server, InitializeParams request, InitializeResult response, CancellationToken token) =>
                 {
                     _logger.LogInformation("Received Initialized notification.");
-                    _logger.LogInformation($"Token Cancelled: {token.IsCancellationRequested}");
                     token.ThrowIfCancellationRequested();
 
                     _logger.LogInformation("Completed OnInitialized request.");
