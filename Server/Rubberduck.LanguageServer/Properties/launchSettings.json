@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Rubberduck.LanguageServer": {
-      "commandName": "Project",
-      "commandLineArgs": "Pipe --c 1234"
-    }
-  }
-}

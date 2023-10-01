@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace Rubberduck.LanguageServer
 {
@@ -16,6 +17,12 @@ namespace Rubberduck.LanguageServer
         {
             using var tokenSource = new CancellationTokenSource();
             var options = await ServerArgs.ParseAsync(args);
+            if (options.Debug)
+            {
+                Debugger.Launch();
+                Debug.Assert(Debugger.IsAttached, "Debugger is not attached.");
+            }
+
             await new ServerApp(options, tokenSource).RunAsync();
             return 0;
         }

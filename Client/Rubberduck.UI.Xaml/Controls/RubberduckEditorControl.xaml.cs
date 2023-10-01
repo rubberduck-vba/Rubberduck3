@@ -26,7 +26,7 @@ namespace Rubberduck.UI.Xaml.Controls
         //private readonly FoldingManager _foldingManager;
         private readonly ITextMarkerService _textMarkerService;
 
-        private CompletionWindow _completionWindow = null;
+        private CompletionWindow _completionWindow = default!;
 
         public RubberduckEditorControl()
         {
@@ -120,7 +120,7 @@ namespace Rubberduck.UI.Xaml.Controls
                 _completionWindow.CompletionList.CompletionData.Add(new CompletionInfo(member));
             }
             _completionWindow.Show();
-            _completionWindow.Closed += (o, e) => _completionWindow = null;
+            _completionWindow.Closed += (o, e) => _completionWindow = null!;
         }
 
         private void OnSelectedMemberProviderChanged(object sender, EventArgs e)
@@ -133,26 +133,26 @@ namespace Rubberduck.UI.Xaml.Controls
             if (DataContext is ICodePaneViewModel context)
             {
                 context.Document = EditorPane.Document;
-                context.SelectedMemberProviderChanged += OnSelectedMemberProviderChanged;
-                context.SelectedMemberProvider = context.MemberProviders.FirstOrDefault();
-                if (context.SelectedMemberProvider != null)
-                {
-                    context.SelectedMemberProvider.CurrentMember = context.SelectedMemberProvider?.Members.FirstOrDefault();
-                }
+                //context.SelectedMemberProviderChanged += OnSelectedMemberProviderChanged;
+                //context.SelectedMemberProvider = context.MemberProviders.FirstOrDefault();
+                //if (context.SelectedMemberProvider != null)
+                //{
+                //    context.SelectedMemberProvider.CurrentMember = context.SelectedMemberProvider?.Members.FirstOrDefault();
+                //}
                 //context.ParseTreeChanged += OnParseTreeChanged;
             }
         }
 
         private async void OnIdle(object obj)
         {
-            await Dispatcher.InvokeAsync(ParseDocumentAsync);
+            await Dispatcher.InvokeAsync(SyncDocumentAsync);
         }
 
-        private async Task ParseDocumentAsync()
+        private async Task SyncDocumentAsync()
         {
             using (var reader = EditorPane.Document.CreateReader())
             {
-                //await ViewModel.ParseAsync(reader);
+                // TODO send content to language server
             }
             await Task.CompletedTask;
         }
@@ -225,7 +225,7 @@ namespace Rubberduck.UI.Xaml.Controls
             if (textPosition.HasValue)
             {
                 var offset = EditorPane.Document.GetOffset(textPosition.Value.Location);
-                ShowMarkerToolTip(offset);
+                // TODO send hover request to server
                 return;
             }
 
@@ -292,10 +292,10 @@ namespace Rubberduck.UI.Xaml.Controls
 
         private void Initialize(TextMarkerService service)
         {
-            EditorPane.TextArea.TextView.BackgroundRenderers.Add(service);
-            EditorPane.TextArea.TextView.LineTransformers.Add(service);
-            var services = (IServiceContainer)EditorPane.Document.ServiceProvider.GetService(typeof(IServiceContainer));
-            services?.AddService(typeof(ITextMarkerService), service);
+            //EditorPane.TextArea.TextView.BackgroundRenderers.Add(service);
+            //EditorPane.TextArea.TextView.LineTransformers.Add(service);
+            //var services = (IServiceContainer)EditorPane.Document.ServiceProvider.GetService(typeof(IServiceContainer));
+            //services?.AddService(typeof(ITextMarkerService), service);
         }
 
         private void OnTextChanged(object sender, EventArgs e)

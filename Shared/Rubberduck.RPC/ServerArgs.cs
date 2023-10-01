@@ -3,13 +3,14 @@ using Rubberduck.InternalApi.ServerPlatform;
 using System;
 using System.IO.Pipes;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Rubberduck.ServerPlatform
 {
-    public abstract class TransportOptions
+    public abstract class ServerStartupOptions
     {
-        protected TransportOptions(TransportType transportType)
+        protected ServerStartupOptions(TransportType transportType)
         {
             TransportType = transportType;
         }
@@ -23,16 +24,21 @@ namespace Rubberduck.ServerPlatform
         [Option('s', "silent", SetName = "TraceLevel", HelpText = "Whether or not to enable trace logging.")]
         public bool Silent { get; set; }
 
+        [Option('d', "debug", HelpText = "Starts the server in debug mode.")]
+        public bool Debug { get; set; }
+
         /// <summary>
         /// Gets a string that corresponds to the <c>InitializeTrace</c> value for the specified <c>Verbose</c> and <c>Silent</c> switch arguments.
         /// </summary>
         public string TraceLevel => Silent ? "Off" : Verbose ? "Verbose" : "Messages";
+
+        public override string ToString() => JsonSerializer.Serialize(this);
     }
 
     [Verb("Pipe")]
-    public class PipeTransportOptions : TransportOptions
+    public class PipeServerStartupOptions : ServerStartupOptions
     {
-        public PipeTransportOptions() : base(TransportType.Pipe) { }
+        public PipeServerStartupOptions() : base(TransportType.Pipe) { }
 
         [Option('c', "client", Required = true, HelpText = "The process ID of the client that starts and owns this server.")]
         public int ClientProcessId { get; set; }
@@ -50,19 +56,19 @@ namespace Rubberduck.ServerPlatform
     }
 
     [Verb("StdIO", isDefault: true)]
-    public class StandardInOutTransportOptions : TransportOptions
+    public class StandardInOutServerStartupOptions : ServerStartupOptions
     {
-        public StandardInOutTransportOptions() : base(TransportType.StdIO) { }
+        public StandardInOutServerStartupOptions() : base(TransportType.StdIO) { }
     }
 
     public class ServerArgs
     {
-        public static TransportOptions Default { get; } = new StandardInOutTransportOptions();
+        public static ServerStartupOptions Default { get; } = new StandardInOutServerStartupOptions();
 
-        public static async Task<TransportOptions> ParseAsync(string[] args)
+        public static async Task<ServerStartupOptions> ParseAsync(string[] args)
         {
             var parser = new Parser(ConfigureParser);
-            var parserResult = parser.ParseArguments<StandardInOutTransportOptions, PipeTransportOptions>(args);
+            var parserResult = parser.ParseArguments<StandardInOutServerStartupOptions, PipeServerStartupOptions>(args);
             
             if (parserResult.Errors.Any())
             {
@@ -73,7 +79,7 @@ namespace Rubberduck.ServerPlatform
                 throw new ArgumentOutOfRangeException(nameof(args), "One or more errors have occurred parsing the specified command-line arguments. Process will be terminated.");
             }
 
-            return (TransportOptions)parserResult.Value;
+            return (ServerStartupOptions)parserResult.Value;
         }
 
         private static void ConfigureParser(ParserSettings settings)

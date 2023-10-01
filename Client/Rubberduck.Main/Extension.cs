@@ -50,17 +50,26 @@ namespace Rubberduck
 
         public void OnStartupComplete(ref Array custom)
         {
-            _rubberduck!.InitializeAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            if (_rubberduck != null)
+            {
+                _rubberduck.InitializeAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            }
         }
 
         public void OnBeginShutdown(ref Array custom)
         {
-            _rubberduck!.ShutdownAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            if (_rubberduck != null)
+            {
+                _rubberduck.Shutdown();
+            }
         }
 
         public void OnDisconnection(ext_DisconnectMode RemoveMode, ref Array custom)
         {
-            _rubberduck!.ShutdownAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            if (_rubberduck != null)
+            {
+                _rubberduck.Shutdown();
+            }
         }
 
         public void OnAddInsUpdate(ref Array custom) { /* no-op / unhandled */ }

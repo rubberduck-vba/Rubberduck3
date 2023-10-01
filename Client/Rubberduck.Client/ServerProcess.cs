@@ -1,4 +1,5 @@
-﻿using Rubberduck.SettingsProvider.Model;
+﻿using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.SettingsProvider.Model;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -48,7 +49,7 @@ namespace Rubberduck.Client
 
             var process = new Process { StartInfo = info };
             process.Start();
-            
+
             return process;
         }
     }

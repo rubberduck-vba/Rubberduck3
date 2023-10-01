@@ -12,6 +12,12 @@
     <OutputType>Exe</OutputType>
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
 
   <ItemGroup>
     <Content Include="Ducky.ico" />
@@ -35,9 +41,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="NLog.config">
+    <None Update="NLog-server.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,5 @@
 ﻿using Extensibility;
 using Microsoft.Extensions.DependencyInjection;
-using NLog;
 using OmniSharp.Extensions.LanguageServer.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
@@ -29,18 +28,20 @@ using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Events;
 using Rubberduck.Unmanaged.TypeLibs;
 using Rubberduck.Unmanaged.WindowsApi;
+using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Common;
+using Rubberduck.InternalApi.Extensions;
 
 namespace Rubberduck
 {
     internal class RubberduckAddIn : IVBIDEAddIn
     {
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
         private RubberduckSettings _initialSettings;
 
         private IVBE _vbe = null!;
         private IAddIn _addin = null!;
         private IServiceScope _serviceScope = null!;
+        private ILogger _logger = null!;
         private App _app = null!;
 
         private bool _isInitialized;
@@ -109,7 +110,9 @@ namespace Rubberduck
 
                 var provider = builder.Build();
                 var scope = provider.CreateScope();
+
                 _serviceScope = scope;
+                _logger = scope.ServiceProvider.GetRequiredService<ILogger<RubberduckAddIn>>();
 
                 InitializeSettings(scope);
 
@@ -130,7 +133,7 @@ namespace Rubberduck
             }
             catch (Exception exception)
             {
-                _logger.Fatal(exception);
+                _logger.LogCritical(exception, TraceLevel.Verbose);
                 // TODO Use Rubberduck Interaction instead and provide exception stack trace as
                 // an optional "more info" collapsible section to eliminate the conditional.
                 MessageBox.Show(
@@ -217,14 +220,14 @@ namespace Rubberduck
                 switch (settings.TransportType)
                 {
                     case TransportType.StdIO:
-                        clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _serverProcess, InitializeTrace.Verbose);
+                        clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _serverProcess, clientProcessId, InitializeTrace.Verbose);
                         break;
 
                     case TransportType.Pipe:
                         var name = settings.PipeName ?? ServerPlatformSettings.LanguageServerDefaultPipeName;
                         _pipeStream = new NamedPipeClientStream(".", $"{name}__{Process.GetCurrentProcess().Id}", PipeDirection.InOut, PipeOptions.Asynchronous);
                         await _pipeStream.ConnectAsync(Convert.ToInt32(TimeSpan.FromSeconds(10).TotalMilliseconds)); // stuck here
-                        clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _pipeStream, InitializeTrace.Verbose);
+                        clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _pipeStream, clientProcessId, InitializeTrace.Verbose);
                         break;
 
                     default:
@@ -234,187 +237,117 @@ namespace Rubberduck
                 _languageClient = LanguageClient.Create(clientOptions, _serviceScope.ServiceProvider);
 
                 statusViewModel?.UpdateStatus("Initializing language server protocol...");
-                await _languageClient.Initialize(_tokenSource.Token); // stuck here
+                _languageClient.Initialize(_tokenSource.Token); // stuck here
 
                 statusViewModel?.UpdateStatus("Connection established.");
                 _isInitialized = true;
             }
             catch (Exception e)
             {
-                _logger.Fatal(e, "Startup sequence threw an unexpected exception.");
+                _logger.LogError(e, "Startup sequence threw an unexpected exception.");
                 throw new Exception($"'{ServerPlatformSettings.LanguageServerExecutable}' - Rubberduck's startup sequence threw an unexpected exception. Please check the Rubberduck logs for more information and report an issue if necessary", e);
             }
         }
 
-        public async Task ShutdownAsync()
+        private void RunShutdownAction(string message, Action action)
+        {
+            if (TimedAction.TryRun(action, out var elapsed, out var exception))
+            {
+                _logger.LogPerformance($"RunShutdownAction: {message}", elapsed, _initialSettings.LanguageServerSettings.TraceLevel.ToTraceLevel());
+            }
+            else if (exception is not null)
+            {
+                _logger.LogError(exception, "RunShutdownAction: {message}", exception.Message);
+            }
+        }
+
+        public void Shutdown()
         {
             if (!_isInitialized)
             {
                 return;
             }
 
-            _logger.Info("Rubberduck is shutting down...");
-
-            try
+            _logger.LogInformation("Rubberduck is shutting down...");
+            RunShutdownAction("Sending LSP shutdown notification...", () =>
             {
                 if (_languageClient != null)
                 {
-                    _logger.Trace("Sending LSP shutdown notification...");
                     _languageClient.SendShutdown(new ShutdownParams());
                 }
-            }
-            catch (Exception e)
+            });
+            RunShutdownAction("Terminating VbeProvier...", () =>
             {
-                _logger.Error(e);
-            }
-
-            try
-            {
-                _logger.Trace("Terminating VbeProvier...");
                 VbeProvider.Terminate();
-            }
-            catch (Exception e)
+            });
+            RunShutdownAction("Releasing dockable hosts...", () =>
             {
-                _logger.Error(e);
-            }
-
-            try
-            {
-                _logger.Trace("Releasing dockable hosts...");
                 using (var windows = _vbe.Windows)
                 {
                     windows.ReleaseDockableHosts();
                 }
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-            }
-
-            try
+            });
+            RunShutdownAction("Initiating App.Shutdown...", () =>
             {
                 if (_app != null)
                 {
-                    _logger.Trace("Initiating App.Shutdown...");
                     _app.Shutdown();
                     _app = null!;
                 }
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-            }
-
-            try
+            });
+            RunShutdownAction("Disposing service scope...", () =>
             {
                 if (_serviceScope != null)
                 {
-                    _logger.Trace("Disposing service scope...");
                     _serviceScope.Dispose();
                     _serviceScope = null!;
                 }
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-            }
-
-            try
+            });
+            RunShutdownAction("Sending LSP exit notification...", () =>
             {
                 if (_languageClient != null)
                 {
-                    _logger.Trace("Sending LSP exit notification...");
                     _languageClient.SendExit(new ExitParams());
                 }
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-            }
-
-            try
+            });
+            RunShutdownAction("Disposing pipe stream...", () =>
             {
                 if (_pipeStream != null)
                 {
-                    _logger.Trace("Disposing pipe stream...");
-                    await _pipeStream.DisposeAsync();
+                    _pipeStream.Dispose();
                     _pipeStream = null!;
                 }
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-            }
-
-            try
+            });
+            RunShutdownAction("Disposing language client...", () =>
             {
                 if (_languageClient != null)
                 {
-                    _logger.Trace("Disposing language client...");
-                    _languageClient.SendExit();
                     _languageClient.Dispose();
                 }
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-            }
-
-            try
+            });
+            RunShutdownAction("Disposing language server process...", () =>
             {
                 if (_serverProcess != null)
                 {
-                    _logger.Trace("Disposing language server process...");
                     _serverProcess.Dispose();
                     _serverProcess = null!;
                 }
-            }
-            catch (Exception e)
+            });
+            RunShutdownAction("Disposing COM safe...", () =>
             {
-                _logger.Error(e);
-            }
-
-            try
-            {
-                if (_languageClient != null)
-                {
-                    _logger.Trace("Disposing language client...");
-                    _languageClient.Dispose();
-                    _languageClient = null!;
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-            }
-
-            try
-            {
-                _logger.Trace("Disposing COM safe...");
                 ComSafeManager.DisposeAndResetComSafe();
                 _addin = null!;
                 _vbe = null!;
 
                 _isInitialized = false;
-                _logger.Info("No exceptions were thrown.");
-            }
-            catch (Exception e)
+            });
+            RunShutdownAction("Deregistering AppDomain handlers....", () =>
             {
-                _logger.Warn("Exception disposing the ComSafe has been swallowed.");
-                _logger.Error(e);
-            }
-
-            try
-            {
-                _logger.Trace("Unregistering AppDomain handlers....");
                 AppDomain.CurrentDomain.AssemblyResolve -= LoadFromSameFolder;
                 AppDomain.CurrentDomain.UnhandledException -= HandleAppDomainException;
-            }
-            finally
-            {
-                _logger.Trace("Rubberduck shutdown completed. Quack!");
-                _isInitialized = false;
-            }
+            });
+
+            _logger.LogInformation("Rubberduck shutdown completed. Quack!");
         }
 
         private void HandleAppDomainException(object sender, UnhandledExceptionEventArgs e)
@@ -425,12 +358,11 @@ namespace Rubberduck
 
             if (e.ExceptionObject is Exception exception)
             {
-                _logger.Fatal(exception, message);
-
+                _logger.LogCritical(exception, TraceLevel.Verbose);
             }
             else
             {
-                _logger.Fatal(message);
+                _logger.LogCritical(message, TraceLevel.Verbose);
             }
         }
 

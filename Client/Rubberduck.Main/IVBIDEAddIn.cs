@@ -18,6 +18,6 @@ namespace Rubberduck
         /// <remarks>
         /// Some hosts disconnect VBE add-ins in different ways, more or less compliant with how IDTExtensibility2 intended it.
         /// </remarks>
-        Task ShutdownAsync();
+        void Shutdown();
     }
 }
