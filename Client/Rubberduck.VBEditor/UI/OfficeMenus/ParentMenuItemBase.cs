@@ -12,7 +12,7 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
 {
     public abstract class ParentMenuItemBase : IParentMenuItem
     {
-        private readonly IDictionary<IMenuItem, ICommandBarControl> _items = new Dictionary<IMenuItem, ICommandBarControl>();
+        private readonly IDictionary<IMenuItem, ICommandBarControl?> _items = new Dictionary<IMenuItem, ICommandBarControl?>();
         //private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         protected readonly IUiDispatcher _uiDispatcher;
 
@@ -21,7 +21,12 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
             _uiDispatcher = dispatcher;
         }
 
-        public void AddItem(IMenuItem item, ICommandBarControl msoControl)
+        public void AddChildItem(IMenuItem item)
+        {
+            AddItem(item, null);
+        }
+
+        public void AddItem(IMenuItem item, ICommandBarControl? msoControl)
         {
             _items.Add(item, msoControl);
         }
@@ -29,8 +34,8 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
         public abstract string ResourceKey { get; }
         public virtual int? BeforeIndex { get; set; }
 
-        private ICommandBarControls _parent;
-        public ICommandBarControls Parent
+        private ICommandBarControls? _parent;
+        public ICommandBarControls? Parent
         {
             get => _parent;
             set
@@ -40,8 +45,8 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
             }
         }
 
-        private ICommandBarPopup _item;
-        public ICommandBarPopup Item
+        private ICommandBarPopup? _item;
+        public ICommandBarPopup? Item
         {
             get => _item;
             private set
@@ -51,7 +56,7 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
             }
         }
 
-        public Func<string> Caption { get { return () => ResourceKey == null ? null : RubberduckMenus.ResourceManager.GetString(ResourceKey, CultureInfo.CurrentUICulture); } }
+        public Func<string> Caption { get { return () => RubberduckMenus.ResourceManager.GetString(ResourceKey, CultureInfo.CurrentUICulture) ?? ResourceKey; } }
 
         public virtual string ToolTipKey { get; set; }
         public virtual Func<string> ToolTipText
@@ -60,16 +65,16 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
             {
                 return () => string.IsNullOrEmpty(ToolTipKey)
                     ? string.Empty
-                    : RubberduckMenus.ResourceManager.GetString(ToolTipKey, CultureInfo.CurrentUICulture);
+                    : RubberduckMenus.ResourceManager.GetString(ToolTipKey, CultureInfo.CurrentUICulture) ?? ToolTipKey;
             }
         }
 
-        public virtual bool BeginGroup => false;
-        public virtual int DisplayOrder => default;
+        public virtual bool BeginGroup { get; set; }
+        public virtual int DisplayOrder { get; set; }
 
         public void Localize()
         {
-            if (Item == null)
+            if (Item is null)
             {
                 return;
             }
@@ -77,6 +82,11 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
             Item.Caption = Caption.Invoke();
             foreach (var kvp in _items)
             {
+                if (kvp.Value is null)
+                {
+                    continue;
+                }
+
                 kvp.Value.Caption = kvp.Key.Caption.Invoke();
                 if (kvp.Key is CommandMenuItemBase command)
                 {
@@ -95,9 +105,9 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
                 return;
             }
 
-            Item =  Parent.AddPopup(BeforeIndex);                
+            Item =  Parent.AddPopup(BeforeIndex);
 
-            Item.Tag = ResourceKey;            
+            Item.Tag = $"RD3.{ResourceKey}";
 
             foreach (var item in _items.Keys.OrderBy(item => item.DisplayOrder))
             {
@@ -126,7 +136,7 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
             }
             foreach (var child in _items.Values.Select(item => item as ICommandBarButton).Where(child => child != null))
             {
-                child.Click -= Child_Click;
+                child.Click -= ChildMenuCommandClick;
                 child.Delete();
                 child.Dispose();
             }
@@ -198,11 +208,11 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
                 ? command.ShortcutText
                 : string.Empty;
 
-            child.Click += Child_Click;
+            child.Click += ChildMenuCommandClick!;
             return child;
         }
 
-        private void Child_Click(object sender, CommandBarButtonClickEventArgs e)
+        private void ChildMenuCommandClick(object sender, CommandBarButtonClickEventArgs e)
         {
             if (!(_items.Select(kvp => kvp.Key).SingleOrDefault(menu => e.Tag.EndsWith(menu.GetType().Name)) is ICommandMenuItem item))
             {

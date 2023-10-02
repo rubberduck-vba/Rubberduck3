@@ -13,22 +13,24 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public abstract class CommandBase : ICommand
     {
-        private static readonly List<MethodBase> ExceptionTargetSites = new List<MethodBase>();
+        private static readonly List<MethodBase> ExceptionTargetSites = new();
 
         protected CommandBase(ILogger? logger = null)
         {
             Logger = logger;
             CanExecuteCondition = (parameter => true);
             OnExecuteCondition = (parameter => true);
+
+            ShortcutText = string.Empty;
         }
 
         protected ILogger? Logger { get; }
-        protected abstract Task OnExecuteAsync(object parameter);
+        protected abstract Task OnExecuteAsync(object? parameter);
 
-        protected Func<object, bool> CanExecuteCondition { get; private set; }
-        protected Func<object, bool> OnExecuteCondition { get; private set; }
+        protected Func<object?, bool> CanExecuteCondition { get; private set; }
+        protected Func<object?, bool> OnExecuteCondition { get; private set; }
 
-        protected void AddToCanExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation, bool requireReevaluationAlso = false)
+        protected void AddToCanExecuteEvaluation(Func<object?, bool> furtherCanExecuteEvaluation, bool requireReevaluationAlso = false)
         {
             if (furtherCanExecuteEvaluation == null)
             {
@@ -45,7 +47,7 @@ namespace Rubberduck.UI.Command
             }
         }
 
-        protected void AddToOnExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation)
+        protected void AddToOnExecuteEvaluation(Func<object?, bool> furtherCanExecuteEvaluation)
         {
             if (furtherCanExecuteEvaluation == null)
             {
@@ -57,7 +59,7 @@ namespace Rubberduck.UI.Command
                 currentOnExecute(parameter) && furtherCanExecuteEvaluation(parameter);
         }
 
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object? parameter)
         {
             try
             {
@@ -70,7 +72,7 @@ namespace Rubberduck.UI.Command
             {
                 //Logger.LogError(exception);
 
-                if (!ExceptionTargetSites.Contains(exception.TargetSite))
+                if (exception.TargetSite != null && !ExceptionTargetSites.Contains(exception.TargetSite))
                 {
                     ExceptionTargetSites.Add(exception.TargetSite);
                 }
@@ -79,7 +81,7 @@ namespace Rubberduck.UI.Command
             }
         }
 
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             try
             {
@@ -98,7 +100,7 @@ namespace Rubberduck.UI.Command
             {
                 //Logger.Error(exception);
 
-                if (!ExceptionTargetSites.Contains(exception.TargetSite))
+                if (exception.TargetSite != null && !ExceptionTargetSites.Contains(exception.TargetSite))
                 {
                     ExceptionTargetSites.Add(exception.TargetSite);
                 }

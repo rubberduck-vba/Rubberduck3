@@ -12,7 +12,7 @@ namespace Rubberduck.UI.Command
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute, true);
         }
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object? parameter)
         {
             return !_vbeEvents.Terminated;
         }

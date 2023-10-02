@@ -5,19 +5,19 @@ namespace Rubberduck.Core.Editor.Tools
 {
     class ShellToolTabProvider : IShellToolTabProvider
     {
-        private readonly ISyncPanelToolTab _syncPanel;
+        //private readonly ISyncPanelToolTab _syncPanel;
         // TODO add new tool tabs here
 
-        public ShellToolTabProvider(ISyncPanelToolTab syncPanel)
+        public ShellToolTabProvider(/*ISyncPanelToolTab syncPanel*/)
         {
-            _syncPanel = syncPanel;
+            //_syncPanel = syncPanel;
         }
 
         public IEnumerable<IShellToolTab> GetShellToolTabs()
         {
             return new IShellToolTab[] 
             { 
-                _syncPanel 
+                //_syncPanel 
             };
         }
     }

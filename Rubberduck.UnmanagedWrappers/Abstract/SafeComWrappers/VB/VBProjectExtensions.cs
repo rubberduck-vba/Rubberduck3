@@ -51,6 +51,12 @@ namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
 
         public static bool TryGetFullPath(this IVBProject project, out string fullPath)
         {
+            if (project.IsWrappingNullReference)
+            {
+                fullPath = null;
+                return false;
+            }
+
             try
             {
                 fullPath = project.FileName;

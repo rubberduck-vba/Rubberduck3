@@ -25,7 +25,6 @@ using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using Rubberduck.Unmanaged;
-using Rubberduck.Unmanaged.Events;
 using Rubberduck.Unmanaged.TypeLibs;
 using Rubberduck.Unmanaged.WindowsApi;
 using Microsoft.Extensions.Logging;
@@ -51,6 +50,7 @@ namespace Rubberduck
         private NamedPipeClientStream? _pipeStream;
 
         private LanguageClient? _languageClient;
+        private IDisposable? _clientInitializeTask;
 
         internal RubberduckAddIn(IDTExtensibility2 extAddin, IVBE vbeWrapper, IAddIn addinWrapper)
         {
@@ -105,7 +105,7 @@ namespace Rubberduck
                     .WithFileSystem(_vbe)
                     .WithNativeServices(_vbe)
                     .WithCommands()
-                    .WithMsoCommandBarMenu()
+                    .WithRubberduckMenu()
                     .WithRubberduckEditor();
 
                 var provider = builder.Build();
@@ -203,11 +203,10 @@ namespace Rubberduck
                 statusViewModel?.UpdateStatus("Resolving services...");
 
                 _app = _serviceScope.ServiceProvider.GetRequiredService<App>();
-
+                
                 statusViewModel?.UpdateStatus("Starting add-in...");
-
+                
                 _app.Startup(version);
-
                 statusViewModel?.UpdateStatus("Starting language server...");
 
                 var settings = LanguageServerSettings.Default;
@@ -216,20 +215,26 @@ namespace Rubberduck
                 
                 statusViewModel?.UpdateStatus("Starting language client...");
 
+                using var project = _vbe.ActiveVBProject;
+                if (!project.TryGetFullPath(out var projectPath))
+                {
+                    projectPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                }
+
                 LanguageClientOptions clientOptions;
                 switch (settings.TransportType)
                 {
                     case TransportType.StdIO:
-                        clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _serverProcess, clientProcessId, InitializeTrace.Verbose);
+                        clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _serverProcess, clientProcessId, _initialSettings, projectPath);
                         break;
 
                     case TransportType.Pipe:
                         var name = settings.PipeName ?? ServerPlatformSettings.LanguageServerDefaultPipeName;
                         _pipeStream = new NamedPipeClientStream(".", $"{name}__{Process.GetCurrentProcess().Id}", PipeDirection.InOut, PipeOptions.Asynchronous);
                         await _pipeStream.ConnectAsync(Convert.ToInt32(TimeSpan.FromSeconds(10).TotalMilliseconds)); // stuck here
-                        clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _pipeStream, clientProcessId, InitializeTrace.Verbose);
+                        clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _pipeStream, clientProcessId, _initialSettings, projectPath);
                         break;
-
+                        
                     default:
                         throw new NotSupportedException();
                 }
@@ -237,7 +242,7 @@ namespace Rubberduck
                 _languageClient = LanguageClient.Create(clientOptions, _serviceScope.ServiceProvider);
 
                 statusViewModel?.UpdateStatus("Initializing language server protocol...");
-                _languageClient.Initialize(_tokenSource.Token); // stuck here
+                _clientInitializeTask = _languageClient.Initialize(_tokenSource.Token);
 
                 statusViewModel?.UpdateStatus("Connection established.");
                 _isInitialized = true;
@@ -246,18 +251,6 @@ namespace Rubberduck
             {
                 _logger.LogError(e, "Startup sequence threw an unexpected exception.");
                 throw new Exception($"'{ServerPlatformSettings.LanguageServerExecutable}' - Rubberduck's startup sequence threw an unexpected exception. Please check the Rubberduck logs for more information and report an issue if necessary", e);
-            }
-        }
-
-        private void RunShutdownAction(string message, Action action)
-        {
-            if (TimedAction.TryRun(action, out var elapsed, out var exception))
-            {
-                _logger.LogPerformance($"RunShutdownAction: {message}", elapsed, _initialSettings.LanguageServerSettings.TraceLevel.ToTraceLevel());
-            }
-            else if (exception is not null)
-            {
-                _logger.LogError(exception, "RunShutdownAction: {message}", exception.Message);
             }
         }
 
@@ -295,19 +288,19 @@ namespace Rubberduck
                     _app = null!;
                 }
             });
+            RunShutdownAction("Sending LSP exit notification...", () =>
+            {
+                if (_languageClient != null)
+                {
+                    _languageClient.SendExit();
+                }
+            });
             RunShutdownAction("Disposing service scope...", () =>
             {
                 if (_serviceScope != null)
                 {
                     _serviceScope.Dispose();
                     _serviceScope = null!;
-                }
-            });
-            RunShutdownAction("Sending LSP exit notification...", () =>
-            {
-                if (_languageClient != null)
-                {
-                    _languageClient.SendExit(new ExitParams());
                 }
             });
             RunShutdownAction("Disposing pipe stream...", () =>
@@ -320,6 +313,10 @@ namespace Rubberduck
             });
             RunShutdownAction("Disposing language client...", () =>
             {
+                if (_clientInitializeTask != null)
+                {
+                    _clientInitializeTask.Dispose();
+                }
                 if (_languageClient != null)
                 {
                     _languageClient.Dispose();
@@ -348,6 +345,18 @@ namespace Rubberduck
             });
 
             _logger.LogInformation("Rubberduck shutdown completed. Quack!");
+        }
+
+        private void RunShutdownAction(string message, Action action)
+        {
+            if (TimedAction.TryRun(action, out var elapsed, out var exception))
+            {
+                _logger.LogPerformance($"RunShutdownAction: {message}", elapsed, _initialSettings.LanguageServerSettings.TraceLevel.ToTraceLevel());
+            }
+            else if (exception is not null)
+            {
+                _logger.LogError(exception, "RunShutdownAction: {message}", exception.Message);
+            }
         }
 
         private void HandleAppDomainException(object sender, UnhandledExceptionEventArgs e)

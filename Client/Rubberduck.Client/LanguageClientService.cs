@@ -18,35 +18,59 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using Rubberduck.InternalApi.ServerPlatform;
+using Microsoft.Extensions.DependencyInjection;
+using System.Text.Json;
+using OmniSharp.Extensions.JsonRpc;
+using Rubberduck.SettingsProvider.Model;
 
 namespace Rubberduck.Client
 {
+    public static class InitializeParamsExtensions
+    {
+        public static InitializeParams ConfigureInitialization(this InitializeParams request, long clientProcessId, string locale)
+        {
+            var type = request.GetType();
+            type.GetProperty(nameof(request.ProcessId))!.SetValue(request, clientProcessId);
+            type.GetProperty(nameof(request.Locale))!.SetValue(request, locale);
+
+            return request;
+        }
+
+        public static InitializeTrace ToInitializeTrace(this ServerTraceLevel trace)
+        {
+            if (trace == ServerTraceLevel.Off)
+            {
+                return InitializeTrace.Off;
+            }
+
+            if (trace == ServerTraceLevel.Verbose)
+            {
+                return InitializeTrace.Verbose;
+            }
+
+            return InitializeTrace.Messages;
+        }
+    }
+
     public class LanguageClientService
     {
-        public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, NamedPipeClientStream pipe, long clientProcessId, InitializeTrace traceLevel)
+        public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, NamedPipeClientStream pipe, long clientProcessId, RubberduckSettings settings, string path)
         {
             var options = new LanguageClientOptions();
             options.WithInput(pipe.UsePipeReader());
             options.WithOutput(pipe.UsePipeWriter());
 
-            ConfigureLanguageClient(options, clientAssembly, clientProcessId, traceLevel);
+            ConfigureLanguageClient(options, clientAssembly, clientProcessId, settings, path);
             return options;
         }
 
-        public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, Process serverProcess, long clientProcessId, InitializeTrace traceLevel)
+        public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, Process serverProcess, long clientProcessId, RubberduckSettings settings, string path)
         {
             var options = new LanguageClientOptions();
             options.WithInput(serverProcess.StandardOutput.BaseStream);
             options.WithOutput(serverProcess.StandardInput.BaseStream);
 
-            options.DisableDynamicRegistration();
-            options.EnableProgressTokens();
-            options.EnableWorkspaceFolders();
-
-            options.WithSerializer(new OmniSharp.Extensions.LanguageServer.Protocol.Serialization.LspSerializer(ClientVersion.Lsp3));
-            options.ConfigureLogging(ConfigureClientLogging);
-
-            ConfigureLanguageClient(options, clientAssembly, clientProcessId, traceLevel);
+            ConfigureLanguageClient(options, clientAssembly, clientProcessId, settings, path);
             return options;
         }
 
@@ -55,29 +79,50 @@ namespace Rubberduck.Client
             builder.AddNLog("NLog-client.config");
         }
 
-        private static LanguageClientOptions ConfigureLanguageClient(LanguageClientOptions options, Assembly clientAssembly, long clientProcessId, InitializeTrace traceLevel)
+        private static LanguageClientOptions ConfigureLanguageClient(LanguageClientOptions options, Assembly clientAssembly, long clientProcessId, RubberduckSettings settings, string path)
         {
             var info = clientAssembly.ToClientInfo();
-            var workspace = new DirectoryInfo(clientAssembly.Location).ToWorkspaceFolder();
+
+            var workspace = new DirectoryInfo(path).ToWorkspaceFolder();
             var clientCapabilities = GetClientCapabilities();
+
+            options.EnableDynamicRegistration();
+            options.EnableProgressTokens();
+            options.EnableWorkspaceFolders();
+            
+            options.WithSerializer(new OmniSharp.Extensions.LanguageServer.Protocol.Serialization.LspSerializer(ClientVersion.Lsp3));
+            options.ConfigureLogging(ConfigureClientLogging);
 
             var initializationOptions = new InitializationOptions
             {
                 Timestamp = DateTime.Now,
-                ClientProcessId = clientProcessId,
                 // TODO
             };
 
             options
                 .WithClientInfo(info)
                 .WithClientCapabilities(clientCapabilities)
-                .WithTrace(traceLevel)
+                .WithTrace(settings.LanguageServerSettings.TraceLevel.ToInitializeTrace())
                 .WithInitializationOptions(initializationOptions)
                 .WithWorkspaceFolder(workspace)
                 .WithContentModifiedSupport(true)
 
                 .OnInitialize((ILanguageClient client, InitializeParams request, CancellationToken cancellationToken) =>
                 {
+                    using var scope = client.CreateScope();
+                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<LanguageClientService>>();
+                    logger.LogDebug("OnInitialize: sending InitializeParams...");
+
+                    request.ConfigureInitialization(clientProcessId, settings.Locale);
+
+                    return Task.CompletedTask;
+                })
+
+                .OnInitialized((ILanguageClient client, InitializeParams request, InitializeResult response, CancellationToken cancellationToken) =>
+                {
+                    using var scope = client.CreateScope();
+                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<LanguageClientService>>();
+                    logger.LogDebug("OnInitialized: received Initialized notification.");
 
                     return Task.CompletedTask;
                 })

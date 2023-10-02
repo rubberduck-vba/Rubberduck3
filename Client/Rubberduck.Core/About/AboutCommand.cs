@@ -4,7 +4,7 @@ using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.WinForms.Dialogs;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
-using Rubberduck.VersionCheck;
+using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -17,21 +17,21 @@ namespace Rubberduck.Core.About
     public class AboutCommand : CommandBase, IAboutCommand
     {
         private readonly ILogger _logger;
-        private readonly IVersionCheckService _versionService;
         private readonly IWebNavigator _web;
         private readonly IMessageBox _messageBox;
+        private readonly Version _version;
 
-        public AboutCommand(ILogger<AboutCommand> logger, IVersionCheckService versionService, IWebNavigator web, IMessageBox messageBox)
+        public AboutCommand(ILogger<AboutCommand> logger, IWebNavigator web, IMessageBox messageBox, Version version)
         {
             _logger = logger;
-            _versionService = versionService;
             _web = web;
             _messageBox = messageBox;
+            _version = version;
         }
 
-        protected async override Task OnExecuteAsync(object parameter)
+        protected async override Task OnExecuteAsync(object? parameter)
         {
-            var vm = new AboutControlViewModel(_logger, _versionService, _web, _messageBox);
+            var vm = new AboutControlViewModel(_logger, _web, _messageBox, _version);
             using (var window = new AboutDialog(vm))
             {
                 window.ShowDialog();

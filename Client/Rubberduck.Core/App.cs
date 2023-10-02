@@ -7,13 +7,12 @@ using Rubberduck.Interaction.MessageBox;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
 using Application = System.Windows.Forms.Application;
-using Rubberduck.VBEditor.UI.OfficeMenus;
-using System.Threading.Tasks;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.Core.Settings;
 using Microsoft.Extensions.Logging;
 using Rubberduck.Unmanaged.UIContext;
+using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 
 namespace Rubberduck.Core
 {
@@ -23,7 +22,7 @@ namespace Rubberduck.Core
 
         private readonly IMessageBox _messageBox;
         private readonly ISettingsService<RubberduckSettings> _settingsService;
-        private readonly IAppMenu _appMenus;
+        private readonly IRubberduckMenu _appMenus;
 
         private readonly ILogger<App> _logger;
         private readonly IFileSystem _filesystem;
@@ -31,13 +30,13 @@ namespace Rubberduck.Core
         public App(ILogger<App> logger,
             IMessageBox messageBox,
             ISettingsService<RubberduckSettings> settingsService,
-            IAppMenu appMenus,
+            IRubberduckMenu appMenu,
             IFileSystem filesystem)
         {
             _logger = logger;
             _messageBox = messageBox;
             _settingsService = settingsService;
-            _appMenus = appMenus;
+            _appMenus = appMenu;
 
             _settingsService.SettingsChanged += HandleSettingsServiceSettingsChanged;
             _filesystem = filesystem;
@@ -118,19 +117,19 @@ namespace Rubberduck.Core
         /// </summary>
         private void UpdateLoggingLevelOnShutdown()
         {
-            var currentSettings = _settingsService.Value;
-            if (currentSettings.Settings.IsInitialLogLevelChanged || currentSettings.Settings.LogLevel != LogLevel.Trace)
-            {
-                return;
-            }
+            //var currentSettings = _settingsService.Value;
+            //if (currentSettings.Settings.IsInitialLogLevelChanged || currentSettings.Settings.LogLevel != LogLevel.Trace)
+            //{
+            //    return;
+            //}
 
-            var vm = new RubberduckSettingsViewModel(currentSettings.Settings)
-            {
-                LogLevel = LogLevel.None
-            };
+            //var vm = new RubberduckSettingsViewModel(currentSettings.Settings)
+            //{
+            //    LogLevel = LogLevel.None
+            //};
 
-            _settingsService.TrySetValue(vm.ToSettings(), currentSettings.Token);
-            _settingsService.WriteToFile();
+            //_settingsService.TrySetValue(vm.ToSettings(), currentSettings.Token);
+            //_settingsService.WriteToFile();
         }
 
         public void Startup(string version)

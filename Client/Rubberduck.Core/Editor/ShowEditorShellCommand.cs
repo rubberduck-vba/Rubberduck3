@@ -15,7 +15,7 @@ namespace Rubberduck.Core.Editor
             _presenter = presenter;
         }
 
-        protected async override Task OnExecuteAsync(object parameter)
+        protected async override Task OnExecuteAsync(object? parameter)
         {
             _presenter?.Show();
             await Task.CompletedTask;

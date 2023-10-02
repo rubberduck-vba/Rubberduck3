@@ -1,30 +1,20 @@
-﻿using System.Collections.Generic;
-using Rubberduck.Unmanaged.UIContext;
+﻿using Rubberduck.Unmanaged.UIContext;
 
 namespace Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu
 {
-    public class RubberduckParentMenu : ParentMenuItemBase
+    public interface IRubberduckMenu 
+    {
+        void Localize();
+        void Initialize();
+    }
+
+    public class RubberduckParentMenu : ParentMenuItemBase, IRubberduckMenu
     {
         public RubberduckParentMenu(IUiDispatcher dispatcher) 
             : base(dispatcher)
         {
         }
 
-        public override int? BeforeIndex { get; set; }
-
         public override string ResourceKey { get; } = "RubberduckMenu";
-
-        public enum ItemDisplayOrder
-        {
-            ShowEditor,
-            Refresh,
-            UnitTesting,
-            Refactorings,
-            Navigate,
-            Tools,
-            CodeInspections,
-            Settings,
-            About,
-        }
     }
 }

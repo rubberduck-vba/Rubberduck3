@@ -1,4 +1,5 @@
 ﻿//using IndenterSettings = Rubberduck.SmartIndenter.IndenterSettings;
+using EnvDTE;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rubberduck.Common;
@@ -24,12 +25,15 @@ using Rubberduck.Unmanaged.TypeLibs;
 using Rubberduck.Unmanaged.TypeLibs.Abstract;
 using Rubberduck.Unmanaged.UIContext;
 using Rubberduck.Unmanaged.VBERuntime;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.UI;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 using System;
 using System.IO.Abstractions;
 using System.Reflection;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Rubberduck.Root
 {
@@ -98,10 +102,46 @@ namespace Rubberduck.Root
             return this;
         }
 
-        public RubberduckServicesBuilder WithMsoCommandBarMenu()
+        public RubberduckServicesBuilder WithRubberduckMenu()
         {
-            _services.AddScoped<IAppMenu, RubberduckParentMenu>();
+            _services.AddSingleton(ConfigureRubberduckParentMenu);
+            _services.AddScoped<RubberduckParentMenu>();
+
+            _services.AddScoped<IAboutCommand, AboutCommand>();
+            _services.AddScoped<AboutCommandMenuItem>();
+
+            _services.AddScoped<EditorShellDockablePresenter>();
+            _services.AddScoped<IShowEditorShellCommand, ShowEditorShellCommand>();
+            _services.AddScoped<ShowEditorShellCommandMenuItem>();
+
             return this;
+        }
+
+        private static IRubberduckMenu ConfigureRubberduckParentMenu(IServiceProvider services)
+        {
+            var addin = services.GetRequiredService<IAddIn>();
+            var vbe = services.GetRequiredService<IVBE>();
+
+            var location = addin.CommandBarLocations[CommandBarSite.MenuBar];
+            var builder = new CommandBarMenuBuilder<RubberduckParentMenu>(location, services, MainCommandBarControls(vbe, location.ParentId))
+                .WithCommandMenuItem<AboutCommandMenuItem>()
+                .WithSeparator()
+                .WithCommandMenuItem<ShowEditorShellCommandMenuItem>();
+
+            return builder.Build();
+        }
+
+        private static ICommandBarControls MainCommandBarControls(IVBE vbe, int commandBarIndex)
+        {
+            ICommandBarControls controls;
+            using (var commandBars = vbe.CommandBars)
+            {
+                using (var menuBar = commandBars[commandBarIndex])
+                {
+                    controls = menuBar.Controls;
+                }
+            }
+            return controls;
         }
 
         public RubberduckServicesBuilder WithRubberduckEditor()
