@@ -13,12 +13,19 @@ using Rubberduck.Core.Settings;
 using Microsoft.Extensions.Logging;
 using Rubberduck.Unmanaged.UIContext;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
+using System.Windows;
+using Rubberduck.UI;
+using System.Threading.Tasks;
+using System.Reactive.Concurrency;
 
 namespace Rubberduck.Core
 {
     public sealed class App : IDisposable
     {
         private static readonly string _title = "Rubberduck";
+
+        private readonly System.Windows.Application _application = new();
+        private readonly IPresenter _presenter;
 
         private readonly IMessageBox _messageBox;
         private readonly ISettingsService<RubberduckSettings> _settingsService;
@@ -31,7 +38,8 @@ namespace Rubberduck.Core
             IMessageBox messageBox,
             ISettingsService<RubberduckSettings> settingsService,
             IRubberduckMenu appMenu,
-            IFileSystem filesystem)
+            IFileSystem filesystem,
+            IPresenter presenter)
         {
             _logger = logger;
             _messageBox = messageBox;
@@ -40,6 +48,7 @@ namespace Rubberduck.Core
 
             _settingsService.SettingsChanged += HandleSettingsServiceSettingsChanged;
             _filesystem = filesystem;
+            _presenter = presenter;
 
             UiContextProvider.Initialize();
         }
@@ -140,10 +149,17 @@ namespace Rubberduck.Core
 
             LogRubberduckStart(version);
             //UpdateLoggingLevel();
-
             //CheckForLegacyIndenterSettings();
             _appMenus.Initialize();
             _appMenus.Localize();
+
+            StartWPF();
+        }
+
+        private void StartWPF()
+        {
+            _application.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            _presenter.Show();
         }
 
         public void Shutdown()
@@ -151,6 +167,7 @@ namespace Rubberduck.Core
             try
             {
                 UpdateLoggingLevelOnShutdown();
+                _application.Shutdown();
             }
             catch
             {

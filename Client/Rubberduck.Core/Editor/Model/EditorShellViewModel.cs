@@ -1,8 +1,10 @@
-﻿using ICSharpCode.AvalonEdit.Document;
+﻿using Dragablz;
+using ICSharpCode.AvalonEdit.Document;
 using Rubberduck.InternalApi.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
 using Rubberduck.Unmanaged.Model.Abstract;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -12,10 +14,9 @@ namespace Rubberduck.Core.Editor
 {
     class EditorShellViewModel : ViewModelBase, IEditorShellViewModel, INotifyCollectionChanged
     {
-        private readonly IEditorShellContext _context;
         private readonly IDictionary<IQualifiedModuleName, ICodePaneViewModel> _modules = new Dictionary<IQualifiedModuleName, ICodePaneViewModel>();
 
-        public EditorShellViewModel(IStatusBarViewModel status, IShellToolTabProvider toolTabsProvider)
+        public EditorShellViewModel(IInterTabClient interTabClient, IStatusBarViewModel status, IShellToolTabProvider toolTabsProvider)
         {
             Status = status;
 
@@ -23,8 +24,14 @@ namespace Rubberduck.Core.Editor
             ToolTabs = new ObservableCollection<IShellToolTab>(tabs);
             SelectedToolTab = ToolTabs.FirstOrDefault()!;
 
-            _context = new EditorShellContext(this);
+            InterTabClient = interTabClient;
+            Partition = _staticPartition;
         }
+
+        private static readonly string _staticPartition = Guid.NewGuid().ToString();
+
+        public object Partition { get; init; }
+        public object InterTabClient { get; init; }
 
         public TextDocument GetDocument(IQualifiedModuleName module)
         {

@@ -98,6 +98,8 @@ namespace Rubberduck.VBEditor.UI
         public virtual void Show() => _window.IsVisible = true;
         public virtual void Hide() => _window.IsVisible = false;
 
+        public virtual void Close() => _window.Close();
+
         public void Dispose()
         {
             Dispose(true);

@@ -7,5 +7,6 @@ namespace Rubberduck.UI
     {
         void Show();
         void Hide();
+        void Close();
     }
 }

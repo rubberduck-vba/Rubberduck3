@@ -29,7 +29,6 @@ namespace Rubberduck.Core.Editor
             _settings = settings;
 
             MemberProviders = new ObservableCollection<IMemberProviderViewModel>(memberProviders);
-            CloseCommand = new DelegateCommand(null, p => EditorShellContext.Current.Shell.UnloadModule((IQualifiedModuleName)p)); // TODO handle sync to VBE when dirty
         }
 
         //private VBFoldingListener _foldingListener;
@@ -38,7 +37,7 @@ namespace Rubberduck.Core.Editor
         public ICommand CloseCommand { get; }
 
         //public IEnumerable<BlockFoldingInfo> Foldings => _foldingListener?.Foldings ?? Enumerable.Empty<BlockFoldingInfo>();
-        public IStatusBarViewModel Status => EditorShellContext.Current.Shell.Status;
+        public IStatusBarViewModel Status => null; // EditorShellContext.Current.Shell.Status;
 
 //        public async Task ParseAsync(TextReader reader)
 //        {

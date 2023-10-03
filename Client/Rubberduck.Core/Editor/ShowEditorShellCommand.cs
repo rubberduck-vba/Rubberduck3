@@ -1,15 +1,16 @@
-﻿using Rubberduck.UI.Command;
+﻿using Rubberduck.UI;
+using Rubberduck.UI.Command;
 using Rubberduck.Unmanaged.Abstract;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Core.Editor
 {
-    public class ShowEditorShellCommand : ComCommandBase, IShowEditorShellCommand
+    class ShowEditorShellCommand : ComCommandBase, IShowEditorShellCommand
     {
-        private readonly EditorShellDockablePresenter _presenter;
+        private readonly IPresenter _presenter;
 
-        public ShowEditorShellCommand(EditorShellDockablePresenter presenter, IVbeEvents vbeEvents)
+        public ShowEditorShellCommand(IPresenter presenter, IVbeEvents vbeEvents)
             : base(vbeEvents)
         {
             _presenter = presenter;
@@ -17,7 +18,7 @@ namespace Rubberduck.Core.Editor
 
         protected async override Task OnExecuteAsync(object? parameter)
         {
-            _presenter?.Show();
+            _presenter.Show();
             await Task.CompletedTask;
         }
     }

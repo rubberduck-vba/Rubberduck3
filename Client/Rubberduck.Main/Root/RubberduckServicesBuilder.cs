@@ -1,5 +1,4 @@
 ﻿//using IndenterSettings = Rubberduck.SmartIndenter.IndenterSettings;
-using EnvDTE;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rubberduck.Common;
@@ -7,7 +6,6 @@ using Rubberduck.Common.Hotkeys;
 using Rubberduck.Core;
 using Rubberduck.Core.About;
 using Rubberduck.Core.Editor;
-using Rubberduck.Core.Editor.Tools;
 using Rubberduck.Interaction.MessageBox;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
@@ -25,45 +23,17 @@ using Rubberduck.Unmanaged.TypeLibs;
 using Rubberduck.Unmanaged.TypeLibs.Abstract;
 using Rubberduck.Unmanaged.UIContext;
 using Rubberduck.Unmanaged.VBERuntime;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.UI;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 using System;
 using System.IO.Abstractions;
 using System.Reflection;
-using System.Threading.Tasks;
-using System.Threading;
+using Dragablz;
+using Rubberduck.UI.Xaml;
 
 namespace Rubberduck.Root
 {
-    internal class MenuBuilder
-    {
-        //private readonly Type _itemType;
-        //private readonly List<Type> _childItemTypes = new List<Type>();
-        private readonly IServiceCollection _services;
-
-        //public MenuBuilder(IServiceCollection services)
-        //    : this(services) { }
-
-        public MenuBuilder(IServiceCollection services)
-        {
-            _services = services;
-            //_itemType = itemType;
-        }
-
-        public MenuBuilder WithCommandMenuItem<TMenuItem, TCommandInterface, TCommandImpl>() 
-            where TMenuItem : class, ICommandMenuItem 
-            where TCommandInterface : class, IMenuCommand
-            where TCommandImpl : class, TCommandInterface
-        {
-            _services.AddScoped<TMenuItem>();
-            _services.AddScoped<TCommandInterface, TCommandImpl>();
-
-            return this;
-        }
-    }
-
     internal class RubberduckServicesBuilder
     {
         private readonly IServiceCollection _services = new ServiceCollection();
@@ -111,6 +81,8 @@ namespace Rubberduck.Root
             _services.AddScoped<AboutCommandMenuItem>();
 
             _services.AddScoped<EditorShellDockablePresenter>();
+            _services.AddScoped<EditorShellWindowPresenter>();
+
             _services.AddScoped<IShowEditorShellCommand, ShowEditorShellCommand>();
             _services.AddScoped<ShowEditorShellCommandMenuItem>();
 
@@ -146,16 +118,15 @@ namespace Rubberduck.Root
 
         public RubberduckServicesBuilder WithRubberduckEditor()
         {
+            _services.AddScoped<IPresenter, EditorShellWindowPresenter>();
+            _services.AddScoped<ShellWindowViewModel>();
+            _services.AddScoped<IInterTabClient, InterTabClient>();
+
             _services.AddScoped<IDockablePresenter, EditorShellDockablePresenter>();
             _services.AddScoped<IEditorShellWindowProvider, EditorShellWindowProvider>();
 
             _services.AddScoped<IEditorShellViewModel, EditorShellViewModel>();
-            _services.AddScoped<IShellToolTabProvider, ShellToolTabProvider>();
             _services.AddScoped<IStatusBarViewModel, StatusBarViewModel>();
-
-            _services.AddScoped<ISyncPanelToolTab, SyncPanelToolTab>();
-            _services.AddScoped<ISyncPanelViewModel, SyncPanelViewModel>();
-            _services.AddScoped<ISyncPanelModuleViewModelProvider, SyncPanelModuleViewModelProvider>();
 
             return this;
         }

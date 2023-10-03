@@ -1,28 +1,29 @@
 ﻿using Rubberduck.InternalApi.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
-using Rubberduck.UI.Command.SyncPanel;
+using Rubberduck.Unmanaged.Model;
 using Rubberduck.Unmanaged.Model.Abstract;
-using System.Windows.Input;
 
-namespace Rubberduck.Core.Editor.Tools
+namespace Rubberduck.Core.Editor
 {
-    public class SyncPanelModuleViewModel : ViewModelBase, ISyncPanelModuleViewModel
+    public class ModuleInfoViewModel : ViewModelBase, IModuleInfoViewModel
     {
-        public SyncPanelModuleViewModel(ILoadCommand loadCommand, IOpenCommand openCommand, ISyncCommand syncCommand)
+        private string _name;
+        public string Name
         {
-            LoadCommand = loadCommand;
-            OpenCommand = openCommand;
-            SyncCommand = syncCommand;
+            get => _name;
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
-        public ICommand LoadCommand { get; }
-        public ICommand OpenCommand { get; }
-        public ICommand SyncCommand { get; }
-
-
         private IQualifiedModuleName _qualifiedModuleName;
-        public IQualifiedModuleName QualifiedModuleName
+        public IQualifiedModuleName QualifiedModuleName 
         {
             get => _qualifiedModuleName;
             set
@@ -49,15 +50,29 @@ namespace Rubberduck.Core.Editor.Tools
             }
         }
 
-        private ModuleSyncState _state;
-        public ModuleSyncState State
+        private string _folder;
+        public string Folder
         {
-            get => _state;  
+            get => _folder;
             set
             {
-                if (_state != value)
+                if (_folder != value)
                 {
-                    _state = value;
+                    _folder = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Selection _position;
+        public Selection EditorPosition
+        {
+            get => _position;
+            set
+            {
+                if (_position != value)
+                {
+                    _position = value;
                     OnPropertyChanged();
                 }
             }

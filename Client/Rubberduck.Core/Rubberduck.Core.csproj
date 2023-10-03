@@ -69,4 +69,8 @@
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Editor\Commands\" />
+    <Folder Include="Editor\Tools\" />
+  </ItemGroup>
 </Project>
