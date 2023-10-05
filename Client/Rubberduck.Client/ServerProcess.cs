@@ -62,12 +62,6 @@ namespace Rubberduck.Client
             {
                 process.Start();
                 Logger.LogInformation("Server process started {start} with ID {id}", process.StartTime, process.Id);
-                Task.Delay(TimeSpan.FromSeconds(2)).ConfigureAwait(false).GetAwaiter().GetResult();
-
-                if (process.HasExited)
-                {
-                    throw new InvalidOperationException($"Server process was started, but exited prematurely with exit code {process.ExitCode}.");
-                }
             }
             catch (Exception exception)
             {
