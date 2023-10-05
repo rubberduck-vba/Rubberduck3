@@ -2,7 +2,6 @@
 using System;
 using System.Threading.Tasks;
 using System.Threading;
-using System.Reflection;
 using System.Diagnostics;
 
 namespace Rubberduck.LanguageServer
@@ -23,8 +22,15 @@ namespace Rubberduck.LanguageServer
                 Debug.Assert(Debugger.IsAttached, "Debugger is not attached.");
             }
 
-            await new ServerApp(options, tokenSource).RunAsync();
-            return 0;
+            try
+            {
+                await new ServerApp(options, tokenSource).RunAsync();
+                return 0;
+            }
+            catch
+            {
+                return -1;
+            }
         }
     }
 }

@@ -115,6 +115,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="NLog-c%3blient.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="NLog-c;oemt.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

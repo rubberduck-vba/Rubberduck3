@@ -11,19 +11,16 @@
         Title="Rubberduck Editor" Height="450" Width="800"
         ShowInTaskbar="True"
         WindowState="Maximized"
-        Icon="Ducky.ico">
+        Icon="pack://application:,,,/Rubberduck.Resources;component/Ducky.ico">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/Generic.xaml" />
-                <ResourceDictionary Source="Styles/ComboBoxTemplate.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BitmapImage x:Key="FaintDucky" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/faint-ducky.png" />
-            <BitmapImage x:Key="CloseIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-button.png" />
 
-            <dragablz:InterTabController x:Key="InterTabController" x:Shared="False" InterTabClient="{Binding InterTabClient}" Partition="1" />
+            <dragablz:InterTabController x:Key="InterTabController" x:Shared="False" InterTabClient="{Binding InterTabClient}" Partition="1"/>
             <Style TargetType="{x:Type dragablz:TabablzControl}" x:Key="TabablzControlStyle">
-                <!--Setter Property="NewItemFactory" Value="{x:Static dragablzDemo:BoundExampleNewItem.Factory}" /-->
                 <Setter Property="ItemsSource" Value="{Binding Items}" />
                 <Setter Property="ClosingItemCallback" Value="{Binding ClosingTabItemHandler}" />
                 <Setter Property="ShowDefaultAddButton" Value="False" />
@@ -196,10 +193,8 @@
             </MenuItem>
         </Menu>
 
-        <dockablz:Layout Grid.Row="1" x:Name="RubberduckEditorMDI" 
-                         FloatingItemHeaderMemberPath="Title"
-                         IsFloatDropZoneEnabled="True">
-            <dragablz:TabablzControl x:Name="Tabs" Style="{StaticResource TabablzControlStyle}">
+        <dockablz:Layout Grid.Row="1" x:Name="RubberduckEditorMDI" IsFloatDropZoneEnabled="False">
+            <dragablz:TabablzControl x:Name="Tabs" TabStripPlacement="Top" Style="{StaticResource TabablzControlStyle}">
             </dragablz:TabablzControl>
         </dockablz:Layout>
 

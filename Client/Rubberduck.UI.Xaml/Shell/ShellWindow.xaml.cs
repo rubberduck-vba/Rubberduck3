@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Rubberduck.UI.Xaml.Shell;
 
 namespace Rubberduck.UI.Xaml
 {

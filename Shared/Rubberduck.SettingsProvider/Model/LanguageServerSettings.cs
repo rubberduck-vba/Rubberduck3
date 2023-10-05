@@ -20,9 +20,9 @@ namespace Rubberduck.SettingsProvider.Model
 
     public enum ServerTraceLevel
     {
-        Off = 0,
-        Verbose = 4,
-        Message,
+        Off = TraceLevel.Off,
+        Verbose = TraceLevel.Verbose,
+        Message = TraceLevel.Info,
     }
 
     public enum MessageMode

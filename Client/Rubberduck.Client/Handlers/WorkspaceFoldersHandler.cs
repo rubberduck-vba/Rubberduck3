@@ -39,13 +39,13 @@ namespace Rubberduck.Client.Handlers
                     response = new Container<WorkspaceFolder>(workspaceFolders);
                 });
 
-                _logger.LogPerformance("Handled WorkspaceFolders request.", elapsed, TraceLevel);
+                _logger.LogPerformance(TraceLevel, "Handled WorkspaceFolders request.", elapsed);
 
                 return await Task.FromResult(response);
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, TraceLevel);
+                _logger.LogError(TraceLevel, exception);
                 throw;
             }
         }

@@ -2,23 +2,26 @@
 using Microsoft.Extensions.Logging;
 using Nerdbank.Streams;
 using NLog.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.General;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
+using OmniSharp.Extensions.LanguageServer.Server;
+using Rubberduck.InternalApi.Common;
+using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.LanguageServer.Handlers;
+using Rubberduck.LanguageServer.Model;
+using Rubberduck.LanguageServer.Services;
+using Rubberduck.ServerPlatform;
+using Rubberduck.SettingsProvider;
+using Rubberduck.SettingsProvider.Model;
 using System;
+using System.Diagnostics;
 using System.IO.Pipes;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Threading;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using OmniSharp.Extensions.LanguageServer.Server;
-using Rubberduck.LanguageServer.Handlers;
-using Rubberduck.LanguageServer.Services;
-using Rubberduck.LanguageServer.Model;
-using Rubberduck.InternalApi.ServerPlatform;
-using Rubberduck.ServerPlatform;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server;
+using System.Threading.Tasks;
 using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.LanguageServer;
-using Rubberduck.InternalApi.Common;
-using System.Diagnostics;
-using Rubberduck.InternalApi.Extensions;
 
 namespace Rubberduck.LanguageServer
 {
@@ -65,8 +68,20 @@ namespace Rubberduck.LanguageServer
 
             _serverState = new(scope.ServiceProvider.GetRequiredService<ILogger<LanguageServerState>>(), _options);
 
-            _languageServer = await OmniSharpLanguageServer.From(options => ConfigureLanguageServer(options), provider, _tokenSource.Token);
-            await _languageServer.WaitForExit;
+            try
+            {
+                _languageServer = await OmniSharpLanguageServer.From(options => ConfigureLanguageServer(options), provider, _tokenSource.Token);
+                await _languageServer.WaitForExit;
+            }
+            catch (OperationCanceledException) 
+            {
+                _logger.LogTrace("Token was cancelled; server process will exit normally.");
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception, "An exception was thrown; server process will exit with an error code.");
+                throw;
+            }
         }
 
         private void LogPreInitialization()
@@ -79,15 +94,20 @@ namespace Rubberduck.LanguageServer
         private void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<LanguageServerState>();
+            services.AddSingleton<IServiceProvider>(provider => provider);
+
+            services.AddSingleton<ServerStartupOptions>(provider => _options);
             services.AddSingleton<IServerStateWriter>(provider => provider.GetRequiredService<LanguageServerState>());
 
+            services.AddScoped<IDefaultSettingsProvider<LanguageServerSettings>>(provider => LanguageServerSettings.Default);
+            services.AddScoped<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
             services.AddScoped<SupportedLanguage, VisualBasicForApplicationsLanguage>();
             services.AddScoped<DocumentContentStore>();
         }
 
         private void ConfigureLogging(ILoggingBuilder builder)
         {
-            builder.AddNLog("NLog-server.config"); // mind: release would deploy all executables to a single folder, so NLog.config is shared!
+            builder.AddNLog("NLog-server.config");
         }
 
         private void ConfigureLanguageServer(LanguageServerOptions options)
@@ -119,11 +139,11 @@ namespace Rubberduck.LanguageServer
                         _serverState.Initialize(request);
                     }, out var elapsed, out var exception))
                     {
-                        _logger.LogPerformance("Handling initialize...", elapsed, TraceLevel.Verbose);
+                        _logger.LogPerformance(TraceLevel.Verbose, "Handling initialize...", elapsed);
                     }
-                    else
+                    else if (exception != null)
                     {
-                        _logger.LogError(exception!, TraceLevel.Verbose);
+                        _logger.LogError(TraceLevel.Verbose, exception);
                     }
                     _logger.LogDebug("Completed Initialize request.");
                     return Task.CompletedTask;
@@ -134,7 +154,7 @@ namespace Rubberduck.LanguageServer
                     _logger.LogDebug("Received Initialized notification.");
                     token.ThrowIfCancellationRequested();
 
-                    _logger.LogDebug("Completed OnInitialized request.");
+                    _logger.LogDebug("Handled OnInitialized notification.");
                     return Task.CompletedTask;
                 })
 
@@ -145,15 +165,32 @@ namespace Rubberduck.LanguageServer
 
                     // TODO start synchronizing documents
 
-                    _logger.LogDebug("Completed OnStarted request.");
+                    _logger.LogDebug("Handled OnStarted notification.");
                     return Task.CompletedTask;
                 })
 
+                /* handlers */
+                .WithHandler<SetTraceHandler>()
+
+                /* registrations */
+
+                .OnShutdown((ShutdownParams request, CancellationToken token) =>
+                {
+                    _logger.LogDebug("Received Shutdown notification.");
+                    token.ThrowIfCancellationRequested();
+
+                    _logger.LogDebug("Handled Shutdown notification; awaiting Exit notification...");
+                    return Task.CompletedTask;
+                })
+                .OnExit(async (ExitParams request, CancellationToken token) =>
+                {
+                    _logger.LogDebug("Received Exit notification. Process will now be terminated.");
+                    await Task.Delay(TimeSpan.FromMilliseconds(100)).ConfigureAwait(false);
+                    
+                    Environment.Exit(0); // FIXME stack should unwind all the way to the entry point... unclear how to do this. cancelling the _tokenSource throws, but doesn't bubble up.
+                })
 
                 //.WithHandler<InitializedHandler>()
-                .WithHandler<ShutdownHandler>()
-                .WithHandler<ExitHandler>()
-                .WithHandler<SetTraceHandler>()
 
             /*/ Workspace
                 .WithHandler<DidChangeConfigurationHandler>()

@@ -4,12 +4,16 @@ using System.Globalization;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using System.Collections.Generic;
 using Rubberduck.ServerPlatform;
+using Rubberduck.InternalApi.Extensions;
+using System.Linq;
 
 namespace Rubberduck.LanguageServer
 {
     public interface IServerStateWriter
     {
         void Initialize(InitializeParams param);
+        void SetTraceLevel(InitializeTrace level);
+        void AddWorkspaceFolders(IEnumerable<WorkspaceFolder> workspaceFolders);
     }
 
     public class LanguageServerState<TOptions> : IServerStateWriter
@@ -28,6 +32,7 @@ namespace Rubberduck.LanguageServer
             _locale = default;
             _workspaceFolders = default;
             _options = default;
+            _traceLevel = default;
         }
 
         private readonly ILogger _logger;
@@ -54,45 +59,51 @@ namespace Rubberduck.LanguageServer
         private Container<WorkspaceFolder>? _workspaceFolders;
         public IEnumerable<WorkspaceFolder> Workspacefolders => _workspaceFolders ?? throw new ServerStateNotInitializedException();
 
+        public void SetTraceLevel(InitializeTrace value)
+        {
+            var oldValue = _traceLevel;
+            if (_traceLevel != value)
+            {
+                _traceLevel = value;
+                _logger.LogInformation(value.ToTraceLevel(), "Server trace level was changed.", $"OldValue: '{oldValue}' NewValue: '{value}'");
+            }
+            else if (_traceLevel != null)
+            {
+                _logger.LogWarning(_traceLevel.Value.ToTraceLevel(), "SetTraceLevel is unchanged.", $"Value: '{value}'");
+            }
+            else
+            {
+                throw new ServerStateNotInitializedException();
+            }
+        }
+
+        public void AddWorkspaceFolders(IEnumerable<WorkspaceFolder> workspaceFolders)
+        {
+            _workspaceFolders = _workspaceFolders?.Concat(workspaceFolders).ToContainer() ?? throw new ServerStateNotInitializedException();
+        }
+
         public void Initialize(InitializeParams param)
         {
-            //InvalidInitializeParamsException.ThrowIfNull(param,
-            //    e => (nameof(e.ClientInfo), e.ClientInfo),
-            //    e => (nameof(e.Capabilities), e.Capabilities),
-            //    //e => (nameof(e.Locale), e.Locale),
-            //    //e => (nameof(e.ProcessId), e.ProcessId),
-            //    e => (nameof(e.WorkspaceFolders), e.WorkspaceFolders)
-            //);
+            InvalidInitializeParamsException.ThrowIfNull(param,
+                e => (nameof(e.ClientInfo), e.ClientInfo),
+                e => (nameof(e.InitializationOptions), e.InitializationOptions),
+                e => (nameof(e.Capabilities), e.Capabilities),
+                e => (nameof(e.Locale), e.Locale),
+                e => (nameof(e.ProcessId), e.ProcessId),
+                e => (nameof(e.Trace), e.Trace),
+                e => (nameof(e.WorkspaceFolders), e.WorkspaceFolders)
+            );
 
             _logger.LogTrace("Received InitializeParams: {param}", param);
 
             _capabilities = param.Capabilities!;
             _clientInfo = param.ClientInfo!;
-            //_locale = ToCultureInfo(param.Locale!);
-            //_processId = param.ProcessId!.Value;
+            _locale = CultureInfo.CurrentCulture.FromLocale(param.Locale);
+            _processId = param.ProcessId!.Value;
             _traceLevel = param.Trace!;
             _workspaceFolders = param.WorkspaceFolders!;
 
-            //_options = (TOptions)(param.InitializationOptions ?? new());
-        }
-
-        private CultureInfo ToCultureInfo(string? locale)
-        {
-            try
-            {
-                if (locale is null)
-                {
-                    _logger.LogWarning("Could not set locale from initialization parameters.");
-                    return CultureInfo.InvariantCulture;
-                }
-
-                return CultureInfo.GetCultureInfo(locale);
-            }
-            catch
-            {
-                _logger.LogWarning("Could not set locale from initialization parameters.");
-                return CultureInfo.InvariantCulture;
-            }
+            _options = (TOptions)(param.InitializationOptions!);
         }
     }
 }

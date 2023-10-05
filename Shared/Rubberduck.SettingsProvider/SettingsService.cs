@@ -167,7 +167,7 @@ namespace Rubberduck.SettingsProvider
                 if (!_fileSystem.Directory.Exists(root))
                 {
                     _fileSystem.Directory.CreateDirectory(root);
-                    _logger.LogInformation("Root application folder was created.", root, traceLevel);
+                    _logger.LogInformation(traceLevel, "Root application folder was created.", root);
                 }
 
                 if (_fileSystem.File.Exists(path))
@@ -191,22 +191,23 @@ namespace Rubberduck.SettingsProvider
                         });
                     }, out var elapsed, out var exception))
                     {
-                        _logger.LogPerformance("Deserialized settings from file.", elapsed, traceLevel);
+                        _logger.LogPerformance(traceLevel, "Deserialized settings from file.", elapsed);
                     }
                     else if (exception != default)
                     {
-                        _logger.LogError(exception, traceLevel);
+                        _logger.LogError(traceLevel, exception);
                     }
                 }
                 else
                 {
-                    _logger.LogWarning($"Settings file '{_path}' does not exist and will be created from defaults.");
+                    _logger.LogWarning(traceLevel, $"Settings file does not exist and will be created from defaults.", $"Path: '{path}'");
                     WriteToFile();
                 }
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, $"Error reading from file '{_path}'. Using cached/default settings.");
+                _logger.LogWarning(traceLevel, $"Error reading from settings file. Using cached/default settings.", $"Path: '{_path}'");
+                _logger.LogError(traceLevel, exception);
                 throw;
             }
 
@@ -216,7 +217,7 @@ namespace Rubberduck.SettingsProvider
         public void WriteToFile()
         {
             var traceLevel = ServerSettings.TraceLevel.ToTraceLevel();
-            _logger.LogTrace("Writing to settings file...", _path, traceLevel);
+            _logger.LogTrace(traceLevel, "Writing to settings file...", _path);
 
                 var settings = Value;
                 var path = _path;
@@ -227,11 +228,11 @@ namespace Rubberduck.SettingsProvider
                         await Task.Run(() => fileSystem.File.Create(path));
                     }, out var elapsed, out var exception))
                 {
-                    _logger.LogPerformance($"Serializing and writing content to file '{_path}' completed.", elapsed, traceLevel);
+                    _logger.LogPerformance(traceLevel, $"Serializing and writing content to file '{_path}' completed.", elapsed);
                 }
                 else if (exception != default)
                 {
-                    _logger.LogError(exception, traceLevel);
+                    _logger.LogError(traceLevel, exception);
             }
         }
     }

@@ -69,6 +69,7 @@ namespace Rubberduck
             if (_rubberduck != null)
             {
                 _rubberduck.Shutdown();
+                _rubberduck = null;
             }
         }
 

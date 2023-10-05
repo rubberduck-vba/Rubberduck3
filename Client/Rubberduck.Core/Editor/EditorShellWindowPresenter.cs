@@ -1,5 +1,6 @@
 ﻿using Rubberduck.UI;
 using Rubberduck.UI.Xaml;
+using Rubberduck.UI.Xaml.Shell;
 using System.Windows;
 
 namespace Rubberduck.Core.Editor

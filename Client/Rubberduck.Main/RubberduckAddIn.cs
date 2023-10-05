@@ -125,15 +125,26 @@ namespace Rubberduck
 
                 await StartupAsync(splashModel, version).ConfigureAwait(false);
             }
+            catch (StartupFailedException exception) when (exception.InnerException is ServerStartupFailedException serverException)
+            {
+                // server process did not start. most likely this is a debug build with a service resolution failure.
+                // see server logs for details; break here to inspect process info in serverException.
+                MessageBox.Show(serverException.Message, Resources.RubberduckUI.RubberduckReloadFailure_Title,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
             catch (Win32Exception)
             {
                 MessageBox.Show(Resources.RubberduckUI.RubberduckReloadFailure_Message,
                     Resources.RubberduckUI.RubberduckReloadFailure_Title,
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+                // add-in may have partially loaded, we want to clean up our mess as much as possible here.
+                Shutdown(force: true);
             }
             catch (Exception exception)
             {
-                _logger.LogCritical(exception, TraceLevel.Verbose);
+                var traceLevel = _initialSettings.LanguageServerSettings.TraceLevel.ToTraceLevel();
+                _logger.LogCritical(traceLevel, exception);
                 // TODO Use Rubberduck Interaction instead and provide exception stack trace as
                 // an optional "more info" collapsible section to eliminate the conditional.
                 MessageBox.Show(
@@ -211,7 +222,7 @@ namespace Rubberduck
 
                 var settings = LanguageServerSettings.Default;
                 var clientProcessId = Process.GetCurrentProcess().Id;
-                _serverProcess = new LanguageServerProcess().Start(clientProcessId, settings);
+                _serverProcess = new LanguageServerProcess(_logger).Start(clientProcessId, settings);
                 
                 statusViewModel?.UpdateStatus("Starting language client...");
 
@@ -239,6 +250,11 @@ namespace Rubberduck
                         throw new NotSupportedException();
                 }
 
+                if (_serverProcess.HasExited)
+                {
+                    throw new ServerStartupFailedException(_serverProcess);
+                }
+
                 _languageClient = LanguageClient.Create(clientOptions, _serviceScope.ServiceProvider);
 
                 statusViewModel?.UpdateStatus("Initializing language server protocol...");
@@ -247,17 +263,19 @@ namespace Rubberduck
                 statusViewModel?.UpdateStatus("Connection established.");
                 _isInitialized = true;
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                _logger.LogError(e, "Startup sequence threw an unexpected exception.");
-                throw new Exception($"'{ServerPlatformSettings.LanguageServerExecutable}' - Rubberduck's startup sequence threw an unexpected exception. Please check the Rubberduck logs for more information and report an issue if necessary", e);
+                var traceLevel = _initialSettings.LanguageServerSettings.TraceLevel.ToTraceLevel();
+                _logger.LogError(traceLevel, exception);
+                throw new StartupFailedException(exception);
             }
         }
 
-        public void Shutdown()
+        public void Shutdown(bool force = false)
         {
-            if (!_isInitialized)
+            if (!force && !_isInitialized)
             {
+                _logger.LogWarning("Addin is not in an initialized state for shutdown.");
                 return;
             }
 
@@ -269,17 +287,17 @@ namespace Rubberduck
                     _languageClient.SendShutdown(new ShutdownParams());
                 }
             });
-            RunShutdownAction("Terminating VbeProvier...", () =>
+            RunShutdownAction("Terminating VbeProvider...", () =>
             {
                 VbeProvider.Terminate();
             });
-            RunShutdownAction("Releasing dockable hosts...", () =>
-            {
-                using (var windows = _vbe.Windows)
-                {
-                    windows.ReleaseDockableHosts();
-                }
-            });
+            //RunShutdownAction("Releasing dockable hosts...", () =>
+            //{
+            //    using (var windows = _vbe.Windows)
+            //    {
+            //        windows.ReleaseDockableHosts();
+            //    }
+            //});
             RunShutdownAction("Initiating App.Shutdown...", () =>
             {
                 if (_app != null)
@@ -315,7 +333,7 @@ namespace Rubberduck
             {
                 if (_clientInitializeTask != null)
                 {
-                    _clientInitializeTask.Dispose();
+                    _tokenSource.Cancel();
                 }
                 if (_languageClient != null)
                 {
@@ -326,6 +344,19 @@ namespace Rubberduck
             {
                 if (_serverProcess != null)
                 {
+                    if (!_serverProcess.HasExited)
+                    {
+                        _serverProcess.WaitForExit(TimeSpan.FromMilliseconds(200));
+                    }
+
+                    if (_serverProcess.HasExited)
+                    {
+                        _logger.LogTrace("Language server process exit code: {code}. Exit time: {exitTime}", _serverProcess.ExitCode, _serverProcess.ExitTime);
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Language server process did not exit after 20ms. Review server logs for possible anomalies.");
+                    }
                     _serverProcess.Dispose();
                     _serverProcess = null!;
                 }
@@ -335,8 +366,6 @@ namespace Rubberduck
                 ComSafeManager.DisposeAndResetComSafe();
                 _addin = null!;
                 _vbe = null!;
-
-                _isInitialized = false;
             });
             RunShutdownAction("Deregistering AppDomain handlers....", () =>
             {
@@ -344,18 +373,20 @@ namespace Rubberduck
                 AppDomain.CurrentDomain.UnhandledException -= HandleAppDomainException;
             });
 
+            _isInitialized = false;
             _logger.LogInformation("Rubberduck shutdown completed. Quack!");
         }
 
         private void RunShutdownAction(string message, Action action)
         {
+            var traceLevel = _initialSettings.LanguageServerSettings.TraceLevel.ToTraceLevel();
             if (TimedAction.TryRun(action, out var elapsed, out var exception))
             {
-                _logger.LogPerformance($"RunShutdownAction: {message}", elapsed, _initialSettings.LanguageServerSettings.TraceLevel.ToTraceLevel());
+                _logger.LogPerformance(traceLevel, $"RunShutdownAction: {message}", elapsed);
             }
             else if (exception is not null)
             {
-                _logger.LogError(exception, "RunShutdownAction: {message}", exception.Message);
+                _logger.LogError(traceLevel, exception);
             }
         }
 
@@ -367,11 +398,12 @@ namespace Rubberduck
 
             if (e.ExceptionObject is Exception exception)
             {
-                _logger.LogCritical(exception, TraceLevel.Verbose);
+                var traceLevel = _initialSettings.LanguageServerSettings.TraceLevel.ToTraceLevel();
+                _logger.LogCritical(traceLevel, exception);
             }
             else
             {
-                _logger.LogCritical(message, TraceLevel.Verbose);
+                _logger.LogCritical(message);
             }
         }
 

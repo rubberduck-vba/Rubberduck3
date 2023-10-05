@@ -1,8 +1,11 @@
-﻿using Rubberduck.InternalApi.ServerPlatform;
+﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.SettingsProvider.Model;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Rubberduck.Client
 {
@@ -13,6 +16,13 @@ namespace Rubberduck.Client
 
     public abstract class ServerProcess<TServer> : IServerProcess
     {
+        protected ILogger Logger { get; init; }
+
+        protected ServerProcess(ILogger logger)
+        {
+            Logger = logger;
+        }
+
         protected virtual string GetRelativePath(IProcessStartInfoArgumentProvider settings) => settings.Path;
         protected abstract string ExecutableFileName { get; }
 
@@ -48,8 +58,22 @@ namespace Rubberduck.Client
             };
 
             var process = new Process { StartInfo = info };
-            process.Start();
+            try
+            {
+                process.Start();
+                Logger.LogInformation("Server process started {start} with ID {id}", process.StartTime, process.Id);
+                Task.Delay(TimeSpan.FromSeconds(2)).ConfigureAwait(false).GetAwaiter().GetResult();
 
+                if (process.HasExited)
+                {
+                    throw new InvalidOperationException($"Server process was started, but exited prematurely with exit code {process.ExitCode}.");
+                }
+            }
+            catch (Exception exception)
+            {
+                Logger.LogWarning(exception, "Could not start server process.", $"FileName: '{filename}'");
+                throw;
+            }
             return process;
         }
     }

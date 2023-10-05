@@ -2,13 +2,13 @@
 using Rubberduck.UI.Abstract;
 using System.Windows;
 
-namespace Rubberduck.UI.Xaml
+namespace Rubberduck.UI.Xaml.Shell
 {
-    public class InterTabClient : IInterTabClient
+    public class ShellInterTabClient : IInterTabClient
     {
         private readonly IStatusBarViewModel _status;
 
-        public InterTabClient(IStatusBarViewModel status)
+        public ShellInterTabClient(IStatusBarViewModel status)
         {
             _status = status;
         }
@@ -17,10 +17,9 @@ namespace Rubberduck.UI.Xaml
         {
             var vm = new ChildWindowViewModel(interTabClient, _status, partition);
             var view = new ChildWindow(vm);
-            return new NewTabHost<ChildWindow>(view, view.Tabs);
+            return new NewTabHost<Window>(view, view.Tabs);
         }
 
         public TabEmptiedResponse TabEmptiedHandler(TabablzControl tabControl, Window window) => TabEmptiedResponse.DoNothing;
     }
-
 }

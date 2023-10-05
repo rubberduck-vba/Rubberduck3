@@ -58,7 +58,7 @@ namespace Rubberduck.LanguageServer.Handlers
             );
 
             var traceLevel = _settings.Value.Settings.TraceLevel.ToTraceLevel();
-            _logger.LogPerformance("Finished reading content from created files.", elapsed, traceLevel);
+            _logger.LogPerformance(traceLevel, "Finished reading content from created files.", elapsed);
 
             return Task.FromResult(Unit.Value);
         }

@@ -30,7 +30,8 @@ using System;
 using System.IO.Abstractions;
 using System.Reflection;
 using Dragablz;
-using Rubberduck.UI.Xaml;
+using NLog.Extensions.Logging;
+using Rubberduck.UI.Xaml.Shell;
 
 namespace Rubberduck.Root
 {
@@ -41,16 +42,21 @@ namespace Rubberduck.Root
         public IServiceProvider Build() => _services.BuildServiceProvider();
         public RubberduckServicesBuilder WithAddIn(IVBE vbe, IAddIn addin)
         {
-            _services.AddScoped<IVBE>(provider => vbe);
-            _services.AddScoped<IAddIn>(provider => addin);
+            _services.AddScoped(provider => vbe);
+            _services.AddScoped(provider => addin);
             _services.AddScoped<ICommandBars>(provider => new CommandBarsNonDisposingDecorator<ICommandBars>(vbe.CommandBars));
 
-            _services.AddLogging();
+            _services.AddLogging(ConfigureLogging);
 
             _services.AddScoped<IProjectsRepository>(provider => new ProjectsRepository(vbe, provider.GetRequiredService<ILogger<ProjectsRepository>>()));
             _services.AddScoped<IProjectsProvider>(provider => provider.GetRequiredService<IProjectsRepository>());
 
             return this;
+        }
+
+        private void ConfigureLogging(ILoggingBuilder builder)
+        {
+            builder.AddNLog("NLog-client.config");
         }
 
         public RubberduckServicesBuilder WithApplication()
@@ -120,7 +126,7 @@ namespace Rubberduck.Root
         {
             _services.AddScoped<IPresenter, EditorShellWindowPresenter>();
             _services.AddScoped<ShellWindowViewModel>();
-            _services.AddScoped<IInterTabClient, InterTabClient>();
+            _services.AddScoped<IInterTabClient, ShellInterTabClient>();
 
             _services.AddScoped<IDockablePresenter, EditorShellDockablePresenter>();
             _services.AddScoped<IEditorShellWindowProvider, EditorShellWindowProvider>();
@@ -133,7 +139,7 @@ namespace Rubberduck.Root
 
         public RubberduckServicesBuilder WithAssemblyInfo()
         {
-            _services.AddScoped<Version>(_ => Assembly.GetExecutingAssembly().GetName().Version);
+            _services.AddScoped<Version>(provider => Assembly.GetExecutingAssembly().GetName().Version!);
             _services.AddScoped<IOperatingSystem, WindowsOperatingSystem>();
 
             return this;
