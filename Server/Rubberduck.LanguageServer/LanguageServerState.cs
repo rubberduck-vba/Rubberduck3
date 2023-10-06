@@ -1,11 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using System.Globalization;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
-using System.Collections.Generic;
-using Rubberduck.ServerPlatform;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.ServerPlatform;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text.Json;
 
 namespace Rubberduck.LanguageServer
 {
@@ -16,12 +18,11 @@ namespace Rubberduck.LanguageServer
         void AddWorkspaceFolders(IEnumerable<WorkspaceFolder> workspaceFolders);
     }
 
-    public class LanguageServerState<TOptions> : IServerStateWriter
-        where TOptions : new()
+    public class LanguageServerState : IServerStateWriter
     {
         private readonly ServerStartupOptions _startupOptions;
 
-        public LanguageServerState(ILogger logger, ServerStartupOptions startupOptions)
+        public LanguageServerState(ILogger<LanguageServerState> logger, ServerStartupOptions startupOptions)
         {
             _logger = logger;
             _startupOptions = startupOptions;
@@ -47,8 +48,8 @@ namespace Rubberduck.LanguageServer
         private long? _processId;
         public long ClientProcessId => _processId ?? throw new ServerStateNotInitializedException();
 
-        private TOptions? _options;
-        public TOptions Options => _options ?? throw new ServerStateNotInitializedException();
+        private InitializationOptions? _options;
+        public InitializationOptions Options => _options ?? throw new ServerStateNotInitializedException();
 
         private CultureInfo? _locale;
         public CultureInfo Locale => _locale ?? throw new ServerStateNotInitializedException();
@@ -85,25 +86,25 @@ namespace Rubberduck.LanguageServer
         public void Initialize(InitializeParams param)
         {
             InvalidInitializeParamsException.ThrowIfNull(param,
-                e => (nameof(e.ClientInfo), e.ClientInfo),
-                e => (nameof(e.InitializationOptions), e.InitializationOptions),
-                e => (nameof(e.Capabilities), e.Capabilities),
-                e => (nameof(e.Locale), e.Locale),
-                e => (nameof(e.ProcessId), e.ProcessId),
-                e => (nameof(e.Trace), e.Trace),
-                e => (nameof(e.WorkspaceFolders), e.WorkspaceFolders)
+                e => (nameof(e.ClientInfo), param.ClientInfo),
+                e => (nameof(e.InitializationOptions), param.InitializationOptions),
+                e => (nameof(e.Capabilities), param.Capabilities),
+                e => (nameof(e.ProcessId), param.ProcessId),
+                e => (nameof(e.Trace), param.Trace),
+                e => (nameof(e.WorkspaceFolders), param.WorkspaceFolders)
             );
 
-            _logger.LogTrace("Received InitializeParams: {param}", param);
+            var options = param.InitializationOptions!.ToString()!;
+            _options = JsonSerializer.Deserialize<InitializationOptions>(options);
 
             _capabilities = param.Capabilities!;
             _clientInfo = param.ClientInfo!;
-            _locale = CultureInfo.CurrentCulture.FromLocale(param.Locale);
             _processId = param.ProcessId!.Value;
             _traceLevel = param.Trace!;
             _workspaceFolders = param.WorkspaceFolders!;
+            _locale = new CultureInfo(_options.Value.Locale);
 
-            _options = (TOptions)(param.InitializationOptions!);
+            _logger.LogDebug(TraceLevel.ToTraceLevel(), "Received valid initialization options.", options);
         }
     }
 }

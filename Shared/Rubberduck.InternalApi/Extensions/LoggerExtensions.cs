@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Common;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -17,8 +15,8 @@ namespace Rubberduck.InternalApi.Extensions
                 [TimeSpan.Zero] = LogLevel.Trace,
                 [TimeSpan.FromMilliseconds(100)] = LogLevel.Information,
                 [TimeSpan.FromSeconds(1)] = LogLevel.Warning,
-                [TimeSpan.FromMinutes(1)] = LogLevel.Error,
-                [TimeSpan.FromMinutes(5)] = LogLevel.Critical,
+                [TimeSpan.FromSeconds(10)] = LogLevel.Error,
+                [TimeSpan.FromMinutes(1)] = LogLevel.Critical,
             };
             public static LogPerformanceOptions Default { get; } = new() { Mappings = _defaultMappings };
 
@@ -58,52 +56,70 @@ namespace Rubberduck.InternalApi.Extensions
         public static void LogPerformance(this ILogger logger, TraceLevel level, string message, TimeSpan elapsed, LogPerformanceOptions options)
         {
             var logLevel = options.GetLogLevel(elapsed);
-            logger.Log(logLevel, message, $"Elapsed: {elapsed}", level);
+            logger.Log(level, logLevel, message, $"Elapsed: {elapsed}");
         }
 
         /// <summary>
         /// Logs the specified <c>message</c> at <c>Trace</c> level, along with the <c>verbose</c> message when <c>level</c> is <c>TraceLevel.Verbose</c>.
         /// </summary>
-        public static void LogTrace(this ILogger logger, TraceLevel level, string message, string verbose) => 
-            logger.Log(LogLevel.Trace, message, verbose, level);
+        public static void LogTrace(this ILogger logger, TraceLevel level, string message, string? verbose = default) => 
+            logger.Log(level, LogLevel.Trace, message, verbose);
 
         /// <summary>
         /// Logs the specified <c>message</c> at <c>Debug</c> level, along with the <c>verbose</c> message when <c>level</c> is <c>TraceLevel.Verbose</c>.
         /// </summary>
-        public static void LogDebug(this ILogger logger, TraceLevel level, string message, string verbose) =>
-            logger.Log(LogLevel.Debug, message, verbose, level);
+        public static void LogDebug(this ILogger logger, TraceLevel level, string message, string? verbose = default) =>
+            logger.Log(level, LogLevel.Debug, message, verbose);
 
         /// <summary>
         /// Logs the specified <c>message</c> at <c>Information</c> level, along with the <c>verbose</c> message when <c>level</c> is <c>TraceLevel.Verbose</c>.
         /// </summary>
-        public static void LogInformation(this ILogger logger, TraceLevel level, string message, string verbose) =>
-            logger.Log(LogLevel.Information, message, verbose, level);
+        public static void LogInformation(this ILogger logger, TraceLevel level, string message, string? verbose = default) =>
+            logger.Log(level, LogLevel.Information, message, verbose);
 
         /// <summary>
         /// Logs the specified <c>message</c> at <c>Warning</c> level, along with the <c>verbose</c> message when <c>level</c> is <c>TraceLevel.Verbose</c>.
         /// </summary>
-        public static void LogWarning(this ILogger logger, TraceLevel level, string message, string verbose) =>
-            logger.Log(LogLevel.Warning, message, verbose, level);
+        public static void LogWarning(this ILogger logger, TraceLevel level, string message, string? verbose = default) =>
+            logger.Log(level, LogLevel.Warning, message, verbose);
 
         /// <summary>
         /// Logs the <c>Message</c> of the specified <c>Exception</c> at <c>Warning</c> level, along with the stack trace when <c>level</c> is <c>TraceLevel.Verbose</c>.
         /// </summary>
         public static void LogWarning(this ILogger logger, TraceLevel level, Exception exception) =>
-            logger.Log(LogLevel.Warning, exception.Message, exception.StackTrace, level);
+            logger.Log(level, LogLevel.Warning, exception.Message, exception.StackTrace);
+
+        /// <summary>
+        /// Logs the specified <c>message</c> at <c>Warning</c> level, along with the full exception details when <c>level</c> is <c>TraceLevel.Verbose</c>.
+        /// </summary>
+        public static void LogWarning(this ILogger logger, TraceLevel level, Exception exception, string message) =>
+            logger.Log(level, LogLevel.Warning, message, exception.ToString());
 
         /// <summary>
         /// Logs the <c>Message</c> of the specified <c>Exception</c> at <c>Error</c> level, along with the stack trace when <c>level</c> is <c>TraceLevel.Verbose</c>.
         /// </summary>
         public static void LogError(this ILogger logger, TraceLevel level, Exception exception) =>
-            logger.Log(LogLevel.Error, exception.Message, exception.StackTrace, level);
+            logger.Log(level, LogLevel.Error, exception.Message, exception.StackTrace);
+
+        /// <summary>
+        /// Logs the specified <c>message</c> at <c>Error</c> level, along with the full exception details when <c>level</c> is <c>TraceLevel.Verbose</c>.
+        /// </summary>
+        public static void LogError(this ILogger logger, TraceLevel level, Exception exception, string message) =>
+            logger.Log(level, LogLevel.Error, message, exception.ToString());
 
         /// <summary>
         /// Logs the <c>Message</c> of the specified <c>Exception</c> at <c>Critical</c> level, along with the stack trace when <c>level</c> is <c>TraceLevel.Verbose</c>.
         /// </summary>
         public static void LogCritical(this ILogger logger, TraceLevel level, Exception exception) =>
-            logger.Log(LogLevel.Critical, exception, exception.Message, exception.StackTrace, level);
+            logger.Log(level, LogLevel.Critical, exception.Message, exception.StackTrace ?? "(no stack trace available)");
 
-        private static void Log(this ILogger logger, TraceLevel level, LogLevel logLevel, string message, string verbose)
+        /// <summary>
+        /// Logs the specified <c>message</c> at <c>Critical</c> level, along with the <c>verbose</c> message when <c>level</c> is <c>TraceLevel.Verbose</c>.
+        /// </summary>
+        public static void LogCritical(this ILogger logger, TraceLevel level, string message, string? verbose = default) =>
+            logger.Log(level, LogLevel.Critical, message, verbose);
+
+        private static void Log(this ILogger logger, TraceLevel level, LogLevel logLevel, string message, string? verbose)
         {
             if (level == TraceLevel.Off)
             {
@@ -111,12 +127,12 @@ namespace Rubberduck.InternalApi.Extensions
             }
 
             var logMessage = message;
-            if (level == TraceLevel.Verbose)
+            if (level == TraceLevel.Verbose && !string.IsNullOrWhiteSpace(verbose))
             {
                 logMessage = $"{message} | {verbose}";
             }
 
-            logger.Log(logLevel, logMessage);
+            logger.Log(logLevel, "{logMessage}", logMessage);
         }
     }
 }

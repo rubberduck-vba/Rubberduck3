@@ -1,28 +1,27 @@
 ﻿using System;
-using System.Threading.Tasks;
 
 namespace Rubberduck.SettingsProvider
 {
+    /// <summary>
+    /// A service that caches and exposes the current <c>TSettings</c> value.
+    /// </summary>
+    /// <typeparam name="TSettings"></typeparam>
     public interface ISettingsProvider<TSettings>
         where TSettings : struct
     {
-        (Guid Token, TSettings Settings) Value { get; }
-        bool TrySetValue(TSettings value, Guid token);
-        bool TryGetValue(Guid token, out TSettings value);
-
         /// <summary>
-        /// Gets the token mapped to the default TSettings configuration.
+        /// Gets the currently applicable settings.
         /// </summary>
-        Guid DefaultToken { get; }
+        TSettings Settings { get; }
 
         /// <summary>
-        /// Gets the token mapped to the current TSettings configuration.
-        /// </summary>
-        Guid CurrentToken { get; }
-
-        /// <summary>
-        /// Clears cached settings and tokens, resetting to defaults.
+        /// Clears cached settings and forces a reload from file.
         /// </summary>
         void ClearCache();
+
+        /// <summary>
+        /// Notifies listeners when settings are modified.
+        /// </summary>
+        event EventHandler<SettingsChangedEventArgs<TSettings>> SettingsChanged;
     }
 }

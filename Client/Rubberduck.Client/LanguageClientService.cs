@@ -25,33 +25,6 @@ using Rubberduck.SettingsProvider.Model;
 
 namespace Rubberduck.Client
 {
-    public static class InitializeParamsExtensions
-    {
-        public static InitializeParams ConfigureInitialization(this InitializeParams request, long clientProcessId, string locale)
-        {
-            var type = request.GetType();
-            type.GetProperty(nameof(request.ProcessId))!.SetValue(request, clientProcessId);
-            type.GetProperty(nameof(request.Locale))!.SetValue(request, locale);
-
-            return request;
-        }
-
-        public static InitializeTrace ToInitializeTrace(this ServerTraceLevel trace)
-        {
-            if (trace == ServerTraceLevel.Off)
-            {
-                return InitializeTrace.Off;
-            }
-
-            if (trace == ServerTraceLevel.Verbose)
-            {
-                return InitializeTrace.Verbose;
-            }
-
-            return InitializeTrace.Messages;
-        }
-    }
-
     public class LanguageClientService
     {
         public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, NamedPipeClientStream pipe, long clientProcessId, RubberduckSettings settings, string path)
@@ -96,14 +69,15 @@ namespace Rubberduck.Client
             var initializationOptions = new InitializationOptions
             {
                 Timestamp = DateTime.Now,
-                // TODO
+                Locale = settings.Locale,
+                //LibraryReferences = TODO[]
             };
 
             options
                 .WithClientInfo(info)
                 .WithClientCapabilities(clientCapabilities)
                 .WithTrace(settings.LanguageServerSettings.TraceLevel.ToInitializeTrace())
-                .WithInitializationOptions(initializationOptions)
+                .WithInitializationOptions(JsonSerializer.Serialize(initializationOptions))
                 .WithWorkspaceFolder(workspace)
                 .WithContentModifiedSupport(true)
 

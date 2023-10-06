@@ -27,7 +27,7 @@ namespace Rubberduck.LanguageServer.Handlers
             _logger.LogTrace("Received Shutdown notification.");
 
             cancellationToken.ThrowIfCancellationRequested();
-            var traceLevel = _settingsProvider.Value.Settings.TraceLevel.ToTraceLevel();
+            var traceLevel = _settingsProvider.Settings.TraceLevel.ToTraceLevel();
 
             if (TimedAction.TryRun(() =>
             {

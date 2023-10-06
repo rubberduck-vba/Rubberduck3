@@ -4,15 +4,13 @@ namespace Rubberduck.SettingsProvider
 {
     public class SettingsChangedEventArgs<TSettings> : EventArgs
     {
-        public SettingsChangedEventArgs(TSettings oldValue, TSettings currentValue, Guid token)
+        public SettingsChangedEventArgs(TSettings oldValue, TSettings newValue)
         {
             OldValue = oldValue;
-            Value = currentValue;
-            Token = token;
+            NewValue = newValue;
         }
 
-        public Guid Token { get; }
         public TSettings OldValue { get; }
-        public TSettings Value { get; }
+        public TSettings NewValue { get; }
     }
 }

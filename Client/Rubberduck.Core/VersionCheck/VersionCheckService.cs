@@ -12,13 +12,13 @@ namespace Rubberduck.VersionCheck
 {
     public class VersionCheckService : IVersionCheckService
     {
-        private readonly ISettingsProvider<UpdateServerSettings> _settingsProvider;
+        private readonly ISettingsProvider<UpdateServerSettings> _config;
         private readonly IPublicApiClient _api;
 
         /// <param name="version">That would be the version of the assembly for the <c>_Extension</c> class.</param>
         public VersionCheckService(ISettingsProvider<UpdateServerSettings> settingsProvider, IPublicApiClient api, Version version)
         {
-            _settingsProvider = settingsProvider;
+            _config = settingsProvider;
             _api = api;
 
             CurrentVersion = version;
@@ -42,7 +42,7 @@ namespace Rubberduck.VersionCheck
             try
             {
                 var latestTags = await _api.GetLatestTagsAsync();
-                var settings = _settingsProvider.Value.Settings;
+                var settings = _config.Settings;
 
                 _latestTag = latestTags
                     .Where(tag => tag != null 

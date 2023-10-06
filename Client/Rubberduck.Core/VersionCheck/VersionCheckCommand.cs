@@ -1,42 +1,41 @@
-﻿using System;
-using Rubberduck.VersionCheck;
-using Rubberduck.Resources;
-using Rubberduck.SettingsProvider;
-using Rubberduck.Settings;
+﻿using Microsoft.Extensions.Logging;
 using Rubberduck.Interaction.MessageBox;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.VersionCheck;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Rubberduck.UI.Command
 {
     public class VersionCheckCommand : CommandBase
     {
-        private readonly IVersionCheckService _versionCheck;
-        //private readonly IMessageBox _prompt;
+        private readonly IVersionCheckService _service;
+        private readonly IMessageBox _prompt;
         //private readonly IWebNavigator _webNavigator;
         private readonly ISettingsProvider<UpdateServerSettings> _config;
 
-        public VersionCheckCommand(IVersionCheckService versionCheck, /*IMessageBox prompt, IWebNavigator web,*/ ISettingsProvider<UpdateServerSettings> config)
+        public VersionCheckCommand(ILogger<VersionCheckCommand> logger, ISettingsProvider<UpdateServerSettings> config, 
+            IVersionCheckService service, IMessageBox prompt /*, IWebNavigator web*/ )
+            : base(logger)
         {
-            _versionCheck = versionCheck;
-            //_prompt = prompt;
+            _service = service;
+            _prompt = prompt;
             //_webNavigator = web;
             _config = config;
         }
 
-        protected override async Task OnExecuteAsync(object parameter)
+        protected override async Task OnExecuteAsync(object? parameter)
         {
-            var config = _config.Value;
+            var settings = _config.Settings;
             Logger.LogInformation("Executing version check...");
 
-            var latest = await _versionCheck.GetLatestVersionAsync(CancellationToken.None);
+            var latest = await _service.GetLatestVersionAsync(CancellationToken.None);
 
-            if (_versionCheck.CurrentVersion < latest)
+            if (_service.CurrentVersion < latest)
             {
                 var proceed = true;
-                if (_versionCheck.IsDebugBuild || !config.Settings.IncludePreReleases)
+                if (_service.IsDebugBuild || !settings.IncludePreReleases)
                 {
                     // if the latest version has a revision number and isn't a pre-release build,
                     // avoid prompting since we can't know if the build already includes the latest version.

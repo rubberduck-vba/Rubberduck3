@@ -27,14 +27,6 @@ namespace Rubberduck.LanguageServer
 {
     public class ServerStateNotInitializedException : InvalidOperationException { }
 
-    public class LanguageServerState : LanguageServerState<InitializationOptions>
-    {
-        public LanguageServerState(ILogger<LanguageServerState> logger, ServerStartupOptions startupOptions) 
-            : base(logger, startupOptions) 
-        {
-        }
-    }
-
     public sealed class ServerApp : IDisposable
     {
         private readonly ServerStartupOptions _options;
@@ -43,6 +35,9 @@ namespace Rubberduck.LanguageServer
         private NamedPipeServerStream? _pipe;
 
         private ILogger<ServerApp> _logger = default!;
+        private IHealthCheckService _healthCheckService = default;
+        private IServiceScope _serviceScope = default!;
+
         private OmniSharpLanguageServer _languageServer = default!;
         private LanguageServerState _serverState = default!;
 
@@ -61,7 +56,7 @@ namespace Rubberduck.LanguageServer
             services.AddLogging(ConfigureLogging);
 
             var provider = new DefaultServiceProviderFactory().CreateServiceProvider(services);
-            using var scope = provider.CreateScope();
+            var scope = provider.CreateScope();
 
             _logger = scope.ServiceProvider.GetRequiredService<ILogger<ServerApp>>();
             LogPreInitialization();
@@ -93,16 +88,23 @@ namespace Rubberduck.LanguageServer
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<LanguageServerState>();
-            services.AddSingleton<IServiceProvider>(provider => provider);
+            services.AddScoped<LanguageServerState>();
+            services.AddScoped<IServiceProvider>(provider => provider);
+            services.AddScoped<IHealthCheckService>(provider => new ClientProcessHealthCheckService(
+                logger: provider.GetRequiredService<ILogger<ClientProcessHealthCheckService>>(),
+                settingsProvider: provider.GetRequiredService<ISettingsProvider<LanguageServerSettings>>(),
+                process: Process.GetProcessById((int)_serverState.ClientProcessId),
+                server: _languageServer));
 
-            services.AddSingleton<ServerStartupOptions>(provider => _options);
-            services.AddSingleton<IServerStateWriter>(provider => provider.GetRequiredService<LanguageServerState>());
+            services.AddScoped<ServerStartupOptions>(provider => _options);
+            services.AddScoped<IServerStateWriter>(provider => provider.GetRequiredService<LanguageServerState>());
 
             services.AddScoped<IDefaultSettingsProvider<LanguageServerSettings>>(provider => LanguageServerSettings.Default);
             services.AddScoped<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
             services.AddScoped<SupportedLanguage, VisualBasicForApplicationsLanguage>();
             services.AddScoped<DocumentContentStore>();
+        
+            _serviceScope = new DefaultServiceProviderFactory().CreateServiceProvider(services).CreateScope();
         }
 
         private void ConfigureLogging(ILoggingBuilder builder)
@@ -163,7 +165,18 @@ namespace Rubberduck.LanguageServer
                     _logger.LogDebug("Language server started.");
                     token.ThrowIfCancellationRequested();
 
-                    // TODO start synchronizing documents
+                    if (TimedAction.TryRun(() =>
+                    {
+                        _healthCheckService = _serviceScope.ServiceProvider.GetRequiredService<IHealthCheckService>();
+                        _healthCheckService.Start();
+                    }, out var elapsed, out var exception))
+                    {
+                        _logger.LogPerformance(_serverState.TraceLevel.ToTraceLevel(), "Started healthcheck service.", elapsed);
+                    }
+                    else if (exception != null)
+                    {
+                        _logger.LogError(_serverState.TraceLevel.ToTraceLevel(), exception, "Healthcheck service could not be started.");
+                    }
 
                     _logger.LogDebug("Handled OnStarted notification.");
                     return Task.CompletedTask;
@@ -185,7 +198,7 @@ namespace Rubberduck.LanguageServer
                 .OnExit(async (ExitParams request, CancellationToken token) =>
                 {
                     _logger.LogDebug("Received Exit notification. Process will now be terminated.");
-                    await Task.Delay(TimeSpan.FromMilliseconds(100)).ConfigureAwait(false);
+                    await Task.Delay(TimeSpan.FromMilliseconds(100), token).ConfigureAwait(false); // allow the logger to write that last entry.
                     
                     Environment.Exit(0); // FIXME stack should unwind all the way to the entry point... unclear how to do this. cancelling the _tokenSource throws, but doesn't bubble up.
                 })
@@ -289,6 +302,13 @@ namespace Rubberduck.LanguageServer
                 _logger?.LogDebug("Disposing LanguageServer...");
                 _languageServer.Dispose();
                 _languageServer = null!;
+            }
+
+            if (_serviceScope is not null)
+            {
+                _logger?.LogDebug("Disposing service scope...");
+                _serviceScope.Dispose();
+                _serviceScope = null!;
             }
         }
 

@@ -1,17 +1,21 @@
 ﻿//using IndenterSettings = Rubberduck.SmartIndenter.IndenterSettings;
+using Dragablz;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 using Rubberduck.Common;
 using Rubberduck.Common.Hotkeys;
 using Rubberduck.Core;
 using Rubberduck.Core.About;
 using Rubberduck.Core.Editor;
 using Rubberduck.Interaction.MessageBox;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI.WinForms;
+using Rubberduck.UI.Xaml.Shell;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
@@ -29,9 +33,6 @@ using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 using System;
 using System.IO.Abstractions;
 using System.Reflection;
-using Dragablz;
-using NLog.Extensions.Logging;
-using Rubberduck.UI.Xaml.Shell;
 
 namespace Rubberduck.Root
 {
@@ -47,6 +48,7 @@ namespace Rubberduck.Root
             _services.AddScoped<ICommandBars>(provider => new CommandBarsNonDisposingDecorator<ICommandBars>(vbe.CommandBars));
 
             _services.AddLogging(ConfigureLogging);
+            _services.AddScoped<ILogLevelService, LogLevelService>();
 
             _services.AddScoped<IProjectsRepository>(provider => new ProjectsRepository(vbe, provider.GetRequiredService<ILogger<ProjectsRepository>>()));
             _services.AddScoped<IProjectsProvider>(provider => provider.GetRequiredService<IProjectsRepository>());
@@ -114,10 +116,8 @@ namespace Rubberduck.Root
             ICommandBarControls controls;
             using (var commandBars = vbe.CommandBars)
             {
-                using (var menuBar = commandBars[commandBarIndex])
-                {
-                    controls = menuBar.Controls;
-                }
+                using var menuBar = commandBars[commandBarIndex];
+                controls = menuBar.Controls;
             }
             return controls;
         }

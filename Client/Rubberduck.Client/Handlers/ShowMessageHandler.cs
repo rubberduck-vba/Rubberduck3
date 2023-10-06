@@ -19,7 +19,7 @@ namespace Rubberduck.Client.Handlers
         private readonly IMessageBox _service;
         private readonly ISettingsProvider<LanguageServerSettings> _settingsProvider;
 
-        TraceLevel TraceLevel => _settingsProvider.Value.Settings.TraceLevel.ToTraceLevel();
+        TraceLevel TraceLevel => _settingsProvider.Settings.TraceLevel.ToTraceLevel();
 
         public ShowMessageHandler(ILogger<ShowMessageHandler> logger, IMessageBox service, ISettingsProvider<LanguageServerSettings> settingsProvider)
         {
@@ -31,7 +31,7 @@ namespace Rubberduck.Client.Handlers
         public override async Task<Unit> Handle(ShowMessageParams request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            _logger.LogInformation("Handling ShowMessage request.", $"[{request.Type}] {request.Message}", TraceLevel);
+            _logger.LogInformation(TraceLevel, "Handling ShowMessage request.", $"[{request.Type}] {request.Message}");
 
             switch (request.Type)
             {

@@ -45,7 +45,12 @@ namespace Rubberduck.SettingsProvider.Model
             TraceLevel = ServerTraceLevel.Verbose,
             Mode = MessageMode.Message,
             PipeName = "Rubberduck.LanguageServer.Pipe",
+#if DEBUG
             Path = @"",
+#else
+            Path = @"",
+#endif
+            ClientHealthCheckInterval = TimeSpan.FromSeconds(10),
         };
 
         LanguageServerSettings IDefaultSettingsProvider<LanguageServerSettings>.Default => LanguageServerSettings.Default;
@@ -57,6 +62,8 @@ namespace Rubberduck.SettingsProvider.Model
         public MessageMode Mode { get; init; }
 
         public ServerTraceLevel TraceLevel { get; init; }
+
+        public TimeSpan ClientHealthCheckInterval { get; init; }
 
         public string ToProcessStartInfoArguments(long clientProcessId)
         {
@@ -103,7 +110,7 @@ namespace Rubberduck.SettingsProvider.Model
                 && string.Equals(other.Path, Path, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null || obj.GetType() != GetType())
             {
@@ -115,6 +122,16 @@ namespace Rubberduck.SettingsProvider.Model
         public override int GetHashCode()
         {
             return HashCode.Combine(TraceLevel, TransportType, Mode, PipeName.ToLowerInvariant(), Path.ToLowerInvariant());
+        }
+
+        public static bool operator ==(LanguageServerSettings left, LanguageServerSettings right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(LanguageServerSettings left, LanguageServerSettings right)
+        {
+            return !(left == right);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Rubberduck.UI.Command
     {
         private static readonly List<MethodBase> ExceptionTargetSites = new();
 
-        protected CommandBase(ILogger? logger = null)
+        protected CommandBase(ILogger logger)
         {
             Logger = logger;
             CanExecuteCondition = (parameter => true);
@@ -24,7 +24,7 @@ namespace Rubberduck.UI.Command
             ShortcutText = string.Empty;
         }
 
-        protected ILogger? Logger { get; }
+        protected ILogger Logger { get; }
         protected abstract Task OnExecuteAsync(object? parameter);
 
         protected Func<object?, bool> CanExecuteCondition { get; private set; }

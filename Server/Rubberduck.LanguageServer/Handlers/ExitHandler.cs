@@ -1,13 +1,13 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using Rubberduck.SettingsProvider.Model;
-using Rubberduck.SettingsProvider;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.SettingsProvider;
+using Rubberduck.SettingsProvider.Model;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Rubberduck.LanguageServer.Handlers
 {
@@ -27,7 +27,7 @@ namespace Rubberduck.LanguageServer.Handlers
             _logger.LogTrace("Received Exit notification.");
 
             cancellationToken.ThrowIfCancellationRequested();
-            var traceLevel = _settingsProvider.Value.Settings.TraceLevel.ToTraceLevel();
+            var traceLevel = _settingsProvider.Settings.TraceLevel.ToTraceLevel();
 
             if (TimedAction.TryRun(() =>
             {

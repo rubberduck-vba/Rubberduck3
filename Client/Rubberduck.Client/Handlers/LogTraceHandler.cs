@@ -6,6 +6,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Client;
 using Microsoft.Extensions.Logging;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider;
+using Rubberduck.InternalApi.Extensions;
 using System.Diagnostics;
 
 namespace Rubberduck.Client.Handlers
@@ -15,7 +16,7 @@ namespace Rubberduck.Client.Handlers
         private readonly ILogger<WorkspaceFoldersHandler> _logger;
         private readonly ISettingsProvider<LanguageServerSettings> _settingsProvider;
 
-        TraceLevel TraceLevel => _settingsProvider.Value.Settings.TraceLevel.ToTraceLevel();
+        TraceLevel TraceLevel => _settingsProvider.Settings.TraceLevel.ToTraceLevel();
 
         public LogTraceHandler(ILogger<WorkspaceFoldersHandler> logger, ISettingsProvider<LanguageServerSettings> settingsProvider)
         {
@@ -25,10 +26,10 @@ namespace Rubberduck.Client.Handlers
 
         public override async Task<Unit> Handle(LogTraceParams request, CancellationToken cancellationToken)
         {
+            _logger.LogDebug(TraceLevel, "Received LogTrace request.", string.Empty);
             cancellationToken.ThrowIfCancellationRequested();
             if (TraceLevel != TraceLevel.Off)
             {
-                // _serverConsole.LogTrace(request.Message, request.Verbose, TraceLevel)
             }
 
             return await Task.FromResult(Unit.Value);

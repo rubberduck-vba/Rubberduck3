@@ -32,9 +32,11 @@ namespace Rubberduck.Core
         private readonly IRubberduckMenu _appMenus;
 
         private readonly ILogger<App> _logger;
+        private readonly ILogLevelService _logLevelService;
         private readonly IFileSystem _filesystem;
 
-        public App(ILogger<App> logger,
+        public App(ILogger<App> logger, 
+            ILogLevelService logLevelService,
             IMessageBox messageBox,
             ISettingsService<RubberduckSettings> settingsService,
             IRubberduckMenu appMenu,
@@ -42,6 +44,8 @@ namespace Rubberduck.Core
             IPresenter presenter)
         {
             _logger = logger;
+            _logLevelService = logLevelService;
+
             _messageBox = messageBox;
             _settingsService = settingsService;
             _appMenus = appMenu;
@@ -57,7 +61,7 @@ namespace Rubberduck.Core
         {
             try
             {
-                if (e is not null && !string.Equals(e.OldValue.Locale, e.Value.Locale, StringComparison.InvariantCultureIgnoreCase))
+                if (e is not null && !string.Equals(e.OldValue.Locale, e.NewValue.Locale, StringComparison.InvariantCultureIgnoreCase))
                 {
                     ApplyCultureConfig();
                 }
@@ -115,7 +119,7 @@ namespace Rubberduck.Core
 
         private void UpdateLoggingLevel()
         {
-            //LogLevelHelper.SetMinimumLogLevel(LogLevel.FromOrdinal(_config.UserSettings.GeneralSettings.MinimumLogLevel));
+            _logLevelService.SetMinimumLogLevel(_settingsService.Settings.LogLevel);
         }
 
         /// <summary>
@@ -126,19 +130,18 @@ namespace Rubberduck.Core
         /// </summary>
         private void UpdateLoggingLevelOnShutdown()
         {
-            //var currentSettings = _settingsService.Value;
-            //if (currentSettings.Settings.IsInitialLogLevelChanged || currentSettings.Settings.LogLevel != LogLevel.Trace)
-            //{
-            //    return;
-            //}
+            var currentSettings = _settingsService.Settings;
+            if (currentSettings.IsInitialLogLevelChanged || currentSettings.LogLevel != LogLevel.Trace)
+            {
+                return;
+            }
 
-            //var vm = new RubberduckSettingsViewModel(currentSettings.Settings)
-            //{
-            //    LogLevel = LogLevel.None
-            //};
+            var vm = new RubberduckSettingsViewModel(currentSettings)
+            {
+                LogLevel = LogLevel.None
+            };
 
-            //_settingsService.TrySetValue(vm.ToSettings(), currentSettings.Token);
-            //_settingsService.WriteToFile();
+            _settingsService.Write(vm.ToSettings());
         }
 
         public void Startup(string version)
@@ -148,7 +151,7 @@ namespace Rubberduck.Core
             ApplyCultureConfig();
 
             LogRubberduckStart(version);
-            //UpdateLoggingLevel();
+            UpdateLoggingLevel();
             //CheckForLegacyIndenterSettings();
             _appMenus.Initialize();
             _appMenus.Localize();
@@ -178,11 +181,11 @@ namespace Rubberduck.Core
         private void ApplyCultureConfig()
         {
             var currentCulture = Resources.RubberduckUI.Culture;
-            var currentSettings = _settingsService.Value;
+            var currentSettings = _settingsService.Settings;
 
             try
             {
-                var uiCulture = CultureInfo.GetCultureInfo(currentSettings.Settings.Locale);
+                var uiCulture = CultureInfo.GetCultureInfo(currentSettings.Locale);
                 LocalizeResources(uiCulture);
 
                 _appMenus.Localize();
@@ -193,13 +196,12 @@ namespace Rubberduck.Core
                 // not accessing resources here, because setting resource culture literally just failed.
                 _messageBox.NotifyWarn(exception.Message, "Rubberduck");
 
-                var vm = new RubberduckSettingsViewModel(currentSettings.Settings)
+                var vm = new RubberduckSettingsViewModel(currentSettings)
                 {
                     Locale = currentCulture.Name
                 };
 
-                _settingsService.TrySetValue(vm.ToSettings(), currentSettings.Token);
-                _settingsService.WriteToFile();
+                _settingsService.Write(vm.ToSettings());
             }
         }
 
@@ -227,9 +229,9 @@ namespace Rubberduck.Core
         {
             try
             {
-                var currentSettings = _settingsService.Value;
+                var currentSettings = _settingsService.Settings;
                 _logger.LogTrace("Checking for legacy Smart Indenter settings.");
-                if (currentSettings.Settings.IsSmartIndenterPrompted /*||
+                if (currentSettings.IsSmartIndenterPrompted /*||
                     !_config.UserSettings.IndenterSettings.LegacySettingsExist()*/)
                 {
                     return;
@@ -240,13 +242,12 @@ namespace Rubberduck.Core
                     //_config.UserSettings.IndenterSettings.LoadLegacyFromRegistry();
                 }
 
-                var vm = new RubberduckSettingsViewModel(currentSettings.Settings)
+                var vm = new RubberduckSettingsViewModel(currentSettings)
                 {
                     IsSmartIndenterPrompted = true
                 };
 
-                _settingsService.TrySetValue(vm.ToSettings(), currentSettings.Token);
-                _settingsService.WriteToFile();
+                _settingsService.Write(vm.ToSettings());
             }
             catch (Exception e)
             {
@@ -277,7 +278,7 @@ namespace Rubberduck.Core
                 headers.Add("\tHost could not be determined.");
             }
 
-            _logger.LogInformation(string.Join(Environment.NewLine, headers));
+            _logger.LogInformation("{message}", string.Join(Environment.NewLine, headers));
         }
 
         private bool _disposed;

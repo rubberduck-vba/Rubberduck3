@@ -1,4 +1,5 @@
-﻿using Rubberduck.UI;
+﻿using Microsoft.Extensions.Logging;
+using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using Rubberduck.Unmanaged.Abstract;
 using Rubberduck.VBEditor.UI.OfficeMenus;
@@ -10,8 +11,8 @@ namespace Rubberduck.Core.Editor
     {
         private readonly IPresenter _presenter;
 
-        public ShowEditorShellCommand(IPresenter presenter, IVbeEvents vbeEvents)
-            : base(vbeEvents)
+        public ShowEditorShellCommand(ILogger<ShowEditorShellCommand> logger, IPresenter presenter, IVbeEvents vbeEvents)
+            : base(logger, vbeEvents)
         {
             _presenter = presenter;
         }

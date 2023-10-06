@@ -18,7 +18,7 @@ namespace Rubberduck.Client.Handlers
         private readonly ILogger<WorkspaceFoldersHandler> _logger;
         private readonly ISettingsProvider<LanguageServerSettings> _settingsProvider;
 
-        TraceLevel TraceLevel => _settingsProvider.Value.Settings.TraceLevel.ToTraceLevel();
+        TraceLevel TraceLevel => _settingsProvider.Settings.TraceLevel.ToTraceLevel();
 
         public WorkspaceFoldersHandler(ILogger<WorkspaceFoldersHandler> logger, ISettingsProvider<LanguageServerSettings> settingsProvider)
         {

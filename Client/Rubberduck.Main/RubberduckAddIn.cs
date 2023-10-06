@@ -45,7 +45,7 @@ namespace Rubberduck
 
         private bool _isInitialized;
 
-        private readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource _tokenSource = new();
         private Process? _serverProcess;
         private NamedPipeClientStream? _pipeStream;
 
@@ -91,7 +91,7 @@ namespace Rubberduck
             }
 
             Splash? splash = null;
-            ISplashViewModel? splashModel = null;
+            var sw = new Stopwatch();
 
             try
             {
@@ -117,13 +117,16 @@ namespace Rubberduck
                 InitializeSettings(scope);
 
                 var version = GetVersionString();
-                if (_initialSettings.ShowSplash)
+                if (!ShowSplash(version, out splash, out var model))
                 {
-                    splashModel = new SplashViewModel(version);
-                    splash = ShowSplash(splashModel);
+                    _logger.LogTrace(_initialSettings.LanguageServerSettings.TraceLevel.ToTraceLevel(), "Splash was not shown.", $"ShowSplash setting value: {_initialSettings.ShowSplash}");
+                }
+                else
+                {
+                    sw.Start();
                 }
 
-                await StartupAsync(splashModel, version).ConfigureAwait(false);
+                await StartupAsync(model, version).ConfigureAwait(false);
             }
             catch (StartupFailedException exception) when (exception.InnerException is ServerStartupFailedException serverException)
             {
@@ -157,27 +160,39 @@ namespace Rubberduck
             }
             finally
             {
+                sw.Stop();
+                var message = splash is null ? "Initialization completed." : "Initialization completed; splash was shown during initialization.";
                 splash?.Dispose();
+                _logger.LogPerformance(_initialSettings.LanguageServerSettings.TraceLevel.ToTraceLevel(), message, sw.Elapsed);
             }
         }
 
-        private Splash ShowSplash(ISplashViewModel model)
+        private bool ShowSplash(string version, out Splash? window, out SplashViewModel? model)
         {
-            model.UpdateStatus("Open-Source VBIDE Add-In");
-            var splash = new Splash(model);
+            if (!_initialSettings.ShowSplash)
+            {
+                window = null;
+                model = null;
+                return false;
+            }
 
-            splash.Show();
-            splash.Refresh();
+            model = new SplashViewModel(version);
+            model.UpdateStatus("Long live the cucumber!");
 
-            return splash;
+            window = new Splash(model);
+
+            window.Show();
+            window.Refresh();
+
+            return true;
         }
 
         private void InitializeSettings(IServiceScope scope)
         {
             var configProvider = scope.ServiceProvider.GetRequiredService<ISettingsService<RubberduckSettings>>();
-            var currentSettings = configProvider.ReadFromFile();
+            var currentSettings = configProvider.Read();
             
-            _initialSettings = currentSettings.Settings;
+            _initialSettings = currentSettings;
 
             try
             {
@@ -221,7 +236,7 @@ namespace Rubberduck
                 statusViewModel?.UpdateStatus("Starting language server...");
 
                 var settings = LanguageServerSettings.Default;
-                var clientProcessId = Process.GetCurrentProcess().Id;
+                var clientProcessId = Environment.ProcessId;
                 _serverProcess = new LanguageServerProcess(_logger).Start(clientProcessId, settings);
                 
                 statusViewModel?.UpdateStatus("Starting language client...");
@@ -241,7 +256,7 @@ namespace Rubberduck
 
                     case TransportType.Pipe:
                         var name = settings.PipeName ?? ServerPlatformSettings.LanguageServerDefaultPipeName;
-                        _pipeStream = new NamedPipeClientStream(".", $"{name}__{Process.GetCurrentProcess().Id}", PipeDirection.InOut, PipeOptions.Asynchronous);
+                        _pipeStream = new NamedPipeClientStream(".", $"{name}__{Environment.ProcessId}", PipeDirection.InOut, PipeOptions.Asynchronous);
                         await _pipeStream.ConnectAsync(Convert.ToInt32(TimeSpan.FromSeconds(10).TotalMilliseconds)); // stuck here
                         clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _pipeStream, clientProcessId, _initialSettings, projectPath);
                         break;
@@ -282,10 +297,7 @@ namespace Rubberduck
             _logger.LogInformation("Rubberduck is shutting down...");
             RunShutdownAction("Sending LSP shutdown notification...", () =>
             {
-                if (_languageClient != null)
-                {
-                    _languageClient.SendShutdown(new ShutdownParams());
-                }
+                _languageClient?.SendShutdown(new ShutdownParams());
             });
             RunShutdownAction("Terminating VbeProvider...", () =>
             {
@@ -300,45 +312,28 @@ namespace Rubberduck
             //});
             RunShutdownAction("Initiating App.Shutdown...", () =>
             {
-                if (_app != null)
-                {
-                    _app.Shutdown();
-                    _app = null!;
-                }
+                _app?.Shutdown();
+                _app = null!;
             });
             RunShutdownAction("Sending LSP exit notification...", () =>
             {
-                if (_languageClient != null)
-                {
-                    _languageClient.SendExit();
-                }
+                _languageClient?.SendExit();
             });
             RunShutdownAction("Disposing service scope...", () =>
             {
-                if (_serviceScope != null)
-                {
-                    _serviceScope.Dispose();
-                    _serviceScope = null!;
-                }
+                _serviceScope?.Dispose();
+                _serviceScope = null!;
             });
             RunShutdownAction("Disposing pipe stream...", () =>
             {
-                if (_pipeStream != null)
-                {
-                    _pipeStream.Dispose();
-                    _pipeStream = null!;
-                }
+                _pipeStream?.Dispose();
+                _pipeStream = null!;
             });
             RunShutdownAction("Disposing language client...", () =>
             {
-                if (_clientInitializeTask != null)
-                {
-                    _tokenSource.Cancel();
-                }
-                if (_languageClient != null)
-                {
-                    _languageClient.Dispose();
-                }
+                _clientInitializeTask?.Dispose();
+                _languageClient?.Dispose();
+                _tokenSource?.Cancel();
             });
             RunShutdownAction("Disposing language server process...", () =>
             {
@@ -396,14 +391,14 @@ namespace Rubberduck
                 ? "An unhandled exception occurred. The runtime is shutting down."
                 : "An unhandled exception occurred. The runtime continues running.";
 
+            var traceLevel = _initialSettings.LanguageServerSettings.TraceLevel.ToTraceLevel();
             if (e.ExceptionObject is Exception exception)
             {
-                var traceLevel = _initialSettings.LanguageServerSettings.TraceLevel.ToTraceLevel();
                 _logger.LogCritical(traceLevel, exception);
             }
             else
             {
-                _logger.LogCritical(message);
+                _logger.LogCritical(traceLevel, message);
             }
         }
 
