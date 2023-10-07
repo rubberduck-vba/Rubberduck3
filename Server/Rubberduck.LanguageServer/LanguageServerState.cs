@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.ServerPlatform;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -14,6 +16,7 @@ namespace Rubberduck.LanguageServer
     public interface IServerStateWriter
     {
         void Initialize(InitializeParams param);
+        void Shutdown(ShutdownParams param);
         void SetTraceLevel(InitializeTrace level);
         void AddWorkspaceFolders(IEnumerable<WorkspaceFolder> workspaceFolders);
     }
@@ -21,11 +24,14 @@ namespace Rubberduck.LanguageServer
     public class LanguageServerState : IServerStateWriter
     {
         private readonly ServerStartupOptions _startupOptions;
+        private readonly IHealthCheckService _healthCheckService;
 
-        public LanguageServerState(ILogger<LanguageServerState> logger, ServerStartupOptions startupOptions)
+        public LanguageServerState(ILogger<LanguageServerState> logger, ServerStartupOptions startupOptions,
+            IHealthCheckService healthCheck)
         {
             _logger = logger;
             _startupOptions = startupOptions;
+            _healthCheckService = healthCheck;
 
             _clientInfo = default;
             _capabilities = default;
@@ -105,6 +111,33 @@ namespace Rubberduck.LanguageServer
             _locale = new CultureInfo(_options.Value.Locale);
 
             _logger.LogDebug(TraceLevel.ToTraceLevel(), "Received valid initialization options.", options);
+            StartClientHealthCheckService();
         }
+
+        public void StartClientHealthCheckService()
+        {
+            if (TimedAction.TryRun(() =>
+            {
+                _healthCheckService.Start();
+
+            }, out var elapsed, out var exception))
+            {
+                _logger.LogPerformance(TraceLevel.ToTraceLevel(), "Started healthcheck service.", elapsed);
+            }
+            else if (exception != null)
+            {
+                _logger.LogError(TraceLevel.ToTraceLevel(), exception, "Healthcheck service could not be started.");
+            }
+        }
+
+        public void Shutdown(ShutdownParams param)
+        {
+            _ = param ?? throw new ArgumentNullException(nameof(param), "Shutdown state cannot be meaningfully set with a null parameter.");
+            _shutdownParams = param;
+            _logger.LogInformation(TraceLevel.ToTraceLevel(), "Shutdown state was set.", $"IsCleanExit: {IsCleanExit}");
+        }
+
+        private ShutdownParams? _shutdownParams;
+        public bool IsCleanExit => _shutdownParams != null;
     }
 }

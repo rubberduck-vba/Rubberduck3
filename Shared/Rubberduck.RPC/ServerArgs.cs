@@ -17,6 +17,8 @@ namespace Rubberduck.ServerPlatform
 
         public TransportType TransportType { get; }
 
+        [Option('c', "client", Required = true, HelpText = "The process ID of the client that starts and owns this server.")]
+        public int ClientProcessId { get; set; }
 
         [Option('v', "verbose", SetName = "TraceLevel", HelpText = "Whether to output verbose messages.")]
         public bool Verbose { get; set; }
@@ -24,8 +26,6 @@ namespace Rubberduck.ServerPlatform
         [Option('s', "silent", SetName = "TraceLevel", HelpText = "Whether or not to enable trace logging.")]
         public bool Silent { get; set; }
 
-        [Option('d', "debug", HelpText = "Starts the server in debug mode.")]
-        public bool Debug { get; set; }
 
         /// <summary>
         /// Gets a string that corresponds to the <c>InitializeTrace</c> value for the specified <c>Verbose</c> and <c>Silent</c> switch arguments.
@@ -40,8 +40,6 @@ namespace Rubberduck.ServerPlatform
     {
         public PipeServerStartupOptions() : base(TransportType.Pipe) { }
 
-        [Option('c', "client", Required = true, HelpText = "The process ID of the client that starts and owns this server.")]
-        public int ClientProcessId { get; set; }
 
         [Option('n', "Name", Default = ServerPlatformSettings.LanguageServerDefaultPipeName, HelpText = "The name of the transport pipe.")]
         public string Name { get; set; } = ServerPlatformSettings.LanguageServerDefaultPipeName;

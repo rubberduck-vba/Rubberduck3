@@ -68,11 +68,12 @@ namespace Rubberduck.SettingsProvider.Model
         public string ToProcessStartInfoArguments(long clientProcessId)
         {
             var builder = new StringBuilder();
+            builder.Append($" --client {clientProcessId}");
 
             switch (TransportType)
             {
                 case TransportType.Pipe:
-                    builder.Append($"Pipe --client {clientProcessId} --mode {Mode}");
+                    builder.Append($" Pipe --mode {Mode}");
                     
                     // NOTE: server will use LanguageServerSettings.Default.PipeName without a --name argument.
                     if (!string.IsNullOrWhiteSpace(PipeName))

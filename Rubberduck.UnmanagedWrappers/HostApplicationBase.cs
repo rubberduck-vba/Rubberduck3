@@ -183,9 +183,9 @@ namespace Rubberduck.Unmanaged
                     name = nameProperty?.Value.ToString() ?? string.Empty;
                 }
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                //logger.LogTrace(ex, "An expection attempting to access VBComponent.Properties.");
+                //logger.LogTrace(exception, "An exception attempting to access VBComponent.Properties.");
             }
 
             if (string.IsNullOrWhiteSpace(name))
