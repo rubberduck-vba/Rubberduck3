@@ -8,8 +8,10 @@
              xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz" 
              xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz" xmlns:mdxam="clr-namespace:MdXaml;assembly=MdXaml"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance {x:Type vm:IEditorShellViewModel}, IsDesignTimeCreatable=False}"
-             d:DesignHeight="600" d:DesignWidth="800">
+             d:DataContext="{d:DesignInstance {x:Type local:EditorShellDesignViewModel}, IsDesignTimeCreatable=True}"
+             d:DesignHeight="300" d:DesignWidth="800">
+    <!--d:DataContext="{d:DesignInstance {x:Type vm:IEditorShellViewModel}, IsDesignTimeCreatable=False}"-->
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
