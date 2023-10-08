@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Events;
 using VB = Microsoft.Vbe.Interop;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -18,13 +19,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE => new VBE((IsWrappingNullReference ? null : Target.VBE)!);
 
-        public IVBE Parent => new VBE(IsWrappingNullReference ? null : Target.Parent);
+        public IVBE Parent => new VBE((IsWrappingNullReference ? null : Target.Parent)!);
 
         public IVBProject Add(ProjectType type)
         {
-            return new VBProject(IsWrappingNullReference ? null : Target.Add((VB.vbext_ProjectType)type));
+            return new VBProject((IsWrappingNullReference ? null : Target.Add((VB.vbext_ProjectType)type))!);
         }
 
         public void Remove(IVBProject project)
@@ -38,17 +39,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IVBProject Open(string path)
         {
-            return new VBProject(IsWrappingNullReference ? null : Target.Open(path));
+            return new VBProject((IsWrappingNullReference ? null : Target.Open(path))!);
         }
 
         // Not applicable to VBA
         IVBProject IVBProjects.StartProject
         {
-            get => new VBProject(null);
+            get => new VBProject(null!);
             set { }
         }
 
-        public IVBProject this[object index] => new VBProject(IsWrappingNullReference ? null : Target.Item(index));
+        public IVBProject this[object index] => new VBProject((IsWrappingNullReference ? null : Target.Item(index))!);
 
         IEnumerator<IVBProject> IEnumerable<IVBProject>.GetEnumerator()
         {
@@ -58,7 +59,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         IEnumerator IEnumerable.GetEnumerator()
         {
             return IsWrappingNullReference
-                ? (IEnumerator) new List<IEnumerable>().GetEnumerator()
+                ? new List<IEnumerable>().GetEnumerator()
                 : ((IEnumerable<IVBProject>) this).GetEnumerator();
         }
 
@@ -67,9 +68,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-        public bool Equals(IVBProjects other)
+        public bool Equals(IVBProjects? other)
         {
-            return Equals(other as SafeComWrapper<VB.VBProjects>);
+            return Equals((other as SafeComWrapper<VB.VBProjects>)!);
         }
 
         public override int GetHashCode()
@@ -82,19 +83,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         #region Events
 
-        public event EventHandler<ProjectEventArgs> ProjectAdded;
+        public event EventHandler<ProjectEventArgs> ProjectAdded = delegate { };
         void VB._dispVBProjectsEvents.ItemAdded([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject)
         {
             OnDispatch(ProjectAdded, VBProject, true);
         }
 
-        public event EventHandler<ProjectEventArgs> ProjectRemoved;
+        public event EventHandler<ProjectEventArgs> ProjectRemoved = delegate { };
         void VB._dispVBProjectsEvents.ItemRemoved([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject)
         {
             OnDispatch(ProjectRemoved, VBProject);
         }
 
-        public event EventHandler<ProjectRenamedEventArgs> ProjectRenamed;
+        public event EventHandler<ProjectRenamedEventArgs> ProjectRenamed = delegate { };
         void VB._dispVBProjectsEvents.ItemRenamed([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject,
             [MarshalAs(UnmanagedType.BStr), In] string OldName)
         {
@@ -117,7 +118,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public event EventHandler<ProjectEventArgs> ProjectActivated;
+        public event EventHandler<ProjectEventArgs> ProjectActivated = delegate { };
         void VB._dispVBProjectsEvents.ItemActivated([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject)
         {
             OnDispatch(ProjectActivated, VBProject);

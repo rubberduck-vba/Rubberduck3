@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
-using Rubberduck.InternalApi.Common;
-using Rubberduck.InternalApi.Model;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Model;
+using Rubberduck.Unmanaged.Model.Abstract;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -20,14 +21,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             : base(target, rewrapping)
         { }
 
-        public QualifiedModuleName QualifiedModuleName => new QualifiedModuleName(this);
+        public IQualifiedModuleName QualifiedModuleName => new QualifiedModuleName(this);
 
         public ComponentType Type => IsWrappingNullReference ? 0 : (ComponentType)Target.Type;
         public bool HasCodeModule => true;
-        public ICodeModule CodeModule => new CodeModule(IsWrappingNullReference ? null : Target.CodeModule);
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
-        public IVBComponents Collection => new VBComponents(IsWrappingNullReference ? null : Target.Collection);
-        public IProperties Properties => new Properties(IsWrappingNullReference ? null : Target.Properties);
+        public ICodeModule CodeModule => new CodeModule((IsWrappingNullReference ? null : Target.CodeModule)!);
+        public IVBE VBE => new VBE((IsWrappingNullReference ? null : Target.VBE)!);
+        public IVBComponents Collection => new VBComponents((IsWrappingNullReference ? null : Target.Collection)!);
+        public IProperties Properties => new Properties((IsWrappingNullReference ? null : Target.Properties)!);
         public bool HasOpenDesigner => !IsWrappingNullReference && Target.HasOpenDesigner;
         public string DesignerId => IsWrappingNullReference ? string.Empty : Target.DesignerID;
 
@@ -51,7 +52,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 using (var designer = IsWrappingNullReference
                     ? null
-                    : new UserForm(Target.Designer as VB.Forms.UserForm))
+                    : new UserForm((Target.Designer as VB.Forms.UserForm)!))
                 {
                     return designer == null
                         ? new Controls(null)
@@ -66,7 +67,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 using (var designer = IsWrappingNullReference
                     ? null
-                    : new UserForm(Target.Designer as VB.Forms.UserForm))
+                    : new UserForm((Target.Designer as VB.Forms.UserForm)!))
                 {
                     return designer == null
                         ? new Controls(null)
@@ -85,7 +86,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     {
                         return false;
                     }
-                    using (var designer = new UserForm(Target.Designer as VB.Forms.UserForm))
+                    using (var designer = new UserForm((Target.Designer as VB.Forms.UserForm)!))
                     {
                         return !designer.IsWrappingNullReference;
                     }
@@ -97,7 +98,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public IWindow DesignerWindow() => new Window(IsWrappingNullReference ? null : Target.DesignerWindow());
+        public IWindow DesignerWindow() => new Window((IsWrappingNullReference ? null : Target.DesignerWindow())!);
         public void Activate() => Target.Activate();
         public bool IsSaved => !IsWrappingNullReference && Target.Saved;
         public void Export(string path) => Target.Export(path);
@@ -246,11 +247,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         }
 
         public int FileCount => 0;
-        public string GetFileName(short index) => null;
+        public string GetFileName(short index) => null!;
 
-        public bool Equals(IVBComponent other)
+        public bool Equals(IVBComponent? other)
         {
-            return Equals(other as SafeComWrapper<VB.VBComponent>);
+            return Equals((other as SafeComWrapper<VB.VBComponent>)!);
         }
 
         public override int GetHashCode()

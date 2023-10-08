@@ -1,6 +1,7 @@
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Model.Abstract;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
@@ -10,12 +11,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public FallbackApp(IVBE vbe) { }
         public string ApplicationName => "(unknown)";
         public IEnumerable<HostDocument> GetDocuments() => Enumerable.Empty<HostDocument>();
-        public HostDocument GetDocument(QualifiedModuleName moduleName)
+        public HostDocument GetDocument(IQualifiedModuleName moduleName)
         {
-            return null;
+            return null!;
         }
-        public bool CanOpenDocumentDesigner(QualifiedModuleName moduleName) => false;
-        public bool TryOpenDocumentDesigner(QualifiedModuleName moduleName) => false;
+        public bool CanOpenDocumentDesigner(IQualifiedModuleName moduleName) => false;
+        public bool TryOpenDocumentDesigner(IQualifiedModuleName moduleName) => false;
         public IEnumerable<HostAutoMacro> AutoMacroIdentifiers => Enumerable.Empty<HostAutoMacro>();
         public void Dispose() { }
     }

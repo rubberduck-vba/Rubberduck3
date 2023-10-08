@@ -2,9 +2,10 @@ using System.Collections.Generic;
 using IOException = System.IO.IOException;
 using Path = System.IO.Path;
 using System.Text.RegularExpressions;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
 using System;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
@@ -16,9 +17,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
         }
 
-        public IApplication Application => new Application(IsWrappingNullReference ? null : Target.Application);
+        public IApplication Application => new Application((IsWrappingNullReference ? null : Target.Application)!);
 
-        public IApplication Parent => new Application(IsWrappingNullReference ? null : Target.Parent);
+        public IApplication Parent => new Application((IsWrappingNullReference ? null : Target.Parent)!);
 
         public string ProjectId => HelpFile;
 
@@ -42,11 +43,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public EnvironmentMode Mode => IsWrappingNullReference ? 0 : (EnvironmentMode)Target.Mode;
 
-        public IVBProjects Collection => new VBProjects(IsWrappingNullReference ? null : Target.Collection);
+        public IVBProjects Collection => new VBProjects((IsWrappingNullReference ? null : Target.Collection)!);
 
-        public IReferences References => new References(IsWrappingNullReference ? null : Target.References);
+        public IReferences References => new References((IsWrappingNullReference ? null : Target.References)!);
 
-        public IVBComponents VBComponents => new VBComponents(IsWrappingNullReference || Protection == ProjectProtection.Locked ? null : Target.VBComponents);
+        public IVBComponents VBComponents => new VBComponents((IsWrappingNullReference || Protection == ProjectProtection.Locked ? null : Target.VBComponents)!);
 
         public ProjectProtection Protection => IsWrappingNullReference ? 0 : (ProjectProtection)Target.Protection;
 
@@ -72,7 +73,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string BuildFileName => IsWrappingNullReference ? string.Empty : Target.BuildFileName;
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE => new VBE((IsWrappingNullReference ? null : Target.VBE)!);
 
         public void SaveAs(string fileName)
         {
@@ -89,9 +90,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && other.Target == Target);
         }
 
-        public bool Equals(IVBProject other)
+        public bool Equals(IVBProject? other)
         {
-            return Equals(other as SafeComWrapper<VB.VBProject>);
+            return Equals((other as SafeComWrapper<VB.VBProject>)!);
         }
 
         public override int GetHashCode()
@@ -166,7 +167,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        private string _displayName;
+        private string? _displayName;
         /// <summary>
         /// WARNING: This property might have has side effects. If the filename cannot be accessed, it changes the ActiveVBProject, which causes a flicker in the VBE.
         /// This should only be called if it is *absolutely* necessary.

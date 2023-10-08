@@ -1,18 +1,18 @@
 ﻿using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
-using Rubberduck.VersionCheck;
+
 namespace Rubberduck.Core.Splash
 {
     public class SplashViewModel : ViewModelBase, ISplashViewModel
     {
-        public SplashViewModel(IVersionCheckService versionCheck)
+        public SplashViewModel(string version)
         {
-            Version = $"v{versionCheck.VersionString}";
+            Version = version;
         }
 
         public string Version { get; }
 
-        private string _status = "Initializing..."; // TODO move to .resx
+        private string _status = "Long live the cucumber!";
         public string CurrentStatus 
         {
             get => _status;

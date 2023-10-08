@@ -1,7 +1,7 @@
-﻿using IOException = System.IO.IOException;
+﻿using System.IO;
 using System.Runtime.InteropServices;
-using NLog;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Unmanaged.Model;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 
 namespace Rubberduck.VBEditor.Extensions
 {
@@ -23,7 +23,7 @@ namespace Rubberduck.VBEditor.Extensions
         /// Gets the standard projectId for a <em>locked</em> user projects.
         /// <strong>Do not</strong> use this overload for <em>unlocked</em> user projects.
         /// </summary>
-        public static string GetProjectId(this IVBProject project, string projectName, string projectPath)
+        public static string GetProjectId(this IVBProject _, string projectName, string projectPath)
         {
             return new QualifiedModuleName(projectName, projectPath, projectName).ProjectId;
         }
@@ -50,7 +50,7 @@ namespace Rubberduck.VBEditor.Extensions
             return projectId;
         }
 
-        public static bool TryGetFullPath(this IVBProject project, out string fullPath)
+        public static bool TryGetFullPath(this IVBProject project, out string? fullPath)
         {
             try
             {
@@ -62,9 +62,9 @@ namespace Rubberduck.VBEditor.Extensions
                 fullPath = null;
                 return false;
             }
-            catch (COMException e)
+            catch (COMException)
             {
-                LogManager.GetLogger(typeof(IVBProject).FullName).Warn(e);
+                //LogManager.GetLogger(typeof(IVBProject).FullName).Warn(e);
                 fullPath = null;
                 return false;
             }

@@ -1,5 +1,7 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using Rubberduck.InternalApi.Model;
+using Rubberduck.Unmanaged.Model;
+using Rubberduck.Unmanaged.Model.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -30,7 +32,7 @@ namespace Rubberduck.UI.Abstract
     {
         //event EventHandler<NavigateToMemberEventArgs> MemberSelected;
 
-        IQualifiedModuleName QualifiedModuleName { get; set; }
+        //IQualifiedModuleName QualifiedModuleName { get; set; }
         string Name { get; set; }
         ModuleType ModuleType { get; set; }
 
@@ -42,7 +44,7 @@ namespace Rubberduck.UI.Abstract
 
     public interface IModuleInfoViewModel : INotifyPropertyChanged
     {
-        IQualifiedModuleName QualifiedModuleName { get; set; }
+        //IQualifiedModuleName QualifiedModuleName { get; set; }
         string Name { get; set; }
         ModuleType ModuleType { get; set; }
 

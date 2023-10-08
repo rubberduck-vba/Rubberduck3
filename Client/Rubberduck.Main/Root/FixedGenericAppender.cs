@@ -1,11 +1,12 @@
-﻿using Castle.Core;
-using Castle.MicroKernel.Context;
-using Castle.MicroKernel.Handlers;
+﻿//using Castle.Core;
+//using Castle.MicroKernel.Context;
+//using Castle.MicroKernel.Handlers;
 using System;
 using System.Linq;
 
 namespace Rubberduck.Root
 {
+    /*
     internal class FixedGenericAppender : IGenericImplementationMatchingStrategy
     {
         private readonly Type[] closingGenerics;
@@ -20,4 +21,5 @@ namespace Rubberduck.Root
             return context.GenericArguments.Union(closingGenerics).ToArray();
         }
     }
+    */
 }

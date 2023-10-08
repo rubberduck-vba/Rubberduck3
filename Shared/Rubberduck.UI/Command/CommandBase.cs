@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using NLog;
+using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Common;
 
 namespace Rubberduck.UI.Command
@@ -12,22 +13,24 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public abstract class CommandBase : ICommand
     {
-        private static readonly List<MethodBase> ExceptionTargetSites = new List<MethodBase>();
+        private static readonly List<MethodBase> ExceptionTargetSites = new();
 
-        protected CommandBase(ILogger logger = null)
+        protected CommandBase(ILogger logger)
         {
-            Logger = logger ?? LogManager.GetLogger(GetType().FullName);
+            Logger = logger;
             CanExecuteCondition = (parameter => true);
             OnExecuteCondition = (parameter => true);
+
+            ShortcutText = string.Empty;
         }
 
         protected ILogger Logger { get; }
-        protected abstract void OnExecute(object parameter);
+        protected abstract Task OnExecuteAsync(object? parameter);
 
-        protected Func<object, bool> CanExecuteCondition { get; private set; }
-        protected Func<object, bool> OnExecuteCondition { get; private set; }
+        protected Func<object?, bool> CanExecuteCondition { get; private set; }
+        protected Func<object?, bool> OnExecuteCondition { get; private set; }
 
-        protected void AddToCanExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation, bool requireReevaluationAlso = false)
+        protected void AddToCanExecuteEvaluation(Func<object?, bool> furtherCanExecuteEvaluation, bool requireReevaluationAlso = false)
         {
             if (furtherCanExecuteEvaluation == null)
             {
@@ -44,7 +47,7 @@ namespace Rubberduck.UI.Command
             }
         }
 
-        protected void AddToOnExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation)
+        protected void AddToOnExecuteEvaluation(Func<object?, bool> furtherCanExecuteEvaluation)
         {
             if (furtherCanExecuteEvaluation == null)
             {
@@ -56,20 +59,20 @@ namespace Rubberduck.UI.Command
                 currentOnExecute(parameter) && furtherCanExecuteEvaluation(parameter);
         }
 
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object? parameter)
         {
             try
             {
                 var result = false;
                 var elapsed = TimedAction.Run(() => result = CanExecuteCondition(parameter));
-                Logger.Trace($"{GetType().Name}.CanExecute completed in {elapsed.TotalMilliseconds}ms.");
+                //Logger?.LogPerformance($"{GetType().Name}.CanExecute completed in {elapsed.TotalMilliseconds}ms.");
                 return result;
             }
             catch (Exception exception)
             {
-                Logger.Error(exception);
+                //Logger.LogError(exception);
 
-                if (!ExceptionTargetSites.Contains(exception.TargetSite))
+                if (exception.TargetSite != null && !ExceptionTargetSites.Contains(exception.TargetSite))
                 {
                     ExceptionTargetSites.Add(exception.TargetSite);
                 }
@@ -78,7 +81,7 @@ namespace Rubberduck.UI.Command
             }
         }
 
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             try
             {
@@ -89,15 +92,15 @@ namespace Rubberduck.UI.Command
                         return;
                     }
 
-                    OnExecute(parameter);
+                    OnExecuteAsync(parameter).ConfigureAwait(false).GetAwaiter().GetResult();
                 });
-                Logger.Trace($"{GetType().Name}.Execute completed in {elapsed.TotalMilliseconds}ms.");
+                //Logger.Trace($"{GetType().Name}.Execute completed in {elapsed.TotalMilliseconds}ms.");
             }
             catch (Exception exception)
             {
-                Logger.Error(exception);
+                //Logger.Error(exception);
 
-                if (!ExceptionTargetSites.Contains(exception.TargetSite))
+                if (exception.TargetSite != null && !ExceptionTargetSites.Contains(exception.TargetSite))
                 {
                     ExceptionTargetSites.Add(exception.TargetSite);
                 }
@@ -106,7 +109,7 @@ namespace Rubberduck.UI.Command
 
         public string ShortcutText { get; set; }
 
-        public event EventHandler CanExecuteChanged
+        public event EventHandler? CanExecuteChanged
         {
             add => CommandManager.RequerySuggested += value;
             remove => CommandManager.RequerySuggested -= value;

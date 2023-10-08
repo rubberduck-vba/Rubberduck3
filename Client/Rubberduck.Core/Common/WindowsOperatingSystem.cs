@@ -1,19 +1,20 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Diagnostics;
 using System.IO.Abstractions;
 using System.Management;
-using NLog;
 
 namespace Rubberduck.Common
 {
     public sealed class WindowsOperatingSystem : IOperatingSystem
     {
-        private static readonly ILogger _Logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger<WindowsOperatingSystem> _Logger;
         private readonly IFileSystem _filesystem;
 
-        public WindowsOperatingSystem(
+        public WindowsOperatingSystem(ILogger<WindowsOperatingSystem> logger,
             IFileSystem filesystem)
         {
+            _Logger = logger;
             _filesystem = filesystem;
         }
 
@@ -34,8 +35,7 @@ namespace Rubberduck.Common
         {
             try
             {
-                var wmiEnum = new ManagementObjectSearcher("root\\CIMV2", "SELECT Version FROM  Win32_OperatingSystem")
-                    .Get().GetEnumerator();
+                var wmiEnum = new ManagementObjectSearcher("root\\CIMV2", "SELECT Version FROM  Win32_OperatingSystem").Get().GetEnumerator();
                 wmiEnum.MoveNext();
                 var versionString = wmiEnum.Current.Properties["Version"].Value as string;
 
@@ -51,12 +51,11 @@ namespace Rubberduck.Common
             }
             catch (Exception exception)
             {
-                _Logger.Warn(exception, "Unable to determine OS Version");
+                _Logger.LogWarning(exception, "Unable to determine OS Version");
                 return null;
             }
-            _Logger.Warn("Unable to determine OS Version");
+            _Logger.LogWarning("Unable to determine OS Version");
             return null;
         }
     }
 }
-

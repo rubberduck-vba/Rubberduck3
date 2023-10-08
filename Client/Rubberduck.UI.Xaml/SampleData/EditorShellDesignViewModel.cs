@@ -1,5 +1,5 @@
-﻿using Rubberduck.InternalApi.Model;
-using Rubberduck.UI.Abstract;
+﻿using Rubberduck.UI.Abstract;
+using Rubberduck.Unmanaged.Model.Abstract;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -40,6 +40,10 @@ namespace Rubberduck.UI.Xaml.Controls
         public IStatusBarViewModel Status { get; set; } = new StatusBarDesignViewModel();
 
         public IEnumerable<ISyntaxErrorViewModel> SyntaxErrors => throw new System.NotImplementedException();
+
+        public object Partition { get; init; }
+        public object InterTabClient { get; init; }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void ActivateModuleDocumentTab(IQualifiedModuleName module) => throw new System.NotImplementedException();
         public ICodePaneViewModel GetModule(IQualifiedModuleName module) => throw new System.NotImplementedException();

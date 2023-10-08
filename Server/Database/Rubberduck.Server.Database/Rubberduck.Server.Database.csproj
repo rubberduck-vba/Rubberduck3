@@ -368,9 +368,9 @@
       <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
       <Name>Rubberduck.Resources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Shared\Rubberduck.RPC\Rubberduck.RPC.csproj">
+    <ProjectReference Include="..\..\..\Shared\Rubberduck.RPC\Rubberduck.ServerPlatform.csproj">
       <Project>{8d218701-af68-4013-b9c0-108c1d162e11}</Project>
-      <Name>Rubberduck.RPC</Name>
+      <Name>Rubberduck.ServerPlatform</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

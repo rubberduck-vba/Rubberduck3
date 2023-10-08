@@ -8,6 +8,8 @@ using System.Windows.Input;
 using System;
 using Rubberduck.VBEditor;
 using System.Linq;
+using Rubberduck.Unmanaged.Model.Abstract;
+using Rubberduck.Unmanaged.Model;
 
 ///<summary>
 ///This file provides design-time data for the <see cref="RubberduckEditorControl.xaml"/> control.
@@ -50,7 +52,7 @@ namespace Rubberduck.UI.Xaml.Controls
 
     internal class ModuleInfoDesignViewModel : IModuleInfoViewModel
     {
-        public IQualifiedModuleName QualifiedModuleName { get; set; } = new QualifiedModuleName("projectName", "projectPath", "componentName");
+        //public IQualifiedModuleName QualifiedModuleName { get; set; } = new QualifiedModuleName("projectName", "projectPath", "componentName");
         public string Name { get; set; } = "Module1";
         public ModuleType ModuleType { get; set; } = ModuleType.StandardModule;
         public string Folder { get; set; } = "VBAProject";
@@ -73,7 +75,7 @@ namespace Rubberduck.UI.Xaml.Controls
             new MemberInfoDesignViewModel { Name = "MySub" },
             new MemberInfoDesignViewModel { Name = "Other" }
         };
-        public IQualifiedModuleName QualifiedModuleName { get; set; } = new QualifiedModuleName("projectName", "projectPath", "componentName");
+        //public IQualifiedModuleName QualifiedModuleName { get; set; } = new QualifiedModuleName("projectName", "projectPath", "componentName");
         public event PropertyChangedEventHandler PropertyChanged;
         public void AddMember(string name, MemberType memberType, DocumentOffset offset)
         {

@@ -193,9 +193,9 @@
     <Analyzer Include="..\..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.5.22\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.VisualBasic.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Shared\Rubberduck.RPC\Rubberduck.RPC.csproj">
+    <ProjectReference Include="..\..\..\Shared\Rubberduck.RPC\Rubberduck.ServerPlatform.csproj">
       <Project>{8D218701-AF68-4013-B9C0-108C1D162E11}</Project>
-      <Name>Rubberduck.RPC</Name>
+      <Name>Rubberduck.ServerPlatform</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

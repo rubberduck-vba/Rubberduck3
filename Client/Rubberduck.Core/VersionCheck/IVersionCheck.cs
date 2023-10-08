@@ -7,7 +7,7 @@ namespace Rubberduck.VersionCheck
 {
     public interface IVersionCheckService
     {
-        Task<Version> GetLatestVersionAsync(GeneralSettings settings, CancellationToken token = default);
+        Task<Version?> GetLatestVersionAsync(CancellationToken token = default);
         Version CurrentVersion { get; }
         bool IsDebugBuild { get; }
         string VersionString { get; }

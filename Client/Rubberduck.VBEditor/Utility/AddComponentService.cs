@@ -1,10 +1,10 @@
 ﻿using System.Runtime.InteropServices;
-using NLog;
+//using NLog;
 using Rubberduck.InternalApi.Model;
-using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SourceCodeHandling;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SourceCodeProvider;
+using Rubberduck.Unmanaged.Model;
 
 namespace Rubberduck.VBEditor.Utility
 {
@@ -14,7 +14,7 @@ namespace Rubberduck.VBEditor.Utility
         private readonly IComponentSourceCodeHandler _codePaneSourceCodeHandler;
         private readonly IComponentSourceCodeHandler _attributeSourceCodeHandler;
 
-        private static ILogger _logger = LogManager.GetCurrentClassLogger();
+        //private static ILogger _logger = LogManager.GetCurrentClassLogger();
 
         public AddComponentService(
             IProjectsProvider projectsProvider,
@@ -74,9 +74,9 @@ namespace Rubberduck.VBEditor.Utility
             {
                 newComponent.Name = componentName;
             }
-            catch (COMException ex)
+            catch (COMException)
             {
-                _logger.Debug(ex, $"Unable to rename component to {componentName}.");
+                //_logger.Debug(ex, $"Unable to rename component to {componentName}.");
             }
         }
 

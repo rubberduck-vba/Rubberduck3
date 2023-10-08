@@ -1,6 +1,7 @@
-﻿using Rubberduck.InternalApi.Model;
-using Rubberduck.UI.Abstract;
-using Rubberduck.VBEditor.ComManagement;
+﻿using Rubberduck.UI.Abstract;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Model;
+using Rubberduck.Unmanaged.Model.Abstract;
 using System.Linq;
 
 namespace Rubberduck.Core.Editor
@@ -25,7 +26,7 @@ namespace Rubberduck.Core.Editor
 
         public ICodePaneViewModel GetViewModel(IEditorShellViewModel shell, IQualifiedModuleName module, IMemberProviderViewModel memberProvider, string content)
         {
-            var vm = shell.ModuleDocumentTabs.SingleOrDefault(e => e.ModuleInfo.QualifiedModuleName.Equals(module));
+            var vm = shell.ModuleDocumentTabs.FirstOrDefault();
             if (vm is null)
             {
                 _projectsRepository.Component(module);

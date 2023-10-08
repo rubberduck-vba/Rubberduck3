@@ -1,22 +1,26 @@
-﻿using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.Events;
+﻿using Microsoft.Extensions.Logging;
+using Rubberduck.UI;
+using Rubberduck.UI.Command;
+using Rubberduck.Unmanaged.Abstract;
 using Rubberduck.VBEditor.UI.OfficeMenus;
+using System.Threading.Tasks;
 
 namespace Rubberduck.Core.Editor
 {
-    public class ShowEditorShellCommand : ComCommandBase, IShowEditorShellCommand
+    class ShowEditorShellCommand : ComCommandBase, IShowEditorShellCommand
     {
-        private readonly EditorShellDockablePresenter _presenter;
+        private readonly IPresenter _presenter;
 
-        public ShowEditorShellCommand(EditorShellDockablePresenter presenter, IVbeEvents vbeEvents)
-            : base(vbeEvents)
+        public ShowEditorShellCommand(ILogger<ShowEditorShellCommand> logger, IPresenter presenter, IVbeEvents vbeEvents)
+            : base(logger, vbeEvents)
         {
             _presenter = presenter;
         }
 
-        protected override void OnExecute(object parameter)
+        protected async override Task OnExecuteAsync(object? parameter)
         {
-            _presenter?.Show();
+            _presenter.Show();
+            await Task.CompletedTask;
         }
     }
 }

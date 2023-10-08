@@ -1,6 +1,8 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+﻿// ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
+using Microsoft.Extensions.Logging;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 
-// ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class PublisherApp : HostApplicationBase<Microsoft.Office.Interop.Publisher.Application>

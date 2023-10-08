@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using VB = Microsoft.Vbe.Interop;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -15,14 +16,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE => new VBE((IsWrappingNullReference ? null : Target.VBE)!);
 
-        public IApplication Parent => new Application(IsWrappingNullReference ? null : Target.Parent);
+        public IApplication Parent => new Application((IsWrappingNullReference ? null : Target.Parent)!);
 
-        public IWindow this[object index] => new Window(IsWrappingNullReference ? null : Target.Item(index));
+        public IWindow this[object index] => new Window((IsWrappingNullReference ? null : Target.Item(index))!);
 
 
-        private static readonly Dictionary<VB.Window, object> _dockableHosts = new Dictionary<VB.Window, object>();
+        private static readonly Dictionary<VB.Window, object> _dockableHosts = new();
 
         public ToolWindowInfo CreateToolWindow(IAddIn addInInst, string progId, string caption, string guidPosition)
         {
@@ -30,7 +31,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 return new ToolWindowInfo(null, null);
             }
-            object control = null;
+            object? control = null;
             var window = Target.CreateToolWindow((VB.AddIn)addInInst.Target, progId, caption, guidPosition, ref control);
             _dockableHosts.Add(window, control);
             return new ToolWindowInfo(new Window(window), control);
@@ -62,9 +63,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-        public bool Equals(IWindows other)
+        public bool Equals(IWindows? other)
         {
-            return Equals(other as SafeComWrapper<VB.Windows>);
+            return Equals((other as SafeComWrapper<VB.Windows>)!);
         }
 
         public override int GetHashCode()

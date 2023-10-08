@@ -1,6 +1,7 @@
 ﻿using Rubberduck.InternalApi.Common;
 using Rubberduck.Settings;
 using System;
+using System.IO.Abstractions;
 using System.Linq;
 
 namespace Rubberduck.Main.Extensions

@@ -1,25 +1,21 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
-using Rubberduck.Parsing;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SourceCodeHandling;
-using Rubberduck.InternalApi.Model;
 using System;
 using System.IO;
 using System.Linq;
 using RubberduckUI.Extensions;
+using Rubberduck.Unmanaged.Model.Abstract;
+using Rubberduck.Unmanaged.Abstract.SourceCodeProvider;
+using Rubberduck.Unmanaged.Model;
 
 namespace Rubberduck.Core.Editor
 {
     public class EditorSourceCodeHandler : IEditorSourceCodeHandler
     {
-        private readonly ITextDocumentProvider _documentProvider;
-
-        public EditorSourceCodeHandler(ITextDocumentProvider documentProvider)
+        public EditorSourceCodeHandler()
         {
-            _documentProvider = documentProvider;
         }
 
-        private TextDocument GetDocument(IQualifiedModuleName module) => null; //_documentProvider.GetDocument(module);
+        private TextDocument GetDocument(IQualifiedModuleName module) => null!; // TODO
 
         public string StringSource(IQualifiedModuleName module) => GetDocument(module)?.Text ?? string.Empty;
 

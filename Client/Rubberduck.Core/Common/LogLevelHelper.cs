@@ -1,14 +1,15 @@
 ﻿using System.Linq;
-using NLog;
-using NLog.Config;
+//using NLog;
+//using NLog.Config;
 using System;
 using System.Collections.Generic;
 
 namespace Rubberduck.Common
 {
+    /*
     public static class LogLevelHelper
     {
-        private static readonly Lazy<IEnumerable<LogLevel>> _logLevels = new Lazy<IEnumerable<LogLevel>>(GetLogLevels);
+        private static readonly Lazy<IEnumerable<LogLevel>> _logLevels = new(GetLogLevels);
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static string LogHeader;
@@ -102,4 +103,5 @@ namespace Rubberduck.Common
             }
         }
     }
+    */
 }

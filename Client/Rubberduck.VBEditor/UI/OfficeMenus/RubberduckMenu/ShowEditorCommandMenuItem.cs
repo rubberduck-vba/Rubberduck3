@@ -1,6 +1,4 @@
-﻿using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
-
-namespace Rubberduck.VBEditor.UI.OfficeMenus
+﻿namespace Rubberduck.VBEditor.UI.OfficeMenus
 {
     public interface IShowEditorShellCommand : IMenuCommand { }
 
@@ -10,10 +8,7 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
         {
         }
 
-        public override string Key => "RubberduckMenu_ShowEditor";
-        public override bool BeginGroup => false;
-        public override int DisplayOrder => (int)RubberduckParentMenu.ItemDisplayOrder.ShowEditor;
-
+        public override string ResourceKey => "RubberduckMenu_ShowEditor";
         public override bool EvaluateCanExecute(object parameter) => true;
     }
 }

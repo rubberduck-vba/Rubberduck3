@@ -219,8 +219,8 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
                 return;
             }
 
-            _outerObject = null;
-            _supportedTypes = null;
+            _outerObject = null!;
+            _supportedTypes = null!;
 
             _isDisposed = true;
         }
@@ -319,7 +319,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private COM_IOleInPlaceFrame _IOleInPlaceFrame;         // cached object for accessing the IOleInPlaceFrame interface
+        private COM_IOleInPlaceFrame _IOleInPlaceFrame = null!;         // cached object for accessing the IOleInPlaceFrame interface
 
         public Wrapper_IOleInPlaceFrame(IntPtr hostObjectPtr) : base(hostObjectPtr)
         {
@@ -336,7 +336,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
                 if (_IOleInPlaceFrame != null)
                 {
                     Marshal.ReleaseComObject(_IOleInPlaceFrame);
-                    _IOleInPlaceFrame = null;
+                    _IOleInPlaceFrame = null!;
                 }
             }
 
@@ -424,9 +424,9 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        COM_IOleClientSite _IOleClientSite;        // cached object for accessing the IOleClientSite interface
-        COM_IOleInPlaceSite _IOleInPlaceSite;       // cached object for accessing the IOleInPlaceSite interface
-        public Wrapper_IOleInPlaceFrame _cachedFrame;           // cache the frame object returned from GetWindowContext, so that we can control the tear down
+        COM_IOleClientSite _IOleClientSite = null!;        // cached object for accessing the IOleClientSite interface
+        COM_IOleInPlaceSite _IOleInPlaceSite = null!;       // cached object for accessing the IOleInPlaceSite interface
+        public Wrapper_IOleInPlaceFrame _cachedFrame = null!;           // cache the frame object returned from GetWindowContext, so that we can control the tear down
 
         public Wrapper_IOleClientSite(IntPtr hostObjectPtr) : base(hostObjectPtr)
         {
@@ -442,18 +442,18 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
             if (disposing)
             {
                 _cachedFrame?.Dispose();
-                _cachedFrame = null;
+                _cachedFrame = null!;
 
                 if (_IOleClientSite != null)
                 {
                     Marshal.ReleaseComObject(_IOleClientSite);
-                    _IOleClientSite = null;
+                    _IOleClientSite = null!;
                 }
 
                 if (_IOleInPlaceSite != null)
                 {
                     Marshal.ReleaseComObject(_IOleInPlaceSite);
-                    _IOleInPlaceSite = null;
+                    _IOleInPlaceSite = null!;
                 }
             }
 
@@ -545,7 +545,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
             {
                 // call succeeded, so wrap the ppFrame with our own object so that we can control all host owned COM references
                 _cachedFrame?.Dispose();
-                _cachedFrame = null;
+                _cachedFrame = null!;
                 _cachedFrame = new Wrapper_IOleInPlaceFrame(ppFrame);
                 Marshal.Release(ppFrame);    // the Wrapper_IOleInPlaceFrame took its own reference, so we can release this one.
                 ppFrame = _cachedFrame.CopyAggregatedReference();

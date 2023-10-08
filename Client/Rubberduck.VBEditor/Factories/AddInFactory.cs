@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 
 namespace Rubberduck.VBEditor
 {

@@ -4,8 +4,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using Rubberduck.RPC.Platform.Model;
-using Rubberduck.RPC.Platform.Model.Database;
+using Rubberduck.ServerPlatform.Platform.Model;
+using Rubberduck.ServerPlatform.Platform.Model.Database;
 
 namespace Rubberduck.Server.Database.Internal.Storage.Abstract
 {

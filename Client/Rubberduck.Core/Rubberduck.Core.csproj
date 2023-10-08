@@ -1,243 +1,39 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7B04E66C-DD08-437F-8D43-EDDAC732DC53}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rubberduck.Core</RootNamespace>
-    <AssemblyName>Rubberduck.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
+    <Version>3.0.0</Version>
+    <TargetFramework>net7.0</TargetFramework>
+    <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Platforms>AnyCPU</Platforms>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ApplicationIcon>Ducky.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Antlr4.Runtime.4.6.6\lib\net45\Antlr4.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.AvalonEdit, Version=6.2.0.78, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AvalonEdit.6.2.0.78\lib\net462\ICSharpCode.AvalonEdit.dll</HintPath>
-    </Reference>
-    <Reference Include="Infralution.Localization.Wpf, Version=3.3.0.0, Culture=neutral, PublicKeyToken=547ccae517a004b5, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\libs\Infralution.Localization.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="MessagePack.Annotations, Version=2.4.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MessagePack.Annotations.2.4.59\lib\netstandard2.0\MessagePack.Annotations.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.NET.StringTools, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.NET.StringTools.17.4.0\lib\net472\Microsoft.NET.StringTools.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NLog.5.1.2\lib\net46\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Collections.Immutable, Version=1.2.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Collections.Immutable.1.7.1\lib\net461\System.Collections.Immutable.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Abstractions, Version=19.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.IO.Abstractions.19.1.18\lib\net461\System.IO.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Text.Encodings.Web, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Text.Encodings.Web.7.0.0\lib\net462\System.Text.Encodings.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Text.Json, Version=7.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Text.Json.7.0.2\lib\net462\System.Text.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Windows" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="TestableIO.System.IO.Abstractions, Version=19.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\TestableIO.System.IO.Abstractions.19.1.18\lib\net461\TestableIO.System.IO.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="TestableIO.System.IO.Abstractions.Wrappers, Version=19.0.0.0, Culture=neutral, PublicKeyToken=96bf224d23c43e59, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\TestableIO.System.IO.Abstractions.Wrappers.19.1.18\lib\net461\TestableIO.System.IO.Abstractions.Wrappers.dll</HintPath>
-    </Reference>
-    <Reference Include="WindowsBase" />
+    <Content Include="Ducky.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App.cs" />
-    <Compile Include="About\AboutCommand.cs" />
-    <Compile Include="Editor\Commands\EditorShellCommand.cs" />
-    <Compile Include="Editor\Commands\IEditorShellCommand.cs" />
-    <Compile Include="Editor\Commands\LoadCommand.cs" />
-    <Compile Include="Editor\Commands\OpenCommand.cs" />
-    <Compile Include="Editor\Commands\SyncCommand.cs" />
-    <Compile Include="Editor\Tools\SyncPanelModuleViewModel.cs" />
-    <Compile Include="Editor\Tools\SyncPanelModuleViewModelProvider.cs" />
-    <Compile Include="Editor\Tools\SyncPanelToolTab.cs" />
-    <Compile Include="Editor\Tools\SyncPanelViewModel.cs" />
-    <Compile Include="Settings\BlockFoldingSettings.cs" />
-    <Compile Include="Editor\Model\CodePaneViewModel.cs" />
-    <Compile Include="Editor\EditorShellDockablePresenter.cs" />
-    <Compile Include="Editor\Model\CodePaneViewModelProvider.cs" />
-    <Compile Include="Editor\Model\EditorShellContext.cs" />
-    <Compile Include="Editor\Model\EditorShellViewModel.cs" />
-    <Compile Include="Editor\Model\StatusBarViewModel.cs" />
-    <Compile Include="Editor\Model\MemberProviderViewModel.cs" />
-    <Compile Include="Editor\Parsing\EditorSourceCodeHandler.cs" />
-    <Compile Include="Editor\ShowEditorShellCommand.cs" />
-    <Compile Include="Editor\Model\SyntaxErrorViewModel.cs" />
-    <Compile Include="Editor\Tools\ShellToolTabProvider.cs" />
-    <Compile Include="Editor\Tools\ShellToolTabSetting.cs" />
-    <Compile Include="Settings\EditorSettings.cs" />
-    <Compile Include="VersionCheck\VersionCheckCommand.cs" />
-    <Compile Include="About\AboutControlViewModel.cs" />
-    <Compile Include="Common\ClipboardWriter.cs" />
-    <Compile Include="Common\ExportFormatter.cs" />
-    <Compile Include="Common\HookEventArgs.cs" />
-    <Compile Include="Common\Hotkeys\Hotkey.cs" />
-    <Compile Include="Common\Hotkeys\HotkeyFactory.cs" />
-    <Compile Include="Common\Hotkeys\HotkeyInfo.cs" />
-    <Compile Include="Common\Hotkeys\IHotkey.cs" />
-    <Compile Include="Common\IAttachable.cs" />
-    <Compile Include="Common\IOperatingSystem.cs" />
-    <Compile Include="Common\IRubberduckHooks.cs" />
-    <Compile Include="Common\LogLevelHelper.cs" />
-    <Compile Include="Common\RubberduckHooks.cs" />
-    <Compile Include="Common\UndocumentedAttribute.cs" />
-    <Compile Include="WebApi\ApiClientBase.cs" />
-    <Compile Include="WebApi\ApiException.cs" />
-    <Compile Include="WebApi\IPublicApiClient.cs" />
-    <Compile Include="WebApi\Model\Example.cs" />
-    <Compile Include="WebApi\Model\ExampleModule.cs" />
-    <Compile Include="WebApi\Model\ExampleModuleType.cs" />
-    <Compile Include="WebApi\Model\Feature.cs" />
-    <Compile Include="WebApi\Model\FeatureItem.cs" />
-    <Compile Include="WebApi\PublicApiClient.cs" />
-    <Compile Include="Common\WindowsOperatingSystem.cs" />
-    <Compile Include="Common\WindowsVersion.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Settings1.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
-    <Compile Include="Settings\AutoCompleteConfigProvider.cs" />
-    <Compile Include="Settings\AutoCompleteSettings.cs" />
-    <Compile Include="Settings\Configuration.cs" />
-    <Compile Include="Settings\ConfigurationLoader.cs" />
-    <Compile Include="Settings\DisplayLanguageSetting.cs" />
-    <Compile Include="Settings\ExperimentalFeatures.cs" />
-    <Compile Include="Settings\ExperimentalTypesProvider.cs" />
-    <Compile Include="Settings\GeneralConfigProvider.cs" />
-    <Compile Include="Settings\GeneralSettings.cs" />
-    <Compile Include="Settings\HotkeyConfigProvider.cs" />
-    <Compile Include="Settings\HotkeySetting.cs" />
-    <Compile Include="Settings\HotkeySettings.cs" />
-    <Compile Include="Settings\MinimumLogLevel.cs" />
-    <Compile Include="Settings\ReferenceConfigProvider.cs" />
-    <Compile Include="Settings\ReferenceSettings.cs" />
-    <Compile Include="Settings\ToDoGridViewColumnInfo.cs" />
-    <Compile Include="Settings\ToDoListConfigProvider.cs" />
-    <Compile Include="Settings\ToDoListSettings.cs" />
-    <Compile Include="Settings\ToDoMarkers.cs" />
-    <Compile Include="Settings\UserSettings.cs" />
-    <Compile Include="Settings\WindowConfigProvider.cs" />
-    <Compile Include="Settings\WindowSettings.cs" />
-    <Compile Include="Splash\SplashViewModel.cs" />
-    <Compile Include="VersionCheck\IVersionCheck.cs" />
-    <Compile Include="WebApi\Model\Entity.cs" />
-    <Compile Include="WebApi\Model\IEntity.cs" />
-    <Compile Include="WebApi\Model\Tag.cs" />
-    <Compile Include="WebApi\Model\TagAsset.cs" />
-    <Compile Include="VersionCheck\VersionCheckService.cs" />
+    <InternalsVisibleTo Include="Rubberduck" />
+    <InternalsVisibleTo Include="Rubberduck.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <!-- TODO remove Settings.settings -->
+    <None Include="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
+    <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+    <PackageReference Include="System.IO.Abstractions" Version="19.2.69" />
+    <PackageReference Include="System.Management" Version="7.0.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\shared\Rubberduck.Interaction\Rubberduck.Interaction.csproj">
@@ -248,17 +44,17 @@
       <Project>{5E2588A5-2EF2-4267-952D-53AEC8F5F173}</Project>
       <Name>Rubberduck.InternalApi</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\server\LSP\Rubberduck\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
-      <Project>{86502725-A9D2-47A8-B26A-5E7BC8A85D47}</Project>
-      <Name>Rubberduck.Parsing</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\shared\Rubberduck.Resources\Rubberduck.Resources.csproj">
       <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
       <Name>Rubberduck.Resources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
+    <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
       <Project>{E794CFC3-3D9F-400F-88D9-69E929D8E8AF}</Project>
       <Name>Rubberduck.SettingsProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Client\Rubberduck.Client.csproj">
+      <Project>{36e18087-fe84-4e3a-9c65-07ca0fd7d303}</Project>
+      <Name>Rubberduck.Client</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.UI.WinForms\Rubberduck.UI.WinForms.csproj">
       <Project>{A1F54935-FE6D-4013-B618-5251DE4466CF}</Project>
@@ -274,13 +70,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>PublicSettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
-    </None>
+    <Folder Include="Editor\Commands\" />
+    <Folder Include="Editor\Tools\" />
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

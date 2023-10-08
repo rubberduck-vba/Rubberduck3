@@ -1,6 +1,7 @@
 ﻿using Rubberduck.InternalApi.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Abstract;
+using Rubberduck.Unmanaged.Model.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -88,11 +89,11 @@ namespace Rubberduck.Core.Editor
             }
         } 
 
-        private IMemberInfoViewModel _currentMember;
+        private IMemberInfoViewModel? _currentMember;
 
         //public event EventHandler<NavigateToMemberEventArgs> MemberSelected;
 
-        public IMemberInfoViewModel CurrentMember
+        public IMemberInfoViewModel? CurrentMember
         {
             get => _currentMember;
             set

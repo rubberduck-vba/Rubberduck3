@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using VB = Microsoft.Vbe.Interop;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -15,17 +16,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public IVBE Parent => new VBE(IsWrappingNullReference ? null : Target.Parent);
+        public IVBE Parent => new VBE((IsWrappingNullReference ? null : Target.Parent)!);
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE => new VBE((IsWrappingNullReference ? null : Target.VBE)!);
 
         public ICodePane Current 
         { 
-            get => new CodePane(IsWrappingNullReference ? null : Target.Current);
+            get => new CodePane((IsWrappingNullReference ? null : Target.Current)!);
             set { if (!IsWrappingNullReference) Target.Current = (VB.CodePane)value.Target; }
         }
 
-        public ICodePane this[object index] => new CodePane(IsWrappingNullReference ? null : Target.Item(index));
+        public ICodePane this[object index] => new CodePane((IsWrappingNullReference ? null : Target.Item(index))!);
 
         IEnumerator<ICodePane> IEnumerable<ICodePane>.GetEnumerator()
         {
@@ -44,9 +45,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-        public bool Equals(ICodePanes other)
+        public bool Equals(ICodePanes? other)
         {
-            return Equals(other as SafeComWrapper<VB.CodePanes>);
+            return Equals((other as SafeComWrapper<VB.CodePanes>)!);
         }
 
         public override int GetHashCode()

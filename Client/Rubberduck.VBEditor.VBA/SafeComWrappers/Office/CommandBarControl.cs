@@ -1,5 +1,6 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.Office;
+﻿using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
 using System;
 using MSO = Microsoft.Office.Core;
 
@@ -95,7 +96,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
             }
         }
 
-        public ICommandBar Parent => new CommandBar(IsWrappingNullReference ? null : Target.Parent);
+        public ICommandBar Parent => new CommandBar((IsWrappingNullReference ? null : Target.Parent)!);
 
         public string Parameter
         {
@@ -123,7 +124,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
 
         public string Tag 
         {
-            get => Target?.Tag;
+            get => Target?.Tag ?? string.Empty;
             set
             {
                 if (!IsWrappingNullReference)
@@ -200,9 +201,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
                 && ReferenceEquals(other.Target.Parent, Target.Parent));
         }
 
-        public bool Equals(ICommandBarControl other)
+        public bool Equals(ICommandBarControl? other)
         {
-            return Equals(other as SafeComWrapper<MSO.CommandBarControl>);
+            return Equals((other as SafeComWrapper<MSO.CommandBarControl>)!);
         }
 
         private int _hashCode;

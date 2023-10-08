@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using Dapper;
-using Rubberduck.RPC.Platform.Model;
-using Rubberduck.RPC.Platform.Model.Database;
+using Rubberduck.ServerPlatform.Platform.Model;
+using Rubberduck.ServerPlatform.Platform.Model.Database;
 using Rubberduck.Server.Database.Internal.Storage.Abstract;
 
 namespace Rubberduck.Server.Database.Internal.Storage

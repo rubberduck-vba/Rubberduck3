@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 namespace Rubberduck.UI.WinForms
-    // note: not under Rubberduck.UI.WinForms only because this dialog isn't meant to be used anywhere other than for startup.
+// note: not under Rubberduck.UI.WinForms only because this dialog isn't meant to be used anywhere other than for startup.
 {
     public partial class Splash : Form
     {
@@ -12,7 +12,7 @@ namespace Rubberduck.UI.WinForms
             InitializeComponent();
         }
 
-        public Splash(ISplashViewModel viewModel) 
+        public Splash(ISplashViewModel viewModel)
             : this()
         {
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
@@ -32,7 +32,7 @@ namespace Rubberduck.UI.WinForms
         private void InitializeVersionLabel(ISplashViewModel viewModel)
         {
             VersionLabel.DataBindings.Add(new Binding(nameof(VersionLabel.Text), viewModel, nameof(viewModel.Version)));
-            
+
             VersionLabel.BackColor = Color.Transparent;
             VersionLabel.Parent = ContainerBox;
         }
@@ -40,7 +40,7 @@ namespace Rubberduck.UI.WinForms
         private void InitializeStatusLabel(ISplashViewModel viewModel)
         {
             StatusLabel.DataBindings.Add(new Binding(nameof(StatusLabel.Text), viewModel, nameof(viewModel.CurrentStatus)));
-            
+
             StatusLabel.BackColor = Color.Transparent;
             StatusLabel.Parent = ContainerBox;
         }

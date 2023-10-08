@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using VB = Microsoft.Vbe.Interop;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -37,9 +38,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string Guid => IsWrappingNullReference ? string.Empty : Target.Guid;
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE => new VBE((IsWrappingNullReference ? null : Target.VBE)!);
 
-        public IAddIns Collection => new AddIns(IsWrappingNullReference ? null : Target.Collection);
+        public IAddIns Collection => new AddIns((IsWrappingNullReference ? null : Target.Collection)!);
 
         public string Description
         {
@@ -65,7 +66,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public object Object // definitely leaks a COM object
+        public object? Object // definitely leaks a COM object
         {
             get => IsWrappingNullReference ? null : Target.Object;
             set
@@ -82,9 +83,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && other.Target.ProgId == ProgId && other.Target.Guid == Guid);
         }
 
-        public bool Equals(IAddIn other)
+        public bool Equals(IAddIn? other)
         {
-            return Equals(other as SafeComWrapper<VB.AddIn>);
+            return Equals((other as SafeComWrapper<VB.AddIn>)!);
         }
 
         public override int GetHashCode()

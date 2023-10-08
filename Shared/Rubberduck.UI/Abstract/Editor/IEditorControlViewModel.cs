@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.Model;
+using Rubberduck.Unmanaged.Model.Abstract;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -19,6 +20,9 @@ namespace Rubberduck.UI.Abstract
         bool LoadModule(IQualifiedModuleName module, string content, IMemberProviderViewModel vm);
         bool UnloadModule(IQualifiedModuleName module);
         void ActivateModuleDocumentTab(IQualifiedModuleName module);
+
+
+        public object Partition { get; init; }
+        public object InterTabClient { get; init; }
     }
-    
 }

@@ -1,6 +1,8 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.InternalApi.Model;
-using VB = Microsoft.Vbe.Interop;
+﻿using VB = Microsoft.Vbe.Interop;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Model;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Model.Abstract;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
@@ -12,11 +14,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
         }
 
-        public ICodePanes Collection => new CodePanes(IsWrappingNullReference ? null : Target.Collection);
+        public ICodePanes Collection => new CodePanes((IsWrappingNullReference ? null : Target.Collection)!);
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE => new VBE((IsWrappingNullReference ? null : Target.VBE)!);
 
-        public IWindow Window => new Window(IsWrappingNullReference ? null : Target.Window);
+        public IWindow Window => new Window((IsWrappingNullReference ? null : Target.Window)!);
 
         public int TopLine
         {
@@ -26,7 +28,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public int CountOfVisibleLines => IsWrappingNullReference ? 0 : Target.CountOfVisibleLines;
 
-        public ICodeModule CodeModule => new CodeModule(IsWrappingNullReference ? null : Target.CodeModule);
+        public ICodeModule CodeModule => new CodeModule((IsWrappingNullReference ? null : Target.CodeModule)!);
 
         public CodePaneView CodePaneView => IsWrappingNullReference ? 0 : (CodePaneView)Target.CodePaneView;
 
@@ -71,7 +73,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return new QualifiedSelection(moduleName, selection);
         }
 
-        public QualifiedModuleName QualifiedModuleName
+        public IQualifiedModuleName QualifiedModuleName
         {
             get
             {
@@ -102,9 +104,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-        public bool Equals(ICodePane other)
+        public bool Equals(ICodePane? other)
         {
-            return Equals(other as SafeComWrapper<VB.CodePane>);
+            return Equals((other as SafeComWrapper<VB.CodePane>)!);
         }
 
         public override int GetHashCode()

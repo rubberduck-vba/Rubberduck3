@@ -1,7 +1,7 @@
 ﻿using System;
-using Rubberduck.InternalApi.WindowsApi;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.WindowsApi;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.WindowsApi;
 using VB = Microsoft.Vbe.Interop;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -21,9 +21,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return (IntPtr)HWnd;
         }
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE => new VBE((IsWrappingNullReference ? null : Target.VBE)!);
 
-        public IWindows Collection => new Windows(IsWrappingNullReference ? null : Target.Collection);
+        public IWindows Collection => new Windows((IsWrappingNullReference ? null : Target.Collection)!);
 
         public string Caption => IsWrappingNullReference ? string.Empty : Target.Caption;
 
@@ -104,9 +104,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public WindowKind Type => IsWrappingNullReference ? 0 : (WindowKind)Target.Type;
 
-        public ILinkedWindows LinkedWindows => new LinkedWindows(IsWrappingNullReference ? null : Target.LinkedWindows);
+        public ILinkedWindows LinkedWindows => new LinkedWindows((IsWrappingNullReference ? null : Target.LinkedWindows)!);
 
-        public IWindow LinkedWindowFrame => new Window(IsWrappingNullReference ? null : Target.LinkedWindowFrame);
+        public IWindow LinkedWindowFrame => new Window((IsWrappingNullReference ? null : Target.LinkedWindowFrame)!);
 
         public void Close()
         {
@@ -141,9 +141,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 && other.Target.HWnd == HWnd);
         }
 
-        public bool Equals(IWindow other)
+        public bool Equals(IWindow? other)
         {
-            return Equals(other as SafeComWrapper<VB.Window>);
+            return Equals((other as SafeComWrapper<VB.Window>)!);
         }
 
         public override int GetHashCode()

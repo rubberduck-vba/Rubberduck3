@@ -1,9 +1,43 @@
-﻿using Forms = System.Windows.Forms;
+﻿using static System.Net.Mime.MediaTypeNames;
+using Forms = System.Windows.Forms;
 
 namespace Rubberduck.Interaction.MessageBox
 {
+    public class MessageBoxViewModel
+    {
+        public string Message { get; set; } = string.Empty;
+        public string Caption { get; set; } = string.Empty;
+
+        public Forms.MessageBoxButtons Buttons { get; set; } = Forms.MessageBoxButtons.OK;
+        public Forms.MessageBoxIcon Icon { get; set; } = Forms.MessageBoxIcon.Information;
+     
+        public ConfirmationOutcome? Result { get; set; }
+    }
+
     public class FormsMessageBox : IMessageBox
     {
+        public void Show(MessageBoxViewModel viewModel)
+        {
+            Forms.MessageBox.Show(viewModel.Message, viewModel.Caption, viewModel.Buttons, viewModel.Icon);
+        }
+
+        public ConfirmationOutcome Confirm(MessageBoxViewModel viewModel)
+        {
+            var result = Forms.MessageBox.Show(viewModel.Message, viewModel.Caption, viewModel.Buttons, viewModel.Icon);
+            switch (result)
+            {
+                case Forms.DialogResult.Cancel:
+                    return ConfirmationOutcome.Cancel;
+                case Forms.DialogResult.Yes:
+                case Forms.DialogResult.OK:
+                    return ConfirmationOutcome.Yes;
+                case Forms.DialogResult.No:
+                    return ConfirmationOutcome.No;
+                default:
+                    return ConfirmationOutcome.Cancel;
+            }
+        }
+
         public void Message(string text)
         {
             Forms.MessageBox.Show(text);

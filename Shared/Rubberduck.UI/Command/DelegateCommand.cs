@@ -1,16 +1,17 @@
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
-using NLog;
+using System.Threading.Tasks;
 
 namespace Rubberduck.UI.Command
 {
     [ComVisible(false)]
     public class DelegateCommand : CommandBase
     {
-        private readonly Predicate<object> _canExecute;
-        private readonly Action<object> _execute;
+        private readonly Predicate<object?>? _canExecute;
+        private readonly Action<object?> _execute;
 
-        public DelegateCommand(ILogger logger, Action<object> execute, Predicate<object> canExecute = null) 
+        public DelegateCommand(ILogger logger, Action<object?> execute, Predicate<object?>? canExecute = null) 
             : base(logger)
         {
             _canExecute = canExecute;
@@ -19,14 +20,14 @@ namespace Rubberduck.UI.Command
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        private bool SpecialEvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object? parameter)
         {
-            return _canExecute == null || _canExecute.Invoke(parameter);
+            return _canExecute is null || _canExecute.Invoke(parameter);
         }
 
-        protected override void OnExecute(object parameter)
+        protected async override Task OnExecuteAsync(object? parameter)
         {
-            _execute.Invoke(parameter);
+            await Task.Run(() => _execute.Invoke(parameter));
         }
     }
 }

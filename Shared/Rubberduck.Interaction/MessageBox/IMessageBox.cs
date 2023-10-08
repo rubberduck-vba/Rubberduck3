@@ -2,6 +2,8 @@
 {
     public interface IMessageBox
     {
+        void Show(MessageBoxViewModel viewModel);
+        ConfirmationOutcome Confirm(MessageBoxViewModel viewModel);
         /// <summary>
         /// Show a message to the user. Will only return after the user has acknowledged the message.
         /// </summary>

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Platform.Model.Database;
-using Rubberduck.RPC.Platform.Model.Database.Responses;
+using Rubberduck.ServerPlatform.Platform;
+using Rubberduck.ServerPlatform.Platform.Model.Database;
+using Rubberduck.ServerPlatform.Platform.Model.Database.Responses;
 using Rubberduck.Server.Database.Internal.Storage.Abstract;
 using System.Linq;
 using System.Threading.Tasks;

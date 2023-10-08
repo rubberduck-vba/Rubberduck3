@@ -3,7 +3,7 @@ using System.Data;
 using Dapper;
 using System.Threading.Tasks;
 using Rubberduck.Server.Database.Internal.Storage.Abstract;
-using Rubberduck.RPC.Platform.Model.Database;
+using Rubberduck.ServerPlatform.Platform.Model.Database;
 
 namespace Rubberduck.Server.Database.Internal.Storage
 {

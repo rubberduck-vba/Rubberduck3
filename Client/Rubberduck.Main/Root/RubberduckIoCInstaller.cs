@@ -1,51 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Castle.Facilities.TypedFactory;
-using Castle.MicroKernel.ModelBuilder.Inspectors;
-using Castle.MicroKernel.Registration;
-using Component = Castle.MicroKernel.Registration.Component;
-using Castle.MicroKernel.Resolvers.SpecializedResolvers;
-using Castle.MicroKernel.SubSystems.Configuration;
-using Castle.Windsor;
-using Rubberduck.Common;
-using Rubberduck.Common.Hotkeys;
-using Rubberduck.Settings;
-using Rubberduck.SettingsProvider;
-using GeneralSettings = Rubberduck.Settings.GeneralSettings;
+﻿//using Component = Castle.MicroKernel.Registration.Component;
 //using IndenterSettings = Rubberduck.SmartIndenter.IndenterSettings;
-using Rubberduck.UI;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.ComManagement.TypeLibs;
-using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
-using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.Utility;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SourceCodeHandling;
-using Rubberduck.VBEditor.VbeRuntime;
-using System.IO.Abstractions;
-using Rubberduck.VBEditor.ComManagement.NonDisposalDecorators;
-using Rubberduck.InternalApi.UIContext;
-using System.Runtime.InteropServices;
-using Rubberduck.Main.Extensions;
-using Rubberduck.Core;
-using Rubberduck.UI.Command;
-using System.Windows.Input;
-using Rubberduck.InternalApi.Common;
-using Rubberduck.Core.About;
-using Rubberduck.UI.Xaml.Controls;
-using Rubberduck.Core.Editor;
-using Rubberduck.Parsing.Abstract;
-using System.IO;
-using Rubberduck.Parsing.TokenStreamProviders;
-using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
-using Rubberduck.VBEditor.UI.OfficeMenus;
-using Rubberduck.VBEditor.UI;
 
 namespace Rubberduck.Root
-{
+{/*
     [ComVisible(false)]
     internal class RubberduckIoCInstaller : IWindsorInstaller
     {
@@ -83,7 +40,7 @@ namespace Rubberduck.Root
             RegisterAppWithSpecialDependencies(container);
             RegisterUnitTestingComSide(container);
 
-            container.Register(Component.For<ICommonTokenStreamProvider<TextReader>>().ImplementedBy<TextReaderTokenStreamProvider>().LifestyleSingleton());
+            //container.Register(Component.For<ICommonTokenStreamProvider<TextReader>>().ImplementedBy<TextReaderTokenStreamProvider>().LifestyleSingleton());
 
             container.Register(Component.For<Version>()
                      .UsingFactoryMethod(() => Assembly.GetExecutingAssembly().GetName().Version)
@@ -513,19 +470,6 @@ namespace Rubberduck.Root
             }
 
             return controls.Count;
-        }
-
-        private ICommandBarControls MainCommandBarControls(string commandBarName)
-        {
-            ICommandBarControls controls;
-            using (var commandBars = _vbe.CommandBars)
-            {
-                using (var menuBar = commandBars[commandBarName])
-                {
-                    controls = menuBar.Controls;
-                }
-            }
-            return controls;
         }
 
         private ICommandBarControls MainCommandBarControls(int commandBarIndex)
@@ -1148,10 +1092,11 @@ namespace Rubberduck.Root
         {
             //note: We register safe com wrappers inside non-disposal decorators to ensure that the disposal is not executed by CW on some random thread.
             //Instead, the disposal will happen via the ComSafe on the thread executing the add in termination.
-            container.Register(Component.For<IVBE>().Instance(new VbeNonDisposalDecorator<IVBE>(_vbe)));
-            container.Register(Component.For<IAddIn>().Instance(new AddInNonDisposalDecorator<IAddIn>(_addin)));
+            container.Register(Component.For<IVBE>().Instance(new VbeNonDisposingDecorator<IVBE>(_vbe)));
+            container.Register(Component.For<IAddIn>().Instance(new AddInNonDisposingDecorator<IAddIn>(_addin)));
             //note: This registration makes Castle Windsor inject _vbe_CommandBars in all ICommandBars Parent properties.
-            container.Register(Component.For<ICommandBars>().Instance(new CommandBarsNonDisposalDecorator<ICommandBars>(_vbe.CommandBars)));
+            container.Register(Component.For<ICommandBars>().Instance(new CommandBarsNonDisposingDecorator<ICommandBars>(_vbe.CommandBars)));
         }
     }
+    */
 }

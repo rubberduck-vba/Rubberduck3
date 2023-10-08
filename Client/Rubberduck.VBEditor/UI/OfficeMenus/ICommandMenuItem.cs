@@ -1,5 +1,5 @@
 ﻿using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.SafeComWrappers.Office;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
 using System.Drawing;
 
 namespace Rubberduck.VBEditor.UI.OfficeMenus

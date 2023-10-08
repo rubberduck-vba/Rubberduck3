@@ -71,9 +71,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 {
                     return IsWrappingNullReference || Target.IsBroken;
                 }
-                catch (COMException e)
+                catch (COMException)
                 {
-                    _logger.Trace(e, "IsBroken is broken.");
+                    //_logger.Trace(e, "IsBroken is broken.");
                 }
 
                 return true;

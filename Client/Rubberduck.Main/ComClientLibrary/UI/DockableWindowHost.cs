@@ -1,9 +1,7 @@
-﻿using NLog;
-using Rubberduck.InternalApi.WindowsApi;
-using Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers;
+﻿using Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers;
 using Rubberduck.Resources.Registration;
-using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.WindowsApi;
+using Rubberduck.Unmanaged.Events;
+using Rubberduck.Unmanaged.WindowsApi;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -81,16 +79,15 @@ namespace Rubberduck.Main.ComClientLibrary.UI
     ]
     //Nothing breaks because we declare a ProgId
     // ReSharper disable once InconsistentNaming
-    //Underscores make classes invisible to VB6 object explorer
-    [SuppressMessage("Microsoft.Design", "CA1049")]
-    [SuppressMessage("Microsoft.Design", "CA1001")] //This should *never* have Dispose called on it. See comment block above.
+    //Underscore make classes invisible to VB6 object explorer
+    [SuppressMessage("Microsoft.Design", "IDE1006")]
     public class _DockableWindowHost : COM_IOleObject, COM_IOleInPlaceObject, COM_IOleWindow, IDockableWindowHost
     {
         public static string RegisteredProgId => RubberduckProgId.DockableWindowHostProgId;
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        //private readonly ILogger _logger;
 
         private ExposedUserControl _userControl = new ExposedUserControl();
-        private Wrapper_IOleClientSite _cachedClientSite;
+        private Wrapper_IOleClientSite _cachedClientSite = null!;
 
         private bool _releaseHasBeenCalled;
         public void Release()
@@ -113,13 +110,13 @@ namespace Rubberduck.Main.ComClientLibrary.UI
 
         public int /* IOleObject:: */ SetClientSite([In] IntPtr /* IOleClientSite */ pClientSite)
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::SetClientSite() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::SetClientSite() called");
 
             // IOleObject::SetClientSite is typically called with pClientSite = null just before calling IOleObject::Close()
             // We release all host COM objects here in that instance.
 
             _cachedClientSite?.Dispose();
-            _cachedClientSite = null;
+            _cachedClientSite = null!;
 
             if (pClientSite != IntPtr.Zero)
             {
@@ -131,20 +128,20 @@ namespace Rubberduck.Main.ComClientLibrary.UI
 
         public int /* IOleObject:: */ GetClientSite([Out] out IntPtr /* IOleClientSite */ ppClientSite)
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::GetClientSite() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::GetClientSite() called");
             ppClientSite = _cachedClientSite?.CopyAggregatedReference() ?? IntPtr.Zero;
             return (int)ComConstants.S_OK;
         }
 
         public int /* IOleObject:: */ SetHostNames([In, MarshalAs(UnmanagedType.LPWStr)] string szContainerApp, [In, MarshalAs(UnmanagedType.LPWStr)] string szContainerObj)
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::SetHostNames() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::SetHostNames() called");
             return _userControl.IOleObject.SetHostNames(szContainerApp, szContainerObj);
         }
 
         public int /* IOleObject:: */ Close([In] uint dwSaveOption)
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::Close() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::Close() called");
             var hr = _userControl.IOleObject.Close(dwSaveOption);
 
             // IOleObject::SetClientSite is typically called with pClientSite = null just before calling IOleObject::Close()
@@ -166,28 +163,31 @@ namespace Rubberduck.Main.ComClientLibrary.UI
 
         private void UnsubclassParent()
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::Close() ... unsubclassing the host parent window");
-            _subClassingWindow.CallBackEvent -= OnCallBackEvent;
-            _subClassingWindow.Dispose();
+            //_logger.Log(LogLevel.Trace, "IOleObject::Close() ... unsubclassing the host parent window");
+            if (_subClassingWindow is not null)
+            {
+                _subClassingWindow.CallBackEvent -= OnCallBackEvent;
+                _subClassingWindow.Dispose();
+            }
         }
 
         private void ReleasedExposedControl()
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::Close() ... closing down internal COM references");
+            //_logger.Log(LogLevel.Trace, "IOleObject::Close() ... closing down internal COM references");
             _userControl.Dispose();
-            _userControl = null;
+            _userControl = null!;
         }
 
         private void ReleaseActiveXControlComReference()
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::Close() ... closing down host COM references");
+            //_logger.Log(LogLevel.Trace, "IOleObject::Close() ... closing down host COM references");
             _cachedClientSite?.Dispose();
-            _cachedClientSite = null;
+            _cachedClientSite = null!;
         }
 
         public int /* IOleObject:: */ SetMoniker([In] uint dwWhichMoniker, [In] IntPtr /* IMoniker */ pmk)
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::SetMoniker() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::SetMoniker() called");
             // need to wrap IMoniker to support this.  Not used by VBE anyway?
             //return _IOleObject.SetMoniker(dwWhichMoniker, pmk);
             Debug.Assert(false);
@@ -196,7 +196,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI
 
         public int /* IOleObject:: */ GetMoniker([In] uint dwAssign, [In] uint dwWhichMoniker, [Out] out IntPtr /* IMoniker */ ppmk)
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::GetMoniker() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::GetMoniker() called");
             // need to wrap IMoniker to support this.  Not used by VBE anyway?
             //return _IOleObject.GetMoniker(dwAssign, dwWhichMoniker, out ppmk);
             ppmk = IntPtr.Zero;
@@ -206,7 +206,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI
 
         public int /* IOleObject:: */ InitFromData([In] IntPtr /* IDataObject */ pDataObject, [In] int fCreation, [In] uint dwReserved)
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::InitFromData() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::InitFromData() called");
             // need to wrap IDataObject to support this.  Not used by VBE anyway?
             //return _IOleObject.InitFromData(pDataObject, fCreation, dwReserved);
             Debug.Assert(false);
@@ -215,7 +215,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI
 
         public int /* IOleObject:: */ GetClipboardData([In] uint dwReserved, [Out] out IntPtr /*IDataObject*/ ppDataObject)
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::GetClipboardData() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::GetClipboardData() called");
             // need to wrap IDataObject to support this.  Not used by VBE anyway?
             //return _IOleObject.GetClipboardData(dwReserved, out ppDataObject);
             ppDataObject = IntPtr.Zero;
@@ -225,7 +225,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI
 
         public int /* IOleObject:: */ DoVerb([In] int iVerb, [In] IntPtr lpmsg, [In] IntPtr /* IOleClientSite */ pActiveSite, [In] int lindex, [In] IntPtr hwndParent, [In] IntPtr /* COMRECT */ lprcPosRect)
         {
-            _logger.Log(LogLevel.Trace, $"IOleObject::DoVerb() called with iVerb {(Enum.IsDefined(typeof(OleVerbs), iVerb) ? ((OleVerbs) iVerb).ToString() : iVerb.ToString())}.");
+            //_logger.Log(LogLevel.Trace, $"IOleObject::DoVerb() called with iVerb {(Enum.IsDefined(typeof(OleVerbs), iVerb) ? ((OleVerbs) iVerb).ToString() : iVerb.ToString())}.");
             // pActiveSite is not used by the UserControl implementation.  Either wrap it or pass null instead
             pActiveSite = IntPtr.Zero;
 
@@ -240,7 +240,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI
 
         public int /* IOleObject:: */ EnumVerbs([Out] out IntPtr /* IEnumOLEVERB */ ppEnumOleVerb)
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::EnumVerbs() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::EnumVerbs() called");
             // need to wrap IEnumOLEVERB to support this.  Not used by VBE anyway?
             //return _IOleObject.EnumVerbs(out ppEnumOleVerb);
             ppEnumOleVerb = IntPtr.Zero;
@@ -250,43 +250,43 @@ namespace Rubberduck.Main.ComClientLibrary.UI
 
         public int /* IOleObject:: */ Update()
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::Update() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::Update() called");
             return _userControl.IOleObject.Update();
         }
 
         public int /* IOleObject:: */ IsUpToDate()
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::IsUpToDate() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::IsUpToDate() called");
             return _userControl.IOleObject.IsUpToDate();
         }
 
         public int /* IOleObject:: */ GetUserClassID([Out] out Guid pClsid)
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::GetUserClassID() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::GetUserClassID() called");
             return _userControl.IOleObject.GetUserClassID(out pClsid);
         }
 
         public int /* IOleObject:: */ GetUserType([In] uint dwFormOfType, [Out, MarshalAs(UnmanagedType.LPWStr)] out string pszUserType)
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::GetUserType() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::GetUserType() called");
             return _userControl.IOleObject.GetUserType(dwFormOfType, out pszUserType);
         }
 
         public int /* IOleObject:: */ SetExtent([In] uint dwDrawAspect, [In] IntPtr /* tagSIZE */ psizel)
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::SetExtent() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::SetExtent() called");
             return _userControl.IOleObject.SetExtent(dwDrawAspect, psizel);
         }
 
         public int /* IOleObject:: */ GetExtent([In] uint dwDrawAspect, [Out] out IntPtr /* tagSIZE */ psizel)
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::GetExtent() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::GetExtent() called");
             return _userControl.IOleObject.GetExtent(dwDrawAspect, out psizel);
         }
 
         public int /* IOleObject:: */ Advise([In] IntPtr /* IAdviseSink */ pAdvSink, [Out] out uint pdwConnection)
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::Advise() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::Advise() called");
             // need to wrap IAdviseSink to support this. VBE does try to use this, but the events don't look interesting?
             pdwConnection = 0;
             return (int)ComConstants.E_NOTIMPL;
@@ -294,7 +294,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI
 
         public int /* IOleObject:: */ Unadvise([In] uint pdwConnection)
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::Unadvise() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::Unadvise() called");
             // No sense supporting Unadvise, as we're not supporting Advise
             //return _IOleObject.Unadvise(pdwConnection);
             //Debug.Assert(false);                              stupid VBE still calls us, despite us not implementing Advise()
@@ -303,7 +303,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI
 
         public int /* IOleObject:: */ EnumAdvise([Out] out IntPtr /* IEnumSTATDATA */ enumAdvise)
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::EnumAdvise() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::EnumAdvise() called");
             // need to wrap IEnumSTATDATA to support this. No sense supporting EnumAdvise, as we're not supporting Advise
             //return _IOleObject.EnumAdvise(out enumAdvise);
             enumAdvise = IntPtr.Zero;
@@ -312,13 +312,13 @@ namespace Rubberduck.Main.ComClientLibrary.UI
 
         public int /* IOleObject:: */ GetMiscStatus([In] uint dwAspect, [Out] out uint pdwStatus)
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::GetMiscStatus() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::GetMiscStatus() called");
             return _userControl.IOleObject.GetMiscStatus(dwAspect, out pdwStatus);
         }
 
         public int /* IOleObject:: */ SetColorScheme([In] IntPtr /* tagLOGPALETTE */ pLogpal)
         {
-            _logger.Log(LogLevel.Trace, "IOleObject::SetColorScheme() called");
+            //_logger.Log(LogLevel.Trace, "IOleObject::SetColorScheme() called");
             return _userControl.IOleObject.SetColorScheme(pLogpal);
         }
 
@@ -326,37 +326,37 @@ namespace Rubberduck.Main.ComClientLibrary.UI
 
         public int /* IOleInPlaceObject:: */ GetWindow([Out] out IntPtr hwnd)
         {
-            _logger.Log(LogLevel.Trace, "IOleInPlaceObject::GetWindow() called");
+            //_logger.Log(LogLevel.Trace, "IOleInPlaceObject::GetWindow() called");
             return _userControl.IOleInPlaceObject.GetWindow(out hwnd);
         }
 
         public int /* IOleInPlaceObject:: */ ContextSensitiveHelp([In] int fEnterMode)
         {
-            _logger.Log(LogLevel.Trace, "IOleInPlaceObject::ContextSensitiveHelp() called");
+            //_logger.Log(LogLevel.Trace, "IOleInPlaceObject::ContextSensitiveHelp() called");
             return _userControl.IOleInPlaceObject.ContextSensitiveHelp(fEnterMode);
         }
 
         public int /* IOleInPlaceObject:: */ InPlaceDeactivate()
         {
-            _logger.Log(LogLevel.Trace, "IOleInPlaceObject::InPlaceDeactivate() called");
+            //_logger.Log(LogLevel.Trace, "IOleInPlaceObject::InPlaceDeactivate() called");
             return _userControl.IOleInPlaceObject.InPlaceDeactivate();
         }
 
         public int /* IOleInPlaceObject:: */ UIDeactivate()
         {
-            _logger.Log(LogLevel.Trace, "IOleInPlaceObject::UIDeactivate() called");
+            //_logger.Log(LogLevel.Trace, "IOleInPlaceObject::UIDeactivate() called");
             return _userControl.IOleInPlaceObject.UIDeactivate();
         }
 
         public int /* IOleInPlaceObject:: */ SetObjectRects([In] IntPtr lprcPosRect, [In] IntPtr lprcClipRect)
         {
-            _logger.Log(LogLevel.Trace, "IOleInPlaceObject::SetObjectRects() called");
+            //_logger.Log(LogLevel.Trace, "IOleInPlaceObject::SetObjectRects() called");
             return _userControl.IOleInPlaceObject.SetObjectRects(lprcPosRect, lprcClipRect);
         }
 
         public int /* IOleInPlaceObject:: */ ReactivateAndUndo()
         {
-            _logger.Log(LogLevel.Trace, "IOleInPlaceObject::ReactivateAndUndo() called");
+            //_logger.Log(LogLevel.Trace, "IOleInPlaceObject::ReactivateAndUndo() called");
             return _userControl.IOleInPlaceObject.ReactivateAndUndo();
         }
 
@@ -418,7 +418,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI
         static extern int GetClientRect(IntPtr hWnd, ref Rect lpRect);
 
         private IntPtr _parentHandle;
-        private ParentWindow _subClassingWindow;
+        private ParentWindow? _subClassingWindow;
 
         private void AdjustSize()
         {
@@ -437,11 +437,11 @@ namespace Rubberduck.Main.ComClientLibrary.UI
         [ComVisible(false)]
         internal class ParentWindow : SubclassingWindow
         {
-            private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+            //private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
             private const int MF_BYPOSITION = 0x400;
 
-            public event SubClassingWindowEventHandler CallBackEvent;
+            public event SubClassingWindowEventHandler? CallBackEvent;
             public delegate void SubClassingWindowEventHandler(object sender, SubClassingWindowEventArgs e);
 
             private readonly IntPtr _vbeHwnd;
@@ -485,20 +485,20 @@ namespace Rubberduck.Main.ComClientLibrary.UI
 
                     if (_menuHandle == IntPtr.Zero)
                     {
-                        _logger.Warn("Cannot create menu handle");
+                        //_logger.Warn("Cannot create menu handle");
                         return;
                     }
 
                     if (!NativeMethods.InsertMenu(_menuHandle, 0, MF_BYPOSITION, (UIntPtr)WM.RUBBERDUCK_UNDOCKABLE_CONTEXT_MENU, "Dockable" + char.MinValue))
                     {
-                        _logger.Warn("Failed to insert a menu item for dockable command");
+                        //_logger.Warn("Failed to insert a menu item for dockable command");
                     }
                 }
 
                 var param = new LParam {Value = (uint)lParam};
                 if (!NativeMethods.TrackPopupMenuEx(_menuHandle, 0x0, param.LowWord, param.HighWord, handle, IntPtr.Zero ))
                 {
-                    _logger.Warn("Failed to set the context menu for undockable tool windows");
+                    //_logger.Warn("Failed to set the context menu for undockable tool windows");
                 };
             }
 
@@ -554,7 +554,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI
                         {
                             if (!NativeMethods.DestroyMenu(_menuHandle))
                             {
-                                _logger.Fatal($"Failed to destroy the menu handle {_menuHandle}");
+                                //_logger.Fatal($"Failed to destroy the menu handle {_menuHandle}");
                             }
                         }
                         break;
@@ -583,14 +583,14 @@ namespace Rubberduck.Main.ComClientLibrary.UI
         // IOleObject and IOleInPlaceObject COM interfaces implemented by it
         public class ExposedUserControl : UserControl
         {
-            private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+            //private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
             public COM_IOleObject IOleObject;                  // cached interface obtained from UserConrol
             public COM_IOleInPlaceObject IOleInPlaceObject;    // cached interface obtained from UserConrol
 
             public ExposedUserControl()
             {
-                _logger.Log(LogLevel.Trace, "ExposedUserControl constructor called");
+                //_logger.Log(LogLevel.Trace, "ExposedUserControl constructor called");
 
                 // Gain access to the IOleObject and IOleInPlaceObject interfaces implemented by the UserControl
                 IOleObject = (COM_IOleObject)AggregationHelper.ObtainInternalInterface(this, GetType().GetInterface("IOleObject"));
@@ -602,13 +602,13 @@ namespace Rubberduck.Main.ComClientLibrary.UI
                 if (IOleObject != null)
                 {
                     Marshal.ReleaseComObject(IOleObject);
-                    IOleObject = null;
+                    IOleObject = null!;
                 }
 
                 if (IOleInPlaceObject != null)
                 {
                     Marshal.ReleaseComObject(IOleInPlaceObject);
-                    IOleInPlaceObject = null;
+                    IOleInPlaceObject = null!;
                 }
 
                 base.Dispose(disposing);

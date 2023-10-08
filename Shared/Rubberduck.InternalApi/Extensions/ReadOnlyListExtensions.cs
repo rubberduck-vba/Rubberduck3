@@ -20,7 +20,7 @@ namespace Rubberduck.InternalApi.Extensions
 
         public static int IndexOf<T>(this IReadOnlyList<T> source, T elem)
         {
-            return source.FindIndex(item => elem.Equals(item));
+            return source.FindIndex(item => Equals(elem, item));
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OmniSharp.Extensions.JsonRpc;
-using Rubberduck.RPC.Platform.Model.Database;
+using Rubberduck.ServerPlatform.Platform.Model.Database;
 using Rubberduck.Server.Database.Properties;
 using Rubberduck.Server.Database.RPC.Connect;
 using Rubberduck.Server.Database.RPC.Disconnect;

@@ -1,10 +1,13 @@
-﻿using Rubberduck.Interaction.MessageBox;
+﻿using Microsoft.Extensions.Logging;
+using Rubberduck.Interaction.MessageBox;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.WinForms.Dialogs;
+using Rubberduck.Unmanaged.Abstract;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
-using Rubberduck.VersionCheck;
+using System;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace Rubberduck.Core.About
 {
@@ -12,26 +15,28 @@ namespace Rubberduck.Core.About
     /// A command that displays the About window.
     /// </summary>
     [ComVisible(false)]
-    public class AboutCommand : CommandBase, IAboutCommand
+    public class AboutCommand : ComCommandBase, IAboutCommand
     {
-        public AboutCommand(IVersionCheckService versionService, IWebNavigator web, IMessageBox messageBox)
-        {
-            _versionService = versionService;
-            _web = web;
-            _messageBox = messageBox;
-        }
-
-        private readonly IVersionCheckService _versionService;
         private readonly IWebNavigator _web;
         private readonly IMessageBox _messageBox;
+        private readonly Version _version;
 
-        protected override void OnExecute(object parameter)
+        public AboutCommand(ILogger<AboutCommand> logger, IVbeEvents vbeEvents, IWebNavigator web, IMessageBox messageBox, Version version)
+            : base(logger, vbeEvents)
         {
-            var vm = new AboutControlViewModel(_versionService, _web, _messageBox);
+            _web = web;
+            _messageBox = messageBox;
+            _version = version;
+        }
+
+        protected async override Task OnExecuteAsync(object? parameter)
+        {
+            var vm = new AboutControlViewModel(Logger, _web, _messageBox, _version);
             using (var window = new AboutDialog(vm))
             {
                 window.ShowDialog();
             }
+            await Task.CompletedTask;
         }
     }
 }

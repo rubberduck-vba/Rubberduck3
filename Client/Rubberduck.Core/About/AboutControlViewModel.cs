@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using Path = System.IO.Path;
-using NLog;
-using NLog.Targets;
 using Rubberduck.UI.Command;
 using Application = System.Windows.Forms.Application;
 using Rubberduck.VersionCheck;
@@ -12,27 +10,28 @@ using System.Windows;
 using Rubberduck.Interaction.MessageBox;
 using Rubberduck.UI.Abstract;
 using Rubberduck.UI;
+using Microsoft.Extensions.Logging;
 
 namespace Rubberduck.Core.About
 {
     public class AboutControlViewModel : ViewModelBase, IAboutControlViewModel
     {
         private readonly IMessageBox _messageBox;
-        private readonly IVersionCheckService _version;
         private readonly IWebNavigator _web;
+        private readonly Version _version;
 
-        public AboutControlViewModel(IVersionCheckService version, IWebNavigator web, IMessageBox messageBox)
+        public AboutControlViewModel(ILogger logger, IWebNavigator web, IMessageBox messageBox, Version version)
         {
             _messageBox = messageBox;
 
             _version = version;
             _web = web;
 
-            UriCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteUri);
-            ViewLogCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteViewLog);
+            UriCommand = new DelegateCommand(logger, ExecuteUri);
+            ViewLogCommand = new DelegateCommand(logger, ExecuteViewLog);
         }
 
-        public string Version => string.Format(Resources.RubberduckUI.Rubberduck_AboutBuild, _version.VersionString);
+        public string Version => string.Format(Resources.RubberduckUI.Rubberduck_AboutBuild, $"v{_version.ToString(3)}");
 
         public string OperatingSystem => 
             string.Format(AboutUI.AboutWindow_OperatingSystem, Environment.OSVersion.VersionString, Environment.Is64BitOperatingSystem ? "x64" : "x86");
@@ -69,14 +68,14 @@ namespace Rubberduck.Core.About
 
         private void ExecuteViewLog(object parameter)
         {
-            var fileTarget = (FileTarget) LogManager.Configuration.FindTargetByName("file");
+            //var fileTarget = (FileTarget) LogManager.Configuration.FindTargetByName("file");
                     
-            var logEventInfo = new LogEventInfo { TimeStamp = DateTime.Now }; 
-            var fileName = fileTarget.FileName.Render(logEventInfo);
+            //var logEventInfo = new LogEventInfo { TimeStamp = DateTime.Now }; 
+            //var fileName = fileTarget.FileName.Render(logEventInfo);
                     
-            // The /select argument will only work if the path has backslashes
-            fileName = fileName.Replace("/", "\\");
-            Process.Start(new ProcessStartInfo("explorer.exe", $"/select, \"{fileName}\""));
+            //// The /select argument will only work if the path has backslashes
+            //fileName = fileName.Replace("/", "\\");
+            //Process.Start(new ProcessStartInfo("explorer.exe", $"/select, \"{fileName}\""));
         }
     }
 }

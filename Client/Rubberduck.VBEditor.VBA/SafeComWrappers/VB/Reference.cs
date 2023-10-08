@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using VB = Microsoft.Vbe.Interop;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -71,9 +72,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 {
                     return IsWrappingNullReference || Target.IsBroken;
                 }
-                catch (COMException e)
+                catch (COMException)
                 {
-                    _logger.Trace(e, "IsBroken is broken.");
+                    //_logger.Trace(e, "IsBroken is broken.");
                 }
 
                 return true;
@@ -87,12 +88,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IReferences Collection
         {
-            get { return new References(IsBroken ? null : Target.Collection); }
+            get { return new References((IsBroken ? null : Target.Collection)!); }
         }
 
         public IVBE VBE
         {
-            get { return new VBE(IsBroken ? null : Target.VBE); }
+            get { return new VBE((IsBroken ? null : Target.VBE)!); }
         }
 
         public override bool Equals(ISafeComWrapper<VB.Reference> other)
@@ -107,9 +108,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     && other.Target.Minor == Minor);
         }
 
-        public bool Equals(IReference other)
+        public bool Equals(IReference? other)
         {
-            return Equals(other as SafeComWrapper<VB.Reference>);
+            return Equals((other as SafeComWrapper<VB.Reference>)!);
         }
 
         public override int GetHashCode()

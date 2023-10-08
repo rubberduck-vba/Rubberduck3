@@ -2,10 +2,10 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using NLog;
+using Microsoft.Extensions.Logging;
 using Rubberduck.Resources.Registration;
 using Rubberduck.UI;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 
 namespace Rubberduck.VBEditor.UI
 {
@@ -17,21 +17,23 @@ namespace Rubberduck.VBEditor.UI
     public abstract class DockableToolwindowPresenter : IDockablePresenter, IDisposable
     {
         private readonly IAddIn _addin;
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger _logger;
         private readonly IWindow _window;
 
-        protected DockableToolwindowPresenter(IVBE vbe, IAddIn addin, IDockableUserControl view)
+        protected DockableToolwindowPresenter(IVBE vbe, IAddIn addin, IDockableUserControl view, ILogger logger)
         {
             _vbe = vbe;
             _addin = addin;
-            Logger.Trace($"Initializing Dockable Panel ({GetType().Name})");
-            UserControl = view as UserControl;
+            _logger = logger;
+
+            logger.LogTrace($"Initializing Dockable Panel ({GetType().Name})");
+            UserControl = (view as UserControl)!;
             _window = CreateToolWindow(view);
         }
 
         public UserControl UserControl { get; }
 
-        private object _userControlObject;
+        private object? _userControlObject;
         private readonly IVBE _vbe;
 
         private IWindow CreateToolWindow(IDockableUserControl control)
@@ -49,12 +51,12 @@ namespace Rubberduck.VBEditor.UI
             }
             catch (COMException exception)
             {
-                Logger.Error(exception);
+                _logger.LogError(exception, exception.Message);
                 throw;
             }
             catch (NullReferenceException exception)
             {
-                Logger.Error(exception);
+                _logger.LogError(exception, exception.Message);
                 throw;
             }
 
@@ -96,6 +98,8 @@ namespace Rubberduck.VBEditor.UI
         public virtual void Show() => _window.IsVisible = true;
         public virtual void Hide() => _window.IsVisible = false;
 
+        public virtual void Close() => _window.Close();
+
         public void Dispose()
         {
             Dispose(true);
@@ -110,7 +114,7 @@ namespace Rubberduck.VBEditor.UI
                 return;
             }
 
-            Logger.Trace($"Disposing DockableWindowPresenter of type {this.GetType()}.");
+            _logger.LogTrace($"Disposing DockableWindowPresenter of type {this.GetType()}.");
 
             _window.Dispose();
            

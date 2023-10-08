@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Common;
-using Rubberduck.RPC.Platform;
-using Rubberduck.RPC.Platform.Model;
-using Rubberduck.RPC.Platform.Model.Database.Responses;
+using Rubberduck.ServerPlatform.Platform;
+using Rubberduck.ServerPlatform.Platform.Model;
+using Rubberduck.ServerPlatform.Platform.Model.Database.Responses;
 using Rubberduck.Server.Database.Internal.Storage.Abstract;
 using System;
 using System.Threading;

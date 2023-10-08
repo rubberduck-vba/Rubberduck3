@@ -1,7 +1,8 @@
-﻿using System.Collections;
+﻿using Rubberduck.Unmanaged;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
+using System.Collections;
 using System.Collections.Generic;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.Office;
 using MSO = Microsoft.Office.Core;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -16,22 +17,22 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
 
         public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public ICommandBar Parent => new CommandBar(IsWrappingNullReference ? null : Target.Parent);
+        public ICommandBar Parent => new CommandBar((IsWrappingNullReference ? null : Target.Parent)!);
 
-        public ICommandBarControl this[object index] => new CommandBarControl(!IsWrappingNullReference ? Target[index] : null);
+        public ICommandBarControl this[object index] => new CommandBarControl((!IsWrappingNullReference ? Target[index] : null)!);
 
         public ICommandBarButton AddButton(int? before = null)
         {
             return before.HasValue
-                ? new CommandBarButton(IsWrappingNullReference ? null : Target.Add(ControlType.Button, Before: before, Temporary: CommandBarControl.AddCommandBarControlsTemporarily) as MSO.CommandBarButton)
-                : new CommandBarButton(IsWrappingNullReference ? null : Target.Add(ControlType.Button, Temporary: CommandBarControl.AddCommandBarControlsTemporarily) as MSO.CommandBarButton);
+                ? new CommandBarButton((IsWrappingNullReference ? null : Target.Add(ControlType.Button, Before: before, Temporary: CommandBarControl.AddCommandBarControlsTemporarily) as MSO.CommandBarButton)!)
+                : new CommandBarButton((IsWrappingNullReference ? null : Target.Add(ControlType.Button, Temporary: CommandBarControl.AddCommandBarControlsTemporarily) as MSO.CommandBarButton)!);
         }
 
         public ICommandBarPopup AddPopup(int? before = null)
         {
             return before.HasValue
-                ? new CommandBarPopup(IsWrappingNullReference ? null : Target.Add(ControlType.Popup, Before: before, Temporary: CommandBarControl.AddCommandBarControlsTemporarily) as MSO.CommandBarPopup)
-                : new CommandBarPopup(IsWrappingNullReference ? null : Target.Add(ControlType.Popup, Temporary: CommandBarControl.AddCommandBarControlsTemporarily) as MSO.CommandBarPopup);
+                ? new CommandBarPopup((IsWrappingNullReference ? null : Target.Add(ControlType.Popup, Before: before, Temporary: CommandBarControl.AddCommandBarControlsTemporarily) as MSO.CommandBarPopup)!)
+                : new CommandBarPopup((IsWrappingNullReference ? null : Target.Add(ControlType.Popup, Temporary: CommandBarControl.AddCommandBarControlsTemporarily) as MSO.CommandBarPopup)!);
         }
 
         IEnumerator<ICommandBarControl> IEnumerable<ICommandBarControl>.GetEnumerator()
@@ -52,9 +53,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-        public bool Equals(ICommandBarControls other)
+        public bool Equals(ICommandBarControls? other)
         {
-            return Equals(other as SafeComWrapper<MSO.CommandBarControls>);
+            return Equals((other as SafeComWrapper<MSO.CommandBarControls>)!);
         }
 
         public override int GetHashCode()
