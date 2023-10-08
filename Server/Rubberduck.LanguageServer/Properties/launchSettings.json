@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Rubberduck.LanguageServer": {
+      "commandName": "Project",
+      "commandLineArgs": "--client 32072\r\n--verbose"
+    }
+  }
+}

@@ -68,7 +68,6 @@ namespace Rubberduck.SettingsProvider.Model
         public string ToProcessStartInfoArguments(long clientProcessId)
         {
             var builder = new StringBuilder();
-            builder.Append($" --client {clientProcessId}");
 
             switch (TransportType)
             {
@@ -84,7 +83,7 @@ namespace Rubberduck.SettingsProvider.Model
                     break;
 
                 case TransportType.StdIO:
-                    builder.Append("StdIO");
+                    builder.Append(" StdIO");
                     break;
             }
 
@@ -98,6 +97,8 @@ namespace Rubberduck.SettingsProvider.Model
                     builder.Append(" --silent");
                     break;
             }
+
+            builder.Append($" --client {clientProcessId}");
 
             return builder.ToString();
         }

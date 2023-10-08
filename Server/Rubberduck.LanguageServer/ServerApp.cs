@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Nerdbank.Streams;
+using NLog;
 using NLog.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
@@ -9,14 +11,17 @@ using OmniSharp.Extensions.LanguageServer.Server;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform;
-using Rubberduck.LanguageServer.Handlers;
+using Rubberduck.LanguageServer.Handlers.Lifecycle;
 using Rubberduck.LanguageServer.Model;
 using Rubberduck.LanguageServer.Services;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
+using System.IO.Abstractions;
 using System.IO.Pipes;
 using System.Reflection;
 using System.Threading;
@@ -34,9 +39,8 @@ namespace Rubberduck.LanguageServer
 
         private NamedPipeServerStream? _pipe;
 
-        private ILogger<ServerApp> _logger = default!;
-        private IHealthCheckService _healthCheckService = default;
-        private IServiceScope _serviceScope = default!;
+        private ILogger<ServerApp>? _logger;
+        private IServiceProvider? _serviceProvider;
 
         private OmniSharpLanguageServer _languageServer = default!;
         private LanguageServerState _serverState = default!;
@@ -52,64 +56,70 @@ namespace Rubberduck.LanguageServer
         /// </summary>
         public async Task RunAsync()
         {
-            var services = new ServiceCollection();
-            services.AddLogging(ConfigureLogging);
-
-            var provider = new DefaultServiceProviderFactory().CreateServiceProvider(services);
-            var scope = provider.CreateScope();
-
-            _logger = scope.ServiceProvider.GetRequiredService<ILogger<ServerApp>>();
-            LogPreInitialization();
-
-            _serverState = new(scope.ServiceProvider.GetRequiredService<ILogger<LanguageServerState>>(), _options);
-
             try
             {
-                _languageServer = await OmniSharpLanguageServer.From(options => ConfigureLanguageServer(options), provider, _tokenSource.Token);
+                var services = new ServiceCollection();
+                services.AddLogging(ConfigureLogging);
+                ConfigureServices(services);
+
+                _serviceProvider = services.BuildServiceProvider();
+                _logger = _serviceProvider.GetRequiredService<ILogger<ServerApp>>();
+                _serverState = _serviceProvider.GetRequiredService<LanguageServerState>();
+
+                _languageServer = await OmniSharpLanguageServer.From(ConfigureLanguageServer, _serviceProvider);
+                
                 await _languageServer.WaitForExit;
             }
-            catch (OperationCanceledException) 
+            catch (OperationCanceledException)
             {
-                _logger.LogTrace("Token was cancelled; server process will exit normally.");
+                _logger?.LogTrace("Token was cancelled; server process will exit normally.");
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, "An exception was thrown; server process will exit with an error code.");
+                _logger?.LogError(exception, "An exception was thrown; server process will exit with an error code.");
                 throw;
             }
         }
 
-        private void LogPreInitialization()
-        {
-            _logger.LogInformation("Rubberduck 3.0 Language Server v{version}", Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString(3) ?? "0.x");
-            _logger.LogDebug("Startup options:\n{options}'", _options);
-            _logger.LogInformation("Starting language server...");
-        }
-
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<LanguageServerState>();
-            services.AddScoped<IServiceProvider>(provider => provider);
-            services.AddScoped<IHealthCheckService>(provider => new ClientProcessHealthCheckService(
-                logger: provider.GetRequiredService<ILogger<ClientProcessHealthCheckService>>(),
-                settingsProvider: provider.GetRequiredService<ISettingsProvider<LanguageServerSettings>>(),
-                process: Process.GetProcessById((int)_serverState.ClientProcessId),
-                server: _languageServer));
+            services.AddSingleton<Func<ILanguageServer>>(provider => () => _languageServer);
+            services.AddSingleton<ServerStartupOptions>(provider => _options);
+            services.AddSingleton<Process>(provider => Process.GetProcessById((int)_options.ClientProcessId));
 
-            services.AddScoped<ServerStartupOptions>(provider => _options);
-            services.AddScoped<IServerStateWriter>(provider => provider.GetRequiredService<LanguageServerState>());
+            services.AddSingleton<IFileSystem, FileSystem>();
 
-            services.AddScoped<IDefaultSettingsProvider<LanguageServerSettings>>(provider => LanguageServerSettings.Default);
-            services.AddScoped<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
-            services.AddScoped<SupportedLanguage, VisualBasicForApplicationsLanguage>();
-            services.AddScoped<DocumentContentStore>();
-        
-            _serviceScope = new DefaultServiceProviderFactory().CreateServiceProvider(services).CreateScope();
+            services.AddSingleton<LanguageServerState>();
+            services.AddSingleton<IServerStateWriter>(provider => provider.GetRequiredService<LanguageServerState>());
+
+            services.AddSingleton<IDefaultSettingsProvider<LanguageServerSettings>>(provider => LanguageServerSettings.Default);
+            services.AddSingleton<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
+
+            services.AddSingleton<SupportedLanguage, VisualBasicForApplicationsLanguage>();
+            services.AddSingleton<DocumentContentStore>();
+
+            services.AddSingleton<IHealthCheckService, ClientProcessHealthCheckService>();
         }
 
         private void ConfigureLogging(ILoggingBuilder builder)
         {
-            builder.AddNLog("NLog-server.config");
+            builder.AddNLog(provider =>
+            {
+                var factory = new LogFactory
+                {
+                    AutoShutdown = true,
+                    ThrowConfigExceptions = true,
+                    ThrowExceptions = true,
+                    DefaultCultureInfo = CultureInfo.InvariantCulture,
+                    GlobalThreshold = NLog.LogLevel.Trace,
+                };
+                factory.Setup(builder =>
+                {
+                    builder.LoadConfigurationFromFile("NLog-server.config");
+                });
+
+                return factory;
+            });
         }
 
         private void ConfigureLanguageServer(LanguageServerOptions options)
@@ -128,82 +138,84 @@ namespace Rubberduck.LanguageServer
                 Version = version
             };
 
+            var loggerProvider = new NLogLoggerProvider();
+            loggerProvider.LogFactory.Setup().LoadConfigurationFromFile("NLog-server.config");
+            options.LoggerFactory = new NLogLoggerFactory(loggerProvider);
+
             options
                 .WithServerInfo(info)
-                .WithServices(ConfigureServices)
-
                 .OnInitialize((ILanguageServer server, InitializeParams request, CancellationToken token) =>
                 {
-                    _logger.LogDebug("Received Initialize request.");
+                    _logger?.LogDebug("Received Initialize request.");
                     token.ThrowIfCancellationRequested();
                     if (TimedAction.TryRun(() =>
                     {
                         _serverState.Initialize(request);
                     }, out var elapsed, out var exception))
                     {
-                        _logger.LogPerformance(TraceLevel.Verbose, "Handling initialize...", elapsed);
+                        _logger?.LogPerformance(TraceLevel.Verbose, "Handling initialize...", elapsed);
                     }
                     else if (exception != null)
                     {
-                        _logger.LogError(TraceLevel.Verbose, exception);
+                        _logger?.LogError(TraceLevel.Verbose, exception);
                     }
-                    _logger.LogDebug("Completed Initialize request.");
+                    _logger?.LogDebug("Completed Initialize request.");
                     return Task.CompletedTask;
                 })
 
                 .OnInitialized((ILanguageServer server, InitializeParams request, InitializeResult response, CancellationToken token) =>
                 {
-                    _logger.LogDebug("Received Initialized notification.");
+                    _logger?.LogDebug("Received Initialized notification.");
                     token.ThrowIfCancellationRequested();
 
-                    _logger.LogDebug("Handled OnInitialized notification.");
+                    _logger?.LogDebug("Handled Initialized notification.");
                     return Task.CompletedTask;
                 })
 
                 .OnStarted((ILanguageServer server, CancellationToken token) =>
                 {
-                    _logger.LogDebug("Language server started.");
+                    _logger?.LogDebug("Language server started.");
                     token.ThrowIfCancellationRequested();
 
-                    if (TimedAction.TryRun(() =>
-                    {
-                        _healthCheckService = _serviceScope.ServiceProvider.GetRequiredService<IHealthCheckService>();
-                        _healthCheckService.Start();
-                    }, out var elapsed, out var exception))
-                    {
-                        _logger.LogPerformance(_serverState.TraceLevel.ToTraceLevel(), "Started healthcheck service.", elapsed);
-                    }
-                    else if (exception != null)
-                    {
-                        _logger.LogError(_serverState.TraceLevel.ToTraceLevel(), exception, "Healthcheck service could not be started.");
-                    }
-
-                    _logger.LogDebug("Handled OnStarted notification.");
+                    _logger?.LogDebug("Handled Started notification.");
                     return Task.CompletedTask;
                 })
 
                 /* handlers */
-                .WithHandler<SetTraceHandler>()
+                //.WithHandler<SetTraceHandler>()
 
                 /* registrations */
 
+                // TODO figure out why these aren't working as regular handlers
+                // .WithHandler<ShutdownHandler>()
+                // .WithHandler<ExitHandler>()
+                // .WithHandler<InitializedHandler>()
+
                 .OnShutdown((ShutdownParams request, CancellationToken token) =>
                 {
-                    _logger.LogDebug("Received Shutdown notification.");
+                    _logger?.LogDebug("Received Shutdown notification.");
                     token.ThrowIfCancellationRequested();
 
-                    _logger.LogDebug("Handled Shutdown notification; awaiting Exit notification...");
+                    _serverState.Shutdown(request);
+                    _logger?.LogDebug("Handled Shutdown notification; awaiting Exit notification...");
                     return Task.CompletedTask;
                 })
                 .OnExit(async (ExitParams request, CancellationToken token) =>
                 {
-                    _logger.LogDebug("Received Exit notification. Process will now be terminated.");
-                    await Task.Delay(TimeSpan.FromMilliseconds(100), token).ConfigureAwait(false); // allow the logger to write that last entry.
-                    
-                    Environment.Exit(0); // FIXME stack should unwind all the way to the entry point... unclear how to do this. cancelling the _tokenSource throws, but doesn't bubble up.
-                })
+                    _logger?.LogDebug("Received Exit notification. Process will now be terminated.");
+                    await Task.Delay(TimeSpan.FromMilliseconds(100));
 
-                //.WithHandler<InitializedHandler>()
+                    // FIXME figure out a way to unwind the stack all the way up?
+                    if (_serverState.IsCleanExit)
+                    {
+                        Environment.Exit(0);
+                    }
+                    else
+                    {
+                        _languageServer.ForcefulShutdown();
+                        Environment.Exit(1);
+                    }
+                })
 
             /*/ Workspace
                 .WithHandler<DidChangeConfigurationHandler>()
@@ -302,13 +314,6 @@ namespace Rubberduck.LanguageServer
                 _logger?.LogDebug("Disposing LanguageServer...");
                 _languageServer.Dispose();
                 _languageServer = null!;
-            }
-
-            if (_serviceScope is not null)
-            {
-                _logger?.LogDebug("Disposing service scope...");
-                _serviceScope.Dispose();
-                _serviceScope = null!;
             }
         }
 
