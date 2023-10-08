@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.LanguageServer;
@@ -22,13 +23,13 @@ namespace Rubberduck.LanguageServer.Handlers.Lifecycle
 
         private readonly ILogger _logger;
         private readonly ISettingsProvider<LanguageServerSettings> _settingsProvider;
-        private readonly LanguageServerState _serverState;
+        private readonly Func<LanguageServerState> _state;
 
-        public ExitHandler(ILogger<ExitHandler> logger, ISettingsProvider<LanguageServerSettings> settingsProvider, LanguageServerState serverState)
+        public ExitHandler(ILogger<ExitHandler> logger, ISettingsProvider<LanguageServerSettings> settingsProvider, Func<LanguageServerState> state)
         {
             _logger = logger;
             _settingsProvider = settingsProvider;
-            _serverState = serverState;
+            _state = state;
         }
 
         public async override Task<Unit> Handle(ExitParams request, CancellationToken cancellationToken)
@@ -41,7 +42,7 @@ namespace Rubberduck.LanguageServer.Handlers.Lifecycle
             if (TimedAction.TryRun(() =>
             {
                 _logger.LogInformation("Handling exit notification...");
-                if (_serverState.IsCleanExit)
+                if (_state().IsCleanExit)
                 {
                     Environment.Exit(0);
                 }

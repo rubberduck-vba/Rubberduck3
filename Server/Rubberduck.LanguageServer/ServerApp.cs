@@ -90,6 +90,7 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<IFileSystem, FileSystem>();
 
             services.AddSingleton<LanguageServerState>();
+            services.AddSingleton<Func<LanguageServerState>>(provider => () => _serverState);
             services.AddSingleton<IServerStateWriter>(provider => provider.GetRequiredService<LanguageServerState>());
 
             services.AddSingleton<IDefaultSettingsProvider<LanguageServerSettings>>(provider => LanguageServerSettings.Default);
@@ -98,6 +99,7 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<SupportedLanguage, VisualBasicForApplicationsLanguage>();
             services.AddSingleton<DocumentContentStore>();
 
+            services.AddSingleton<IExitHandler, ExitHandler>();
             services.AddSingleton<IHealthCheckService, ClientProcessHealthCheckService>();
         }
 
@@ -181,41 +183,41 @@ namespace Rubberduck.LanguageServer
                     return Task.CompletedTask;
                 })
 
-                /* handlers */
-                //.WithHandler<SetTraceHandler>()
+                 /* handlers */
+                 //.WithHandler<SetTraceHandler>()
 
-                /* registrations */
+                 /* registrations */
 
-                // TODO figure out why these aren't working as regular handlers
-                // .WithHandler<ShutdownHandler>()
-                // .WithHandler<ExitHandler>()
-                // .WithHandler<InitializedHandler>()
+                 // TODO figure out why these aren't working as regular handlers
+                 .WithHandler<ShutdownHandler>()
+                 .WithHandler<ExitHandler>()
+            // .WithHandler<InitializedHandler>()
 
-                .OnShutdown((ShutdownParams request, CancellationToken token) =>
-                {
-                    _logger?.LogDebug("Received Shutdown notification.");
-                    token.ThrowIfCancellationRequested();
+            //.OnShutdown((ShutdownParams request, CancellationToken token) =>
+            //{
+            //    _logger?.LogDebug("Received Shutdown notification.");
+            //    token.ThrowIfCancellationRequested();
 
-                    _serverState.Shutdown(request);
-                    _logger?.LogDebug("Handled Shutdown notification; awaiting Exit notification...");
-                    return Task.CompletedTask;
-                })
-                .OnExit(async (ExitParams request, CancellationToken token) =>
-                {
-                    _logger?.LogDebug("Received Exit notification. Process will now be terminated.");
-                    await Task.Delay(TimeSpan.FromMilliseconds(100));
+            //    _serverState.Shutdown(request);
+            //    _logger?.LogDebug("Handled Shutdown notification; awaiting Exit notification...");
+            //    return Task.CompletedTask;
+            //})
+            //.OnExit(async (ExitParams request, CancellationToken token) =>
+            //{
+            //    _logger?.LogDebug("Received Exit notification. Process will now be terminated.");
+            //    await Task.Delay(TimeSpan.FromMilliseconds(100));
 
-                    // FIXME figure out a way to unwind the stack all the way up?
-                    if (_serverState.IsCleanExit)
-                    {
-                        Environment.Exit(0);
-                    }
-                    else
-                    {
-                        _languageServer.ForcefulShutdown();
-                        Environment.Exit(1);
-                    }
-                })
+            //    // FIXME figure out a way to unwind the stack all the way up?
+            //    if (_serverState.IsCleanExit)
+            //    {
+            //        Environment.Exit(0);
+            //    }
+            //    else
+            //    {
+            //        _languageServer.ForcefulShutdown();
+            //        Environment.Exit(1);
+            //    }
+            //})
 
             /*/ Workspace
                 .WithHandler<DidChangeConfigurationHandler>()

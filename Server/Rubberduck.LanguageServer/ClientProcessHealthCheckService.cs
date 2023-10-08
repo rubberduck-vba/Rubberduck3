@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.General;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
@@ -6,7 +8,6 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using System;
 using System.Diagnostics;
-using System.Reactive.Linq;
 using System.Threading;
 
 namespace Rubberduck.LanguageServer
@@ -23,18 +24,18 @@ namespace Rubberduck.LanguageServer
         private readonly Process _process;
 
         private readonly Timer _timer;
-        private readonly Func<ILanguageServer> _getLanguageServer;
+        private readonly IExitHandler _exitHandler;
 
         private TraceLevel TraceLevel => _settingsProvider.Settings.TraceLevel.ToTraceLevel();
         private TimeSpan Interval => _settingsProvider.Settings.ClientHealthCheckInterval;
 
         public ClientProcessHealthCheckService(ILogger<ClientProcessHealthCheckService> logger, ISettingsProvider<LanguageServerSettings> settingsProvider, 
-            Process process, Func<ILanguageServer> server)
+            Process process, IExitHandler exitHandler)
         {
             _logger = logger;
             _settingsProvider = settingsProvider;
             _process = process;
-            _getLanguageServer = server;
+            _exitHandler = exitHandler;
 
             _timer = new Timer(RunHealthCheck);
         }
@@ -69,27 +70,23 @@ namespace Rubberduck.LanguageServer
             }
         }
 
-// justification: crashing the process wouldn't even be a bad idea at that point.
-#pragma warning disable VSTHRD100 // Avoid async void methods
-        private async void RunHealthCheck(object? _)
-#pragma warning restore VSTHRD100
+        private void RunHealthCheck(object? _)
         {
-            try
+            if (TimedAction.TryRun(() =>
             {
                 if (_process.HasExited)
                 {
-                    _logger.LogWarning(TraceLevel, "Client process has exited.", $"ExitCode: {_process.ExitCode} ExitTime: {_process.ExitTime}");
-                    var server = _getLanguageServer();
-                    await server.Exit.RunAsync(CancellationToken.None);
+                    _logger.LogWarning(TraceLevel, "Client process has exited.");
+                    _ = _exitHandler.Handle(new ExitParams(), CancellationToken.None).ConfigureAwait(false).GetAwaiter().GetResult();
                 }
-                else
-                {
-                    _logger.LogTrace(TraceLevel, "Client process health check completed.", $"IsResponding: {_process.Responding} TotalProcessorTime: {_process.TotalProcessorTime}");
-                }
-            }
-            catch (Exception exception)
+            }, out var elapsed, out var exception))
             {
-                Debug.WriteLine(exception);
+                var message = $"Client process health check completed. IsResponding: {_process.Responding} TotalProcessorTime: {_process.TotalProcessorTime}";
+                _logger.LogPerformance(TraceLevel, message, elapsed);
+            }
+            else if (exception != null)
+            {
+                _logger.LogError(TraceLevel, exception);
             }
         }
     }
