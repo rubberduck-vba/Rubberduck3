@@ -32,7 +32,7 @@ namespace Rubberduck.UI.Abstract
     {
         //event EventHandler<NavigateToMemberEventArgs> MemberSelected;
 
-        IQualifiedModuleName QualifiedModuleName { get; set; }
+        //IQualifiedModuleName QualifiedModuleName { get; set; }
         string Name { get; set; }
         ModuleType ModuleType { get; set; }
 
@@ -44,7 +44,7 @@ namespace Rubberduck.UI.Abstract
 
     public interface IModuleInfoViewModel : INotifyPropertyChanged
     {
-        IQualifiedModuleName QualifiedModuleName { get; set; }
+        //IQualifiedModuleName QualifiedModuleName { get; set; }
         string Name { get; set; }
         ModuleType ModuleType { get; set; }
 
