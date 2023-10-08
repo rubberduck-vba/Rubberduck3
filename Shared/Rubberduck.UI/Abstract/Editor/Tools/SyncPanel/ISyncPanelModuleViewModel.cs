@@ -10,7 +10,7 @@ namespace Rubberduck.UI.Abstract
         /// <summary>
         /// Gets/sets an object representing the VBIDE module.
         /// </summary>
-        IQualifiedModuleName QualifiedModuleName { get; set; }
+        //IQualifiedModuleName QualifiedModuleName { get; set; }
 
         /// <summary>
         /// Gets/sets the ModuleType of this module.

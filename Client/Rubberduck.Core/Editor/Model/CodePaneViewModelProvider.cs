@@ -26,7 +26,7 @@ namespace Rubberduck.Core.Editor
 
         public ICodePaneViewModel GetViewModel(IEditorShellViewModel shell, IQualifiedModuleName module, IMemberProviderViewModel memberProvider, string content)
         {
-            var vm = shell.ModuleDocumentTabs.SingleOrDefault(e => e.ModuleInfo.QualifiedModuleName.Equals(module));
+            var vm = shell.ModuleDocumentTabs.FirstOrDefault();
             if (vm is null)
             {
                 _projectsRepository.Component(module);

@@ -20,12 +20,12 @@ namespace Rubberduck.UI.Xaml.Controls
              new SyncPanelModuleDesignViewModel
             {
                 ModuleType = ModuleType.StandardModule,
-                QualifiedModuleName = new QualifiedModuleName("projectName", "projectPath", "Module1")
+                //QualifiedModuleName = new QualifiedModuleName("projectName", "projectPath", "Module1")
             },
             new SyncPanelModuleDesignViewModel
             {
                 ModuleType = ModuleType.ClassModule,
-                QualifiedModuleName = new QualifiedModuleName("projectName", "projectPath", "Class1")
+                //QualifiedModuleName = new QualifiedModuleName("projectName", "projectPath", "Class1")
             }
         };
 
@@ -45,7 +45,7 @@ namespace Rubberduck.UI.Xaml.Controls
 
     internal class SyncPanelModuleDesignViewModel : ISyncPanelModuleViewModel
     {
-        public IQualifiedModuleName QualifiedModuleName { get; set; } = new QualifiedModuleName("projectName", "projectPath", "Module1");
+        //public IQualifiedModuleName QualifiedModuleName { get; set; } = new QualifiedModuleName("projectName", "projectPath", "Module1");
         public ModuleType ModuleType { get; set; } = ModuleType.StandardModule;
         public ModuleSyncState State { get; set; } = ModuleSyncState.OK;
 
