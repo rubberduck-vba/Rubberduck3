@@ -1,8 +1,7 @@
-﻿using Rubberduck.Unmanaged.Model;
-using Rubberduck.Unmanaged.Model.Abstract;
+﻿using Rubberduck.Unmanaged.Model.Abstract;
 using System;
 
-namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
+namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
 {
     /// <summary>
     /// Provides a generic manner of reporting document state for use within Rubberduck
@@ -32,7 +31,7 @@ namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
         /// </summary>
         ActiveView
     }
-    
+
     public interface IHostDocument
     {
         IQualifiedModuleName QualifiedName { get; }
@@ -40,7 +39,7 @@ namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
         string ClassName { get; }
         DocumentState State { get; }
         bool TryGetTarget(out SafeIDispatchWrapper iDispatch);
-    } 
+    }
 
     public class HostDocument : IHostDocument
     {

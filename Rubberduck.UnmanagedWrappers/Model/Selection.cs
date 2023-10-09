@@ -1,5 +1,4 @@
 ﻿using System;
-using Rubberduck.Resources;
 
 namespace Rubberduck.Unmanaged.Model
 {
@@ -138,8 +137,8 @@ namespace Rubberduck.Unmanaged.Model
         public override string ToString()
         {
             return (StartLine == EndLine && StartColumn == EndColumn)
-                ? string.Format(RubberduckUI.SelectionLocationPosition, StartLine, StartColumn)
-                : string.Format(RubberduckUI.SelectionLocationRange, StartLine, StartColumn, EndLine, EndColumn);
+                ? $"L{StartLine}C{StartColumn}"
+                : $"L{StartLine}C{StartColumn}-L{EndLine}C{EndColumn}";
         }
 
         public static bool operator ==(Selection selection1, Selection selection2)

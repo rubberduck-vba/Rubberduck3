@@ -1,4 +1,4 @@
-namespace Rubberduck.Unmanaged.VBERuntime
+namespace Rubberduck.Unmanaged.VBERuntime.Settings
 {
     public interface IVbeSettings
     {

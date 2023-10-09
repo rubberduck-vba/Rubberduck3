@@ -1,5 +1,5 @@
 ﻿using Dragablz;
-using Rubberduck.UI.Abstract;
+using Rubberduck.UI.Xaml.Dependencies.Controls.StatusBar;
 using System.Windows;
 
 namespace Rubberduck.UI.Xaml.Shell

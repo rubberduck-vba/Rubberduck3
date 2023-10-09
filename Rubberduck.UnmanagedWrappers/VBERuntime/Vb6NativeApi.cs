@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Rubberduck.Unmanaged.VBERuntime;
 
 namespace Rubberduck.Unmanaged.VBERuntime
 {

@@ -1,8 +1,8 @@
 ﻿using System.Runtime.InteropServices.ComTypes;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.TypeLibs.Abstract;
 
-namespace Rubberduck.Unmanaged.TypeLibs
+namespace Rubberduck.Unmanaged.TypeLibs.Public
 {
     public class TypeLibWrapperProvider : ITypeLibWrapperProvider
     {

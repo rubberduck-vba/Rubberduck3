@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
+using System;
 using System.Collections.Generic;
 
-namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
+namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
 {
     public interface IVBProject : ISafeComWrapper, IEquatable<IVBProject>
     {

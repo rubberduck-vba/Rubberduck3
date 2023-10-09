@@ -1,4 +1,4 @@
-﻿using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+﻿using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.VBERuntime;
 
 namespace Rubberduck.Root

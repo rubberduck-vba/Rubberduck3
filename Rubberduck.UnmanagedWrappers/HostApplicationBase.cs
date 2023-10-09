@@ -1,5 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+﻿using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
 using Rubberduck.Unmanaged.Model;
 using Rubberduck.Unmanaged.Model.Abstract;
 using System;

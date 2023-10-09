@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Rubberduck.Unmanaged.TypeLibs.Abstract;
+using System;
 using System.Runtime.InteropServices;
-using Rubberduck.Unmanaged.TypeLibs.Abstract;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.Unmanaged.TypeLibs.Unmanaged
@@ -46,6 +46,29 @@ namespace Rubberduck.Unmanaged.TypeLibs.Unmanaged
             DISPATCH_PROPERTYGET = 2,
             DISPATCH_PROPERTYPUT = 4,
             DISPATCH_PROPERTYPUTREF = 8,
+        }
+
+        public enum StandardDispIds : int
+        {
+            DISPID_ENUM = -4
+        }
+
+        public static object PropertyGet_NoArgs(IDispatch obj, int memberId)
+        {
+            var pDispParams = new ComTypes.DISPPARAMS();
+            var pExcepInfo = new ComTypes.EXCEPINFO();
+            Guid guid = new Guid();
+
+            int hr = obj.Invoke(memberId, ref guid, 0, (uint)(InvokeKind.DISPATCH_METHOD | InvokeKind.DISPATCH_PROPERTYGET),
+                                    ref pDispParams, out var pVarResult, ref pExcepInfo, out uint ErrArg);
+
+            if (hr < 0)
+            {
+                // could expand this to better handle DISP_E_EXCEPTION
+                throw Marshal.GetExceptionForHR(hr);
+            }
+
+            return pVarResult;
         }
 
         /// <summary>

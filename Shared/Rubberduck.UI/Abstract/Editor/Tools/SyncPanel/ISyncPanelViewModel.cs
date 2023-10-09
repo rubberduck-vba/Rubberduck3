@@ -1,8 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using Rubberduck.UI.Abstract.Editor.Tools;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 
-namespace Rubberduck.UI.Abstract
+namespace Rubberduck.UI.Abstract.Editor.Tools.SyncPanel
 {
     public interface ISyncPanelViewModel : IToolTabViewModel, INotifyPropertyChanged
     {

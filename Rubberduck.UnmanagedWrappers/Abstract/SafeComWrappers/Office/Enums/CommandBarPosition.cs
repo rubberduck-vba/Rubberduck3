@@ -1,4 +1,4 @@
-namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office
+namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office.Enums
 {
     // Abstraction of the MsoBarPosition enum in the interop assemblies for Office.v8 and Office.v12
     public enum CommandBarPosition

@@ -14,8 +14,8 @@ namespace Rubberduck.UI
 {
     public abstract class ViewModelBase : INotifyPropertyChanged, INotifyDataErrorInfo
     {
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = delegate { };
+        public event PropertyChangedEventHandler? PropertyChanged = delegate { };
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged = delegate { };
 
         private readonly IDictionary<string, List<string>> _errors = new ConcurrentDictionary<string, List<string>>();
 

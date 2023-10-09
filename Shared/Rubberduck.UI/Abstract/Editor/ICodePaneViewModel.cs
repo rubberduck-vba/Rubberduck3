@@ -1,14 +1,15 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using Rubberduck.InternalApi.Model;
+using Rubberduck.UI.Xaml.Dependencies.Controls.StatusBar;
+using Rubberduck.UI.Xaml.Shell.Document;
 using Rubberduck.Unmanaged.Model;
-using Rubberduck.Unmanaged.Model.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 
-namespace Rubberduck.UI.Abstract
+namespace Rubberduck.UI.Abstract.Editor
 {
     /* some of these are useless with LSP. TODO: clean this up */
     public interface ICodePaneViewModel : INotifyPropertyChanged

@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.UI.Abstract
+﻿using Rubberduck.UI.Abstract.Editor;
+
+namespace Rubberduck.UI.Abstract.Editor.Tools
 {
     public interface IShellToolTabSetting
     {

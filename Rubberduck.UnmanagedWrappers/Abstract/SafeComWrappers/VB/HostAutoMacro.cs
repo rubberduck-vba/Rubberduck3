@@ -1,7 +1,7 @@
 ﻿using Rubberduck.Unmanaged.Model;
 using System.Collections.Generic;
 
-namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
+namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
 {
     /// <summary>
     /// Provide information about naming schemes that the host

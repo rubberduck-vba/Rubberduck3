@@ -1,7 +1,4 @@
-﻿using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
-using System;
-
-namespace Rubberduck.Unmanaged.WindowsApi
+﻿namespace Rubberduck.Unmanaged.WindowsApi
 {
     //Stub for code pane replacement.  :-)
     internal class CodePaneSubclass //: VbeAttachableSubclass<ICodePane>, IWindowEventProvider

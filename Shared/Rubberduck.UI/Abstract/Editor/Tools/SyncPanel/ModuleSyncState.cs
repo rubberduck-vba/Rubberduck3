@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rubberduck.UI.Abstract
+namespace Rubberduck.UI.Abstract.Editor.Tools.SyncPanel
 {
     [Flags]
     public enum ModuleSyncState

@@ -1,4 +1,4 @@
-﻿using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+﻿using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
 using Rubberduck.Unmanaged.Model;
 using System;
 

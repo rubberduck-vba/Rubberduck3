@@ -1,7 +1,7 @@
 using Rubberduck.Unmanaged.Events;
 using System;
 
-namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
+namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
 {
     public interface IReferences : ISafeEventedComWrapper, IComCollection<IReference>, IEquatable<IReferences>
     {

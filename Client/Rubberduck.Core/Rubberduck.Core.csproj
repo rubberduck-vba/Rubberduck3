@@ -56,10 +56,6 @@
       <Project>{36e18087-fe84-4e3a-9c65-07ca0fd7d303}</Project>
       <Name>Rubberduck.Client</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.UI.WinForms\Rubberduck.UI.WinForms.csproj">
-      <Project>{A1F54935-FE6D-4013-B618-5251DE4466CF}</Project>
-      <Name>Rubberduck.UI.WinForms</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\shared\Rubberduck.UI\Rubberduck.UI.csproj">
       <Project>{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}</Project>
       <Name>Rubberduck.UI</Name>
@@ -68,9 +64,5 @@
       <Project>{030FDE59-C347-4B81-AB80-5B4B80B757A0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Editor\Commands\" />
-    <Folder Include="Editor\Tools\" />
   </ItemGroup>
 </Project>

@@ -23,8 +23,8 @@ namespace Rubberduck.Core
     public sealed class App : IDisposable
     {
         private static readonly string _title = "Rubberduck";
+        private readonly Version _version;
 
-        private readonly System.Windows.Application _application = new();
         private readonly IPresenter _presenter;
 
         private readonly IMessageBox _messageBox;
@@ -35,7 +35,8 @@ namespace Rubberduck.Core
         private readonly ILogLevelService _logLevelService;
         private readonly IFileSystem _filesystem;
 
-        public App(ILogger<App> logger, 
+        public App(Version version,
+            ILogger<App> logger, 
             ILogLevelService logLevelService,
             IMessageBox messageBox,
             ISettingsService<RubberduckSettings> settingsService,
@@ -43,6 +44,8 @@ namespace Rubberduck.Core
             IFileSystem filesystem,
             IPresenter presenter)
         {
+            _version = version;
+
             _logger = logger;
             _logLevelService = logLevelService;
 
@@ -53,8 +56,6 @@ namespace Rubberduck.Core
             _settingsService.SettingsChanged += HandleSettingsServiceSettingsChanged;
             _filesystem = filesystem;
             _presenter = presenter;
-
-            UiContextProvider.Initialize();
         }
 
         private void HandleSettingsServiceSettingsChanged(object? sender, SettingsChangedEventArgs<RubberduckSettings>? e)
@@ -144,24 +145,20 @@ namespace Rubberduck.Core
             _settingsService.Write(vm.ToSettings());
         }
 
-        public void Startup(string version)
+        public void Startup()
         {
+            UiContextProvider.Initialize();
+
             EnsureLogFolderPathExists();
             EnsureTempPathExists();
             ApplyCultureConfig();
 
-            LogRubberduckStart(version);
+            LogRubberduckStart(_version);
             UpdateLoggingLevel();
             //CheckForLegacyIndenterSettings();
             _appMenus.Initialize();
             _appMenus.Localize();
 
-            StartWPF();
-        }
-
-        private void StartWPF()
-        {
-            _application.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             _presenter.Show();
         }
 
@@ -170,7 +167,6 @@ namespace Rubberduck.Core
             try
             {
                 UpdateLoggingLevelOnShutdown();
-                _application.Shutdown();
             }
             catch
             {
@@ -255,13 +251,13 @@ namespace Rubberduck.Core
             }
         }
 
-        public void LogRubberduckStart(string version)
+        public void LogRubberduckStart(Version version)
         {
             //GlobalDiagnosticsContext.Set("RubberduckVersion", version.ToString());
 
             var headers = new List<string>
             {
-                $"\r\n\tRubberduck version {version} loading:",
+                $"\r\n\tRubberduck version {version.ToString(3)} loading:",
                 $"\tOperating System: {Environment.OSVersion.VersionString} {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}"
             };
             try

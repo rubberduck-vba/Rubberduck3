@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.SettingsProvider;
+using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using Rubberduck.Unmanaged.Abstract;
@@ -11,8 +13,8 @@ namespace Rubberduck.Core.Editor
     {
         private readonly IPresenter _presenter;
 
-        public ShowEditorShellCommand(ILogger<ShowEditorShellCommand> logger, IPresenter presenter, IVbeEvents vbeEvents)
-            : base(logger, vbeEvents)
+        public ShowEditorShellCommand(ILogger<ShowEditorShellCommand> logger, ISettingsProvider<RubberduckSettings> settingsProvider, IVbeEvents vbeEvents, IPresenter presenter)
+            : base(logger, settingsProvider, vbeEvents)
         {
             _presenter = presenter;
         }

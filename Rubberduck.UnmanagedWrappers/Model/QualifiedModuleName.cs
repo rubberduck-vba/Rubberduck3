@@ -1,9 +1,8 @@
 using System.Globalization;
 using Path = System.IO.Path;
 using System;
-using Rubberduck.Unmanaged.Abstract;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using Rubberduck.Unmanaged.Model.Abstract;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 
 namespace Rubberduck.Unmanaged.Model
 {

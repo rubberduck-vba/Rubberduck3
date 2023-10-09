@@ -1,7 +1,7 @@
 ﻿// ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 using Microsoft.Extensions.Logging;
 using Rubberduck.Unmanaged;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {

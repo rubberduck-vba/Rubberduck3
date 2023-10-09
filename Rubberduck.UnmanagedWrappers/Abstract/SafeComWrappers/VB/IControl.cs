@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel;
 
-namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
+namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
 {
     public interface IControl : ISafeComWrapper, IEquatable<IControl>
     {
@@ -20,6 +20,6 @@ namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
             {
                 return "Control";
             }
-        }     
+        }
     }
 }

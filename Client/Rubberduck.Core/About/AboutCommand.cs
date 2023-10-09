@@ -1,11 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.Interaction.MessageBox;
-using Rubberduck.UI;
+using Rubberduck.SettingsProvider;
+using Rubberduck.SettingsProvider.Model;
+using Rubberduck.UI.About;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.WinForms.Dialogs;
 using Rubberduck.Unmanaged.Abstract;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
-using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -17,26 +16,18 @@ namespace Rubberduck.Core.About
     [ComVisible(false)]
     public class AboutCommand : ComCommandBase, IAboutCommand
     {
-        private readonly IWebNavigator _web;
-        private readonly IMessageBox _messageBox;
-        private readonly Version _version;
+        private AboutService _service;
 
-        public AboutCommand(ILogger<AboutCommand> logger, IVbeEvents vbeEvents, IWebNavigator web, IMessageBox messageBox, Version version)
-            : base(logger, vbeEvents)
+        public AboutCommand(ILogger<AboutCommand> logger, ISettingsProvider<RubberduckSettings> settingsProvider, IVbeEvents vbeEvents, AboutService service)
+            : base(logger, settingsProvider, vbeEvents)
         {
-            _web = web;
-            _messageBox = messageBox;
-            _version = version;
+            _service = service;
         }
 
-        protected async override Task OnExecuteAsync(object? parameter)
+        protected override Task OnExecuteAsync(object? parameter)
         {
-            var vm = new AboutControlViewModel(Logger, _web, _messageBox, _version);
-            using (var window = new AboutDialog(vm))
-            {
-                window.ShowDialog();
-            }
-            await Task.CompletedTask;
+            _service.Show();
+            return Task.CompletedTask;
         }
     }
 }

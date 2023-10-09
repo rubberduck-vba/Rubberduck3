@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.UI.Abstract
+﻿namespace Rubberduck.UI.Abstract.Editor.Tools
 {
     public interface IToolTabViewModel
     {

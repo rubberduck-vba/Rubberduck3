@@ -1,4 +1,4 @@
-﻿using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+﻿using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 
 namespace Rubberduck.VBEditor.Extensions
 {

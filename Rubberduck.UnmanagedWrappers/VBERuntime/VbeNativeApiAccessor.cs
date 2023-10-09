@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Rubberduck.Unmanaged.VBERuntime;
 
 namespace Rubberduck.Unmanaged.VBERuntime
 {

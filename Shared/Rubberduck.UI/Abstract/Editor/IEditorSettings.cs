@@ -1,5 +1,4 @@
-﻿
-namespace Rubberduck.UI.Abstract
+﻿namespace Rubberduck.UI.Abstract.Editor
 {
     public interface IEditorSettings
     {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.Model;
 using Rubberduck.Unmanaged.Model.Abstract;
 using Rubberduck.VBEditor.Extensions;

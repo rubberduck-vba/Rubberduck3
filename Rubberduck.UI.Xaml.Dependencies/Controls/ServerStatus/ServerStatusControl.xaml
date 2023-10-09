@@ -1,0 +1,73 @@
+﻿<UserControl x:Class="Rubberduck.UI.Xaml.Dependencies.Controls.ServerStatus.ServerStatusControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Rubberduck.UI.Xaml.Controls">
+    <UserControl.Resources>
+        <BitmapImage x:Key="StatusOfflineIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/drive--exclamation.png" />
+        <BitmapImage x:Key="StatusOnlineIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick.png" />
+        <BitmapImage x:Key="UptimeIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/clock-network.png" />
+        <BitmapImage x:Key="SocketIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/socket.png" />
+        <BitmapImage x:Key="DownloadIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/drive-download.png" />
+        <BitmapImage x:Key="UploadIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/drive-upload.png" />
+        <BitmapImage x:Key="ClientIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/user-medium-silhouette.png" />
+    </UserControl.Resources>
+    <Grid>
+        <StatusBar>
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <Image Height="16" Width="16">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsAlive}" Value="true">
+                                        <Setter Property="Source" Value="{StaticResource StatusOnlineIcon}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsAlive}" Value="false">
+                                        <Setter Property="Source" Value="{StaticResource StatusOfflineIcon}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                    <Label Content="{Binding StatusMessage}" />
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem ToolTip="The amount of time this server instance has been running.">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{StaticResource UptimeIcon}" Height="16" Width="16" />
+                    <Label Content="{Binding Uptime}" ContentStringFormat="{}{0:hh}:{0:mm}:{0:ss}" />
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem ToolTip="The number of incoming messages received by this server instance.">
+                <StackPanel Orientation="Horizontal" Margin="0,0,5,0">
+                    <Image Source="{StaticResource DownloadIcon}" Height="16" Width="16" />
+                    <!--Label Content="Incoming:" /-->
+                    <Label Content="{Binding TotalInbound, StringFormat={}N0}" />
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem ToolTip="The number of outgoing messages sent by this server instance.">
+                <StackPanel Orientation="Horizontal" Margin="5,0">
+                    <Image Source="{StaticResource UploadIcon}" Height="16" Width="16" />
+                    <!--Label Content="Outgoing:" /-->
+                    <Label Content="{Binding TotalOutbound, StringFormat={}N0}" />
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem ToolTip="The number of clients connected to this server instance.">
+                <StackPanel Orientation="Horizontal" Margin="5,0">
+                    <Image Source="{StaticResource ClientIcon}" Height="16" Width="16" />
+                    <!--Label Content="Clients:" /-->
+                    <Label Content="{Binding ClientConnections, StringFormat={}N0}" />
+                </StackPanel>
+            </StatusBarItem>
+
+            <StatusBarItem HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{Binding ServerName}" ToolTip="The name of the server" />
+                    <Label Content="{Binding RpcPort}" ToolTip="The RPC port (1024-5000) this server is communicating with." />
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</UserControl>

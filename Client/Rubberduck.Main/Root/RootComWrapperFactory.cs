@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 

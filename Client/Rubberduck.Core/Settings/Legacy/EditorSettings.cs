@@ -1,4 +1,4 @@
-﻿using Rubberduck.UI.Abstract;
+﻿using Rubberduck.UI.Abstract.Editor;
 
 namespace Rubberduck.Settings
 {

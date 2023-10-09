@@ -1,5 +1,5 @@
 ﻿using System;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.TypeLibs.Abstract;
 using Rubberduck.Unmanaged.TypeLibs.Unmanaged;
 using Rubberduck.Unmanaged.TypeLibs.Utility;

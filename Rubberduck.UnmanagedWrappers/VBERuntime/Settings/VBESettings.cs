@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Win32;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 
-namespace Rubberduck.Unmanaged.VBERuntime
+namespace Rubberduck.Unmanaged.VBERuntime.Settings
 {
     public class VbeSettings : IVbeSettings
     {
@@ -14,7 +14,7 @@ namespace Rubberduck.Unmanaged.VBERuntime
 
         private readonly IRegistryWrapper _registry;
         private readonly string _activeRegistryRootPath;
-        
+
 
         public VbeSettings(IVBE vbe, IRegistryWrapper registry)
         {
@@ -65,7 +65,7 @@ namespace Rubberduck.Unmanaged.VBERuntime
         private void WriteAllRegistryPaths(string keyName, bool value)
         {
             var paths = VbeVersions.Select(version => string.Format(VbeSettingPathTemplate, version))
-                .Union(new[] {Vb6SettingPath});
+                .Union(new[] { Vb6SettingPath });
 
             foreach (var path in paths)
             {

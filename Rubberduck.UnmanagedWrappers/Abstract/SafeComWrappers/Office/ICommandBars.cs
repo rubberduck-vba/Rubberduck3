@@ -1,3 +1,5 @@
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office.Enums;
+
 namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office
 {
     // Abstraction of the CommandBars coclass interface in the interop assemblies for Office.v8 and Office.v12

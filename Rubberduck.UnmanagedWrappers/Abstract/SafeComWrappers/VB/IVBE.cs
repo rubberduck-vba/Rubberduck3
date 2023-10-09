@@ -1,9 +1,10 @@
 using System;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
 using Rubberduck.Unmanaged.Abstract.SourceCodeProvider;
 using Rubberduck.Unmanaged.Model;
 
-namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
+namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
 {
     // ReSharper disable once InconsistentNaming
     public interface IVBE : ISafeComWrapper, IEquatable<IVBE>
@@ -27,7 +28,7 @@ namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
 
         bool IsInDesignMode { get; }
         int ProjectsCount { get; }
-        
+
         ITempSourceFileHandler TempSourceFileHandler { get; }
     }
 }

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Common;
+using Rubberduck.InternalApi.Extensions;
+using Rubberduck.SettingsProvider;
+using Rubberduck.SettingsProvider.Model;
 
 namespace Rubberduck.UI.Command
 {
@@ -15,15 +18,18 @@ namespace Rubberduck.UI.Command
     {
         private static readonly List<MethodBase> ExceptionTargetSites = new();
 
-        protected CommandBase(ILogger logger)
+        protected CommandBase(ILogger logger, ISettingsProvider<RubberduckSettings> settings)
         {
             Logger = logger;
+            SettingsProvider = settings;
+
             CanExecuteCondition = (parameter => true);
             OnExecuteCondition = (parameter => true);
 
             ShortcutText = string.Empty;
         }
 
+        protected ISettingsProvider<RubberduckSettings> SettingsProvider { get; }
         protected ILogger Logger { get; }
         protected abstract Task OnExecuteAsync(object? parameter);
 
@@ -61,45 +67,42 @@ namespace Rubberduck.UI.Command
 
         public bool CanExecute(object? parameter)
         {
-            try
-            {
-                var result = false;
-                var elapsed = TimedAction.Run(() => result = CanExecuteCondition(parameter));
-                //Logger?.LogPerformance($"{GetType().Name}.CanExecute completed in {elapsed.TotalMilliseconds}ms.");
-                return result;
-            }
-            catch (Exception exception)
-            {
-                //Logger.LogError(exception);
+            var traceLevel = SettingsProvider.Settings.LanguageServerSettings.TraceLevel.ToTraceLevel();
+            var allowExecute = false;
 
+            if (TimedAction.TryRun(() =>
+            {
+                allowExecute = CanExecuteCondition(parameter);
+            }, out var elapsed, out var exception))
+            {
+                Logger.LogPerformance(traceLevel, $"{GetType().Name}.CanExecute completed.", elapsed);
+            }
+            else if (exception is not null)
+            {
+                Logger.LogError(traceLevel, exception);
                 if (exception.TargetSite != null && !ExceptionTargetSites.Contains(exception.TargetSite))
                 {
                     ExceptionTargetSites.Add(exception.TargetSite);
                 }
-
-                return false;
+                allowExecute = false;
             }
+            return allowExecute;
         }
 
         public void Execute(object? parameter)
         {
-            try
-            {
-                var elapsed = TimedAction.Run(() =>
-                {
-                    if (!OnExecuteCondition(parameter))
-                    {
-                        return;
-                    }
+            var traceLevel = SettingsProvider.Settings.LanguageServerSettings.TraceLevel.ToTraceLevel();
 
-                    OnExecuteAsync(parameter).ConfigureAwait(false).GetAwaiter().GetResult();
-                });
-                //Logger.Trace($"{GetType().Name}.Execute completed in {elapsed.TotalMilliseconds}ms.");
+            if (TimedAction.TryRun(async () =>
+            {
+                await OnExecuteAsync(parameter);
+            }, out var elapsed, out var exception))
+            {
+                Logger.LogPerformance(traceLevel, $"{GetType().Name}.Execute completed.", elapsed);
             }
-            catch (Exception exception)
+            else if (exception is not null)
             {
-                //Logger.Error(exception);
-
+                Logger.LogError(traceLevel, exception);
                 if (exception.TargetSite != null && !ExceptionTargetSites.Contains(exception.TargetSite))
                 {
                     ExceptionTargetSites.Add(exception.TargetSite);

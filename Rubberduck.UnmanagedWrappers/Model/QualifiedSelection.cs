@@ -1,5 +1,4 @@
-﻿using Rubberduck.Unmanaged.Abstract;
-using Rubberduck.Unmanaged.Model.Abstract;
+﻿using Rubberduck.Unmanaged.Model.Abstract;
 using System;
 
 namespace Rubberduck.Unmanaged.Model

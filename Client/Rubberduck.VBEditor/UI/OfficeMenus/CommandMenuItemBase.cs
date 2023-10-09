@@ -1,6 +1,6 @@
 ﻿using Rubberduck.Resources.Menus;
 using Rubberduck.UI.Command;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office.Enums;
 using System;
 using System.Drawing;
 using System.Globalization;

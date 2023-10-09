@@ -1,7 +1,8 @@
 using System;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
 using Rubberduck.Unmanaged.Events;
 
-namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
+namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
 {
     public interface IVBProjects : ISafeEventedComWrapper, IComCollection<IVBProject>, IEquatable<IVBProjects>
     {

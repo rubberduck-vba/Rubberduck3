@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
+﻿namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums
 {
     /// <summary>
     /// Describes the kind of VB Editor.

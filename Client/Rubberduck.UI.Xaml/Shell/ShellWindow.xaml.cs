@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Xaml
     /// </summary>
     public partial class ShellWindow : Window
     {
-        public ShellWindow(ShellWindowViewModel viewModel) : this()
+        public ShellWindow(IShellWindowViewModel viewModel) : this()
         {
             DataContext = viewModel;
         }
@@ -18,6 +18,6 @@ namespace Rubberduck.UI.Xaml
             InitializeComponent();
         }
 
-        public ShellWindowViewModel ViewModel => (ShellWindowViewModel)DataContext;
+        public IShellWindowViewModel ViewModel => (IShellWindowViewModel)DataContext;
     }
 }

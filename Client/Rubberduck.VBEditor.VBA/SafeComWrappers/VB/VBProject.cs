@@ -6,6 +6,8 @@ using VB = Microsoft.Vbe.Interop;
 using System;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA

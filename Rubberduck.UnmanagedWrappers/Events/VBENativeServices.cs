@@ -1,8 +1,7 @@
-﻿using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+﻿using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.WindowsApi;
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
 
 namespace Rubberduck.Unmanaged.Events

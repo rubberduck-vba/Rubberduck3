@@ -214,7 +214,7 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
 
         private void ChildMenuCommandClick(object sender, CommandBarButtonClickEventArgs e)
         {
-            if (!(_items.Select(kvp => kvp.Key).SingleOrDefault(menu => e.Tag.EndsWith(menu.GetType().Name)) is ICommandMenuItem item))
+            if (_items.Select(kvp => kvp.Key).SingleOrDefault(menu => e.Tag.EndsWith(menu.GetType().Name)) is not ICommandMenuItem item)
             {
                 return;
             }

@@ -1,12 +1,14 @@
-﻿using Rubberduck.InternalApi.Model;
+﻿using Rubberduck.UI.Abstract.Editor.Tools;
+using Rubberduck.UI.Xaml.Dependencies.Controls.StatusBar;
+using Rubberduck.UI.Xaml.Shell.Document;
 using Rubberduck.Unmanaged.Model.Abstract;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace Rubberduck.UI.Abstract
+namespace Rubberduck.UI.Abstract.Editor
 {
-    
+
     public interface IEditorShellViewModel : INotifyPropertyChanged, ITextDocumentProvider
     {
         ObservableCollection<ICodePaneViewModel> ModuleDocumentTabs { get; }

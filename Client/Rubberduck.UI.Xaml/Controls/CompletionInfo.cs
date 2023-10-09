@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Document;
-using Rubberduck.UI.Abstract;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Editing;
 
@@ -9,11 +8,11 @@ namespace Rubberduck.UI.Xaml.Controls
 {
     public class CompletionInfo : ICompletionData
     {
-        public CompletionInfo(IMemberInfoViewModel memberInfo)
-        {
-            Text = memberInfo.Name;
-            Content = memberInfo.Name; // TODO make a nice XAML control for this
-        }
+        //public CompletionInfo(IMemberInfoViewModel memberInfo)
+        //{
+        //    Text = memberInfo.Name;
+        //    Content = memberInfo.Name; // TODO make a nice XAML control for this
+        //}
 
         public ImageSource Image { get; }
 

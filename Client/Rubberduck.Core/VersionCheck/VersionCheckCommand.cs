@@ -13,21 +13,19 @@ namespace Rubberduck.UI.Command
         private readonly IVersionCheckService _service;
         private readonly IMessageBox _prompt;
         //private readonly IWebNavigator _webNavigator;
-        private readonly ISettingsProvider<UpdateServerSettings> _config;
 
-        public VersionCheckCommand(ILogger<VersionCheckCommand> logger, ISettingsProvider<UpdateServerSettings> config, 
+        public VersionCheckCommand(ILogger<VersionCheckCommand> logger, ISettingsProvider<RubberduckSettings> settings, 
             IVersionCheckService service, IMessageBox prompt /*, IWebNavigator web*/ )
-            : base(logger)
+            : base(logger, settings)
         {
             _service = service;
             _prompt = prompt;
             //_webNavigator = web;
-            _config = config;
         }
 
         protected override async Task OnExecuteAsync(object? parameter)
         {
-            var settings = _config.Settings;
+            var settings = SettingsProvider.Settings.UpdateServerSettings;
             Logger.LogInformation("Executing version check...");
 
             var latest = await _service.GetLatestVersionAsync(CancellationToken.None);

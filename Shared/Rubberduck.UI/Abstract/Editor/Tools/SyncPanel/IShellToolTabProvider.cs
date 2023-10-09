@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Rubberduck.UI.Abstract.Editor.Tools;
+using System.Collections.Generic;
 
-namespace Rubberduck.UI.Abstract
+namespace Rubberduck.UI.Abstract.Editor.Tools.SyncPanel
 {
     public interface IShellToolTabProvider
     {

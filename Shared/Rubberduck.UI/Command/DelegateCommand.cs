@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Logging;
+using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -11,8 +13,8 @@ namespace Rubberduck.UI.Command
         private readonly Predicate<object?>? _canExecute;
         private readonly Action<object?> _execute;
 
-        public DelegateCommand(ILogger logger, Action<object?> execute, Predicate<object?>? canExecute = null) 
-            : base(logger)
+        public DelegateCommand(ILogger logger, ISettingsProvider<RubberduckSettings> settings, Action<object?> execute, Predicate<object?>? canExecute = null) 
+            : base(logger, settings)
         {
             _canExecute = canExecute;
             _execute = execute;
@@ -20,14 +22,8 @@ namespace Rubberduck.UI.Command
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        private bool SpecialEvaluateCanExecute(object? parameter)
-        {
-            return _canExecute is null || _canExecute.Invoke(parameter);
-        }
+        private bool SpecialEvaluateCanExecute(object? parameter) => _canExecute is null || _canExecute.Invoke(parameter);
 
-        protected async override Task OnExecuteAsync(object? parameter)
-        {
-            await Task.Run(() => _execute.Invoke(parameter));
-        }
+        protected async override Task OnExecuteAsync(object? parameter) => await Task.Run(() => _execute.Invoke(parameter));
     }
 }

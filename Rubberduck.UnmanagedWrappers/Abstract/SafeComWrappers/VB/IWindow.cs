@@ -1,6 +1,7 @@
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
 using System;
 
-namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
+namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
 {
     public interface IWindow : ISafeComWrapper, IEquatable<IWindow>
     {

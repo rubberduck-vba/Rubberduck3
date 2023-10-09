@@ -1,4 +1,5 @@
-﻿using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+﻿using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
 
 namespace Rubberduck.Unmanaged.VBERuntime
 {

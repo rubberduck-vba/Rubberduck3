@@ -16,20 +16,18 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using Rubberduck.Client;
 using Rubberduck.Core;
-using Rubberduck.Core.Splash;
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.Root;
-using Rubberduck.UI.Abstract;
-using Rubberduck.UI.WinForms;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using Rubberduck.Unmanaged;
-using Rubberduck.Unmanaged.TypeLibs;
 using Rubberduck.Unmanaged.WindowsApi;
 using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.UI.Splash;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
+using Rubberduck.Unmanaged.TypeLibs.Public;
 
 namespace Rubberduck
 {
@@ -44,6 +42,8 @@ namespace Rubberduck
         private App _app = null!;
 
         private bool _isInitialized;
+
+        private readonly System.Windows.Application _application = new();
 
         private readonly CancellationTokenSource _tokenSource = new();
         private Process? _serverProcess;
@@ -90,8 +90,8 @@ namespace Rubberduck
                 return;
             }
 
-            Splash? splash = null;
             var sw = new Stopwatch();
+            SplashService? splashService = default;
 
             try
             {
@@ -115,18 +115,19 @@ namespace Rubberduck
                 _logger = scope.ServiceProvider.GetRequiredService<ILogger<RubberduckAddIn>>();
 
                 InitializeSettings(scope);
-
-                var version = GetVersionString();
-                if (!ShowSplash(version, out splash, out var model))
+                splashService = scope.ServiceProvider.GetRequiredService<SplashService>();
+                if (splashService.CanShowSplash)
                 {
-                    _logger.LogTrace(_initialSettings.LanguageServerSettings.TraceLevel.ToTraceLevel(), "Splash was not shown.", $"ShowSplash setting value: {_initialSettings.ShowSplash}");
+                    sw.Start();
+                    splashService.Show();
                 }
                 else
                 {
-                    sw.Start();
+                    _logger.LogTrace(_initialSettings.LanguageServerSettings.TraceLevel.ToTraceLevel(), "Splash was not shown.", $"ShowSplash setting value: {_initialSettings.ShowSplash}");
                 }
 
-                await StartupAsync(model, version).ConfigureAwait(false);
+                var version = GetVersionString();
+                await StartupAsync(splashService).ConfigureAwait(false);
             }
             catch (StartupFailedException exception) when (exception.InnerException is ServerStartupFailedException serverException)
             {
@@ -160,31 +161,13 @@ namespace Rubberduck
             }
             finally
             {
+                splashService?.Close();
                 sw.Stop();
-                var message = splash is null ? "Initialization completed." : "Initialization completed; splash was shown during initialization.";
-                splash?.Dispose();
+                var message = (splashService?.CanShowSplash ?? false) 
+                    ? "Initialization completed." 
+                    : "Initialization completed; splash window was shown during initialization.";
                 _logger.LogPerformance(_initialSettings.LanguageServerSettings.TraceLevel.ToTraceLevel(), message, sw.Elapsed);
             }
-        }
-
-        private bool ShowSplash(string version, out Splash? window, out SplashViewModel? model)
-        {
-            if (!_initialSettings.ShowSplash)
-            {
-                window = null;
-                model = null;
-                return false;
-            }
-
-            model = new SplashViewModel(version);
-            model.UpdateStatus("Long live the cucumber!");
-
-            window = new Splash(model);
-
-            window.Show();
-            window.Refresh();
-
-            return true;
         }
 
         private void InitializeSettings(IServiceScope scope)
@@ -218,7 +201,7 @@ namespace Rubberduck
             }
         }
 
-        private async Task StartupAsync(IStatusUpdate? statusViewModel, string version)
+        private async Task StartupAsync(SplashService splashService)
         {
             try
             {
@@ -226,20 +209,20 @@ namespace Rubberduck
                 currentDomain.UnhandledException += HandleAppDomainException;
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
 
-                statusViewModel?.UpdateStatus("Resolving services...");
+                splashService.UpdateStatus("Resolving services...");
 
                 _app = _serviceScope.ServiceProvider.GetRequiredService<App>();
+
+                splashService.UpdateStatus("Starting add-in...");
                 
-                statusViewModel?.UpdateStatus("Starting add-in...");
-                
-                _app.Startup(version);
-                statusViewModel?.UpdateStatus("Starting language server...");
+                _app.Startup();
+                splashService.UpdateStatus("Starting language server...");
 
                 var settings = LanguageServerSettings.Default;
                 var clientProcessId = Environment.ProcessId;
                 _serverProcess = new LanguageServerProcess(_logger).Start(clientProcessId, settings);
-                
-                statusViewModel?.UpdateStatus("Starting language client...");
+
+                splashService.UpdateStatus("Starting language client...");
 
                 using var project = _vbe.ActiveVBProject;
                 if (!project.TryGetFullPath(out var projectPath))
@@ -272,10 +255,10 @@ namespace Rubberduck
 
                 _languageClient = LanguageClient.Create(clientOptions, _serviceScope.ServiceProvider);
 
-                statusViewModel?.UpdateStatus("Initializing language server protocol...");
+                splashService.UpdateStatus("Initializing language server protocol...");
                 _clientInitializeTask = _languageClient.Initialize(_tokenSource.Token);
 
-                statusViewModel?.UpdateStatus("Connection established.");
+                splashService.UpdateStatus("Connection established.");
                 _isInitialized = true;
             }
             catch (Exception exception)

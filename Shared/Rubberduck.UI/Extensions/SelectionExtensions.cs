@@ -2,7 +2,7 @@
 using Rubberduck.InternalApi.Model;
 using Rubberduck.Unmanaged.Model;
 
-namespace RubberduckUI.Extensions
+namespace Rubberduck.UI.Extensions
 {
     public static class SelectionExtensions
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.Unmanaged;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor.Utility

@@ -2,7 +2,7 @@ using System;
 using Rubberduck.Unmanaged.Events;
 using Rubberduck.Unmanaged.Model;
 
-namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
+namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
 {
     public interface IVBComponents : ISafeEventedComWrapper, IComCollection<IVBComponent>, IEquatable<IVBComponents>
     {

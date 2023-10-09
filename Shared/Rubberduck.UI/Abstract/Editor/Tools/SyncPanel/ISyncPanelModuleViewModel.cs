@@ -3,7 +3,7 @@ using Rubberduck.Unmanaged.Model.Abstract;
 using System.ComponentModel;
 using System.Windows.Input;
 
-namespace Rubberduck.UI.Abstract
+namespace Rubberduck.UI.Abstract.Editor.Tools.SyncPanel
 {
     public interface ISyncPanelModuleViewModel : INotifyPropertyChanged
     {

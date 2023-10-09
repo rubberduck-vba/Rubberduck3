@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office.Enums;
 using MSO = Microsoft.Office.Core;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities

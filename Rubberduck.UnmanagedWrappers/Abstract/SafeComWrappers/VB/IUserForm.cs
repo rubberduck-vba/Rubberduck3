@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
+﻿namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
 {
     public interface IUserForm
     {

@@ -23,7 +23,15 @@ namespace Rubberduck.Unmanaged.UIContext
                 }
 
                 Context = SynchronizationContext.Current;
-                TaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+                if (Context is not null)
+                {
+                    TaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+                }
+                else
+                {
+                    Context = new SynchronizationContext();
+                    TaskScheduler = TaskScheduler.Default;
+                }
             }
         }
 

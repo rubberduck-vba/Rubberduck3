@@ -1,10 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using Rubberduck.Resources.Registration;
 using Rubberduck.Root;
 using Microsoft.Extensions.Logging;
 using Extensibility;
+using Rubberduck.Unmanaged.Registration;
 
 namespace Rubberduck
 {

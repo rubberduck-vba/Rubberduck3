@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Rubberduck.Unmanaged.NonDisposingDecorators;
-using Rubberduck.Unmanaged.Abstract;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using Microsoft.Extensions.Logging;
 using Rubberduck.Unmanaged.Model.Abstract;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
 
 namespace Rubberduck.Unmanaged
 {

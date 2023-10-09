@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using Rubberduck.Unmanaged.Model;
 
-namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
+namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
 {
     public static class ReferenceInfoExtensions
     {

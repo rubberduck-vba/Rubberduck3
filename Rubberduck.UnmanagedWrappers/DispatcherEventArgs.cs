@@ -1,6 +1,6 @@
 using System;
 
-namespace Rubberduck.VBEditor.SafeComWrappers
+namespace Rubberduck.Unmanaged
 {
     public class DispatcherEventArgs<T> : EventArgs
         where T : class

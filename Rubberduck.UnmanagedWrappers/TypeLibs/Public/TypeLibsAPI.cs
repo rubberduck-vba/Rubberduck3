@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using Rubberduck.Resources.Registration;
 using Rubberduck.Unmanaged.TypeLibs.Abstract;
 using Rubberduck.Unmanaged.TypeLibs.Unmanaged;
 using Rubberduck.Unmanaged.TypeLibs.Utility;
-using Rubberduck.Unmanaged.Abstract;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
+using Rubberduck.Unmanaged.Registration;
 
 // ReSharper disable once CheckNamespace
-namespace Rubberduck.Unmanaged.TypeLibs
+namespace Rubberduck.Unmanaged.TypeLibs.Public
 {
     /// <summary>
     /// FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA

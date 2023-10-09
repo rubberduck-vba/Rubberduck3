@@ -1,4 +1,4 @@
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.Model.Abstract;
 using System.Collections.Generic;
 using System.Linq;

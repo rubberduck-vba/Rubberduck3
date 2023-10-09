@@ -1,3 +1,4 @@
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office.Enums;
 using System;
 using System.Drawing;
 

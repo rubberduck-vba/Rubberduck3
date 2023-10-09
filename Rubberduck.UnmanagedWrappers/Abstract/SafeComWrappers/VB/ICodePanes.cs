@@ -1,6 +1,6 @@
 using System;
 
-namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
+namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
 {
     public interface ICodePanes : ISafeComWrapper, IComCollection<ICodePane>, IEquatable<ICodePanes>
     {

@@ -1,8 +1,9 @@
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
 using Rubberduck.Unmanaged.Model;
 using Rubberduck.Unmanaged.Model.Abstract;
 using System;
 
-namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
+namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
 {
     public interface ICodeModule : ISafeComWrapper, IEquatable<ICodeModule>
     {
@@ -37,6 +38,6 @@ namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers
         int GetProcBodyStartLine(string procName, ProcKind procKind);
         int GetProcCountLines(string procName, ProcKind procKind);
         string GetProcOfLine(int line);
-        ProcKind GetProcKindOfLine(int line);      
+        ProcKind GetProcKindOfLine(int line);
     }
 }

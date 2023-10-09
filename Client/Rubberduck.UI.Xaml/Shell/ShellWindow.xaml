@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz" 
         xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
-        xmlns:mdxaml="clr-namespace:MdXaml;assembly=MdXaml"
-        xmlns:controls="clr-namespace:Rubberduck.UI.Xaml.Controls" 
+        xmlns:sb="clr-namespace:Rubberduck.UI.Xaml.Dependencies.Controls.StatusBar;assembly=Rubberduck.UI.Xaml.Dependencies" 
         mc:Ignorable="d"
         Title="Rubberduck Editor" Height="450" Width="800"
         ShowInTaskbar="True"
@@ -198,6 +197,6 @@
             </dragablz:TabablzControl>
         </dockablz:Layout>
 
-        <controls:StatusBarControl Grid.Row="3" DataContext="{Binding Status}" />
+        <sb:StatusBarControl Grid.Row="3" DataContext="{Binding StatusBar}" />
     </Grid>
 </Window>

@@ -2,11 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Rubberduck.UI.Xaml.Controls"
-             xmlns:vm="clr-namespace:Rubberduck.UI.Abstract;assembly=Rubberduck.UI" 
-             xmlns:converters="clr-namespace:Rubberduck.UI.WPF.Converters;assembly=Rubberduck.UI"
-             mc:Ignorable="d" d:DataContext="{d:DesignInstance {x:Type vm:IMemberInfoViewModel}, IsDesignTimeCreatable=False}"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Xaml.Dependencies.Converters;assembly=Rubberduck.UI.Xaml.Dependencies"
+             mc:Ignorable="d"
              d:DesignHeight="72" d:DesignWidth="300">
     <UserControl.Resources>
         <converters:MemberTypeToIconConverter x:Key="MemberTypeToIconConverter" />

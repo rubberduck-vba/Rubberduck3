@@ -1,5 +1,4 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-using Forms = System.Windows.Forms;
+﻿using Forms = System.Windows.Forms;
 
 namespace Rubberduck.Interaction.MessageBox
 {

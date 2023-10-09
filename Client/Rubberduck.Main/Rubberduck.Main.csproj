@@ -60,10 +60,6 @@
       <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
       <Name>Rubberduck.Resources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.UI.WinForms\Rubberduck.UI.WinForms.csproj">
-      <Project>{A1F54935-FE6D-4013-B618-5251DE4466CF}</Project>
-      <Name>Rubberduck.UI.WinForms</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.UI.Xaml\Rubberduck.UI.Xaml.csproj">
       <Project>{1192FA78-B73F-46BC-B98C-FD887A062A2C}</Project>
       <Name>Rubberduck.UI.Xaml</Name>

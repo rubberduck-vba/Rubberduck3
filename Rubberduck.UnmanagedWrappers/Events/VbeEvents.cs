@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Rubberduck.Unmanaged.Abstract;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
-using Rubberduck.Unmanaged.Events;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
 
 namespace Rubberduck.Unmanaged.Events
 {

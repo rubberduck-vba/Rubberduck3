@@ -13,21 +13,21 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI;
-using Rubberduck.UI.Abstract;
-using Rubberduck.UI.WinForms;
+using Rubberduck.UI.RubberduckEditor;
+using Rubberduck.UI.Splash;
 using Rubberduck.UI.Xaml.Shell;
+using Rubberduck.UI.Xaml.Splash;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.Abstract.SourceCodeProvider;
 using Rubberduck.Unmanaged.Events;
 using Rubberduck.Unmanaged.NonDisposingDecorators;
-using Rubberduck.Unmanaged.TypeLibs;
 using Rubberduck.Unmanaged.TypeLibs.Abstract;
+using Rubberduck.Unmanaged.TypeLibs.Public;
 using Rubberduck.Unmanaged.UIContext;
 using Rubberduck.Unmanaged.VBERuntime;
-using Rubberduck.VBEditor.UI;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 using System;
@@ -49,6 +49,9 @@ namespace Rubberduck.Root
 
             _services.AddLogging(ConfigureLogging);
             _services.AddScoped<ILogLevelService, LogLevelService>();
+            
+            _services.AddScoped<ISplashViewModel, SplashViewModel>();
+            _services.AddScoped<SplashService>();
 
             _services.AddScoped<IProjectsRepository>(provider => new ProjectsRepository(vbe, provider.GetRequiredService<ILogger<ProjectsRepository>>()));
             _services.AddScoped<IProjectsProvider>(provider => provider.GetRequiredService<IProjectsRepository>());
@@ -88,10 +91,7 @@ namespace Rubberduck.Root
             _services.AddScoped<IAboutCommand, AboutCommand>();
             _services.AddScoped<AboutCommandMenuItem>();
 
-            _services.AddScoped<EditorShellDockablePresenter>();
-            _services.AddScoped<EditorShellWindowPresenter>();
-
-            _services.AddScoped<IShowEditorShellCommand, ShowEditorShellCommand>();
+            //_services.AddScoped<IShowEditorShellCommand, ShowEditorShellCommand>();
             _services.AddScoped<ShowEditorShellCommandMenuItem>();
 
             return this;
@@ -124,15 +124,12 @@ namespace Rubberduck.Root
 
         public RubberduckServicesBuilder WithRubberduckEditor()
         {
-            _services.AddScoped<IPresenter, EditorShellWindowPresenter>();
+            //_services.AddScoped<IPresenter, EditorShellWindowPresenter>();
             _services.AddScoped<ShellWindowViewModel>();
             _services.AddScoped<IInterTabClient, ShellInterTabClient>();
 
-            _services.AddScoped<IDockablePresenter, EditorShellDockablePresenter>();
-            _services.AddScoped<IEditorShellWindowProvider, EditorShellWindowProvider>();
-
-            _services.AddScoped<IEditorShellViewModel, EditorShellViewModel>();
-            _services.AddScoped<IStatusBarViewModel, StatusBarViewModel>();
+            //_services.AddScoped<IEditorShellViewModel, EditorShellViewModel>();
+            //_services.AddScoped<IStatusBarViewModel, StatusBarViewModel>();
 
             return this;
         }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Rubberduck.Unmanaged;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.Model;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
