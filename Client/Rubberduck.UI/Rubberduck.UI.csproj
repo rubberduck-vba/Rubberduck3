@@ -9,7 +9,6 @@
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU</Platforms>
     <UseWPF>true</UseWPF>
-    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,17 +17,11 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\Client\Rubberduck.UI.Xaml\Rubberduck.UI.Xaml.csproj" />
-    <ProjectReference Include="..\..\Rubberduck.UnmanagedWrappers\Rubberduck.Unmanaged.csproj" />
-    <ProjectReference Include="..\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj">
-      <Project>{5E2588A5-2EF2-4267-952D-53AEC8F5F173}</Project>
-      <Name>Rubberduck.InternalApi</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
-      <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
-      <Name>Rubberduck.Resources</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
+    <ProjectReference Include="..\Rubberduck.UI.Xaml\Rubberduck.UI.Xaml.csproj" />
+    <ProjectReference Include="..\Rubberduck.Unmanaged\Rubberduck.Unmanaged.csproj" />
+    <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
+    <ProjectReference Include="..\..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj" />
+    <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="RubberduckEditor\vba.xshd" />

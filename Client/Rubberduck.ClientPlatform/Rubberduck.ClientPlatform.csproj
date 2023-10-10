@@ -25,7 +25,6 @@
     <PackageReference Include="NLog.Extensions.Logging" Version="5.3.4" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\Rubberduck.Interaction\Rubberduck.Interaction.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
   </ItemGroup>

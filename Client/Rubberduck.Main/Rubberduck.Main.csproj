@@ -36,18 +36,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\Rubberduck.Interaction\Rubberduck.Interaction.csproj">
-      <Project>{3EE4CCB7-42FC-49D2-8221-88A2FEF2F762}</Project>
-      <Name>Rubberduck.Interaction</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
       <Project>{e794cfc3-3d9f-400f-88d9-69e929d8e8af}</Project>
       <Name>Rubberduck.SettingsProvider</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Client\Rubberduck.Client.csproj">
-      <Project>{36e18087-fe84-4e3a-9c65-07ca0fd7d303}</Project>
-      <Name>Rubberduck.Client</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.ClientPlatform\Rubberduck.ClientPlatform.csproj" />
     <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
       <Project>{7B04E66C-DD08-437F-8D43-EDDAC732DC53}</Project>
       <Name>Rubberduck.Core</Name>
@@ -64,10 +57,7 @@
       <Project>{1192FA78-B73F-46BC-B98C-FD887A062A2C}</Project>
       <Name>Rubberduck.UI.Xaml</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Shared\Rubberduck.UI\Rubberduck.UI.csproj">
-      <Project>{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}</Project>
-      <Name>Rubberduck.UI</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.UI\Rubberduck.UI.csproj" />
     <ProjectReference Include="..\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj">
       <Project>{4ccd023c-a503-4bc7-9e9a-a509b4a16d41}</Project>
       <Name>Rubberduck.VBEditor.VBA</Name>

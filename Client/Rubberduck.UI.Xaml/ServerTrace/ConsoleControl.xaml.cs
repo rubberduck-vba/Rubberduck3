@@ -15,7 +15,7 @@ namespace Rubberduck.UI.Xaml.ServerTrace
             DataContextChanged += ConsoleControl_DataContextChanged;
         }
 
-        private void ConsoleControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void ConsoleControl_DataContextChanged(object? sender, DependencyPropertyChangedEventArgs e)
         {
             if (ViewModel is IConsoleViewModel vm)
             {
@@ -23,7 +23,7 @@ namespace Rubberduck.UI.Xaml.ServerTrace
             }
         }
 
-        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IConsoleViewModel.ConsoleContent))
             {
