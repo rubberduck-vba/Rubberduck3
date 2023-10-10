@@ -14,6 +14,7 @@ using Rubberduck.LanguagePlatform;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.TelemetryServer.Handlers;
 using Rubberduck.TelemetryServer.Handlers.Lifecycle;
 using System;
 using System.Diagnostics;
@@ -173,6 +174,8 @@ namespace Rubberduck.TelemetryServer
                  .WithHandler<ShutdownHandler>()
                  .WithHandler<ExitHandler>()
                  .WithHandler<SetTraceHandler>()
+
+                 .WithHandler<TelemetryEventHandler>()
             ;
         }
 
