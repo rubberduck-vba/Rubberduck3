@@ -7,6 +7,7 @@ namespace Rubberduck.InternalApi.Model
     {
         public static MessageAction AcceptAction { get; } = new MessageAction(nameof(RubberduckUI.OK), nameof(RubberduckUI.OK), true);
         public static MessageAction CancelAction { get; } = new MessageAction(nameof(RubberduckUI.CancelButtonText), nameof(RubberduckUI.CancelButtonText));
+        public static MessageAction CloseAction { get; } = new MessageAction(nameof(RubberduckUI.CloseButtonText), nameof(RubberduckUI.CloseButtonText), true);
 
         private MessageAction(string key, string? tooltipKey = default, bool isDefaultAction = false) 
         {

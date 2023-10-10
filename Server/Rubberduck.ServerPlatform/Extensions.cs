@@ -1,24 +1,20 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using System.Globalization;
 using System.Diagnostics;
-using System.Collections;
 using System.Collections.Generic;
 
-namespace Rubberduck.LanguageServer
+namespace Rubberduck.ServerPlatform
 {
     public static class Extensions
     {
         public static TraceLevel ToTraceLevel(this InitializeTrace value)
         {
-            switch (value)
+            return value switch
             {
-                case InitializeTrace.Off:
-                    return TraceLevel.Off;
-                case InitializeTrace.Verbose:
-                    return TraceLevel.Verbose;
-                default:
-                    return TraceLevel.Info; // == ServerTraceLevel.Message
-            }
+                InitializeTrace.Off => TraceLevel.Off,
+                InitializeTrace.Verbose => TraceLevel.Verbose,
+                _ => TraceLevel.Info,// == ServerTraceLevel.Message
+            };
         }
 
         public static CultureInfo FromLocale(this CultureInfo _, string? locale)

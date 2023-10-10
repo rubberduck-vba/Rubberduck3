@@ -1,13 +1,21 @@
-﻿using System.Text.Json.Serialization;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.InternalApi.ServerPlatform;
+using System.Text.Json.Serialization;
 
 namespace Rubberduck.ServerPlatform.Model.Telemetry
 {
     /// <summary>
     /// <strong>ExceptionTelemetry</strong> represents any exception that occurred during execution of the monitored application.
     /// </summary>
-    public class ExceptionTelemetry : TelemetryEvent
+    public record ExceptionTelemetry : TelemetryEvent
     {
-        public ExceptionTelemetry() : base(TelemetryEventName.Exception) { }
+        public ExceptionTelemetry(string problemId, TelemetryEventSeverityLevel level, string details, TelemetryEventParams request, TelemetryContext context) 
+            : base(TelemetryEventName.Exception, request, context) 
+        {
+            ProblemId = problemId;
+            SeverityLevel = level.ToString();
+            ExceptionDetails = details;
+        }
 
         /// <summary>
         /// Identifies where in the code an exception was thrown.
@@ -16,18 +24,18 @@ namespace Rubberduck.ServerPlatform.Model.Telemetry
         /// Typically a combination of exception type and a function from the call stack.
         /// </remarks>
         [JsonPropertyName("problemId")]
-        public string ProblemId { get; set; }
+        public string ProblemId { get; init; }
 
         /// <summary>
         /// Trace severity level. Value can be `Verbose`, `Information`, `Warning`, `Error`, or `Critical`.
         /// </summary>
         [JsonPropertyName("severityLevel")]
-        public string SeverityLevel { get; set; } = TelemetryEventSeverityLevel.Verbose.ToString();
+        public string SeverityLevel { get; init; } = TelemetryEventSeverityLevel.Verbose.ToString();
 
         /// <summary>
         /// Stack trace information.
         /// </summary>
         [JsonPropertyName("exceptionDetails")]
-        public string ExceptionDetails { get; set; }
+        public string ExceptionDetails { get; init; }
     }
 }

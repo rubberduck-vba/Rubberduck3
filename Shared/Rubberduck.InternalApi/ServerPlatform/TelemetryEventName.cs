@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.ServerPlatform.Model.Telemetry
+﻿namespace Rubberduck.InternalApi.ServerPlatform
 {
     /// <summary>
     /// Defines the possible values of <c>TelemetryEvent.EventName</c>.

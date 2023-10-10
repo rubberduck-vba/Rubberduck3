@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.Interaction.MessageBox;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.UI.Message;
 using Rubberduck.VersionCheck;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,11 +11,11 @@ namespace Rubberduck.UI.Command
     public class VersionCheckCommand : CommandBase
     {
         private readonly IVersionCheckService _service;
-        private readonly IMessageBoxService _prompt;
+        private readonly IMessageService _prompt;
         //private readonly IWebNavigator _webNavigator;
 
         public VersionCheckCommand(ILogger<VersionCheckCommand> logger, ISettingsProvider<RubberduckSettings> settings, 
-            IVersionCheckService service, IMessageBoxService prompt /*, IWebNavigator web*/ )
+            IVersionCheckService service, IMessageService prompt /*, IWebNavigator web*/ )
             : base(logger, settings)
         {
             _service = service;

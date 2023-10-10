@@ -1,7 +1,7 @@
 ﻿using System;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
-namespace Rubberduck.LanguageServer
+namespace Rubberduck.ServerPlatform
 {
     public class InvalidInitializeParamsException : ArgumentException
     {

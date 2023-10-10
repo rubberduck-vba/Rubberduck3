@@ -1,13 +1,17 @@
-﻿using System.Text.Json.Serialization;
+﻿using Rubberduck.InternalApi.ServerPlatform;
+using System.Text.Json.Serialization;
 
 namespace Rubberduck.ServerPlatform.Model.Telemetry
 {
     /// <summary>
     /// <strong>DependencyTelemetry</strong> represents an interaction of the monitored component with a remote component suhc as a SQL, HTTP, (or RPC) endpoint.
     /// </summary>
-    public class DependencyTelemetry : TelemetryEvent
+    public record DependencyTelemetry : TelemetryEvent
     {
-        public DependencyTelemetry() : base(TelemetryEventName.Dependency) { }
+        public DependencyTelemetry(TelemetryEvent request, TelemetryContext context) 
+            : base(TelemetryEventName.Dependency, request, context) 
+        {
+        }
 
         /// <summary>
         /// The name of the command initiated with this dependency call.

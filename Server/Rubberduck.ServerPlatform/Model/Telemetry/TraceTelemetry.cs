@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.InternalApi.ServerPlatform;
+using System.Text.Json.Serialization;
 
 namespace Rubberduck.ServerPlatform.Model.Telemetry
 {
@@ -8,20 +10,25 @@ namespace Rubberduck.ServerPlatform.Model.Telemetry
     /// <remarks>
     /// NLog.ILogger entries translate into this type of telemetry event.
     /// </remarks>
-    public class TraceTelemetry : TelemetryEvent
+    public record TraceTelemetry : TelemetryEvent
     {
-        public TraceTelemetry() : base(TelemetryEventName.Trace) { }
+        public TraceTelemetry(string message, TelemetryEventSeverityLevel level, TelemetryEventParams request, TelemetryContext context) 
+            : base(TelemetryEventName.Trace, request, context)
+        {
+            Message = message;
+            SeverityLevel = level;
+        }
 
         /// <summary>
         /// The trace message.
         /// </summary>
         [JsonPropertyName("message")]
-        public string Message { get; set; }
+        public string Message { get; init; }
 
         /// <summary>
         /// The trace severity level.
         /// </summary>
         [JsonPropertyName("severityLevel"), JsonConverter(typeof(JsonStringEnumConverter))]
-        public TelemetryEventSeverityLevel SeverityLevel { get; set; } = TelemetryEventSeverityLevel.Verbose;
+        public TelemetryEventSeverityLevel SeverityLevel { get; init; } = TelemetryEventSeverityLevel.Verbose;
     }
 }

@@ -4,7 +4,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.LanguageServer;
+using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using System.Threading;

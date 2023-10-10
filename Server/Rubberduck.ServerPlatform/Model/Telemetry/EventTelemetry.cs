@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.InternalApi.ServerPlatform;
+using System.Text.Json.Serialization;
 
 namespace Rubberduck.ServerPlatform.Model.Telemetry
 {
@@ -12,9 +14,13 @@ namespace Rubberduck.ServerPlatform.Model.Telemetry
     /// However if used properly, event telemetry is more important than requests or traces.
     /// Events represent <em>business telemetry</em> and should be subject to separate, less aggressive sampling.
     /// </remarks>
-    public class EventTelemetry : TelemetryEvent
+    public record EventTelemetry : TelemetryEvent
     {
-        public EventTelemetry() : base(TelemetryEventName.Event) { }
+        public EventTelemetry(EventTelemetryName name, TelemetryEventParams request, TelemetryContext context) 
+            : base(TelemetryEventName.Event, request, context) 
+        {
+            Name = name.ToString();
+        }
 
         /// <summary>
         /// The name of the event.
@@ -23,6 +29,6 @@ namespace Rubberduck.ServerPlatform.Model.Telemetry
         /// Maximum length: 512
         /// </remarks>
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name { get; init; }
     }
 }

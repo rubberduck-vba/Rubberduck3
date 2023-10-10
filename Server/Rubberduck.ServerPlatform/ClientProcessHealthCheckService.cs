@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.SettingsProvider;
@@ -10,32 +9,37 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 
-namespace Rubberduck.LanguageServer
+namespace Rubberduck.LanguagePlatform
 {
-    public interface IHealthCheckService : IDisposable
+    public interface IHealthCheckService<TSettings> : IDisposable
+        where TSettings : struct, IHealthCheckSettingsProvider
     {
+        event EventHandler<EventArgs>? ChildProcessExited;
         void Start();
     }
 
-    internal sealed class ClientProcessHealthCheckService : IHealthCheckService, IDisposable
+    public sealed class ClientProcessHealthCheckService<TSettings> : IHealthCheckService<TSettings>, IDisposable
+        where TSettings : struct, IHealthCheckSettingsProvider
     {
         private readonly ILogger _logger;
-        private readonly ISettingsProvider<LanguageServerSettings> _settingsProvider;
+        private readonly ISettingsProvider<TSettings> _settingsProvider;
         private readonly Process _process;
 
         private readonly Timer _timer;
-        private readonly IExitHandler _exitHandler;
+
+        public event EventHandler<EventArgs>? ChildProcessExited = delegate { };
 
         private TraceLevel TraceLevel => _settingsProvider.Settings.TraceLevel.ToTraceLevel();
         private TimeSpan Interval => _settingsProvider.Settings.ClientHealthCheckInterval;
 
-        public ClientProcessHealthCheckService(ILogger<ClientProcessHealthCheckService> logger, ISettingsProvider<LanguageServerSettings> settingsProvider, 
-            Process process, IExitHandler exitHandler)
+        public ClientProcessHealthCheckService(
+            ILogger<ClientProcessHealthCheckService<TSettings>> logger, 
+            ISettingsProvider<TSettings> settingsProvider, 
+            Process process)
         {
             _logger = logger;
             _settingsProvider = settingsProvider;
             _process = process;
-            _exitHandler = exitHandler;
 
             _timer = new Timer(RunHealthCheck);
         }
@@ -70,19 +74,22 @@ namespace Rubberduck.LanguageServer
             }
         }
 
+        private bool _didNotifyExit = false;
         private void RunHealthCheck(object? _)
         {
             if (TimedAction.TryRun(() =>
             {
-                if (_process.HasExited)
+                if (!_didNotifyExit && _process.HasExited)
                 {
                     _logger.LogWarning(TraceLevel, "Client process has exited.");
-                    _ = _exitHandler.Handle(new ExitParams(), CancellationToken.None).ConfigureAwait(false).GetAwaiter().GetResult();
+                    ChildProcessExited?.Invoke(this, EventArgs.Empty);
+                    _didNotifyExit = true;
                 }
             }, out var elapsed, out var exception))
             {
                 var message = $"Client process health check completed. IsResponding: {_process.Responding} TotalProcessorTime: {_process.TotalProcessorTime}";
                 _logger.LogPerformance(TraceLevel, message, elapsed);
+                _didNotifyExit = false;
             }
             else if (exception != null)
             {

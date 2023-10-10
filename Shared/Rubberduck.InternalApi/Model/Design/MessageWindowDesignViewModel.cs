@@ -11,6 +11,7 @@ namespace Rubberduck.InternalApi.Model.Design
 
         public string Verbose { get; } = "Some verbose message details, or exception stack trace would go here.";
 
+        public MessageAction SelectedAction { get; set; }
         public MessageAction[] Actions { get; } = new[]
         {
             MessageAction.AcceptAction,

@@ -1,22 +1,20 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using Rubberduck.Core.Settings;
+using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model;
+using Rubberduck.Resources;
+using Rubberduck.SettingsProvider;
+using Rubberduck.SettingsProvider.Model;
+using Rubberduck.UI;
+using Rubberduck.UI.Message;
+using Rubberduck.Unmanaged.UIContext;
+using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Abstractions;
 using System.Linq;
-using Rubberduck.Interaction.MessageBox;
-using Rubberduck.Resources;
-using Rubberduck.SettingsProvider;
 using Application = System.Windows.Forms.Application;
-using Rubberduck.InternalApi.Extensions;
-using Rubberduck.SettingsProvider.Model;
-using Rubberduck.Core.Settings;
-using Microsoft.Extensions.Logging;
-using Rubberduck.Unmanaged.UIContext;
-using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
-using System.Windows;
-using Rubberduck.UI;
-using System.Threading.Tasks;
-using System.Reactive.Concurrency;
 
 namespace Rubberduck.Core
 {
@@ -27,7 +25,7 @@ namespace Rubberduck.Core
 
         private readonly IPresenter _presenter;
 
-        private readonly IMessageBoxService _messageBox;
+        private readonly IMessageService _messageBox;
         private readonly ISettingsService<RubberduckSettings> _settingsService;
         private readonly IRubberduckMenu _appMenus;
 
@@ -38,7 +36,7 @@ namespace Rubberduck.Core
         public App(Version version,
             ILogger<App> logger, 
             ILogLevelService logLevelService,
-            IMessageBoxService messageBox,
+            IMessageService messageBox,
             ISettingsService<RubberduckSettings> settingsService,
             IRubberduckMenu appMenu,
             IFileSystem filesystem,
@@ -85,7 +83,7 @@ namespace Rubberduck.Core
             }
             catch (Exception e)
             {
-                _messageBox.NotifyError("", _title, e.ToString());
+                _messageBox.ShowError(nameof(EnsureLogFolderPathExists), e.Message, _title, e.ToString());
             }
         }
 
@@ -190,7 +188,7 @@ namespace Rubberduck.Core
             {
                 _logger.LogError(exception, "Error Setting Culture for Rubberduck");
                 // not accessing resources here, because setting resource culture literally just failed.
-                _messageBox.NotifyWarn(exception.Message, "Rubberduck");
+                _messageBox.ShowWarning(nameof(ApplyCultureConfig), exception.Message, RubberduckUI.Rubberduck, exception.ToString());
 
                 var vm = new RubberduckSettingsViewModel(currentSettings)
                 {
@@ -232,7 +230,7 @@ namespace Rubberduck.Core
                 {
                     return;
                 }
-                if (_messageBox.Question(Resources.RubberduckUI.SmartIndenter_LegacySettingPrompt, "Rubberduck"))
+                if (_messageBox.ConfirmMessage(nameof(CheckForLegacyIndenterSettings), Resources.RubberduckUI.SmartIndenter_LegacySettingPrompt, RubberduckUI.Rubberduck) == MessageAction.AcceptAction)
                 {
                     _logger.LogTrace("Attempting to load legacy Smart Indenter settings.");
                     //_config.UserSettings.IndenterSettings.LoadLegacyFromRegistry();
@@ -247,7 +245,7 @@ namespace Rubberduck.Core
             }
             catch (Exception e)
             {
-                _messageBox.NotifyError("The operation failed.", "Rubberduck", e.ToString());
+                _messageBox.ShowError(nameof(CheckForLegacyIndenterSettings),"The operation failed.", RubberduckUI.Rubberduck, e.ToString());
             }
         }
 

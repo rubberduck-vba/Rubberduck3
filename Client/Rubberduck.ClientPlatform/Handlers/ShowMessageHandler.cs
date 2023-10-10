@@ -3,25 +3,25 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using System.Threading.Tasks;
 using MediatR;
 using System.Threading;
-using Rubberduck.Interaction.MessageBox;
 using Rubberduck.Resources;
 using Rubberduck.InternalApi.Extensions;
 using Microsoft.Extensions.Logging;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider;
 using System.Diagnostics;
+using Rubberduck.UI.Message;
 
 namespace Rubberduck.Client.Handlers
 {
     public class ShowMessageHandler : ShowMessageHandlerBase
     {
         private readonly ILogger<ShowMessageHandler> _logger;
-        private readonly IMessageBoxService _service;
+        private readonly IMessageService _service;
         private readonly ISettingsProvider<LanguageServerSettings> _settingsProvider;
 
         TraceLevel TraceLevel => _settingsProvider.Settings.TraceLevel.ToTraceLevel();
 
-        public ShowMessageHandler(ILogger<ShowMessageHandler> logger, IMessageBoxService service, ISettingsProvider<LanguageServerSettings> settingsProvider)
+        public ShowMessageHandler(ILogger<ShowMessageHandler> logger, IMessageService service, ISettingsProvider<LanguageServerSettings> settingsProvider)
         {
             _logger = logger;
             _service = service;
@@ -36,13 +36,13 @@ namespace Rubberduck.Client.Handlers
             switch (request.Type)
             {
                 case MessageType.Error:
-                    _service.NotifyError(request.Message, RubberduckUI.Rubberduck, string.Empty);
+                    _service.ShowError(request.Message, request.Message, RubberduckUI.Rubberduck);
                     break;
                 case MessageType.Warning:
-                    _service.NotifyWarn(request.Message, RubberduckUI.Rubberduck);
+                    _service.ShowWarning(request.Message, request.Message, RubberduckUI.Rubberduck);
                     break;
                 case MessageType.Info:
-                    _service.Message(request.Message);
+                    _service.ShowMessage(request.Message, request.Message, RubberduckUI.Rubberduck);
                     break;
                 default:
                     // serverConsole.Log(request.Message, request.Type);

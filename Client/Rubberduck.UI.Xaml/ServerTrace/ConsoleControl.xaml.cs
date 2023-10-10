@@ -28,7 +28,7 @@ namespace Rubberduck.UI.Xaml.ServerTrace
             if (e.PropertyName == nameof(IConsoleViewModel.ConsoleContent))
             {
                 var lastItem = ViewModel.ConsoleContent.Last();
-                //ContentArea.ScrollIntoView(lastItem);
+                ContentArea.ScrollIntoView(lastItem);
             }
         }
 

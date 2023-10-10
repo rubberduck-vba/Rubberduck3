@@ -15,10 +15,12 @@
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
     <PackageReference Include="OmniSharp.Extensions.JsonRpc" Version="0.19.9" />
+    <PackageReference Include="OmniSharp.Extensions.LanguageProtocol" Version="0.19.9" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
+    <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
   </ItemGroup>
 
 </Project>

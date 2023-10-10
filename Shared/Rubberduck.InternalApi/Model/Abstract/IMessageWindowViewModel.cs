@@ -9,5 +9,6 @@ namespace Rubberduck.InternalApi.Model.Abstract
         string Verbose { get; }
 
         MessageAction[] Actions { get; }
+        MessageAction SelectedAction { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.InternalApi.ServerPlatform;
+using System.Text.Json.Serialization;
 
 namespace Rubberduck.ServerPlatform.Model.Telemetry
 {
@@ -12,9 +14,14 @@ namespace Rubberduck.ServerPlatform.Model.Telemetry
     /// <remarks>
     /// Pre-aggregated telemetry assumes that aggregation period was one minute.
     /// </remarks>
-    public class MetricTelemetry : TelemetryEvent
+    public record MetricMeasurementTelemetry : TelemetryEvent
     {
-        public MetricTelemetry() : base(TelemetryEventName.Metric) { }
+        public MetricMeasurementTelemetry(string name, double value, TelemetryEventParams request, TelemetryContext context) 
+            : base(TelemetryEventName.Metric, request, context) 
+        {
+            Name = name;
+            Value = value;
+        }
 
         /// <summary>
         /// The name of the command initiated with this dependency call.
@@ -23,13 +30,13 @@ namespace Rubberduck.ServerPlatform.Model.Telemetry
         /// Low cardinality value, e.g. stored procedure name, URL path template.
         /// </remarks>
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name { get; init; }
 
         /// <summary>
         /// Single value for measurement. Sum of individual measurements for an aggregate.
         /// </summary>
         [JsonPropertyName("value")]
-        public double Value { get; set; }
+        public double Value { get; init; }
 
         /// <summary>
         /// Metric weight of the aggregated metric.
@@ -38,7 +45,7 @@ namespace Rubberduck.ServerPlatform.Model.Telemetry
         /// Should not be set for a measurement.
         /// </remarks>
         [JsonPropertyName("count")]
-        public int? Count { get; set; }
+        public int? Count { get; init; }
 
         /// <summary>
         /// Minimum value of the aggregated metric.
@@ -47,7 +54,7 @@ namespace Rubberduck.ServerPlatform.Model.Telemetry
         /// Should not be set for a measurement.
         /// </remarks>
         [JsonPropertyName("min")]
-        public double? Minimum { get; set; }
+        public double? Minimum { get; init; }
 
         /// <summary>
         /// Maximum value of the aggregated metric.
@@ -56,7 +63,7 @@ namespace Rubberduck.ServerPlatform.Model.Telemetry
         /// Should not be set for a measurement.
         /// </remarks>
         [JsonPropertyName("max")]
-        public double? Maximum { get; set; }
+        public double? Maximum { get; init; }
 
         /// <summary>
         /// The standard deviation of the aggregated metric.
@@ -65,7 +72,7 @@ namespace Rubberduck.ServerPlatform.Model.Telemetry
         /// Should not be set for a measurement.
         /// </remarks>
         [JsonPropertyName("stdev")]
-        public double? StandardDeviation { get; set; }
+        public double? StandardDeviation { get; init; }
 
         /// <summary>
         /// The average of the aggregated metric.
@@ -74,6 +81,6 @@ namespace Rubberduck.ServerPlatform.Model.Telemetry
         /// Should not be set for a measurement.
         /// </remarks>
         [JsonPropertyName("avg")]
-        public double? Average { get; set; }
+        public double? Average { get; init; }
     }
 }

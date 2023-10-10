@@ -17,6 +17,7 @@ namespace Rubberduck.SettingsProvider.Model
             FeatureSwitches = Array.Empty<FeatureSwitch>(),
             UpdateServerSettings = UpdateServerSettings.Default,
             LanguageServerSettings = LanguageServerSettings.Default,
+            SkippedMessageKeys = Array.Empty<string>(),
         };
 
         public string Locale { get; init; }
@@ -24,6 +25,7 @@ namespace Rubberduck.SettingsProvider.Model
         public bool SetDpiUnaware { get; init; }
         public bool IsSmartIndenterPrompted { get; init; }
 
+        public string[] SkippedMessageKeys { get; init; }
         public LogLevel LogLevel { get; init; }
         public bool IsInitialLogLevelChanged { get; init; }
 

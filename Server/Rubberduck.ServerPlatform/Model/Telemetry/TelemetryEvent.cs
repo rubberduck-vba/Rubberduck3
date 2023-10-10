@@ -1,30 +1,31 @@
-﻿using System;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.InternalApi.ServerPlatform;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Rubberduck.ServerPlatform.Model.Telemetry
 {
-    public abstract class TelemetryEvent
+    public abstract record TelemetryEvent : TelemetryEventPayload
     {
-        protected TelemetryEvent(TelemetryEventName eventName)
+        protected TelemetryEvent(TelemetryEventName eventName, TelemetryEventParams request, TelemetryContext context)
+            : base(request)
         {
             EventName = eventName.ToString();
+            Context = context;
+            CustomProperties = new Dictionary<string, string>();
         }
 
         /// <summary>
         /// The name of the event.
         /// </summary>
         [JsonPropertyName("name")]
-        public string EventName { get; set; }
+        public string EventName { get; init; }
 
         /// <summary>
         /// The context of the event.
         /// </summary>
         [JsonPropertyName("context")]
-        public TelemetryContext Context { get; set; }
+        public TelemetryContext Context { get; init; }
 
         /// <summary>
         /// Name-value collection of custom properties, used to extend standard telemetry with the custom dimensions.
@@ -36,6 +37,6 @@ namespace Rubberduck.ServerPlatform.Model.Telemetry
         /// </list>
         /// </remarks>
         [JsonPropertyName("customProperties")]
-        public Dictionary<string, string> CustomProperties { get; set; }
+        public Dictionary<string, string> CustomProperties { get; init; }
     }
 }

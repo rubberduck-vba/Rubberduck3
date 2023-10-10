@@ -10,6 +10,7 @@
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ResourceDictionary>
+            <BitmapImage x:Key="FaintDucky" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/faint-ducky.png" />
             <Style x:Key="SplashWindowStyle" TargetType="Window">
                 <Style.Setters>
                     <Setter Property="IsEnabled" Value="False" />
@@ -52,7 +53,7 @@
             <Style x:Key="SplashProgressBarStyle" TargetType="ProgressBar">
                 <Style.Setters>
                     <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="Foreground" Value="DarkGoldenrod" />
+                    <!--Setter Property="Foreground" Value="DarkGoldenrod" /-->
                     <Setter Property="IsIndeterminate" Value="True" />
                     <Setter Property="BorderThickness" Value="0" />
                     <Setter Property="Height" Value="8" />

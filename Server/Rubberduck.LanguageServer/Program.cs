@@ -7,9 +7,6 @@ namespace Rubberduck.LanguageServer
 {
     public static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
         [STAThread]
         public static async Task<int> Main(string[] args)
         {

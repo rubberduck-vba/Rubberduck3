@@ -65,6 +65,11 @@ namespace Rubberduck.ServerPlatform
 
         public static async Task<ServerStartupOptions> ParseAsync(string[] args)
         {
+            if (args.Length == 0)
+            {
+                return ServerArgs.Default;
+            }
+
             var parser = new Parser(ConfigureParser);
             var parserResult = parser.ParseArguments<StandardInOutServerStartupOptions, PipeServerStartupOptions>(args);
             
