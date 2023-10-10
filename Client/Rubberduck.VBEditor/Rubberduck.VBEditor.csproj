@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Rubberduck.UnmanagedWrappers\Rubberduck.Unmanaged.csproj" />
+    <ProjectReference Include="..\Rubberduck.Unmanaged\Rubberduck.Unmanaged.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj">
       <Project>{5E2588A5-2EF2-4267-952D-53AEC8F5F173}</Project>
       <Name>Rubberduck.InternalApi</Name>
@@ -32,7 +32,7 @@
       <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
       <Name>Rubberduck.Resources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Shared\Rubberduck.UI\Rubberduck.UI.csproj">
+    <ProjectReference Include="..\..\Client\Rubberduck.UI\Rubberduck.UI.csproj">
       <Project>{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}</Project>
       <Name>Rubberduck.UI</Name>
     </ProjectReference>

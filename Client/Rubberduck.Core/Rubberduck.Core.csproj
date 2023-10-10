@@ -21,7 +21,6 @@
     <InternalsVisibleTo Include="Rubberduck.Tests" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <!-- TODO remove Settings.settings -->
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
