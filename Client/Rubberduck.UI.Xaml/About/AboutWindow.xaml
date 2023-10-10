@@ -4,7 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mdxm="clr-namespace:MdXaml;assembly=MdXaml"
-        xmlns:local="clr-namespace:Rubberduck.UI.Xaml.About"
+        xmlns:local="clr-namespace:Rubberduck.UI.Xaml.About" 
+        xmlns:design="clr-namespace:Rubberduck.InternalApi.Model.Design;assembly=Rubberduck.InternalApi"
+        d:DataContext="{d:DesignInstance Type=design:AboutWindowDesignViewModel}"
         mc:Ignorable="d"
         Title="About Rubberduck" Height="450" Width="800">
     <Grid>

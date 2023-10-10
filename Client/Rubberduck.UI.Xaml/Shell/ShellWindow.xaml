@@ -15,6 +15,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.Xaml.Dependencies;component/Styles/DefaultStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <BitmapImage x:Key="FaintDucky" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/faint-ducky.png" />
 

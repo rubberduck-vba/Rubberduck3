@@ -11,6 +11,9 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Icons\Fugue\drive-network.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Ducky.ico" />
     <Resource Include="Icons\Custom\attribution.txt" />
     <Resource Include="Icons\Custom\cc_license.txt" />
@@ -215,6 +218,7 @@
     <Resource Include="Icons\Fugue\document-smiley-sad.png" />
     <Resource Include="Icons\Fugue\document-word.png" />
     <Resource Include="Icons\Fugue\drive-download.png" />
+    <Resource Include="Icons\Fugue\drive-network.png" />
     <Resource Include="Icons\Fugue\drive-upload.png" />
     <Resource Include="Icons\Fugue\edit-list-order.png" />
     <Resource Include="Icons\Fugue\edit-size.png" />

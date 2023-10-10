@@ -6,8 +6,6 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
-    <Platforms>AnyCPU</Platforms>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemGroup>
@@ -19,6 +17,7 @@
     <PackageReference Include="Dragablz" Version="0.0.3.234" />
     <PackageReference Include="MdXaml" Version="1.21.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+    <PackageReference Include="System.Windows.Extensions" Version="7.0.0" />
   </ItemGroup>
   
   <ItemGroup>
@@ -35,5 +34,9 @@
 
   <ItemGroup>
     <Resource Include="Ducky.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Shell\Document\" />
   </ItemGroup>
 </Project>

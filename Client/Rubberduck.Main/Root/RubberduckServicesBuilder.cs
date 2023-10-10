@@ -10,6 +10,7 @@ using Rubberduck.Core.About;
 using Rubberduck.Core.Editor;
 using Rubberduck.Interaction.MessageBox;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Abstract;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI;
@@ -175,7 +176,7 @@ namespace Rubberduck.Root
             _services.AddScoped<IAboutCommand, AboutCommand>();
             _services.AddScoped<AboutCommandMenuItem>();
             _services.AddScoped<IWebNavigator, WebNavigator>();
-            _services.AddScoped<IMessageBox, FormsMessageBox>(); // TODO implement a WpfMessageBox
+            _services.AddScoped<IMessageBoxService, FormsMessageBox>(); // TODO implement a WpfMessageBox
 
             return this;
         }

@@ -27,7 +27,7 @@ namespace Rubberduck.Core
 
         private readonly IPresenter _presenter;
 
-        private readonly IMessageBox _messageBox;
+        private readonly IMessageBoxService _messageBox;
         private readonly ISettingsService<RubberduckSettings> _settingsService;
         private readonly IRubberduckMenu _appMenus;
 
@@ -38,7 +38,7 @@ namespace Rubberduck.Core
         public App(Version version,
             ILogger<App> logger, 
             ILogLevelService logLevelService,
-            IMessageBox messageBox,
+            IMessageBoxService messageBox,
             ISettingsService<RubberduckSettings> settingsService,
             IRubberduckMenu appMenu,
             IFileSystem filesystem,

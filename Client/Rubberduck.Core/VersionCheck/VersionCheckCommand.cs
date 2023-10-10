@@ -11,11 +11,11 @@ namespace Rubberduck.UI.Command
     public class VersionCheckCommand : CommandBase
     {
         private readonly IVersionCheckService _service;
-        private readonly IMessageBox _prompt;
+        private readonly IMessageBoxService _prompt;
         //private readonly IWebNavigator _webNavigator;
 
         public VersionCheckCommand(ILogger<VersionCheckCommand> logger, ISettingsProvider<RubberduckSettings> settings, 
-            IVersionCheckService service, IMessageBox prompt /*, IWebNavigator web*/ )
+            IVersionCheckService service, IMessageBoxService prompt /*, IWebNavigator web*/ )
             : base(logger, settings)
         {
             _service = service;

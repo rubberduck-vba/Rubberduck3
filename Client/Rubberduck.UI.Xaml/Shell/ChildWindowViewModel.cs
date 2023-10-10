@@ -1,5 +1,5 @@
 ﻿using Dragablz;
-using Rubberduck.UI.Xaml.Dependencies.Controls.StatusBar;
+using Rubberduck.InternalApi.Model.Abstract;
 using System;
 
 namespace Rubberduck.UI.Xaml.Shell
@@ -18,7 +18,7 @@ namespace Rubberduck.UI.Xaml.Shell
         public string Title { get; }
         public IStatusBarViewModel StatusBar { get; }
 
-        public IInterTabClient InterTabClient { get; }
+        public object /*IInterTabClient*/ InterTabClient { get; }
 
         public object Partition { get; }
 

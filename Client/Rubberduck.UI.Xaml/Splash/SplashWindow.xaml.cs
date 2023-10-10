@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Rubberduck.InternalApi.Model.Abstract;
+using System.Windows;
 
 namespace Rubberduck.UI.Xaml.Splash
 {

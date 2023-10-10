@@ -1,0 +1,58 @@
+﻿<Window x:Class="Rubberduck.UI.Xaml.Message.MessageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mdxaml="clr-namespace:MdXaml;assembly=MdXaml" 
+        xmlns:design="clr-namespace:Rubberduck.InternalApi.Model.Design;assembly=Rubberduck.InternalApi"
+        d:DataContext="{d:DesignInstance Type={x:Type design:MessageWindowDesignViewModel}, IsDesignTimeCreatable=True}"
+        mc:Ignorable="d"
+        Title="Rubberduck" Height="160" Width="340" WindowStyle="SingleBorderWindow" ResizeMode="NoResize">
+    <Window.Resources>
+        <ResourceDictionary>
+            <BitmapImage x:Key="FaintDucky" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/faint-ducky.png" />
+            <BitmapImage x:Key="ErrorIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
+            <BitmapImage x:Key="WarnIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation-diamond.png" />
+            <BitmapImage x:Key="InfoIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information.png" />
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="{DynamicResource FaintDucky}" TileMode="None" Stretch="UniformToFill">
+                <ImageBrush.RelativeTransform>
+                    <TransformGroup>
+                        <TranslateTransform X="-0.45" />
+                    </TransformGroup>
+                </ImageBrush.RelativeTransform>
+            </ImageBrush>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Image HorizontalAlignment="Left" Margin="4,8" Source="{StaticResource WarnIcon}" Stretch="Uniform" Width="24" Height="24" />
+            <Label FontFamily="Ink Free" FontWeight="Black" FontSize="18" Content="{Binding Title}" VerticalContentAlignment="Center" />
+        </StackPanel>
+
+        <mdxaml:MarkdownScrollViewer Document="{Binding Message}" VerticalScrollBarVisibility="Auto" />
+
+        <Expander Grid.Row="2" Header="More information" Margin="4">
+            <mdxaml:MarkdownScrollViewer Document="{Binding Verbose}" VerticalScrollBarVisibility="Auto" />
+        </Expander>
+
+        <ListView Grid.Row="3" ItemsSource="{Binding Actions}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Button>
+                        <TextBlock Text="{Binding Label}" ToolTip="{Binding ToolTip}" />
+                    </Button>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+    </Grid>
+</Window>
