@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.InternalApi.ServerPlatform.TelemetryServer;
 using System.Text.Json.Serialization;
 
 namespace Rubberduck.ServerPlatform.Model.Telemetry

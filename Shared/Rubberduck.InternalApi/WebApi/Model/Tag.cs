@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Rubberduck.Core.WebApi.Model
+namespace Rubberduck.InternalApi.WebApi.Model
 {
     public class Tag : Entity
     {

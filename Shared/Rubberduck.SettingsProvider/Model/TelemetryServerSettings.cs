@@ -1,4 +1,6 @@
-﻿using Rubberduck.InternalApi.ServerPlatform;
+﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.InternalApi.ServerPlatform.TelemetryServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +11,10 @@ namespace Rubberduck.SettingsProvider.Model
     public readonly struct TelemetryServerSettings :
         IProcessStartInfoArgumentProvider,
         IHealthCheckSettingsProvider,
-        IDefaultSettingsProvider<TelemetryServerSettings>,
-        IEquatable<TelemetryServerSettings>
+        IDefaultSettingsProvider<TelemetryServerSettings>
+        //IEquatable<TelemetryServerSettings>
     {
-        public static TelemetryServerSettings Default => new TelemetryServerSettings
+        public static TelemetryServerSettings Default => new()
         {
             TransportType = TransportType.StdIO,
             TraceLevel = ServerTraceLevel.Verbose,
@@ -24,12 +26,51 @@ namespace Rubberduck.SettingsProvider.Model
             Path = @"",
 #endif
             ClientHealthCheckInterval = TimeSpan.FromSeconds(10),
+
+            StreamTransmission = true,
+            QueueSize = 20,
+
             SendEventTelemetry = true,
             SendExceptionTelemetry = true,
             SendMetricTelemetry = true,
             SendTraceTelemetry = true,
-            EventTelemetryConfig = Enum.GetValues<EventTelemetryName>().Distinct().Select(e => (key:e.ToString(), value: true)).ToDictionary(e => e.key, e => e.value)
+
+            EventTelemetryConfig = Enum.GetValues<EventTelemetryName>().Select(e => new EventTelemetrySetting { Id = e, IsEnabled = true }).ToDictionary(e => e.Key),
+            ExceptionTelemetryConfig = Enum.GetValues<LogLevel>().Select(e => new ExceptionTelemetrySetting { Id = e, IsEnabled = true }).ToDictionary(e => e.Key),
+            MetricTelemetryConfig = Enum.GetValues<MetricTelemetryName>().Select(e => new MetricTelemetrySetting { Id = e, IsEnabled = true }).ToDictionary(e => e.Key),
+            TraceTelemetryConfig = Enum.GetValues<LogLevel>().Select(e => new TraceTelemetrySetting { Id = e, IsEnabled = true, Verbose = true }).ToDictionary(e => e.Key),
         };
+
+        public abstract record class TelemetrySetting
+        {
+            public abstract string Key { get; }
+            public bool IsEnabled { get; init; }
+        }
+
+        public record class EventTelemetrySetting : TelemetrySetting
+        {
+            public override string Key => Id.ToString();
+            public EventTelemetryName Id { get; init; }
+        }
+
+        public record class ExceptionTelemetrySetting : TelemetrySetting
+        {
+            public override string Key => Id.ToString();
+            public LogLevel Id { get; init; }
+        }
+
+        public record class MetricTelemetrySetting : TelemetrySetting
+        {
+            public override string Key => Id.ToString();
+            public MetricTelemetryName Id { get; init; }
+        }
+
+        public record class TraceTelemetrySetting : TelemetrySetting
+        {
+            public override string Key => throw new NotImplementedException();
+            public LogLevel Id { get; init; }
+            public bool Verbose { get; init; }
+        }
 
         public string Path { get; init; }
 
@@ -81,16 +122,22 @@ namespace Rubberduck.SettingsProvider.Model
 
         TelemetryServerSettings IDefaultSettingsProvider<TelemetryServerSettings>.Default => TelemetryServerSettings.Default;
 
+        public bool StreamTransmission { get; init; }
+        public int QueueSize { get; init; }
+
         public bool SendEventTelemetry { get; init; }
         public bool SendExceptionTelemetry { get; init; }
         public bool SendMetricTelemetry { get; init; }
         public bool SendTraceTelemetry { get; init; }
 
-        public Dictionary<string, bool> EventTelemetryConfig { get; init; }
+        public Dictionary<string, EventTelemetrySetting> EventTelemetryConfig { get; init; }
+        public Dictionary<string, ExceptionTelemetrySetting> ExceptionTelemetryConfig { get; init; }
+        public Dictionary<string, MetricTelemetrySetting> MetricTelemetryConfig { get; init; }
+        public Dictionary<string, TraceTelemetrySetting> TraceTelemetryConfig { get; init; }
 
-        public bool Equals(TelemetryServerSettings other)
-        {
-            throw new NotImplementedException();
-        }
+        //public bool Equals(TelemetryServerSettings other)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

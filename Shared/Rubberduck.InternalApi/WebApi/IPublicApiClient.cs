@@ -1,8 +1,8 @@
-﻿using Rubberduck.Core.WebApi.Model;
+﻿using Rubberduck.InternalApi.WebApi.Model;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Rubberduck.Core.WebApi
+namespace Rubberduck.InternalApi.WebApi
 {
     /// <summary>
     /// An API client that provides website content through anonymous requests.
@@ -26,5 +26,10 @@ namespace Rubberduck.Core.WebApi
         /// Gets metadata for the latest release and prerelease tags.
         /// </summary>
         Task<IEnumerable<Tag>> GetLatestTagsAsync();
+
+        /// <summary>
+        /// Sends a telemetry payload.
+        /// </summary>
+        Task TransmitTelemetryAsync(object payload);
     }
 }

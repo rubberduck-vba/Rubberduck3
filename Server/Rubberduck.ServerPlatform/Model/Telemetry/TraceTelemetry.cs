@@ -1,5 +1,6 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.InternalApi.ServerPlatform.TelemetryServer;
 using System.Text.Json.Serialization;
 
 namespace Rubberduck.ServerPlatform.Model.Telemetry
@@ -8,7 +9,7 @@ namespace Rubberduck.ServerPlatform.Model.Telemetry
     /// <strong>TraceTelemetry</strong> represents trace logs that can later be searched.
     /// </summary>
     /// <remarks>
-    /// NLog.ILogger entries translate into this type of telemetry event.
+    /// ILogger entries translate into this type of telemetry event.
     /// </remarks>
     public record TraceTelemetry : TelemetryEvent
     {

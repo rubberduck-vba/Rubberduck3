@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rubberduck.Core.WebApi.Model
+namespace Rubberduck.InternalApi.WebApi.Model
 {
     /// <summary>
     /// Represents the base properties of a data model entity.

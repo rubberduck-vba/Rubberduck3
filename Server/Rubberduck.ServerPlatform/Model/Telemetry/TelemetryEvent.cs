@@ -1,5 +1,6 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.InternalApi.ServerPlatform.TelemetryServer;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 

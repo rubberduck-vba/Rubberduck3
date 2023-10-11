@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.InternalApi.ServerPlatform
+﻿namespace Rubberduck.InternalApi.ServerPlatform.TelemetryServer
 {
     /// <summary>
     /// Defines the possible values of <c>TelemetryEvent.EventName</c>.
@@ -105,7 +105,7 @@
         /// <summary>
         /// The Rubberduck editor shell was displayed.
         /// </summary>
-        RDE_OnEditorShellShown = 1000,
+        RDE_OnEditorShellShown = 2000,
         /// <summary>
         /// The Rubberduck editor shell was closed.
         /// </summary>
@@ -314,6 +314,19 @@
         /// </summary>
         SQL_OnClientConsoleSaveSettings,
 
+        #endregion
+    }
+
+    public enum MetricTelemetryName
+    {
+        /* range 0-1000 not used */
+
+        #region range 1000-1199 [PROJ] project aggregate metrics
+        PROJ_ComponentCount = 1000,
+        PROJ_StdModuleCount,
+        PROJ_ClsModuleCount,
+        PROJ_FrmModuleCount,
+        PROJ_DocModuleCount,
         #endregion
     }
 }

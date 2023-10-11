@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.Core.WebApi.Model
+﻿namespace Rubberduck.InternalApi.WebApi.Model
 {
     public class ExampleModule : Entity
     {

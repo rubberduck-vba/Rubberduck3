@@ -20,10 +20,9 @@ namespace Rubberduck.LanguageServer
         private readonly IExitHandler _exitHandler;
 
         public LanguageServerState(ILogger<LanguageServerState> logger, 
-            ServerStartupOptions startupOptions,
             IHealthCheckService<LanguageServerSettings> healthCheck,
             IExitHandler exitHandler)
-            : base(logger, startupOptions, healthCheck)
+            : base(logger, healthCheck)
         {
             _exitHandler = exitHandler;
         }

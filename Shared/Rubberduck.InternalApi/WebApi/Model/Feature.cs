@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Rubberduck.Core.WebApi.Model
+namespace Rubberduck.InternalApi.WebApi.Model
 {
     public class Feature : Entity
     {

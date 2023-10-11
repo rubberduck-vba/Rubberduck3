@@ -8,16 +8,15 @@ using Rubberduck.Common.Hotkeys;
 using Rubberduck.Core;
 using Rubberduck.Core.About;
 using Rubberduck.Core.Editor;
-using Rubberduck.Interaction.MessageBox;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Abstract;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI;
+using Rubberduck.UI.Message;
 using Rubberduck.UI.RubberduckEditor;
 using Rubberduck.UI.Splash;
 using Rubberduck.UI.Xaml.Shell;
-using Rubberduck.UI.Xaml.Splash;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
@@ -155,15 +154,15 @@ namespace Rubberduck.Root
         {
             var nativeApi = new VbeNativeApiAccessor();
             _services.AddScoped<IVbeNativeApi>(provider => nativeApi);
-            //_services.AddScoped<IBeepInterceptor>(provider => new BeepInterceptor(nativeApi));
             _services.AddScoped<IVbeEvents>(provider => VbeEvents.Initialize(vbe));
             _services.AddScoped<IVBETypeLibsAPI, VBETypeLibsAPI>();
 
+            #region still needed?
             _services.AddScoped<IUiDispatcher, UiDispatcher>();
             _services.AddScoped<IUiContextProvider>(provider => UiContextProvider.Instance());
-
             _services.AddScoped<IRubberduckHooks, RubberduckHooks>();
             _services.AddScoped<HotkeyFactory>();
+            #endregion
 
             return this;
         }
@@ -176,7 +175,7 @@ namespace Rubberduck.Root
             _services.AddScoped<IAboutCommand, AboutCommand>();
             _services.AddScoped<AboutCommandMenuItem>();
             _services.AddScoped<IWebNavigator, WebNavigator>();
-            _services.AddScoped<IMessageBoxService, FormsMessageBox>(); // TODO implement a WpfMessageBox
+            _services.AddScoped<IMessageService, MessageService>();
 
             return this;
         }

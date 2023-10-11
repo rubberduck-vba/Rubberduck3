@@ -1,12 +1,12 @@
-﻿using Rubberduck.Core.WebApi;
-using Rubberduck.Core.WebApi.Model;
-using Rubberduck.Settings;
+﻿using Rubberduck.Settings;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider;
+using Rubberduck.InternalApi.WebApi.Model;
+using Rubberduck.InternalApi.WebApi;
 
 namespace Rubberduck.VersionCheck
 {

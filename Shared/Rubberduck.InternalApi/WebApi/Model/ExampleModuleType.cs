@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Rubberduck.Core.WebApi.Model
+namespace Rubberduck.InternalApi.WebApi.Model
 {
     public enum ExampleModuleType
     {
