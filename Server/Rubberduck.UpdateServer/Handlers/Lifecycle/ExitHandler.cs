@@ -15,10 +15,10 @@ namespace Rubberduck.UpdateServer.Handlers.Lifecycle
     public class ExitHandler : ExitHandlerBase
     {
         private readonly ILogger _logger;
-        private readonly ISettingsProvider<LanguageServerSettings> _settingsProvider;
+        private readonly ISettingsProvider<UpdateServerSettings> _settingsProvider;
         private readonly Func<UpdateServerState> _stateProvider;
 
-        public ExitHandler(ILogger<ExitHandler> logger, ISettingsProvider<LanguageServerSettings> settingsProvider, Func<UpdateServerState> state)
+        public ExitHandler(ILogger<ExitHandler> logger, ISettingsProvider<UpdateServerSettings> settingsProvider, Func<UpdateServerState> state)
         {
             _logger = logger;
             _settingsProvider = settingsProvider;

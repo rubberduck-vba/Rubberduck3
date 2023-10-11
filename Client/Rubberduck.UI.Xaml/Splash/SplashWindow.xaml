@@ -11,6 +11,8 @@
     <Window.Resources>
         <ResourceDictionary>
             <BitmapImage x:Key="FaintDucky" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/faint-ducky.png" />
+            <BitmapImage x:Key="SplashDucky" UriSource="pack://application:,,,/Rubberduck.Resources;component/splash.png" />
+            <ImageBrush x:Key="SplashBrush" ImageSource="{StaticResource SplashDucky}" />
             <Style x:Key="SplashWindowStyle" TargetType="Window">
                 <Style.Setters>
                     <Setter Property="IsEnabled" Value="False" />
@@ -25,11 +27,7 @@
             </Style>
             <Style x:Key="SplashWindowGridStyle" TargetType="Grid">
                 <Style.Setters>
-                    <Setter Property="Background">
-                        <Setter.Value>
-                            <ImageBrush ImageSource="pack://application:,,,/Rubberduck.Resources;component/Splash.png" />
-                        </Setter.Value>
-                    </Setter>
+                    <Setter Property="Background" Value="{StaticResource SplashBrush}" />
                     <Setter Property="IsHitTestVisible" Value="False" />
                     <Setter Property="IsEnabled" Value="False" />
                 </Style.Setters>

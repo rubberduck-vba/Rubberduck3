@@ -50,12 +50,11 @@ namespace Rubberduck.Root
             _services.AddLogging(ConfigureLogging);
             _services.AddScoped<ILogLevelService, LogLevelService>();
             
-            _services.AddScoped<ISplashViewModel, SplashViewModel>();
-            _services.AddScoped<SplashService>();
-
             _services.AddScoped<IProjectsRepository>(provider => new ProjectsRepository(vbe, provider.GetRequiredService<ILogger<ProjectsRepository>>()));
             _services.AddScoped<IProjectsProvider>(provider => provider.GetRequiredService<IProjectsRepository>());
 
+            _services.AddScoped<ISplashViewModel, SplashViewModel>();
+            _services.AddScoped<SplashService>();
             return this;
         }
 
@@ -76,10 +75,12 @@ namespace Rubberduck.Root
             _services.AddScoped<ISettingsProvider<RubberduckSettings>, SettingsService<RubberduckSettings>>();
             _services.AddScoped<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
             _services.AddScoped<ISettingsProvider<UpdateServerSettings>, SettingsService<UpdateServerSettings>>();
+            _services.AddScoped<ISettingsProvider<TelemetryServerSettings>, SettingsService<TelemetryServerSettings>>();
 
             _services.AddScoped<IDefaultSettingsProvider<RubberduckSettings>>(provider => RubberduckSettings.Default);
             _services.AddScoped<IDefaultSettingsProvider<LanguageServerSettings>>(provider => LanguageServerSettings.Default);
             _services.AddScoped<IDefaultSettingsProvider<UpdateServerSettings>>(provider => UpdateServerSettings.Default);
+            _services.AddScoped<IDefaultSettingsProvider<TelemetryServerSettings>>(provider => TelemetryServerSettings.Default);
             return this;
         }
 

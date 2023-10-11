@@ -11,6 +11,6 @@ namespace Rubberduck.UI.About
         {
         }
 
-        protected override AboutWindow? CreateWindow(IAboutWindowViewModel model) => new AboutWindow(model);
+        protected override AboutWindow CreateWindow(IAboutWindowViewModel model) => new AboutWindow(model);
     }
 }

@@ -35,6 +35,8 @@ namespace Rubberduck.SettingsProvider.Model
             SendMetricTelemetry = true,
             SendTraceTelemetry = true,
 
+            IsEnabled = true,
+
             EventTelemetryConfig = Enum.GetValues<EventTelemetryName>().Select(e => new EventTelemetrySetting { Id = e, IsEnabled = true }).ToDictionary(e => e.Key),
             ExceptionTelemetryConfig = Enum.GetValues<LogLevel>().Select(e => new ExceptionTelemetrySetting { Id = e, IsEnabled = true }).ToDictionary(e => e.Key),
             MetricTelemetryConfig = Enum.GetValues<MetricTelemetryName>().Select(e => new MetricTelemetrySetting { Id = e, IsEnabled = true }).ToDictionary(e => e.Key),
@@ -67,7 +69,7 @@ namespace Rubberduck.SettingsProvider.Model
 
         public record class TraceTelemetrySetting : TelemetrySetting
         {
-            public override string Key => throw new NotImplementedException();
+            public override string Key => Id.ToString();
             public LogLevel Id { get; init; }
             public bool Verbose { get; init; }
         }
@@ -122,6 +124,7 @@ namespace Rubberduck.SettingsProvider.Model
 
         TelemetryServerSettings IDefaultSettingsProvider<TelemetryServerSettings>.Default => TelemetryServerSettings.Default;
 
+        public bool IsEnabled { get; init; }
         public bool StreamTransmission { get; init; }
         public int QueueSize { get; init; }
 

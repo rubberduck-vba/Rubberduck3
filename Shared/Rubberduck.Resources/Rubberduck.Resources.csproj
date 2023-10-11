@@ -296,7 +296,7 @@
     <Resource Include="Icons\Fugue\socket.png" />
     <Resource Include="Icons\Fugue\user-silhouette.png" />
     <Resource Include="Icons\Fugue\user-medium-silhouette.png" />
-    <Resource Include="Splash.png" />
+    <Resource Include="splash.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />

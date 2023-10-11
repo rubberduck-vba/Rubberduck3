@@ -6,7 +6,7 @@ namespace Rubberduck.Client
 {
     public class UpdateServerProcess : ServerProcess<IUpdateClient>
     {
-        public UpdateServerProcess(ILogger<UpdateServerProcess> logger)
+        public UpdateServerProcess(ILogger logger)
             : base(logger) { }
 
         protected override string ExecutableFileName { get; } = ServerPlatformSettings.UpdateServerExecutable;

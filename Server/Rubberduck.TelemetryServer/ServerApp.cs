@@ -10,6 +10,7 @@ using OmniSharp.Extensions.LanguageServer.Server;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.InternalApi.WebApi;
 using Rubberduck.LanguagePlatform;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
@@ -21,6 +22,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO.Abstractions;
 using System.IO.Pipes;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.LanguageServer;
@@ -90,6 +92,12 @@ namespace Rubberduck.TelemetryServer
 
             services.AddSingleton<IExitHandler, ExitHandler>();
             services.AddSingleton<IHealthCheckService<TelemetryServerSettings>, ClientProcessHealthCheckService<TelemetryServerSettings>>();
+
+            services.AddSingleton<ITelemetryService, TelemetryService>();
+            services.AddSingleton<ITelemetryTransmitter, TelemetryTransmitter>();
+
+            services.AddSingleton<HttpClient>();
+            services.AddSingleton<IPublicApiClient>(provider => new PublicApiClient(provider.GetRequiredService<HttpClient>(), new Version("3.0.0"), new Uri("https://api.rubberduckvba.com")));
         }
 
         private void ConfigureLogging(ILoggingBuilder builder)

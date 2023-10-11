@@ -28,6 +28,7 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.UI.Splash;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.TypeLibs.Public;
+using System.Drawing;
 
 namespace Rubberduck
 {
@@ -46,11 +47,21 @@ namespace Rubberduck
         private readonly System.Windows.Application _application = new();
 
         private readonly CancellationTokenSource _tokenSource = new();
-        private Process? _serverProcess;
-        private NamedPipeClientStream? _pipeStream;
-
+        
+        private Process? _languageServerProcess;
+        private NamedPipeClientStream? _languageServerPipeStream;
         private LanguageClient? _languageClient;
-        private IDisposable? _clientInitializeTask;
+        private IDisposable? _languageClientInitializeTask;
+
+        private Process? _telemetryServerProcess;
+        private NamedPipeClientStream? _telemetryServerPipeStream;
+        private LanguageClient? _telemetryClient;
+        private IDisposable _telemetryClientInitializeTask;
+
+        private Process? _updateServerProcess;
+        private NamedPipeClientStream? _updateServerPipeStream;
+        private LanguageClient? _updateClient;
+        private IDisposable _updateClientInitializeTask;
 
         internal RubberduckAddIn(IDTExtensibility2 extAddin, IVBE vbeWrapper, IAddIn addinWrapper)
         {
@@ -214,49 +225,28 @@ namespace Rubberduck
                 _app = _serviceScope.ServiceProvider.GetRequiredService<App>();
 
                 splashService.UpdateStatus("Starting add-in...");
-                
+
                 _app.Startup();
-                splashService.UpdateStatus("Starting language server...");
-
-                var settings = LanguageServerSettings.Default;
                 var clientProcessId = Environment.ProcessId;
-                _serverProcess = new LanguageServerProcess(_logger).Start(clientProcessId, settings);
+                var projectPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-                splashService.UpdateStatus("Starting language client...");
+                splashService.UpdateStatus("Starting language server...");
+                await StartLanguageClientAsync(clientProcessId, projectPath, _initialSettings.LanguageServerSettings);
 
-                using var project = _vbe.ActiveVBProject;
-                if (!project.TryGetFullPath(out var projectPath))
+                if (_initialSettings.UpdateServerSettings.IsEnabled)
                 {
-                    projectPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    splashService.UpdateStatus("Starting update server...");
+                    await StartUpdateClientAsync(clientProcessId, projectPath, _initialSettings.UpdateServerSettings);
                 }
 
-                LanguageClientOptions clientOptions;
-                switch (settings.TransportType)
+                if (_initialSettings.TelemetryServerSettings.IsEnabled)
                 {
-                    case TransportType.StdIO:
-                        clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _serverProcess, clientProcessId, _initialSettings, projectPath);
-                        break;
-
-                    case TransportType.Pipe:
-                        var name = settings.PipeName ?? ServerPlatformSettings.LanguageServerDefaultPipeName;
-                        _pipeStream = new NamedPipeClientStream(".", $"{name}__{Environment.ProcessId}", PipeDirection.InOut, PipeOptions.Asynchronous);
-                        await _pipeStream.ConnectAsync(Convert.ToInt32(TimeSpan.FromSeconds(10).TotalMilliseconds)); // stuck here
-                        clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _pipeStream, clientProcessId, _initialSettings, projectPath);
-                        break;
-                        
-                    default:
-                        throw new NotSupportedException();
+                    splashService.UpdateStatus("Starting telemetry server...");
+                    await StartTelemetryClientAsync(clientProcessId, projectPath, _initialSettings.TelemetryServerSettings);
                 }
-
-                if (_serverProcess.HasExited)
-                {
-                    throw new ServerStartupFailedException(_serverProcess);
-                }
-
-                _languageClient = LanguageClient.Create(clientOptions, _serviceScope.ServiceProvider);
 
                 splashService.UpdateStatus("Initializing language server protocol...");
-                _clientInitializeTask = _languageClient.Initialize(_tokenSource.Token);
+                _languageClientInitializeTask = _languageClient.Initialize(_tokenSource.Token);
 
                 splashService.UpdateStatus("Connection established.");
                 _isInitialized = true;
@@ -269,11 +259,101 @@ namespace Rubberduck
             }
         }
 
+        private async Task StartLanguageClientAsync(int clientProcessId, string projectPath, LanguageServerSettings settings)
+        {
+            _languageServerProcess = new LanguageServerProcess(_logger).Start(clientProcessId, settings);
+
+            LanguageClientOptions clientOptions;
+            switch (settings.TransportType)
+            {
+                case TransportType.StdIO:
+                    clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _languageServerProcess!, clientProcessId, _initialSettings, projectPath);
+                    break;
+
+                case TransportType.Pipe:
+                    var name = settings.PipeName ?? ServerPlatformSettings.LanguageServerDefaultPipeName;
+                    _languageServerPipeStream = new NamedPipeClientStream(".", $"{name}__{Environment.ProcessId}", PipeDirection.InOut, PipeOptions.Asynchronous);
+                    await _languageServerPipeStream.ConnectAsync(Convert.ToInt32(TimeSpan.FromSeconds(10).TotalMilliseconds)); // stuck here
+                    clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _languageServerPipeStream, clientProcessId, _initialSettings, projectPath);
+                    break;
+
+                default:
+                    throw new NotSupportedException();
+            }
+
+            if (_languageServerProcess!.HasExited)
+            {
+                throw new ServerStartupFailedException(_languageServerProcess);
+            }
+
+            _languageClient = LanguageClient.Create(clientOptions, _serviceScope.ServiceProvider);
+        }
+
+        private async Task StartTelemetryClientAsync(int clientProcessId, string projectPath, TelemetryServerSettings settings)
+        {
+            _telemetryServerProcess = new TelemetryServerProcess(_logger).Start(clientProcessId, settings);
+
+            LanguageClientOptions clientOptions;
+            switch (settings.TransportType)
+            {
+                case TransportType.StdIO:
+                    clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _telemetryServerProcess!, clientProcessId, _initialSettings, projectPath);
+                    break;
+
+                case TransportType.Pipe:
+                    var name = settings.PipeName ?? ServerPlatformSettings.TelemetryServerDefaultPipeName;
+                    _telemetryServerPipeStream = new NamedPipeClientStream(".", $"{name}__{Environment.ProcessId}", PipeDirection.InOut, PipeOptions.Asynchronous);
+                    await _telemetryServerPipeStream.ConnectAsync(Convert.ToInt32(TimeSpan.FromSeconds(10).TotalMilliseconds)); // stuck here
+                    clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _telemetryServerPipeStream, clientProcessId, _initialSettings, projectPath);
+                    break;
+
+                default:
+                    throw new NotSupportedException();
+            }
+
+            if (_telemetryServerProcess!.HasExited)
+            {
+                throw new ServerStartupFailedException(_telemetryServerProcess);
+            }
+
+            _telemetryClient = LanguageClient.Create(clientOptions, _serviceScope.ServiceProvider);
+        }
+
+        private async Task StartUpdateClientAsync(int clientProcessId, string projectPath, UpdateServerSettings settings)
+        {
+            _updateServerProcess = new UpdateServerProcess(_logger).Start(clientProcessId, settings);
+
+            LanguageClientOptions clientOptions;
+            switch (settings.TransportType)
+            {
+                case TransportType.StdIO:
+                    clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _updateServerProcess!, clientProcessId, _initialSettings, projectPath);
+                    break;
+
+                case TransportType.Pipe:
+                    var name = settings.PipeName ?? ServerPlatformSettings.UpdateServerDefaultPipeName;
+                    _updateServerPipeStream = new NamedPipeClientStream(".", $"{name}__{Environment.ProcessId}", PipeDirection.InOut, PipeOptions.Asynchronous);
+                    await _updateServerPipeStream.ConnectAsync(Convert.ToInt32(TimeSpan.FromSeconds(10).TotalMilliseconds)); // stuck here
+                    clientOptions = LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _updateServerPipeStream, clientProcessId, _initialSettings, projectPath);
+                    break;
+
+                default:
+                    throw new NotSupportedException();
+            }
+
+            if (_updateServerProcess!.HasExited)
+            {
+                throw new ServerStartupFailedException(_updateServerProcess);
+            }
+
+            _updateClient = LanguageClient.Create(clientOptions, _serviceScope.ServiceProvider);
+        }
+
         public void Shutdown(bool force = false)
         {
             if (!force && !_isInitialized)
             {
-                _logger.LogWarning("Addin is not in an initialized state for shutdown.");
+                //_logger.LogWarning("Addin is not in an initialized state for shutdown.");
                 return;
             }
 
@@ -309,34 +389,34 @@ namespace Rubberduck
             });
             RunShutdownAction("Disposing pipe stream...", () =>
             {
-                _pipeStream?.Dispose();
-                _pipeStream = null!;
+                _languageServerPipeStream?.Dispose();
+                _languageServerPipeStream = null!;
             });
             RunShutdownAction("Disposing language client...", () =>
             {
-                _clientInitializeTask?.Dispose();
+                _languageClientInitializeTask?.Dispose();
                 _languageClient?.Dispose();
                 _tokenSource?.Cancel();
             });
             RunShutdownAction("Disposing language server process...", () =>
             {
-                if (_serverProcess != null)
+                if (_languageServerProcess != null)
                 {
-                    if (!_serverProcess.HasExited)
+                    if (!_languageServerProcess.HasExited)
                     {
-                        _serverProcess.WaitForExit(TimeSpan.FromMilliseconds(200));
+                        _languageServerProcess.WaitForExit(TimeSpan.FromMilliseconds(200));
                     }
 
-                    if (_serverProcess.HasExited)
+                    if (_languageServerProcess.HasExited)
                     {
-                        _logger.LogTrace("Language server process exit code: {code}. Exit time: {exitTime}", _serverProcess.ExitCode, _serverProcess.ExitTime);
+                        _logger.LogTrace("Language server process exit code: {code}. Exit time: {exitTime}", _languageServerProcess.ExitCode, _languageServerProcess.ExitTime);
                     }
                     else
                     {
                         _logger.LogWarning("Language server process did not exit after 20ms. Review server logs for possible anomalies.");
                     }
-                    _serverProcess.Dispose();
-                    _serverProcess = null!;
+                    _languageServerProcess.Dispose();
+                    _languageServerProcess = null!;
                 }
             });
             RunShutdownAction("Disposing COM safe...", () =>

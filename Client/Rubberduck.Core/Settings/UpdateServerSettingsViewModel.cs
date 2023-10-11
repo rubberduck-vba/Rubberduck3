@@ -13,7 +13,7 @@ namespace Rubberduck.Core.Settings
         {
             _settings= settings;
 
-            CheckVersionOnStartup = settings.CheckVersionOnStartup;
+            CheckVersionOnStartup = settings.IsEnabled;
             IncludePreReleases = settings.IncludePreReleases;
             RubberduckWebApiBaseUrl = settings.RubberduckWebApiBaseUrl;
             Path = settings.Path;
@@ -29,7 +29,7 @@ namespace Rubberduck.Core.Settings
         {
             return new UpdateServerSettings
             {
-                CheckVersionOnStartup = this.CheckVersionOnStartup,
+                IsEnabled = this.CheckVersionOnStartup,
                 IncludePreReleases = this.IncludePreReleases,
                 Path = this.Path,
                 RubberduckWebApiBaseUrl = this.RubberduckWebApiBaseUrl,

@@ -33,6 +33,7 @@ namespace Rubberduck.SettingsProvider.Model
 
         public LanguageServerSettings LanguageServerSettings { get; init; }
         public UpdateServerSettings UpdateServerSettings { get; init; }
+        public TelemetryServerSettings TelemetryServerSettings { get; init; }
 
         RubberduckSettings IDefaultSettingsProvider<RubberduckSettings>.Default => RubberduckSettings.Default;
 
@@ -71,6 +72,7 @@ namespace Rubberduck.SettingsProvider.Model
             hash.Add(IsInitialLogLevelChanged);
             hash.Add(LanguageServerSettings);
             hash.Add(UpdateServerSettings);
+            hash.Add(TelemetryServerSettings);
             foreach (var item in FeatureSwitches)
             {
                 hash.Add(item);

@@ -12,7 +12,7 @@ namespace Rubberduck.SettingsProvider.Model
     {
         public static UpdateServerSettings Default { get; } = new UpdateServerSettings
         {
-            CheckVersionOnStartup = true,
+            IsEnabled = true,
             IncludePreReleases = true,
             RubberduckWebApiBaseUrl = "https://api.rubberduckvba.com/api/v1",
 
@@ -30,7 +30,7 @@ namespace Rubberduck.SettingsProvider.Model
 
         UpdateServerSettings IDefaultSettingsProvider<UpdateServerSettings>.Default => UpdateServerSettings.Default;
 
-        public bool CheckVersionOnStartup { get; init; }
+        public bool IsEnabled { get; init; }
         public bool IncludePreReleases { get; init; }
         public string RubberduckWebApiBaseUrl { get; init; }
 
@@ -83,7 +83,7 @@ namespace Rubberduck.SettingsProvider.Model
 
         public bool Equals(UpdateServerSettings other)
         {
-            return CheckVersionOnStartup == other.CheckVersionOnStartup
+            return IsEnabled == other.IsEnabled
                 && IncludePreReleases == other.IncludePreReleases
                 && string.Equals(RubberduckWebApiBaseUrl, other.RubberduckWebApiBaseUrl, StringComparison.InvariantCultureIgnoreCase)
                 && string.Equals(Path, other.Path, StringComparison.InvariantCultureIgnoreCase);
@@ -100,7 +100,7 @@ namespace Rubberduck.SettingsProvider.Model
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(CheckVersionOnStartup, IncludePreReleases, RubberduckWebApiBaseUrl.ToLowerInvariant(), Path.ToLowerInvariant());
+            return HashCode.Combine(IsEnabled, IncludePreReleases, RubberduckWebApiBaseUrl.ToLowerInvariant(), Path.ToLowerInvariant());
         }
     }
 }

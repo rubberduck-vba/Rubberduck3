@@ -7,21 +7,27 @@ namespace Rubberduck.UI.Abstract
         where TView : Window
         where TViewModel : class, INotifyPropertyChanged
     {
-        private readonly TView? _view;
+        private TView? _view;
 
         protected WindowService(TViewModel viewModel)
         {
             Model = viewModel;
-            _view = CreateWindow(viewModel);
         }
 
         public TViewModel Model { get; }
-        protected abstract TView? CreateWindow(TViewModel model);
+        protected abstract TView CreateWindow(TViewModel model);
 
         public void Close() => _view?.Close();
 
         public void Hide() => _view?.Hide();
 
-        public void Show() => _view?.Show();
+        public void Show()
+        {
+            if (_view is null)
+            {
+                _view = CreateWindow(Model);
+            }
+            _view.Show();
+        }
     }
 }
