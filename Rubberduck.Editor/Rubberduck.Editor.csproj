@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>ducky.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Custom\ducky.ico" />
+    <None Remove="Resources\Custom\faint-ducky.png" />
+    <None Remove="Resources\Custom\splash.png" />
+    <None Remove="Resources\FugueIcons\cross-circle.png" />
+    <None Remove="Resources\FugueIcons\exclamation-diamond.png" />
+    <None Remove="Resources\FugueIcons\information.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dragablz" Version="0.0.3.234" />
+    <PackageReference Include="MdXaml" Version="1.21.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
+    <ProjectReference Include="..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj" />
+    <ProjectReference Include="..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ducky.ico" />
+    <Resource Include="Resources\Custom\ducky.ico" />
+    <Resource Include="Resources\Custom\faint-ducky.png" />
+    <Resource Include="Resources\Custom\splash.png" />
+    <Resource Include="Resources\FugueIcons\cross-circle.png" />
+    <Resource Include="Resources\FugueIcons\exclamation-diamond.png" />
+    <Resource Include="Resources\FugueIcons\information.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="About\AboutWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Message\MessageWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Shell\ChildWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Splash\SplashWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>

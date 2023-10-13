@@ -9,17 +9,17 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
 {
     public class SpecificValuesToVisibilityConverter : IValueConverter
     {
-        public IReadOnlyCollection<object> SpecialValues { get; set; }
+        public IReadOnlyCollection<object>? SpecialValues { get; set; }
         public bool CollapseSpecialValues { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null)
+            if (value is null)
             {
-                return null;
+                return null!;
             }
 
-            return SpecialValues.Contains(value)
+            return SpecialValues!.Contains(value)
                 ? SpecialValueVisibility
                 : OtherValueVisibility;
         }

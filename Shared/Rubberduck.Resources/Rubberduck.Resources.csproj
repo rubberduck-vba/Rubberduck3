@@ -3,15 +3,12 @@
     <Version>3.0.0</Version>
     <TargetFramework>net7.0</TargetFramework>
     <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
-    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU</Platforms>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Resource Include="Ducky.ico" />
     <Resource Include="Icons\Custom\attribution.txt" />
     <Resource Include="Icons\Custom\cc_license.txt" />
     <Resource Include="Icons\Custom\Mask\AddPropertyMask.bmp" />
@@ -164,7 +161,6 @@
     <Resource Include="Icons\Custom\PNG\Task.png" />
     <Resource Include="Icons\Custom\PNG\TestManager.png" />
     <Resource Include="Icons\Custom\PNG\TestMethod.png" />
-    <Resource Include="Icons\Ducky.ico" />
     <Resource Include="Icons\Fugue\application-resize.png" />
     <Resource Include="Icons\Fugue\arrow-090-dimmed.png" />
     <Resource Include="Icons\Fugue\arrow-090.png" />
@@ -288,7 +284,6 @@
     <Resource Include="Icons\Fugue\document--plus.png" />
     <Resource Include="Icons\Fugue\selection-input.png" />
     <Resource Include="Icons\Fugue\document-code.png" />
-    <Resource Include="Icons\faint-ducky.png" />
     <Resource Include="Icons\Fugue\control-pause.png" />
     <Resource Include="Icons\Fugue\control-power.png" />
     <Resource Include="Icons\Fugue\drive--exclamation.png" />
@@ -296,10 +291,26 @@
     <Resource Include="Icons\Fugue\socket.png" />
     <Resource Include="Icons\Fugue\user-silhouette.png" />
     <Resource Include="Icons\Fugue\user-medium-silhouette.png" />
-    <Resource Include="splash.png" />
+    <Resource Include="Icons\faint-ducky.png" />
+    <Resource Include="Icons\ducky.ico" />
+    <Resource Include="ducky.ico" />
+    <Resource Include="Icons\splash.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     <PackageReference Include="System.Resources.Extensions" Version="7.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="RubberduckUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RubberduckUI.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="RubberduckUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

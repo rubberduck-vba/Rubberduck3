@@ -39,12 +39,11 @@ namespace Rubberduck.UI.Xaml.Dependencies
             }
         }
 
-        private static readonly List<MouseWheelEventArgs> _avoidReentry = new List<MouseWheelEventArgs>();
+        private static readonly List<MouseWheelEventArgs> _avoidReentry = new();
 
         private static void HandlePreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            var scrollControl = sender as ScrollViewer;
-            if (!e.Handled && sender != null && !_avoidReentry.Contains(e))
+            if (!e.Handled && sender is ScrollViewer scrollControl && !_avoidReentry.Contains(e))
             {
                 var previewEventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
                 {
@@ -69,7 +68,7 @@ namespace Rubberduck.UI.Xaml.Dependencies
                         Source = sender
                     };
                     var parent = ((Control)sender).Parent as UIElement;
-                    parent.RaiseEvent(eventArg);
+                    parent?.RaiseEvent(eventArg);
                 }
             }
         }

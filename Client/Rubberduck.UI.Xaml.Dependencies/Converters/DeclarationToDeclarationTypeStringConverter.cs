@@ -15,7 +15,7 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
             //var declaration = value as Declaration ?? (value as ICodeExplorerNode)?.Declaration;
             //if (declaration == null)
             //{
-            return null;
+            return null!;
             //}
 
             //if (value is CodeExplorerCustomFolderViewModel folder)

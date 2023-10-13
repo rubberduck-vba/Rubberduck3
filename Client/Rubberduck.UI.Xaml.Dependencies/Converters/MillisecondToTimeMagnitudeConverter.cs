@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            return null!;
             //if (!(value is long milliseconds) || milliseconds == 0)
             //{
             //    return string.Empty;
@@ -32,7 +32,8 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
             //return $"{time.TotalMilliseconds:F0} {Resources.UnitTesting.TestExplorer.TestOutcome_DurationMillisecond}";
         }
 
-        private string FormatAsRoundedFloat(double duration)
+        /*
+        private static string FormatAsRoundedFloat(double duration)
         {
             var rounded = Math.Round(duration, 2) * 100;
 
@@ -48,7 +49,7 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
 
             return $"{duration:F2}";
         }
-
+        */
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();

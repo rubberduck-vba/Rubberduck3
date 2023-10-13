@@ -8,11 +8,11 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
     //Based on https://stackoverflow.com/a/29659265 by Yoh Deadfall
     public class EnumToLocalizedStringConverter : IValueConverter
     {
-        public string ResourcePrefix { get; set; }
+        public string? ResourcePrefix { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            return null!;
             //if (value == null)
             //{
             //    throw new ArgumentException("The value cannot be null.", "value");
@@ -24,7 +24,7 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            return null!;
             //var str = (string)value;
 
             //foreach (var enumValue in Enum.GetValues(targetType))

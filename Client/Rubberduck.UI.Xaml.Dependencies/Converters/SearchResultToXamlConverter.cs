@@ -67,7 +67,7 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
             //    return textBlock;
             //}
 
-            return null;
+            return null!;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

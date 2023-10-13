@@ -6,8 +6,6 @@
     <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
-    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <Platforms>AnyCPU</Platforms>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputType>Exe</OutputType>

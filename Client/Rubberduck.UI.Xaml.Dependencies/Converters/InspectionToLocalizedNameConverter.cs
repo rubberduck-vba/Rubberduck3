@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            return null!;
             //var inspectionName = value is IInspection inspection
             //    ? inspection.AnnotationName
             //    : value as string;

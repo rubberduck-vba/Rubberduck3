@@ -5,11 +5,13 @@ using System.Linq;
 
 namespace Rubberduck.InternalApi.Extensions
 {
+    // should be covered by BCL under .net7+
 
+    /*
     // See http://stackoverflow.com/questions/34362316/how-to-turn-icollectiont-into-ireadonlycollectiont
     public class ReadOnlyCollectionWrapper<T> : IReadOnlyCollection<T>
     {
-        private ICollection<T> collection;
+        private readonly ICollection<T> collection;
         public ReadOnlyCollectionWrapper(ICollection<T> collection)
         {
             this.collection = collection;
@@ -101,4 +103,5 @@ namespace Rubberduck.InternalApi.Extensions
             return dictionary.Count == otherDictionary.Count && !dictionary.Except(otherDictionary).Any();
         }
     }
+    */
 }

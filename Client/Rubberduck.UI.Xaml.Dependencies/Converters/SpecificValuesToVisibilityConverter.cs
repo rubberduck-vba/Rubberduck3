@@ -7,14 +7,14 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
 {
     public class SpecificValueToVisibilityConverter : IValueConverter
     {
-        public object SpecialValue { get; set; }
+        public object? SpecialValue { get; set; }
         public bool CollapseSpecialValue { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null)
+            if (value is null)
             {
-                return null;
+                return null!;
             }
 
             return value.Equals(SpecialValue)

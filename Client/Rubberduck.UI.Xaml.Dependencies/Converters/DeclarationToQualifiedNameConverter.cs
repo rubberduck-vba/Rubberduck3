@@ -7,20 +7,19 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
 {
     public class DeclarationToQualifiedNameConverter : IValueConverter
     {
-        private readonly IValueConverter _declarationTypeConverter;
+        //private readonly IValueConverter _declarationTypeConverter;
 
         public DeclarationToQualifiedNameConverter()
         {
-            _declarationTypeConverter = new EnumToLocalizedStringConverter
-            {
-                ResourcePrefix = "DeclarationType_"
-            };
-
+            //_declarationTypeConverter = new EnumToLocalizedStringConverter
+            //{
+            //    ResourcePrefix = "DeclarationType_"
+            //};
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            return null!;
             //if (!(value is Declaration declaration))
             //{
             //    throw new ArgumentException("The value must be an instance of Declaration.", "value");

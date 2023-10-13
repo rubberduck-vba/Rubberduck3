@@ -1,0 +1,13 @@
+﻿<Window x:Class="Rubberduck.Editor.About.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mdxaml="clr-namespace:MdXaml;assembly=MdXaml"
+        xmlns:local="clr-namespace:Rubberduck.Editor.About" 
+        Title="About Rubberduck" Height="450" Width="600">
+    <Grid>
+        <mdxaml:MarkdownScrollViewer>
+        </mdxaml:MarkdownScrollViewer>
+    </Grid>
+</Window>

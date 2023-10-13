@@ -17,7 +17,7 @@ namespace Rubberduck.ServerPlatform
             };
         }
 
-        public static CultureInfo FromLocale(this CultureInfo _, string? locale)
+        public static CultureInfo FromLocale(this CultureInfo _, string locale)
         {
             try
             {

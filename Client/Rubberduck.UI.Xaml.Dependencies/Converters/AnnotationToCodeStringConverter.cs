@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
 {
     public class AnnotationToCodeStringConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //if (value == null)
             //{
@@ -23,7 +23,7 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
             //return $"@{annotation.Name}";
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return DependencyProperty.UnsetValue;
         }

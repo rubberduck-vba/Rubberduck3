@@ -13,12 +13,11 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
     /// </summary>
     public class GroupingToBooleanConverter<T> : IValueConverter where T : IConvertible, IComparable
     {
-        private T _state;
+        private T? _state;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(parameter is T governing) ||
-                !(value is T bound))
+            if (parameter is not T governing || value is not T bound)
             {
                 return false;
             }
@@ -29,14 +28,13 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(parameter is T governing) ||
-                !(value is bool isSet))
+            if (parameter is not T governing || value is not bool isSet)
             {
-                return _state;
+                return _state!;
             }
 
             _state = isSet ? governing : _state;
-            return _state;
+            return _state!;
         }
     }
 }

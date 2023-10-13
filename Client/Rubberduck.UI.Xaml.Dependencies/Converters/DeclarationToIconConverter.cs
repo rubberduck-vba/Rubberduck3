@@ -100,7 +100,7 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
             //    return NullIcon;
             //}
 
-            return null;
+            return null!;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
         {
             //if (!(value is Declaration declaration))
             //{
-            return null;
+            return null!;
             //}
 
             //switch (declaration.Accessibility)

@@ -1,6 +1,6 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
-using Rubberduck.UI.Abstract.Editor;
+using Rubberduck.UI.RubberduckEditor.Proto.Editor;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;

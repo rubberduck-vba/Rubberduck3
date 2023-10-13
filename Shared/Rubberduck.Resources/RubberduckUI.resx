@@ -490,43 +490,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   <data name="ParserState_Busy" xml:space="preserve">
     <value>Busy</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="AddClass" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Custom\PNG\AddClass.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="AddForm" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Custom\PNG\AddForm.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="AddModule" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Custom\PNG\AddModule.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="arrow_circle_double" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\arrow-circle-double.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="light_bulb_code" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\light-bulb-code.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ProjectForm" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Custom\PNG\ProjectForm.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Splash" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Splash.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="cross_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\cross-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="exclamation" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\exclamation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="minus_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\minus-white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="question_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\question-white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="tick_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\tick-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Add" xml:space="preserve">
     <value>Add</value>
   </data>
@@ -539,29 +502,8 @@ This dialog is showing because version checks are enabled. You can turn off this
   <data name="Language_CS" xml:space="preserve">
     <value>Czech</value>
   </data>
-  <data name="padlock" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\lock.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="BrokenReference" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Custom\PNG\BrokenReference.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="LockedReference" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Custom\PNG\LockedReference.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="ApplyButtonText" xml:space="preserve">
     <value>Apply</value>
-  </data>
-  <data name="clock_select" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\clock-select.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="clock_select_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\clock-select-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="exclamation_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\exclamation-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="lock_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\lock-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ReferenceSettings_FixBroken" xml:space="preserve">
     <value>Attempt to fix broken references</value>
@@ -577,30 +519,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   </data>
   <data name="ReferenceSettings_TrackHostReferences" xml:space="preserve">
     <value>Track references not added by Rubberduck</value>
-  </data>
-  <data name="cross_script" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\cross-script.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="magnifier_medium" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\magnifier-medium.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="edit_size" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\edit-size.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="SyncArrows" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Custom\PNG\SyncArrows.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="arrow_090" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\arrow-090.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="arrow_090_dimmed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\arrow-090-dimmed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="arrow_270" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\arrow-270.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="arrow_270_dimmed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\arrow-270-dimmed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="MemberAttributeRecoveryRewriteFailedMessage" xml:space="preserve">
     <value>Failed to recover member attributes.</value>
@@ -634,15 +552,6 @@ This dialog is showing because version checks are enabled. You can turn off this
   </data>
   <data name="InspectionResults_ExpandAll" xml:space="preserve">
     <value>Expand all</value>
-  </data>
-  <data name="clock" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\clock.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="hourglass" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\hourglass.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="skull_mad" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\skull-mad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>
@@ -738,18 +647,6 @@ Import aborted.</value>
     <value>Selection is not a variable.</value>
     <comment>Used in both Introduce Parameter and Introduce Field</comment>
   </data>
-  <data name="pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="plus_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\plus-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="plus_circle_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\plus-circle-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="tick_circle_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\tick-circle-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="CodeInspectionsWindowSettings_AccessKey" xml:space="preserve">
     <value>Code _Inspections</value>
   </data>
@@ -810,36 +707,6 @@ Import aborted.</value>
   </data>
   <data name="CommandDescription_PeekDefinitionCommand" xml:space="preserve">
     <value>Peek definition</value>
-  </data>
-  <data name="document_broken" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\document-broken.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="document_convert" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\document-convert.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="document_exclamation" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\document--exclamation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="document_minus" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\document--minus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="document_pencil" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\document--pencil.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="document_plus" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\document--plus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="document_smiley_sad" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\document-smiley-sad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="document_code" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\document-code.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="selection_input" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\selection-input.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="tick" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\tick.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SelectionLocationPosition" xml:space="preserve">
     <value>L{0}C{1}</value>

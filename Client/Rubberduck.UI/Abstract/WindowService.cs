@@ -23,10 +23,7 @@ namespace Rubberduck.UI.Abstract
 
         public void Show()
         {
-            if (_view is null)
-            {
-                _view = CreateWindow(Model);
-            }
+            _view ??= CreateWindow(Model);
             _view.Show();
         }
     }

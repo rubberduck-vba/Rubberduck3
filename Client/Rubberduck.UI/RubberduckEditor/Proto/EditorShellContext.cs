@@ -1,4 +1,4 @@
-﻿using Rubberduck.UI.Abstract.Editor;
+﻿using Rubberduck.UI.RubberduckEditor.Proto.Editor;
 
 namespace Rubberduck.UI.RubberduckEditor.Proto
 {

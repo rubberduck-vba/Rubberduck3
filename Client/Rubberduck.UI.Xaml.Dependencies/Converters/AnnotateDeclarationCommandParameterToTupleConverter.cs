@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
 {
     public class AnnotateDeclarationCommandParameterToTupleConverter : IMultiValueConverter
     {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             return null;
             //(IAnnotation annotation, ICodeExplorerNode model) data = (
@@ -19,7 +19,7 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            return null;
+            return null!;
             //var data = ((IAnnotation annotation, ICodeExplorerNode model))value;
             //return new[] { (object)data.annotation, data.model };
         }

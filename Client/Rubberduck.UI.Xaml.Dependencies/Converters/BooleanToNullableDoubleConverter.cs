@@ -6,10 +6,9 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
 {
     public class BooleanToNullableDoubleConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is double size) ||
-                !(parameter is IConvertible input))
+            if (value is not double size || parameter is not IConvertible input)
             {
                 return false;
             }
@@ -25,11 +24,9 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is bool toggle) ||
-                !toggle ||
-                !(parameter is IConvertible output))
+            if (value is not bool toggle || !toggle || parameter is not IConvertible output)
             {
                 return null;
             }

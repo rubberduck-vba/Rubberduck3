@@ -63,7 +63,7 @@ namespace Rubberduck.UI.Xaml.Dependencies.Converters
         {
             if (values.Length == 0)
             {
-                return null;
+                return null!;
             };
 
             return Convert(values[0], targetType, parameter, culture);
