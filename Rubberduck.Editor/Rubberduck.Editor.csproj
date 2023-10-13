@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Custom\background-ducky.png" />
     <None Remove="Resources\Custom\ducky.ico" />
-    <None Remove="Resources\Custom\faint-ducky.png" />
     <None Remove="Resources\Custom\splash.png" />
     <None Remove="Resources\FugueIcons\cross-circle.png" />
     <None Remove="Resources\FugueIcons\exclamation-diamond.png" />
@@ -35,7 +35,7 @@
   <ItemGroup>
     <Resource Include="ducky.ico" />
     <Resource Include="Resources\Custom\ducky.ico" />
-    <Resource Include="Resources\Custom\faint-ducky.png" />
+    <Resource Include="Resources\Custom\background-ducky.png" />
     <Resource Include="Resources\Custom\splash.png" />
     <Resource Include="Resources\FugueIcons\cross-circle.png" />
     <Resource Include="Resources\FugueIcons\exclamation-diamond.png" />

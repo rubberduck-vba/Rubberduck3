@@ -13,7 +13,7 @@
         SizeToContent="WidthAndHeight" SnapsToDevicePixels="True">
     <Window.Resources>
         <ResourceDictionary>
-            <BitmapImage x:Key="FaintDucky" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/Custom/faint-ducky.png" />
+            <BitmapImage x:Key="BackgroundDucky" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/Custom/background-ducky.png" />
             <BitmapImage x:Key="ErrorIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FugueIcons/cross-circle.png" />
             <BitmapImage x:Key="WarnIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FugueIcons/exclamation-diamond.png" />
             <BitmapImage x:Key="InfoIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FugueIcons/information.png" />
@@ -34,10 +34,10 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Canvas Grid.RowSpan="4" ClipToBounds="False" HorizontalAlignment="Right"
+        <Canvas Grid.RowSpan="4" HorizontalAlignment="Right"
                 Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=ActualWidth}"
                 Height="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=ActualHeight}">
-            <Image RenderOptions.BitmapScalingMode="HighQuality" Source="{DynamicResource FaintDucky}" Stretch="None">
+            <Image Source="{DynamicResource BackgroundDucky}" Stretch="None">
                 <Image.RenderTransform>
                     <TransformGroup>
                         <TranslateTransform X="-384" />
