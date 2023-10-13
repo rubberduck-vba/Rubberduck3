@@ -56,12 +56,12 @@ namespace Rubberduck
         private Process? _telemetryServerProcess;
         private NamedPipeClientStream? _telemetryServerPipeStream;
         private LanguageClient? _telemetryClient;
-        private IDisposable _telemetryClientInitializeTask;
+        private IDisposable? _telemetryClientInitializeTask;
 
         private Process? _updateServerProcess;
         private NamedPipeClientStream? _updateServerPipeStream;
         private LanguageClient? _updateClient;
-        private IDisposable _updateClientInitializeTask;
+        private IDisposable? _updateClientInitializeTask;
 
         internal RubberduckAddIn(IDTExtensibility2 extAddin, IVBE vbeWrapper, IAddIn addinWrapper)
         {
@@ -245,10 +245,17 @@ namespace Rubberduck
                     await StartTelemetryClientAsync(clientProcessId, projectPath, _initialSettings.TelemetryServerSettings);
                 }
 
-                splashService.UpdateStatus("Initializing language server protocol...");
-                _languageClientInitializeTask = _languageClient.Initialize(_tokenSource.Token);
+                //splashService.UpdateStatus("Initializing language server protocol...");
 
-                splashService.UpdateStatus("Connection established.");
+                //if (_languageClient is not null)
+                //{
+                //    _languageClientInitializeTask = _languageClient.Initialize(_tokenSource.Token);
+                //    splashService.UpdateStatus("Connection established.");
+                //}
+                //else
+                //{
+                //    throw new InvalidOperationException("Language client could be initialized.");
+                //}
                 _isInitialized = true;
             }
             catch (Exception exception)
@@ -358,10 +365,19 @@ namespace Rubberduck
             }
 
             _logger.LogInformation("Rubberduck is shutting down...");
-            RunShutdownAction("Sending LSP shutdown notification...", () =>
+            RunShutdownAction("Sending LSP shutdown notification (language server)...", () =>
             {
                 _languageClient?.SendShutdown(new ShutdownParams());
             });
+            RunShutdownAction("Sending LSP shutdown notification (update server)...", () =>
+            {
+                _updateClient?.SendShutdown(new ShutdownParams());
+            });
+            RunShutdownAction("Sending LSP shutdown notification (telemetry server)...", () =>
+            {
+                _telemetryClient?.SendShutdown(new ShutdownParams());
+            });
+
             RunShutdownAction("Terminating VbeProvider...", () =>
             {
                 VbeProvider.Terminate();
@@ -378,27 +394,57 @@ namespace Rubberduck
                 _app?.Shutdown();
                 _app = null!;
             });
-            RunShutdownAction("Sending LSP exit notification...", () =>
+
+            RunShutdownAction("Sending LSP exit notification (language server)...", () =>
             {
                 _languageClient?.SendExit();
             });
+            RunShutdownAction("Sending LSP exit notification (update server)...", () =>
+            {
+                _updateClient?.SendExit();
+            });
+            RunShutdownAction("Sending LSP exit notification (telemetry server)...", () =>
+            {
+                _telemetryClient?.SendExit();
+            });
+
             RunShutdownAction("Disposing service scope...", () =>
             {
                 _serviceScope?.Dispose();
                 _serviceScope = null!;
             });
-            RunShutdownAction("Disposing pipe stream...", () =>
+
+            RunShutdownAction("Disposing pipe stream (language server)...", () =>
             {
                 _languageServerPipeStream?.Dispose();
                 _languageServerPipeStream = null!;
             });
-            RunShutdownAction("Disposing language client...", () =>
+            RunShutdownAction("Disposing pipe stream (update server)...", () =>
+            {
+                _updateServerPipeStream?.Dispose();
+                _updateServerPipeStream = null!;
+            });
+            RunShutdownAction("Disposing pipe stream (telemetry server)...", () =>
+            {
+                _telemetryServerPipeStream?.Dispose();
+                _telemetryServerPipeStream = null!;
+            });
+
+            RunShutdownAction("Disposing LSP clients...", () =>
             {
                 _languageClientInitializeTask?.Dispose();
                 _languageClient?.Dispose();
+
+                _updateClientInitializeTask?.Dispose();
+                _updateClient?.Dispose();
+
+                _telemetryClientInitializeTask?.Dispose();
+                _telemetryClient?.Dispose();
+
                 _tokenSource?.Cancel();
             });
-            RunShutdownAction("Disposing language server process...", () =>
+
+            RunShutdownAction("Disposing server process (language server)...", () =>
             {
                 if (_languageServerProcess != null)
                 {
@@ -419,6 +465,48 @@ namespace Rubberduck
                     _languageServerProcess = null!;
                 }
             });
+            RunShutdownAction("Disposing server process (update server)...", () =>
+            {
+                if (_updateServerProcess != null)
+                {
+                    if (!_updateServerProcess.HasExited)
+                    {
+                        _updateServerProcess.WaitForExit(TimeSpan.FromMilliseconds(200));
+                    }
+
+                    if (_updateServerProcess.HasExited)
+                    {
+                        _logger.LogTrace("Update server process exit code: {code}. Exit time: {exitTime}", _updateServerProcess.ExitCode, _updateServerProcess.ExitTime);
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Update server process did not exit after 20ms. Review server logs for possible anomalies.");
+                    }
+                    _updateServerProcess.Dispose();
+                    _updateServerProcess = null!;
+                }
+            });
+            RunShutdownAction("Disposing server process (telemetry server)...", () =>
+            {
+                if (_telemetryServerProcess != null)
+                {
+                    if (!_telemetryServerProcess.HasExited)
+                    {
+                        _telemetryServerProcess.WaitForExit(TimeSpan.FromMilliseconds(200));
+                    }
+
+                    if (_telemetryServerProcess.HasExited)
+                    {
+                        _logger.LogTrace("Telemetry server process exit code: {code}. Exit time: {exitTime}", _telemetryServerProcess.ExitCode, _telemetryServerProcess.ExitTime);
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Telemetry server process did not exit after 20ms. Review server logs for possible anomalies.");
+                    }
+                    _telemetryServerProcess.Dispose();
+                    _telemetryServerProcess = null!;
+                }
+            });
             RunShutdownAction("Disposing COM safe...", () =>
             {
                 ComSafeManager.DisposeAndResetComSafe();
@@ -429,6 +517,11 @@ namespace Rubberduck
             {
                 AppDomain.CurrentDomain.AssemblyResolve -= LoadFromSameFolder;
                 AppDomain.CurrentDomain.UnhandledException -= HandleAppDomainException;
+            });
+
+            RunShutdownAction("Shutting down Windows application....", () =>
+            {
+                _application?.Shutdown();
             });
 
             _isInitialized = false;

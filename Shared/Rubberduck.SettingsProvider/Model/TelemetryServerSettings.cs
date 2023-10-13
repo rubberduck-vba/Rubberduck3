@@ -8,11 +8,10 @@ using System.Text;
 
 namespace Rubberduck.SettingsProvider.Model
 {
-    public readonly struct TelemetryServerSettings :
+    public readonly record struct TelemetryServerSettings :
         IProcessStartInfoArgumentProvider,
         IHealthCheckSettingsProvider,
         IDefaultSettingsProvider<TelemetryServerSettings>
-        //IEquatable<TelemetryServerSettings>
     {
         public static TelemetryServerSettings Default => new()
         {
@@ -137,10 +136,5 @@ namespace Rubberduck.SettingsProvider.Model
         public Dictionary<string, ExceptionTelemetrySetting> ExceptionTelemetryConfig { get; init; }
         public Dictionary<string, MetricTelemetrySetting> MetricTelemetryConfig { get; init; }
         public Dictionary<string, TraceTelemetrySetting> TraceTelemetryConfig { get; init; }
-
-        //public bool Equals(TelemetryServerSettings other)
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }

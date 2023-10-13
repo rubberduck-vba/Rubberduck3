@@ -28,14 +28,14 @@ namespace Rubberduck.UI.RubberduckEditor.TextTransform
 
         public TextMarker(TextMarkerService service, int startOffset, int length)
         {
-            _service = service ?? throw new ArgumentNullException("service");
+            _service = service ?? throw new ArgumentNullException(nameof(service));
             _markerTypes = TextMarkerTypes.None;
 
             StartOffset = startOffset;
             Length = length;
         }
 
-        public event EventHandler Deleted;
+        public event EventHandler Deleted = delegate { };
 
         public bool IsDeleted
         {
@@ -117,7 +117,7 @@ namespace Rubberduck.UI.RubberduckEditor.TextTransform
             }
         }
 
-        public object Tag { get; set; }
+        public object? Tag { get; set; }
 
         private TextMarkerTypes _markerTypes;
 
@@ -149,6 +149,6 @@ namespace Rubberduck.UI.RubberduckEditor.TextTransform
             }
         }
 
-        public object ToolTip { get; set; }
+        public object? ToolTip { get; set; }
     }
 }

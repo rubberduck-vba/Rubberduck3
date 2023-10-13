@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Rubberduck.SettingsProvider.Model
@@ -33,40 +34,45 @@ namespace Rubberduck.SettingsProvider.Model
 
     public interface IProcessStartInfoArgumentProvider
     {
+        public ServerTraceLevel TraceLevel { get; init; }
+
         string Path { get; }
         string ToProcessStartInfoArguments(long clientProcessId);
     }
 
-    public readonly struct LanguageServerSettings : 
-        IProcessStartInfoArgumentProvider, 
-        IHealthCheckSettingsProvider,
-        IDefaultSettingsProvider<LanguageServerSettings>, 
-        IEquatable<LanguageServerSettings>
+    public readonly record struct LanguageClientSettings : IDefaultSettingsProvider<LanguageClientSettings>
     {
-        public static LanguageServerSettings Default { get; } = new LanguageServerSettings
+        public static LanguageClientSettings Default { get; } = new();
+
+        public string[] DisabledMessageKeys { get; init; }
+
+        LanguageClientSettings IDefaultSettingsProvider<LanguageClientSettings>.Default => LanguageClientSettings.Default;
+    }
+
+    public readonly record struct LanguageServerSettings :
+        IDefaultSettingsProvider<LanguageServerSettings>,
+        IHealthCheckSettingsProvider,
+        IProcessStartInfoArgumentProvider
+    {
+        public static LanguageServerSettings Default { get; } = new()
         {
+            Path = "",
             TransportType = TransportType.StdIO,
-            TraceLevel = ServerTraceLevel.Verbose,
             Mode = MessageMode.Message,
-            PipeName = "Rubberduck.LanguageServer.Pipe",
-#if DEBUG
-            Path = @"",
-#else
-            Path = @"",
-#endif
+            PipeName = ServerPlatformSettings.LanguageServerDefaultPipeName,
+
+            TraceLevel = ServerTraceLevel.Verbose,
             ClientHealthCheckInterval = TimeSpan.FromSeconds(10),
         };
 
         LanguageServerSettings IDefaultSettingsProvider<LanguageServerSettings>.Default => LanguageServerSettings.Default;
 
         public string Path { get; init; }
-
         public TransportType TransportType { get; init; }
         public string PipeName { get; init; }
         public MessageMode Mode { get; init; }
 
         public ServerTraceLevel TraceLevel { get; init; }
-
         public TimeSpan ClientHealthCheckInterval { get; init; }
 
         public string ToProcessStartInfoArguments(long clientProcessId)
@@ -77,7 +83,7 @@ namespace Rubberduck.SettingsProvider.Model
             {
                 case TransportType.Pipe:
                     builder.Append($" Pipe --mode {Mode}");
-                    
+
                     // NOTE: server will use LanguageServerSettings.Default.PipeName without a --name argument.
                     if (!string.IsNullOrWhiteSpace(PipeName))
                     {
@@ -105,39 +111,6 @@ namespace Rubberduck.SettingsProvider.Model
             builder.Append($" --client {clientProcessId}");
 
             return builder.ToString();
-        }
-
-        public bool Equals(LanguageServerSettings other)
-        {
-            return other.TraceLevel == TraceLevel
-                && other.TransportType == TransportType
-                && other.Mode == Mode
-                && string.Equals(other.PipeName, PipeName, StringComparison.InvariantCultureIgnoreCase)
-                && string.Equals(other.Path, Path, StringComparison.InvariantCultureIgnoreCase);
-        }
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is null || obj.GetType() != GetType())
-            {
-                return false;
-            }
-            return Equals((LanguageServerSettings)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(TraceLevel, TransportType, Mode, PipeName.ToLowerInvariant(), Path.ToLowerInvariant());
-        }
-
-        public static bool operator ==(LanguageServerSettings left, LanguageServerSettings right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(LanguageServerSettings left, LanguageServerSettings right)
-        {
-            return !(left == right);
         }
     }
 }

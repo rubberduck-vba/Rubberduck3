@@ -14,13 +14,13 @@ namespace Rubberduck.UI.Xaml.Controls
         //    Content = memberInfo.Name; // TODO make a nice XAML control for this
         //}
 
-        public ImageSource Image { get; }
+        public ImageSource? Image { get; }
 
-        public string Text { get; }
+        public string? Text { get; }
 
-        public object Content { get; }
+        public object? Content { get; }
 
-        public object Description { get; }
+        public object? Description { get; }
 
         public double Priority { get; }
 

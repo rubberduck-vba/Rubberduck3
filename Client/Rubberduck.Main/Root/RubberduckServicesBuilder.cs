@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using Rubberduck.Common;
-using Rubberduck.Common.Hotkeys;
 using Rubberduck.Core;
 using Rubberduck.Core.About;
 using Rubberduck.Core.Editor;
@@ -161,8 +160,6 @@ namespace Rubberduck.Root
             #region still needed?
             _services.AddScoped<IUiDispatcher, UiDispatcher>();
             _services.AddScoped<IUiContextProvider>(provider => UiContextProvider.Instance());
-            _services.AddScoped<IRubberduckHooks, RubberduckHooks>();
-            _services.AddScoped<HotkeyFactory>();
             #endregion
 
             return this;

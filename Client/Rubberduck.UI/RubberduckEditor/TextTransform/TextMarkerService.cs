@@ -29,12 +29,12 @@ namespace Rubberduck.UI.RubberduckEditor.TextTransform
 {
     public class TextMarkerService : DocumentColorizingTransformer, IBackgroundRenderer, ITextMarkerService, ITextViewConnect
     {
-        private readonly TextSegmentCollection<TextMarker> _markers = new TextSegmentCollection<TextMarker>();
-        private readonly HashSet<(int startOffset, int length)> _markerPositions = new HashSet<(int startOffset, int length)>();
-        private readonly List<TextView> _textViews = new List<TextView>();
+        private readonly TextSegmentCollection<TextMarker> _markers = new();
+        private readonly HashSet<(int startOffset, int length)> _markerPositions = new();
+        private readonly List<TextView> _textViews = new();
         private readonly TextDocument _document;
 
-        public event EventHandler RedrawRequested;
+        public event EventHandler RedrawRequested = delegate { };
 
         public TextMarkerService(TextDocument document)
         {
@@ -62,7 +62,7 @@ namespace Rubberduck.UI.RubberduckEditor.TextTransform
                 return marker;
             }
 
-            return null;
+            return null!;
         }
 
         public IEnumerable<ITextMarker> GetMarkersAtOffset(int offset)
@@ -122,7 +122,7 @@ namespace Rubberduck.UI.RubberduckEditor.TextTransform
 
             foreach (var marker in _markers.FindOverlappingSegments(lineStart, line.Length))
             {
-                Brush foregroundBrush = null;
+                Brush foregroundBrush = null!;
                 if (marker.ForegroundColor != null)
                 {
                     foregroundBrush = new SolidColorBrush(marker.ForegroundColor.Value);
@@ -168,9 +168,11 @@ namespace Rubberduck.UI.RubberduckEditor.TextTransform
             {
                 if (marker.BackgroundColor != null)
                 {
-                    var geoBuilder = new BackgroundGeometryBuilder();
-                    geoBuilder.AlignToWholePixels = true;
-                    geoBuilder.CornerRadius = 3;
+                    var geoBuilder = new BackgroundGeometryBuilder
+                    {
+                        AlignToWholePixels = true,
+                        CornerRadius = 3
+                    };
                     geoBuilder.AddSegment(textView, marker);
                     
                     var geo = geoBuilder.CreateGeometry();
@@ -219,8 +221,10 @@ namespace Rubberduck.UI.RubberduckEditor.TextTransform
                         }
                         if ((marker.MarkerTypes & TextMarkerTypes.DottedUnderline) != 0)
                         {
-                            var markerPen = new Pen(markerBrush, 0.5);
-                            markerPen.DashStyle = DashStyles.Dash;
+                            var markerPen = new Pen(markerBrush, 0.5)
+                            {
+                                DashStyle = DashStyles.Dash
+                            };
                             markerPen.Freeze();
                             drawingContext.DrawLine(markerPen, startPoint, endPoint);
                         }
@@ -229,7 +233,7 @@ namespace Rubberduck.UI.RubberduckEditor.TextTransform
             }
         }
 
-        private IEnumerable<Point> CreatePoints(Point start, Point end, double offset, int count)
+        private static IEnumerable<Point> CreatePoints(Point start, Point end, double offset, int count)
         {
             for (var i = 0; i < count; i++)
             {

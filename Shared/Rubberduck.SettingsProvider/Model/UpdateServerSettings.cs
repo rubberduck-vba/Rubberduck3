@@ -4,11 +4,10 @@ using System.Text;
 
 namespace Rubberduck.SettingsProvider.Model
 {
-    public readonly struct UpdateServerSettings : 
+    public readonly record struct UpdateServerSettings : 
         IProcessStartInfoArgumentProvider, 
         IHealthCheckSettingsProvider,
-        IDefaultSettingsProvider<UpdateServerSettings>, 
-        IEquatable<UpdateServerSettings>
+        IDefaultSettingsProvider<UpdateServerSettings>
     {
         public static UpdateServerSettings Default { get; } = new UpdateServerSettings
         {
@@ -79,28 +78,6 @@ namespace Rubberduck.SettingsProvider.Model
             builder.Append($" --client {clientProcessId}");
 
             return builder.ToString();
-        }
-
-        public bool Equals(UpdateServerSettings other)
-        {
-            return IsEnabled == other.IsEnabled
-                && IncludePreReleases == other.IncludePreReleases
-                && string.Equals(RubberduckWebApiBaseUrl, other.RubberduckWebApiBaseUrl, StringComparison.InvariantCultureIgnoreCase)
-                && string.Equals(Path, other.Path, StringComparison.InvariantCultureIgnoreCase);
-        }
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is null || obj.GetType() != GetType())
-            {
-                return false;
-            }
-            return Equals((UpdateServerSettings)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(IsEnabled, IncludePreReleases, RubberduckWebApiBaseUrl.ToLowerInvariant(), Path.ToLowerInvariant());
         }
     }
 }

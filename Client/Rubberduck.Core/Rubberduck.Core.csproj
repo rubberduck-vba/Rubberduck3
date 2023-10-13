@@ -21,13 +21,6 @@
     <InternalsVisibleTo Include="Rubberduck.Tests" />
   </ItemGroup>
   <ItemGroup>
-    <!-- TODO remove Settings.settings -->
-    <None Include="Properties\Settings.settings">
-      <Generator>PublicSettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />

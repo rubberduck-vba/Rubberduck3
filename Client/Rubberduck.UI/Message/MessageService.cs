@@ -6,24 +6,33 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Xaml.Message;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.UI.Message
 {
+    public class MessageActionResult
+    {
+        public static MessageActionResult Undefined { get; } = new MessageActionResult
+        {
+            IsEnabled = true,
+            MessageAction = MessageAction.Undefined,
+        };
+
+        /// <summary>
+        /// Represents the action (button) selected by the user.
+        /// </summary>
+        public MessageAction MessageAction { get; init; } = MessageAction.Undefined;
+
+        /// <summary>
+        /// <c>false</c> if the user has checked a <em>do not show this message again</em> checkbox.
+        /// </summary>
+        public bool IsEnabled { get; init; } = true;
+    }
+
     public interface IMessageService
     {
-        void ShowMessage(string key, string message, string title, string? verbose = default);
-        void ShowWarning(string key, string message, string title, string? verbose = default);
-        void ShowError(string key, string message, string title, string? verbose = default);
-
-        MessageAction ConfirmMessage(string key, string message, string title, string? verbose = default);
-        MessageAction ConfirmWarning(string key, string message, string title, string? verbose = default);
-        MessageAction ConfirmError(string key, string message, string title, string? verbose = default);
-
-        MessageAction Show(LogLevel level, string key, string message, string title, string? verbose = default, params MessageAction[] actions);
+        MessageActionResult ShowMessageRequest(MessageRequestModel model);
+        MessageActionResult ShowMessage(MessageModel model);
     }
 
     public class MessageService : IMessageService
@@ -37,68 +46,88 @@ namespace Rubberduck.UI.Message
             _logger = logger;
         }
 
-        public MessageAction ConfirmError(string key, string message, string title, string? verbose = null)
-            => Show(LogLevel.Error, key, message, title, verbose, MessageAction.AcceptAction, MessageAction.CancelAction);
-
-        public MessageAction ConfirmMessage(string key, string message, string title, string? verbose = null)
-            => Show(LogLevel.Information, key, message, title, verbose, MessageAction.AcceptAction, MessageAction.CancelAction);
-
-        public MessageAction ConfirmWarning(string key, string message, string title, string? verbose = null)
-            => Show(LogLevel.Warning, key, message, title, verbose, MessageAction.AcceptAction, MessageAction.CancelAction);
-
-        public MessageAction Show(LogLevel level, string key, string message, string title, string? verbose = null, params MessageAction[] actions)
+        public MessageActionResult ShowMessageRequest(MessageRequestModel model)
         {
             var trace = _settings.Settings.LanguageServerSettings.TraceLevel.ToTraceLevel();
-            var model = new MessageWindowViewModel
+            var viewModel = new MessageWindowViewModel(model);
+
+            if (CanShowMessageKey(viewModel.Key))
             {
-                Title = title,
-                Key = key,
-                Message = message,
-                Verbose = verbose,
-                DoNotShowAgain = false,
-                Actions = actions,
-                SelectedAction = actions?.FirstOrDefault(e => e.IsDefaultAction)
-            };
-            if (CanShowMessageKey(key))
-            {
-                var view = new MessageWindow(model);
+                var view = new MessageWindow(viewModel);
                 view.ShowDialog();
 
-                _logger.LogTrace(trace, "User has closed the message window.", $"Selected action: {model.SelectedAction.ResourceKey}");
-                return model.SelectedAction;
+                var selection = viewModel.SelectedAction;
+                if (selection is not null)
+                {
+                    _logger.LogTrace(trace, "User has closed the message window.", $"Selected action: {selection.Value.ResourceKey}");
+                    return new MessageActionResult { MessageAction = selection.Value, IsEnabled = viewModel.DoNotShowAgain };
+                }
+
+                _logger.LogWarning(trace, "User has closed the message window, but no message action was set. This is likely a bug.");
             }
             else
             {
-                _logger.LogTrace(trace, "Message key was blocked by the user; message will not be shown.", $"Key: {key} ({level})");
-                return model.SelectedAction;
+                _logger.LogTrace(trace, "Message key was disabled by the user; message will not be shown.", $"Key: {viewModel.Key} ({viewModel.Level})");
             }
+
+            return new MessageActionResult { MessageAction = MessageAction.Undefined, IsEnabled = viewModel.DoNotShowAgain };
         }
 
-        public void ShowError(string key, string message, string title, string? verbose = null)
-            => Show(LogLevel.Error, key, message, title, verbose, MessageAction.CloseAction);
+        public MessageActionResult ShowMessage(MessageModel model)
+        {
+            var trace = _settings.Settings.LanguageServerSettings.TraceLevel.ToTraceLevel();
+            var viewModel = new MessageWindowViewModel(model);
 
-        public void ShowMessage(string key, string message, string title, string? verbose = null)
-            => Show(LogLevel.Information, key, message, title, verbose, MessageAction.CloseAction);
+            if (CanShowMessageKey(viewModel.Key))
+            {
+                var view = new MessageWindow(viewModel);
+                view.ShowDialog();
 
-        public void ShowWarning(string key, string message, string title, string? verbose = null)
-            => Show(LogLevel.Warning, key, message, title, verbose, MessageAction.CloseAction);
+                var selection = viewModel.SelectedAction;
+                if (selection is not null)
+                {
+                    _logger.LogTrace(trace, "User has closed the message window.", $"Selected action: {selection.Value.ResourceKey}");
+                    return new MessageActionResult { MessageAction = selection.Value, IsEnabled = viewModel.DoNotShowAgain };
+                }
 
-        private bool CanShowMessageKey(string key) => !_settings.Settings.SkippedMessageKeys.Contains(key);
+                _logger.LogWarning(trace, "User has closed the message window, but no message action was set. This is likely a bug.");
+            }
+            else
+            {
+                _logger.LogTrace(trace, "Message key was disabled by the user; message will not be shown.", $"Key: {viewModel.Key} ({viewModel.Level})");
+            }
+
+            return new MessageActionResult { MessageAction = MessageAction.Undefined, IsEnabled = viewModel.DoNotShowAgain };
+        }
+
+        private bool CanShowMessageKey(string key) => _settings.Settings.LanguageClientSettings.DisabledMessageKeys.Contains(key);
     }
 
     public class MessageWindowViewModel : ViewModelBase, IMessageWindowViewModel
     {
-        public string Key { get; set; }
+        public static MessageAction[] ActionCloseOnly { get; } = new[] { MessageAction.CloseAction };
+        public static MessageAction[] ActionAcceptCancel { get; } = new[] { MessageAction.AcceptAction, MessageAction.CancelAction };
 
-        public string Title { get; set; }
-        public string Message { get; set; }
-        public string Verbose { get; set; }
+        public MessageWindowViewModel(MessageModel model)
+        {
+            Key = model.Key;
+            Message = model.Message;
+            Verbose = model.Verbose;
+            Title = model.Title;
+            Level = model.Level;
+        }
 
-        private MessageAction[] _actions;
+        public string Key { get; init; }
+        public string Message { get; init; }
+        public string? Verbose { get; init; }
+        public string Title { get; init; }
+        public LogLevel Level { get; init; }
+
+        private MessageAction[] _actions = ActionCloseOnly;
         public MessageAction[] Actions 
         { 
             get => _actions;
-            set
+            init
             {
                 if (_actions != value )
                 {
@@ -106,7 +135,7 @@ namespace Rubberduck.UI.Message
                     OnPropertyChanged();
                     if (_actions?.Length > 0)
                     {
-                        SelectedAction = _actions.FirstOrDefault(e => e.IsDefaultAction) ?? _actions.First();
+                        SelectedAction = _actions.First(e => e.IsDefaultAction);
                     }
                     else
                     {
@@ -116,7 +145,8 @@ namespace Rubberduck.UI.Message
             }
         }
 
-        private MessageAction _action;
+        private MessageAction? _action;
+
         public MessageAction? SelectedAction
         {
             get => _action;

@@ -1,63 +1,91 @@
 ﻿using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Window;
+using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model;
-using Rubberduck.Resources;
+using Rubberduck.ClientPlatform.Extensions;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Message;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
 
 namespace Rubberduck.Client.Handlers
 {
     public class ShowMessageRequestHandler : ShowMessageRequestHandlerBase
     {
         private readonly ILogger<ShowMessageRequestHandler> _logger;
-        //private readonly IMessageService _service;
-        private readonly ISettingsProvider<LanguageServerSettings> _settingsProvider;
+        private readonly IMessageService _service;
+        private readonly ISettingsProvider<RubberduckSettings> _settingsProvider;
 
-        TraceLevel TraceLevel => _settingsProvider.Settings.TraceLevel.ToTraceLevel();
+        TraceLevel TraceLevel => _settingsProvider.Settings.LanguageServerSettings.TraceLevel.ToTraceLevel();
 
         public ShowMessageRequestHandler(ILogger<ShowMessageRequestHandler> logger, 
-            //IMessageService service, 
-            ISettingsProvider<LanguageServerSettings> settingsProvider)
+            IMessageService service, 
+            ISettingsProvider<RubberduckSettings> settingsProvider)
         {
             _logger = logger;
-            //_service = service;
+            _service = service;
             _settingsProvider = settingsProvider;
         }
+
+        private static readonly IDictionary<MessageType, LogLevel> _typeMap = new Dictionary<MessageType, LogLevel>
+        {
+            [MessageType.Info] = LogLevel.Information,
+            [MessageType.Warning] = LogLevel.Warning,
+            [MessageType.Error] = LogLevel.Error
+        };
 
         public override async Task<MessageActionItem> Handle(ShowMessageRequestParams request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             _logger.LogInformation(TraceLevel, "Handling ShowMessageRequest request.", $"[{request.Type}] {request.Message}");
 
-            // TODO map request actions to buttons, map result to selected action item...
-
-            bool confirmed = false;
-            switch (request.Type)
+            var result = MessageActionResult.Undefined;
+            if (_typeMap.TryGetValue(request.Type, out var level))
             {
-                case MessageType.Error:
-                case MessageType.Warning:
-                    //confirmed = _service.Show(LogLevel.Error, request.Message, request.Message, RubberduckUI.Rubberduck);
-                    break;
-                case MessageType.Info:
-                case MessageType.Log:
-                    //confirmed = _service.Show(LogLevel.Information, request.Message, request.Message, RubberduckUI.Rubberduck, actions:request.Actions);
-                    break;
+                if (TimedAction.TryRun(() =>
+                {
+                    var actions = request.Actions?.Select(e => e.ToMessageAction()).ToArray();
+                    if (actions is null)
+                    {
+                        _logger.LogWarning(TraceLevel, "ShowMessageRequestParams did not include any message actions; using default Accept/Cancel actions. This is likely a bug.");
+                        actions = new[] { MessageAction.AcceptAction, MessageAction.CancelAction };
+                    }
+
+                    var model = MessageRequestModel.For(level, request.Message, actions);
+                    if (!_settingsProvider.Settings.LanguageClientSettings.DisabledMessageKeys.Contains(model.Key))
+                    {
+                        result = _service.ShowMessageRequest(model);
+    
+                        if (!result.IsEnabled)
+                        {
+                            // TODO update settings
+                            //_settingsProvider.Settings.LanguageClientSettings.DisabledMessageKeys.Add(model.Key);
+                        }
+                    }
+
+                }, out var elapsed, out var exception))
+                {
+                    _logger.LogPerformance(TraceLevel, "ShowMessage request completed.", elapsed);
+                }
+                else if (exception is not null)
+                {
+                    _logger.LogError(TraceLevel, exception);
+                }
+            }
+            else
+            {
+                // MessageType.Log does not pop a message box, but should appear in a server trace toolwindow.
+                _logger.LogInformation(TraceLevel, request.Message);
             }
 
-            var response = new MessageActionItem
-            {
-                Title = confirmed ? "ok" : "cancel"
-            };
-
-            cancellationToken.ThrowIfCancellationRequested();
-            return await Task.FromResult(response);
+            return await Task.FromResult(result.ToMessageActionItem(request));
         }
     }
 }

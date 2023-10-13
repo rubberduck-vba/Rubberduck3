@@ -12,11 +12,6 @@
         public const string TelemetryServerExecutable = "Rubberduck.TelemetryServer.exe";
         public const string UpdateServerExecutable = "Rubberduck.UpdateServer.exe";
 
-        public const string DatabaseServerPipeName = @"\\.\Rubberduck.DatabaseServer\RPC";
-        public const string LanguageServerPipeName = @"\\.\Rubberduck.LanguageServer\RPC";
-        public const string TelemetryServerPipeName = @"\\.\Rubberduck.TelemetryServer\RPC";
-        public const string UpdateServerPipeName = @"\\.\Rubberduck.UpdateServer\RPC";
-
         public const string DatabaseServerName = "Rubberduck.DatabaseServer";
         public const string LanguageServerName = "Rubberduck.LanguageServer";
         public const string TelemetryServerName = "Rubberduck.TelemetryServer";

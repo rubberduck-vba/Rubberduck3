@@ -6,9 +6,9 @@ namespace Rubberduck.InternalApi.Model.Abstract
     {
         string Title { get; }
         string Message { get; }
-        string Verbose { get; }
+        string? Verbose { get; }
 
         MessageAction[] Actions { get; }
-        MessageAction SelectedAction { get; set; }
+        MessageAction? SelectedAction { get; set; }
     }
 }

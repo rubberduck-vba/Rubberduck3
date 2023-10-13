@@ -9,7 +9,7 @@ namespace Rubberduck.UI.RubberduckEditor.Proto
             Shell = shell;
         }
 
-        public static EditorShellContext Current { get; set; }
+        public static EditorShellContext? Current { get; set; }
         public IEditorShellViewModel Shell { get; set; }
     }
 }

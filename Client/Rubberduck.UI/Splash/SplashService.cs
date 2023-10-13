@@ -20,6 +20,6 @@ namespace Rubberduck.UI.Splash
         public void UpdateStatus(string status) => Model.UpdateStatus(status);
 
         public bool CanShowSplash => _settings.Settings.ShowSplash;
-        protected override SplashWindow CreateWindow(ISplashViewModel model) => new SplashWindow(model);
+        protected override SplashWindow CreateWindow(ISplashViewModel model) => new(model);
     }
 }

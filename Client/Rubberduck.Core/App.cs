@@ -20,7 +20,6 @@ namespace Rubberduck.Core
 {
     public sealed class App : IDisposable
     {
-        private static readonly string _title = "Rubberduck";
         private readonly Version _version;
 
         private readonly IPresenter _presenter;
@@ -81,9 +80,9 @@ namespace Rubberduck.Core
                     _filesystem.Directory.CreateDirectory(ApplicationConstants.LOG_FOLDER_PATH);
                 }
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                _messageBox.ShowError(nameof(EnsureLogFolderPathExists), e.Message, _title, e.ToString());
+                _messageBox.ShowMessage(MessageModel.For(exception));
             }
         }
 
@@ -188,7 +187,7 @@ namespace Rubberduck.Core
             {
                 _logger.LogError(exception, "Error Setting Culture for Rubberduck");
                 // not accessing resources here, because setting resource culture literally just failed.
-                _messageBox.ShowWarning(nameof(ApplyCultureConfig), exception.Message, RubberduckUI.Rubberduck, exception.ToString());
+                _messageBox.ShowMessage(MessageModel.For(exception));
 
                 var vm = new RubberduckSettingsViewModel(currentSettings)
                 {
@@ -219,21 +218,29 @@ namespace Rubberduck.Core
             }
         }
 
+        /*
         private void CheckForLegacyIndenterSettings()
         {
             try
             {
                 var currentSettings = _settingsService.Settings;
                 _logger.LogTrace("Checking for legacy Smart Indenter settings.");
-                if (currentSettings.IsSmartIndenterPrompted /*||
-                    !_config.UserSettings.IndenterSettings.LegacySettingsExist()*/)
+                if (currentSettings.IsSmartIndenterPrompted ||
+                    !_config.UserSettings.IndenterSettings.LegacySettingsExist())
                 {
                     return;
                 }
-                if (_messageBox.ConfirmMessage(nameof(CheckForLegacyIndenterSettings), Resources.RubberduckUI.SmartIndenter_LegacySettingPrompt, RubberduckUI.Rubberduck) == MessageAction.AcceptAction)
+
+                var action = _messageBox.ShowMessageRequest(MessageRequestModel.For(LogLevel.Information, RubberduckUI.SmartIndenter_LegacySettingPrompt, new[] { MessageAction.AcceptAction, MessageAction.CancelAction }));
+                if (action.MessageAction == MessageAction.AcceptAction)
                 {
                     _logger.LogTrace("Attempting to load legacy Smart Indenter settings.");
                     //_config.UserSettings.IndenterSettings.LoadLegacyFromRegistry();
+                }
+
+                if (!action.IsEnabled)
+                {
+                    // TODO disable this message key
                 }
 
                 var vm = new RubberduckSettingsViewModel(currentSettings)
@@ -243,11 +250,12 @@ namespace Rubberduck.Core
 
                 _settingsService.Write(vm.ToSettings());
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                _messageBox.ShowError(nameof(CheckForLegacyIndenterSettings),"The operation failed.", RubberduckUI.Rubberduck, e.ToString());
+                _messageBox.ShowMessage(MessageModel.For(exception));
             }
         }
+        */
 
         public void LogRubberduckStart(Version version)
         {

@@ -22,12 +22,12 @@ namespace Rubberduck.VBEditor.Utility
         {
             if (!_fileSystem.File.Exists(filename))
             {
-                return null;
+                return null!;
             }
 
             if (!SupportedExtensions.Contains(_fileSystem.Path.GetExtension(filename)))
             {
-                return null;
+                return null!;
             }
 
             var contents = _fileSystem.File.ReadLines(filename, Encoding.Default);

@@ -11,7 +11,6 @@
     <Platforms>AnyCPU</Platforms>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <UseWPF>true</UseWPF>
-    <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
 
     <EnableComHosting>true</EnableComHosting>
