@@ -1,21 +1,14 @@
 ﻿//using IndenterSettings = Rubberduck.SmartIndenter.IndenterSettings;
-using Dragablz;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using Rubberduck.Common;
 using Rubberduck.Core;
-using Rubberduck.Core.About;
 using Rubberduck.Core.Editor;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.InternalApi.Model.Abstract;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
-using Rubberduck.UI;
-using Rubberduck.UI.Message;
-using Rubberduck.UI.RubberduckEditor;
-using Rubberduck.UI.Splash;
-using Rubberduck.UI.Xaml.Shell;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
@@ -51,9 +44,6 @@ namespace Rubberduck.Root
             
             _services.AddScoped<IProjectsRepository>(provider => new ProjectsRepository(vbe, provider.GetRequiredService<ILogger<ProjectsRepository>>()));
             _services.AddScoped<IProjectsProvider>(provider => provider.GetRequiredService<IProjectsRepository>());
-
-            _services.AddScoped<ISplashViewModel, SplashViewModel>();
-            _services.AddScoped<SplashService>();
             return this;
         }
 
@@ -88,8 +78,8 @@ namespace Rubberduck.Root
             _services.AddSingleton(ConfigureRubberduckParentMenu);
             _services.AddScoped<RubberduckParentMenu>();
 
-            _services.AddScoped<IAboutCommand, AboutCommand>();
-            _services.AddScoped<AboutCommandMenuItem>();
+            //_services.AddScoped<IAboutCommand, AboutCommand>();
+            //_services.AddScoped<AboutCommandMenuItem>();
 
             //_services.AddScoped<IShowEditorShellCommand, ShowEditorShellCommand>();
             _services.AddScoped<ShowEditorShellCommandMenuItem>();
@@ -104,8 +94,8 @@ namespace Rubberduck.Root
 
             var location = addin.CommandBarLocations[CommandBarSite.MenuBar];
             var builder = new CommandBarMenuBuilder<RubberduckParentMenu>(location, services, MainCommandBarControls(vbe, location.ParentId))
-                .WithCommandMenuItem<AboutCommandMenuItem>()
-                .WithSeparator()
+                //.WithCommandMenuItem<AboutCommandMenuItem>()
+                //.WithSeparator()
                 .WithCommandMenuItem<ShowEditorShellCommandMenuItem>();
 
             return builder.Build();
@@ -124,12 +114,7 @@ namespace Rubberduck.Root
 
         public RubberduckServicesBuilder WithRubberduckEditor()
         {
-            //_services.AddScoped<IPresenter, EditorShellWindowPresenter>();
-            _services.AddScoped<ShellWindowViewModel>();
-            _services.AddScoped<IInterTabClient, ShellInterTabClient>();
-
-            //_services.AddScoped<IEditorShellViewModel, EditorShellViewModel>();
-            //_services.AddScoped<IStatusBarViewModel, StatusBarViewModel>();
+            // TODO
 
             return this;
         }
@@ -170,10 +155,8 @@ namespace Rubberduck.Root
             _services.AddScoped<IShowEditorShellCommand, ShowEditorShellCommand>();
             _services.AddScoped<ShowEditorShellCommandMenuItem>();
 
-            _services.AddScoped<IAboutCommand, AboutCommand>();
-            _services.AddScoped<AboutCommandMenuItem>();
-            _services.AddScoped<IWebNavigator, WebNavigator>();
-            _services.AddScoped<IMessageService, MessageService>();
+            //_services.AddScoped<IAboutCommand, AboutCommand>();
+            //_services.AddScoped<AboutCommandMenuItem>();
 
             return this;
         }

@@ -1,6 +1,7 @@
-﻿using Rubberduck.InternalApi.Model.Abstract;
-using Rubberduck.UI.Abstract;
-using Rubberduck.UI.Xaml.About;
+﻿// TODO add-in about service
+
+/*
+using Rubberduck.InternalApi.Model.Abstract;
 
 namespace Rubberduck.UI.About
 {
@@ -14,3 +15,4 @@ namespace Rubberduck.UI.About
         protected override AboutWindow CreateWindow(IAboutWindowViewModel model) => new AboutWindow(model);
     }
 }
+*/

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.Editor.Command;
 using Rubberduck.Editor.Services.Abstract;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources.About;
-using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using System;
 using System.Windows;

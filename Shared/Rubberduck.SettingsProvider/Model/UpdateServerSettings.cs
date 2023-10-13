@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.InternalApi.Settings;
 using System;
 using System.Text;
 

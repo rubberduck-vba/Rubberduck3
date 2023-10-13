@@ -38,7 +38,6 @@
       <Project>{E794CFC3-3D9F-400F-88D9-69E929D8E8AF}</Project>
       <Name>Rubberduck.SettingsProvider</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.ClientPlatform\Rubberduck.ClientPlatform.csproj" />
     <ProjectReference Include="..\Rubberduck.UI\Rubberduck.UI.csproj" />
     <ProjectReference Include="..\Rubberduck.VBEditor\Rubberduck.VBEditor.csproj">
       <Project>{030FDE59-C347-4B81-AB80-5B4B80B757A0}</Project>

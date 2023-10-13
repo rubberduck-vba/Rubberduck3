@@ -2,12 +2,10 @@
 using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider.Model;
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO.Abstractions;
 using System.Text.Json;
 using System.Threading.Tasks;

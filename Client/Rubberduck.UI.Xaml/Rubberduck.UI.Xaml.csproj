@@ -7,6 +7,16 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Proto\**" />
+    <Compile Remove="SyntaxHighlighting\**" />
+    <EmbeddedResource Remove="Proto\**" />
+    <EmbeddedResource Remove="SyntaxHighlighting\**" />
+    <None Remove="Proto\**" />
+    <None Remove="SyntaxHighlighting\**" />
+    <Page Remove="Proto\**" />
+    <Page Remove="SyntaxHighlighting\**" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Ducky.ico" />
   </ItemGroup>
 
@@ -32,11 +42,5 @@
 
   <ItemGroup>
     <Resource Include="Ducky.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Message\" />
-    <Folder Include="Shell\Document\" />
-    <Folder Include="Splash\" />
   </ItemGroup>
 </Project>

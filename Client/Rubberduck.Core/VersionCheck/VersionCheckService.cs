@@ -3,9 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using Rubberduck.SettingsProvider.Model;
-using Rubberduck.SettingsProvider;
 using Rubberduck.InternalApi.WebApi.Model;
 using Rubberduck.InternalApi.WebApi;
+using Rubberduck.InternalApi.Settings;
 
 namespace Rubberduck.VersionCheck
 {

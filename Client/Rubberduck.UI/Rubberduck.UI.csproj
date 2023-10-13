@@ -8,6 +8,12 @@
     <Platforms>AnyCPU</Platforms>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="RubberduckEditor\**" />
+    <EmbeddedResource Remove="RubberduckEditor\**" />
+    <None Remove="RubberduckEditor\**" />
+    <Page Remove="RubberduckEditor\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
@@ -15,16 +21,9 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Rubberduck.UI.Xaml\Rubberduck.UI.Xaml.csproj" />
     <ProjectReference Include="..\Rubberduck.Unmanaged\Rubberduck.Unmanaged.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="RubberduckEditor\vba.xshd" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Message\" />
   </ItemGroup>
 </Project>

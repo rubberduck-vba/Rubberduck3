@@ -1,12 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.Core.Settings;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.InternalApi.Model;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI;
-using Rubberduck.UI.Message;
 using Rubberduck.Unmanaged.UIContext;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 using System;
@@ -24,7 +23,7 @@ namespace Rubberduck.Core
 
         private readonly IPresenter _presenter;
 
-        private readonly IMessageService _messageBox;
+        //private readonly IMessageService _messageBox; // TODO move message abstractions to InternalApi?
         private readonly ISettingsService<RubberduckSettings> _settingsService;
         private readonly IRubberduckMenu _appMenus;
 
@@ -35,7 +34,7 @@ namespace Rubberduck.Core
         public App(Version version,
             ILogger<App> logger, 
             ILogLevelService logLevelService,
-            IMessageService messageBox,
+            //IMessageService messageBox,
             ISettingsService<RubberduckSettings> settingsService,
             IRubberduckMenu appMenu,
             IFileSystem filesystem,
@@ -46,7 +45,7 @@ namespace Rubberduck.Core
             _logger = logger;
             _logLevelService = logLevelService;
 
-            _messageBox = messageBox;
+            //_messageBox = messageBox;
             _settingsService = settingsService;
             _appMenus = appMenu;
 
@@ -82,7 +81,8 @@ namespace Rubberduck.Core
             }
             catch (Exception exception)
             {
-                _messageBox.ShowMessage(MessageModel.For(exception));
+                _logger.LogError(exception, "Could not create log folder."); // TODO disable logging then
+                //_messageBox.ShowMessage(MessageModel.For(exception));
             }
         }
 
@@ -187,7 +187,7 @@ namespace Rubberduck.Core
             {
                 _logger.LogError(exception, "Error Setting Culture for Rubberduck");
                 // not accessing resources here, because setting resource culture literally just failed.
-                _messageBox.ShowMessage(MessageModel.For(exception));
+                //_messageBox.ShowMessage(MessageModel.For(exception));
 
                 var vm = new RubberduckSettingsViewModel(currentSettings)
                 {

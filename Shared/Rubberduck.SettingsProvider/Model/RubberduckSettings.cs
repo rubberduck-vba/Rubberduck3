@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Settings;
 using System;
 
 namespace Rubberduck.SettingsProvider.Model

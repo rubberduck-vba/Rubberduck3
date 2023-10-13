@@ -1,8 +1,8 @@
 ﻿using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.InternalApi.Settings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Rubberduck.SettingsProvider.Model
@@ -17,27 +17,6 @@ namespace Rubberduck.SettingsProvider.Model
         };
 
         public static TraceLevel ToTraceLevel(this ServerTraceLevel value) => _map[value];
-    }
-
-    public enum ServerTraceLevel
-    {
-        Off = TraceLevel.Off,
-        Verbose = TraceLevel.Verbose,
-        Message = TraceLevel.Info,
-    }
-
-    public enum MessageMode
-    {
-        Message,
-        Byte
-    }
-
-    public interface IProcessStartInfoArgumentProvider
-    {
-        public ServerTraceLevel TraceLevel { get; init; }
-
-        string Path { get; }
-        string ToProcessStartInfoArguments(long clientProcessId);
     }
 
     public readonly record struct LanguageClientSettings : IDefaultSettingsProvider<LanguageClientSettings>

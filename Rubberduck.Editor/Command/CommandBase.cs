@@ -7,7 +7,7 @@ using System.Windows.Input;
 using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.SettingsProvider;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
 
 namespace Rubberduck.Editor.Command

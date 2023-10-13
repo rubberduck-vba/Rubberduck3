@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
 
 namespace Rubberduck.Core.Settings

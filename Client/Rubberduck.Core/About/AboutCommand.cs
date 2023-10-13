@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
-using Rubberduck.UI.About;
 using Rubberduck.UI.Command;
 using Rubberduck.Unmanaged.Abstract;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
@@ -10,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Core.About
 {
+    /*
+
     /// <summary>
     /// A command that displays the About window.
     /// </summary>
@@ -30,4 +31,5 @@ namespace Rubberduck.Core.About
             return Task.CompletedTask;
         }
     }
+    */
 }

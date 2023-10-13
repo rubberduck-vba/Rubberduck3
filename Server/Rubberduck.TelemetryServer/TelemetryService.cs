@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.ServerPlatform.Model.Telemetry;
-using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.InternalApi.Extensions;
 using System.Collections.Concurrent;
@@ -13,6 +12,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using OmniSharp.Extensions.LanguageServer.Protocol;
+using Rubberduck.InternalApi.Settings;
 
 namespace Rubberduck.TelemetryServer
 {

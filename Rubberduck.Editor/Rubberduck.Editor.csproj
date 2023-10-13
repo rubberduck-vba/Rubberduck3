@@ -23,8 +23,10 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
     <PackageReference Include="NLog.Extensions.Logging" Version="5.3.4" />
+    <PackageReference Include="OmniSharp.Extensions.LanguageClient" Version="0.19.9" />
+    <PackageReference Include="OmniSharp.Extensions.LanguageProtocol" Version="0.19.9" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,6 +56,10 @@
     <Compile Update="Splash\SplashWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="RPC\AddInClient\" />
+    <Folder Include="RPC\UpdateServerClient\" />
   </ItemGroup>
 
 </Project>

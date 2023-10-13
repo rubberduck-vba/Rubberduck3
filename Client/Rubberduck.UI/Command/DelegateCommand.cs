@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Logging;
 using Rubberduck.SettingsProvider.Model;
-using Rubberduck.SettingsProvider;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Rubberduck.InternalApi.Settings;
 
 namespace Rubberduck.UI.Command
 {

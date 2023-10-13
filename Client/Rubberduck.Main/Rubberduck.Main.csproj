@@ -36,7 +36,6 @@
       <Project>{e794cfc3-3d9f-400f-88d9-69e929d8e8af}</Project>
       <Name>Rubberduck.SettingsProvider</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.ClientPlatform\Rubberduck.ClientPlatform.csproj" />
     <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
       <Project>{7B04E66C-DD08-437F-8D43-EDDAC732DC53}</Project>
       <Name>Rubberduck.Core</Name>
@@ -48,10 +47,6 @@
     <ProjectReference Include="..\..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj">
       <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
       <Name>Rubberduck.Resources</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.UI.Xaml\Rubberduck.UI.Xaml.csproj">
-      <Project>{1192FA78-B73F-46BC-B98C-FD887A062A2C}</Project>
-      <Name>Rubberduck.UI.Xaml</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.UI\Rubberduck.UI.csproj" />
     <ProjectReference Include="..\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj">
