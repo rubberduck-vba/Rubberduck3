@@ -9,14 +9,6 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Icons\Fugue\document-export.png" />
-    <None Remove="Icons\Fugue\document-search-result.png" />
-    <None Remove="Icons\Fugue\document-smiley.png" />
-    <None Remove="Icons\Fugue\document-stand.png" />
-    <None Remove="Icons\Fugue\document-sticky-note.png" />
-    <None Remove="Icons\Fugue\document-text.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Icons\Custom\attribution.txt" />
     <Resource Include="Icons\Custom\cc_license.txt" />
     <Resource Include="Icons\Custom\Mask\AddPropertyMask.bmp" />
@@ -309,6 +301,7 @@
     <Resource Include="Icons\ducky.ico" />
     <Resource Include="ducky.ico" />
     <Resource Include="Icons\splash.png" />
+    <Resource Include="vector-ducky-color.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />

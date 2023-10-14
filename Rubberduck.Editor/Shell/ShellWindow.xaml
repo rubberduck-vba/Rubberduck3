@@ -7,7 +7,16 @@
         mc:Ignorable="d"
         Title="Rubberduck Editor" Icon="../ducky.ico" 
         Height="450" Width="800">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid>
-
+        <Canvas Grid.RowSpan="4" HorizontalAlignment="Right">
+            <Image Style="{StaticResource BackgroundDuckyStyle}" />
+        </Canvas>
     </Grid>
 </Window>

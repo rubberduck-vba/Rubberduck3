@@ -11,15 +11,12 @@
         Width="512" MinWidth="400" MaxWidth="800"
         ResizeMode="CanResizeWithGrip" 
         Icon="pack://application:,,,/Rubberduck.Resources;component/vector-ducky-color.png"
-        Background="{DynamicResource BackgroundWhiteBrush}" 
-        Foreground="{DynamicResource BlackBrush}"
         SizeToContent="WidthAndHeight" SnapsToDevicePixels="True">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <BitmapImage x:Key="BackgroundDuckyImage" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/Custom/background-ducky.png" />
             <BitmapImage x:Key="ErrorIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FugueIcons/cross-circle.png" />
             <BitmapImage x:Key="WarnIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FugueIcons/exclamation-diamond.png" />
             <BitmapImage x:Key="InfoIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FugueIcons/information.png" />

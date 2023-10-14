@@ -9,6 +9,8 @@
     <Style TargetType="Window">
         <Style.Setters>
             <Setter Property="Background" Value="{DynamicResource BackgroundWhiteBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+            <Setter Property="ClipToBounds" Value="True" />
         </Style.Setters>
     </Style>
 
