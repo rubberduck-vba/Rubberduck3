@@ -50,7 +50,7 @@ public class ComMember : ComBase
     public ComParameter AsTypeName { get; private set; } = ComParameter.Void;
 
     [DataMember(IsRequired = true)]
-    private List<ComParameter> _parameters = new List<ComParameter>();
+    private List<ComParameter> _parameters = new();
 
     //See https://docs.microsoft.com/en-us/windows/desktop/midl/retval
     //"Parameters with the [retval] attribute are not displayed in user-oriented browsers."

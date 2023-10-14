@@ -52,6 +52,6 @@ public sealed class ExcelHotKeyAnnotation : FlexibleAttributeValueAnnotationBase
         annotationValues.Take(1).Select(v => (v.UnQuote()[0] + @"\n14").EnQuote()).ToList();
     
     public override IReadOnlyList<string> AttributeToAnnotationValues(IReadOnlyList<string> attributeValues) =>        
-        attributeValues.Select(keySpec => keySpec.UnQuote().Substring(0, 1)).ToList();
+        attributeValues.Select(keySpec => keySpec.UnQuote()[..1]).ToList();
    
 }

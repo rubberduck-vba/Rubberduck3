@@ -15,7 +15,7 @@ public sealed class StringLiteralExpression : Expression
     {
         var str = _tokenText.Evaluate().AsString;
         // Remove quotes
-        str = str.Substring(1, str.Length - 2);
+        str = str[1..^1];
         return new StringValue(str);
     }
 }

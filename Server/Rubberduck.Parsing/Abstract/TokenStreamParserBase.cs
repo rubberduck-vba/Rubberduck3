@@ -35,17 +35,13 @@ public abstract class TokenStreamParserBase<TParser> : ITokenStreamParser
     protected abstract IParseTree Parse(TParser parser);
     public IParseTree Parse(string moduleName, string projectId, CommonTokenStream tokenStream, CancellationToken token, CodeKind codeKind = CodeKind.RubberduckEditorModule, ParserMode parserMode = ParserMode.FallBackSllToLl)
     {
-        switch (parserMode)
+        return parserMode switch
         {
-            case ParserMode.FallBackSllToLl:
-                return ParseWithFallBack(moduleName, tokenStream, codeKind);
-            case ParserMode.LlOnly:
-                return ParseLl(moduleName, tokenStream, codeKind);
-            case ParserMode.SllOnly:
-                return ParseSll(moduleName, tokenStream, codeKind);
-            default:
-                throw new ArgumentException(nameof(parserMode));
-        }
+            ParserMode.FallBackSllToLl => ParseWithFallBack(moduleName, tokenStream, codeKind),
+            ParserMode.LlOnly => ParseLl(moduleName, tokenStream, codeKind),
+            ParserMode.SllOnly => ParseSll(moduleName, tokenStream, codeKind),
+            _ => throw new ArgumentException(nameof(parserMode)),
+        };
     }
 
     private IParseTree ParseWithFallBack(string moduleName, CommonTokenStream tokenStream, CodeKind codeKind)

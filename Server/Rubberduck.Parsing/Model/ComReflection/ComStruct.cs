@@ -14,7 +14,7 @@ namespace Rubberduck.Parsing.Model.ComReflection;
 public class ComStruct : ComType, IComTypeWithFields
 {
     [DataMember(IsRequired = true)]
-    private List<ComField> _fields = new List<ComField>();
+    private List<ComField> _fields = new();
     public IEnumerable<ComField> Fields => _fields;
 
     public ComStruct(IComBase parent, ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index)

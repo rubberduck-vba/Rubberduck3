@@ -5,7 +5,7 @@ namespace Rubberduck.Parsing.Annotations;
 
 public sealed class VBAParserAnnotationFactory : IAnnotationFactory
 {
-    private readonly Dictionary<string, IAnnotation> _lookup = new Dictionary<string, IAnnotation>();
+    private readonly Dictionary<string, IAnnotation> _lookup = new();
     private readonly IAnnotation unrecognized;
 
     public VBAParserAnnotationFactory(IEnumerable<IAnnotation> recognizedAnnotations) 

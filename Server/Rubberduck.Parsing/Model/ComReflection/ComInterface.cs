@@ -22,15 +22,15 @@ public class ComInterface : ComType, IComTypeWithMembers
     public bool IsExtensible { get; private set; }
 
     [DataMember(IsRequired = true)]
-    private List<ComInterface> _inherited = new List<ComInterface>();
+    private List<ComInterface> _inherited = new();
     public IEnumerable<ComInterface> InheritedInterfaces => _inherited;
 
     [DataMember(IsRequired = true)]
-    private List<ComMember> _members = new List<ComMember>();
+    private List<ComMember> _members = new();
     public IEnumerable<ComMember> Members => _members;
 
     [DataMember(IsRequired = true)]
-    private List<ComField> _properties = new List<ComField>();
+    private List<ComField> _properties = new();
     public IEnumerable<ComField> Properties => _properties;
 
     [DataMember(IsRequired = true)]

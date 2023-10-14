@@ -4,5 +4,5 @@ namespace Rubberduck.Parsing.TokenStreamProviders;
 
 public class StringTokenStreamProvider : CommonTokenStreamProvider<string>
 {
-    protected override AntlrInputStream GetInputStream(string content) => new AntlrInputStream(content);
+    protected override AntlrInputStream GetInputStream(string content) => new(content);
 }

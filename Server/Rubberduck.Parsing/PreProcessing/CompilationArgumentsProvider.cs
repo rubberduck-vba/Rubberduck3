@@ -27,10 +27,8 @@ public class CompilationArgumentsProvider : ICompilationArgumentsProvider
     {
         // use the TypeLib API to grab the user defined compilation arguments; must be obtained on the main thread.
         var task = _uiDispatcher.StartTask(() => {
-            using (var typeLib = _typeLibWrapperProvider.TypeLibWrapperFromProject(projectId))
-            {
-                return typeLib?.VBEExtensions.ConditionalCompilationArguments ?? new Dictionary<string, short>();
-            }
+            using var typeLib = _typeLibWrapperProvider.TypeLibWrapperFromProject(projectId);
+            return typeLib?.VBEExtensions.ConditionalCompilationArguments ?? new Dictionary<string, short>();
         });
         return task.Result;
     }

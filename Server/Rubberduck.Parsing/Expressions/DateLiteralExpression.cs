@@ -27,8 +27,8 @@ public sealed class DateLiteralExpression : Expression
         int mins;
         int seconds;
 
-        Predicate<int> legalMonth = (x) => x >= 0 && x <= 12;
-        Func<int, int, int, bool> legalDay = (m, d, y) =>
+        static bool legalMonth(int x) => x >= 0 && x <= 12;
+        bool legalDay(int m, int d, int y)
         {
             bool legalYear = y >= 0 && y <= 32767;
             bool legalM = legalMonth(m);
@@ -39,9 +39,9 @@ public sealed class DateLiteralExpression : Expression
                 legalD = d >= 1 && d <= daysInMonth;
             }
             return legalYear && legalM && legalD;
-        };
+        }
 
-        Func<int, int> yearFunc = (x) =>
+        int yearFunc(int x)
         {
             if (x >= 0 && x <= 29)
             {
@@ -55,7 +55,7 @@ public sealed class DateLiteralExpression : Expression
             {
                 return x;
             }
-        };
+        }
 
         int CY = DateTime.Now.Year;
 

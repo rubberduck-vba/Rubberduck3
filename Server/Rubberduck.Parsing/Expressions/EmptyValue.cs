@@ -5,7 +5,7 @@ namespace Rubberduck.Parsing.Expressions;
 
 public sealed class EmptyValue : IValue
 {
-    public static readonly EmptyValue Value = new EmptyValue();
+    public static readonly EmptyValue Value = new();
 
     public ValueType ValueType
     {

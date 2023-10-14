@@ -15,9 +15,9 @@ namespace Rubberduck.Parsing.Model.ComReflection;
 [DebuggerDisplay("{" + nameof(Name) + "}")]
 public class ComProject : ComBase
 {
-    public static readonly ConcurrentDictionary<Guid, ComType> KnownTypes = new ConcurrentDictionary<Guid, ComType>();
-    public static readonly ConcurrentDictionary<Guid, ComEnumeration> KnownEnumerations = new ConcurrentDictionary<Guid, ComEnumeration>();
-    public static readonly ConcurrentDictionary<Guid, ComAlias> KnownAliases = new ConcurrentDictionary<Guid, ComAlias>();
+    public static readonly ConcurrentDictionary<Guid, ComType> KnownTypes = new();
+    public static readonly ConcurrentDictionary<Guid, ComEnumeration> KnownEnumerations = new();
+    public static readonly ConcurrentDictionary<Guid, ComAlias> KnownAliases = new();
 
     [DataMember(IsRequired = true)]
     public string Path { get; set; }
@@ -35,27 +35,27 @@ public class ComProject : ComBase
 #pragma warning restore IDE0052 // Remove unread private members
 
     [DataMember(IsRequired = true)]
-    private readonly List<ComAlias> _aliases = new List<ComAlias>();
+    private readonly List<ComAlias> _aliases = new();
     public IEnumerable<ComAlias> Aliases => _aliases;
 
     [DataMember(IsRequired = true)]
-    private readonly List<ComInterface> _interfaces = new List<ComInterface>();
+    private readonly List<ComInterface> _interfaces = new();
     public IEnumerable<ComInterface> Interfaces => _interfaces;
 
     [DataMember(IsRequired = true)]
-    private readonly List<ComEnumeration> _enumerations = new List<ComEnumeration>();
+    private readonly List<ComEnumeration> _enumerations = new();
     public IEnumerable<ComEnumeration> Enumerations => _enumerations;
 
     [DataMember(IsRequired = true)]
-    private readonly List<ComCoClass> _classes = new List<ComCoClass>();
+    private readonly List<ComCoClass> _classes = new();
     public IEnumerable<ComCoClass> CoClasses => _classes;
 
     [DataMember(IsRequired = true)]
-    private readonly List<ComModule> _modules = new List<ComModule>();
+    private readonly List<ComModule> _modules = new();
     public IEnumerable<ComModule> Modules => _modules;
 
     [DataMember(IsRequired = true)]
-    private readonly List<ComStruct> _structs = new List<ComStruct>();
+    private readonly List<ComStruct> _structs = new();
     public IEnumerable<ComStruct> Structs => _structs;
 
     //Note - Enums and Types should enumerate *last*. That will prevent a duplicate module in the unlikely(?)

@@ -78,25 +78,19 @@ public class Attributes : HashSet<AttributeNode>
             return false;
         }
 
-        switch (attributeName)
+        return attributeName switch
         {
-            case "VB_Name":
-                return true;
-            case "VB_GlobalNameSpace":
-                return (componentType == ComponentType.ClassModule || componentType == ComponentType.UserForm)
-                       && attributeValues[0].Equals(Tokens.False);
-            case "VB_Exposed":
-                return (componentType == ComponentType.ClassModule || componentType == ComponentType.UserForm)
-                       && attributeValues[0].Equals(Tokens.False);
-            case "VB_Creatable":
-                return (componentType == ComponentType.ClassModule || componentType == ComponentType.UserForm)
-                       && attributeValues[0].Equals(Tokens.False);
-            case "VB_PredeclaredId":
-                return (componentType == ComponentType.ClassModule && attributeValues[0].Equals(Tokens.False))
-                       || (componentType == ComponentType.UserForm && attributeValues[0].Equals(Tokens.True));
-            default:
-                return false;
-        }
+            "VB_Name" => true,
+            "VB_GlobalNameSpace" => (componentType == ComponentType.ClassModule || componentType == ComponentType.UserForm)
+                                   && attributeValues[0].Equals(Tokens.False),
+            "VB_Exposed" => (componentType == ComponentType.ClassModule || componentType == ComponentType.UserForm)
+                                   && attributeValues[0].Equals(Tokens.False),
+            "VB_Creatable" => (componentType == ComponentType.ClassModule || componentType == ComponentType.UserForm)
+                                   && attributeValues[0].Equals(Tokens.False),
+            "VB_PredeclaredId" => (componentType == ComponentType.ClassModule && attributeValues[0].Equals(Tokens.False))
+                                   || (componentType == ComponentType.UserForm && attributeValues[0].Equals(Tokens.True)),
+            _ => false,
+        };
     }
 
     private static readonly ICollection<ComponentType> ComponentsWithDefaultAttributes = new HashSet<ComponentType>
@@ -109,7 +103,7 @@ public class Attributes : HashSet<AttributeNode>
     public static string AttributeBaseName(string attributeName, string memberName)
     {
         return attributeName.StartsWith($"{memberName}.")
-            ? attributeName.Substring(memberName.Length + 1)
+            ? attributeName[(memberName.Length + 1)..]
             : attributeName;
     }
 
@@ -125,7 +119,7 @@ public class Attributes : HashSet<AttributeNode>
 
     public IEnumerable<AttributeNode> AttributeNodesFor(IParseTreeAnnotation annotationInstance, string memberName = null)
     {
-        if (!(annotationInstance.Annotation is IAttributeAnnotation annotation))
+        if (annotationInstance.Annotation is not IAttributeAnnotation annotation)
         {
             return Enumerable.Empty<AttributeNode>();
         }

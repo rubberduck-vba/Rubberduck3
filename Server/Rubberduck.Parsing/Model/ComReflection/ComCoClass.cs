@@ -15,10 +15,10 @@ namespace Rubberduck.Parsing.Model.ComReflection;
 public class ComCoClass : ComType, IComTypeWithMembers
 {
     [DataMember(IsRequired = true)]
-    private Dictionary<ComInterface, bool> _interfaces = new Dictionary<ComInterface, bool>();
+    private Dictionary<ComInterface, bool> _interfaces = new();
 
     [DataMember(IsRequired = true)]
-    private List<ComInterface> _events = new List<ComInterface>();
+    private List<ComInterface> _events = new();
 
     [DataMember(IsRequired = true)]
     public bool IsControl { get; private set; }

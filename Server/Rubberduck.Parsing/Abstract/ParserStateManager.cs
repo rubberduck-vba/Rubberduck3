@@ -35,7 +35,7 @@ public interface IParserStateManager
 
 public class ParserStateManager : IParserStateManager
 {
-    private readonly ConcurrentDictionary<QualifiedModuleName, ModuleState> _moduleStates = new ConcurrentDictionary<QualifiedModuleName, ModuleState>();
+    private readonly ConcurrentDictionary<QualifiedModuleName, ModuleState> _moduleStates = new();
 
     public ParserState GetModuleParserState(QualifiedModuleName module)
     {

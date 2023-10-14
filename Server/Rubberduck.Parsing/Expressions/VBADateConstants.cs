@@ -2,5 +2,5 @@
 
 public static class VBADateConstants
 {
-    public static readonly DateTime EPOCH_START = new DateTime(1899, 12, 30);
+    public static readonly DateTime EPOCH_START = new(1899, 12, 30);
 }

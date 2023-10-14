@@ -78,7 +78,7 @@ public class ComField
         }
     }
 
-    private static readonly HashSet<TYPEKIND> ReferenceTypeKinds = new HashSet<TYPEKIND>
+    private static readonly HashSet<TYPEKIND> ReferenceTypeKinds = new()
     {
         TYPEKIND.TKIND_DISPATCH,
         TYPEKIND.TKIND_COCLASS,

@@ -35,7 +35,7 @@ public sealed class LikeExpression : Expression
 
     private string TranslateToNETRegex(VBALikeParser.LikePatternStringContext likePattern)
     {
-        StringBuilder regexStr = new StringBuilder();
+        StringBuilder regexStr = new();
         foreach (var element in likePattern.likePatternElement())
         {
             if (element.likePatternChar() != null)
@@ -59,7 +59,7 @@ public sealed class LikeExpression : Expression
                 var charlist = element.likePatternCharlist().GetText();
                 if (charlist.StartsWith("[!"))
                 {
-                    charlist = "[^" + charlist.Substring(2);
+                    charlist = "[^" + charlist[2..];
                 }
                 regexStr.Append(charlist);
             }

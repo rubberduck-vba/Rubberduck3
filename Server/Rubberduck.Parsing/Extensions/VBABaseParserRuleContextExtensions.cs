@@ -108,15 +108,12 @@ public static class VBABaseParserRuleContextExtensions
     /// </summary>
     public static TContext GetAncestor<TContext>(this VBABaseParserRuleContext context) where TContext: VBABaseParserRuleContext
     {
-        switch (context)
+        return context switch
         {
-            case null:
-                return default;
-            case TContext _:
-                return GetAncestor_Recursive<TContext>((VBABaseParserRuleContext)context.Parent);
-            default:
-                return GetAncestor_Recursive<TContext>(context);
-        }
+            null => default,
+            TContext _ => GetAncestor_Recursive<TContext>((VBABaseParserRuleContext)context.Parent),
+            _ => GetAncestor_Recursive<TContext>(context),
+        };
     }
 
     /// <summary>
@@ -130,15 +127,12 @@ public static class VBABaseParserRuleContextExtensions
 
     private static TContext GetAncestor_Recursive<TContext>(VBABaseParserRuleContext context) where TContext: VBABaseParserRuleContext
     {
-        switch (context)
+        return context switch
         {
-            case null:
-                return default;
-            case TContext tContext:
-                return tContext;
-            default:
-                return GetAncestor_Recursive<TContext>((VBABaseParserRuleContext)context.Parent);
-        }
+            null => default,
+            TContext tContext => tContext,
+            _ => GetAncestor_Recursive<TContext>((VBABaseParserRuleContext)context.Parent),
+        };
     }
 
     /// <summary>
@@ -156,7 +150,7 @@ public static class VBABaseParserRuleContextExtensions
             return context;
         }
 
-        if (!(context.Parent is VBABaseParserRuleContext parent))
+        if (context.Parent is not VBABaseParserRuleContext parent)
         {
             return default;
         }
@@ -273,7 +267,7 @@ public static class VBABaseParserRuleContextExtensions
     /// </summary>
     public static bool IsOptionCompareBinary(this VBABaseParserRuleContext context)
     {
-        if( !(context is VBAParser.ModuleContext moduleContext))
+        if( context is not VBAParser.ModuleContext moduleContext)
         {
             moduleContext = context.GetAncestor<VBAParser.ModuleContext>();
             if (moduleContext is null)
@@ -283,7 +277,7 @@ public static class VBABaseParserRuleContextExtensions
         }
 
         var optionContext = moduleContext.GetDescendent<VBAParser.OptionCompareStmtContext>();
-        return (optionContext is null) || !(optionContext.BINARY() is null);
+        return (optionContext is null) || optionContext.BINARY() is not null;
     }
 
     /// <summary>
@@ -465,7 +459,7 @@ public static class VBABaseParserRuleContextExtensions
 
     private class ChildNodeListener<TContext> : VBAParserBaseListener where TContext : VBABaseParserRuleContext
     {
-        private readonly HashSet<TContext> _matches = new HashSet<TContext>();
+        private readonly HashSet<TContext> _matches = new();
         public IEnumerable<TContext> Matches => _matches;
 
         public override void EnterEveryRule(ParserRuleContext context)

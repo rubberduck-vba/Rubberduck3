@@ -121,7 +121,7 @@ public static class StringExtensions
         return -1;
     }
 
-    private static readonly Dictionary<char, string> VbCharacterConstants = new Dictionary<char, string>()
+    private static readonly Dictionary<char, string> VbCharacterConstants = new()
     {
         { '\x00', "vbNullChar" },
         { '\b', "vbBack" },

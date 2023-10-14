@@ -7,7 +7,7 @@ public class AttributeAnnotationProvider : IAttributeAnnotationProvider
     // I want to const this, but can't
     private readonly AnnotationTarget [] distinctTargets = new AnnotationTarget[] { AnnotationTarget.Identifier, AnnotationTarget.Member, AnnotationTarget.Module, AnnotationTarget.Variable };
     private readonly Dictionary<AnnotationTarget, List<IAttributeAnnotation>> annotationInfoByTarget
-        = new Dictionary<AnnotationTarget, List<IAttributeAnnotation>>();
+        = new();
 
     private readonly IAttributeAnnotation memberFallback = new MemberAttributeAnnotation();
     private readonly IAttributeAnnotation moduleFallback = new ModuleAttributeAnnotation();

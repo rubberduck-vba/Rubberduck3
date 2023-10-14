@@ -4,7 +4,7 @@ namespace Rubberduck.Parsing.Expressions;
 
 public static class VBALibrary
 {
-    private static readonly Dictionary<string, Func<IExpression, IExpression>> _libraryFunctions = new Dictionary<string, Func<IExpression, IExpression>>()
+    private static readonly Dictionary<string, Func<IExpression, IExpression>> _libraryFunctions = new()
     {
         { "INT", expr => new IntLibraryFunctionExpression(expr) },
         { "FIX", expr => new FixLibraryFunctionExpression(expr) },

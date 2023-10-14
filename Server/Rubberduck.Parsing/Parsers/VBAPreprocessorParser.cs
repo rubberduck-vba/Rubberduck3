@@ -12,7 +12,7 @@ public class VBAPreprocessorParser : TokenStreamParserBase<VBAConditionalCompila
     {
     }
 
-    protected override VBAConditionalCompilationParser GetParser(ITokenStream tokenStream) => new VBAConditionalCompilationParser(tokenStream);
+    protected override VBAConditionalCompilationParser GetParser(ITokenStream tokenStream) => new(tokenStream);
 
     protected override IParseTree Parse(VBAConditionalCompilationParser parser) => parser.compilationUnit();
 }

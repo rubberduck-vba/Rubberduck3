@@ -5,8 +5,8 @@ namespace Rubberduck.Parsing.PreProcessing;
 public class CompilationArgumentsCache : ICompilationArgumentsCache
 {
     private readonly ICompilationArgumentsProvider _provider;
-    private readonly Dictionary<string,Dictionary<string,short>> _compilationArguments = new Dictionary<string, Dictionary<string, short>>();
-    private readonly HashSet<string> _projectsWhoseCompilationArgumentsChanged = new HashSet<string>();
+    private readonly Dictionary<string,Dictionary<string,short>> _compilationArguments = new();
+    private readonly HashSet<string> _projectsWhoseCompilationArgumentsChanged = new();
 
     public CompilationArgumentsCache(ICompilationArgumentsProvider compilationArgumentsProvider)
     {

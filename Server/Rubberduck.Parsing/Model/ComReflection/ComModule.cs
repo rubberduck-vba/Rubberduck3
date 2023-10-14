@@ -18,7 +18,7 @@ namespace Rubberduck.Parsing.Model.ComReflection;
 public class ComModule : ComType, IComTypeWithMembers, IComTypeWithFields
 {
     [DataMember(IsRequired = true)]
-    private List<ComMember> _members = new List<ComMember>();
+    private List<ComMember> _members = new();
     public IEnumerable<ComMember> Members => _members;
 
     public ComMember DefaultMember => null;
@@ -26,7 +26,7 @@ public class ComModule : ComType, IComTypeWithMembers, IComTypeWithFields
     public bool IsExtensible => false;
 
     [DataMember(IsRequired = true)]
-    private List<ComField> _fields = new List<ComField>();
+    private List<ComField> _fields = new();
     public IEnumerable<ComField> Fields => _fields;
 
     public IEnumerable<ComField> Properties => Enumerable.Empty<ComField>();

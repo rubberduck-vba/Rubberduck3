@@ -16,7 +16,7 @@ namespace Rubberduck.Parsing.Model.ComReflection;
 [DebuggerDisplay("{" + nameof(DeclarationName) + "}")]
 public class ComParameter
 {
-    public static ComParameter Void = new ComParameter { _typeName = new ComTypeName(null, string.Empty) };
+    public static ComParameter Void = new() { _typeName = new ComTypeName(null, string.Empty) };
 
     [DataMember(IsRequired = true)]
     public string Name { get; private set; }
