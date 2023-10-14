@@ -1,10 +1,9 @@
 ﻿using Rubberduck.Parsing.Model.ComReflection;
 
-namespace Rubberduck.Parsing.COM.Abstract
+namespace Rubberduck.Parsing.COM.Abstract;
+
+public interface IComProjectSerializationProvider : IComProjectDeserializer
 {
-    public interface IComProjectSerializationProvider : IComProjectDeserializer
-    {
-        string Target { get; }
-        void SerializeProject(ComProject project);
-    }
+    string Target { get; }
+    void SerializeProject(ComProject project);
 }

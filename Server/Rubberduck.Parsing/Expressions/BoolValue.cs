@@ -1,96 +1,93 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Abstract;
-using System;
-using System.Collections.Generic;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class BoolValue : IValue
 {
-    public sealed class BoolValue : IValue
+    private readonly bool _value;
+
+    public BoolValue(bool value)
     {
-        private readonly bool _value;
+        _value = value;
+    }
 
-        public BoolValue(bool value)
+    public ValueType ValueType
+    {
+        get
         {
-            _value = value;
+            return ValueType.Bool;
         }
+    }
 
-        public ValueType ValueType
+    public bool AsBool
+    {
+        get
         {
-            get
+            return _value;
+        }
+    }
+
+    public byte AsByte
+    {
+        get
+        {
+            if (_value)
             {
-                return ValueType.Bool;
+                return 255;
             }
+            return 0;
         }
+    }
 
-        public bool AsBool
+    public DateTime AsDate
+    {
+        get
         {
-            get
+            return new DecimalValue(AsDecimal).AsDate;
+        }
+    }
+
+    public decimal AsDecimal
+    {
+        get
+        {
+            if (_value)
             {
-                return _value;
+                return -1;
             }
-        }
-
-        public byte AsByte
-        {
-            get
+            else
             {
-                if (_value)
-                {
-                    return 255;
-                }
                 return 0;
             }
         }
+    }
 
-        public DateTime AsDate
+    public string AsString
+    {
+        get
         {
-            get
+            if (_value)
             {
-                return new DecimalValue(AsDecimal).AsDate;
+                return "True";
+            }
+            else
+            {
+                return "False";
             }
         }
+    }
 
-        public decimal AsDecimal
+    public IEnumerable<IToken> AsTokens
+    {
+        get
         {
-            get
-            {
-                if (_value)
-                {
-                    return -1;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
+            return new List<IToken>();
         }
+    }
 
-        public string AsString
-        {
-            get
-            {
-                if (_value)
-                {
-                    return "True";
-                }
-                else
-                {
-                    return "False";
-                }
-            }
-        }
-
-        public IEnumerable<IToken> AsTokens
-        {
-            get
-            {
-                return new List<IToken>();
-            }
-        }
-
-        public override string ToString()
-        {
-            return _value.ToString();
-        }
+    public override string ToString()
+    {
+        return _value.ToString();
     }
 }

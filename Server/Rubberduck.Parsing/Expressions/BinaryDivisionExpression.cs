@@ -1,29 +1,28 @@
 ﻿using Rubberduck.Parsing.Abstract;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class BinaryDivisionExpression : Expression
 {
-    public sealed class BinaryDivisionExpression : Expression
+    private readonly IExpression _left;
+    private readonly IExpression _right;
+
+    public BinaryDivisionExpression(IExpression left, IExpression right)
     {
-        private readonly IExpression _left;
-        private readonly IExpression _right;
+        _left = left;
+        _right = right;
+    }
 
-        public BinaryDivisionExpression(IExpression left, IExpression right)
+    public override IValue Evaluate()
+    {
+        var left = _left.Evaluate();
+        var right = _right.Evaluate();
+        if (left == null || right == null)
         {
-            _left = left;
-            _right = right;
+            return null;
         }
-
-        public override IValue Evaluate()
-        {
-            var left = _left.Evaluate();
-            var right = _right.Evaluate();
-            if (left == null || right == null)
-            {
-                return null;
-            }
-            var leftValue = left.AsDecimal;
-            var rightValue = right.AsDecimal;
-            return new DecimalValue(leftValue / rightValue);
-        }
+        var leftValue = left.AsDecimal;
+        var rightValue = right.AsDecimal;
+        return new DecimalValue(leftValue / rightValue);
     }
 }

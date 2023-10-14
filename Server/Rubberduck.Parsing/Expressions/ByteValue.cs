@@ -1,78 +1,75 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Abstract;
-using System;
-using System.Collections.Generic;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class ByteValue : IValue
 {
-    public sealed class ByteValue : IValue
+    private readonly byte _value;
+
+    public ByteValue(byte value)
     {
-        private readonly byte _value;
+        _value = value;
+    }
 
-        public ByteValue(byte value)
+    public ValueType ValueType
+    {
+        get
         {
-            _value = value;
+            return ValueType.Byte;
         }
+    }
 
-        public ValueType ValueType
+    public bool AsBool
+    {
+        get
         {
-            get
-            {
-                return ValueType.Byte;
-            }
+            return _value != 0;
         }
+    }
 
-        public bool AsBool
+    public byte AsByte
+    {
+        get
         {
-            get
-            {
-                return _value != 0;
-            }
+            return _value;
         }
+    }
 
-        public byte AsByte
+    public DateTime AsDate
+    {
+        get
         {
-            get
-            {
-                return _value;
-            }
+            return DateTime.FromOADate(Convert.ToDouble(_value));
         }
+    }
 
-        public DateTime AsDate
+    public decimal AsDecimal
+    {
+        get
         {
-            get
-            {
-                return DateTime.FromOADate(Convert.ToDouble(_value));
-            }
+            return Convert.ToDecimal(_value);
         }
+    }
 
-        public decimal AsDecimal
-        {
-            get
-            {
-                return Convert.ToDecimal(_value);
-            }
-        }
-
-        public string AsString
-        {
-            get
-            {
-                return _value.ToString();
-            }
-        }
-
-        public IEnumerable<IToken> AsTokens
-        {
-            get
-            {
-                return new List<IToken>();
-            }
-        }
-
-        public override string ToString()
+    public string AsString
+    {
+        get
         {
             return _value.ToString();
         }
+    }
+
+    public IEnumerable<IToken> AsTokens
+    {
+        get
+        {
+            return new List<IToken>();
+        }
+    }
+
+    public override string ToString()
+    {
+        return _value.ToString();
     }
 }

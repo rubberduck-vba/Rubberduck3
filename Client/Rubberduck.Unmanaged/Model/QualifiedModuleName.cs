@@ -9,7 +9,7 @@ namespace Rubberduck.Unmanaged.Model
     /// <summary>
     /// Represents a VBComponent or a VBProject.
     /// </summary>
-    internal class QualifiedModuleName : IQualifiedModuleName
+    public class QualifiedModuleName : IQualifiedModuleName
     {
         public static QualifiedModuleName None { get; } = new QualifiedModuleName();
 

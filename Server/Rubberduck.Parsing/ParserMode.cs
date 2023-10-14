@@ -1,9 +1,8 @@
-﻿namespace Rubberduck.Parsing
+﻿namespace Rubberduck.Parsing;
+
+public enum ParserMode
 {
-    public enum ParserMode
-    {
-        FallBackSllToLl,
-        LlOnly,
-        SllOnly
-    }
+    FallBackSllToLl,
+    LlOnly,
+    SllOnly
 }

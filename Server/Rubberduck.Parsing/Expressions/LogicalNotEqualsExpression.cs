@@ -1,26 +1,25 @@
 ﻿using Rubberduck.Parsing.Abstract;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class LogicalNotEqualsExpression : Expression
 {
-    public sealed class LogicalNotEqualsExpression : Expression
+    private readonly IExpression _left;
+    private readonly IExpression _right;
+
+    public LogicalNotEqualsExpression(IExpression left, IExpression right)
     {
-        private readonly IExpression _left;
-        private readonly IExpression _right;
+        _left = left;
+        _right = right;
+    }
 
-        public LogicalNotEqualsExpression(IExpression left, IExpression right)
+    public override IValue Evaluate()
+    {
+        var eq = new LogicalEqualsExpression(_left, _right).Evaluate();
+        if (eq == null)
         {
-            _left = left;
-            _right = right;
+            return null;
         }
-
-        public override IValue Evaluate()
-        {
-            var eq = new LogicalEqualsExpression(_left, _right).Evaluate();
-            if (eq == null)
-            {
-                return null;
-            }
-            return new BoolValue(!eq.AsBool);
-        }
+        return new BoolValue(!eq.AsBool);
     }
 }

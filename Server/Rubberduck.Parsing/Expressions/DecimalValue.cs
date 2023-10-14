@@ -1,79 +1,76 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Abstract;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class DecimalValue : IValue
 {
-    public sealed class DecimalValue : IValue
+    private readonly decimal _value;
+
+    public DecimalValue(decimal value)
     {
-        private readonly decimal _value;
+        _value = value;
+    }
 
-        public DecimalValue(decimal value)
+    public ValueType ValueType
+    {
+        get
         {
-            _value = value;
+            return ValueType.Decimal;
         }
+    }
 
-        public ValueType ValueType
+    public bool AsBool
+    {
+        get
         {
-            get
-            {
-                return ValueType.Decimal;
-            }
+            return _value != 0;
         }
+    }
 
-        public bool AsBool
+    public byte AsByte
+    {
+        get
         {
-            get
-            {
-                return _value != 0;
-            }
+            return Convert.ToByte(_value);
         }
+    }
 
-        public byte AsByte
+    public DateTime AsDate
+    {
+        get
         {
-            get
-            {
-                return Convert.ToByte(_value);
-            }
+            return DateTime.FromOADate(Convert.ToDouble(_value));
         }
+    }
 
-        public DateTime AsDate
+    public decimal AsDecimal
+    {
+        get
         {
-            get
-            {
-                return DateTime.FromOADate(Convert.ToDouble(_value));
-            }
+            return _value;
         }
+    }
 
-        public decimal AsDecimal
-        {
-            get
-            {
-                return _value;
-            }
-        }
-
-        public string AsString
-        {
-            get
-            {
-                return _value.ToString(CultureInfo.InvariantCulture);
-            }
-        }
-
-        public IEnumerable<IToken> AsTokens
-        {
-            get
-            {
-                return new List<IToken>();
-            }
-        }
-
-        public override string ToString()
+    public string AsString
+    {
+        get
         {
             return _value.ToString(CultureInfo.InvariantCulture);
         }
+    }
+
+    public IEnumerable<IToken> AsTokens
+    {
+        get
+        {
+            return new List<IToken>();
+        }
+    }
+
+    public override string ToString()
+    {
+        return _value.ToString(CultureInfo.InvariantCulture);
     }
 }

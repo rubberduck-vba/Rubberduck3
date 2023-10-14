@@ -1,13 +1,12 @@
-﻿namespace Rubberduck.Parsing.Expressions
+﻿namespace Rubberduck.Parsing.Expressions;
+
+public enum ValueType
 {
-    public enum ValueType
-    {
-        Empty,
-        Bool,
-        Byte,
-        Decimal,
-        Date,
-        String,
-        Tokens
-    }
+    Empty,
+    Bool,
+    Byte,
+    Decimal,
+    Date,
+    String,
+    Tokens
 }

@@ -1,118 +1,115 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Abstract;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class TokensValue : IValue
 {
-    public sealed class TokensValue : IValue
+    private readonly IEnumerable<IToken> _value;
+
+    public TokensValue(IEnumerable<IToken> value)
     {
-        private readonly IEnumerable<IToken> _value;
+        _value = value;
+    }
 
-        public TokensValue(IEnumerable<IToken> value)
+    public ValueType ValueType
+    {
+        get
         {
-            _value = value;
+            return ValueType.Tokens;
         }
+    }
 
-        public ValueType ValueType
+    public bool AsBool
+    {
+        get
         {
-            get
+            if (_value == null)
             {
-                return ValueType.Tokens;
+                return false;
             }
-        }
-
-        public bool AsBool
-        {
-            get
+            var value = AsString;
+            if (string.CompareOrdinal(value.ToLower(), "true") == 0 || string.CompareOrdinal(value, "#TRUE#") == 0)
             {
-                if (_value == null)
-                {
-                    return false;
-                }
-                var value = AsString;
-                if (string.CompareOrdinal(value.ToLower(), "true") == 0 || string.CompareOrdinal(value, "#TRUE#") == 0)
-                {
-                    return true;
-                }
-
-                if (string.CompareOrdinal(value.ToLower(), "false") == 0 || string.CompareOrdinal(value, "#FALSE#") == 0)
-                {
-                    return false;
-                }
-
-                return new DecimalValue(AsDecimal).ToString() != "0"; // any non-zero value evaluates to TRUE in VBA
+                return true;
             }
-        }
 
-        public byte AsByte
-        {
-            get
+            if (string.CompareOrdinal(value.ToLower(), "false") == 0 || string.CompareOrdinal(value, "#FALSE#") == 0)
             {
-                if (byte.TryParse(AsString, NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
-                {
-                    return value;
-                }
-                return byte.Parse(AsString, NumberStyles.Float);
+                return false;
             }
-        }
 
-        public DateTime AsDate
+            return new DecimalValue(AsDecimal).ToString() != "0"; // any non-zero value evaluates to TRUE in VBA
+        }
+    }
+
+    public byte AsByte
+    {
+        get
         {
-            get
+            if (byte.TryParse(AsString, NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
             {
-                if (DateTime.TryParse(AsString, out var value))
-                {
-                    return value;
-                }
-                decimal number = AsDecimal;
-                return new DecimalValue(number).AsDate;
+                return value;
             }
+            return byte.Parse(AsString, NumberStyles.Float);
         }
+    }
 
-        public decimal AsDecimal
+    public DateTime AsDate
+    {
+        get
         {
-            get
+            if (DateTime.TryParse(AsString, out var value))
             {
-                if (decimal.TryParse(AsString, NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
-                {
-                    return value;
-                }
-                Debug.Assert(false); // this line was never hit in any unit test covering it.
-                return 0;
+                return value;
             }
+            decimal number = AsDecimal;
+            return new DecimalValue(number).AsDate;
         }
+    }
 
-        public string AsString
+    public decimal AsDecimal
+    {
+        get
         {
-            get
+            if (decimal.TryParse(AsString, NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
             {
-                var builder = new StringBuilder();
-                foreach (var token in _value)
-                {
-                    if (token.Channel == TokenConstants.DefaultChannel)
-                    {
-                        builder.Append(token.Text);
-                    }
-                }
-                return builder.ToString();
+                return value;
             }
+            Debug.Assert(false); // this line was never hit in any unit test covering it.
+            return 0;
         }
+    }
 
-        public IEnumerable<IToken> AsTokens
+    public string AsString
+    {
+        get
         {
-            get
+            var builder = new StringBuilder();
+            foreach (var token in _value)
             {
-                return _value;
+                if (token.Channel == TokenConstants.DefaultChannel)
+                {
+                    builder.Append(token.Text);
+                }
             }
+            return builder.ToString();
         }
+    }
 
-        public override string ToString()
+    public IEnumerable<IToken> AsTokens
+    {
+        get
         {
-            return _value.ToString();
+            return _value;
         }
+    }
+
+    public override string ToString()
+    {
+        return _value.ToString();
     }
 }

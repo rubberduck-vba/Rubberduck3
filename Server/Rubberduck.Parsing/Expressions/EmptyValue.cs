@@ -1,73 +1,70 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Abstract;
-using System;
-using System.Collections.Generic;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class EmptyValue : IValue
 {
-    public sealed class EmptyValue : IValue
+    public static readonly EmptyValue Value = new();
+
+    public ValueType ValueType
     {
-        public static readonly EmptyValue Value = new EmptyValue();
-
-        public ValueType ValueType
+        get
         {
-            get
-            {
-                return ValueType.Empty;
-            }
+            return ValueType.Empty;
         }
+    }
 
-        public bool AsBool
+    public bool AsBool
+    {
+        get
         {
-            get
-            {
-                return false;
-            }
+            return false;
         }
+    }
 
-        public byte AsByte
+    public byte AsByte
+    {
+        get
         {
-            get
-            {
-                return 0;
-            }
+            return 0;
         }
+    }
 
-        public DateTime AsDate
+    public DateTime AsDate
+    {
+        get
         {
-            get
-            {
-                return new DateTime(1899, 12, 30);
-            }
+            return new DateTime(1899, 12, 30);
         }
+    }
 
-        public decimal AsDecimal
+    public decimal AsDecimal
+    {
+        get
         {
-            get
-            {
-                return 0;
-            }
+            return 0;
         }
+    }
 
-        public string AsString
+    public string AsString
+    {
+        get
         {
-            get
-            {
-                return string.Empty;
-            }
+            return string.Empty;
         }
+    }
 
-        public IEnumerable<IToken> AsTokens
+    public IEnumerable<IToken> AsTokens
+    {
+        get
         {
-            get
-            {
-                return new List<IToken>();
-            }
+            return new List<IToken>();
         }
+    }
 
-        public override string ToString()
-        {
-            return "<Empty>";
-        }
+    public override string ToString()
+    {
+        return "<Empty>";
     }
 }

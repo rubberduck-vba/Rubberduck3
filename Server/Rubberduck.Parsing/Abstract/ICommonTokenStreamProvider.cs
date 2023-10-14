@@ -1,9 +1,8 @@
 ﻿using Antlr4.Runtime;
 
-namespace Rubberduck.Parsing.Abstract
+namespace Rubberduck.Parsing.Abstract;
+
+public interface ICommonTokenStreamProvider<TContent>
 {
-    public interface ICommonTokenStreamProvider<TContent>
-    {
-        CommonTokenStream Tokens(TContent content);
-    }
+    CommonTokenStream Tokens(TContent content);
 }

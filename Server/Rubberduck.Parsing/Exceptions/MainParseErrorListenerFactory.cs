@@ -1,13 +1,12 @@
 ﻿using Rubberduck.Parsing.Abstract;
 using Rubberduck.Parsing.Model;
 
-namespace Rubberduck.Parsing.Exceptions
+namespace Rubberduck.Parsing.Exceptions;
+
+public class MainParseErrorListenerFactory : IParsePassErrorListenerFactory
 {
-    public class MainParseErrorListenerFactory : IParsePassErrorListenerFactory
+    public IRubberduckParseErrorListener Create(string moduleName, CodeKind codeKind)
     {
-        public IRubberduckParseErrorListener Create(string moduleName, CodeKind codeKind)
-        {
-            return new MainParseExceptionErrorListener(moduleName, codeKind);
-        }
+        return new MainParseExceptionErrorListener(moduleName, codeKind);
     }
 }

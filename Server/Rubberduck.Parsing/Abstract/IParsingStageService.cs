@@ -1,6 +1,5 @@
-﻿namespace Rubberduck.Parsing.VBA.Parsing
+﻿namespace Rubberduck.Parsing.VBA.Parsing;
+
+public interface IParsingStageService
 {
-    public interface IParsingStageService
-    {
-    }
 }

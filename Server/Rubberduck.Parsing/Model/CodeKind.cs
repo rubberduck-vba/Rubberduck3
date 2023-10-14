@@ -1,10 +1,9 @@
-﻿namespace Rubberduck.Parsing.Model
+﻿namespace Rubberduck.Parsing.Model;
+
+public enum CodeKind
 {
-    public enum CodeKind
-    {
-        RubberduckEditorModule,
-        AttributesCode,
-        CodePaneCode,
-        SnippetCode,
-    }
+    RubberduckEditorModule,
+    AttributesCode,
+    CodePaneCode,
+    SnippetCode,
 }

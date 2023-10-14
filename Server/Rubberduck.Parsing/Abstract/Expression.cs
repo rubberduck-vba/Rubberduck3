@@ -1,17 +1,16 @@
-﻿namespace Rubberduck.Parsing.Abstract
-{
-    public abstract class Expression : IExpression
-    {
-        public abstract IValue Evaluate();
+﻿namespace Rubberduck.Parsing.Abstract;
 
-        public bool EvaluateCondition()
+public abstract class Expression : IExpression
+{
+    public abstract IValue Evaluate();
+
+    public bool EvaluateCondition()
+    {
+        var val = Evaluate();
+        if (val == null)
         {
-            var val = Evaluate();
-            if (val == null)
-            {
-                return false;
-            }
-            return val.AsBool;
+            return false;
         }
+        return val.AsBool;
     }
 }

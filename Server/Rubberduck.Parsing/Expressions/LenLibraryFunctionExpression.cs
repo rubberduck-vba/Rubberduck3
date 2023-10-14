@@ -1,24 +1,23 @@
 ﻿using Rubberduck.Parsing.Abstract;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class LenLibraryFunctionExpression : Expression
 {
-    public sealed class LenLibraryFunctionExpression : Expression
+    private readonly IExpression _expression;
+
+    public LenLibraryFunctionExpression(IExpression expression)
     {
-        private readonly IExpression _expression;
+        _expression = expression;
+    }
 
-        public LenLibraryFunctionExpression(IExpression expression)
+    public override IValue Evaluate()
+    {
+        var expr = _expression.Evaluate();
+        if (expr == null)
         {
-            _expression = expression;
+            return null;
         }
-
-        public override IValue Evaluate()
-        {
-            var expr = _expression.Evaluate();
-            if (expr == null)
-            {
-                return null;
-            }
-            return new DecimalValue(expr.AsString.Length);
-        }
+        return new DecimalValue(expr.AsString.Length);
     }
 }

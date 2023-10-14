@@ -1,39 +1,35 @@
-﻿using System.Collections.Generic;
-using Rubberduck.InternalApi.UIContext;
-using Rubberduck.Parsing.Abstract;
-using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
+﻿using Rubberduck.Parsing.Abstract;
+using Rubberduck.Unmanaged.TypeLibs.Abstract;
+using Rubberduck.Unmanaged.UIContext;
 
-namespace Rubberduck.Parsing.PreProcessing
+namespace Rubberduck.Parsing.PreProcessing;
+
+public class CompilationArgumentsProvider : ICompilationArgumentsProvider
 {
-    public class CompilationArgumentsProvider : ICompilationArgumentsProvider
+    private readonly IUiDispatcher _uiDispatcher;
+    private readonly ITypeLibWrapperProvider _typeLibWrapperProvider;
+
+    public CompilationArgumentsProvider(ITypeLibWrapperProvider typeLibWrapperProvider, IUiDispatcher uiDispatcher, VBAPredefinedCompilationConstants predefinedConstants)
     {
-        private readonly IUiDispatcher _uiDispatcher;
-        private readonly ITypeLibWrapperProvider _typeLibWrapperProvider;
+        _typeLibWrapperProvider = typeLibWrapperProvider;
+        _uiDispatcher = uiDispatcher;
+        PredefinedCompilationConstants = predefinedConstants;
+    }
 
-        public CompilationArgumentsProvider(ITypeLibWrapperProvider typeLibWrapperProvider, IUiDispatcher uiDispatcher, VBAPredefinedCompilationConstants predefinedConstants)
-        {
-            _typeLibWrapperProvider = typeLibWrapperProvider;
-            _uiDispatcher = uiDispatcher;
-            PredefinedCompilationConstants = predefinedConstants;
-        }
+    public VBAPredefinedCompilationConstants PredefinedCompilationConstants { get; }
 
-        public VBAPredefinedCompilationConstants PredefinedCompilationConstants { get; }
+    public Dictionary<string, short> UserDefinedCompilationArguments(string projectId)
+    {
+        return GetUserDefinedCompilationArguments(projectId);
+    }
 
-        public Dictionary<string, short> UserDefinedCompilationArguments(string projectId)
-        {
-            return GetUserDefinedCompilationArguments(projectId);
-        }
-
-        private Dictionary<string, short> GetUserDefinedCompilationArguments(string projectId)
-        {
-            // use the TypeLib API to grab the user defined compilation arguments; must be obtained on the main thread.
-            var task = _uiDispatcher.StartTask(() => {
-                using (var typeLib = _typeLibWrapperProvider.TypeLibWrapperFromProject(projectId))
-                {
-                    return typeLib?.VBEExtensions.ConditionalCompilationArguments ?? new Dictionary<string, short>();
-                }
-            });
-            return task.Result;
-        }
+    private Dictionary<string, short> GetUserDefinedCompilationArguments(string projectId)
+    {
+        // use the TypeLib API to grab the user defined compilation arguments; must be obtained on the main thread.
+        var task = _uiDispatcher.StartTask(() => {
+            using var typeLib = _typeLibWrapperProvider.TypeLibWrapperFromProject(projectId);
+            return typeLib?.VBEExtensions.ConditionalCompilationArguments ?? new Dictionary<string, short>();
+        });
+        return task.Result;
     }
 }

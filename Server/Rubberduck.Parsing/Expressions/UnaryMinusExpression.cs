@@ -1,45 +1,44 @@
 ﻿using Rubberduck.Parsing.Abstract;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class UnaryMinusExpression : Expression
 {
-    public sealed class UnaryMinusExpression : Expression
+    private readonly IExpression _expression;
+
+    public UnaryMinusExpression(IExpression expression)
     {
-        private readonly IExpression _expression;
+        _expression = expression;
+    }
 
-        public UnaryMinusExpression(IExpression expression)
+    public override IValue Evaluate()
+    {
+        var operand = _expression.Evaluate();
+        if (operand == null)
         {
-            _expression = expression;
+            return null;
         }
-
-        public override IValue Evaluate()
+        else if (operand.ValueType == ValueType.Date)
         {
-            var operand = _expression.Evaluate();
-            if (operand == null)
+            var value = operand.AsDecimal;
+            value = -value;
+            try
             {
-                return null;
+                return new DateValue(new DecimalValue(value).AsDate);
             }
-            else if (operand.ValueType == ValueType.Date)
+            catch
             {
-                var value = operand.AsDecimal;
-                value = -value;
-                try
-                {
-                    return new DateValue(new DecimalValue(value).AsDate);
-                }
-                catch
-                {
-                    // 5.6.9.3.1: If overflow occurs during the coercion to Date, and the operand has a 
-                    // declared type of Variant, the result is the Double value.
-                    // We don't care about it being a Variant because if it's not a Variant it won't compile/run.
-                    // We catch everything because the only case where the code is valid is that if this is an overflow.
-                    return new DecimalValue(value);
-                }
+                // 5.6.9.3.1: If overflow occurs during the coercion to Date, and the operand has a 
+                // declared type of Variant, the result is the Double value.
+                // We don't care about it being a Variant because if it's not a Variant it won't compile/run.
+                // We catch everything because the only case where the code is valid is that if this is an overflow.
+                return new DecimalValue(value);
             }
-            else
-            {
-                var value = operand.AsDecimal;
-                return new DecimalValue(-value);
-            }
+        }
+        else
+        {
+            var value = operand.AsDecimal;
+            return new DecimalValue(-value);
         }
     }
 }

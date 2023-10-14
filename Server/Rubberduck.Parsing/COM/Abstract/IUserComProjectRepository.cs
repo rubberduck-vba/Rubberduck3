@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace Rubberduck.Parsing.COM.Abstract;
 
-namespace Rubberduck.Parsing.COM.Abstract
+public interface IUserComProjectRepository : IUserComProjectProvider
 {
-    public interface IUserComProjectRepository : IUserComProjectProvider
-    {
-        void RefreshUserComProjects(IReadOnlyCollection<string> projectIdsToReload);
-    }
+    void RefreshUserComProjects(IReadOnlyCollection<string> projectIdsToReload);
 }

@@ -1,51 +1,49 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Abstract;
-using System.Collections.Generic;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class LivelinessExpression : Expression
 {
-    public sealed class LivelinessExpression : Expression
+    private readonly IExpression _isAlive;
+    private readonly IExpression _tokens;
+
+    public LivelinessExpression(IExpression isAlive, IExpression tokens)
     {
-        private readonly IExpression _isAlive;
-        private readonly IExpression _tokens;
+        _isAlive = isAlive;
+        _tokens = tokens;
+    }
 
-        public LivelinessExpression(IExpression isAlive, IExpression tokens)
+    public override IValue Evaluate()
+    {
+        var isAlive = _isAlive.Evaluate().AsBool;
+        var tokens = _tokens.Evaluate().AsTokens;
+        if (!isAlive)
         {
-            _isAlive = isAlive;
-            _tokens = tokens;
+            HideDeadTokens(tokens);
         }
+        return new TokensValue(tokens);
+    }
 
-        public override IValue Evaluate()
+    private void HideDeadTokens(IEnumerable<IToken> deadTokens)
+    {
+        foreach(var token in deadTokens)
         {
-            var isAlive = _isAlive.Evaluate().AsBool;
-            var tokens = _tokens.Evaluate().AsTokens;
-            if (!isAlive)
+            //We need this cast because the IToken interface does not expose the setters for the properties.
+            //CommonToken is the default token type used by Antlr. (Any custom token types should extend it.)
+            if (token is CommonToken commonToken)
             {
-                HideDeadTokens(tokens);
-            }
-            return new TokensValue(tokens);
-        }
-
-        private void HideDeadTokens(IEnumerable<IToken> deadTokens)
-        {
-            foreach(var token in deadTokens)
-            {
-                //We need this cast because the IToken interface does not expose the setters for the properties.
-                //CommonToken is the default token type used by Antlr. (Any custom token types should extend it.)
-                if (token is CommonToken commonToken)
-                {
-                    HideNonNewline(commonToken);
-                }
+                HideNonNewline(commonToken);
             }
         }
+    }
 
-        private void HideNonNewline(CommonToken token)
+    private void HideNonNewline(CommonToken token)
+    {
+        //We do not remove the newlines or line continuations to keep physical and logical line counts intact.
+        if (token.Type != Grammar.VBALexer.NEWLINE && token.Type != Grammar.VBALexer.LINE_CONTINUATION)
         {
-            //We do not remove the newlines or line continuations to keep physical and logical line counts intact.
-            if (token.Type != Grammar.VBALexer.NEWLINE && token.Type != Grammar.VBALexer.LINE_CONTINUATION)
-            {
-                token.Channel = TokenConstants.HiddenChannel;
-            }
+            token.Channel = TokenConstants.HiddenChannel;
         }
     }
 }

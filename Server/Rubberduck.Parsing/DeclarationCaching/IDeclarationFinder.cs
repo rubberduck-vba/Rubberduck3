@@ -1,6 +1,5 @@
-﻿namespace Rubberduck.Parsing.DeclarationCaching
+﻿namespace Rubberduck.Parsing.DeclarationCaching;
+
+public interface IDeclarationFinder
 {
-    public interface IDeclarationFinder
-    {
-    }
 }

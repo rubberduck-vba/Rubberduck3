@@ -1,41 +1,39 @@
 ﻿using Rubberduck.Parsing.Abstract;
-using System;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class IntLibraryFunctionExpression : Expression
 {
-    public sealed class IntLibraryFunctionExpression : Expression
+    private readonly IExpression _expression;
+
+    public IntLibraryFunctionExpression(IExpression expression)
     {
-        private readonly IExpression _expression;
+        _expression = expression;
+    }
 
-        public IntLibraryFunctionExpression(IExpression expression)
+    public override IValue Evaluate()
+    {
+        var expr = _expression.Evaluate();
+        if (expr == null)
         {
-            _expression = expression;
+            return null;
         }
-
-        public override IValue Evaluate()
+        if (expr.ValueType == ValueType.Decimal)
         {
-            var expr = _expression.Evaluate();
-            if (expr == null)
-            {
-                return null;
-            }
-            if (expr.ValueType == ValueType.Decimal)
-            {
-                return new DecimalValue(Math.Truncate(expr.AsDecimal));
-            }
-            else if (expr.ValueType == ValueType.String)
-            {
-                return new DecimalValue(Math.Truncate(expr.AsDecimal));
-            }
-            else if (expr.ValueType == ValueType.Date)
-            {
-                var truncated = new DecimalValue(Math.Truncate(expr.AsDecimal));
-                return new DateValue(truncated.AsDate);
-            }
-            else
-            {
-                return new DecimalValue(expr.AsDecimal);
-            }
+            return new DecimalValue(Math.Truncate(expr.AsDecimal));
+        }
+        else if (expr.ValueType == ValueType.String)
+        {
+            return new DecimalValue(Math.Truncate(expr.AsDecimal));
+        }
+        else if (expr.ValueType == ValueType.Date)
+        {
+            var truncated = new DecimalValue(Math.Truncate(expr.AsDecimal));
+            return new DateValue(truncated.AsDate);
+        }
+        else
+        {
+            return new DecimalValue(expr.AsDecimal);
         }
     }
 }

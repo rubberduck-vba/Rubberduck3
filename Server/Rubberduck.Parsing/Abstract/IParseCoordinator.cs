@@ -1,7 +1,6 @@
-﻿namespace Rubberduck.Parsing.VBA.Parsing
+﻿namespace Rubberduck.Parsing.VBA.Parsing;
+
+public interface IParseCoordinator
 {
-    public interface IParseCoordinator
-    {
-        IParserStateManager ParserState { get; }
-    }
+    IParserStateManager ParserState { get; }
 }

@@ -1,8 +1,7 @@
-﻿namespace Rubberduck.Parsing.Abstract
+﻿namespace Rubberduck.Parsing.Abstract;
+
+public interface IExpression
 {
-    public interface IExpression
-    {
-        IValue Evaluate();
-        bool EvaluateCondition();
-    }
+    IValue Evaluate();
+    bool EvaluateCondition();
 }

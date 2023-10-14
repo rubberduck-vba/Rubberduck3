@@ -1,112 +1,109 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Abstract;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class StringValue : IValue
 {
-    public sealed class StringValue : IValue
+    private readonly string _value;
+
+    public StringValue(string value)
     {
-        private readonly string _value;
+        _value = value;
+    }
 
-        public StringValue(string value)
+    public ValueType ValueType
+    {
+        get
         {
-            _value = value;
+            return ValueType.String;
         }
+    }
 
-        public ValueType ValueType
+    public bool AsBool
+    {
+        get
         {
-            get
+            if (_value == null)
             {
-                return ValueType.String;
+                return false;
             }
-        }
-
-        public bool AsBool
-        {
-            get
+            var value = _value;
+            if (string.CompareOrdinal(value.ToLower(), "true") == 0 || string.CompareOrdinal(value, "#TRUE#") == 0)
             {
-                if (_value == null)
-                {
-                    return false;
-                }
-                var value = _value;
-                if (string.CompareOrdinal(value.ToLower(), "true") == 0 || string.CompareOrdinal(value, "#TRUE#") == 0)
-                {
-                    return true;
-                }
-                
-                if (string.CompareOrdinal(value.ToLower(), "false") == 0 || string.CompareOrdinal(value, "#FALSE#") == 0)
-                {
-                    return false;
-                }
-                
-                return new DecimalValue(AsDecimal).ToString() != "0"; // any non-zero value evaluates to TRUE in VBA
+                return true;
             }
-        }
-
-        public byte AsByte
-        {
-            get
+            
+            if (string.CompareOrdinal(value.ToLower(), "false") == 0 || string.CompareOrdinal(value, "#FALSE#") == 0)
             {
-                byte value;
-                if (byte.TryParse(_value, NumberStyles.Float, CultureInfo.InvariantCulture, out value))
-                {
-                    return value;
-                }
-                return byte.Parse(_value, NumberStyles.Float);
+                return false;
             }
+            
+            return new DecimalValue(AsDecimal).ToString() != "0"; // any non-zero value evaluates to TRUE in VBA
         }
+    }
 
-        public DateTime AsDate
+    public byte AsByte
+    {
+        get
         {
-            get
+            byte value;
+            if (byte.TryParse(_value, NumberStyles.Float, CultureInfo.InvariantCulture, out value))
             {
-                DateTime value;
-                if (DateTime.TryParse(_value, out value))
-                {
-                    return value;
-                }
-                decimal number = AsDecimal;
-                return new DecimalValue(number).AsDate;
+                return value;
             }
+            return byte.Parse(_value, NumberStyles.Float);
         }
+    }
 
-        public decimal AsDecimal
+    public DateTime AsDate
+    {
+        get
         {
-            get
+            DateTime value;
+            if (DateTime.TryParse(_value, out value))
             {
-                decimal value;
-                if (decimal.TryParse(_value, NumberStyles.Float, CultureInfo.InvariantCulture, out value))
-                {
-                    return value;
-                }
-                Debug.Assert(false); // this line was never hit in any unit test covering it.
-                return 0;
+                return value;
             }
+            decimal number = AsDecimal;
+            return new DecimalValue(number).AsDate;
         }
+    }
 
-        public string AsString
+    public decimal AsDecimal
+    {
+        get
         {
-            get
+            decimal value;
+            if (decimal.TryParse(_value, NumberStyles.Float, CultureInfo.InvariantCulture, out value))
             {
-                return _value;
+                return value;
             }
+            Debug.Assert(false); // this line was never hit in any unit test covering it.
+            return 0;
         }
+    }
 
-        public IEnumerable<IToken> AsTokens
-        {
-            get
-            {
-                return new List<IToken>();
-            }
-        }
-
-        public override string ToString()
+    public string AsString
+    {
+        get
         {
             return _value;
         }
+    }
+
+    public IEnumerable<IToken> AsTokens
+    {
+        get
+        {
+            return new List<IToken>();
+        }
+    }
+
+    public override string ToString()
+    {
+        return _value;
     }
 }

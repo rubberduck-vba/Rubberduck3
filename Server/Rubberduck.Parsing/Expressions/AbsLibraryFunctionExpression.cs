@@ -1,41 +1,39 @@
 ﻿using Rubberduck.Parsing.Abstract;
-using System;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class AbsLibraryFunctionExpression : Expression
 {
-    public sealed class AbsLibraryFunctionExpression : Expression
+    private readonly IExpression _expression;
+
+    public AbsLibraryFunctionExpression(IExpression expression)
     {
-        private readonly IExpression _expression;
+        _expression = expression;
+    }
 
-        public AbsLibraryFunctionExpression(IExpression expression)
+    public override IValue Evaluate()
+    {
+        var expr = _expression.Evaluate();
+        if (expr == null)
         {
-            _expression = expression;
+            return null;
         }
-
-        public override IValue Evaluate()
+        if (expr.ValueType == ValueType.Date)
         {
-            var expr = _expression.Evaluate();
-            if (expr == null)
+            decimal exprValue = expr.AsDecimal;
+            exprValue = Math.Abs(exprValue);
+            try
             {
-                return null;
+                return new DateValue(new DecimalValue(exprValue).AsDate);
             }
-            if (expr.ValueType == ValueType.Date)
+            catch
             {
-                decimal exprValue = expr.AsDecimal;
-                exprValue = Math.Abs(exprValue);
-                try
-                {
-                    return new DateValue(new DecimalValue(exprValue).AsDate);
-                }
-                catch
-                {
-                    return new DecimalValue(exprValue);
-                }
+                return new DecimalValue(exprValue);
             }
-            else
-            {
-                return new DecimalValue(Math.Abs(expr.AsDecimal));
-            }
+        }
+        else
+        {
+            return new DecimalValue(Math.Abs(expr.AsDecimal));
         }
     }
 }

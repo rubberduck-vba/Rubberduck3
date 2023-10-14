@@ -1,25 +1,23 @@
 ﻿using Rubberduck.Parsing.Abstract;
-using System;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class SgnLibraryFunctionExpression : Expression
 {
-    public sealed class SgnLibraryFunctionExpression : Expression
+    private readonly IExpression _expression;
+
+    public SgnLibraryFunctionExpression(IExpression expression)
     {
-        private readonly IExpression _expression;
+        _expression = expression;
+    }
 
-        public SgnLibraryFunctionExpression(IExpression expression)
+    public override IValue Evaluate()
+    {
+        var expr = _expression.Evaluate();
+        if (expr == null)
         {
-            _expression = expression;
+            return null;
         }
-
-        public override IValue Evaluate()
-        {
-            var expr = _expression.Evaluate();
-            if (expr == null)
-            {
-                return null;
-            }
-            return new DecimalValue(Math.Sign(expr.AsDecimal));
-        }
+        return new DecimalValue(Math.Sign(expr.AsDecimal));
     }
 }

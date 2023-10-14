@@ -1,10 +1,8 @@
 ﻿//using ICSharpCode.AvalonEdit.Document;
-using Rubberduck.InternalApi.Model;
 
-namespace Rubberduck.Parsing
+namespace Rubberduck.Parsing;
+
+public interface ITextDocumentProvider
 {
-    public interface ITextDocumentProvider
-    {
-        //TextDocument GetDocument(IQualifiedModuleName module);
-    }
+    //TextDocument GetDocument(IQualifiedModuleName module);
 }

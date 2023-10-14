@@ -1,39 +1,37 @@
 ﻿using Rubberduck.Parsing.Abstract;
-using System;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class LogicalXorExpression : Expression
 {
-    public sealed class LogicalXorExpression : Expression
+    private readonly IExpression _left;
+    private readonly IExpression _right;
+
+    public LogicalXorExpression(IExpression left, IExpression right)
     {
-        private readonly IExpression _left;
-        private readonly IExpression _right;
+        _left = left;
+        _right = right;
+    }
 
-        public LogicalXorExpression(IExpression left, IExpression right)
+    public override IValue Evaluate()
+    {
+        var left = _left.Evaluate();
+        var right = _right.Evaluate();
+        if (left == null || right == null)
         {
-            _left = left;
-            _right = right;
+            return null;
         }
-
-        public override IValue Evaluate()
+        else if (left.ValueType == ValueType.Bool && right.ValueType == ValueType.Bool)
         {
-            var left = _left.Evaluate();
-            var right = _right.Evaluate();
-            if (left == null || right == null)
-            {
-                return null;
-            }
-            else if (left.ValueType == ValueType.Bool && right.ValueType == ValueType.Bool)
-            {
-                var leftNumber = Convert.ToInt64(left.AsDecimal);
-                var rightNumber = Convert.ToInt64(right.AsDecimal);
-                return new BoolValue(new DecimalValue(leftNumber ^ rightNumber).AsBool);
-            }
-            else
-            {
-                var leftNumber = Convert.ToInt64(left.AsDecimal);
-                var rightNumber = Convert.ToInt64(right.AsDecimal);
-                return new DecimalValue(leftNumber ^ rightNumber);
-            }
+            var leftNumber = Convert.ToInt64(left.AsDecimal);
+            var rightNumber = Convert.ToInt64(right.AsDecimal);
+            return new BoolValue(new DecimalValue(leftNumber ^ rightNumber).AsBool);
+        }
+        else
+        {
+            var leftNumber = Convert.ToInt64(left.AsDecimal);
+            var rightNumber = Convert.ToInt64(right.AsDecimal);
+            return new DecimalValue(leftNumber ^ rightNumber);
         }
     }
 }

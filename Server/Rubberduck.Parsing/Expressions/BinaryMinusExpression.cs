@@ -1,55 +1,54 @@
 ﻿using Rubberduck.Parsing.Abstract;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class BinaryMinusExpression : Expression
 {
-    public sealed class BinaryMinusExpression : Expression
+    private readonly IExpression _left;
+    private readonly IExpression _right;
+
+    public BinaryMinusExpression(IExpression left, IExpression right)
     {
-        private readonly IExpression _left;
-        private readonly IExpression _right;
+        _left = left;
+        _right = right;
+    }
 
-        public BinaryMinusExpression(IExpression left, IExpression right)
+    public override IValue Evaluate()
+    {
+        var left = _left.Evaluate();
+        var right = _right.Evaluate();
+        if (left == null || right == null)
         {
-            _left = left;
-            _right = right;
+            return null;
         }
-
-        public override IValue Evaluate()
+        else if (left.ValueType == ValueType.Date && right.ValueType == ValueType.Date)
         {
-            var left = _left.Evaluate();
-            var right = _right.Evaluate();
-            if (left == null || right == null)
+            // 5.6.9.3.3 - Effective value type exception.
+            // If left + right are both Date then effective value type is double.
+            decimal leftValue = left.AsDecimal;
+            decimal rightValue = right.AsDecimal;
+            decimal difference = leftValue - rightValue;
+            return new DecimalValue(difference);
+        }
+        else if (left.ValueType == ValueType.Date || right.ValueType == ValueType.Date)
+        {
+            decimal leftValue = left.AsDecimal;
+            decimal rightValue = right.AsDecimal;
+            decimal difference = leftValue - rightValue;
+            try
             {
-                return null;
+                return new DateValue(new DecimalValue(difference).AsDate);
             }
-            else if (left.ValueType == ValueType.Date && right.ValueType == ValueType.Date)
+            catch
             {
-                // 5.6.9.3.3 - Effective value type exception.
-                // If left + right are both Date then effective value type is double.
-                decimal leftValue = left.AsDecimal;
-                decimal rightValue = right.AsDecimal;
-                decimal difference = leftValue - rightValue;
                 return new DecimalValue(difference);
             }
-            else if (left.ValueType == ValueType.Date || right.ValueType == ValueType.Date)
-            {
-                decimal leftValue = left.AsDecimal;
-                decimal rightValue = right.AsDecimal;
-                decimal difference = leftValue - rightValue;
-                try
-                {
-                    return new DateValue(new DecimalValue(difference).AsDate);
-                }
-                catch
-                {
-                    return new DecimalValue(difference);
-                }
-            }
-            else
-            {
-                decimal leftValue = left.AsDecimal;
-                decimal rightValue = right.AsDecimal;
-                return new DecimalValue(leftValue - rightValue);
-            }
+        }
+        else
+        {
+            decimal leftValue = left.AsDecimal;
+            decimal rightValue = right.AsDecimal;
+            return new DecimalValue(leftValue - rightValue);
         }
     }
 }

@@ -1,26 +1,25 @@
 ﻿using Rubberduck.Parsing.Abstract;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class LogicalGreaterOrEqualsExpression : Expression
 {
-    public sealed class LogicalGreaterOrEqualsExpression : Expression
+    private readonly IExpression _left;
+    private readonly IExpression _right;
+
+    public LogicalGreaterOrEqualsExpression(IExpression left, IExpression right)
     {
-        private readonly IExpression _left;
-        private readonly IExpression _right;
+        _left = left;
+        _right = right;
+    }
 
-        public LogicalGreaterOrEqualsExpression(IExpression left, IExpression right)
+    public override IValue Evaluate()
+    {
+        var result = new LogicalLessThanExpression(_left, _right).Evaluate();
+        if (result == null)
         {
-            _left = left;
-            _right = right;
+            return null;
         }
-
-        public override IValue Evaluate()
-        {
-            var result = new LogicalLessThanExpression(_left, _right).Evaluate();
-            if (result == null)
-            {
-                return null;
-            }
-            return new BoolValue(!result.AsBool);
-        }
+        return new BoolValue(!result.AsBool);
     }
 }

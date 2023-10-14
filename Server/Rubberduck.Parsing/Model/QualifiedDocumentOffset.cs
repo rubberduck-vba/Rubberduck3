@@ -1,19 +1,18 @@
 ﻿using Rubberduck.InternalApi.Model;
-using Rubberduck.VBEditor;
+using Rubberduck.Unmanaged.Model;
 
-namespace Rubberduck.Parsing.Model
+namespace Rubberduck.Parsing.Model;
+
+public readonly struct QualifiedDocumentOffset
 {
-    public readonly struct QualifiedDocumentOffset
+    public QualifiedDocumentOffset(QualifiedModuleName module, DocumentOffset offset)
     {
-        public QualifiedDocumentOffset(QualifiedModuleName module, DocumentOffset offset)
-        {
-            QualifiedModuleName = module;
-            Offset = offset;
-        }
-
-        public QualifiedModuleName QualifiedModuleName { get; }
-        public DocumentOffset Offset { get; }
-
-        // TODO implement IEquatable, IComparable, ...
+        QualifiedModuleName = module;
+        Offset = offset;
     }
+
+    public QualifiedModuleName QualifiedModuleName { get; }
+    public DocumentOffset Offset { get; }
+
+    // TODO implement IEquatable, IComparable, ...
 }

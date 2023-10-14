@@ -1,65 +1,62 @@
-﻿using System.Collections.Generic;
-using Rubberduck.InternalApi.Extensions;
-using Rubberduck.Parsing.Abstract;
+﻿using Rubberduck.Parsing.Abstract;
 
-namespace Rubberduck.Parsing.PreProcessing
+namespace Rubberduck.Parsing.PreProcessing;
+
+public class CompilationArgumentsCache : ICompilationArgumentsCache
 {
-    public class CompilationArgumentsCache : ICompilationArgumentsCache
+    private readonly ICompilationArgumentsProvider _provider;
+    private readonly Dictionary<string,Dictionary<string,short>> _compilationArguments = new();
+    private readonly HashSet<string> _projectsWhoseCompilationArgumentsChanged = new();
+
+    public CompilationArgumentsCache(ICompilationArgumentsProvider compilationArgumentsProvider)
     {
-        private readonly ICompilationArgumentsProvider _provider;
-        private readonly Dictionary<string,Dictionary<string,short>> _compilationArguments = new Dictionary<string, Dictionary<string, short>>();
-        private readonly HashSet<string> _projectsWhoseCompilationArgumentsChanged = new HashSet<string>();
+        _provider = compilationArgumentsProvider;
+    }
 
-        public CompilationArgumentsCache(ICompilationArgumentsProvider compilationArgumentsProvider)
+    public VBAPredefinedCompilationConstants PredefinedCompilationConstants =>
+        _provider.PredefinedCompilationConstants;
+
+    public Dictionary<string, short> UserDefinedCompilationArguments(string projectId)
+    {
+        return _compilationArguments.TryGetValue(projectId, out var compilatioarguments)
+            ? compilatioarguments
+            : new Dictionary<string, short>();
+    }
+
+    public void ReloadCompilationArguments(IEnumerable<string> projectIds)
+    {
+        foreach (var projectId in projectIds)
         {
-            _provider = compilationArgumentsProvider;
-        }
-
-        public VBAPredefinedCompilationConstants PredefinedCompilationConstants =>
-            _provider.PredefinedCompilationConstants;
-
-        public Dictionary<string, short> UserDefinedCompilationArguments(string projectId)
-        {
-            return _compilationArguments.TryGetValue(projectId, out var compilatioarguments)
-                ? compilatioarguments
-                : new Dictionary<string, short>();
-        }
-
-        public void ReloadCompilationArguments(IEnumerable<string> projectIds)
-        {
-            foreach (var projectId in projectIds)
+            var oldCompilationArguments = UserDefinedCompilationArguments(projectId);
+            ReloadCompilationArguments(projectId);
+            var newCompilationArguments = UserDefinedCompilationArguments(projectId);
+            if (!newCompilationArguments.HasEqualContent(oldCompilationArguments))
             {
-                var oldCompilationArguments = UserDefinedCompilationArguments(projectId);
-                ReloadCompilationArguments(projectId);
-                var newCompilationArguments = UserDefinedCompilationArguments(projectId);
-                if (!newCompilationArguments.HasEqualContent(oldCompilationArguments))
-                {
-                    _projectsWhoseCompilationArgumentsChanged.Add(projectId);
-                }
+                _projectsWhoseCompilationArgumentsChanged.Add(projectId);
             }
         }
+    }
 
-        private void ReloadCompilationArguments(string projectId)
-        {
-            _compilationArguments[projectId] = _provider.UserDefinedCompilationArguments(projectId);
-        }
+    private void ReloadCompilationArguments(string projectId)
+    {
+        _compilationArguments[projectId] = _provider.UserDefinedCompilationArguments(projectId);
+    }
 
-        public IReadOnlyCollection<string> ProjectWhoseCompilationArgumentsChanged()
-        {
-            return _projectsWhoseCompilationArgumentsChanged;
-        }
+    public IReadOnlyCollection<string> ProjectWhoseCompilationArgumentsChanged()
+    {
+        return _projectsWhoseCompilationArgumentsChanged;
+    }
 
-        public void ClearProjectWhoseCompilationArgumentsChanged()
-        {
-            _projectsWhoseCompilationArgumentsChanged.Clear();
-        }
+    public void ClearProjectWhoseCompilationArgumentsChanged()
+    {
+        _projectsWhoseCompilationArgumentsChanged.Clear();
+    }
 
-        public void RemoveCompilationArgumentsFromCache(IEnumerable<string> projectIds)
+    public void RemoveCompilationArgumentsFromCache(IEnumerable<string> projectIds)
+    {
+        foreach (var projectId in projectIds)
         {
-            foreach (var projectId in projectIds)
-            {
-                _compilationArguments.Remove(projectId);
-            }
+            _compilationArguments.Remove(projectId);
         }
     }
 }

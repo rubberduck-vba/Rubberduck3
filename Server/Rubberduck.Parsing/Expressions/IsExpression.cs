@@ -1,23 +1,22 @@
 ﻿using Rubberduck.Parsing.Abstract;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class IsExpression : Expression
 {
-    public sealed class IsExpression : Expression
+    private readonly IExpression _left;
+    private readonly IExpression _right;
+
+    public IsExpression(IExpression left, IExpression right)
     {
-        private readonly IExpression _left;
-        private readonly IExpression _right;
+        _left = left;
+        _right = right;
+    }
 
-        public IsExpression(IExpression left, IExpression right)
-        {
-            _left = left;
-            _right = right;
-        }
-
-        public override IValue Evaluate()
-        {
-            var left = _left.Evaluate();
-            var right = _right.Evaluate();
-            return new BoolValue(left == null && right == null);
-        }
+    public override IValue Evaluate()
+    {
+        var left = _left.Evaluate();
+        var right = _right.Evaluate();
+        return new BoolValue(left == null && right == null);
     }
 }

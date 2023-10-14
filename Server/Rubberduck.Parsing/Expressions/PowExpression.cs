@@ -1,30 +1,28 @@
 ﻿using Rubberduck.Parsing.Abstract;
-using System;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class PowExpression : Expression
 {
-    public sealed class PowExpression : Expression
+    private readonly IExpression _left;
+    private readonly IExpression _right;
+
+    public PowExpression(IExpression left, IExpression right)
     {
-        private readonly IExpression _left;
-        private readonly IExpression _right;
+        _left = left;
+        _right = right;
+    }
 
-        public PowExpression(IExpression left, IExpression right)
+    public override IValue Evaluate()
+    {
+        var left = _left.Evaluate();
+        var right = _right.Evaluate();
+        if (left == null || right == null)
         {
-            _left = left;
-            _right = right;
+            return null;
         }
-
-        public override IValue Evaluate()
-        {
-            var left = _left.Evaluate();
-            var right = _right.Evaluate();
-            if (left == null || right == null)
-            {
-                return null;
-            }
-            var leftValue = left.AsDecimal;
-            var rightValue = right.AsDecimal;
-            return new DecimalValue((decimal)Math.Pow(Convert.ToDouble(leftValue), Convert.ToDouble(rightValue)));
-        }
+        var leftValue = left.AsDecimal;
+        var rightValue = right.AsDecimal;
+        return new DecimalValue((decimal)Math.Pow(Convert.ToDouble(leftValue), Convert.ToDouble(rightValue)));
     }
 }

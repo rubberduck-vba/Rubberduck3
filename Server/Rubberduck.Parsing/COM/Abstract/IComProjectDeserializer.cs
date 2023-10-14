@@ -1,11 +1,10 @@
 ﻿using Rubberduck.Parsing.Model.ComReflection;
-using Rubberduck.VBEditor;
+using Rubberduck.Unmanaged.Model;
 
-namespace Rubberduck.Parsing.COM.Abstract
+namespace Rubberduck.Parsing.COM.Abstract;
+
+public interface IComProjectDeserializer
 {
-    public interface IComProjectDeserializer
-    {
-        ComProject DeserializeProject(ReferenceInfo reference);
-        bool SerializedVersionExists(ReferenceInfo reference);
-    }
+    ComProject DeserializeProject(ReferenceInfo reference);
+    bool SerializedVersionExists(ReferenceInfo reference);
 }

@@ -1,81 +1,79 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Abstract;
-using System.Collections.Generic;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class DateValue : IValue
 {
-    public sealed class DateValue : IValue
+    private readonly System.DateTime _value;
+
+    public DateValue(System.DateTime value)
     {
-        private readonly System.DateTime _value;
+        _value = value;
+    }
 
-        public DateValue(System.DateTime value)
+    public ValueType ValueType
+    {
+        get
         {
-            _value = value;
+            return ValueType.Date;
         }
+    }
 
-        public ValueType ValueType
+    public bool AsBool
+    {
+        get
         {
-            get
+            return new DecimalValue(AsDecimal).AsBool;
+        }
+    }
+
+    public byte AsByte
+    {
+        get
+        {
+            return new DecimalValue(AsDecimal).AsByte;
+        }
+    }
+
+    public System.DateTime AsDate
+    {
+        get
+        {
+            return _value;
+        }
+    }
+
+    public decimal AsDecimal
+    {
+        get
+        {
+            return (decimal)(_value).ToOADate();
+        }
+    }
+
+    public string AsString
+    {
+        get
+        {
+            if (_value.Date == VBADateConstants.EPOCH_START.Date)
             {
-                return ValueType.Date;
+                return _value.ToLongTimeString();
             }
+            return _value.ToShortDateString();
         }
+    }
 
-        public bool AsBool
+    public IEnumerable<IToken> AsTokens
+    {
+        get
         {
-            get
-            {
-                return new DecimalValue(AsDecimal).AsBool;
-            }
+            return new List<IToken>();
         }
+    }
 
-        public byte AsByte
-        {
-            get
-            {
-                return new DecimalValue(AsDecimal).AsByte;
-            }
-        }
-
-        public System.DateTime AsDate
-        {
-            get
-            {
-                return _value;
-            }
-        }
-
-        public decimal AsDecimal
-        {
-            get
-            {
-                return (decimal)(_value).ToOADate();
-            }
-        }
-
-        public string AsString
-        {
-            get
-            {
-                if (_value.Date == VBADateConstants.EPOCH_START.Date)
-                {
-                    return _value.ToLongTimeString();
-                }
-                return _value.ToShortDateString();
-            }
-        }
-
-        public IEnumerable<IToken> AsTokens
-        {
-            get
-            {
-                return new List<IToken>();
-            }
-        }
-
-        public override string ToString()
-        {
-            return _value.ToString();
-        }
+    public override string ToString()
+    {
+        return _value.ToString();
     }
 }

@@ -1,24 +1,23 @@
 ﻿using Rubberduck.Parsing.Abstract;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class CDateLibraryFunctionExpression : Expression
 {
-    public sealed class CDateLibraryFunctionExpression : Expression
+    private readonly IExpression _expression;
+
+    public CDateLibraryFunctionExpression(IExpression expression)
     {
-        private readonly IExpression _expression;
+        _expression = expression;
+    }
 
-        public CDateLibraryFunctionExpression(IExpression expression)
+    public override IValue Evaluate()
+    {
+        var expr = _expression.Evaluate();
+        if (expr == null)
         {
-            _expression = expression;
+            return null;
         }
-
-        public override IValue Evaluate()
-        {
-            var expr = _expression.Evaluate();
-            if (expr == null)
-            {
-                return null;
-            }
-            return new DateValue(expr.AsDate);
-        }
+        return new DateValue(expr.AsDate);
     }
 }

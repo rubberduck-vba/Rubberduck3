@@ -4,38 +4,37 @@ using System.Runtime.Serialization;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 
-namespace Rubberduck.Parsing.Model.ComReflection
+namespace Rubberduck.Parsing.Model.ComReflection;
+
+[DataContract]
+[KnownType(typeof(ComBase))]
+[DebuggerDisplay("{Name} As {TypeName}")]
+public class ComAlias : ComBase
 {
-    [DataContract]
-    [KnownType(typeof(ComBase))]
-    [DebuggerDisplay("{Name} As {TypeName}")]
-    public class ComAlias : ComBase
+    [DataMember(IsRequired = true)]
+    public string TypeName { get; private set; }
+
+    [DataMember(IsRequired = true)]
+    public bool IsHidden { get; private set; }
+
+    [DataMember(IsRequired = true)]
+    public bool IsRestricted { get; private set; }
+
+    public ComAlias(IComBase parent, ITypeLib typeLib, ITypeInfo info, int index, TYPEATTR attributes) : base(parent, typeLib, index)
     {
-        [DataMember(IsRequired = true)]
-        public string TypeName { get; private set; }
-
-        [DataMember(IsRequired = true)]
-        public bool IsHidden { get; private set; }
-
-        [DataMember(IsRequired = true)]
-        public bool IsRestricted { get; private set; }
-
-        public ComAlias(IComBase parent, ITypeLib typeLib, ITypeInfo info, int index, TYPEATTR attributes) : base(parent, typeLib, index)
+        Index = index;
+        Documentation = new ComDocumentation(typeLib, index);
+        Guid = attributes.guid;
+        IsHidden = attributes.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FHIDDEN);
+        IsRestricted = attributes.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FRESTRICTED);
+        
+        if (Name.Equals("LONG_PTR"))
         {
-            Index = index;
-            Documentation = new ComDocumentation(typeLib, index);
-            Guid = attributes.guid;
-            IsHidden = attributes.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FHIDDEN);
-            IsRestricted = attributes.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FRESTRICTED);
-            
-            if (Name.Equals("LONG_PTR"))
-            {
-                TypeName = Tokens.LongPtr;
-                return;                
-            }
-
-            var aliased = new ComParameter(attributes, info);
-            TypeName = aliased.TypeName;
+            TypeName = Tokens.LongPtr;
+            return;                
         }
+
+        var aliased = new ComParameter(attributes, info);
+        TypeName = aliased.TypeName;
     }
 }

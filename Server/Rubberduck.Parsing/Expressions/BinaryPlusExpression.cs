@@ -1,50 +1,49 @@
 ﻿using Rubberduck.Parsing.Abstract;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class BinaryPlusExpression : Expression
 {
-    public sealed class BinaryPlusExpression : Expression
+    private readonly IExpression _left;
+    private readonly IExpression _right;
+
+    public BinaryPlusExpression(IExpression left, IExpression right)
     {
-        private readonly IExpression _left;
-        private readonly IExpression _right;
+        _left = left;
+        _right = right;
+    }
 
-        public BinaryPlusExpression(IExpression left, IExpression right)
+    public override IValue Evaluate()
+    {
+        var left = _left.Evaluate();
+        var right = _right.Evaluate();
+        if (left == null || right == null)
         {
-            _left = left;
-            _right = right;
+            return null;
         }
-
-        public override IValue Evaluate()
+        if (left.ValueType == ValueType.String || right.ValueType == ValueType.String)
         {
-            var left = _left.Evaluate();
-            var right = _right.Evaluate();
-            if (left == null || right == null)
+            return new StringValue(left.AsString+ right.AsString);
+        }
+        else if (left.ValueType == ValueType.Date || right.ValueType == ValueType.Date)
+        {
+            decimal leftValue = left.AsDecimal;
+            decimal rightValue = right.AsDecimal;
+            decimal sum = leftValue + rightValue;
+            try
             {
-                return null;
+                return new DateValue(new DecimalValue(sum).AsDate);
             }
-            if (left.ValueType == ValueType.String || right.ValueType == ValueType.String)
+            catch
             {
-                return new StringValue(left.AsString+ right.AsString);
+                return new DecimalValue(sum);
             }
-            else if (left.ValueType == ValueType.Date || right.ValueType == ValueType.Date)
-            {
-                decimal leftValue = left.AsDecimal;
-                decimal rightValue = right.AsDecimal;
-                decimal sum = leftValue + rightValue;
-                try
-                {
-                    return new DateValue(new DecimalValue(sum).AsDate);
-                }
-                catch
-                {
-                    return new DecimalValue(sum);
-                }
-            }
-            else
-            {
-                var leftNumber = left.AsDecimal;
-                var rightNumber = right.AsDecimal;
-                return new DecimalValue(leftNumber + rightNumber);
-            }
+        }
+        else
+        {
+            var leftNumber = left.AsDecimal;
+            var rightNumber = right.AsDecimal;
+            return new DecimalValue(leftNumber + rightNumber);
         }
     }
 }

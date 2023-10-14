@@ -1,33 +1,31 @@
 ﻿using Rubberduck.Parsing.Abstract;
-using System;
 
-namespace Rubberduck.Parsing.Expressions
+namespace Rubberduck.Parsing.Expressions;
+
+public sealed class UnaryNotExpression : Expression
 {
-    public sealed class UnaryNotExpression : Expression
+    private readonly IExpression _expression;
+
+    public UnaryNotExpression(IExpression expression)
     {
-        private readonly IExpression _expression;
+        _expression = expression;
+    }
 
-        public UnaryNotExpression(IExpression expression)
+    public override IValue Evaluate()
+    {
+        var operand = _expression.Evaluate();
+        if (operand == null)
         {
-            _expression = expression;
+            return null;
         }
-
-        public override IValue Evaluate()
+        else if (operand.ValueType == ValueType.Bool)
         {
-            var operand = _expression.Evaluate();
-            if (operand == null)
-            {
-                return null;
-            }
-            else if (operand.ValueType == ValueType.Bool)
-            {
-                return new BoolValue(!operand.AsBool);
-            }
-            else
-            {
-                var coerced = operand.AsDecimal;
-                return new DecimalValue(~Convert.ToInt64(coerced));
-            }
+            return new BoolValue(!operand.AsBool);
+        }
+        else
+        {
+            var coerced = operand.AsDecimal;
+            return new DecimalValue(~Convert.ToInt64(coerced));
         }
     }
 }
