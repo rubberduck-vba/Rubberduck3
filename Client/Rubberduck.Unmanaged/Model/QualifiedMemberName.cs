@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.Unmanaged.Model
 {
-    internal class QualifiedMemberName
+    public class QualifiedMemberName
     {
         private QualifiedModuleName qualifiedModuleName;
         private string member;
