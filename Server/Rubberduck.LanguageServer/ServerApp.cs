@@ -176,6 +176,12 @@ namespace Rubberduck.LanguageServer
                     _logger?.LogDebug("Language server started.");
                     token.ThrowIfCancellationRequested();
 
+                    // todo: read workspace folder from _serverState.RootUri
+                    // todo: parse all .vba/.vb6 files in folder
+                    // todo: this needs to return immediately so the server can start without killing things
+                    //       it also needs to capture the `server` param (or otherwise retain access to the server object)
+                    //       to send notifications to the client (e.g. parsing, parse ended, resolving, inspecting, etc.)
+
                     _logger?.LogDebug("Handled Started notification.");
                     return Task.CompletedTask;
                 })

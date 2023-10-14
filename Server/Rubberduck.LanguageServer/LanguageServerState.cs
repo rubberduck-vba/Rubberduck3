@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.LanguagePlatform;
@@ -30,6 +31,8 @@ namespace Rubberduck.LanguageServer
         private Container<WorkspaceFolder>? _workspaceFolders;
         public IEnumerable<WorkspaceFolder> Workspacefolders => _workspaceFolders ?? throw new ServerStateNotInitializedException();
 
+        public DocumentUri RootUri { get; set; }
+
         public void AddWorkspaceFolders(IEnumerable<WorkspaceFolder> workspaceFolders)
         {
             _workspaceFolders = _workspaceFolders?.Concat(workspaceFolders).ToContainer() ?? throw new ServerStateNotInitializedException();
@@ -38,6 +41,7 @@ namespace Rubberduck.LanguageServer
         protected override void OnInitialize(InitializeParams param)
         {
             _workspaceFolders = param.WorkspaceFolders!;
+            RootUri = param.RootUri!;
         }
 
         protected override void OnClientProcessExited()
