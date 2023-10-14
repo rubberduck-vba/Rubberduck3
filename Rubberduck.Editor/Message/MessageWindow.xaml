@@ -80,15 +80,13 @@ Hopefully we'll figure out how to tweak the fonts.
         <Border Grid.Row="3" Grid.RowSpan="2" Background="{StaticResource BlackBrush}" Opacity="0.05" />
 
         <StackPanel Grid.Row="4" Margin="16,8" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="{Binding Title}" IsDefault="{Binding IsDefaultAction}" Style="{StaticResource ActionButtonStyle}" />
-            <Button Content="{Binding Title}" IsDefault="True" Style="{StaticResource ActionButtonStyle}" />
-            <!--<ItemsControl ItemsSource="{Binding Actions}">
+            <ItemsControl ItemsSource="{Binding Actions}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Button Content="{Binding Title}" IsDefault="{Binding IsDefaultAction}" Style="{StaticResource ActionButtonStyle}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
-            </ItemsControl>-->
+            </ItemsControl>
         </StackPanel>
 
     </Grid>
