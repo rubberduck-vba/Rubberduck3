@@ -40,17 +40,9 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!--<Canvas Grid.RowSpan="4" HorizontalAlignment="Right"
-                Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=ActualWidth}"
-                Height="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=ActualHeight}">
-            <Image Source="{DynamicResource BackgroundDucky}" Stretch="None">
-                <Image.RenderTransform>
-                    <TransformGroup>
-                        <TranslateTransform X="-384" />
-                    </TransformGroup>
-                </Image.RenderTransform>
-            </Image>
-        </Canvas>-->
+        <Canvas Grid.RowSpan="4" HorizontalAlignment="Right">
+            <Image Style="{StaticResource BackgroundDuckyStyle}" />
+        </Canvas>
 
         <Label Grid.Row="0" 
                Content="Title goes here." 
