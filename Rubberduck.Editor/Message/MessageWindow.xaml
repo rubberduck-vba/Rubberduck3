@@ -7,10 +7,10 @@
         xmlns:mdxaml="clr-namespace:MdXaml;assembly=MdXaml"
         mc:Ignorable="d"
         Title="Rubberduck" WindowStyle="SingleBorderWindow"
-        Height="200" MinHeight="200" MaxHeight="500"
-        Width="512" MinWidth="400" MaxWidth="800"
+        Height="220" MinHeight="220" MaxHeight="600"
+        Width="380" MinWidth="380" MaxWidth="800"
         ResizeMode="CanResizeWithGrip" 
-        Icon="pack://application:,,,/Rubberduck.Resources;component/vector-ducky-color.png"
+        Icon="pack://application:,,,/Rubberduck.Resources;component/ducky.ico"
         SizeToContent="WidthAndHeight" SnapsToDevicePixels="True">
     <Window.Resources>
         <ResourceDictionary>
@@ -20,19 +20,14 @@
             <BitmapImage x:Key="ErrorIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FugueIcons/cross-circle.png" />
             <BitmapImage x:Key="WarnIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FugueIcons/exclamation-diamond.png" />
             <BitmapImage x:Key="InfoIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FugueIcons/information.png" />
-            <Style x:Key="ActionButtonStyle" TargetType="Button">
-                <Style.Setters>
-                    <Setter Property="MinWidth" Value="92" />
-                    <Setter Property="Height" Value="24" />
-                    <Setter Property="Margin" Value="1,0" />
-                </Style.Setters>
-            </Style>
         </ResourceDictionary>
     </Window.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -41,25 +36,37 @@
             <Image Style="{StaticResource BackgroundDuckyStyle}" />
         </Canvas>
 
-        <Label Grid.Row="0" 
+        <Label Grid.Row="0" Foreground="{DynamicResource BlackBrush}"
                Content="Title goes here." 
                FontWeight="Bold" FontSize="16" Margin="10,0" />
 
-        <mdxaml:MarkdownScrollViewer Grid.Row="1" Margin="4" Padding="16,0" MinHeight="100" Height="400"
+        <mdxaml:MarkdownScrollViewer Grid.Row="1" Margin="4" Padding="16,0" MinHeight="100" Height="100"
                                      VerticalAlignment="Top" Foreground="{StaticResource BlackBrush}"
                                      VerticalScrollBarVisibility="Auto" xml:space="preserve">
 This is actually a ***markdown** document*.
 
         </mdxaml:MarkdownScrollViewer>
 
-        <Expander Grid.Row="2" Header="More information" Margin="4">
+        <CheckBox Grid.Row="4" Margin="8" Content="Don't show again" Foreground="{DynamicResource BlackBrush}" />
+
+        <Expander Grid.Row="3" Header="More information" Margin="4" BorderBrush="{DynamicResource BlackBrush}" BorderThickness="0,1">
             <Expander.HeaderTemplate>
                 <DataTemplate>
-                    <Label FontSize="11" Content="More information" ToolTip="Expand/collapse to show/hide details" />
+                    <Label FontSize="11" Content="More information" Foreground="{DynamicResource BlackBrush}" ToolTip="Expand/collapse to show/hide details">
+                        <Label.Style>
+                            <Style TargetType="Label">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsExpanded, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Expander}}" Value="True">
+                                        <Setter Property="Content" Value="Show less" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
                 </DataTemplate>
             </Expander.HeaderTemplate>
-            <mdxaml:MarkdownScrollViewer Grid.Row="1" Margin="4" Padding="16,0" Height="102" Foreground="{StaticResource BlackBrush}"
-                                     VerticalScrollBarVisibility="Auto" xml:space="preserve">
+            <mdxaml:MarkdownScrollViewer Grid.Row="1" Margin="4" Padding="16,0" Height="92" 
+                                         VerticalScrollBarVisibility="Auto" xml:space="preserve">
 We ❤️ Markdown!
 ```vb
 Option Explicit
@@ -70,16 +77,18 @@ Hopefully we'll figure out how to tweak the fonts.
         </mdxaml:MarkdownScrollViewer>
         </Expander>
 
-        <Border Grid.Row="2" Background="{StaticResource BlackBrush}" Opacity="0.05" Grid.RowSpan="2" />
+        <Border Grid.Row="3" Grid.RowSpan="2" Background="{StaticResource BlackBrush}" Opacity="0.05" />
 
-        <StackPanel Grid.Row="3" Margin="16,6" Orientation="Horizontal" HorizontalAlignment="Right">
-            <ItemsControl ItemsSource="{Binding Actions}">
+        <StackPanel Grid.Row="4" Margin="16,8" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="{Binding Title}" IsDefault="{Binding IsDefaultAction}" Style="{StaticResource ActionButtonStyle}" />
+            <Button Content="{Binding Title}" IsDefault="True" Style="{StaticResource ActionButtonStyle}" />
+            <!--<ItemsControl ItemsSource="{Binding Actions}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Button Content="{Binding Title}" IsDefault="{Binding IsDefaultAction}" Style="{StaticResource ActionButtonStyle}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            </ItemsControl>-->
         </StackPanel>
 
     </Grid>

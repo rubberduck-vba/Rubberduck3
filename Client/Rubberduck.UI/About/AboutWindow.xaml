@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mdxaml="clr-namespace:MdXaml;assembly=MdXaml"
         xmlns:local="clr-namespace:Rubberduck.UI.About" 
-        Foreground="{DynamicResource BlackBrush}"
         Title="About Rubberduck" Height="450" Width="600">
     <Window.Resources>
         <ResourceDictionary>

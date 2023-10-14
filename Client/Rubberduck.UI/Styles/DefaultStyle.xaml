@@ -3,6 +3,7 @@
                     xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" 
                     xmlns:converters="clr-namespace:Rubberduck.UI.Converters">
     <ResourceDictionary.MergedDictionaries>
+        <!--ResourceDictionary Source="LightTheme.xaml"/-->
         <ResourceDictionary Source="DarkTheme.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
@@ -19,8 +20,8 @@
             <Setter Property="Source" Value="{DynamicResource BackgroundDuckyImage}" />
             <Setter Property="Stretch" Value="None" />
             <Setter Property="HorizontalAlignment" Value="Right" />
-            <Setter Property="Width" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=ActualWidth}" />
-            <Setter Property="Height" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=ActualHeight}" />
+            <Setter Property="Width" Value="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" />
+            <Setter Property="Height" Value="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" />
             <Setter Property="RenderTransform">
                 <Setter.Value>
                     <TransformGroup>
@@ -30,6 +31,30 @@
             </Setter>
         </Style.Setters>
     </Style>
+
+    <Style x:Key="ActionButtonStyle" TargetType="Button">
+        <Style.Resources>
+            <Style TargetType="Border">
+                <Setter Property="CornerRadius" Value="4" />
+            </Style>
+        </Style.Resources>
+        <Style.Setters>
+            <Setter Property="MinWidth" Value="92" />
+            <Setter Property="Height" Value="24" />
+            <Setter Property="Margin" Value="1,0" />
+            <Setter Property="Background" Value="{DynamicResource BackgroundSoftBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+        </Style.Setters>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsDefault, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <Setter Property="Background" Value="{DynamicResource BusyIndicatorFillBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource WhiteBrush}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+
+    <!-- RD2 resources below this line -->
     
     <Style x:Key="ToolbarIconStyle" TargetType="Image">
         <Setter Property="Height" Value="16" />
