@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.Model.Abstract;
+using Rubberduck.UI;
 using System;
 
 namespace Rubberduck.Editor.Document.Tabs

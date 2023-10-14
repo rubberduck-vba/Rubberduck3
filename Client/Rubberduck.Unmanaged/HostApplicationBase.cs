@@ -31,18 +31,18 @@ namespace Rubberduck.Unmanaged
             {
                 application = (TApplication)Marshal.GetActiveObject($"{applicationName}.Application");
             }
-            catch (COMException exception)
+            catch (COMException)
             {
                 //logger.LogError(exception, "Unexpected COM exception while acquiring the host application object for application {applicationName} via COM reflection.", applicationName);
                 application = null;
             }
-            catch (InvalidCastException exception)
+            catch (InvalidCastException)
             {
                 //TODO: Find out why this ever happens.
                 //logger.LogError(exception, "Unable to cast the host application object for application {applicationName} acquired via COM reflection to its PIA type.", applicationName);
                 application = null;
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 //note: We catch all exceptions because we currently really do not need application object and there can be exceptions for unexpected system setups.
                 //logger.LogError(exception, "Unexpected exception while acquiring the host application object for application {applicationName} from a document module.", applicationName);
@@ -70,17 +70,17 @@ namespace Rubberduck.Unmanaged
                 }
 
             }
-            catch (COMException exception)
+            catch (COMException)
             {
                 //logger.LogError(exception, "Unexpected COM exception while acquiring the host application object for application {applicationName} from a document module.", applicationName);
                 application = null;
             }
-            catch (InvalidCastException exception)
+            catch (InvalidCastException)
             {
                 //logger.LogError(exception, "Unable to cast the host application object for application {applicationName} acquiered from a document module to its PIA type.", applicationName);
                 application = null;
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 //note: We catch all exceptions because we currently really do not need application object and there can be exceptions for unexpected system setups.
                 //logger.LogError(exception, "Unexpected exception while acquiring the host application object for application {applicationName} from a document module.", applicationName);
@@ -184,7 +184,7 @@ namespace Rubberduck.Unmanaged
                     name = nameProperty?.Value.ToString() ?? string.Empty;
                 }
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 //logger.LogTrace(exception, "An exception attempting to access VBComponent.Properties.");
             }

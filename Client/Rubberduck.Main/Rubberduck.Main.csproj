@@ -92,7 +92,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="NLog-c%3blient.config">
+    <None Update="NLog-client.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="NLog-c;oemt.config">
@@ -101,6 +101,10 @@
     <None Update="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="RPC\Editor\Handlers\" />
   </ItemGroup>
 
 </Project>

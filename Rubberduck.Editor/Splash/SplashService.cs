@@ -1,6 +1,7 @@
 ﻿using Rubberduck.InternalApi.Model.Abstract;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.UI;
 
 namespace Rubberduck.Editor.Splash
 {

@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Client\Rubberduck.UI\Rubberduck.UI.csproj" />
     <ProjectReference Include="..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
     <ProjectReference Include="..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj" />
     <ProjectReference Include="..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
@@ -44,9 +45,6 @@
     <Resource Include="Resources\FugueIcons\information.png" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="About\AboutWindow.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Message\MessageWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

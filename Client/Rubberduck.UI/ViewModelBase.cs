@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
-using MemoryStream = System.IO.MemoryStream;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Media.Imaging;
+using MemoryStream = System.IO.MemoryStream;
 
 namespace Rubberduck.UI
 {
@@ -84,7 +84,7 @@ namespace Rubberduck.UI
             }
             else
             {
-                _errors.Add(propertyName, new List<string>{errorText});
+                _errors.Add(propertyName, new List<string> { errorText });
             }
 
             OnErrorsChanged(propertyName);

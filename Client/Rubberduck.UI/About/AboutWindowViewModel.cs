@@ -1,12 +1,9 @@
-﻿// TODO add-in about box
-
-/*
-using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Model.Abstract;
+﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources.About;
-using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Services.Abstract;
 using System;
 using System.Windows;
 using System.Windows.Input;
@@ -15,73 +12,74 @@ using Path = System.IO.Path;
 
 namespace Rubberduck.UI.About
 {
-public class AboutWindowViewModel : ViewModelBase, IAboutWindowViewModel
-{
-    private readonly IMessageBox _messageBox;
-    private readonly IWebNavigator _web;
-    private readonly Version _version;
-
-    public AboutWindowViewModel(ILogger<AboutWindowViewModel> logger, ISettingsProvider<RubberduckSettings> settings, IWebNavigator web, IMessageBox messageBox, Version version)
+    public class AboutWindowViewModel : ViewModelBase, IAboutWindowViewModel
     {
-        _messageBox = messageBox;
+        //private readonly IMessageBox _messageBox;
+        private readonly IWebNavigator _web;
+        private readonly Version _version;
 
-        _version = version;
-        _web = web;
+        public AboutWindowViewModel() { /* designer ctor */ }
 
-        Document = "TODO: load about.md";
+        public AboutWindowViewModel(ILogger<AboutWindowViewModel> logger, ISettingsProvider<RubberduckSettings> settings, IWebNavigator web/*, IMessageBox messageBox*/, Version version)
+        {
+            //_messageBox = messageBox;
 
-        UriCommand = new DelegateCommand(logger, settings, ExecuteUri);
-        ViewLogCommand = new DelegateCommand(logger, settings, ExecuteViewLog);
-    }
+            _version = version;
+            _web = web;
 
-    public string Version => string.Format(Resources.RubberduckUI.Rubberduck_AboutBuild, $"v{_version.ToString(3)}");
+            Document = "TODO: load about.md";
 
-    public string OperatingSystem => 
-        string.Format(AboutUI.AboutWindow_OperatingSystem, Environment.OSVersion.VersionString, Environment.Is64BitOperatingSystem ? "x64" : "x86");
+            UriCommand = new DelegateCommand(logger, settings, ExecuteUri);
+            ViewLogCommand = new DelegateCommand(logger, settings, ExecuteViewLog);
+        }
 
-    public string HostProduct =>
-        string.Format(AboutUI.AboutWindow_HostProduct, Application.ProductName, Environment.Is64BitProcess ? "x64" : "x86");
+        public string Version => string.Format(Resources.RubberduckUI.Rubberduck_AboutBuild, $"v{_version.ToString(3)}");
 
-    public string HostVersion => string.Format(AboutUI.AboutWindow_HostVersion, Application.ProductVersion);
+        public string OperatingSystem =>
+            string.Format(AboutUI.AboutWindow_OperatingSystem, Environment.OSVersion.VersionString, Environment.Is64BitOperatingSystem ? "x64" : "x86");
 
-    public string HostExecutable => string.Format(AboutUI.AboutWindow_HostExecutable,
-        Path.GetFileName(Application.ExecutablePath).ToUpper()); // .ToUpper() used to convert ExceL.EXE -> EXCEL.EXE
+        public string HostProduct =>
+            string.Format(AboutUI.AboutWindow_HostProduct, Application.ProductName, Environment.Is64BitProcess ? "x64" : "x86");
 
-    public string AboutCopyright =>
-        string.Format(AboutUI.AboutWindow_Copyright, DateTime.Now.Year);
+        public string HostVersion => string.Format(AboutUI.AboutWindow_HostVersion, Application.ProductVersion);
 
-    public ICommand UriCommand { get; }
+        public string HostExecutable => string.Format(AboutUI.AboutWindow_HostExecutable,
+            Path.GetFileName(Application.ExecutablePath).ToUpper()); // .ToUpper() used to convert ExceL.EXE -> EXCEL.EXE
 
-    public ICommand ViewLogCommand { get; }
+        public string AboutCopyright =>
+            string.Format(AboutUI.AboutWindow_Copyright, DateTime.Now.Year);
 
-    public string Document { get; }
+        public ICommand UriCommand { get; }
 
-    public void CopyVersionInfo()
-    {
-        var sb = new System.Text.StringBuilder();
-        sb.AppendLine(Version);
-        sb.AppendLine(OperatingSystem);
-        sb.AppendLine(HostProduct);
-        sb.AppendLine(HostVersion);
-        sb.AppendLine(HostExecutable);
+        public ICommand ViewLogCommand { get; }
 
-        Clipboard.SetText(sb.ToString());
-        //_messageBox.Message(AboutUI.AboutWindow_CopyVersionMessage);
-    }
+        public string Document { get; }
 
-    private void ExecuteUri(object? parameter) => _web.Navigate((Uri)(parameter ?? throw new ArgumentNullException(nameof(parameter))));
+        public void CopyVersionInfo()
+        {
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine(Version);
+            sb.AppendLine(OperatingSystem);
+            sb.AppendLine(HostProduct);
+            sb.AppendLine(HostVersion);
+            sb.AppendLine(HostExecutable);
 
-    private void ExecuteViewLog(object? parameter)
-    {
-        //var fileTarget = (FileTarget) LogManager.Configuration.FindTargetByName("file");
+            Clipboard.SetText(sb.ToString());
+            //_messageBox.Message(AboutUI.AboutWindow_CopyVersionMessage);
+        }
 
-        //var logEventInfo = new LogEventInfo { TimeStamp = DateTime.Now }; 
-        //var fileName = fileTarget.FileName.Render(logEventInfo);
+        private void ExecuteUri(object? parameter) => _web.Navigate((Uri)(parameter ?? throw new ArgumentNullException(nameof(parameter))));
 
-        //// The /select argument will only work if the path has backslashes
-        //fileName = fileName.Replace("/", "\\");
-        //Process.Start(new ProcessStartInfo("explorer.exe", $"/select, \"{fileName}\""));
+        private void ExecuteViewLog(object? parameter)
+        {
+            //var fileTarget = (FileTarget) LogManager.Configuration.FindTargetByName("file");
+
+            //var logEventInfo = new LogEventInfo { TimeStamp = DateTime.Now }; 
+            //var fileName = fileTarget.FileName.Render(logEventInfo);
+
+            //// The /select argument will only work if the path has backslashes
+            //fileName = fileName.Replace("/", "\\");
+            //Process.Start(new ProcessStartInfo("explorer.exe", $"/select, \"{fileName}\""));
+        }
     }
 }
-}
-*/

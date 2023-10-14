@@ -10,10 +10,16 @@
         Height="200" MinHeight="200" MaxHeight="500"
         Width="512" MinWidth="400" MaxWidth="800"
         ResizeMode="CanResizeWithGrip" 
+        Icon="pack://application:,,,/Rubberduck.Resources;component/vector-ducky-color.png"
+        Background="{DynamicResource BackgroundWhiteBrush}" 
+        Foreground="{DynamicResource BlackBrush}"
         SizeToContent="WidthAndHeight" SnapsToDevicePixels="True">
     <Window.Resources>
         <ResourceDictionary>
-            <BitmapImage x:Key="BackgroundDucky" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/Custom/background-ducky.png" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <BitmapImage x:Key="BackgroundDuckyImage" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/Custom/background-ducky.png" />
             <BitmapImage x:Key="ErrorIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FugueIcons/cross-circle.png" />
             <BitmapImage x:Key="WarnIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FugueIcons/exclamation-diamond.png" />
             <BitmapImage x:Key="InfoIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FugueIcons/information.png" />
@@ -34,7 +40,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Canvas Grid.RowSpan="4" HorizontalAlignment="Right"
+        <!--<Canvas Grid.RowSpan="4" HorizontalAlignment="Right"
                 Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=ActualWidth}"
                 Height="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=ActualHeight}">
             <Image Source="{DynamicResource BackgroundDucky}" Stretch="None">
@@ -44,12 +50,14 @@
                     </TransformGroup>
                 </Image.RenderTransform>
             </Image>
-        </Canvas>
+        </Canvas>-->
 
-        <Label Grid.Row="0" Content="Title goes here." FontWeight="Bold" FontSize="16" Margin="10,0" />
+        <Label Grid.Row="0" 
+               Content="Title goes here." 
+               FontWeight="Bold" FontSize="16" Margin="10,0" />
 
         <mdxaml:MarkdownScrollViewer Grid.Row="1" Margin="4" Padding="16,0" MinHeight="100" Height="400"
-                                     VerticalAlignment="Top"
+                                     VerticalAlignment="Top" Foreground="{StaticResource BlackBrush}"
                                      VerticalScrollBarVisibility="Auto" xml:space="preserve">
 This is actually a ***markdown** document*.
 
@@ -61,7 +69,7 @@ This is actually a ***markdown** document*.
                     <Label FontSize="11" Content="More information" ToolTip="Expand/collapse to show/hide details" />
                 </DataTemplate>
             </Expander.HeaderTemplate>
-            <mdxaml:MarkdownScrollViewer Grid.Row="1" Margin="4" Padding="16,0" Height="102"
+            <mdxaml:MarkdownScrollViewer Grid.Row="1" Margin="4" Padding="16,0" Height="102" Foreground="{StaticResource BlackBrush}"
                                      VerticalScrollBarVisibility="Auto" xml:space="preserve">
 We ❤️ Markdown!
 ```vb
@@ -73,7 +81,7 @@ Hopefully we'll figure out how to tweak the fonts.
         </mdxaml:MarkdownScrollViewer>
         </Expander>
 
-        <Border Grid.Row="2" Background="Black" Opacity="0.05" Grid.RowSpan="2" />
+        <Border Grid.Row="2" Background="{StaticResource BlackBrush}" Opacity="0.05" Grid.RowSpan="2" />
 
         <StackPanel Grid.Row="3" Margin="16,6" Orientation="Horizontal" HorizontalAlignment="Right">
             <ItemsControl ItemsSource="{Binding Actions}">
