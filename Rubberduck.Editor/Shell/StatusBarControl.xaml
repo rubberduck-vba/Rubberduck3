@@ -25,7 +25,9 @@
         
     </UserControl.Resources>
     <Grid>
-        <StatusBar Background="{DynamicResource ThemeBackgroundDarkColorBrush}" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeL}">
+        <StatusBar Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
+                   Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}"
+                   BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeWhiteMediumColorBrush}">
             
             <StatusBarItem MinWidth="96">
                 <Button ToolTip="Show server trace toolwindow">

@@ -14,6 +14,9 @@
     <None Remove="RubberduckEditor\**" />
     <Page Remove="RubberduckEditor\**" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="Ducky.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
@@ -26,6 +29,10 @@
     <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Resource Include="Ducky.ico" />
   </ItemGroup>
   
   <ItemGroup>
