@@ -6,9 +6,21 @@
         xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
         mc:Ignorable="d"
         Title="ChildWindow" Height="450" Width="800">
-    <dragablz:TabablzControl x:Name="Tabs">
-        <dragablz:TabablzControl.InterTabController>
-            <dragablz:InterTabController InterTabClient="{Binding InterTabClient}" />
-        </dragablz:TabablzControl.InterTabController>
-    </dragablz:TabablzControl>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Canvas Grid.RowSpan="4" HorizontalAlignment="Right">
+            <Image Style="{StaticResource BackgroundDuckyStyle}" />
+        </Canvas>
+        <dragablz:TabablzControl x:Name="Tabs" Background="Transparent">
+            <dragablz:TabablzControl.InterTabController>
+                <dragablz:InterTabController InterTabClient="{Binding InterTabClient}" />
+            </dragablz:TabablzControl.InterTabController>
+        </dragablz:TabablzControl>
+    </Grid>
 </Window>

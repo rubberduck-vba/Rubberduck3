@@ -3,36 +3,47 @@
                     xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" 
                     xmlns:converters="clr-namespace:Rubberduck.UI.Converters">
     <ResourceDictionary.MergedDictionaries>
-        <!--ResourceDictionary Source="LightTheme.xaml"/-->
-        <ResourceDictionary Source="DarkTheme.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/BlueTheme.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Icons.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="Window">
         <Style.Setters>
-            <Setter Property="Background" Value="{DynamicResource BackgroundWhiteBrush}" />
-            <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+            <Setter Property="Icon" Value="pack://application:,,,/Rubberduck.Resources;component/ducky.ico" />
             <Setter Property="ClipToBounds" Value="True" />
+            <Setter Property="SizeToContent" Value="WidthAndHeight" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="12" />
         </Style.Setters>
     </Style>
 
-    <Style x:Key="BackgroundDuckyStyle" TargetType="Image">
+    <Style TargetType="UserControl">
         <Style.Setters>
-            <Setter Property="Source" Value="{DynamicResource BackgroundDuckyImage}" />
-            <Setter Property="Stretch" Value="None" />
-            <Setter Property="HorizontalAlignment" Value="Right" />
-            <Setter Property="Width" Value="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" />
-            <Setter Property="Height" Value="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" />
-            <Setter Property="RenderTransform">
-                <Setter.Value>
-                    <TransformGroup>
-                        <TranslateTransform X="-384" />
-                    </TransformGroup>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="ClipToBounds" Value="True" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="12" />
         </Style.Setters>
     </Style>
 
-    <Style x:Key="ActionButtonStyle" TargetType="Button">
+    <Style TargetType="Grid">
+        <Style.Setters>
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
+        </Style.Setters>
+    </Style>
+
+
+    <Style x:Key="ButtonStyle" TargetType="Button">
+        <Style.Setters>
+            <Setter Property="Margin" Value="1" />
+            <Setter Property="Padding" Value="1" />
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundLightColorBrush}" />
+            <Setter Property="Background" Value="{DynamicResource ThemeTextBackgroundLightColorBrush}" />
+        </Style.Setters>
+    </Style>
+
+    <Style x:Key="ActionButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
         <Style.Resources>
             <Style TargetType="Border">
                 <Setter Property="CornerRadius" Value="4" />
@@ -41,14 +52,11 @@
         <Style.Setters>
             <Setter Property="MinWidth" Value="92" />
             <Setter Property="Height" Value="24" />
-            <Setter Property="Margin" Value="1,0" />
-            <Setter Property="Background" Value="{DynamicResource BackgroundSoftBrush}" />
-            <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
         </Style.Setters>
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsDefault, RelativeSource={RelativeSource Mode=Self}}" Value="True">
-                <Setter Property="Background" Value="{DynamicResource BusyIndicatorFillBrush}" />
-                <Setter Property="Foreground" Value="{DynamicResource WhiteBrush}" />
+                <Setter Property="Background" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1TextColorBrush}" />
             </DataTrigger>
         </Style.Triggers>
     </Style>

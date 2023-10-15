@@ -1,8 +1,91 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="Icons.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Icons.xaml"/>
     </ResourceDictionary.MergedDictionaries>
+
+    <!-- THEMING NOTES: 
+        ~> [White] and [Black] color groups be the same colors for all themes.
+        ~> [Accent] color groups may dramatically differ between themes.
+        ~> Color groups consist of a 3-color gradient:
+            > [DarkColor] is Black or the closest to actual Black in the [Black] color group.
+              In [Accent] color groups, it is the most saturated color of the group.
+            > [MediumColor] is a shade between [DarkColor] and [LightColor], not necessarily at 50%.
+            > [LightColor] is White or the closest to actual White in the [White] color group.
+              In [Accent] color groups, it is essentially a whited-out version of the [DarkColor].
+        ~> [Foreground]/[Background] color groups define colors and brushes used for text and backgrounds, respectively.
+    -->
+
+    <Color x:Key="ThemeWhiteDarkColor">#FFA9A9A9</Color>
+    <Color x:Key="ThemeWhiteMediumColor">#FFD3D3D3</Color>
+    <Color x:Key="ThemeWhiteLightColor">#FFFFFFFF</Color>
+    <SolidColorBrush x:Key="ThemeWhiteDarkColorBrush" Color="{DynamicResource ThemeWhiteDarkColor}" />
+    <SolidColorBrush x:Key="ThemeWhiteMediumColorBrush" Color="{DynamicResource ThemeWhiteMediumColor}" />
+    <SolidColorBrush x:Key="ThemeWhiteLightColorBrush" Color="{DynamicResource ThemeWhiteLightColor}" />
+
+    <Color x:Key="ThemeBlackDarkColor">#FF1E1E1E</Color>
+    <Color x:Key="ThemeBlackMediumColor">#FF2E2E2E</Color>
+    <Color x:Key="ThemeBlackLightColor">#FF333333</Color>
+    <SolidColorBrush x:Key="ThemeBlackDarkColorBrush" Color="{DynamicResource ThemeBlackDarkColor}" />
+    <SolidColorBrush x:Key="ThemeBlackMediumColorBrush" Color="{DynamicResource ThemeBlackMediumColor}" />
+    <SolidColorBrush x:Key="ThemeBlackLightColorBrush" Color="{DynamicResource ThemeBlackLightColor}" />
+
+    <!-- TODO work out nice individualized accent color palettes for each theme -->
+
+    <Color x:Key="ThemeAccent1DarkColor">#FF999999</Color>
+    <Color x:Key="ThemeAccent1MediumColor">#FFA9A9A9</Color>
+    <Color x:Key="ThemeAccent1LightColor">#FFD3D3D3</Color>
+    <SolidColorBrush x:Key="ThemeAccent1DarkColorBrush" Color="{DynamicResource ThemeAccent1DarkColor}" />
+    <SolidColorBrush x:Key="ThemeAccent1MediumColorBrush" Color="{DynamicResource ThemeAccent1MediumColor}" />
+    <SolidColorBrush x:Key="ThemeAccent1LightColorBrush" Color="{DynamicResource ThemeAccent1LightColor}" />
+    <SolidColorBrush x:Key="ThemeAccent1TextColorBrush" Color="{DynamicResource ThemeWhiteLightColor}" />
+
+    <Color x:Key="ThemeAccent2DarkColor">#FF008000</Color>
+    <Color x:Key="ThemeAccent2MediumColor">#FF40C954</Color>
+    <Color x:Key="ThemeAccent2LightColor">#FFA0CE9A</Color>
+    <SolidColorBrush x:Key="ThemeAccent2DarkColorBrush" Color="{DynamicResource ThemeAccent2DarkColor}" />
+    <SolidColorBrush x:Key="ThemeAccent2MediumColorBrush" Color="{DynamicResource ThemeAccent2MediumColor}" />
+    <SolidColorBrush x:Key="ThemeAccent2LightColorBrush" Color="{DynamicResource ThemeAccent2LightColor}" />
+    <SolidColorBrush x:Key="ThemeAccent2TextColorBrush" Color="{DynamicResource ThemeWhiteLightColor}" />
+
+    <Color x:Key="ThemeAccent3DarkColor">#FFFFDB28</Color>
+    <Color x:Key="ThemeAccent3MediumColor">#FFFFF484</Color>
+    <Color x:Key="ThemeAccent3LightColor">#FFFFFACD</Color>
+    <SolidColorBrush x:Key="ThemeAccent3DarkColorBrush" Color="{DynamicResource ThemeAccent3DarkColor}" />
+    <SolidColorBrush x:Key="ThemeAccent3MediumColorBrush" Color="{DynamicResource ThemeAccent3MediumColor}" />
+    <SolidColorBrush x:Key="ThemeAccent3LightColorBrush" Color="{DynamicResource ThemeAccent3LightColor}" />
+    <SolidColorBrush x:Key="ThemeAccent3TextColorBrush" Color="{DynamicResource ThemeBlackDarkColor}" />
+
+    <Color x:Key="ThemeAccent4DarkColor">#FFFF6410</Color>
+    <Color x:Key="ThemeAccent4MediumColor">#FFFF8E56</Color>
+    <Color x:Key="ThemeAccent4LightColor">#FFFFD7CC</Color>
+    <SolidColorBrush x:Key="ThemeAccent4DarkColorBrush" Color="{DynamicResource ThemeAccent4DarkColor}" />
+    <SolidColorBrush x:Key="ThemeAccent4MediumColorBrush" Color="{DynamicResource ThemeAccent4MediumColor}" />
+    <SolidColorBrush x:Key="ThemeAccent4LightColorBrush" Color="{DynamicResource ThemeAccent4LightColor}" />
+    <SolidColorBrush x:Key="ThemeAccent4TextColorBrush" Color="{DynamicResource ThemeBlackDarkColor}" />
+
+    <!-- Theme Foreground/Background -->
+
+    <Color x:Key="ThemeTextColor">#FF000000</Color>
+    <Color x:Key="ThemeTextInactiveColor">#FF999999</Color>
+    <SolidColorBrush x:Key="ThemeTextColorBrush" Color="{DynamicResource ThemeTextColor}" />
+    <SolidColorBrush x:Key="ThemeTextInactiveColorBrush" Color="{DynamicResource ThemeTextInactiveColor}" />
+
+    <Color x:Key="ThemeBackgroundDarkColor">#FFEEEEF2</Color>
+    <Color x:Key="ThemeBackgroundMediumColor">#FFF5F5F5</Color>
+    <Color x:Key="ThemeBackgroundLightColor">#FFFFFFFF</Color>
+    <Color x:Key="ThemeBackgroundColor">#FFFFFFFF</Color>
+    <SolidColorBrush x:Key="ThemeBackgroundDarkColorBrush" Color="{DynamicResource ThemeBackgroundDarkColor}" />
+    <SolidColorBrush x:Key="ThemeBackgroundMediumColorBrush" Color="{DynamicResource ThemeBackgroundMediumColor}" />
+    <SolidColorBrush x:Key="ThemeBackgroundLightColorBrush" Color="{DynamicResource ThemeBackgroundLightColor}" />
+    <SolidColorBrush x:Key="ThemeBackgroundColorBrush" Color="{DynamicResource ThemeBackgroundColor}" />
+
+    <SolidColorBrush x:Key="ThemeTextBackgroundDarkColorBrush" Color="{DynamicResource ThemeTextColor}" />
+    <SolidColorBrush x:Key="ThemeTextBackgroundMediumColorBrush" Color="{DynamicResource ThemeTextColor}" />
+    <SolidColorBrush x:Key="ThemeTextBackgroundLightColorBrush" Color="{DynamicResource ThemeTextColor}" />
+    <SolidColorBrush x:Key="ThemeTextBackgroundColorBrush" Color="{DynamicResource ThemeTextColor}" />
+
+    <!-- TODO squeaky wheel test and cleanup -->
 
     <Color x:Key="HighlightGradientStartColor">#FFD9F4FF</Color>
     <Color x:Key="HighlightGradientEndColor">#FF9BDDFB</Color>

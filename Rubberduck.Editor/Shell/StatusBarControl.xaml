@@ -6,47 +6,45 @@
              mc:Ignorable="d"
              d:DesignHeight="24" d:DesignWidth="800" VerticalContentAlignment="Center">
     <UserControl.Resources>
-        <BitmapImage x:Key="ErrorIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
-        <BitmapImage x:Key="ConnectedIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/drive-network.png" />
-        <BitmapImage x:Key="ConnectErrorIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/drive--exclamation.png" />
-        <BitmapImage x:Key="DocInfoIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-code.png" />
-        <BitmapImage x:Key="CaretLocationIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/selection-input.png" />
-        <BitmapImage x:Key="IssuesIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/severity.png" />
-        <BitmapImage x:Key="NoIssuesIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick-circle.png" />
-        <BitmapImage x:Key="MemberInfoIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/magnifier-medium.png" />
-        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style x:Key="Icon" TargetType="Image">
-            <Style.Setters>
-                <Setter Property="Height" Value="16" />
-                <Setter Property="Width" Value="16" />
-                <Setter Property="Stretch" Value="UniformToFill" />
-                <Setter Property="Margin" Value="2,0" />
-            </Style.Setters>
-        </Style>
+            <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
 
-        <Style x:Key="StatusBarButtonStyle" TargetType="Button">
-            <Style.Setters>
-                <Setter Property="Margin" Value="0.5,-3.0" />
-                <Setter Property="Padding" Value="2,0" />
-                <Setter Property="BorderBrush" Value="DarkGray" />
-            </Style.Setters>
-        </Style>
+            <Style TargetType="StatusBarItem">
+                <Style.Setters>
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundDarkColorBrush}" />
+                    <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+                </Style.Setters>
+            </Style>
+            
+            <Style x:Key="StatusBarButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+                <Style.Setters>
+                    <Setter Property="Margin" Value="0.5,-3.0" />
+                    <Setter Property="Padding" Value="2,0" />
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundMediumColorBrush}" />
+                    <Setter Property="Background" Value="{DynamicResource ThemeBackgroundMediumColorBrush}" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource ThemeBlackDarkColorBrush}" />
+                </Style.Setters>
+            </Style>
+
+            <Style x:Key="ServerStateImageStyle" TargetType="Image" BasedOn="{StaticResource IconStyle}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding ServerConnectionState}" Value="Connected">
+                        <Setter Property="Source" Value="{StaticResource ConnectedIcon}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ServerConnectionState}" Value="Disconnected">
+                        <Setter Property="Source" Value="{StaticResource ConnectErrorIcon}" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
         
-        <Style x:Key="ServerStateImageStyle" TargetType="Image" BasedOn="{StaticResource Icon}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding ServerConnectionState}" Value="Connected">
-                    <Setter Property="Source" Value="{StaticResource ConnectedIcon}" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding ServerConnectionState}" Value="Disconnected">
-                    <Setter Property="Source" Value="{StaticResource ConnectErrorIcon}" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
     </UserControl.Resources>
     <Grid>
-        <StatusBar FontSize="10">
+        <StatusBar Background="{DynamicResource ThemeBackgroundDarkColorBrush}">
             
             <StatusBarItem MinWidth="96">
                 <Button Style="{StaticResource StatusBarButtonStyle}" ToolTip="Show server trace toolwindow">
@@ -60,11 +58,11 @@
             <StatusBarItem MinWidth="96" Visibility="{Binding ShowDocumentStatusItems, Converter={StaticResource BoolToVisibilityConverter}}">
                 <StackPanel Orientation="Horizontal">
                     
-                    <Image Style="{StaticResource Icon}" Source="{StaticResource DocInfoIcon}" />
+                    <Image Style="{StaticResource IconStyle}" Source="{StaticResource DocInfoIcon}" />
                     <TextBlock Text="{Binding DocumentLines}" Margin="2,0" />
                     <TextBlock Text="lines" Margin="2,0,10,0" />
 
-                    <Image Style="{StaticResource Icon}" Source="{StaticResource CaretLocationIcon}" />
+                    <Image Style="{StaticResource IconStyle}" Source="{StaticResource CaretLocationIcon}" />
 
                     <TextBlock Text="Ln: " Margin="5,0,0,0" />
                     <TextBlock Text="{Binding CaretLine}" Margin="2,0" />
@@ -80,7 +78,7 @@
 
             <StatusBarItem Visibility="{Binding ShowDocumentStatusItems, Converter={StaticResource BoolToVisibilityConverter}}">
                 <StackPanel Orientation="Horizontal">
-                    <Image Style="{StaticResource Icon}" Source="{StaticResource MemberInfoIcon}" />
+                    <Image Style="{StaticResource IconStyle}" Source="{StaticResource MemberInfoIcon}" />
                     <TextBlock Text="{Binding CodeLocation}" FontWeight="Medium" />
                 </StackPanel>
             </StatusBarItem>
@@ -92,7 +90,7 @@
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource IssuesIcon}" >
                                 <Image.Style>
-                                    <Style TargetType="Image" BasedOn="{StaticResource Icon}">
+                                    <Style TargetType="Image" BasedOn="{StaticResource IconStyle}">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IssuesCount}" Value="0">
                                                 <Setter Property="Source" Value="{StaticResource NoIssuesIcon}" />

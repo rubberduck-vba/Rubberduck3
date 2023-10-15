@@ -14,9 +14,16 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+    
     <Grid>
-        <Canvas Grid.RowSpan="4" HorizontalAlignment="Right">
-            <Image Style="{StaticResource BackgroundDuckyStyle}" />
-        </Canvas>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <local:DuckyBackgroundControl />
+
+        <local:StatusBarControl x:Name="StatusBar" Grid.Row="2" />
     </Grid>
 </Window>

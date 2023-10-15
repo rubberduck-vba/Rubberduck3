@@ -11,10 +11,19 @@
   <ItemGroup>
     <None Remove="Resources\Custom\background-ducky.png" />
     <None Remove="Resources\Custom\ducky.ico" />
+    <None Remove="Resources\Custom\Icons\Severity.png" />
     <None Remove="Resources\Custom\splash.png" />
+    <None Remove="Resources\Custom\vector-ducky-blur-1480.png" />
+    <None Remove="Resources\Custom\vector-ducky-shadow-1480.png" />
     <None Remove="Resources\FugueIcons\cross-circle.png" />
+    <None Remove="Resources\FugueIcons\document-code.png" />
+    <None Remove="Resources\FugueIcons\drive--exclamation.png" />
+    <None Remove="Resources\FugueIcons\drive-network.png" />
     <None Remove="Resources\FugueIcons\exclamation-diamond.png" />
     <None Remove="Resources\FugueIcons\information.png" />
+    <None Remove="Resources\FugueIcons\magnifier-medium.png" />
+    <None Remove="Resources\FugueIcons\selection-input.png" />
+    <None Remove="Resources\FugueIcons\tick-circle.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,10 +48,19 @@
     <Resource Include="ducky.ico" />
     <Resource Include="Resources\Custom\ducky.ico" />
     <Resource Include="Resources\Custom\background-ducky.png" />
+    <Resource Include="Resources\Custom\Icons\Severity.png" />
     <Resource Include="Resources\Custom\splash.png" />
+    <Resource Include="Resources\Custom\vector-ducky-blur-1480.png" />
+    <Resource Include="Resources\Custom\vector-ducky-shadow-1480.png" />
     <Resource Include="Resources\FugueIcons\cross-circle.png" />
+    <Resource Include="Resources\FugueIcons\document-code.png" />
+    <Resource Include="Resources\FugueIcons\drive--exclamation.png" />
+    <Resource Include="Resources\FugueIcons\drive-network.png" />
     <Resource Include="Resources\FugueIcons\exclamation-diamond.png" />
     <Resource Include="Resources\FugueIcons\information.png" />
+    <Resource Include="Resources\FugueIcons\magnifier-medium.png" />
+    <Resource Include="Resources\FugueIcons\selection-input.png" />
+    <Resource Include="Resources\FugueIcons\tick-circle.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Message\MessageWindow.xaml.cs">

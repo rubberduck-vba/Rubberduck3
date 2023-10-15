@@ -4,22 +4,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Rubberduck.Editor.Message" 
+        xmlns:shell="clr-namespace:Rubberduck.Editor.Shell" 
         xmlns:mdxaml="clr-namespace:MdXaml;assembly=MdXaml"
         mc:Ignorable="d"
-        Title="Rubberduck" WindowStyle="SingleBorderWindow"
-        Height="220" MinHeight="220" MaxHeight="600"
-        Width="380" MinWidth="380" MaxWidth="800"
-        ResizeMode="CanResizeWithGrip" 
-        Icon="pack://application:,,,/Rubberduck.Resources;component/ducky.ico"
-        SizeToContent="WidthAndHeight" SnapsToDevicePixels="True">
+        Title="Rubberduck" 
+        MinWidth="480"  MaxWidth="800"  
+        MinHeight="220" MaxHeight="600" 
+        Width="480" Height="220"
+        ResizeMode="CanResizeWithGrip"
+        WindowStyle="SingleBorderWindow">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <BitmapImage x:Key="ErrorIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FugueIcons/cross-circle.png" />
-            <BitmapImage x:Key="WarnIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FugueIcons/exclamation-diamond.png" />
-            <BitmapImage x:Key="InfoIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FugueIcons/information.png" />
         </ResourceDictionary>
     </Window.Resources>
     
@@ -32,27 +30,25 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Canvas Grid.RowSpan="4" HorizontalAlignment="Right">
-            <Image Style="{StaticResource BackgroundDuckyStyle}" />
-        </Canvas>
+        <shell:DuckyBackgroundControl />
 
-        <Label Grid.Row="0" Foreground="{DynamicResource BlackBrush}"
+        <Label Grid.Row="0"
                Content="Title goes here." 
-               FontWeight="Bold" FontSize="16" Margin="10,0" />
+               FontWeight="Bold" FontSize="16" Margin="10,0" Foreground="{DynamicResource ThemeTextColorBrush}" />
 
-        <mdxaml:MarkdownScrollViewer Grid.Row="1" Margin="4" Padding="16,0" MinHeight="100" Height="100"
-                                     VerticalAlignment="Top" Foreground="{StaticResource BlackBrush}"
+        <mdxaml:MarkdownScrollViewer Grid.Row="1" Margin="4" Padding="16,0" Height="100"
+                                     VerticalAlignment="Top" Foreground="{DynamicResource ThemeTextColorBrush}"
                                      VerticalScrollBarVisibility="Auto" xml:space="preserve">
 This is actually a ***markdown** document*.
 
         </mdxaml:MarkdownScrollViewer>
 
-        <CheckBox Grid.Row="4" Margin="8" Content="Don't show again" Foreground="{DynamicResource BlackBrush}" />
+        <CheckBox Grid.Row="4" Margin="8" Content="Don't show again" Foreground="{DynamicResource ThemeTextColorBrush}" />
 
-        <Expander Grid.Row="3" Header="More information" Margin="4" BorderBrush="{DynamicResource BlackBrush}" BorderThickness="0,1">
+        <Expander Grid.Row="3" Header="More information" Margin="4" BorderBrush="{DynamicResource ThemeWhiteMediumColorBrush}" BorderThickness="0,1">
             <Expander.HeaderTemplate>
                 <DataTemplate>
-                    <Label FontSize="11" Content="More information" Foreground="{DynamicResource BlackBrush}" ToolTip="Expand/collapse to show/hide details">
+                    <Label Content="More information" Foreground="{DynamicResource ThemeTextColorBrush}" ToolTip="Expand/collapse to show/hide details">
                         <Label.Style>
                             <Style TargetType="Label">
                                 <Style.Triggers>
@@ -65,8 +61,7 @@ This is actually a ***markdown** document*.
                     </Label>
                 </DataTemplate>
             </Expander.HeaderTemplate>
-            <mdxaml:MarkdownScrollViewer Grid.Row="1" Margin="4" Padding="16,0" Height="92" 
-                                         VerticalScrollBarVisibility="Auto" xml:space="preserve">
+            <mdxaml:MarkdownScrollViewer Grid.Row="1" Margin="4" Padding="16,0" Height="92" VerticalScrollBarVisibility="Auto" xml:space="preserve">
 We ❤️ Markdown!
 ```vb
 Option Explicit
@@ -77,7 +72,7 @@ Hopefully we'll figure out how to tweak the fonts.
         </mdxaml:MarkdownScrollViewer>
         </Expander>
 
-        <Border Grid.Row="3" Grid.RowSpan="2" Background="{StaticResource BlackBrush}" Opacity="0.05" />
+        <Border Grid.Row="3" Grid.RowSpan="2" Background="{DynamicResource ThemeAccent1DarkColorBrush}" Opacity="0.05"/>
 
         <StackPanel Grid.Row="4" Margin="16,8" Orientation="Horizontal" HorizontalAlignment="Right">
             <ItemsControl ItemsSource="{Binding Actions}">
