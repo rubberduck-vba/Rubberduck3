@@ -24,6 +24,8 @@
 
         <local:DuckyBackgroundControl />
 
+        <local:MenuBarControl x:Name="MenuBar" Grid.Row="0" />
+
         <local:StatusBarControl x:Name="StatusBar" Grid.Row="2" />
     </Grid>
 </Window>

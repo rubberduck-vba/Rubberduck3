@@ -23,5 +23,5 @@
             <Setter Property="Stretch" Value="UniformToFill" />
         </Style.Setters>
     </Style>
-
+    
 </ResourceDictionary>

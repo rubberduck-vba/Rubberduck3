@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
 using System;
@@ -25,9 +26,16 @@ namespace Rubberduck.Editor.Command
                 || _canExecute.Invoke(parameter).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
-        protected async override Task OnExecuteAsync(object? parameter)
+        protected override async void OnExecute(object? parameter)
         {
-            await _execute.Invoke(parameter);
+            try
+            {
+                await _execute.Invoke(parameter);
+            }
+            catch (Exception exception) 
+            {
+                Logger.LogDebug(TraceLevel, "An exception was thrown and handled in an async void method.", exception.ToString());
+            }
         }
     }
 }

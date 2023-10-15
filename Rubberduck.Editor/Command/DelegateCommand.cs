@@ -24,6 +24,6 @@ namespace Rubberduck.Editor.Command
 
         private bool SpecialEvaluateCanExecute(object? parameter) => _canExecute is null || _canExecute.Invoke(parameter);
 
-        protected async override Task OnExecuteAsync(object? parameter) => await Task.Run(() => _execute.Invoke(parameter));
+        protected override void OnExecute(object? parameter) => _execute.Invoke(parameter);
     }
 }

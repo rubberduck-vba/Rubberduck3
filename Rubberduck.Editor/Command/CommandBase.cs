@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -31,7 +32,8 @@ namespace Rubberduck.Editor.Command
 
         protected ISettingsProvider<RubberduckSettings> SettingsProvider { get; }
         protected ILogger Logger { get; }
-        protected abstract Task OnExecuteAsync(object? parameter);
+        protected TraceLevel TraceLevel => SettingsProvider.Settings.LanguageServerSettings.TraceLevel.ToTraceLevel();
+        protected abstract void OnExecute(object? parameter);
 
         protected Func<object?, bool> CanExecuteCondition { get; private set; }
         protected Func<object?, bool> OnExecuteCondition { get; private set; }
@@ -93,9 +95,9 @@ namespace Rubberduck.Editor.Command
         {
             var traceLevel = SettingsProvider.Settings.LanguageServerSettings.TraceLevel.ToTraceLevel();
 
-            if (TimedAction.TryRun(async () =>
+            if (TimedAction.TryRun(() =>
             {
-                await OnExecuteAsync(parameter);
+                OnExecute(parameter);
             }, out var elapsed, out var exception))
             {
                 Logger.LogPerformance(traceLevel, $"{GetType().Name}.Execute completed.", elapsed);

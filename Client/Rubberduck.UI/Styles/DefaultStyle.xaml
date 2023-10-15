@@ -3,8 +3,7 @@
                     xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" 
                     xmlns:converters="clr-namespace:Rubberduck.UI.Converters">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/LightTheme.xaml"/>
-        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Icons.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/BlueTheme.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="Window">
@@ -15,6 +14,9 @@
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="FontFamily" Value="Segoe UI" />
             <Setter Property="FontSize" Value="12" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundDarkColorBrush}" />
         </Style.Setters>
     </Style>
 
@@ -24,6 +26,9 @@
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="FontFamily" Value="Segoe UI" />
             <Setter Property="FontSize" Value="12" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundDarkColorBrush}" />
         </Style.Setters>
     </Style>
 
@@ -34,16 +39,7 @@
     </Style>
 
 
-    <Style x:Key="ButtonStyle" TargetType="Button">
-        <Style.Setters>
-            <Setter Property="Margin" Value="1" />
-            <Setter Property="Padding" Value="1" />
-            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundLightColorBrush}" />
-            <Setter Property="Background" Value="{DynamicResource ThemeTextBackgroundLightColorBrush}" />
-        </Style.Setters>
-    </Style>
-
-    <Style x:Key="ActionButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+    <Style x:Key="ActionButtonStyle" TargetType="Button">
         <Style.Resources>
             <Style TargetType="Border">
                 <Setter Property="CornerRadius" Value="4" />
@@ -62,7 +58,7 @@
     </Style>
 
 
-    <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+    <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
     <converters:SelectedItemToBooleanConverter x:Key="HasSelectedItems"/>
 
