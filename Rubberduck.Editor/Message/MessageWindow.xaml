@@ -45,7 +45,7 @@ This is actually a ***markdown** document*.
 
         <CheckBox Grid.Row="4" Margin="8" Content="Don't show again" Foreground="{DynamicResource ThemeTextColorBrush}" />
 
-        <Expander Grid.Row="3" Header="More information" Margin="4" BorderBrush="{DynamicResource ThemeWhiteMediumColorBrush}" BorderThickness="0,1">
+        <Expander Grid.Row="3" Header="More information" Margin="4" BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}" BorderThickness="0,1">
             <Expander.HeaderTemplate>
                 <DataTemplate>
                     <Label Content="More information" Foreground="{DynamicResource ThemeTextColorBrush}" ToolTip="Expand/collapse to show/hide details">
@@ -72,13 +72,13 @@ Hopefully we'll figure out how to tweak the fonts.
         </mdxaml:MarkdownScrollViewer>
         </Expander>
 
-        <Border Grid.Row="3" Grid.RowSpan="2" Background="{DynamicResource ThemeAccent1DarkColorBrush}" Opacity="0.05"/>
+        <Border Grid.Row="3" Grid.RowSpan="2" Background="{DynamicResource ThemeBackgroundLightColorBrush}" Opacity="0.05"/>
 
         <StackPanel Grid.Row="4" Margin="16,8" Orientation="Horizontal" HorizontalAlignment="Right">
             <ItemsControl ItemsSource="{Binding Actions}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button Content="{Binding Title}" IsDefault="{Binding IsDefaultAction}" Style="{StaticResource ActionButtonStyle}" />
+                        <Button Style="{StaticResource ActionButtonStyle}" Content="{Binding Title}" IsDefault="{Binding IsDefaultAction}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
