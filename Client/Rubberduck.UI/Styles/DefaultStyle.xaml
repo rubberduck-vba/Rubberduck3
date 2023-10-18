@@ -153,7 +153,7 @@
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundDarkColorBrush}" />
             <Setter Property="WindowChrome.WindowChrome">
                 <Setter.Value>
-                    <WindowChrome ResizeBorderThickness="4" UseAeroCaptionButtons="False" CaptionHeight="0" />
+                    <WindowChrome UseAeroCaptionButtons="False" CaptionHeight="0" />
                 </Setter.Value>
             </Setter>
             <Setter Property="Template" Value="{DynamicResource WindowTemplate}" />
@@ -186,8 +186,7 @@
     </Style>
     <Style x:Key="ControlBoxButtonCanvasStyle" TargetType="{x:Type Canvas}">
         <Setter Property="Height" Value="20" />
-        <Setter Property="Width" Value="20" />
-        <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="Width" Value="20" /> 
         <Setter Property="HorizontalAlignment" Value="Left" />
     </Style>
 
