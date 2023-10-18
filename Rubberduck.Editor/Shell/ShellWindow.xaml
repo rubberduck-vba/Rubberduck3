@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Rubberduck.Editor.Shell" xmlns:styles="clr-namespace:Rubberduck.UI.Styles;assembly=Rubberduck.UI"
         mc:Ignorable="d"
         WindowStyle="None"
+        ContentRendered="Window_ContentRendered"
         Style="{DynamicResource ThemedWindowStyle}"
         Title="Rubberduck Editor"
         MinHeight="300" MinWidth="480">

@@ -24,5 +24,10 @@ namespace Rubberduck.Editor.Shell
         {
             InitializeComponent();
         }
+
+        private void Window_ContentRendered(object sender, EventArgs e)
+        {
+            InvalidateVisual();
+        }
     }
 }

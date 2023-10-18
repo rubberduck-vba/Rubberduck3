@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:Rubberduck.UI.Styles"
                     xmlns:converters="clr-namespace:Rubberduck.UI.Converters">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/AbyssTheme.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/LightTheme.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <ControlTemplate x:Key="WindowTemplate" TargetType="{x:Type Window}">
@@ -20,9 +20,9 @@
                         HorizontalAlignment="Left" 
                         VerticalAlignment="Top">
                 <Image x:Name="AppIcon" 
-                       Width="20" 
-                       Height="20" 
-                       Margin="2,0" 
+                       Width="16" 
+                       Height="16" 
+                       Margin="4,2,2,0" 
                        VerticalAlignment="Top" 
                        HorizontalAlignment="Left"
                        Source="{Binding Icon, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
@@ -54,7 +54,7 @@
                     <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
                         <Image Source="{DynamicResource WindowMinimizeIcon}"
                                Style="{DynamicResource ControlBoxButtonImageStyle}"/>
-                        <Rectangle Fill="{DynamicResource ThemeBlackLightColorBrush}"
+                        <Rectangle Fill="{Binding Background, ElementName=ControlBoxMinimizeButton}"
                                    Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
                             <Rectangle.OpacityMask>
                                 <ImageBrush ImageSource="{DynamicResource WindowMinimizeIcon}" />
@@ -71,7 +71,7 @@
                     <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
                         <Image Source="{DynamicResource WindowRestoreIcon}"
                                Style="{DynamicResource ControlBoxButtonImageStyle}"/>
-                        <Rectangle Fill="{DynamicResource ThemeBlackLightColorBrush}"
+                        <Rectangle Fill="{Binding Background, ElementName=ControlBoxRestoreButton}"
                                    Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
                             <Rectangle.OpacityMask>
                                 <ImageBrush ImageSource="{DynamicResource WindowRestoreIcon}" />
@@ -87,7 +87,7 @@
                     <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
                         <Image Source="{DynamicResource WindowMaximizeIcon}"
                                Style="{DynamicResource ControlBoxButtonImageStyle}"/>
-                        <Rectangle Fill="{DynamicResource ThemeBlackLightColorBrush}"
+                        <Rectangle Fill="{Binding Background, ElementName=ControlBoxMaximizeButton}"
                                    Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
                             <Rectangle.OpacityMask>
                                 <ImageBrush ImageSource="{DynamicResource WindowMaximizeIcon}" />
@@ -104,31 +104,13 @@
                         <Image Source="{DynamicResource WindowCloseIcon}"
                                Style="{DynamicResource ControlBoxButtonImageStyle}"
                                Canvas.Left="-1"/>
-                        <Rectangle Fill="{DynamicResource ThemeBlackLightColorBrush}"
+                        <Rectangle Fill="{Binding Background, ElementName=ControlBoxCloseButton, Mode=OneWay}"
                                    Height="20" 
                                    Width="20" 
                                    Canvas.Left="-1">
                             <Rectangle.OpacityMask>
                                 <ImageBrush ImageSource="{DynamicResource WindowCloseIcon}" />
                             </Rectangle.OpacityMask>
-                            <Rectangle.Style>
-                                <Style TargetType="Rectangle">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}"
-                                                     Value="True">
-                                            <DataTrigger.Setters>
-                                                <Setter Property="Fill" Value="Transparent" />
-                                            </DataTrigger.Setters>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}"
-                                                     Value="True">
-                                            <DataTrigger.Setters>
-                                                <Setter Property="Fill" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
-                                            </DataTrigger.Setters>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Rectangle.Style>
                         </Rectangle>
                     </Canvas>
                 </Button>
@@ -153,7 +135,8 @@
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundDarkColorBrush}" />
             <Setter Property="WindowChrome.WindowChrome">
                 <Setter.Value>
-                    <WindowChrome UseAeroCaptionButtons="False" CaptionHeight="0" />
+                    <WindowChrome UseAeroCaptionButtons="False" CaptionHeight="20"
+                                  GlassFrameThickness="0" />
                 </Setter.Value>
             </Setter>
             <Setter Property="Template" Value="{DynamicResource WindowTemplate}" />
@@ -166,18 +149,6 @@
             <Setter Property="Width" Value="20" />
             <Setter Property="Fill" Value="{DynamicResource ThemeBlackLightColorBrush}" />
         </Style.Setters>
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
-                <DataTrigger.Setters>
-                    <Setter Property="Fill" Value="{DynamicResource ThemeWhiteLightColorBrush}" />
-                </DataTrigger.Setters>
-            </DataTrigger>
-            <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
-                <DataTrigger.Setters>
-                    <Setter Property="Fill" Value="{DynamicResource ThemeBlackLightColorBrush}" />
-                </DataTrigger.Setters>
-            </DataTrigger>
-        </Style.Triggers>
     </Style>
     <Style x:Key="ControlBoxButtonImageStyle" TargetType="{x:Type Image}">
         <Setter Property="Height" Value="20" />
@@ -195,9 +166,21 @@
         <Setter Property="Padding" Value="0"/>
         <Setter Property="Width" Value="20" />
         <Setter Property="Height" Value="20" />
-        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundLightColorBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ThemeBlackLightColorBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
         <Setter Property="Template" Value="{DynamicResource ControlBoxButtonTemplate}"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <DataTrigger.Setters>
+                    <Setter Property="Background" Value="Transparent" />
+                </DataTrigger.Setters>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <DataTrigger.Setters>
+                    <Setter Property="Background" Value="{DynamicResource ThemeBlackLightColorBrush}" />
+                </DataTrigger.Setters>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <ControlTemplate x:Key="ControlBoxButtonTemplate" TargetType="{x:Type ButtonBase}">
