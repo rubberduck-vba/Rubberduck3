@@ -5,11 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Rubberduck.Editor.Shell" xmlns:styles="clr-namespace:Rubberduck.UI.Styles;assembly=Rubberduck.UI"
         mc:Ignorable="d"
-        WindowStyle="None"
         ContentRendered="Window_ContentRendered"
         Style="{DynamicResource ThemedWindowStyle}"
-        Title="Rubberduck Editor"
-        MinHeight="300" MinWidth="480">
+        Title="Rubberduck Editor">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
