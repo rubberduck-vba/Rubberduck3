@@ -47,7 +47,7 @@
                         VerticalAlignment="Top" 
                         HorizontalAlignment="Right">
 
-                <Button x:Name="ControlBoxMinimizeButton" Margin="1,0"
+                <Button x:Name="ControlBoxMinimizeButton" Margin="0.5,0"
                         Style="{DynamicResource ControlBoxButtonStyle}"
                         Command="{x:Static SystemCommands.MinimizeWindowCommand}"
                         ToolTip="Minimize">
@@ -63,7 +63,7 @@
                     </Canvas>
                 </Button>
 
-                <Button x:Name="ControlBoxRestoreButton" Margin="1,0"
+                <Button x:Name="ControlBoxRestoreButton" Margin="0.5,0"
                         Style="{DynamicResource ControlBoxButtonStyle}"
                         Command="{x:Static SystemCommands.RestoreWindowCommand}"
                         Visibility="Collapsed" 
@@ -80,7 +80,7 @@
                     </Canvas>
                 </Button>
 
-                <Button x:Name="ControlBoxMaximizeButton" Margin="1,0"
+                <Button x:Name="ControlBoxMaximizeButton" Margin="0.5,0"
                         Style="{DynamicResource ControlBoxButtonStyle}" 
                         Command="{x:Static SystemCommands.MaximizeWindowCommand}" 
                         ToolTip="Maximize">
@@ -96,18 +96,16 @@
                     </Canvas>
                 </Button>
 
-                <Button x:Name="ControlBoxCloseButton" Margin="1,0,0,0"
+                <Button x:Name="ControlBoxCloseButton" Margin="0.5,-2,0,0"
                         Style="{DynamicResource ControlBoxButtonStyle}"
                         Command="{x:Static SystemCommands.CloseWindowCommand}" 
                         ToolTip="Close">
                     <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
                         <Image Source="{DynamicResource WindowCloseIcon}"
-                               Style="{DynamicResource ControlBoxButtonImageStyle}"
-                               Canvas.Left="-1"/>
+                               Style="{DynamicResource ControlBoxButtonImageStyle}" />
                         <Rectangle Fill="{Binding Background, ElementName=ControlBoxCloseButton, Mode=OneWay}"
                                    Height="20" 
-                                   Width="20" 
-                                   Canvas.Left="-1">
+                                   Width="20" >
                             <Rectangle.OpacityMask>
                                 <ImageBrush ImageSource="{DynamicResource WindowCloseIcon}" />
                             </Rectangle.OpacityMask>
@@ -123,6 +121,7 @@
         </Grid>
     </ControlTemplate>
 
+        <!-- note: key seems to be required, WindowChrome doesn't seem to work correctly without -->
     <Style x:Key="ThemedWindowStyle" TargetType="{x:Type Window}">
         <Style.Setters>
             <Setter Property="Icon" Value="{StaticResource DuckyIcon}" />
@@ -165,6 +164,7 @@
     </Style>
 
     <Style x:Key="ControlBoxButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
         <Setter Property="Margin" Value="0"/>
         <Setter Property="Padding" Value="0"/>
         <Setter Property="Width" Value="20" />
@@ -180,7 +180,7 @@
             </DataTrigger>
             <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="True">
                 <DataTrigger.Setters>
-                    <Setter Property="Background" Value="{DynamicResource ThemeBlackLightColorBrush}" />
+                    <Setter Property="Background" Value="{DynamicResource ThemeWhiteLightColorBrush}" />
                 </DataTrigger.Setters>
             </DataTrigger>
         </Style.Triggers>

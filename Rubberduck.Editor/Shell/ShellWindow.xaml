@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         ContentRendered="Window_ContentRendered"
         Style="{DynamicResource ThemedWindowStyle}"
-        Title="Rubberduck Editor">
+        Title="Rubberduck Editor"
+        Height="360" Width="640">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,7 +16,6 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
