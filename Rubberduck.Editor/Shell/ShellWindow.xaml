@@ -3,10 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Rubberduck.Editor.Shell"
+        xmlns:local="clr-namespace:Rubberduck.Editor.Shell" xmlns:styles="clr-namespace:Rubberduck.UI.Styles;assembly=Rubberduck.UI"
         mc:Ignorable="d"
-        Title="Rubberduck Editor" Icon="../ducky.ico" 
-        Height="450" Width="800">
+        WindowStyle="None"
+        Style="{DynamicResource ThemedWindowStyle}"
+        Title="Rubberduck Editor"
+        MinHeight="300" MinWidth="480">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -27,5 +29,7 @@
         <local:MenuBarControl x:Name="MenuBar" Grid.Row="0" />
 
         <local:StatusBarControl x:Name="StatusBar" Grid.Row="2" />
+
+        <ResizeGrip Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,-6,-6" IsHitTestVisible="True" />
     </Grid>
 </Window>

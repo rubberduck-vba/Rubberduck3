@@ -1,15 +1,149 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" 
+                    xmlns:local="clr-namespace:Rubberduck.UI.Styles"
                     xmlns:converters="clr-namespace:Rubberduck.UI.Converters">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/DarkTheme.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/AbyssTheme.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="Window">
+    <ControlTemplate x:Key="WindowTemplate" TargetType="{x:Type Window}">
+        <Grid Background="{DynamicResource ThemeBackgroundDarkColorBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            
+            <!-- Title bar -->
+            
+            <StackPanel Orientation="Horizontal" 
+                        Margin="4" 
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Top">
+                <Image x:Name="AppIcon" 
+                       Width="20" 
+                       Height="20" 
+                       Margin="2,0" 
+                       VerticalAlignment="Top" 
+                       HorizontalAlignment="Left"
+                       Source="{Binding Icon, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
+                <TextBlock x:Name="AppTitle" 
+                           Margin="2"
+                           Text="{Binding Title, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" 
+                           FontWeight="SemiBold" 
+                           Foreground="{DynamicResource ThemeTextColorBrush}" />
+            </StackPanel>
+            
+            <StackPanel Orientation="Horizontal" 
+                        Margin="6" 
+                        VerticalAlignment="Top" 
+                        HorizontalAlignment="Center">
+                <TextBlock x:Name="ActiveDocumentTitle" 
+                           VerticalAlignment="Top" 
+                           Text="[Project1.rdproj]" /> <!-- TODO binding here -->
+            </StackPanel>
+
+            <!-- TODO templates! -->
+            <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Top" 
+                        HorizontalAlignment="Right">
+
+                <Button x:Name="ControlBoxMinimizeButton"
+                        Style="{DynamicResource ControlBoxButtonStyle}"
+                        Command="{x:Static SystemCommands.MinimizeWindowCommand}"
+                        ToolTip="Minimize">
+                    <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
+                        <Image Source="{DynamicResource WindowMinimizeIcon}"
+                               Style="{DynamicResource ControlBoxButtonImageStyle}"/>
+                        <Rectangle Fill="{DynamicResource ThemeBlackLightColorBrush}"
+                                   Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="{DynamicResource WindowMinimizeIcon}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Canvas>
+                </Button>
+
+                <Button x:Name="ControlBoxRestoreButton"
+                        Style="{DynamicResource ControlBoxButtonStyle}"
+                        Command="{x:Static SystemCommands.RestoreWindowCommand}"
+                        Visibility="Collapsed" 
+                        ToolTip="Restore">
+                    <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
+                        <Image Source="{DynamicResource WindowRestoreIcon}"
+                               Style="{DynamicResource ControlBoxButtonImageStyle}"/>
+                        <Rectangle Fill="{DynamicResource ThemeBlackLightColorBrush}"
+                                   Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="{DynamicResource WindowRestoreIcon}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Canvas>
+                </Button>
+
+                <Button x:Name="ControlBoxMaximizeButton" 
+                        Style="{DynamicResource ControlBoxButtonStyle}" 
+                        Command="{x:Static SystemCommands.MaximizeWindowCommand}" 
+                        ToolTip="Maximize">
+                    <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
+                        <Image Source="{DynamicResource WindowMaximizeIcon}"
+                               Style="{DynamicResource ControlBoxButtonImageStyle}"/>
+                        <Rectangle Fill="{DynamicResource ThemeBlackLightColorBrush}"
+                                   Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="{DynamicResource WindowMaximizeIcon}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Canvas>
+                </Button>
+
+                <Button x:Name="ControlBoxCloseButton"
+                        Style="{DynamicResource ControlBoxButtonStyle}"
+                        Command="{x:Static SystemCommands.CloseWindowCommand}" 
+                        ToolTip="Close">
+                    <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
+                        <Image Source="{DynamicResource WindowCloseIcon}"
+                               Style="{DynamicResource ControlBoxButtonImageStyle}"
+                               Canvas.Left="-1"/>
+                        <Rectangle Fill="{DynamicResource ThemeBlackLightColorBrush}"
+                                   Height="20" 
+                                   Width="20" 
+                                   Canvas.Left="-1">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="{DynamicResource WindowCloseIcon}" />
+                            </Rectangle.OpacityMask>
+                            <Rectangle.Style>
+                                <Style TargetType="Rectangle">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}"
+                                                     Value="True">
+                                            <DataTrigger.Setters>
+                                                <Setter Property="Fill" Value="Transparent" />
+                                            </DataTrigger.Setters>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}"
+                                                     Value="True">
+                                            <DataTrigger.Setters>
+                                                <Setter Property="Fill" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+                                            </DataTrigger.Setters>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Rectangle.Style>
+                        </Rectangle>
+                    </Canvas>
+                </Button>
+            </StackPanel>
+
+            <Border Grid.Row="1" Background="Transparent" Margin="8">
+                <ContentPresenter x:Name="ClientArea" Content="{TemplateBinding Content}" />
+            </Border>
+            
+        </Grid>
+    </ControlTemplate>
+
+    <Style x:Key="ThemedWindowStyle" TargetType="{x:Type Window}">
         <Style.Setters>
-            <Setter Property="Icon" Value="pack://application:,,,/Rubberduck.Resources;component/ducky.ico" />
-            <Setter Property="ClipToBounds" Value="True" />
+            <Setter Property="Icon" Value="{StaticResource DuckyIcon}" />
             <Setter Property="SizeToContent" Value="WidthAndHeight" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="FontFamily" Value="Segoe UI" />
@@ -17,27 +151,64 @@
             <Setter Property="BorderBrush" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundDarkColorBrush}" />
+            <Setter Property="WindowChrome.WindowChrome">
+                <Setter.Value>
+                    <WindowChrome ResizeBorderThickness="4" UseAeroCaptionButtons="False" CaptionHeight="0" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template" Value="{DynamicResource WindowTemplate}" />
         </Style.Setters>
     </Style>
 
-    <Style TargetType="UserControl">
+    <Style x:Key="ControlBoxButtonMaskRectangleStyle" TargetType="{x:Type Rectangle}">
         <Style.Setters>
-            <Setter Property="ClipToBounds" Value="True" />
-            <Setter Property="SnapsToDevicePixels" Value="True" />
-            <Setter Property="FontFamily" Value="Segoe UI" />
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
-            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
-            <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundDarkColorBrush}" />
+            <Setter Property="Height" Value="20" />
+            <Setter Property="Width" Value="20" />
+            <Setter Property="Fill" Value="{DynamicResource ThemeBlackLightColorBrush}" />
         </Style.Setters>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
+                <DataTrigger.Setters>
+                    <Setter Property="Fill" Value="{DynamicResource ThemeWhiteLightColorBrush}" />
+                </DataTrigger.Setters>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
+                <DataTrigger.Setters>
+                    <Setter Property="Fill" Value="{DynamicResource ThemeBlackLightColorBrush}" />
+                </DataTrigger.Setters>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="ControlBoxButtonImageStyle" TargetType="{x:Type Image}">
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Stretch" Value="Fill" />
+    </Style>
+    <Style x:Key="ControlBoxButtonCanvasStyle" TargetType="{x:Type Canvas}">
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Width" Value="20" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
     </Style>
 
-    <Style TargetType="Grid">
-        <Style.Setters>
-            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
-        </Style.Setters>
+    <Style x:Key="ControlBoxButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundLightColorBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
+        <Setter Property="Template" Value="{DynamicResource ControlBoxButtonTemplate}"/>
     </Style>
 
+    <ControlTemplate x:Key="ControlBoxButtonTemplate" TargetType="{x:Type ButtonBase}">
+        <ContentPresenter x:Name="contentPresenter" 
+                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                          Margin="{TemplateBinding Padding}" 
+                          RecognizesAccessKey="True" 
+                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+    </ControlTemplate>
 
     <Style x:Key="ActionButtonStyle" TargetType="Button">
         <Style.Resources>
@@ -57,10 +228,8 @@
         </Style.Triggers>
     </Style>
 
-
     <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
     <converters:SelectedItemToBooleanConverter x:Key="HasSelectedItems"/>
-
 
 </ResourceDictionary>

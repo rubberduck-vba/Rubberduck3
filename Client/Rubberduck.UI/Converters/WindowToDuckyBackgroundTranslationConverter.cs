@@ -8,12 +8,11 @@ namespace Rubberduck.UI.Converters
     {
         public enum TranslationDirection { TranslationX, TranslationY }
 
-        public double Percent { get; set; } = 0.5;
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var windowSize = (double)value;
-            return windowSize * Percent;
+            var windowSize = System.Convert.ToDouble(value);
+            var percent = System.Convert.ToDouble(parameter);
+            return windowSize * percent;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

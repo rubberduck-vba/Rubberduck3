@@ -7,12 +7,11 @@
         xmlns:shell="clr-namespace:Rubberduck.Editor.Shell" 
         xmlns:mdxaml="clr-namespace:MdXaml;assembly=MdXaml"
         mc:Ignorable="d"
+        Style="{DynamicResource ShellWindow}"
         Title="Rubberduck" 
         MinWidth="480"  MaxWidth="800"  
         MinHeight="220" MaxHeight="600" 
-        Width="480" Height="220"
-        ResizeMode="CanResizeWithGrip"
-        WindowStyle="SingleBorderWindow">
+        Width="480" Height="220">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -30,14 +29,15 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <shell:DuckyBackgroundControl />
+        <shell:DuckyBackgroundControl Grid.RowSpan="5" />
 
-        <Label Grid.Row="0"
-               Content="Title goes here." 
-               FontWeight="Bold" FontSize="16" Margin="10,0" Foreground="{DynamicResource ThemeTextColorBrush}" />
+        <Label Grid.Row="0" Content="Title goes here." 
+               Foreground="{DynamicResource ThemeTextColorBrush}"
+               FontWeight="Bold" FontSize="16" Margin="10,0" />
 
         <mdxaml:MarkdownScrollViewer Grid.Row="1" Margin="4" Padding="16,0" Height="100"
-                                     VerticalAlignment="Top" Foreground="{DynamicResource ThemeTextColorBrush}"
+                                     VerticalAlignment="Top" 
+                                     Foreground="{DynamicResource ThemeTextColorBrush}"
                                      VerticalScrollBarVisibility="Auto" xml:space="preserve">
 This is actually a ***markdown** document*.
 

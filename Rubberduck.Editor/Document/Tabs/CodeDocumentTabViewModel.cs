@@ -2,10 +2,13 @@
 
 namespace Rubberduck.Editor.Document.Tabs
 {
-    public class CodeDocumentTabViewModel : DocumentTabViewModel
+    /// <summary>
+    /// The base view model for a type of document tab that contains code managed by a language server.
+    /// </summary>
+    public abstract class CodeDocumentTabViewModel : DocumentTabViewModel
     {
-        public CodeDocumentTabViewModel(Uri documentUri, string title, string content)
-            : base(documentUri, title, content)
+        public CodeDocumentTabViewModel(Uri documentUri, string language, string title, string content, bool isReadOnly)
+            : base(documentUri, language, title, content, isReadOnly)
         {
         }
     }

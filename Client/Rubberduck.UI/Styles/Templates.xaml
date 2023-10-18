@@ -4,7 +4,7 @@
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
-    <SolidColorBrush x:Key="Button.Foreground" Color="{DynamicResource ThemeBackgroundLightColor}"/>
+    <!--<SolidColorBrush x:Key="Button.Foreground" Color="{DynamicResource ThemeBackgroundLightColor}"/>
     <SolidColorBrush x:Key="Button.Defaulted.Border" Color="{DynamicResource ThemeAccent1DarkColor}"/>
     <SolidColorBrush x:Key="Button.MouseOver.Background" Color="{DynamicResource ThemeAccent1HighlightColor}"/>
     <SolidColorBrush x:Key="Button.MouseOver.Foreground" Color="{DynamicResource ThemeAccent1TextColor}"/>
@@ -15,32 +15,6 @@
     <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
     <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
     <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
-
-    <ControlTemplate x:Key="ButtonTemplate" TargetType="{x:Type ButtonBase}">
-        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
-            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-        </Border>
-        <ControlTemplate.Triggers>
-            <Trigger Property="Button.IsDefaulted" Value="true">
-                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource Button.Defaulted.Border}"/>
-            </Trigger>
-            <Trigger Property="IsMouseOver" Value="true">
-                <Setter Property="Background" TargetName="border" Value="{DynamicResource Button.MouseOver.Background}"/>
-                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource Button.MouseOver.Border}"/>
-                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{DynamicResource Button.MouseOver.Foreground}"/>
-            </Trigger>
-            <Trigger Property="IsPressed" Value="true">
-                <Setter Property="Background" TargetName="border" Value="{DynamicResource Button.Pressed.Background}"/>
-                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource Button.Pressed.Border}"/>
-                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{DynamicResource Button.Pressed.Foreground}"/>
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="Background" TargetName="border" Value="{DynamicResource Button.Disabled.Background}" />
-                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource Button.Disabled.Border}" />
-                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{DynamicResource Button.Disabled.Foreground}" />
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
 
     <Style TargetType="Button">
         <Style.Resources>
@@ -58,9 +32,9 @@
             <Setter Property="Padding" Value="1" />
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundLightColorBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}" />
-            <Setter Property="Template" Value="{DynamicResource ButtonTemplate}" />
+            <Setter Property="Template" Value="{DynamicResource ControlBoxButtonTemplate}" />
         </Style.Setters>
-    </Style>
+    </Style>-->
 
     <Style TargetType="Menu">
         <Style.Setters>

@@ -12,8 +12,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <converters:WindowToDuckyBackgroundTranslationConverter x:Key="RelativeTranslateX" Percent="0.30" />
-            <converters:WindowToDuckyBackgroundTranslationConverter x:Key="RelativeTranslateY" Percent="-0.25" />
+            <converters:WindowToDuckyBackgroundTranslationConverter x:Key="RelativeTranslateX" />
+            <converters:WindowToDuckyBackgroundTranslationConverter x:Key="RelativeTranslateY" />
 
             <Style x:Key="BackgroundDuckyStyle" TargetType="Image">
                 <Style.Setters>
@@ -39,8 +39,8 @@
             </Rectangle>
             <Canvas.RenderTransform>
                 <TranslateTransform 
-                    X="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource RelativeTranslateX}}" 
-                    Y="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource RelativeTranslateY}}" />
+                    X="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource RelativeTranslateX}, ConverterParameter=0.31}"
+                    Y="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource RelativeTranslateY}, ConverterParameter=-0.235}" />
             </Canvas.RenderTransform>
         </Canvas>
     </Grid>

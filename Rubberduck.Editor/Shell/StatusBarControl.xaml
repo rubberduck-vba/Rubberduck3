@@ -69,7 +69,7 @@
             <StatusBarItem HorizontalAlignment="Right" Visibility="{Binding ShowDocumentStatusItems, Converter={StaticResource BoolToVisibilityConverter}}">
                 <StackPanel Orientation="Horizontal">
                     
-                    <Button ToolTip="Review diagnostics">
+                    <Button Style="{DynamicResource ControlBoxButtonStyle}" ToolTip="Review diagnostics">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource IssuesIcon}" >
                                 <Image.Style>

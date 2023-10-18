@@ -16,12 +16,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Ducky.ico" />
+    <None Remove="SVG\FontAwesome\rectangle-xmark-solid.png" />
+    <None Remove="SVG\FontAwesome\rectangle-xmark-solid.svg" />
+    <None Remove="SVG\FontAwesome\window-maximize-regular.svg" />
+    <None Remove="SVG\FontAwesome\window-minimize-regular.svg" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
     <PackageReference Include="MdXaml" Version="1.21.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+    <PackageReference Include="SharpVectors" Version="1.8.2" />
   </ItemGroup>
   
   <ItemGroup>
@@ -33,10 +38,16 @@
   
   <ItemGroup>
     <Resource Include="Ducky.ico" />
+    <Resource Include="SVG\FontAwesome\rectangle-xmark-solid.svg" />
+    <Resource Include="SVG\FontAwesome\window-maximize-regular.svg" />
+    <Resource Include="SVG\FontAwesome\window-minimize-regular.svg" />
   </ItemGroup>
   
   <ItemGroup>
     <Compile Update="About\AboutWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Styles\ControlBoxCanvas.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
