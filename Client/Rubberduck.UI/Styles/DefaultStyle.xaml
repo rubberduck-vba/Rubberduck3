@@ -47,7 +47,7 @@
                         VerticalAlignment="Top" 
                         HorizontalAlignment="Right">
 
-                <Button x:Name="ControlBoxMinimizeButton"
+                <Button x:Name="ControlBoxMinimizeButton" Margin="1,0"
                         Style="{DynamicResource ControlBoxButtonStyle}"
                         Command="{x:Static SystemCommands.MinimizeWindowCommand}"
                         ToolTip="Minimize">
@@ -63,7 +63,7 @@
                     </Canvas>
                 </Button>
 
-                <Button x:Name="ControlBoxRestoreButton"
+                <Button x:Name="ControlBoxRestoreButton" Margin="1,0"
                         Style="{DynamicResource ControlBoxButtonStyle}"
                         Command="{x:Static SystemCommands.RestoreWindowCommand}"
                         Visibility="Collapsed" 
@@ -80,7 +80,7 @@
                     </Canvas>
                 </Button>
 
-                <Button x:Name="ControlBoxMaximizeButton" 
+                <Button x:Name="ControlBoxMaximizeButton" Margin="1,0"
                         Style="{DynamicResource ControlBoxButtonStyle}" 
                         Command="{x:Static SystemCommands.MaximizeWindowCommand}" 
                         ToolTip="Maximize">
@@ -96,7 +96,7 @@
                     </Canvas>
                 </Button>
 
-                <Button x:Name="ControlBoxCloseButton"
+                <Button x:Name="ControlBoxCloseButton" Margin="1,0,0,0"
                         Style="{DynamicResource ControlBoxButtonStyle}"
                         Command="{x:Static SystemCommands.CloseWindowCommand}" 
                         ToolTip="Close">
