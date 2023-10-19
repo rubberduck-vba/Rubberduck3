@@ -3,100 +3,63 @@
                     xmlns:local="clr-namespace:Rubberduck.UI.Styles"
                     xmlns:converters="clr-namespace:Rubberduck.UI.Converters">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/LightTheme.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/DarkTheme.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
+    <converters:BoolToVisibleVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
+    <converters:SelectedItemToBooleanConverter x:Key="HasSelectedItems"/>
+    <converters:WindowStateToVisibilityConverter x:Key="WindowStateToRestoreVisibility" VisibleState="Maximized" HiddenState="Normal" />
+    <converters:WindowStateToVisibilityConverter x:Key="WindowStateToMaximizeVisibility" VisibleState="Normal" HiddenState="Maximized" />
+
     <ControlTemplate x:Key="WindowTemplate" TargetType="{x:Type Window}">
-        <Grid Background="{DynamicResource ThemeBackgroundDarkColorBrush}">
+        <Grid Background="{DynamicResource ThemeBackgroundLightColorBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            
+
+            <Border Grid.RowSpan="2" Background="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+
             <!-- Title bar -->
             
-            <StackPanel Orientation="Horizontal" 
-                        Margin="4" 
-                        HorizontalAlignment="Left" 
-                        VerticalAlignment="Top">
-                <Image x:Name="AppIcon" 
-                       Width="16" 
-                       Height="16" 
-                       Margin="4,2,2,0" 
-                       VerticalAlignment="Top" 
-                       HorizontalAlignment="Left"
-                       Source="{Binding Icon, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
+            <DockPanel Margin="2"
+                       HorizontalAlignment="Left" 
+                       VerticalAlignment="Top">
+                
+                <Button DockPanel.Dock="Left"
+                        Command="{x:Static SystemCommands.ShowSystemMenuCommand}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image x:Name="AppIcon" 
+                                   Width="16" 
+                                   Height="16" 
+                                   Margin="2,2,2,0" 
+                                   VerticalAlignment="Top" 
+                                   HorizontalAlignment="Left"
+                                   Source="{Binding Icon, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" />
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
                 <TextBlock x:Name="AppTitle" 
+                           DockPanel.Dock="Left"
                            Margin="2"
                            Text="{Binding Title, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" 
                            FontWeight="SemiBold" 
                            Foreground="{DynamicResource ThemeTextColorBrush}" />
-            </StackPanel>
+            </DockPanel>
             
-            <StackPanel Orientation="Horizontal" 
-                        Margin="6" 
+            <TextBlock x:Name="ActiveDocumentTitle" Margin="0,2"
                         VerticalAlignment="Top" 
-                        HorizontalAlignment="Center">
-                <TextBlock x:Name="ActiveDocumentTitle" 
-                           VerticalAlignment="Top" 
-                           Text="[Project1.rdproj]" /> <!-- TODO binding here -->
-            </StackPanel>
+                        HorizontalAlignment="Center"
+                        Text="[Project1.rdproj]" /> <!-- TODO binding here -->
 
             <!-- TODO templates! -->
-            <StackPanel Orientation="Horizontal"
-                        VerticalAlignment="Top" 
-                        HorizontalAlignment="Right">
-
-                <Button x:Name="ControlBoxMinimizeButton" Margin="0.5,0"
-                        Style="{DynamicResource ControlBoxButtonStyle}"
-                        Command="{x:Static SystemCommands.MinimizeWindowCommand}"
-                        ToolTip="Minimize">
-                    <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
-                        <Image Source="{DynamicResource WindowMinimizeIcon}"
-                               Style="{DynamicResource ControlBoxButtonImageStyle}"/>
-                        <Rectangle Fill="{Binding Background, ElementName=ControlBoxMinimizeButton}"
-                                   Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
-                            <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="{DynamicResource WindowMinimizeIcon}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                    </Canvas>
-                </Button>
-
-                <Button x:Name="ControlBoxRestoreButton" Margin="0.5,0"
-                        Style="{DynamicResource ControlBoxButtonStyle}"
-                        Command="{x:Static SystemCommands.RestoreWindowCommand}"
-                        Visibility="Collapsed" 
-                        ToolTip="Restore">
-                    <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
-                        <Image Source="{DynamicResource WindowRestoreIcon}"
-                               Style="{DynamicResource ControlBoxButtonImageStyle}"/>
-                        <Rectangle Fill="{Binding Background, ElementName=ControlBoxRestoreButton}"
-                                   Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
-                            <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="{DynamicResource WindowRestoreIcon}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                    </Canvas>
-                </Button>
-
-                <Button x:Name="ControlBoxMaximizeButton" Margin="0.5,0"
-                        Style="{DynamicResource ControlBoxButtonStyle}" 
-                        Command="{x:Static SystemCommands.MaximizeWindowCommand}" 
-                        ToolTip="Maximize">
-                    <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
-                        <Image Source="{DynamicResource WindowMaximizeIcon}"
-                               Style="{DynamicResource ControlBoxButtonImageStyle}"/>
-                        <Rectangle Fill="{Binding Background, ElementName=ControlBoxMaximizeButton}"
-                                   Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
-                            <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="{DynamicResource WindowMaximizeIcon}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                    </Canvas>
-                </Button>
+            <DockPanel VerticalAlignment="Top" 
+                       HorizontalAlignment="Right">
 
                 <Button x:Name="ControlBoxCloseButton" Margin="0.5,-2,0,0"
+                        DockPanel.Dock="Right"
                         Style="{DynamicResource ControlBoxButtonStyle}"
                         Command="{x:Static SystemCommands.CloseWindowCommand}" 
                         ToolTip="Close">
@@ -112,16 +75,70 @@
                         </Rectangle>
                     </Canvas>
                 </Button>
-            </StackPanel>
 
-            <Border Grid.Row="1" Background="Transparent" Margin="8">
+                <Button x:Name="ControlBoxMaximizeButton" Margin="0.5,0"
+                        DockPanel.Dock="Right"
+                        Style="{DynamicResource ControlBoxButtonStyle}" 
+                        Command="{x:Static SystemCommands.MaximizeWindowCommand}" 
+                        Visibility="{Binding WindowState, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Converter={StaticResource WindowStateToMaximizeVisibility}}"
+                        ToolTip="Maximize">
+                    <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
+                        <Image Source="{DynamicResource WindowMaximizeIcon}"
+                               Style="{DynamicResource ControlBoxButtonImageStyle}"/>
+                        <Rectangle Fill="{Binding Background, ElementName=ControlBoxMaximizeButton}"
+                                   Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="{DynamicResource WindowMaximizeIcon}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Canvas>
+                </Button>
+
+                <Button x:Name="ControlBoxRestoreButton" Margin="0.5,0"
+                        DockPanel.Dock="Right"
+                        Style="{DynamicResource ControlBoxButtonStyle}"
+                        Command="{x:Static SystemCommands.RestoreWindowCommand}"
+                        Visibility="{Binding WindowState, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Converter={StaticResource WindowStateToRestoreVisibility}}"
+                        ToolTip="Restore">
+                    <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
+                        <Image Source="{DynamicResource WindowRestoreIcon}"
+                               Style="{DynamicResource ControlBoxButtonImageStyle}"/>
+                        <Rectangle Fill="{Binding Background, ElementName=ControlBoxRestoreButton}"
+                                   Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="{DynamicResource WindowRestoreIcon}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Canvas>
+                </Button>
+
+                <Button x:Name="ControlBoxMinimizeButton" Margin="0.5,0"
+                        DockPanel.Dock="Right"
+                        Style="{DynamicResource ControlBoxButtonStyle}"
+                        Command="{x:Static SystemCommands.MinimizeWindowCommand}"
+                        ToolTip="Minimize">
+                    <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
+                        <Image Source="{DynamicResource WindowMinimizeIcon}"
+                               Style="{DynamicResource ControlBoxButtonImageStyle}"/>
+                        <Rectangle Fill="{Binding Background, ElementName=ControlBoxMinimizeButton}"
+                                   Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="{DynamicResource WindowMinimizeIcon}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Canvas>
+                </Button>
+
+            </DockPanel>
+
+            <Border Grid.Row="1" Background="{DynamicResource ThemeBackgroundLightColorBrush}" Margin="4,0,4,8" CornerRadius="8">
                 <ContentPresenter x:Name="ClientArea" Content="{TemplateBinding Content}" />
             </Border>
             
         </Grid>
     </ControlTemplate>
 
-        <!-- note: key seems to be required, WindowChrome doesn't seem to work correctly without -->
+        <!-- note: key seems to be required, WindowChrome doesn't seem to work correctly without :( -->
     <Style x:Key="ThemedWindowStyle" TargetType="{x:Type Window}">
         <Style.Setters>
             <Setter Property="Icon" Value="{StaticResource DuckyIcon}" />
@@ -137,7 +154,8 @@
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundDarkColorBrush}" />
             <Setter Property="WindowChrome.WindowChrome">
                 <Setter.Value>
-                    <WindowChrome UseAeroCaptionButtons="False" CaptionHeight="20"
+                    <WindowChrome UseAeroCaptionButtons="False" 
+                                  CaptionHeight="20"
                                   GlassFrameThickness="0" />
                 </Setter.Value>
             </Setter>
@@ -169,7 +187,7 @@
         <Setter Property="Padding" Value="0"/>
         <Setter Property="Width" Value="20" />
         <Setter Property="Height" Value="20" />
-        <Setter Property="Background" Value="{DynamicResource ThemeBlackLightColorBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ThemeWhiteMediumColorBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
         <Setter Property="Template" Value="{DynamicResource ControlBoxButtonTemplate}"/>
         <Style.Triggers>
@@ -180,7 +198,7 @@
             </DataTrigger>
             <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="True">
                 <DataTrigger.Setters>
-                    <Setter Property="Background" Value="{DynamicResource ThemeWhiteLightColorBrush}" />
+                    <Setter Property="Background" Value="{DynamicResource ThemeBlackLightColorBrush}" />
                 </DataTrigger.Setters>
             </DataTrigger>
         </Style.Triggers>
@@ -212,9 +230,5 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
-
-    <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-    <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
-    <converters:SelectedItemToBooleanConverter x:Key="HasSelectedItems"/>
-
+    
 </ResourceDictionary>

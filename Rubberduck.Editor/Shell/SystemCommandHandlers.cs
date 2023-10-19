@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 
 namespace Rubberduck.Editor.Shell
 {
@@ -11,52 +12,64 @@ namespace Rubberduck.Editor.Shell
             _window = window;
         }
 
-        public void CloseWindowCommandBinding_CanExecute(object sender, System.Windows.Input.CanExecuteRoutedEventArgs e)
+        public void CloseWindowCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
             e.Handled = true;
         }
 
-        public void CloseWindowCommandBinding_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        public void CloseWindowCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _window.Close();
+            SystemCommands.CloseWindow(_window);
             e.Handled = true;
         }
 
-        public void MinimizeWindowCommandBinding_CanExecute(object sender, System.Windows.Input.CanExecuteRoutedEventArgs e)
+        public void MinimizeWindowCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = _window.WindowState != WindowState.Minimized;
             e.Handled = true;
         }
 
-        public void MinimizeWindowCommandBinding_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        public void MinimizeWindowCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _window.WindowState = WindowState.Minimized;
+            SystemCommands.MinimizeWindow(_window);
             e.Handled = true;
         }
 
-        public void MaximizeWindowCommandBinding_CanExecute(object sender, System.Windows.Input.CanExecuteRoutedEventArgs e)
+        public void MaximizeWindowCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = _window.WindowState != WindowState.Maximized;
             e.Handled = true;
         }
 
-        public void MaximizeWindowCommandBinding_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        public void MaximizeWindowCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _window.WindowState = WindowState.Maximized;
-
+            SystemCommands.MaximizeWindow(_window);
             e.Handled = true;
         }
 
-        public void RestoreWindowCommandBinding_CanExecute(object sender, System.Windows.Input.CanExecuteRoutedEventArgs e)
+        public void RestoreWindowCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = _window.WindowState == WindowState.Maximized;
             e.Handled = true;
         }
 
-        public void RestoreWindowCommandBinding_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        public void RestoreWindowCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _window.WindowState = WindowState.Normal;
+            SystemCommands.RestoreWindow(_window);
+            e.Handled = true;
+        }
+
+        public void ShowSystemMenuCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+            e.Handled = true;
+        }
+
+        public void ShowSystemMenuCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var location = Mouse.GetPosition(_window);
+            SystemCommands.ShowSystemMenu(_window, location);
             e.Handled = true;
         }
     }
