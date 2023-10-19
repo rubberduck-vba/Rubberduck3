@@ -15,11 +15,7 @@
     </UserControl.Resources>
     <Menu>
         <MenuItem Header="_File">
-            <MenuItem Header="_New">
-                <MenuItem Header="_Project..." />
-                <MenuItem Header="Project From _Existing Code..." />
-                <Separator />
-                <MenuItem Header="_File..." />
+            <MenuItem Header="_New Project...">
             </MenuItem>
             <MenuItem Header="_Open..."/>
             <Separator />
