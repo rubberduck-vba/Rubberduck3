@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Rubberduck.Editor.FileMenu" xmlns:shell="clr-namespace:Rubberduck.Editor.Shell"
         mc:Ignorable="d"
         Style="{DynamicResource ThemedWindowStyle}"
-        Title="New Project" Height="400" Width="480">
+        Height="400" Width="480">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -14,5 +14,6 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <shell:ThunderFrame/>
+    <shell:ThunderFrame Title="New Project Workspace">
+    </shell:ThunderFrame>
 </Window>

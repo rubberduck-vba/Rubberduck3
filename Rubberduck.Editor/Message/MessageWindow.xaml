@@ -19,29 +19,31 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <shell:ThunderFrame AcceptCommand="{Binding AcceptCommand}"
-                        CancelCommand="{x:Static ApplicationCommands.NotACommand}"
+    <shell:ThunderFrame AcceptCommand="{Binding Actions[0]}"
+                        CancelCommand="{Binding Actions[1]}"
                         Title="Title goes here.">
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <mdxaml:MarkdownScrollViewer Grid.Row="0" Padding="16,0" Height="140"
+            <mdxaml:MarkdownScrollViewer Grid.Row="0" Padding="16,0" 
+                                         Height="180"
                                          Foreground="{DynamicResource ThemeTextColorBrush}"
                                          VerticalScrollBarVisibility="Auto" xml:space="preserve">
 This is actually a ***markdown** document*.
 
             </mdxaml:MarkdownScrollViewer>
 
-            <CheckBox Grid.Row="1" Margin="8" Content="Do not show this message again" Foreground="{DynamicResource ThemeTextColorBrush}" />
-
-            <Expander Grid.Row="2" Header="More information" Margin="4" BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}" BorderThickness="0,1">
+            <Expander Grid.Row="2" Header="More information" Margin="4" 
+                      BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}" BorderThickness="0,1">
                 <Expander.HeaderTemplate>
                     <DataTemplate>
-                        <Label Content="More information" Foreground="{DynamicResource ThemeTextColorBrush}" ToolTip="Expand/collapse to show/hide details">
+                        <Label Content="More information" 
+                               Foreground="{DynamicResource ThemeTextColorBrush}" 
+                               ToolTip="Expand/collapse to show/hide details">
                             <Label.Style>
                                 <Style TargetType="Label">
                                     <Style.Triggers>
@@ -54,7 +56,11 @@ This is actually a ***markdown** document*.
                         </Label>
                     </DataTemplate>
                 </Expander.HeaderTemplate>
-                <mdxaml:MarkdownScrollViewer Grid.Row="0" Margin="4" Padding="16,0" Height="92" VerticalScrollBarVisibility="Auto" xml:space="preserve">
+                <mdxaml:MarkdownScrollViewer 
+                    Grid.Row="0" Margin="4" Padding="16,0" 
+                    Height="Auto" MaxHeight="200" 
+                    FontFamily="Consolas"
+                    VerticalScrollBarVisibility="Auto" xml:space="preserve">
 We ❤️ Markdown!
 ```vb
 Option Explicit
