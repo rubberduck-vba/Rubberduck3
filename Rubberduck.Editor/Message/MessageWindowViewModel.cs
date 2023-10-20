@@ -10,6 +10,11 @@ namespace Rubberduck.Editor.Message
         public static MessageAction[] ActionCloseOnly { get; } = new[] { MessageAction.CloseAction };
         public static MessageAction[] ActionAcceptCancel { get; } = new[] { MessageAction.AcceptAction, MessageAction.CancelAction };
 
+        /// <summary>
+        /// Parameterless constructor for designer view.
+        /// </summary>
+        public MessageWindowViewModel() { }
+
         public MessageWindowViewModel(MessageModel model)
         {
             Key = model.Key;
@@ -19,11 +24,11 @@ namespace Rubberduck.Editor.Message
             Level = model.Level;
         }
 
-        public string Key { get; init; }
-        public string Message { get; init; }
-        public string? Verbose { get; init; }
-        public string Title { get; init; }
-        public LogLevel Level { get; init; }
+        public string Key { get; init; } = "DT-Message";
+        public string Message { get; init; } = "Message goes here";
+        public string? Verbose { get; init; } = null;
+        public string Title { get; init; } = "Title";
+        public LogLevel Level { get; init; } = LogLevel.Information;
 
         private MessageAction[] _actions = ActionCloseOnly;
         public MessageAction[] Actions
@@ -62,15 +67,18 @@ namespace Rubberduck.Editor.Message
             }
         }
 
-        private bool _doNotShowAgain;
-        public bool DoNotShowAgain
+        private bool _isEnabled = true;
+        /// <remarks>
+        /// Use an inverted-bool converter to use with e.g. "do not show again" checkboxes.
+        /// </remarks>
+        public bool IsEnabled
         {
-            get => _doNotShowAgain;
+            get => _isEnabled;
             set
             {
-                if (_doNotShowAgain != value)
+                if (_isEnabled != value)
                 {
-                    _doNotShowAgain = value;
+                    _isEnabled = value;
                     OnPropertyChanged();
                 }
             }

@@ -3,15 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Rubberduck.Editor.Message" 
+        xmlns:mdxaml="clr-namespace:MdXaml;assembly=MdXaml" 
         xmlns:shell="clr-namespace:Rubberduck.Editor.Shell" 
-        xmlns:mdxaml="clr-namespace:MdXaml;assembly=MdXaml"
+        xmlns:local="clr-namespace:Rubberduck.Editor.Message" 
+        d:DataContext="{d:DesignInstance Type=local:MessageWindowViewModel}"
         mc:Ignorable="d"
-        Style="{DynamicResource ShellWindow}"
-        Title="Rubberduck" 
-        MinWidth="480"  MaxWidth="800"  
-        MinHeight="220" MaxHeight="600" 
-        Width="480" Height="220">
+        Style="{DynamicResource ThemedWindowStyle}"
+        Title="Rubberduck"
+        ShowInTaskbar="False">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -19,49 +18,43 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
 
-        <shell:DuckyBackgroundControl Grid.RowSpan="5" />
+    <shell:ThunderFrame AcceptCommand="{Binding AcceptCommand}"
+                        CancelCommand="{x:Static ApplicationCommands.NotACommand}"
+                        Title="Title goes here.">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <Label Grid.Row="0" Content="Title goes here." 
-               Foreground="{DynamicResource ThemeTextColorBrush}"
-               FontWeight="Bold" FontSize="16" Margin="10,0" />
-
-        <mdxaml:MarkdownScrollViewer Grid.Row="1" Margin="4" Padding="16,0" Height="100"
-                                     VerticalAlignment="Top" 
-                                     Foreground="{DynamicResource ThemeTextColorBrush}"
-                                     VerticalScrollBarVisibility="Auto" xml:space="preserve">
+            <mdxaml:MarkdownScrollViewer Grid.Row="0" Padding="16,0" Height="140"
+                                         Foreground="{DynamicResource ThemeTextColorBrush}"
+                                         VerticalScrollBarVisibility="Auto" xml:space="preserve">
 This is actually a ***markdown** document*.
 
-        </mdxaml:MarkdownScrollViewer>
+            </mdxaml:MarkdownScrollViewer>
 
-        <CheckBox Grid.Row="4" Margin="8" Content="Don't show again" Foreground="{DynamicResource ThemeTextColorBrush}" />
+            <CheckBox Grid.Row="1" Margin="8" Content="Do not show this message again" Foreground="{DynamicResource ThemeTextColorBrush}" />
 
-        <Expander Grid.Row="3" Header="More information" Margin="4" BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}" BorderThickness="0,1">
-            <Expander.HeaderTemplate>
-                <DataTemplate>
-                    <Label Content="More information" Foreground="{DynamicResource ThemeTextColorBrush}" ToolTip="Expand/collapse to show/hide details">
-                        <Label.Style>
-                            <Style TargetType="Label">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsExpanded, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Expander}}" Value="True">
-                                        <Setter Property="Content" Value="Show less" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Label.Style>
-                    </Label>
-                </DataTemplate>
-            </Expander.HeaderTemplate>
-            <mdxaml:MarkdownScrollViewer Grid.Row="1" Margin="4" Padding="16,0" Height="92" VerticalScrollBarVisibility="Auto" xml:space="preserve">
+            <Expander Grid.Row="2" Header="More information" Margin="4" BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}" BorderThickness="0,1">
+                <Expander.HeaderTemplate>
+                    <DataTemplate>
+                        <Label Content="More information" Foreground="{DynamicResource ThemeTextColorBrush}" ToolTip="Expand/collapse to show/hide details">
+                            <Label.Style>
+                                <Style TargetType="Label">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsExpanded, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Expander}}" Value="True">
+                                            <Setter Property="Content" Value="Show less" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                    </DataTemplate>
+                </Expander.HeaderTemplate>
+                <mdxaml:MarkdownScrollViewer Grid.Row="0" Margin="4" Padding="16,0" Height="92" VerticalScrollBarVisibility="Auto" xml:space="preserve">
 We ❤️ Markdown!
 ```vb
 Option Explicit
@@ -70,19 +63,19 @@ Option Explicit
 Hopefully we'll figure out how to tweak the fonts.
 
         </mdxaml:MarkdownScrollViewer>
-        </Expander>
+            </Expander>
 
-        <Border Grid.Row="3" Grid.RowSpan="2" Background="{DynamicResource ThemeBackgroundLightColorBrush}" Opacity="0.05"/>
+            <StackPanel Grid.Row="4" Margin="16,8" Orientation="Horizontal" HorizontalAlignment="Right">
+                <ItemsControl ItemsSource="{Binding Actions}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Style="{StaticResource ActionButtonStyle}" Content="{Binding Title}" IsDefault="{Binding IsDefaultAction}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
 
-        <StackPanel Grid.Row="4" Margin="16,8" Orientation="Horizontal" HorizontalAlignment="Right">
-            <ItemsControl ItemsSource="{Binding Actions}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button Style="{StaticResource ActionButtonStyle}" Content="{Binding Title}" IsDefault="{Binding IsDefaultAction}" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
-
-    </Grid>
+        </Grid>
+    </shell:ThunderFrame>
+    
 </Window>

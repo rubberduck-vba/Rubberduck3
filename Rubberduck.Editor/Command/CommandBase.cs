@@ -13,7 +13,6 @@ using Rubberduck.SettingsProvider.Model;
 
 namespace Rubberduck.Editor.Command
 {
-
     [ComVisible(false)]
     public abstract class CommandBase : ICommand
     {

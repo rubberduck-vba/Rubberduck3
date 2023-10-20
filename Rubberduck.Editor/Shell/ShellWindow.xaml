@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Rubberduck.Editor.Shell" xmlns:styles="clr-namespace:Rubberduck.UI.Styles;assembly=Rubberduck.UI"
         mc:Ignorable="d"
-        ContentRendered="Window_ContentRendered"
+        ContentRendered="Window_ContentRendered" 
         Style="{DynamicResource ThemedWindowStyle}"
         Title="Rubberduck Editor"
-        Height="360" Width="640">
+        ShowInTaskbar="True">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -16,14 +16,15 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid>
+    <Grid Background="{DynamicResource ThemeBackgroundColorBrush}"
+          ClipToBounds="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="*" MinHeight="200" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <local:DuckyBackgroundControl />
+        <local:DuckyBackgroundControl Grid.RowSpan="3" />
 
         <local:MenuBarControl x:Name="MenuBar" Grid.Row="0" />
 
@@ -32,7 +33,7 @@
         <Thumb Grid.Row="2" HorizontalAlignment="Right" DragDelta="ResizeGrip_DragDelta" Cursor="SizeNWSE">
             <Thumb.Template>
                 <ControlTemplate>
-                    <ResizeGrip Margin="0,0,-6,-6">
+                    <ResizeGrip Margin="0">
                     </ResizeGrip>
                 </ControlTemplate>
             </Thumb.Template>

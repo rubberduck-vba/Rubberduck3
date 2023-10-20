@@ -19,9 +19,22 @@
     <Color x:Key="ThemeWhiteDarkColor">#FFA9A9A9</Color>
     <Color x:Key="ThemeWhiteMediumColor">#FFD3D3D3</Color>
     <Color x:Key="ThemeWhiteLightColor">#FFFFFFFF</Color>
+    <Color x:Key="ThemeWhiteDarkColor50">#0FA9A9A9</Color>
+    <Color x:Key="ThemeWhiteMediumColor50">#0FD3D3D3</Color>
+    <Color x:Key="ThemeWhiteLightColor50">#0FFFFFFF</Color>
+    <Color x:Key="ThemeWhiteDarkColor25">#08A9A9A9</Color>
+    <Color x:Key="ThemeWhiteMediumColor25">#08D3D3D3</Color>
+    <Color x:Key="ThemeWhiteLightColor25">#08FFFFFF</Color>
+
     <SolidColorBrush x:Key="ThemeWhiteDarkColorBrush" Color="{DynamicResource ThemeWhiteDarkColor}" />
     <SolidColorBrush x:Key="ThemeWhiteMediumColorBrush" Color="{DynamicResource ThemeWhiteMediumColor}" />
     <SolidColorBrush x:Key="ThemeWhiteLightColorBrush" Color="{DynamicResource ThemeWhiteLightColor}" />
+    <SolidColorBrush x:Key="ThemeWhiteDarkColorBrush50" Color="{DynamicResource ThemeWhiteDarkColor50}" />
+    <SolidColorBrush x:Key="ThemeWhiteMediumColorBrush50" Color="{DynamicResource ThemeWhiteMediumColor50}" />
+    <SolidColorBrush x:Key="ThemeWhiteLightColorBrush50" Color="{DynamicResource ThemeWhiteLightColor50}" />
+    <SolidColorBrush x:Key="ThemeWhiteDarkColorBrush25" Color="{DynamicResource ThemeWhiteDarkColor25}" />
+    <SolidColorBrush x:Key="ThemeWhiteMediumColorBrush25" Color="{DynamicResource ThemeWhiteMediumColor25}" />
+    <SolidColorBrush x:Key="ThemeWhiteLightColorBrush25" Color="{DynamicResource ThemeWhiteLightColor25}" />
 
     <Color x:Key="ThemeBlackDarkColor">#FF1E1E1E</Color>
     <Color x:Key="ThemeBlackMediumColor">#FF2E2E2E</Color>

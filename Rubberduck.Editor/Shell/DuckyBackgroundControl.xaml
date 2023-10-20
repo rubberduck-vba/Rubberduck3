@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Rubberduck.Editor.Shell" 
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters;assembly=Rubberduck.UI"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             MinHeight="320" MinWidth="340">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -26,7 +26,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Canvas Opacity="0.2">
+        <Canvas Opacity="0.225"
+                HorizontalAlignment="Stretch" 
+                VerticalAlignment="Stretch">
             <Image x:Name="Ducky" Style="{StaticResource BackgroundDuckyStyle}"/>
             <Rectangle Width="{Binding ActualWidth, ElementName=Ducky}"
                        Height="{Binding ActualHeight, ElementName=Ducky}">
@@ -39,8 +41,8 @@
             </Rectangle>
             <Canvas.RenderTransform>
                 <TranslateTransform 
-                    X="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource RelativeTranslateX}, ConverterParameter=0.31}"
-                    Y="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource RelativeTranslateY}, ConverterParameter=-0.235}" />
+                    X="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource RelativeTranslateX}, ConverterParameter=0.30}"
+                    Y="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource RelativeTranslateY}, ConverterParameter=0.0}" />
             </Canvas.RenderTransform>
         </Canvas>
     </Grid>

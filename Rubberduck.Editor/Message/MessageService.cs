@@ -7,6 +7,24 @@ using System.Linq;
 
 namespace Rubberduck.Editor.Message
 {
+    public interface IMessageViewModelFactory
+    {
+        IMessageWindowViewModel Create(MessageRequestModel model);
+    }
+
+    public class MessageViewModelFactory : IMessageViewModelFactory
+    {
+        public MessageViewModelFactory()
+        {
+
+        }
+
+        public IMessageWindowViewModel Create(MessageRequestModel model)
+        {
+            return new MessageWindowViewModel(model);
+        }
+    }
+
     public class MessageActionResult
     {
         public static MessageActionResult Undefined { get; } = new MessageActionResult
@@ -57,7 +75,7 @@ namespace Rubberduck.Editor.Message
                 if (selection is not null)
                 {
                     _logger.LogTrace(trace, "User has closed the message window.", $"Selected action: {selection.ResourceKey}");
-                    return new MessageActionResult { MessageAction = selection, IsEnabled = viewModel.DoNotShowAgain };
+                    return new MessageActionResult { MessageAction = selection, IsEnabled = viewModel.IsEnabled };
                 }
 
                 _logger.LogWarning(trace, "User has closed the message window, but no message action was set. This is likely a bug.");
@@ -67,7 +85,7 @@ namespace Rubberduck.Editor.Message
                 _logger.LogTrace(trace, "Message key was disabled by the user; message will not be shown.", $"Key: {viewModel.Key} ({viewModel.Level})");
             }
 
-            return new MessageActionResult { MessageAction = MessageAction.Undefined, IsEnabled = viewModel.DoNotShowAgain };
+            return new MessageActionResult { MessageAction = MessageAction.Undefined, IsEnabled = viewModel.IsEnabled };
         }
 
         public MessageActionResult ShowMessage(MessageModel model)
@@ -84,7 +102,7 @@ namespace Rubberduck.Editor.Message
                 if (selection is not null)
                 {
                     _logger.LogTrace(trace, "User has closed the message window.", $"Selected action: {selection.ResourceKey}");
-                    return new MessageActionResult { MessageAction = selection, IsEnabled = viewModel.DoNotShowAgain };
+                    return new MessageActionResult { MessageAction = selection, IsEnabled = viewModel.IsEnabled };
                 }
 
                 _logger.LogWarning(trace, "User has closed the message window, but no message action was set. This is likely a bug.");
@@ -94,7 +112,7 @@ namespace Rubberduck.Editor.Message
                 _logger.LogTrace(trace, "Message key was disabled by the user; message will not be shown.", $"Key: {viewModel.Key} ({viewModel.Level})");
             }
 
-            return new MessageActionResult { MessageAction = MessageAction.Undefined, IsEnabled = viewModel.DoNotShowAgain };
+            return new MessageActionResult { MessageAction = MessageAction.Undefined, IsEnabled = viewModel.IsEnabled };
         }
 
         private bool CanShowMessageKey(string key) => _settings.Settings.LanguageClientSettings.DisabledMessageKeys.Contains(key);

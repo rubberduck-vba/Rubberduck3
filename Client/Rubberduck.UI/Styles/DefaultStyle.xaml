@@ -13,13 +13,13 @@
     <converters:WindowStateToVisibilityConverter x:Key="WindowStateToMaximizeVisibility" VisibleState="Normal" HiddenState="Maximized" />
 
     <ControlTemplate x:Key="WindowTemplate" TargetType="{x:Type Window}">
-        <Grid Background="{DynamicResource ThemeBackgroundLightColorBrush}">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <Border Grid.RowSpan="2" Background="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+            <Border Grid.RowSpan="2" Background="{DynamicResource ThemeBackgroundMediumColorBrush}" />
 
             <!-- Title bar -->
             
@@ -142,6 +142,7 @@
     <Style x:Key="ThemedWindowStyle" TargetType="{x:Type Window}">
         <Style.Setters>
             <Setter Property="Icon" Value="{StaticResource DuckyIcon}" />
+            <Setter Property="Title" Value="Rubberduck" />
             <Setter Property="SizeToContent" Value="WidthAndHeight" />
             <Setter Property="WindowStyle" Value="None" />
             <Setter Property="MinHeight" Value="300" />
@@ -149,7 +150,6 @@
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="FontFamily" Value="Segoe UI" />
             <Setter Property="FontSize" Value="12" />
-            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundDarkColorBrush}" />
             <Setter Property="WindowChrome.WindowChrome">
@@ -217,11 +217,15 @@
         <Style.Resources>
             <Style TargetType="Border">
                 <Setter Property="CornerRadius" Value="4" />
+                <Setter Property="Margin" Value="1,0" />
             </Style>
         </Style.Resources>
         <Style.Setters>
-            <Setter Property="MinWidth" Value="92" />
-            <Setter Property="Height" Value="24" />
+            <Setter Property="MinWidth" Value="96" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Padding" Value="8,0"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
         </Style.Setters>
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsDefault, RelativeSource={RelativeSource Mode=Self}}" Value="True">

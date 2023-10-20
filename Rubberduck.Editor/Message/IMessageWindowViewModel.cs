@@ -2,13 +2,21 @@
 
 namespace Rubberduck.Editor.Message
 {
-    public interface IMessageWindowViewModel : INotifyPropertyChanged
+    public interface IWindowViewModel : INotifyPropertyChanged
     {
         string Title { get; }
-        string Message { get; }
-        string? Verbose { get; }
+    }
 
+    public interface IDialogWindowViewModel : IWindowViewModel
+    {
         MessageAction[] Actions { get; }
         MessageAction? SelectedAction { get; set; }
+        bool IsEnabled { get; set; }
+    }
+
+    public interface IMessageWindowViewModel : IDialogWindowViewModel
+    {
+        string Message { get; }
+        string? Verbose { get; }
     }
 }
