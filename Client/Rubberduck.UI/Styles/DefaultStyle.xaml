@@ -198,7 +198,7 @@
             </DataTrigger>
             <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="True">
                 <DataTrigger.Setters>
-                    <Setter Property="Background" Value="{DynamicResource ThemeBlackLightColorBrush}" />
+                    <Setter Property="Background" Value="{DynamicResource ThemeWhiteLightColorBrush}" />
                 </DataTrigger.Setters>
             </DataTrigger>
         </Style.Triggers>
