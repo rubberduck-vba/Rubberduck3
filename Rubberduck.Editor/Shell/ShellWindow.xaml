@@ -30,7 +30,7 @@
 
         <local:StatusBarControl x:Name="StatusBar" Grid.Row="2" />
 
-        <Thumb Grid.Row="2" HorizontalAlignment="Right" IsEnabled="True" IsHitTestVisible="True"
+        <Thumb Grid.Row="2" HorizontalAlignment="Right" IsEnabled="True" IsHitTestVisible="True" WindowChrome.IsHitTestVisibleInChrome="True"
                DragDelta="ResizeGrip_DragDelta" Cursor="SizeNWSE">
             <Thumb.Template>
                 <ControlTemplate>

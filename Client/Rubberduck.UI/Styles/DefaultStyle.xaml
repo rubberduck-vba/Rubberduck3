@@ -66,7 +66,8 @@
                     <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
                         <Image Source="{DynamicResource WindowCloseIcon}"
                                Style="{DynamicResource ControlBoxButtonImageStyle}" />
-                        <Rectangle Fill="{Binding Foreground, ElementName=ControlBoxCloseButton, Mode=OneWay}" Height="10" Width="10">
+                        <Rectangle Fill="{Binding Foreground, ElementName=ControlBoxCloseButton, Mode=OneWay}"
+                                                                      Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
                             <Rectangle.OpacityMask>
                                 <ImageBrush ImageSource="{DynamicResource WindowCloseIcon}" />
                             </Rectangle.OpacityMask>
@@ -163,12 +164,16 @@
 
     <Style x:Key="ControlBoxButtonMaskRectangleStyle" TargetType="{x:Type Rectangle}">
         <Style.Setters>
+            <Setter Property="Canvas.Left" Value="5" />
+            <Setter Property="Canvas.Top" Value="5" />
             <Setter Property="Height" Value="10" />
             <Setter Property="Width" Value="10" />
             <Setter Property="Fill" Value="{DynamicResource ThemeBlackLightColorBrush}" />
         </Style.Setters>
     </Style>
     <Style x:Key="ControlBoxButtonImageStyle" TargetType="{x:Type Image}">
+        <Setter Property="Canvas.Left" Value="5" />
+        <Setter Property="Canvas.Top" Value="5" />
         <Setter Property="Height" Value="10" />
         <Setter Property="Width" Value="10" />
         <Setter Property="Stretch" Value="Fill" />

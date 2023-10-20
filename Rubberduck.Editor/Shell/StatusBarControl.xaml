@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Rubberduck.Editor.Shell" 
+             d:DataContext="{d:DesignInstance Type=local:StatusBarViewModel}"
              mc:Ignorable="d"
              d:DesignHeight="24" d:DesignWidth="800" VerticalContentAlignment="Center">
     <UserControl.Resources>
@@ -21,26 +23,25 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
+
         </ResourceDictionary>
         
     </UserControl.Resources>
     <Grid>
         <StatusBar Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
                    Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}"
-                   BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeWhiteMediumColorBrush}">
-            
+                   BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeBackgroundLightColorBrush}">
             <StatusBarItem MinWidth="96">
-                <Button ToolTip="Show server trace toolwindow">
+                <Button ToolTip="Show server trace toolwindow" Background="{DynamicResource ThemeBackgroundMediumColorBrush}">
                     <StackPanel Orientation="Horizontal">
                         <Image Style="{StaticResource ServerStateImageStyle}" />
                         <TextBlock Text="{Binding ServerStateText}" Margin="2,0" />
                     </StackPanel>
                 </Button>
             </StatusBarItem>
-
-            <StatusBarItem MinWidth="96" Visibility="{Binding ShowDocumentStatusItems, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StatusBarItem Visibility="{Binding ShowDocumentStatusItems, Converter={StaticResource BoolToVisibilityConverter}}">
                 <StackPanel Orientation="Horizontal">
-                    
+
                     <Image Style="{StaticResource IconStyle}" Source="{StaticResource DocInfoIcon}" />
                     <TextBlock Text="{Binding DocumentLines}" Margin="2,0" />
                     <TextBlock Text="lines" Margin="2,0,10,0" />
@@ -66,9 +67,10 @@
                 </StackPanel>
             </StatusBarItem>
 
-            <StatusBarItem HorizontalAlignment="Right" Visibility="{Binding ShowDocumentStatusItems, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StatusBarItem HorizontalAlignment="Right" Margin="16,0"
+                           Visibility="{Binding ShowDocumentStatusItems, Converter={StaticResource BoolToVisibilityConverter}}">
                 <StackPanel Orientation="Horizontal">
-                    
+
                     <Button Style="{DynamicResource ControlBoxButtonStyle}" ToolTip="Review diagnostics">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource IssuesIcon}" >
