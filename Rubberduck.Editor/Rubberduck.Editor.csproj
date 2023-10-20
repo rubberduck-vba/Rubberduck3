@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <None Remove="Resources\FontAwesome\rectangle-xmark-solid.png" />
+    <None Remove="Resources\FontAwesome\square-xmark-solid-red.png" />
+    <None Remove="Resources\FontAwesome\square-xmark-solid.png" />
     <None Remove="Resources\FontAwesome\window-maximize-regular.png" />
     <None Remove="Resources\FontAwesome\window-minimize-regular.png" />
     <None Remove="Resources\FontAwesome\window-restore-regular.png" />
@@ -44,6 +46,8 @@
     <Resource Include="Resources\Custom\vector-ducky-blur-1480.png" />
     <Resource Include="Resources\Custom\vector-ducky-shadow-1480.png" />
     <Resource Include="Resources\FontAwesome\rectangle-xmark-solid.png" />
+    <Resource Include="Resources\FontAwesome\square-xmark-solid-red.png" />
+    <Resource Include="Resources\FontAwesome\square-xmark-solid.png" />
     <Resource Include="Resources\FontAwesome\window-maximize-regular.png" />
     <Resource Include="Resources\FontAwesome\window-minimize-regular.png" />
     <Resource Include="Resources\FontAwesome\window-restore-regular.png" />

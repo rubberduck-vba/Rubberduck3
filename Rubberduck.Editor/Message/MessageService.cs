@@ -7,29 +7,37 @@ using System.Linq;
 
 namespace Rubberduck.Editor.Message
 {
-    public interface IMessageViewModelFactory
+    public interface IMessageWindowFactory
     {
-        IMessageWindowViewModel Create(MessageRequestModel model);
+        (MessageWindow view, IMessageWindowViewModel viewModel) Create<TModel>(TModel model) where TModel : MessageModel;
     }
 
-    public class MessageViewModelFactory : IMessageViewModelFactory
+    public class MessageWindowFactory : IMessageWindowFactory
     {
-        public MessageViewModelFactory()
-        {
+        /// <summary>
+        /// Parameterless constructor for designer view.
+        /// </summary>
+        public MessageWindowFactory() { }
 
-        }
-
-        public IMessageWindowViewModel Create(MessageRequestModel model)
+        public (MessageWindow view, IMessageWindowViewModel viewModel) Create<TModel>(TModel model) where TModel : MessageModel
         {
-            return new MessageWindowViewModel(model);
+            var viewModel = new MessageWindowViewModel(model);
+            var view = new MessageWindow(viewModel);
+            return (view, viewModel);
         }
     }
 
-    public class MessageActionResult
+    public record class MessageActionResult
     {
-        public static MessageActionResult Undefined { get; } = new MessageActionResult
+        public static MessageActionResult Default { get; } = new MessageActionResult
         {
             IsEnabled = true,
+            MessageAction = MessageAction.Undefined,
+        };
+
+        public static MessageActionResult Disabled { get; } = new MessageActionResult
+        {
+            IsEnabled = false,
             MessageAction = MessageAction.Undefined,
         };
 
@@ -46,7 +54,20 @@ namespace Rubberduck.Editor.Message
 
     public interface IMessageService
     {
+        /// <summary>
+        /// Displays a message to the user, requesting an action.
+        /// </summary>
+        /// <returns>
+        /// <c>MessageActionResult.Disabled</c> if the model key is disabled.
+        /// </returns>
         MessageActionResult ShowMessageRequest(MessageRequestModel model);
+
+        /// <summary>
+        /// Displays a message to the user.
+        /// </summary>
+        /// <returns>
+        /// <c>MessageActionResult.Disabled</c> if the model key is disabled.
+        /// </returns>
         MessageActionResult ShowMessage(MessageModel model);
     }
 
@@ -54,21 +75,23 @@ namespace Rubberduck.Editor.Message
     {
         private readonly ISettingsProvider<RubberduckSettings> _settings;
         private readonly ILogger _logger;
+        private readonly IMessageWindowFactory _viewFactory;
 
-        public MessageService(ISettingsProvider<RubberduckSettings> settings, ILogger<MessageService> logger)
+        public MessageService(ISettingsProvider<RubberduckSettings> settings, ILogger<MessageService> logger,
+            IMessageWindowFactory viewFactory)
         {
             _settings = settings;
             _logger = logger;
+            _viewFactory = viewFactory;
         }
 
         public MessageActionResult ShowMessageRequest(MessageRequestModel model)
         {
             var trace = _settings.Settings.LanguageServerSettings.TraceLevel.ToTraceLevel();
-            var viewModel = new MessageWindowViewModel(model);
 
-            if (CanShowMessageKey(viewModel.Key))
+            if (CanShowMessageKey(model.Key))
             {
-                var view = new MessageWindow(viewModel);
+                var (view, viewModel) = _viewFactory.Create(model);
                 view.ShowDialog();
 
                 var selection = viewModel.SelectedAction;
@@ -79,23 +102,23 @@ namespace Rubberduck.Editor.Message
                 }
 
                 _logger.LogWarning(trace, "User has closed the message window, but no message action was set. This is likely a bug.");
+                return viewModel.IsEnabled ? MessageActionResult.Default : MessageActionResult.Disabled;
             }
             else
             {
-                _logger.LogTrace(trace, "Message key was disabled by the user; message will not be shown.", $"Key: {viewModel.Key} ({viewModel.Level})");
+                _logger.LogTrace(trace, "Message key was disabled by the user; message will not be shown.", $"Key: {model.Key}  ({model.Level})");
             }
 
-            return new MessageActionResult { MessageAction = MessageAction.Undefined, IsEnabled = viewModel.IsEnabled };
+            return MessageActionResult.Disabled;
         }
 
         public MessageActionResult ShowMessage(MessageModel model)
         {
             var trace = _settings.Settings.LanguageServerSettings.TraceLevel.ToTraceLevel();
-            var viewModel = new MessageWindowViewModel(model);
 
-            if (CanShowMessageKey(viewModel.Key))
+            if (CanShowMessageKey(model.Key))
             {
-                var view = new MessageWindow(viewModel);
+                var (view, viewModel) = _viewFactory.Create(model);
                 view.ShowDialog();
 
                 var selection = viewModel.SelectedAction;
@@ -106,13 +129,14 @@ namespace Rubberduck.Editor.Message
                 }
 
                 _logger.LogWarning(trace, "User has closed the message window, but no message action was set. This is likely a bug.");
+                return viewModel.IsEnabled ? MessageActionResult.Default : MessageActionResult.Disabled;
             }
             else
             {
-                _logger.LogTrace(trace, "Message key was disabled by the user; message will not be shown.", $"Key: {viewModel.Key} ({viewModel.Level})");
+                _logger.LogTrace(trace, "Message key was disabled by the user; message will not be shown.", $"Key: {model.Key} ({model.Level})");
             }
 
-            return new MessageActionResult { MessageAction = MessageAction.Undefined, IsEnabled = viewModel.IsEnabled };
+            return MessageActionResult.Disabled;
         }
 
         private bool CanShowMessageKey(string key) => _settings.Settings.LanguageClientSettings.DisabledMessageKeys.Contains(key);

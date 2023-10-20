@@ -58,7 +58,7 @@
             <DockPanel VerticalAlignment="Top" 
                        HorizontalAlignment="Right">
 
-                <Button x:Name="ControlBoxCloseButton" Margin="0.5,-2,0,0"
+                <Button x:Name="ControlBoxCloseButton" Margin="1,0" Width="24" Height="20"
                         DockPanel.Dock="Right"
                         Style="{DynamicResource ControlBoxButtonStyle}"
                         Command="{x:Static SystemCommands.CloseWindowCommand}" 
@@ -66,9 +66,7 @@
                     <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
                         <Image Source="{DynamicResource WindowCloseIcon}"
                                Style="{DynamicResource ControlBoxButtonImageStyle}" />
-                        <Rectangle Fill="{Binding Background, ElementName=ControlBoxCloseButton, Mode=OneWay}"
-                                   Height="20" 
-                                   Width="20" >
+                        <Rectangle Fill="{Binding Foreground, ElementName=ControlBoxCloseButton, Mode=OneWay}" Height="10" Width="10">
                             <Rectangle.OpacityMask>
                                 <ImageBrush ImageSource="{DynamicResource WindowCloseIcon}" />
                             </Rectangle.OpacityMask>
@@ -76,7 +74,7 @@
                     </Canvas>
                 </Button>
 
-                <Button x:Name="ControlBoxMaximizeButton" Margin="0.5,0"
+                <Button x:Name="ControlBoxMaximizeButton" Margin="1,0" Width="24" Height="20"
                         DockPanel.Dock="Right"
                         Style="{DynamicResource ControlBoxButtonStyle}" 
                         Command="{x:Static SystemCommands.MaximizeWindowCommand}" 
@@ -85,7 +83,7 @@
                     <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
                         <Image Source="{DynamicResource WindowMaximizeIcon}"
                                Style="{DynamicResource ControlBoxButtonImageStyle}"/>
-                        <Rectangle Fill="{Binding Background, ElementName=ControlBoxMaximizeButton}"
+                        <Rectangle Fill="{Binding Foreground, ElementName=ControlBoxMaximizeButton}"
                                    Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
                             <Rectangle.OpacityMask>
                                 <ImageBrush ImageSource="{DynamicResource WindowMaximizeIcon}" />
@@ -94,7 +92,7 @@
                     </Canvas>
                 </Button>
 
-                <Button x:Name="ControlBoxRestoreButton" Margin="0.5,0"
+                <Button x:Name="ControlBoxRestoreButton" Margin="1,0" Width="24" Height="20"
                         DockPanel.Dock="Right"
                         Style="{DynamicResource ControlBoxButtonStyle}"
                         Command="{x:Static SystemCommands.RestoreWindowCommand}"
@@ -103,7 +101,7 @@
                     <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
                         <Image Source="{DynamicResource WindowRestoreIcon}"
                                Style="{DynamicResource ControlBoxButtonImageStyle}"/>
-                        <Rectangle Fill="{Binding Background, ElementName=ControlBoxRestoreButton}"
+                        <Rectangle Fill="{Binding Foreground, ElementName=ControlBoxRestoreButton}"
                                    Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
                             <Rectangle.OpacityMask>
                                 <ImageBrush ImageSource="{DynamicResource WindowRestoreIcon}" />
@@ -112,7 +110,7 @@
                     </Canvas>
                 </Button>
 
-                <Button x:Name="ControlBoxMinimizeButton" Margin="0.5,0"
+                <Button x:Name="ControlBoxMinimizeButton" Margin="1,0" Width="24" Height="20"
                         DockPanel.Dock="Right"
                         Style="{DynamicResource ControlBoxButtonStyle}"
                         Command="{x:Static SystemCommands.MinimizeWindowCommand}"
@@ -120,7 +118,7 @@
                     <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
                         <Image Source="{DynamicResource WindowMinimizeIcon}"
                                Style="{DynamicResource ControlBoxButtonImageStyle}"/>
-                        <Rectangle Fill="{Binding Background, ElementName=ControlBoxMinimizeButton}"
+                        <Rectangle Fill="{Binding Foreground, ElementName=ControlBoxMinimizeButton}"
                                    Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
                             <Rectangle.OpacityMask>
                                 <ImageBrush ImageSource="{DynamicResource WindowMinimizeIcon}" />
@@ -165,52 +163,53 @@
 
     <Style x:Key="ControlBoxButtonMaskRectangleStyle" TargetType="{x:Type Rectangle}">
         <Style.Setters>
-            <Setter Property="Height" Value="20" />
-            <Setter Property="Width" Value="20" />
+            <Setter Property="Height" Value="10" />
+            <Setter Property="Width" Value="10" />
             <Setter Property="Fill" Value="{DynamicResource ThemeBlackLightColorBrush}" />
         </Style.Setters>
     </Style>
     <Style x:Key="ControlBoxButtonImageStyle" TargetType="{x:Type Image}">
-        <Setter Property="Height" Value="20" />
-        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="10" />
+        <Setter Property="Width" Value="10" />
         <Setter Property="Stretch" Value="Fill" />
     </Style>
     <Style x:Key="ControlBoxButtonCanvasStyle" TargetType="{x:Type Canvas}">
         <Setter Property="Height" Value="20" />
-        <Setter Property="Width" Value="20" /> 
-        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Background" Value="Transparent" />
     </Style>
 
     <Style x:Key="ControlBoxButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
-        <Setter Property="Margin" Value="0"/>
-        <Setter Property="Padding" Value="0"/>
-        <Setter Property="Width" Value="20" />
+        <Setter Property="Width" Value="24" />
         <Setter Property="Height" Value="20" />
-        <Setter Property="Background" Value="{DynamicResource ThemeWhiteMediumColorBrush}"/>
-        <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
+        <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Template" Value="{DynamicResource ControlBoxButtonTemplate}"/>
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
                 <DataTrigger.Setters>
-                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Background" Value="{DynamicResource ThemeBlackLightColorBrush}" />
+                    <Setter Property="Foreground" Value="Transparent" />
                 </DataTrigger.Setters>
             </DataTrigger>
             <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="True">
                 <DataTrigger.Setters>
-                    <Setter Property="Background" Value="{DynamicResource ThemeWhiteLightColorBrush}" />
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeWhiteLightColorBrush}" />
                 </DataTrigger.Setters>
             </DataTrigger>
         </Style.Triggers>
     </Style>
 
     <ControlTemplate x:Key="ControlBoxButtonTemplate" TargetType="{x:Type ButtonBase}">
-        <ContentPresenter x:Name="contentPresenter" 
-                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                          Margin="{TemplateBinding Padding}" 
-                          RecognizesAccessKey="True" 
-                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
-                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+        <Border Background="{Binding Background, RelativeSource={RelativeSource Mode=TemplatedParent}}">
+            <ContentPresenter x:Name="contentPresenter" 
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                Margin="{TemplateBinding Padding}" 
+                                RecognizesAccessKey="True" 
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+        </Border>
     </ControlTemplate>
 
     <Style x:Key="ActionButtonStyle" TargetType="Button">

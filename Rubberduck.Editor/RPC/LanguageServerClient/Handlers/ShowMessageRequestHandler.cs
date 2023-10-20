@@ -44,7 +44,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
             cancellationToken.ThrowIfCancellationRequested();
             _logger.LogInformation(TraceLevel, "Handling ShowMessageRequest request.", $"[{request.Type}] {request.Message}");
 
-            var result = MessageActionResult.Undefined;
+            var result = MessageActionResult.Default;
             if (_typeMap.TryGetValue(request.Type, out var level))
             {
                 if (TimedAction.TryRun(() =>

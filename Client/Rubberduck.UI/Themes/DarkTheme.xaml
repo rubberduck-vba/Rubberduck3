@@ -38,7 +38,7 @@
 
     <Color x:Key="ThemeBlackDarkColor">#FF1E1E1E</Color>
     <Color x:Key="ThemeBlackMediumColor">#FF2E2E2E</Color>
-    <Color x:Key="ThemeBlackLightColor">#FF333333</Color>
+    <Color x:Key="ThemeBlackLightColor">#FF434343</Color>
     <SolidColorBrush x:Key="ThemeBlackDarkColorBrush" Color="{DynamicResource ThemeBlackDarkColor}" />
     <SolidColorBrush x:Key="ThemeBlackMediumColorBrush" Color="{DynamicResource ThemeBlackMediumColor}" />
     <SolidColorBrush x:Key="ThemeBlackLightColorBrush" Color="{DynamicResource ThemeBlackLightColor}" />
