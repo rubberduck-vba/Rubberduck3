@@ -4,8 +4,6 @@
     <BitmapImage x:Key="DuckyIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/ducky.ico"/>
     <BitmapImage x:Key="BackgroundDuckyImage" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/Custom/vector-ducky-shadow-1480.png" />
 
-    <BitmapImage x:Key="SettingsIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/"/>
-
     <BitmapImage x:Key="WindowCloseIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FontAwesome/square-xmark-solid-red.png" />
     <BitmapImage x:Key="WindowMaximizeIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FontAwesome/window-maximize-regular.png" />
     <BitmapImage x:Key="WindowRestoreIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FontAwesome/window-restore-regular.png" />

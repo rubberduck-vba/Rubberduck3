@@ -364,6 +364,7 @@
     <Style x:Key="FormLabelStyle" TargetType="Label">
         <Style.Setters>
             <Setter Property="FontSize" Value="10" />
+            <Setter Property="MinHeight" Value="24" />
             <Setter Property="Margin" Value="0,5,0,0" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
         </Style.Setters>
@@ -384,6 +385,7 @@
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Border.Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
             <Setter Property="FontSize" Value="10" />
+            <Setter Property="MinHeight" Value="24" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
         </Style.Setters>
     </Style>
@@ -394,6 +396,7 @@
             <Setter Property="Padding" Value="4" />
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
             <Setter Property="FontSize" Value="10" />
+            <Setter Property="MinHeight" Value="24" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
         </Style.Setters>
     </Style>

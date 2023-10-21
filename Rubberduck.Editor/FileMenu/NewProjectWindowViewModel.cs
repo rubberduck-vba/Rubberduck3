@@ -87,6 +87,25 @@ namespace Rubberduck.Editor.FileMenu
         public string SourcePath => Path.Combine(WorkspaceLocation, ProjectName, SourceFolderName);
 
         public IEnumerable<VBProjectInfo?> VBProjects { get; init; }
+
+        private VBProjectInfo? _selectedVBProject;
+        public VBProjectInfo? SelectedVBProject 
+        {
+            get => _selectedVBProject;
+            set
+            {
+                if (_selectedVBProject != value)
+                {
+                    _selectedVBProject = value;
+                    OnPropertyChanged();
+
+                    if (_selectedVBProject.HasValue)
+                    {
+                        ProjectName = _selectedVBProject.Value.Name;
+                    }
+                }
+            }
+        }
     }
 
     public abstract class DialogWindowViewModel : ViewModelBase, IDialogWindowViewModel

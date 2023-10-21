@@ -25,16 +25,16 @@
                 <ComboBox Template="{DynamicResource FormFieldComboBoxTemplate}" 
                           Style="{DynamicResource FormFieldComboBoxStyle}"
                           ItemsSource="{Binding VBProjects}"
-                          SelectedItem="{Binding ProjectName, Mode=OneWayToSource}" />
+                          SelectedItem="{Binding SelectedVBProject}" />
 
                 <Label Style="{DynamicResource FormFieldNameLabelStyle}" Content="Project name" />
-                <TextBox Style="{DynamicResource FormFieldTextBoxStyle}" Text="Project1" />
+                <TextBox Style="{DynamicResource FormFieldTextBoxStyle}" Text="{Binding ProjectName}" />
 
                 <Label Style="{DynamicResource FormFieldNameLabelStyle}" Content="Workspace Location" />
-                <TextBox Style="{DynamicResource FormFieldBrowseBoxStyle}" Text="%APPDATA%\Rubberduck\Workspaces\Project1" />
+                <TextBox Style="{DynamicResource FormFieldBrowseBoxStyle}" Text="{Binding WorkspaceLocation}" />
 
                 <Label Style="{DynamicResource FormLabelStyle}">Source files will be exported to and will synchronize from:</Label>
-                <Label Style="{DynamicResource FormFieldValueLabelStyle}" Content="%APPDATA%\Rubberduck\Workspaces\Project1\src" />
+                <Label Style="{DynamicResource FormFieldValueLabelStyle}" Content="{Binding SourcePath}" />
 
             </StackPanel>
         </shell:ThunderFrame>
