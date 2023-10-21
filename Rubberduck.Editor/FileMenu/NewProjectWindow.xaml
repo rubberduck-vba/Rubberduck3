@@ -27,6 +27,12 @@
                           ItemsSource="{Binding VBProjects}"
                           SelectedItem="{Binding SelectedVBProject}" />
 
+                <Label Content="Select a project from the list. Only unlocked VB projects currently loaded in the VBE are shown."
+                       HorizontalAlignment="Right" Margin="0"
+                       Visibility="{Binding SelectedVBProject.HasValue, Converter={StaticResource BoolToHiddenVisibility}}"
+                       Foreground="{DynamicResource ThemeAccent1LightColorBrush}"
+                       Style="{DynamicResource FormLabelStyle}" />
+
                 <Label Style="{DynamicResource FormFieldNameLabelStyle}" Content="Project name" />
                 <TextBox Style="{DynamicResource FormFieldTextBoxStyle}" Text="{Binding ProjectName}" />
 
