@@ -7,51 +7,6 @@ using System.Linq;
 
 namespace Rubberduck.Editor.Message
 {
-    public interface IMessageWindowFactory
-    {
-        (MessageWindow view, IMessageWindowViewModel viewModel) Create<TModel>(TModel model) where TModel : MessageModel;
-    }
-
-    public class MessageWindowFactory : IMessageWindowFactory
-    {
-        /// <summary>
-        /// Parameterless constructor for designer view.
-        /// </summary>
-        public MessageWindowFactory() { }
-
-        public (MessageWindow view, IMessageWindowViewModel viewModel) Create<TModel>(TModel model) where TModel : MessageModel
-        {
-            var viewModel = new MessageWindowViewModel(model);
-            var view = new MessageWindow(viewModel);
-            return (view, viewModel);
-        }
-    }
-
-    public record class MessageActionResult
-    {
-        public static MessageActionResult Default { get; } = new MessageActionResult
-        {
-            IsEnabled = true,
-            MessageAction = MessageAction.Undefined,
-        };
-
-        public static MessageActionResult Disabled { get; } = new MessageActionResult
-        {
-            IsEnabled = false,
-            MessageAction = MessageAction.Undefined,
-        };
-
-        /// <summary>
-        /// Represents the action (button) selected by the user.
-        /// </summary>
-        public MessageAction MessageAction { get; init; } = MessageAction.Undefined;
-
-        /// <summary>
-        /// <c>false</c> if the user has checked a <em>do not show this message again</em> checkbox.
-        /// </summary>
-        public bool IsEnabled { get; init; } = true;
-    }
-
     public interface IMessageService
     {
         /// <summary>

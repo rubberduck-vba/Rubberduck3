@@ -3,10 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Rubberduck.Editor.FileMenu" xmlns:shell="clr-namespace:Rubberduck.Editor.Shell"
+        xmlns:local="clr-namespace:Rubberduck.Editor.FileMenu" xmlns:shell="clr-namespace:Rubberduck.Editor.Shell" d:DataContext="{d:DesignInstance Type=local:NewProjectWindowViewModel}"
         mc:Ignorable="d"
+        WindowStyle="None"
         Style="{DynamicResource ThemedWindowStyle}"
-        Height="400" Width="480">
+        Height="240" Width="480">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -14,6 +15,16 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <shell:ThunderFrame Title="New Project Workspace">
+    <shell:ThunderFrame Title="{Binding Title}" AcceptCommand="{Binding Actions[0]}" CancelCommand="{Binding Actions[1]}">
+        <StackPanel>
+            <Label Style="{DynamicResource FormFieldNameLabelStyle}" Content="Project name" />
+            <TextBox Style="{DynamicResource FormFieldTextBoxStyle}" Text="Project1" />
+
+            <Label Style="{DynamicResource FormFieldNameLabelStyle}" Content="Workspace Location" />
+            <TextBox Style="{DynamicResource FormFieldBrowseBoxStyle}" Text="%APPDATA%\Rubberduck\Workspaces\Project1" />
+
+            <Label Style="{DynamicResource FormLabelStyle}">Source files will be exported to:</Label>
+            <Label Style="{DynamicResource FormFieldValueLabelStyle}" Content="%APPDATA%\Rubberduck\Workspaces\Project1\src" />
+        </StackPanel>
     </shell:ThunderFrame>
 </Window>

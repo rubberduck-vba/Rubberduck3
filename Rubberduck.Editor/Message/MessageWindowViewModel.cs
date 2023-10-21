@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.Editor.Command;
+using Rubberduck.Editor.FileMenu;
 using Rubberduck.UI;
 using System;
 using System.Linq;
@@ -7,21 +9,23 @@ namespace Rubberduck.Editor.Message
 {
     public class MessageWindowViewModel : ViewModelBase, IMessageWindowViewModel
     {
-        public static MessageAction[] ActionCloseOnly { get; } = new[] { MessageAction.CloseAction };
-        public static MessageAction[] ActionAcceptCancel { get; } = new[] { MessageAction.AcceptAction, MessageAction.CancelAction };
-
         /// <summary>
         /// Parameterless constructor for designer view.
         /// </summary>
-        public MessageWindowViewModel() { }
+        public MessageWindowViewModel()
+        {
+            _actions = new[]{new AcceptMessageActionCommand(null!, null!, MessageAction.CloseAction)};
+        }
 
-        public MessageWindowViewModel(MessageModel model)
+        public MessageWindowViewModel(MessageModel model, MessageActionsProvider actions)
         {
             Key = model.Key;
             Message = model.Message;
             Verbose = model.Verbose;
             Title = model.Title;
             Level = model.Level;
+
+            _actions = actions.Close();
         }
 
         public string Key { get; init; } = "DT-Message";
@@ -30,8 +34,8 @@ namespace Rubberduck.Editor.Message
         public string Title { get; init; } = "Title";
         public LogLevel Level { get; init; } = LogLevel.Information;
 
-        private MessageAction[] _actions = ActionCloseOnly;
-        public MessageAction[] Actions
+        private MessageActionCommand[] _actions;
+        public MessageActionCommand[] Actions
         {
             get => _actions;
             init
@@ -42,7 +46,7 @@ namespace Rubberduck.Editor.Message
                     OnPropertyChanged();
                     if (_actions?.Length > 0)
                     {
-                        SelectedAction = _actions.First(e => e.IsDefaultAction);
+                        SelectedAction = _actions.First(e => e.MessageAction.IsDefaultAction).MessageAction;
                     }
                     else
                     {

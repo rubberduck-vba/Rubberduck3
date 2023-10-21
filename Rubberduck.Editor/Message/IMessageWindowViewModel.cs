@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Rubberduck.Editor.Command;
+using System.ComponentModel;
 
 namespace Rubberduck.Editor.Message
 {
@@ -9,7 +10,7 @@ namespace Rubberduck.Editor.Message
 
     public interface IDialogWindowViewModel : IWindowViewModel
     {
-        MessageAction[] Actions { get; }
+        MessageActionCommand[] Actions { get; }
         MessageAction? SelectedAction { get; set; }
         bool IsEnabled { get; set; }
     }

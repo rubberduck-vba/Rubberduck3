@@ -42,7 +42,7 @@
             <Canvas.RenderTransform>
                 <TranslateTransform 
                     X="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource RelativeTranslateX}, 
-                        ConverterParameter=0.06}"
+                        ConverterParameter=0.18}"
                     Y="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource RelativeTranslateY}, 
                         ConverterParameter=0.0}" />
             </Canvas.RenderTransform>
