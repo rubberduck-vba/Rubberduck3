@@ -1,8 +1,28 @@
-﻿using System.Windows;
+﻿using ICSharpCode.AvalonEdit;
+using Rubberduck.Editor.Command;
+using Rubberduck.Editor.Message;
+using System.Windows;
+using System.Windows.Forms.Design;
 using System.Windows.Input;
 
 namespace Rubberduck.Editor.Shell
 {
+    public class DialogCommandHandlers
+    {
+        private readonly Window _window;
+
+        public DialogCommandHandlers(Window window)
+        {
+            _window = window;
+        }
+
+        public void CloseWindowCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+            => e.CanExecute = true;
+
+        public void CloseWindowCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+            => DialogCommands.BrowseLocation(_window);
+    }
+
     public class SystemCommandHandlers
     {
         private readonly Window _window;

@@ -1,33 +1,10 @@
 ﻿using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 
 namespace Rubberduck.SettingsProvider.Model
 {
-    public static class TraceLevelExtensions
-    {
-        private static readonly IDictionary<ServerTraceLevel, TraceLevel> _map = new Dictionary<ServerTraceLevel, TraceLevel>
-        {
-            [ServerTraceLevel.Off] = TraceLevel.Off,
-            [ServerTraceLevel.Verbose] = TraceLevel.Verbose,
-            [ServerTraceLevel.Message] = TraceLevel.Info,
-        };
-
-        public static TraceLevel ToTraceLevel(this ServerTraceLevel value) => _map[value];
-    }
-
-    public readonly record struct LanguageClientSettings : IDefaultSettingsProvider<LanguageClientSettings>
-    {
-        public static LanguageClientSettings Default { get; } = new();
-
-        public string[] DisabledMessageKeys { get; init; }
-
-        LanguageClientSettings IDefaultSettingsProvider<LanguageClientSettings>.Default => LanguageClientSettings.Default;
-    }
-
     public readonly record struct LanguageServerSettings :
         IDefaultSettingsProvider<LanguageServerSettings>,
         IHealthCheckSettingsProvider,

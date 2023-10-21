@@ -4,6 +4,8 @@
     <BitmapImage x:Key="DuckyIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/ducky.ico"/>
     <BitmapImage x:Key="BackgroundDuckyImage" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/Custom/vector-ducky-shadow-1480.png" />
 
+    <BitmapImage x:Key="SettingsIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/"/>
+
     <BitmapImage x:Key="WindowCloseIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FontAwesome/square-xmark-solid-red.png" />
     <BitmapImage x:Key="WindowMaximizeIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FontAwesome/window-maximize-regular.png" />
     <BitmapImage x:Key="WindowRestoreIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FontAwesome/window-restore-regular.png" />
@@ -26,6 +28,13 @@
             <Setter Property="Height" Value="16" />
             <Setter Property="Width" Value="16" />
             <Setter Property="Stretch" Value="UniformToFill" />
+        </Style.Setters>
+    </Style>
+
+    <Style x:Key="SettingsIconStyle" TargetType="Image" BasedOn="{StaticResource IconStyle}">
+        <Style.Setters>
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Source" Value ="{DynamicResource DuckyIcon}" />
         </Style.Setters>
     </Style>
     

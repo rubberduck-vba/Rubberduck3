@@ -27,6 +27,7 @@
     <PackageReference Include="NLog.Extensions.Logging" Version="5.3.4" />
     <PackageReference Include="OmniSharp.Extensions.LanguageClient" Version="0.19.9" />
     <PackageReference Include="OmniSharp.Extensions.LanguageProtocol" Version="0.19.9" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
     <PackageReference Include="SharpVectors" Version="1.8.2" />
   </ItemGroup>
 

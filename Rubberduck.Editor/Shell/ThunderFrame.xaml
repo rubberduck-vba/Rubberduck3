@@ -4,9 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.Editor.Shell"
-             ClipToBounds="True"
-             mc:Ignorable="d"
-             d:DesignHeight="380" d:DesignWidth="600">
+             mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -34,21 +32,26 @@
 
                                 <Border Grid.RowSpan="3" Background="{DynamicResource ThemeBackgroundMediumColorBrush}" />
                                 <local:DuckyBackgroundControl Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
-
-                                <Label Grid.Row="0" 
-                                       Content="{Binding Title, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
-                                       Foreground="{DynamicResource ThemeTextColorBrush}"
-                                       FontWeight="Bold" FontSize="18" 
-                                       Margin="10,10,10,0" />
-
-                                <ContentPresenter Grid.Row="1" VerticalAlignment="Top"
-                                                  Content="{Binding Content, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
-                                                  Margin="10,0,10,10"/>
-
-                                <Border Grid.RowSpan="2" BorderBrush="{DynamicResource ThemeWhiteLightColorBrush50}" 
+                                <Border Grid.Row="1" BorderBrush="{DynamicResource ThemeWhiteLightColorBrush50}" 
                                         BorderThickness="0,1" CornerRadius="8"
                                         Margin="4"
                                         Background="{DynamicResource ThemeWhiteDarkColorBrush50}"/>
+
+                                <DockPanel Grid.Row="0">
+                                    <Label DockPanel.Dock="Left" 
+                                       Content="{Binding Title, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
+                                       Foreground="{DynamicResource ThemeTextColorBrush}"
+                                       FontWeight="Bold" FontSize="18" 
+                                       Margin="10,10,10,4" />
+                                    <Image Style="{DynamicResource ControlBoxButtonImageStyle}" />
+                                </DockPanel>
+                                
+                                <ScrollViewer Grid.Row="1" VerticalAlignment="Top"
+                                              Style="{DynamicResource ScrollViewerStyle}" 
+                                              VerticalScrollBarVisibility="Hidden">
+                                    <ContentPresenter Margin="10,0,10,10" Height="Auto" MinHeight="200"
+                                                      Content="{Binding Content, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"/>
+                                </ScrollViewer>
 
                                 <DockPanel Grid.Row="2" HorizontalAlignment="Right" 
                                            Margin="16,8,8,8" 

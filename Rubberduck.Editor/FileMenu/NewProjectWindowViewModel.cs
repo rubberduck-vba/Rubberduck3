@@ -1,6 +1,8 @@
 ﻿using Rubberduck.Editor.Command;
 using Rubberduck.Editor.Message;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
+using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI;
 using System;
 using System.Collections.Generic;
@@ -13,25 +15,26 @@ using System.Windows.Input;
 
 namespace Rubberduck.Editor.FileMenu
 {
-    public interface IDialogService<TViewModel>
-        where TViewModel : IDialogWindowViewModel
+    public interface INewProjectWindowViewModel
     {
-        TViewModel ShowDialog();
+        IEnumerable<VBProjectInfo?> VBProjects { get; }
+
+        string ProjectName { get; set; }
+        string WorkspaceLocation { get; set; }
     }
 
-    public interface INewProjectDialogService : IDialogService<NewProjectWindowViewModel> { }
-
-    public class NewProjectDialogService : INewProjectDialogService
+    public readonly record struct VBProjectInfo
     {
-        public NewProjectWindowViewModel ShowDialog()
-        {
-            throw new NotImplementedException();
-        }
+        public string Name { get; init; }
+        public string ProjectId { get; init; }
+        public string? Location { get; init; }
     }
 
-    public class NewProjectWindowViewModel : DialogWindowViewModel
+    public class NewProjectWindowViewModel : DialogWindowViewModel, INewProjectWindowViewModel
     {
         public static readonly string SourceFolderName = "src";
+
+
 
         private static bool Validate(object? param)
         {
@@ -41,11 +44,14 @@ namespace Rubberduck.Editor.FileMenu
             return !vm.HasErrors;
         }
 
-        public NewProjectWindowViewModel(string name, string location, MessageActionsProvider actions)
+        public NewProjectWindowViewModel(RubberduckSettings settings, IEnumerable<VBProjectInfo?> projects, MessageActionsProvider actions)
             : base("New Project", actions.OkCancel(Validate))
         {
-            _projectName = name;
-            _workspaceLocation = location;
+            VBProjects = projects;
+            var vbProject = projects.FirstOrDefault() ?? new VBProjectInfo { Name = "NewProject", ProjectId = Guid.NewGuid().ToString() };
+
+            _projectName = vbProject.Name;
+            _workspaceLocation = vbProject.Location ?? settings.LanguageClientSettings.DefaultWorkspaceRoot;
         }
 
         private string _projectName;
@@ -79,6 +85,8 @@ namespace Rubberduck.Editor.FileMenu
         }
 
         public string SourcePath => Path.Combine(WorkspaceLocation, ProjectName, SourceFolderName);
+
+        public IEnumerable<VBProjectInfo?> VBProjects { get; init; }
     }
 
     public abstract class DialogWindowViewModel : ViewModelBase, IDialogWindowViewModel
