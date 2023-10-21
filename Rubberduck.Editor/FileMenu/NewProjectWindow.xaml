@@ -33,7 +33,7 @@
                 <Label Style="{DynamicResource FormFieldNameLabelStyle}" Content="Workspace Location" />
                 <TextBox Style="{DynamicResource FormFieldBrowseBoxStyle}" Text="%APPDATA%\Rubberduck\Workspaces\Project1" />
 
-                <Label Style="{DynamicResource FormLabelStyle}">Source files will be exported to:</Label>
+                <Label Style="{DynamicResource FormLabelStyle}">Source files will be exported to and will synchronize from:</Label>
                 <Label Style="{DynamicResource FormFieldValueLabelStyle}" Content="%APPDATA%\Rubberduck\Workspaces\Project1\src" />
 
             </StackPanel>
