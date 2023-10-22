@@ -26,6 +26,7 @@
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
     <PackageReference Include="MdXaml" Version="1.21.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
     <PackageReference Include="SharpVectors" Version="1.8.2" />
   </ItemGroup>
   
@@ -45,6 +46,18 @@
   
   <ItemGroup>
     <Compile Update="About\AboutWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Message\MessageWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="NewProject\NewProjectWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Shell\DuckyBackgroundControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Shell\ThunderFrame.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Styles\ControlBoxCanvas.xaml.cs">

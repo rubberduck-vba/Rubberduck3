@@ -10,8 +10,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System;
-using Rubberduck.Editor.Message;
 using Rubberduck.InternalApi.Settings;
+using Rubberduck.UI;
+using Rubberduck.UI.Message;
 
 namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
 {

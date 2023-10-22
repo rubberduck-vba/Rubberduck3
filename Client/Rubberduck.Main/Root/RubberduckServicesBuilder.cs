@@ -78,10 +78,10 @@ namespace Rubberduck.Root
             _services.AddSingleton(ConfigureRubberduckParentMenu);
             _services.AddScoped<RubberduckParentMenu>();
 
-            //_services.AddScoped<IAboutCommand, AboutCommand>();
-            //_services.AddScoped<AboutCommandMenuItem>();
+            _services.AddScoped<IAboutCommand, AboutCommand>();
+            _services.AddScoped<AboutCommandMenuItem>();
 
-            //_services.AddScoped<IShowEditorShellCommand, ShowEditorShellCommand>();
+            _services.AddScoped<IShowEditorShellCommand, ShowEditorShellCommand>();
             _services.AddScoped<ShowEditorShellCommandMenuItem>();
 
             return this;
@@ -94,9 +94,10 @@ namespace Rubberduck.Root
 
             var location = addin.CommandBarLocations[CommandBarSite.MenuBar];
             var builder = new CommandBarMenuBuilder<RubberduckParentMenu>(location, services, MainCommandBarControls(vbe, location.ParentId))
-                //.WithCommandMenuItem<AboutCommandMenuItem>()
-                //.WithSeparator()
-                .WithCommandMenuItem<ShowEditorShellCommandMenuItem>();
+                .WithCommandMenuItem<ShowEditorShellCommandMenuItem>()
+                .WithSeparator()
+                .WithCommandMenuItem<SettingsCommandMenuItem>()
+                .WithCommandMenuItem<AboutCommandMenuItem>();
 
             return builder.Build();
         }

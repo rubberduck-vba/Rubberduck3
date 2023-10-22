@@ -9,6 +9,8 @@
     <BitmapImage x:Key="WindowRestoreIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FontAwesome/window-restore-regular.png" />
     <BitmapImage x:Key="WindowMinimizeIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FontAwesome/window-minimize-regular.png" />
 
+    <BitmapImage x:Key="GearIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FontAwesome/gear-solid.png"/>
+
     <BitmapImage x:Key="ErrorIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FugueIcons/cross-circle.png" />
     <BitmapImage x:Key="WarnIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FugueIcons/exclamation-diamond.png" />
     <BitmapImage x:Key="InfoIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/FugueIcons/information.png" />

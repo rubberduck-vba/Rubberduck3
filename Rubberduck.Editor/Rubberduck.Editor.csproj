@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\FontAwesome\gear-solid.png" />
     <None Remove="Resources\FontAwesome\rectangle-xmark-solid.png" />
     <None Remove="Resources\FontAwesome\square-xmark-solid-red.png" />
     <None Remove="Resources\FontAwesome\square-xmark-solid.png" />
@@ -46,6 +47,7 @@
     <Resource Include="Resources\Custom\splash.png" />
     <Resource Include="Resources\Custom\vector-ducky-blur-1480.png" />
     <Resource Include="Resources\Custom\vector-ducky-shadow-1480.png" />
+    <Resource Include="Resources\FontAwesome\gear-solid.png" />
     <Resource Include="Resources\FontAwesome\rectangle-xmark-solid.png" />
     <Resource Include="Resources\FontAwesome\square-xmark-solid-red.png" />
     <Resource Include="Resources\FontAwesome\square-xmark-solid.png" />
@@ -63,9 +65,6 @@
     <Resource Include="Resources\FugueIcons\tick-circle.png" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Message\MessageWindow.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Shell\ChildWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -74,6 +73,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="FileMenu\" />
     <Folder Include="RPC\AddInClient\" />
     <Folder Include="RPC\UpdateServerClient\" />
   </ItemGroup>

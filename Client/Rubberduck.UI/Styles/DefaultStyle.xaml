@@ -8,6 +8,7 @@
 
     <converters:BoolToVisibleVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
+    <converters:InvertBoolValueConverter x:Key="InverseBoolConverter" />
     <converters:SelectedItemToBooleanConverter x:Key="HasSelectedItems"/>
     <converters:WindowStateToVisibilityConverter x:Key="WindowStateToRestoreVisibility" VisibleState="Maximized" HiddenState="Normal" />
     <converters:WindowStateToVisibilityConverter x:Key="WindowStateToMaximizeVisibility" VisibleState="Normal" HiddenState="Maximized" />

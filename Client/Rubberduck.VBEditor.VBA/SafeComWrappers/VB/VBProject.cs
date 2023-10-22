@@ -106,18 +106,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public IReadOnlyList<string> ComponentNames()
         {
             var names = new List<string>();
-            using (var components = VBComponents)
+            using var components = VBComponents;
+            foreach (var component in components)
             {
-                foreach (var component in components)
+                using (component)
                 {
-                    using (component)
-                    {
-                        names.Add(component.Name);
-                    }
+                    names.Add(component.Name);
                 }
-
-                return names.ToArray();
             }
+
+            return names.ToArray();
         }
 
         public void AssignProjectId()
@@ -137,23 +135,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private bool IsProjectIdUnique()
         {
-            using (var vbe = VBE)
+            using var vbe = VBE;
+            using var projects = vbe.VBProjects;
+            var helpFile = HelpFile;
+            int matchCount = 0;
+            foreach (var project in projects)
             {
-                using (var projects = vbe.VBProjects)
+                if (project.HelpFile == helpFile)
                 {
-                    var helpFile = HelpFile;
-                    int matchCount = 0;
-                    foreach (var project in projects)
-                    {
-                        if (project.HelpFile == helpFile)
-                        {
-                            matchCount++;
-                        }
-                        project.Dispose();
-                    }
-                    return matchCount == 1;
+                    matchCount++;
                 }
+                project.Dispose();
             }
+            return matchCount == 1;
         }
 
 
@@ -221,85 +215,83 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             var pseudoDllName = Path.GetFileName(BuildFileName);
             return pseudoDllName == null || pseudoDllName.Length <= 4 //Should not happen as the string should always end in .DLL.
                 ? string.Empty
-                : pseudoDllName.Substring(0, pseudoDllName.Length - 4);
+                : pseudoDllName[..^4];
         }
 
-        private static readonly Regex CaptionProjectRegex = new Regex(@"^(?:[^-]+)(?:\s-\s)(?<project>.+)(?:\s-\s.*)?$");
-        private static readonly Regex OpenModuleRegex = new Regex(@"^(?<project>.+)(?<module>\s-\s\[.*\((Code|UserForm)\)\])$");
-        private static readonly Regex PartialOpenModuleRegex = new Regex(@"^(?<project>.+)(\s-\s\[)");
-        private static readonly Regex NearlyOnlyProject = new Regex(@"^(?<project>.+)(\s-?\s?)$");
+        private static readonly Regex CaptionProjectRegex = new(@"^(?:[^-]+)(?:\s-\s)(?<project>.+)(?:\s-\s.*)?$");
+        private static readonly Regex OpenModuleRegex = new(@"^(?<project>.+)(?<module>\s-\s\[.*\((Code|UserForm)\)\])$");
+        private static readonly Regex PartialOpenModuleRegex = new(@"^(?<project>.+)(\s-\s\[)");
+        private static readonly Regex NearlyOnlyProject = new(@"^(?<project>.+)(\s-?\s?)$");
 
         private string DisplayNameFromWindowCaption()
         {
-            using (var vbe = VBE)
-            using (var activeProject = vbe.ActiveVBProject)
-            using (var mainWindow = vbe.MainWindow)
+            using var vbe = VBE;
+            using var activeProject = vbe.ActiveVBProject;
+            using var mainWindow = vbe.MainWindow;
+            try
             {
-                try
+                if (ProjectId != activeProject.ProjectId)
                 {
-                    if (ProjectId != activeProject.ProjectId)
-                    {
-                        vbe.ActiveVBProject = this;
-                    }
+                    vbe.ActiveVBProject = this;
+                }
 
-                    var caption = mainWindow.Caption;
-                    if (caption.Length > 99)
-                    {
-                        //The value returned will be truncated at character 99 and the rest is garbage due to a bug in the VBE API.
-                        caption = caption.Substring(0, 99);
+                var caption = mainWindow.Caption;
+                if (caption.Length > 99)
+                {
+                    //The value returned will be truncated at character 99 and the rest is garbage due to a bug in the VBE API.
+                    caption = caption[..99];
 
-                        if (CaptionProjectRegex.IsMatch(caption))
+                    if (CaptionProjectRegex.IsMatch(caption))
+                    {
+                        var projectRelatedPartOfCaption = CaptionProjectRegex
+                            .Matches(caption)[0]
+                            .Groups["project"]
+                            .Value;
+
+                        if (PartialOpenModuleRegex.IsMatch(projectRelatedPartOfCaption))
                         {
-                            var projectRelatedPartOfCaption = CaptionProjectRegex
-                                .Matches(caption)[0]
+                            return PartialOpenModuleRegex
+                                .Matches(projectRelatedPartOfCaption)[0]
                                 .Groups["project"]
                                 .Value;
-
-                            if (PartialOpenModuleRegex.IsMatch(projectRelatedPartOfCaption))
-                            {
-                                return PartialOpenModuleRegex
-                                    .Matches(projectRelatedPartOfCaption)[0]
-                                    .Groups["project"]
-                                    .Value;
-                            }
-
-                            if (NearlyOnlyProject.IsMatch(projectRelatedPartOfCaption))
-                            {
-                                return NearlyOnlyProject
-                                    .Matches(projectRelatedPartOfCaption)[0]
-                                    .Groups["project"]
-                                    .Value;
-                            }
-
-                            return $"{projectRelatedPartOfCaption}...";
                         }
-                    }
-                    else
-                    {
-                        if (CaptionProjectRegex.IsMatch(caption))
+
+                        if (NearlyOnlyProject.IsMatch(projectRelatedPartOfCaption))
                         {
-                            var projectRelatedPartOfCaption = CaptionProjectRegex
-                                .Matches(caption)[0]
+                            return NearlyOnlyProject
+                                .Matches(projectRelatedPartOfCaption)[0]
                                 .Groups["project"]
                                 .Value;
+                        }
 
-                            if (OpenModuleRegex.IsMatch(projectRelatedPartOfCaption))
-                            {
-                                return OpenModuleRegex
-                                    .Matches(projectRelatedPartOfCaption)[0]
-                                    .Groups["project"]
-                                    .Value;
-                            }
+                        return $"{projectRelatedPartOfCaption}...";
+                    }
+                }
+                else
+                {
+                    if (CaptionProjectRegex.IsMatch(caption))
+                    {
+                        var projectRelatedPartOfCaption = CaptionProjectRegex
+                            .Matches(caption)[0]
+                            .Groups["project"]
+                            .Value;
+
+                        if (OpenModuleRegex.IsMatch(projectRelatedPartOfCaption))
+                        {
+                            return OpenModuleRegex
+                                .Matches(projectRelatedPartOfCaption)[0]
+                                .Groups["project"]
+                                .Value;
                         }
                     }
                 }
-                catch
-                {
-                    return string.Empty;
-                }
-
+            }
+            catch
+            {
                 return string.Empty;
             }
+
+            return string.Empty;
         }
 
         protected override void Dispose(bool disposing) => base.Dispose(disposing);

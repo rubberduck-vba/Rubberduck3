@@ -2,11 +2,11 @@
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Window;
-using Rubberduck.Editor.Message;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.UI.Message;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;

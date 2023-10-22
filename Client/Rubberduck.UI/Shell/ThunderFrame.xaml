@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="Rubberduck.UI.Shell.ThunderFrame"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Rubberduck.UI.Shell" 
+             xmlns:styles="clr-namespace:Rubberduck.UI.Styles"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <UserControl.ContentTemplate>
+        <DataTemplate>
+            <ContentPresenter Content="{TemplateBinding Content}" />
+        </DataTemplate>
+    </UserControl.ContentTemplate>
+    <UserControl.Style>
+        <Style TargetType="UserControl">
+            <Style.Setters>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <Border Grid.RowSpan="3" Background="{DynamicResource ThemeBackgroundMediumColorBrush}" />
+                                <local:DuckyBackgroundControl Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+                                <Border Grid.Row="1" BorderBrush="{DynamicResource ThemeWhiteLightColorBrush50}" 
+                                        BorderThickness="0,1" CornerRadius="8"
+                                        Margin="4"
+                                        Background="{DynamicResource ThemeWhiteDarkColorBrush50}"/>
+
+                                <DockPanel Grid.Row="0">
+                                    <Label DockPanel.Dock="Left" 
+                                       Content="{Binding Title, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
+                                       Foreground="{DynamicResource ThemeTextColorBrush}"
+                                       FontWeight="Bold" FontSize="18" 
+                                       Margin="10,10,10,4" />
+
+                                    <styles:FlatButton HorizontalAlignment="Right"
+                                                       ToolTip="Settings"
+                                                       Visibility="{Binding ShowGearButton, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                       Command="{Binding ShowSettingsCommand}"
+                                                       Icon="{DynamicResource GearIcon}" />
+                                </DockPanel>
+                                
+                                <ScrollViewer Grid.Row="1" VerticalAlignment="Top"
+                                              Style="{DynamicResource ScrollViewerStyle}" 
+                                              VerticalScrollBarVisibility="Hidden">
+                                    <ContentPresenter Margin="10,0,10,10" Height="Auto" MinHeight="200"
+                                                      Content="{Binding Content, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"/>
+                                </ScrollViewer>
+
+                                <DockPanel Grid.Row="2" HorizontalAlignment="Right" 
+                                           Margin="16,8,8,8" 
+                                           FlowDirection="RightToLeft">
+
+                                    <Button Style="{StaticResource ActionButtonStyle}" 
+                                            Command="{Binding AcceptCommand, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
+                                            Visibility="{Binding ShowAcceptButton, Converter={StaticResource BoolToVisibilityConverter}}"
+                                            IsDefault="True">
+                                        <TextBlock Text="{Binding AcceptButtonText}" />
+                                    </Button>
+                                    <Button Style="{StaticResource ActionButtonStyle}"
+                                            Command="{Binding CancelCommand, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
+                                            Visibility="{Binding ShowCancelButton, Converter={StaticResource BoolToVisibilityConverter}}">
+                                        <TextBlock Text="{Binding CancelButtonText}" />
+                                    </Button>
+                                </DockPanel>
+
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+        </Style>
+    </UserControl.Style>
+</UserControl>

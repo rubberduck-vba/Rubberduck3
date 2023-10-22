@@ -1,6 +1,5 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq;
+﻿using Rubberduck.UI.Shell;
+using System;
 using System.Windows;
 using System.Windows.Input;
 

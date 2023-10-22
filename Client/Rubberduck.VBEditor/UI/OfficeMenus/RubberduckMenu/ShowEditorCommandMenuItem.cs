@@ -9,6 +9,6 @@
         }
 
         public override string ResourceKey => "RubberduckMenu_ShowEditor";
-        public override bool EvaluateCanExecute(object parameter) => true;
+        public override bool EvaluateCanExecute(object? parameter) => true;
     }
 }

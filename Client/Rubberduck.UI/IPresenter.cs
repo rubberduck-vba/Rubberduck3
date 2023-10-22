@@ -1,7 +1,4 @@
-﻿//using Rubberduck.Settings;
-//using Rubberduck.SettingsProvider;
-
-namespace Rubberduck.UI
+﻿namespace Rubberduck.UI
 {
     public interface IPresenter
     {
