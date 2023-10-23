@@ -13,7 +13,7 @@ namespace Rubberduck.SettingsProvider.Model.ServerStartup
         string ServerPipeName { get; }
         MessageMode ServerMessageMode { get; }
 
-        ServerTraceLevel ServerTraceLevel { get; }
+        MessageTraceLevel ServerTraceLevel { get; }
 
         TimeSpan ClientHealthCheckInterval { get; }
     }
@@ -22,16 +22,29 @@ namespace Rubberduck.SettingsProvider.Model.ServerStartup
         IProcessStartInfoArgumentProvider,
         IHealthCheckSettingsProvider
     {
+        protected ServerStartupSettings(ServerStartupSettings original, IEnumerable<RubberduckSetting>? settings = null)
+            : base(original)
+        {
+            Name = original.Name;
+            Description = original.Description;
+            Settings = settings ?? GetDefaultSettings(original.Name, DefaultServerExecutablePath);
+        }
+
         protected ServerStartupSettings(string name, string description)
             : base(name, description) 
         {
-            Settings = new RubberduckSetting[]
+            Settings = GetDefaultSettings(name, DefaultServerExecutablePath);
+        }
+
+        private static RubberduckSetting[] GetDefaultSettings(string name, string path)
+        {
+            return new RubberduckSetting[]
             {
-                new ServerExecutablePathSetting($"{name}.{nameof(ServerStartupSettings)}", new Uri(DefaultServerExecutablePath)),
+                new ServerExecutablePathSetting($"{name}.{nameof(ServerStartupSettings)}", new Uri(path)),
                 new ServerTransportTypeSetting($"{name}.{nameof(ServerTransportTypeSetting)}", TransportType.StdIO),
                 new ServerPipeNameSetting($"{name}.{nameof(ServerPipeNameSetting)}", string.Empty),
                 new ServerMessageModeSetting($"{name}.{nameof(ServerMessageModeSetting)}", MessageMode.Message),
-                new ServerTraceLevelSetting($"{name}.{nameof(ServerTraceLevelSetting)}", ServerTraceLevel.Verbose),
+                new TraceLevelSetting($"{name}.{nameof(TraceLevelSetting)}", MessageTraceLevel.Verbose),
                 new ClientHealthCheckIntervalSetting($"{name}.{nameof(ClientHealthCheckIntervalSetting)}", TimeSpan.FromSeconds(10)),
             };
         }
@@ -45,7 +58,7 @@ namespace Rubberduck.SettingsProvider.Model.ServerStartup
         public string ServerPipeName => Values[nameof(ServerPipeNameSetting)];
         public MessageMode ServerMessageMode => Enum.Parse<MessageMode>(Values[nameof(ServerMessageModeSetting)]);
 
-        public ServerTraceLevel ServerTraceLevel => Enum.Parse<ServerTraceLevel>(Values[nameof(ServerTraceLevelSetting)]);
+        public MessageTraceLevel ServerTraceLevel => Enum.Parse<MessageTraceLevel>(Values[nameof(TraceLevelSetting)]);
 
         public TimeSpan ClientHealthCheckInterval => TimeSpan.Parse(Values[nameof(ClientHealthCheckIntervalSetting)]);
 
@@ -54,12 +67,12 @@ namespace Rubberduck.SettingsProvider.Model.ServerStartup
         public override string ToString() => ToProcessStartInfoArguments(0);
 
 
-        ServerTraceLevel IHealthCheckSettingsProvider.ServerTraceLevel => ServerTraceLevel;
+        MessageTraceLevel IHealthCheckSettingsProvider.ServerTraceLevel => ServerTraceLevel;
 
         TimeSpan IHealthCheckSettingsProvider.ClientHealthCheckInterval => ClientHealthCheckInterval;
 
 
-        ServerTraceLevel IProcessStartInfoArgumentProvider.ServerTraceLevel => ServerTraceLevel;
+        MessageTraceLevel IProcessStartInfoArgumentProvider.ServerTraceLevel => ServerTraceLevel;
 
         string IProcessStartInfoArgumentProvider.ServerExecutablePath => ServerExecutablePath;
 
@@ -87,11 +100,11 @@ namespace Rubberduck.SettingsProvider.Model.ServerStartup
 
             switch (ServerTraceLevel)
             {
-                case ServerTraceLevel.Verbose:
+                case MessageTraceLevel.Verbose:
                     builder.Append(" --verbose");
                     break;
 
-                case ServerTraceLevel.Off:
+                case MessageTraceLevel.Off:
                     builder.Append(" --silent");
                     break;
             }
@@ -101,9 +114,6 @@ namespace Rubberduck.SettingsProvider.Model.ServerStartup
             return builder.ToString();
         }
 
-        string IProcessStartInfoArgumentProvider.ToProcessStartInfoArguments(long clientProcessId)
-        {
-            throw new NotImplementedException();
-        }
+        string IProcessStartInfoArgumentProvider.ToProcessStartInfoArguments(long clientProcessId) => ToProcessStartInfoArguments(clientProcessId);
     }
 }

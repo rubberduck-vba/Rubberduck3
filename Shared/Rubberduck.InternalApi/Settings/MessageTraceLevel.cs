@@ -2,7 +2,7 @@
 
 namespace Rubberduck.InternalApi.Settings
 {
-    public enum ServerTraceLevel
+    public enum MessageTraceLevel
     {
         Off = TraceLevel.Off,
         Verbose = TraceLevel.Verbose,

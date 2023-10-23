@@ -165,7 +165,7 @@ namespace Rubberduck
 
             try
             {
-                var cultureInfo = CultureInfo.GetCultureInfo(_initialSettings.Locale);
+                var cultureInfo = CultureInfo.GetCultureInfo(_initialSettings.GeneralSettings.Locale);
                 CultureInfo.CurrentUICulture = cultureInfo;
                 Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = cultureInfo;
             }
@@ -176,10 +176,10 @@ namespace Rubberduck
 
             try
             {
-                if (_initialSettings.SetDpiUnaware)
-                {
-                    SHCore.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.Process_DPI_Unaware);
-                }
+                //if (_initialSettings.GeneralSettings.SetDpiUnaware)
+                //{
+                //    SHCore.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.Process_DPI_Unaware);
+                //}
             }
             catch (Exception)
             {

@@ -32,7 +32,7 @@ namespace Rubberduck.TelemetryServer.Handlers
 
         public override Task<Unit> Handle(TelemetryEventPayload request, CancellationToken cancellationToken)
         {
-            var trace = _settingsProvider.Settings.ServerTraceLevel.ToTraceLevel();
+            var trace = _settingsProvider.Settings.TraceLevel.ToTraceLevel();
             _logger.LogTrace(trace, "Received TelemetryEvent payload.", JsonSerializer.Serialize(request));
             if (TimedAction.TryRun(() =>
             {

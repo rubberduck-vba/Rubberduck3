@@ -15,10 +15,10 @@ namespace Rubberduck.UpdateServer.Handlers.Lifecycle
     public class ExitHandler : ExitHandlerBase
     {
         private readonly ILogger _logger;
-        private readonly ISettingsProvider<UpdateServerSettingGroup> _settingsProvider;
+        private readonly ISettingsProvider<UpdateServerSettingsGroup> _settingsProvider;
         private readonly Func<UpdateServerState> _stateProvider;
 
-        public ExitHandler(ILogger<ExitHandler> logger, ISettingsProvider<UpdateServerSettingGroup> settingsProvider, Func<UpdateServerState> state)
+        public ExitHandler(ILogger<ExitHandler> logger, ISettingsProvider<UpdateServerSettingsGroup> settingsProvider, Func<UpdateServerState> state)
         {
             _logger = logger;
             _settingsProvider = settingsProvider;
@@ -30,7 +30,7 @@ namespace Rubberduck.UpdateServer.Handlers.Lifecycle
             _logger.LogTrace("Received Exit notification.");
 
             cancellationToken.ThrowIfCancellationRequested();
-            var traceLevel = _settingsProvider.Settings.ServerTraceLevel.ToTraceLevel();
+            var traceLevel = _settingsProvider.Settings.TraceLevel.ToTraceLevel();
             var state = _stateProvider.Invoke();
 
             if (state.ServerState <= ServerState.Downloading)

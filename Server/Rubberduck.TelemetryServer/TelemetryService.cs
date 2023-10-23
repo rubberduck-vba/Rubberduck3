@@ -45,7 +45,7 @@ namespace Rubberduck.TelemetryServer
         private readonly ITelemetryTransmitter _transmitter;
         //private readonly Func<ILanguageServer> _server;
 
-        private TraceLevel TraceLevel => _settingsProvider.Settings.ServerTraceLevel.ToTraceLevel();
+        private TraceLevel TraceLevel => _settingsProvider.Settings.TraceLevel.ToTraceLevel();
 
         public TelemetryService(ILogger<TelemetryService> logger, ISettingsProvider<TelemetryServerSettingsGroup> settingsProvider, 
             ITelemetryTransmitter transmitter/*, Func<ILanguageServer> server*/)

@@ -4,7 +4,7 @@ namespace Rubberduck.InternalApi.Settings
 {
     public interface IHealthCheckSettingsProvider
     {
-        ServerTraceLevel ServerTraceLevel { get; }
+        MessageTraceLevel ServerTraceLevel { get; }
         TimeSpan ClientHealthCheckInterval { get; }
     }
 }

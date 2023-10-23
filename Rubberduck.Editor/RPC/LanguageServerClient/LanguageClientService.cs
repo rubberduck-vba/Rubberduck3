@@ -66,7 +66,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
             var initializationOptions = new InitializationOptions
             {
                 Timestamp = DateTime.Now,
-                Locale = settings.Locale,
+                Locale = settings.GeneralSettings.Locale,
                 //LibraryReferences = TODO[]
             };
 
@@ -84,7 +84,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
                     var logger = scope.ServiceProvider.GetRequiredService<ILogger<LanguageClientService>>();
                     logger.LogDebug("OnInitialize: sending InitializeParams...");
 
-                    request.ConfigureInitialization(clientProcessId, settings.Locale);
+                    request.ConfigureInitialization(clientProcessId, settings.GeneralSettings.Locale);
 
                     return Task.CompletedTask;
                 })

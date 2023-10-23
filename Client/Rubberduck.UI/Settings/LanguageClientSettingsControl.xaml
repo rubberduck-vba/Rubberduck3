@@ -12,10 +12,10 @@
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <DataTemplate x:Key="BooleanSettingTemplate" DataType="">
+
+            </DataTemplate>
         </ResourceDictionary>
-        <DataTemplate x:Key="BooleanSettingTemplate" DataType="">
-            
-        </DataTemplate>
     </UserControl.Resources>
     <StackPanel>
         

@@ -6,13 +6,13 @@ namespace Rubberduck.SettingsProvider.Model
 {
     public static class TraceLevelExtensions
     {
-        private static readonly IDictionary<ServerTraceLevel, TraceLevel> _map = new Dictionary<ServerTraceLevel, TraceLevel>
+        private static readonly IDictionary<MessageTraceLevel, TraceLevel> _map = new Dictionary<MessageTraceLevel, TraceLevel>
         {
-            [ServerTraceLevel.Off] = TraceLevel.Off,
-            [ServerTraceLevel.Verbose] = TraceLevel.Verbose,
-            [ServerTraceLevel.Message] = TraceLevel.Info,
+            [MessageTraceLevel.Off] = TraceLevel.Off,
+            [MessageTraceLevel.Verbose] = TraceLevel.Verbose,
+            [MessageTraceLevel.Message] = TraceLevel.Info,
         };
 
-        public static TraceLevel ToTraceLevel(this ServerTraceLevel value) => _map[value];
+        public static TraceLevel ToTraceLevel(this MessageTraceLevel value) => _map[value];
     }
 }

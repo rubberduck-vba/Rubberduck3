@@ -97,7 +97,7 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<DocumentContentStore>();
 
             services.AddSingleton<IExitHandler, ExitHandler>();
-            services.AddSingleton<IHealthCheckService<LanguageServerSettingsGroup>, ClientProcessHealthCheckService<LanguageServerSettingsGroup>>();
+            services.AddSingleton<IHealthCheckService<LanguageServerStartupSettings>, ClientProcessHealthCheckService<LanguageServerStartupSettings>>();
         }
 
         private void ConfigureLogging(ILoggingBuilder builder)

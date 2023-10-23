@@ -20,7 +20,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
         private readonly ILogger<ShowMessageHandler> _logger;
         private readonly IMessageService _service;
         private readonly ISettingsProvider<RubberduckSettings> _settingsProvider;
-        TraceLevel TraceLevel => _settingsProvider.Settings.LanguageClientSettings.TraceLevel.ToTraceLevel();
+        TraceLevel TraceLevel => _settingsProvider.Settings.LanguageServerSettings.TraceLevel.ToTraceLevel();
 
         public ShowMessageHandler(ILogger<ShowMessageHandler> logger, IMessageService service, ISettingsProvider<RubberduckSettings> settingsProvider)
         {

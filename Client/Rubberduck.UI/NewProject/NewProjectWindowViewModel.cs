@@ -49,7 +49,9 @@ namespace Rubberduck.UI.NewProject
         {
             var vbProject = VBProjects.FirstOrDefault() ?? new VBProjectInfo { Name = "VBAProject", ProjectId = Guid.NewGuid().ToString() };
             _projectName = vbProject.Name;
-            _workspaceLocation = vbProject.Location ?? _settings.LanguageClientSettings.DefaultWorkspaceRoot;
+            _workspaceLocation = (string.IsNullOrWhiteSpace(vbProject.Location)
+                ? _settings.LanguageClientSettings.DefaultWorkspaceRoot
+                : new Uri(vbProject.Location)).ToString();
         }
 
         private string _projectName = string.Empty;

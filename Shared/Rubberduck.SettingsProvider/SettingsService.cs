@@ -5,6 +5,7 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
 using System;
 using System.Diagnostics;
@@ -19,7 +20,6 @@ namespace Rubberduck.SettingsProvider
     /// </summary>
     /// <typeparam name="TSettings"></typeparam>
     public interface ISettingsService<TSettings> : ISettingsProvider<TSettings>
-        where TSettings : class
     {
         /// <summary>
         /// Reads and deserializes settings from disk into a <c>TSettings</c> value.
@@ -34,7 +34,7 @@ namespace Rubberduck.SettingsProvider
     }
 
     public class SettingsService<TSettings> : ISettingsService<TSettings>
-        where TSettings : class, new()
+        where TSettings : new()
     {
         private static readonly JsonSerializerOptions _options = new() { PropertyNameCaseInsensitive = true };
 
@@ -44,7 +44,12 @@ namespace Rubberduck.SettingsProvider
         private readonly string _path;
 
         private readonly IServiceProvider _services;
-        private LanguageServerSettingsGroup ServerSettings => _services.GetRequiredService<ISettingsProvider<LanguageServerSettingsGroup>>().Settings;
+        private GeneralSettingsGroup GeneralSettings => _services.GetRequiredService<ISettingsProvider<GeneralSettingsGroup>>().Settings;
+        private LanguageClientSettingsGroup LanguageClientSettings => _services.GetRequiredService<ISettingsProvider<LanguageClientSettingsGroup>>().Settings;
+        private LanguageServerSettingsGroup LanguageServerSettings => _services.GetRequiredService<ISettingsProvider<LanguageServerSettingsGroup>>().Settings;
+        private UpdateServerSettingsGroup UpdateServerSettings => _services.GetRequiredService<ISettingsProvider<UpdateServerSettingsGroup>>().Settings;
+        private TelemetryServerSettingsGroup TelemetryServerSettings => _services.GetRequiredService<ISettingsProvider<TelemetryServerSettingsGroup>>().Settings;
+
         private TSettings _cached = new();
 
         public SettingsService(ILogger<SettingsService<TSettings>> logger,
@@ -75,7 +80,7 @@ namespace Rubberduck.SettingsProvider
 
         public TSettings Settings => _cached;
 
-        public TraceLevel TraceLevel => ServerSettings.StartupSettings.ServerTraceLevel.ToTraceLevel();
+        public TraceLevel TraceLevel => GeneralSettings.TraceLevel.ToTraceLevel();
 
         private bool TrySetValue(TSettings value)
         {

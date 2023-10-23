@@ -92,7 +92,7 @@ namespace Rubberduck.TelemetryServer
             services.AddSingleton<ISettingsProvider<TelemetryServerSettingsGroup>, SettingsService<TelemetryServerSettingsGroup>>();
 
             services.AddSingleton<IExitHandler, ExitHandler>();
-            services.AddSingleton<IHealthCheckService<TelemetryServerSettingsGroup>, ClientProcessHealthCheckService<TelemetryServerSettingsGroup>>();
+            services.AddSingleton<IHealthCheckService<TelemetryServerStartupSettings>, ClientProcessHealthCheckService<TelemetryServerStartupSettings>>();
 
             services.AddSingleton<ITelemetryService, TelemetryService>();
             services.AddSingleton<ITelemetryTransmitter, TelemetryTransmitter>();

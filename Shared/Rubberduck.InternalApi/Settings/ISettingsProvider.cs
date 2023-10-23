@@ -7,7 +7,6 @@ namespace Rubberduck.InternalApi.Settings
     /// </summary>
     /// <typeparam name="TSettings"></typeparam>
     public interface ISettingsProvider<TSettings>
-        where TSettings : class
     {
         /// <summary>
         /// Gets the currently applicable settings.

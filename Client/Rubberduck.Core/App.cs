@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.Core.Settings;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI;
+using Rubberduck.UI.Message;
 using Rubberduck.Unmanaged.UIContext;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 using System;
@@ -23,7 +23,7 @@ namespace Rubberduck.Core
 
         private readonly IPresenter _presenter;
 
-        //private readonly IMessageService _messageBox; // TODO move message abstractions to InternalApi?
+        private readonly IMessageService _messageBox;
         private readonly ISettingsService<RubberduckSettings> _settingsService;
         private readonly IRubberduckMenu _appMenus;
 
@@ -34,7 +34,7 @@ namespace Rubberduck.Core
         public App(Version version,
             ILogger<App> logger, 
             ILogLevelService logLevelService,
-            //IMessageService messageBox,
+            IMessageService messageBox,
             ISettingsService<RubberduckSettings> settingsService,
             IRubberduckMenu appMenu,
             IFileSystem filesystem,
@@ -45,7 +45,7 @@ namespace Rubberduck.Core
             _logger = logger;
             _logLevelService = logLevelService;
 
-            //_messageBox = messageBox;
+            _messageBox = messageBox;
             _settingsService = settingsService;
             _appMenus = appMenu;
 
@@ -58,7 +58,7 @@ namespace Rubberduck.Core
         {
             try
             {
-                if (e is not null && !string.Equals(e.OldValue.Locale, e.NewValue.Locale, StringComparison.InvariantCultureIgnoreCase))
+                if (e is not null && !string.Equals(e.OldValue.GeneralSettings.Locale, e.NewValue.GeneralSettings.Locale, StringComparison.InvariantCultureIgnoreCase))
                 {
                     ApplyCultureConfig();
                 }
@@ -82,7 +82,7 @@ namespace Rubberduck.Core
             catch (Exception exception)
             {
                 _logger.LogError(exception, "Could not create log folder."); // TODO disable logging then
-                //_messageBox.ShowMessage(MessageModel.For(exception));
+                _messageBox.ShowMessage(MessageModel.For(exception));
             }
         }
 
@@ -117,7 +117,7 @@ namespace Rubberduck.Core
 
         private void UpdateLoggingLevel()
         {
-            _logLevelService.SetMinimumLogLevel(_settingsService.Settings.LogLevel);
+            _logLevelService.SetMinimumLogLevel(_settingsService.Settings.GeneralSettings.LogLevel);
         }
 
         /// <summary>
@@ -129,17 +129,19 @@ namespace Rubberduck.Core
         private void UpdateLoggingLevelOnShutdown()
         {
             var currentSettings = _settingsService.Settings;
-            if (currentSettings.IsInitialLogLevelChanged || currentSettings.LogLevel != LogLevel.Trace)
+            if (currentSettings.GeneralSettings.DisableInitialLogLevelReset || currentSettings.GeneralSettings.LogLevel != LogLevel.Trace)
             {
                 return;
             }
 
-            var vm = new RubberduckSettingsViewModel(currentSettings)
-            {
-                LogLevel = LogLevel.None
-            };
+            var updatedSettings = new RubberduckSettings(
+                new GeneralSettingsGroup(currentSettings.GeneralSettings, new RubberduckSetting[] { new LogLevelSetting(LogLevel.None) }),
+                currentSettings.LanguageClientSettings,
+                currentSettings.LanguageServerSettings,
+                currentSettings.UpdateServerSettings,
+                currentSettings.TelemetryServerSettings);
 
-            _settingsService.Write(vm.ToSettings());
+            _settingsService.Write(updatedSettings);
         }
 
         public void Startup()
@@ -178,7 +180,7 @@ namespace Rubberduck.Core
 
             try
             {
-                var uiCulture = CultureInfo.GetCultureInfo(currentSettings.Locale);
+                var uiCulture = CultureInfo.GetCultureInfo(currentSettings.GeneralSettings.Locale);
                 LocalizeResources(uiCulture);
 
                 _appMenus.Localize();
@@ -187,14 +189,16 @@ namespace Rubberduck.Core
             {
                 _logger.LogError(exception, "Error Setting Culture for Rubberduck");
                 // not accessing resources here, because setting resource culture literally just failed.
-                //_messageBox.ShowMessage(MessageModel.For(exception));
+                _messageBox.ShowMessage(MessageModel.For(exception));
 
-                var vm = new RubberduckSettingsViewModel(currentSettings)
-                {
-                    Locale = currentCulture.Name
-                };
+                var updatedSettings = new RubberduckSettings(
+                    new GeneralSettingsGroup(currentSettings.GeneralSettings, new RubberduckSetting[] { new LogLevelSetting(LogLevel.None) }),
+                    currentSettings.LanguageClientSettings,
+                    currentSettings.LanguageServerSettings,
+                    currentSettings.UpdateServerSettings,
+                    currentSettings.TelemetryServerSettings);
 
-                _settingsService.Write(vm.ToSettings());
+                _settingsService.Write(updatedSettings);
             }
         }
 

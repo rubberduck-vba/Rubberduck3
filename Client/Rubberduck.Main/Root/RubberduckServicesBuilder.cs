@@ -64,12 +64,12 @@ namespace Rubberduck.Root
         {
             _services.AddScoped<ISettingsProvider<RubberduckSettings>, SettingsService<RubberduckSettings>>();
             _services.AddScoped<ISettingsProvider<LanguageServerSettingsGroup>, SettingsService<LanguageServerSettingsGroup>>();
-            _services.AddScoped<ISettingsProvider<UpdateServerSettingGroup>, SettingsService<UpdateServerSettingGroup>>();
+            _services.AddScoped<ISettingsProvider<UpdateServerSettingsGroup>, SettingsService<UpdateServerSettingsGroup>>();
             _services.AddScoped<ISettingsProvider<TelemetryServerSettingsGroup>, SettingsService<TelemetryServerSettingsGroup>>();
 
             _services.AddScoped<IDefaultSettingsProvider<RubberduckSettings>>(provider => RubberduckSettings.Default);
             _services.AddScoped<IDefaultSettingsProvider<LanguageServerSettingsGroup>>(provider => LanguageServerSettingsGroup.Default);
-            _services.AddScoped<IDefaultSettingsProvider<UpdateServerSettingGroup>>(provider => UpdateServerSettingGroup.Default);
+            _services.AddScoped<IDefaultSettingsProvider<UpdateServerSettingsGroup>>(provider => UpdateServerSettingsGroup.Default);
             _services.AddScoped<IDefaultSettingsProvider<TelemetryServerSettingsGroup>>(provider => TelemetryServerSettingsGroup.Default);
             return this;
         }

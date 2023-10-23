@@ -2,7 +2,7 @@
 {
     public interface IProcessStartInfoArgumentProvider
     {
-        public ServerTraceLevel ServerTraceLevel { get; }
+        public MessageTraceLevel ServerTraceLevel { get; }
 
         string ServerExecutablePath { get; }
         string ToProcessStartInfoArguments(long clientProcessId);

@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using OmniSharp.Extensions.LanguageServer.Protocol.General;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
@@ -12,14 +10,14 @@ using System.Threading;
 namespace Rubberduck.LanguagePlatform
 {
     public interface IHealthCheckService<TSettings> : IDisposable
-        where TSettings : struct, IHealthCheckSettingsProvider
+        where TSettings : IHealthCheckSettingsProvider
     {
         event EventHandler<EventArgs>? ChildProcessExited;
         void Start();
     }
 
     public sealed class ClientProcessHealthCheckService<TSettings> : IHealthCheckService<TSettings>, IDisposable
-        where TSettings : struct, IHealthCheckSettingsProvider
+        where TSettings : IHealthCheckSettingsProvider
     {
         private readonly ILogger _logger;
         private readonly ISettingsProvider<TSettings> _settingsProvider;

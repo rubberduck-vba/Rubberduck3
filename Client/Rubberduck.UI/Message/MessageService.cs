@@ -94,6 +94,6 @@ namespace Rubberduck.UI.Message
             return MessageActionResult.Disabled;
         }
 
-        private bool CanShowMessageKey(string key) => _settings.Settings.LanguageClientSettings.DisabledMessageKeys.Contains(key);
+        private bool CanShowMessageKey(string key) => _settings.Settings.GeneralSettings.DisabledMessageKeys.Contains(key);
     }
 }

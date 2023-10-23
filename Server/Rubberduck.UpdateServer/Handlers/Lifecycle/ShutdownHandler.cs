@@ -15,10 +15,10 @@ namespace Rubberduck.UpdateServer.Handlers.Lifecycle
     public class ShutdownHandler : ShutdownHandlerBase
     {
         private readonly ILogger _logger;
-        private readonly ISettingsProvider<UpdateServerSettingGroup> _settingsProvider;
+        private readonly ISettingsProvider<UpdateServerSettingsGroup> _settingsProvider;
         private readonly IServerStateWriter _serverState;
 
-        public ShutdownHandler(ILogger<ShutdownHandler> logger, ISettingsProvider<UpdateServerSettingGroup> settings, IServerStateWriter serverState)
+        public ShutdownHandler(ILogger<ShutdownHandler> logger, ISettingsProvider<UpdateServerSettingsGroup> settings, IServerStateWriter serverState)
         {
             _logger = logger;
             _settingsProvider = settings;
@@ -30,7 +30,7 @@ namespace Rubberduck.UpdateServer.Handlers.Lifecycle
             _logger.LogTrace("Received Shutdown notification.");
 
             cancellationToken.ThrowIfCancellationRequested();
-            var traceLevel = _settingsProvider.Settings.ServerTraceLevel.ToTraceLevel();
+            var traceLevel = _settingsProvider.Settings.TraceLevel.ToTraceLevel();
 
             if (TimedAction.TryRun(() =>
             {

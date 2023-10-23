@@ -12,16 +12,16 @@ using System.Text.Json;
 
 namespace Rubberduck.ServerPlatform
 {
-    public abstract class ServerState<TSettings> : IServerStateWriter
-        where TSettings : struct, IHealthCheckSettingsProvider
+    public abstract class ServerState<TSettings, TStartupSettings> : IServerStateWriter
+        where TStartupSettings : IHealthCheckSettingsProvider
     {
         //private readonly ServerStartupOptions _startupOptions;
-        private readonly IHealthCheckService<TSettings> _healthCheckService;
+        private readonly IHealthCheckService<TStartupSettings> _healthCheckService;
 
         public ServerState(
-            ILogger<ServerState<TSettings>> logger, 
+            ILogger<ServerState<TSettings, TStartupSettings>> logger, 
             //ServerStartupOptions startupOptions,
-            IHealthCheckService<TSettings> healthCheck)
+            IHealthCheckService<TStartupSettings> healthCheck)
         {
             _logger = logger;
             //_startupOptions = startupOptions;

@@ -14,14 +14,14 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
             return request;
         }
 
-        public static InitializeTrace ToInitializeTrace(this ServerTraceLevel trace)
+        public static InitializeTrace ToInitializeTrace(this MessageTraceLevel trace)
         {
-            if (trace == ServerTraceLevel.Off)
+            if (trace == MessageTraceLevel.Off)
             {
                 return InitializeTrace.Off;
             }
 
-            if (trace == ServerTraceLevel.Verbose)
+            if (trace == MessageTraceLevel.Verbose)
             {
                 return InitializeTrace.Verbose;
             }
