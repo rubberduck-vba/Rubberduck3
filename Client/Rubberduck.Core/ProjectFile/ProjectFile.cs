@@ -1,22 +1,61 @@
-﻿using System;
+﻿using Rubberduck.InternalApi.Common;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
+using Rubberduck.Unmanaged.TypeLibs.Abstract;
+using Rubberduck.Unmanaged.TypeLibs.Utility;
+using System;
+using System.Collections.Generic;
+using System.IO.Abstractions;
 using System.Linq;
+using System.Windows.Documents;
 
 namespace Rubberduck.Core.ProjectFile
 {
-    public record ProjectFile
+    public record class ProjectFile
     {
-        public ProjectFile(Version rubberduck, Uri uri, Uri[] references, Uri[] components)
+        public ProjectFile(Version rubberduck, Uri uri, Project vBProject)
         {
             Rubberduck = rubberduck.ToString(3);
-            Uri = uri.ToString();
-            References = references.Select(e => e.ToString()).ToArray();
-            Components = components.Select(e => e.ToString()).ToArray();
+            Uri = uri;
+            VBProject = vBProject;
+        }
+
+        public ProjectFile(Version rubberduck, Uri uri, string name, Reference[] references, Module[] modules)
+        {
+            Rubberduck = rubberduck.ToString(3);
+            Uri = uri;
+            VBProject = new()
+            {
+                Name = name,
+                References = references,
+                Modules = modules,
+            };
         }
 
         public string Rubberduck { get; init; }
-        public string Uri { get; init; }
+        public Uri Uri { get; init; }
 
-        public string[] References { get; init; }
-        public string[] Components { get; init; }
+        public Project VBProject { get; init; }
+
+        public record class Project
+        {
+            public string Name { get; init; }
+            public Reference[] References { get; init; }
+            public Module[] Modules { get; init; }
+        }
+
+        public record class Reference
+        {
+            public string Name { get; init; }
+            public Uri Uri { get; init; }
+            public Guid Guid { get; init; } = Guid.Empty;
+            public Uri? TypeLibInfoUri { get; init; } = null;
+        }
+
+        public record class Module
+        {
+            public string Name { get; init; }
+            public DocClassType? Super { get; init; }
+            public Uri Uri { get; init; }
+        }
     }
 }

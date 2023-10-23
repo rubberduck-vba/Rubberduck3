@@ -1,15 +1,22 @@
 ﻿using Rubberduck.Resources;
+using Rubberduck.UI.Command;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Rubberduck.UI.Settings
 {
-    public class SettingsWindowViewModel : ViewModelBase, IWindowViewModel
+    public interface ISettingsWindowViewModel { }
+
+    public class SettingsWindowViewModel : DialogWindowViewModel, ISettingsWindowViewModel
     {
-        public string Title => RubberduckUI.Settings;
+        public SettingsWindowViewModel(MessageActionCommand[] actions, ICommand? showSettingsCommand = null) 
+            : base(RubberduckUI.Settings, actions, showSettingsCommand)
+        {
+        }
+
+        protected override void ResetToDefaults()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

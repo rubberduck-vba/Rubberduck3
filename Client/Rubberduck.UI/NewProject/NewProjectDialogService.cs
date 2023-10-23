@@ -12,7 +12,7 @@ namespace Rubberduck.UI.NewProject
     {
     }
 
-    public class NewProjectDialogService : DialogService<NewProjectWindow, NewProjectWindowViewModel>
+    public class NewProjectDialogService : DialogService<NewProjectWindow, NewProjectWindowViewModel>, INewProjectDialogService
     {
         private readonly IProjectsProvider _provider;
         private readonly ICommand _showSettingsCommand;
