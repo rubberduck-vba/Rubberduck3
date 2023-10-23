@@ -6,7 +6,18 @@
              xmlns:local="clr-namespace:Rubberduck.UI.Settings"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+        <DataTemplate x:Key="BooleanSettingTemplate" DataType="">
             
-    </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+    <StackPanel>
+        
+    </StackPanel>
 </UserControl>

@@ -3,8 +3,8 @@ using Rubberduck.SettingsProvider.Model;
 
 namespace Rubberduck.SettingsProvider
 {
-    public class DefaultUpdateServerSettingsProvider : IDefaultSettingsProvider<UpdateServerSettings>
+    public class DefaultUpdateServerSettingsProvider : IDefaultSettingsProvider<UpdateServerSettingGroup>
     {
-        public UpdateServerSettings Default { get; } = UpdateServerSettings.Default;
+        public UpdateServerSettingGroup Default { get; } = UpdateServerSettingGroup.Default;
     }
 }

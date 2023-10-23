@@ -9,6 +9,7 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.LanguageServer;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
@@ -62,14 +63,14 @@ namespace Rubberduck.Root
         public RubberduckServicesBuilder WithSettingsProviders()
         {
             _services.AddScoped<ISettingsProvider<RubberduckSettings>, SettingsService<RubberduckSettings>>();
-            _services.AddScoped<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
-            _services.AddScoped<ISettingsProvider<UpdateServerSettings>, SettingsService<UpdateServerSettings>>();
-            _services.AddScoped<ISettingsProvider<TelemetryServerSettings>, SettingsService<TelemetryServerSettings>>();
+            _services.AddScoped<ISettingsProvider<LanguageServerSettingsGroup>, SettingsService<LanguageServerSettingsGroup>>();
+            _services.AddScoped<ISettingsProvider<UpdateServerSettingGroup>, SettingsService<UpdateServerSettingGroup>>();
+            _services.AddScoped<ISettingsProvider<TelemetryServerSettingsGroup>, SettingsService<TelemetryServerSettingsGroup>>();
 
             _services.AddScoped<IDefaultSettingsProvider<RubberduckSettings>>(provider => RubberduckSettings.Default);
-            _services.AddScoped<IDefaultSettingsProvider<LanguageServerSettings>>(provider => LanguageServerSettings.Default);
-            _services.AddScoped<IDefaultSettingsProvider<UpdateServerSettings>>(provider => UpdateServerSettings.Default);
-            _services.AddScoped<IDefaultSettingsProvider<TelemetryServerSettings>>(provider => TelemetryServerSettings.Default);
+            _services.AddScoped<IDefaultSettingsProvider<LanguageServerSettingsGroup>>(provider => LanguageServerSettingsGroup.Default);
+            _services.AddScoped<IDefaultSettingsProvider<UpdateServerSettingGroup>>(provider => UpdateServerSettingGroup.Default);
+            _services.AddScoped<IDefaultSettingsProvider<TelemetryServerSettingsGroup>>(provider => TelemetryServerSettingsGroup.Default);
             return this;
         }
 

@@ -18,7 +18,7 @@ namespace Rubberduck.Editor.Splash
         public string Status => Model.Status ?? string.Empty;
         public void UpdateStatus(string status) => Model.UpdateStatus(status);
 
-        public bool CanShowSplash => _settings.Settings.ShowSplash;
+        public bool CanShowSplash => _settings.Settings.GeneralSettings.ShowSplash;
         protected override SplashWindow CreateWindow(ISplashViewModel model) => new(model);
     }
 }

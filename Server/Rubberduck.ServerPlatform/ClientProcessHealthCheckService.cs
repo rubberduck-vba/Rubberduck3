@@ -29,7 +29,7 @@ namespace Rubberduck.LanguagePlatform
 
         public event EventHandler<EventArgs>? ChildProcessExited = delegate { };
 
-        private TraceLevel TraceLevel => _settingsProvider.Settings.TraceLevel.ToTraceLevel();
+        private TraceLevel TraceLevel => _settingsProvider.Settings.ServerTraceLevel.ToTraceLevel();
         private TimeSpan Interval => _settingsProvider.Settings.ClientHealthCheckInterval;
 
         public ClientProcessHealthCheckService(

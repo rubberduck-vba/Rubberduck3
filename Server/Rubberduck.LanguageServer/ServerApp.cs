@@ -17,7 +17,7 @@ using Rubberduck.LanguageServer.Model;
 using Rubberduck.LanguageServer.Services;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
-using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.LanguageServer;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -90,14 +90,14 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<Func<LanguageServerState>>(provider => () => _serverState);
             services.AddSingleton<IServerStateWriter>(provider => provider.GetRequiredService<LanguageServerState>());
 
-            services.AddSingleton<IDefaultSettingsProvider<LanguageServerSettings>>(provider => LanguageServerSettings.Default);
-            services.AddSingleton<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
+            services.AddSingleton<IDefaultSettingsProvider<LanguageServerSettingsGroup>>(provider => LanguageServerSettingsGroup.Default);
+            services.AddSingleton<ISettingsProvider<LanguageServerSettingsGroup>, SettingsService<LanguageServerSettingsGroup>>();
 
             services.AddSingleton<SupportedLanguage, VisualBasicForApplicationsLanguage>();
             services.AddSingleton<DocumentContentStore>();
 
             services.AddSingleton<IExitHandler, ExitHandler>();
-            services.AddSingleton<IHealthCheckService<LanguageServerSettings>, ClientProcessHealthCheckService<LanguageServerSettings>>();
+            services.AddSingleton<IHealthCheckService<LanguageServerSettingsGroup>, ClientProcessHealthCheckService<LanguageServerSettingsGroup>>();
         }
 
         private void ConfigureLogging(ILoggingBuilder builder)

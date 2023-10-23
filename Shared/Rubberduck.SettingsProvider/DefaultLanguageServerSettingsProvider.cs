@@ -1,10 +1,10 @@
 ﻿using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.LanguageServer;
 
 namespace Rubberduck.SettingsProvider
 {
-    public class DefaultLanguageServerSettingsProvider : IDefaultSettingsProvider<LanguageServerSettings>
+    public class DefaultLanguageServerSettingsProvider : IDefaultSettingsProvider<LanguageServerSettingsGroup>
     {
-        public LanguageServerSettings Default { get; } = LanguageServerSettings.Default;
+        public LanguageServerSettingsGroup Default { get; } = LanguageServerSettingsGroup.Default;
     }
 }

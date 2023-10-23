@@ -40,14 +40,14 @@ namespace Rubberduck.TelemetryServer
     internal class TelemetryService : ITelemetryService
     {
         private readonly ILogger<TelemetryService> _logger;
-        private readonly ISettingsProvider<TelemetryServerSettings> _settingsProvider;
+        private readonly ISettingsProvider<TelemetryServerSettingsGroup> _settingsProvider;
         private readonly ConcurrentQueue<TelemetryEventPayload> _queue;
         private readonly ITelemetryTransmitter _transmitter;
         //private readonly Func<ILanguageServer> _server;
 
-        private TraceLevel TraceLevel => _settingsProvider.Settings.TraceLevel.ToTraceLevel();
+        private TraceLevel TraceLevel => _settingsProvider.Settings.ServerTraceLevel.ToTraceLevel();
 
-        public TelemetryService(ILogger<TelemetryService> logger, ISettingsProvider<TelemetryServerSettings> settingsProvider, 
+        public TelemetryService(ILogger<TelemetryService> logger, ISettingsProvider<TelemetryServerSettingsGroup> settingsProvider, 
             ITelemetryTransmitter transmitter/*, Func<ILanguageServer> server*/)
         {
             _logger = logger;
@@ -112,7 +112,7 @@ namespace Rubberduck.TelemetryServer
             }
         }
 
-        private bool CanTransmitTelemetry(TelemetryEventPayload telemetryItem, TelemetryServerSettings settings)
+        private bool CanTransmitTelemetry(TelemetryEventPayload telemetryItem, TelemetryServerSettingsGroup settings)
         {
             if (settings.SendEventTelemetry && telemetryItem is EventTelemetry eventTelemetry)
             {

@@ -10,17 +10,18 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Common;
 using System.Linq;
 using Rubberduck.InternalApi.Settings;
+using Rubberduck.SettingsProvider.Model.LanguageServer;
 
 namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
 {
     public class WorkspaceFoldersHandler : WorkspaceFoldersHandlerBase
     {
         private readonly ILogger<WorkspaceFoldersHandler> _logger;
-        private readonly ISettingsProvider<LanguageServerSettings> _settingsProvider;
+        private readonly ISettingsProvider<LanguageServerSettingsGroup> _settingsProvider;
 
         TraceLevel TraceLevel => _settingsProvider.Settings.TraceLevel.ToTraceLevel();
 
-        public WorkspaceFoldersHandler(ILogger<WorkspaceFoldersHandler> logger, ISettingsProvider<LanguageServerSettings> settingsProvider)
+        public WorkspaceFoldersHandler(ILogger<WorkspaceFoldersHandler> logger, ISettingsProvider<LanguageServerSettingsGroup> settingsProvider)
         {
             _logger = logger;
             _settingsProvider = settingsProvider;

@@ -9,11 +9,11 @@ using System.Threading;
 
 namespace Rubberduck.TelemetryServer
 {
-    public class TelemetryServerState : ServerState<TelemetryServerSettings>
+    public class TelemetryServerState : ServerState<TelemetryServerSettingsGroup>
     {
         public TelemetryServerState(
-            ILogger<ServerState<TelemetryServerSettings>> logger,
-            IHealthCheckService<TelemetryServerSettings> healthCheck)
+            ILogger<ServerState<TelemetryServerSettingsGroup>> logger,
+            IHealthCheckService<TelemetryServerSettingsGroup> healthCheck)
             : base(logger, healthCheck)
         {
         }

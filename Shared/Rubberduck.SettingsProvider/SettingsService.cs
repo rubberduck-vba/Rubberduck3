@@ -5,7 +5,9 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.LanguageServer;
 using System;
+using System.Diagnostics;
 using System.IO.Abstractions;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -17,7 +19,7 @@ namespace Rubberduck.SettingsProvider
     /// </summary>
     /// <typeparam name="TSettings"></typeparam>
     public interface ISettingsService<TSettings> : ISettingsProvider<TSettings>
-        where TSettings : struct
+        where TSettings : class
     {
         /// <summary>
         /// Reads and deserializes settings from disk into a <c>TSettings</c> value.
@@ -32,7 +34,7 @@ namespace Rubberduck.SettingsProvider
     }
 
     public class SettingsService<TSettings> : ISettingsService<TSettings>
-        where TSettings : struct
+        where TSettings : class, new()
     {
         private static readonly JsonSerializerOptions _options = new() { PropertyNameCaseInsensitive = true };
 
@@ -42,7 +44,7 @@ namespace Rubberduck.SettingsProvider
         private readonly string _path;
 
         private readonly IServiceProvider _services;
-        private LanguageServerSettings ServerSettings => _services.GetRequiredService<ISettingsProvider<LanguageServerSettings>>().Settings;
+        private LanguageServerSettingsGroup ServerSettings => _services.GetRequiredService<ISettingsProvider<LanguageServerSettingsGroup>>().Settings;
         private TSettings _cached = new();
 
         public SettingsService(ILogger<SettingsService<TSettings>> logger,
@@ -73,9 +75,11 @@ namespace Rubberduck.SettingsProvider
 
         public TSettings Settings => _cached;
 
+        public TraceLevel TraceLevel => ServerSettings.StartupSettings.ServerTraceLevel.ToTraceLevel();
+
         private bool TrySetValue(TSettings value)
         {
-            var traceLevel = ServerSettings.TraceLevel.ToTraceLevel();
+            var traceLevel = TraceLevel;
             var didChange = false;
 
             var oldValue = _cached;
@@ -92,7 +96,7 @@ namespace Rubberduck.SettingsProvider
 
         public TSettings Read()
         {
-            var traceLevel = ServerSettings.TraceLevel.ToTraceLevel();
+            var traceLevel = TraceLevel;
             _logger.LogTrace(traceLevel, "Reading settings from file...", _path);
 
             try
@@ -117,7 +121,7 @@ namespace Rubberduck.SettingsProvider
 
                             if (!string.IsNullOrWhiteSpace(content))
                             {
-                                var newValue = JsonSerializer.Deserialize<TSettings>(content, _options);
+                                var newValue = JsonSerializer.Deserialize<TSettings>(content, _options) ?? new();
                                 _logger.LogTrace(traceLevel, "File content successfully deserialized.");
                                 TrySetValue(newValue);
                             }
@@ -153,7 +157,7 @@ namespace Rubberduck.SettingsProvider
 
         public void Write(TSettings settings)
         {
-            var traceLevel = ServerSettings.TraceLevel.ToTraceLevel();
+            var traceLevel = TraceLevel;
             _logger.LogTrace(traceLevel, "Writing to settings file...", _path);
 
             var path = _path;

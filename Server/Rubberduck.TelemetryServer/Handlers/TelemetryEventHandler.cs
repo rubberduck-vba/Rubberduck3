@@ -19,10 +19,10 @@ namespace Rubberduck.TelemetryServer.Handlers
     public class TelemetryEventHandler : TelemetryEventHandlerBase<TelemetryEventPayload>
     {
         private readonly ILogger _logger;
-        private readonly ISettingsProvider<TelemetryServerSettings> _settingsProvider;
+        private readonly ISettingsProvider<TelemetryServerSettingsGroup> _settingsProvider;
         private readonly ITelemetryService _telemetryService;
 
-        public TelemetryEventHandler(ILogger<TelemetryEventHandler> logger, ISettingsProvider<TelemetryServerSettings> settings,
+        public TelemetryEventHandler(ILogger<TelemetryEventHandler> logger, ISettingsProvider<TelemetryServerSettingsGroup> settings,
             ITelemetryService service)
         {
             _logger = logger;
@@ -32,7 +32,7 @@ namespace Rubberduck.TelemetryServer.Handlers
 
         public override Task<Unit> Handle(TelemetryEventPayload request, CancellationToken cancellationToken)
         {
-            var trace = _settingsProvider.Settings.TraceLevel.ToTraceLevel();
+            var trace = _settingsProvider.Settings.ServerTraceLevel.ToTraceLevel();
             _logger.LogTrace(trace, "Received TelemetryEvent payload.", JsonSerializer.Serialize(request));
             if (TimedAction.TryRun(() =>
             {

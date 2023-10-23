@@ -2,21 +2,21 @@
 
 namespace Rubberduck.Core.Settings
 {
-    public class UpdateServerSettingsViewModel : ISettingsViewModel<UpdateServerSettings>
+    public class UpdateServerSettingsViewModel : ISettingsViewModel<UpdateServerSettingGroup>
     {
-        private readonly UpdateServerSettings _settings;
+        private readonly UpdateServerSettingGroup _settings;
 
         public UpdateServerSettingsViewModel()
-            : this(UpdateServerSettings.Default) { }
+            : this(UpdateServerSettingGroup.Default) { }
 
-        public UpdateServerSettingsViewModel(UpdateServerSettings settings)
+        public UpdateServerSettingsViewModel(UpdateServerSettingGroup settings)
         {
             _settings= settings;
 
             CheckVersionOnStartup = settings.IsEnabled;
             IncludePreReleases = settings.IncludePreReleases;
             RubberduckWebApiBaseUrl = settings.RubberduckWebApiBaseUrl;
-            Path = settings.Path;
+            Path = settings.ServerExecutablePath;
         }
 
         public bool CheckVersionOnStartup { get; set; }
@@ -25,13 +25,13 @@ namespace Rubberduck.Core.Settings
 
         public string Path { get; set; }
 
-        public UpdateServerSettings ToSettings()
+        public UpdateServerSettingGroup ToSettings()
         {
-            return new UpdateServerSettings
+            return new UpdateServerSettingGroup
             {
                 IsEnabled = this.CheckVersionOnStartup,
                 IncludePreReleases = this.IncludePreReleases,
-                Path = this.Path,
+                ServerExecutablePath = this.Path,
                 RubberduckWebApiBaseUrl = this.RubberduckWebApiBaseUrl,
             };
         }

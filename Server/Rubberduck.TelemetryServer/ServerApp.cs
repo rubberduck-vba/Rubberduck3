@@ -88,11 +88,11 @@ namespace Rubberduck.TelemetryServer
             services.AddSingleton<Func<TelemetryServerState>>(provider => () => _serverState);
             services.AddSingleton<IServerStateWriter>(provider => provider.GetRequiredService<TelemetryServerState>());
 
-            services.AddSingleton<IDefaultSettingsProvider<TelemetryServerSettings>>(provider => TelemetryServerSettings.Default);
-            services.AddSingleton<ISettingsProvider<TelemetryServerSettings>, SettingsService<TelemetryServerSettings>>();
+            services.AddSingleton<IDefaultSettingsProvider<TelemetryServerSettingsGroup>>(provider => TelemetryServerSettingsGroup.Default);
+            services.AddSingleton<ISettingsProvider<TelemetryServerSettingsGroup>, SettingsService<TelemetryServerSettingsGroup>>();
 
             services.AddSingleton<IExitHandler, ExitHandler>();
-            services.AddSingleton<IHealthCheckService<TelemetryServerSettings>, ClientProcessHealthCheckService<TelemetryServerSettings>>();
+            services.AddSingleton<IHealthCheckService<TelemetryServerSettingsGroup>, ClientProcessHealthCheckService<TelemetryServerSettingsGroup>>();
 
             services.AddSingleton<ITelemetryService, TelemetryService>();
             services.AddSingleton<ITelemetryTransmitter, TelemetryTransmitter>();

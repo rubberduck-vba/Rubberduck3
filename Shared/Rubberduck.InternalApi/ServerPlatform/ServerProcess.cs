@@ -22,7 +22,7 @@ namespace Rubberduck.InternalApi.ServerPlatform
             Logger = logger;
         }
 
-        protected virtual string GetRelativePath(IProcessStartInfoArgumentProvider settings) => settings.Path;
+        protected virtual string GetRelativePath(IProcessStartInfoArgumentProvider settings) => settings.ServerExecutablePath;
         protected abstract string ExecutableFileName { get; }
 
         public virtual Process Start(long clientProcessId, IProcessStartInfoArgumentProvider settings)

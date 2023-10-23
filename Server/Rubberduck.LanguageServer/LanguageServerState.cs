@@ -4,7 +4,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.LanguagePlatform;
 using Rubberduck.ServerPlatform;
-using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.LanguageServer;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -16,12 +16,12 @@ namespace Rubberduck.LanguageServer
         void AddWorkspaceFolders(IEnumerable<WorkspaceFolder> workspaceFolders);
     }
 
-    public class LanguageServerState : ServerState<LanguageServerSettings>, ILanguageServerState
+    public class LanguageServerState : ServerState<LanguageServerSettingsGroup>, ILanguageServerState
     {
         private readonly IExitHandler _exitHandler;
 
         public LanguageServerState(ILogger<LanguageServerState> logger, 
-            IHealthCheckService<LanguageServerSettings> healthCheck,
+            IHealthCheckService<LanguageServerSettingsGroup> healthCheck,
             IExitHandler exitHandler)
             : base(logger, healthCheck)
         {

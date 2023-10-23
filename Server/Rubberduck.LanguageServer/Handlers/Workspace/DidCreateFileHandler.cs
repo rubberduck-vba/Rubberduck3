@@ -12,6 +12,7 @@ using Rubberduck.LanguageServer;
 using Rubberduck.LanguageServer.Model;
 using Rubberduck.LanguageServer.Services;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.LanguageServer;
 using System.Configuration;
 using System.IO;
 using System.IO.Abstractions;
@@ -28,13 +29,13 @@ namespace Rubberduck.LanguageServer.Handlers.Workspace
         private readonly SupportedLanguage _language;
         private readonly DocumentContentStore _contentStore;
         private readonly IFileSystem _fileSystem;
-        private readonly ISettingsProvider<LanguageServerSettings> _settings;
+        private readonly ISettingsProvider<LanguageServerSettingsGroup> _settings;
 
         public DidCreateFileHandler(ILogger<DidCreateFileHandler> logger, ILanguageServerFacade server,
             SupportedLanguage language,
             DocumentContentStore contentStore,
             IFileSystem fileSystem,
-            ISettingsProvider<LanguageServerSettings> settings)
+            ISettingsProvider<LanguageServerSettingsGroup> settings)
         {
             _logger = logger;
             _server = server;

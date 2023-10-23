@@ -1,15 +1,15 @@
 ﻿using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.LanguageServer;
 
 namespace Rubberduck.Core.Settings
 {
-    public class LanguageServerSettingsViewModel : ISettingsViewModel<LanguageServerSettings>
+    public class LanguageServerSettingsViewModel : ISettingsViewModel<LanguageServerSettingsGroup>
     {
         public LanguageServerSettingsViewModel()
-            : this(LanguageServerSettings.Default) { }
+            : this(LanguageServerSettingsGroup.Default) { }
 
-        public LanguageServerSettingsViewModel(LanguageServerSettings settings)
+        public LanguageServerSettingsViewModel(LanguageServerSettingsGroup settings)
         {
             Path = settings.Path;
             TransportType = settings.TransportType;
@@ -26,9 +26,9 @@ namespace Rubberduck.Core.Settings
 
         public ServerTraceLevel TraceLevel { get; set; }
 
-        public LanguageServerSettings ToSettings()
+        public LanguageServerSettingsGroup ToSettings()
         {
-            return new LanguageServerSettings
+            return new LanguageServerSettingsGroup
             {
                 Mode = this.Mode,
                 Path = this.Path,

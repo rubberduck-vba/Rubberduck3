@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using MediatR;
 using System.Threading;
 using Microsoft.Extensions.Logging;
-using Rubberduck.SettingsProvider.Model;
 using Rubberduck.InternalApi.Settings;
 using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
+using Rubberduck.SettingsProvider.Model.LanguageServer;
 
 namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
 {
@@ -34,7 +34,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
     {
         private readonly ILogger<WorkspaceFoldersHandler> _logger;
 
-        public LogMessageHandler(ILogger<WorkspaceFoldersHandler> logger, ISettingsProvider<LanguageServerSettings> settingsProvider)
+        public LogMessageHandler(ILogger<WorkspaceFoldersHandler> logger, ISettingsProvider<LanguageServerSettingsGroup> settingsProvider)
         {
             _logger = logger;
         }

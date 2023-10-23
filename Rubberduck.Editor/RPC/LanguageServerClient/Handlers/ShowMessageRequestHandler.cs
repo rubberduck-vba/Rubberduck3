@@ -22,7 +22,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
         private readonly IMessageService _service;
         private readonly ISettingsProvider<RubberduckSettings> _settingsProvider;
 
-        TraceLevel TraceLevel => _settingsProvider.Settings.LanguageServerSettings.TraceLevel.ToTraceLevel();
+        TraceLevel TraceLevel => _settingsProvider.Settings.LanguageClientSettings.StartupSettings.TraceLevel.ToTraceLevel();
 
         public ShowMessageRequestHandler(ILogger<ShowMessageRequestHandler> logger,
             IMessageService service,
@@ -58,7 +58,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
                     }
 
                     var model = MessageRequestModel.For(level, request.Message, actions);
-                    if (!_settingsProvider.Settings.LanguageClientSettings.DisabledMessageKeys.Contains(model.Key))
+                    if (!_settingsProvider.Settings.GeneralSettings.DisabledMessageKeys.Contains(model.Key))
                     {
                         result = _service.ShowMessageRequest(model);
 

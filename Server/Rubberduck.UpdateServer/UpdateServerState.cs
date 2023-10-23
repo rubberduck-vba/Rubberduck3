@@ -21,14 +21,14 @@ namespace Rubberduck.UpdateServer
         Completed
     }
 
-    public class UpdateServerState : ServerState<UpdateServerSettings>
+    public class UpdateServerState : ServerState<UpdateServerSettingGroup>
     {
         private readonly IExitHandler _exitHandler;
 
         public UpdateServerState(
-            ILogger<ServerState<UpdateServerSettings>> logger, 
+            ILogger<ServerState<UpdateServerSettingGroup>> logger, 
             //ServerStartupOptions startupOptions, 
-            IHealthCheckService<UpdateServerSettings> healthCheck,
+            IHealthCheckService<UpdateServerSettingGroup> healthCheck,
             IExitHandler exitHandler)
             : base(logger, healthCheck)
         {

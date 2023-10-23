@@ -52,8 +52,8 @@ namespace Rubberduck.UpdateServer
             {
                 var services = new ServiceCollection();
                 services.AddLogging(ConfigureLogging);
-                services.AddSingleton<IDefaultSettingsProvider<UpdateServerSettings>>(provider => UpdateServerSettings.Default);
-                services.AddSingleton<ISettingsProvider<UpdateServerSettings>, SettingsService<UpdateServerSettings>>();
+                services.AddSingleton<IDefaultSettingsProvider<UpdateServerSettingGroup>>(provider => UpdateServerSettingGroup.Default);
+                services.AddSingleton<ISettingsProvider<UpdateServerSettingGroup>, SettingsService<UpdateServerSettingGroup>>();
                 ConfigureServices(services);
 
                 _serviceProvider = services.BuildServiceProvider();
@@ -88,7 +88,7 @@ namespace Rubberduck.UpdateServer
             services.AddSingleton<IServerStateWriter>(provider => provider.GetRequiredService<UpdateServerState>());
 
             services.AddSingleton<IExitHandler, ExitHandler>();
-            services.AddSingleton<IHealthCheckService<UpdateServerSettings>, ClientProcessHealthCheckService<UpdateServerSettings>>();
+            services.AddSingleton<IHealthCheckService<UpdateServerSettingGroup>, ClientProcessHealthCheckService<UpdateServerSettingGroup>>();
         }
 
         private void ConfigureLogging(ILoggingBuilder builder)
