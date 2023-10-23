@@ -21,8 +21,10 @@ namespace Rubberduck.Core.ProjectFile
         private readonly IVBETypeLibsAPI _api;
         private readonly IVBE _vbe;
 
-        public ProjectFileService(IFileSystem fileSystem, ISettingsProvider<RubberduckSettings> settings)
+        public ProjectFileService(IVBE vbe, IVBETypeLibsAPI api, IFileSystem fileSystem, ISettingsProvider<RubberduckSettings> settings)
         {
+            _api = api;
+            _vbe = vbe;
             _fileSystem = fileSystem;
             _settings = settings;
         }
