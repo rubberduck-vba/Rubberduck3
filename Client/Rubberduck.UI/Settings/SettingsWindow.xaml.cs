@@ -10,17 +10,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Rubberduck.UI.Settings
 {
     /// <summary>
-    /// Interaction logic for LanguageClientSettingsControl.xaml
+    /// Interaction logic for SettingsWindow.xaml
     /// </summary>
-    public partial class LanguageClientSettingsControl : UserControl
+    public partial class SettingsWindow : Window
     {
-        public LanguageClientSettingsControl()
+        public SettingsWindow()
         {
             InitializeComponent();
         }
