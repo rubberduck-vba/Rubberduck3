@@ -10,7 +10,7 @@ namespace Rubberduck.UI.Command
         private readonly ILogger _logger;
         private readonly ISettingsProvider<RubberduckSettings> _settings;
 
-        public MessageActionsProvider(ILogger logger, ISettingsProvider<RubberduckSettings> settings)
+        public MessageActionsProvider(ILogger<MessageActionsProvider> logger, ISettingsProvider<RubberduckSettings> settings)
         {
             _logger = logger;
             _settings = settings;

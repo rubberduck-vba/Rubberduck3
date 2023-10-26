@@ -1,5 +1,6 @@
 ﻿using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
+using System;
 
 namespace Rubberduck.SettingsProvider.Model.LanguageServer
 {
@@ -13,7 +14,9 @@ namespace Rubberduck.SettingsProvider.Model.LanguageServer
         {
         }
 
-        protected override string DefaultServerExecutablePath => ServerPlatformSettings.LanguageServerExecutable;
+        protected override string DefaultServerExecutablePath
+            => @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Rubberduck\LanguageServer\{ServerPlatformSettings.TelemetryServerExecutable}";
+
         protected override string DefaultServerPipeName => ServerPlatformSettings.LanguageServerDefaultPipeName;
     }
 }

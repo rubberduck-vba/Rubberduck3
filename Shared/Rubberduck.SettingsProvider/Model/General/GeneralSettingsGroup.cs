@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace Rubberduck.SettingsProvider.Model
 {
@@ -18,14 +19,20 @@ namespace Rubberduck.SettingsProvider.Model
             {
                 new LocaleSetting(),
                 new LogLevelSetting(),
-                new TraceLevelSetting(nameof(GeneralSettingsGroup), MessageTraceLevel.Verbose),
+                new TraceLevelSetting(nameof(TraceLevelSetting), MessageTraceLevel.Verbose),
                 new ShowSplashSetting(),
                 new DisableInitialLogLevelResetSetting(),
                 new DisableInitialLegacyIndenterCheckSetting(),
                 new DisabledMessageKeysSetting(),
             };
 
-        public GeneralSettingsGroup(GeneralSettingsGroup original, IEnumerable<RubberduckSetting>? settings = null) 
+        public GeneralSettingsGroup() 
+            : base(nameof(GeneralSettingsGroup), _description)
+        {
+            Settings = DefaultSettings;
+        }
+
+        public GeneralSettingsGroup(GeneralSettingsGroup original, IEnumerable<RubberduckSetting>? settings) 
             : base(original) 
         {
             Name = original.Name;
@@ -44,23 +51,23 @@ namespace Rubberduck.SettingsProvider.Model
             Settings = settings ?? DefaultSettings;
         }
 
-        public GeneralSettingsGroup(IEnumerable<RubberduckSetting>? settings = null)
-            : base(nameof(GeneralSettingsGroup)[..^5], _description)
+        public GeneralSettingsGroup(IEnumerable<RubberduckSetting>? settings)
+            : base(nameof(GeneralSettingsGroup), _description)
         {
             Settings = settings ?? DefaultSettings;
         }
 
         public static GeneralSettingsGroup Default { get; } = new();
 
-        public string Locale => Values[nameof(Locale)];
-        public bool ShowSplash => bool.Parse(Values[nameof(ShowSplash)]);
-        public bool DisableInitialLegacyIndenterCheck => bool.Parse(Values[nameof(DisableInitialLegacyIndenterCheck)]);
+        public string Locale => Values[nameof(LocaleSetting)];
+        public bool ShowSplash => bool.Parse(Values[nameof(ShowSplashSetting)]);
+        public bool DisableInitialLegacyIndenterCheck => bool.Parse(Values[nameof(DisableInitialLegacyIndenterCheckSetting)]);
 
         public LogLevel LogLevel => Enum.Parse<LogLevel>(Values[nameof(LogLevelSetting)]);
-        public MessageTraceLevel TraceLevel => Enum.Parse<MessageTraceLevel>(Values[nameof(TraceLevel)]);
+        public MessageTraceLevel TraceLevel => Enum.Parse<MessageTraceLevel>(Values[nameof(TraceLevelSetting)]);
 
-        public bool DisableInitialLogLevelReset => bool.Parse(Values[nameof(DisableInitialLogLevelReset)]);
-        public string[] DisabledMessageKeys => JsonSerializer.Deserialize<string[]>(Values[nameof(DisabledMessageKeys)]) ?? Array.Empty<string>();
+        public bool DisableInitialLogLevelReset => bool.Parse(Values[nameof(DisableInitialLogLevelResetSetting)]);
+        public string[] DisabledMessageKeys => JsonArray.Parse(Values[nameof(DisabledMessageKeysSetting)])?.AsArray().Select(e => e!.ToString()).ToArray() ?? Array.Empty<string>();
 
 
         protected override IEnumerable<RubberduckSetting> Settings { get; init; }

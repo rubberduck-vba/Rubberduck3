@@ -15,11 +15,16 @@
     <Page Remove="RubberduckEditor\**" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Ducky.ico" />
-    <None Remove="SVG\FontAwesome\rectangle-xmark-solid.png" />
-    <None Remove="SVG\FontAwesome\rectangle-xmark-solid.svg" />
-    <None Remove="SVG\FontAwesome\window-maximize-regular.svg" />
-    <None Remove="SVG\FontAwesome\window-minimize-regular.svg" />
+    <None Remove="Resources\FontAwesome\gear-solid.png" />
+    <None Remove="Resources\FontAwesome\rectangle-xmark-solid.png" />
+    <None Remove="Resources\FontAwesome\square-xmark-solid-red.png" />
+    <None Remove="Resources\FontAwesome\square-xmark-solid.png" />
+    <None Remove="Resources\FontAwesome\window-maximize-regular.png" />
+    <None Remove="Resources\FontAwesome\window-minimize-regular.png" />
+    <None Remove="Resources\FontAwesome\window-restore-regular.png" />
+    <None Remove="Resources\vector-ducky-blur-1480.png" />
+    <None Remove="Resources\vector-ducky-color.png" />
+    <None Remove="Resources\vector-ducky-shadow-1480.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,9 +44,16 @@
   
   <ItemGroup>
     <Resource Include="Ducky.ico" />
-    <Resource Include="SVG\FontAwesome\rectangle-xmark-solid.svg" />
-    <Resource Include="SVG\FontAwesome\window-maximize-regular.svg" />
-    <Resource Include="SVG\FontAwesome\window-minimize-regular.svg" />
+    <Resource Include="Resources\FontAwesome\gear-solid.png" />
+    <Resource Include="Resources\FontAwesome\rectangle-xmark-solid.png" />
+    <Resource Include="Resources\FontAwesome\square-xmark-solid-red.png" />
+    <Resource Include="Resources\FontAwesome\square-xmark-solid.png" />
+    <Resource Include="Resources\FontAwesome\window-maximize-regular.png" />
+    <Resource Include="Resources\FontAwesome\window-minimize-regular.png" />
+    <Resource Include="Resources\FontAwesome\window-restore-regular.png" />
+    <Resource Include="Resources\vector-ducky-blur-1480.png" />
+    <Resource Include="Resources\vector-ducky-color.png" />
+    <Resource Include="Resources\vector-ducky-shadow-1480.png" />
   </ItemGroup>
   
   <ItemGroup>
@@ -55,6 +67,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Shell\DuckyBackgroundControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Shell\FlatButton.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Shell\ThunderFrame.xaml.cs">

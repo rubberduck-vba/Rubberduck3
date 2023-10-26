@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,16 +14,21 @@ namespace Rubberduck.Editor
         public static async Task<int> Main(string[] args)
         {
             using var tokenSource = new CancellationTokenSource();
-            
 
             try
             {
-                return 0;
+                var services = new ServiceCollection();
+                services.AddLogging();
+
+                var app = new App();
+                return app.Run();
             }
             catch
             {
                 return -1;
             }
         }
+
+
     }
 }

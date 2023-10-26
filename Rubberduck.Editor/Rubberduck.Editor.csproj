@@ -9,13 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\FontAwesome\gear-solid.png" />
-    <None Remove="Resources\FontAwesome\rectangle-xmark-solid.png" />
-    <None Remove="Resources\FontAwesome\square-xmark-solid-red.png" />
-    <None Remove="Resources\FontAwesome\square-xmark-solid.png" />
-    <None Remove="Resources\FontAwesome\window-maximize-regular.png" />
-    <None Remove="Resources\FontAwesome\window-minimize-regular.png" />
-    <None Remove="Resources\FontAwesome\window-restore-regular.png" />
+    <Compile Remove="Resources\Customoccvondvond\**" />
+    <EmbeddedResource Remove="Resources\Customoccvondvond\**" />
+    <None Remove="Resources\Customoccvondvond\**" />
+    <Page Remove="Resources\Customoccvondvond\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Custom\splash.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,10 +43,11 @@
   
   <ItemGroup>
     <Resource Include="ducky.ico" />
+    <Resource Include="Resources\Custom\splash.png" />
+    <Resource Include="Resources\Custom\vector-ducky-color.png" />
     <Resource Include="Resources\Custom\ducky.ico" />
     <Resource Include="Resources\Custom\background-ducky.png" />
     <Resource Include="Resources\Custom\Icons\Severity.png" />
-    <Resource Include="Resources\Custom\splash.png" />
     <Resource Include="Resources\Custom\vector-ducky-blur-1480.png" />
     <Resource Include="Resources\Custom\vector-ducky-shadow-1480.png" />
     <Resource Include="Resources\FontAwesome\gear-solid.png" />
@@ -66,7 +68,16 @@
     <Resource Include="Resources\FugueIcons\tick-circle.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Resources\Xaml\Styles\ControlBoxCanvas.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Resources\Xaml\Styles\FlatButton.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Shell\ChildWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Shell\DuckyBackgroundControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Splash\SplashWindow.xaml.cs">

@@ -10,9 +10,6 @@
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ResourceDictionary>
-            <BitmapImage x:Key="FaintDucky" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/faint-ducky.png" />
-            <BitmapImage x:Key="SplashDucky" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Splash3.png" />
-            <ImageBrush x:Key="SplashBrush" ImageSource="{StaticResource SplashDucky}" />
             <Style x:Key="SplashWindowStyle" TargetType="Window">
                 <Style.Setters>
                     <Setter Property="IsEnabled" Value="False" />

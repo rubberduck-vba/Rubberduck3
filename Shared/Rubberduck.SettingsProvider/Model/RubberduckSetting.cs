@@ -31,10 +31,10 @@ namespace Rubberduck.SettingsProvider.Model
         public RubberduckSetting(SettingDataType type, string name, string description, TValue defaultValue, TValue value, bool readOnlyRecommended = false)
             : base(type, name, description, readOnlyRecommended)
         {
-            if (SettingDataTypeMap.TypeMap[type] != typeof(TValue))
-            {
-                throw new InvalidCastException();
-            }
+            //if (SettingDataTypeMap.TypeMap[type] != typeof(TValue))
+            //{
+            //    throw new InvalidCastException();
+            //}
 
             DefaultValue = defaultValue;
             Value = value;

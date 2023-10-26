@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.UI.Shell" 
-             xmlns:styles="clr-namespace:Rubberduck.UI.Styles"
              mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -45,7 +44,7 @@
                                        FontWeight="Bold" FontSize="18" 
                                        Margin="10,10,10,4" />
 
-                                    <styles:FlatButton HorizontalAlignment="Right"
+                                    <local:FlatButton HorizontalAlignment="Right"
                                                        ToolTip="Settings"
                                                        Visibility="{Binding ShowGearButton, Converter={StaticResource BoolToVisibilityConverter}}"
                                                        Command="{Binding ShowSettingsCommand}"

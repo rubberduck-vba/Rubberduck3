@@ -21,8 +21,6 @@ namespace Rubberduck.Core
     {
         private readonly Version _version;
 
-        private readonly IPresenter _presenter;
-
         private readonly IMessageService _messageBox;
         private readonly ISettingsService<RubberduckSettings> _settingsService;
         private readonly IRubberduckMenu _appMenus;
@@ -37,8 +35,7 @@ namespace Rubberduck.Core
             IMessageService messageBox,
             ISettingsService<RubberduckSettings> settingsService,
             IRubberduckMenu appMenu,
-            IFileSystem filesystem,
-            IPresenter presenter)
+            IFileSystem filesystem)
         {
             _version = version;
 
@@ -51,7 +48,6 @@ namespace Rubberduck.Core
 
             _settingsService.SettingsChanged += HandleSettingsServiceSettingsChanged;
             _filesystem = filesystem;
-            _presenter = presenter;
         }
 
         private void HandleSettingsServiceSettingsChanged(object? sender, SettingsChangedEventArgs<RubberduckSettings>? e)
@@ -157,8 +153,6 @@ namespace Rubberduck.Core
             //CheckForLegacyIndenterSettings();
             _appMenus.Initialize();
             _appMenus.Localize();
-
-            _presenter.Show();
         }
 
         public void Shutdown()

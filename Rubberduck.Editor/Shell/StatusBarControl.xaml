@@ -11,6 +11,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.Editor;component/Icons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             
             <Style x:Key="ServerStateImageStyle" TargetType="Image" BasedOn="{StaticResource IconStyle}">

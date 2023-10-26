@@ -89,6 +89,7 @@
     <PackageReference Include="NLog.Extensions.Logging" Version="5.3.4" />
     <PackageReference Include="OmniSharp.Extensions.JsonRpc" Version="0.19.9" />
     <PackageReference Include="OmniSharp.Extensions.LanguageProtocol" Version="0.19.9" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
     <PackageReference Include="System.IO.Abstractions" Version="19.2.69" />
     <PackageReference Include="System.Text.Json" Version="7.0.3" />
     <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
@@ -104,10 +105,6 @@
     <None Update="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Commands\About\" />
   </ItemGroup>
 
 </Project>

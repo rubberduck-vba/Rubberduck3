@@ -1,27 +1,26 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
-using Rubberduck.UI.About;
 using Rubberduck.UI.Command;
 using Rubberduck.Unmanaged.Abstract;
-using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
+using Rubberduck.VBEditor.UI.OfficeMenus;
 using System.Threading.Tasks;
 
-namespace Rubberduck.Core.About
+namespace Rubberduck.Main.Settings
 {
-    public class AboutCommand : ComCommandBase, IAboutCommand
+    public class SettingsCommand : ComCommandBase, ISettingsCommand
     {
-        private readonly AboutService _service;
+        //private readonly SettingsService _service;
 
-        public AboutCommand(ILogger logger, ISettingsProvider<RubberduckSettings> settingsProvider, IVbeEvents vbeEvents, AboutService service)
+        public SettingsCommand(ILogger<SettingsCommand> logger, ISettingsProvider<RubberduckSettings> settingsProvider, IVbeEvents vbeEvents/*, SettingsService service*/)
             : base(logger, settingsProvider, vbeEvents)
         {
-            _service = service;
+            //_service = service;
         }
 
         protected async override Task OnExecuteAsync(object? parameter)
         {
-            _service.Show();
+            //_service.Show();
             await Task.CompletedTask;
         }
     }

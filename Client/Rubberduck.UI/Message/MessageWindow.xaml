@@ -42,10 +42,9 @@ This is actually a ***markdown** document*.
                 <Expander.HeaderTemplate>
                     <DataTemplate>
                         <Label Content="More information" 
-                               Foreground="{DynamicResource ThemeTextColorBrush}" 
                                ToolTip="Expand/collapse to show/hide details">
                             <Label.Style>
-                                <Style TargetType="Label">
+                                <Style TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsExpanded, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Expander}}" Value="True">
                                             <Setter Property="Content" Value="Show less" />

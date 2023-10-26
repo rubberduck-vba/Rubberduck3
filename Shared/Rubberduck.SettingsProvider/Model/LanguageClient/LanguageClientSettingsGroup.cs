@@ -29,6 +29,7 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
                 new RequireSavedHostSetting(),
                 new RequireDefaultWorkspaceRootHostSetting(),
                 new EnableUncWorkspacesSetting(),
+                new LanguageClientStartupSettings(),
             };
 
 
@@ -62,7 +63,7 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
         public bool RequireSavedHost => bool.Parse(Values[nameof(RequireSavedHostSetting)]);
         public bool RequireDefaultWorkspaceRootHost => bool.Parse(Values[nameof(RequireDefaultWorkspaceRootHostSetting)]);
         public bool EnableUncWorkspaces => bool.Parse(Values[nameof(EnableUncWorkspacesSetting)]);
-        public LanguageClientStartupSettings StartupSettings => JsonSerializer.Deserialize<LanguageClientStartupSettings>(Values[nameof(StartupSettings)]) ?? new();
+        public LanguageClientStartupSettings StartupSettings => JsonSerializer.Deserialize<LanguageClientStartupSettings>(Values[nameof(LanguageClientStartupSettings)]) ?? new();
 
         protected override IEnumerable<RubberduckSetting> Settings { get; init; }
     }

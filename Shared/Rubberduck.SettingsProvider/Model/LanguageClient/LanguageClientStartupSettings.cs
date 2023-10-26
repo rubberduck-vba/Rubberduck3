@@ -1,5 +1,6 @@
 ﻿using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
+using System;
 
 namespace Rubberduck.SettingsProvider.Model.LanguageClient
 {
@@ -13,7 +14,8 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
         {
         }
 
-        protected override string DefaultServerExecutablePath => ServerPlatformSettings.EditorServerExecutable;
+        protected override string DefaultServerExecutablePath
+            => @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Rubberduck\Editor\{ServerPlatformSettings.EditorServerExecutable}";
         protected override string DefaultServerPipeName => ServerPlatformSettings.EditorServerDefaultPipeName;
     }
 }

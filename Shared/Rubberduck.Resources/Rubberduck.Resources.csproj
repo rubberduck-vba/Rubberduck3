@@ -297,11 +297,8 @@
     <Resource Include="Icons\Fugue\socket.png" />
     <Resource Include="Icons\Fugue\user-silhouette.png" />
     <Resource Include="Icons\Fugue\user-medium-silhouette.png" />
-    <Resource Include="Icons\background-ducky.png" />
     <Resource Include="Icons\ducky.ico" />
     <Resource Include="ducky.ico" />
-    <Resource Include="Icons\splash.png" />
-    <Resource Include="vector-ducky-color.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />

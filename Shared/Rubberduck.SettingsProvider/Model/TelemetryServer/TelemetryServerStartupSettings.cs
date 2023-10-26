@@ -1,5 +1,6 @@
 ﻿using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
+using System;
 
 namespace Rubberduck.SettingsProvider.Model
 {
@@ -13,7 +14,9 @@ namespace Rubberduck.SettingsProvider.Model
         {
         }
 
-        protected override string DefaultServerExecutablePath => ServerPlatformSettings.TelemetryServerExecutable;
+        protected override string DefaultServerExecutablePath
+            => @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Rubberduck\Telemetry\{ServerPlatformSettings.TelemetryServerExecutable}";
+
         protected override string DefaultServerPipeName => ServerPlatformSettings.TelemetryServerDefaultPipeName;
     }
 }

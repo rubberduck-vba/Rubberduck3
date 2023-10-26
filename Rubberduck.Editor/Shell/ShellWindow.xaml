@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Rubberduck.Editor.Shell" 
-        xmlns:shell="clr-namespace:Rubberduck.UI.Shell;assembly=Rubberduck.UI"
         mc:Ignorable="d"
         ContentRendered="Window_ContentRendered" 
         Style="{DynamicResource ThemedWindowStyle}"
@@ -25,7 +24,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <shell:DuckyBackgroundControl Grid.RowSpan="3" />
+        <local:DuckyBackgroundControl Grid.RowSpan="3" />
 
         <local:MenuBarControl x:Name="MenuBar" Grid.Row="0" />
 
