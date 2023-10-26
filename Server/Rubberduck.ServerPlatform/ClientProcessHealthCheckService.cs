@@ -7,7 +7,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 
-namespace Rubberduck.LanguagePlatform
+namespace Rubberduck.ServerPlatform
 {
     public interface IHealthCheckService<TSettings> : IDisposable
         where TSettings : IHealthCheckSettingsProvider

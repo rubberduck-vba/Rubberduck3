@@ -19,14 +19,15 @@ using System.Text.Json;
 using OmniSharp.Extensions.JsonRpc;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.Editor.RPC.LanguageServerClient.Handlers;
+using EditorClientOptions = OmniSharp.Extensions.LanguageServer.Client.LanguageClientOptions;
 
 namespace Rubberduck.Editor.RPC.LanguageServerClient
 {
     public class LanguageClientService
     {
-        public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, NamedPipeClientStream pipe, long clientProcessId, RubberduckSettings settings, string path)
+        public static EditorClientOptions ConfigureLanguageClient(Assembly clientAssembly, NamedPipeClientStream pipe, long clientProcessId, RubberduckSettings settings, string path)
         {
-            var options = new LanguageClientOptions();
+            var options = new EditorClientOptions();
             options.WithInput(pipe.UsePipeReader());
             options.WithOutput(pipe.UsePipeWriter());
 
@@ -34,9 +35,9 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
             return options;
         }
 
-        public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, Process serverProcess, long clientProcessId, RubberduckSettings settings, string path)
+        public static EditorClientOptions ConfigureLanguageClient(Assembly clientAssembly, Process serverProcess, long clientProcessId, RubberduckSettings settings, string path)
         {
-            var options = new LanguageClientOptions();
+            var options = new EditorClientOptions();
             options.WithInput(serverProcess.StandardOutput.BaseStream);
             options.WithOutput(serverProcess.StandardInput.BaseStream);
 
@@ -49,7 +50,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
             builder.AddNLog("NLog-client.config");
         }
 
-        private static LanguageClientOptions ConfigureLanguageClient(LanguageClientOptions options, Assembly clientAssembly, long clientProcessId, RubberduckSettings settings, string path)
+        private static EditorClientOptions ConfigureLanguageClient(EditorClientOptions options, Assembly clientAssembly, long clientProcessId, RubberduckSettings settings, string path)
         {
             var info = clientAssembly.ToClientInfo();
 

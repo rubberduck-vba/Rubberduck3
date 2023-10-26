@@ -10,6 +10,7 @@ namespace Rubberduck.SettingsProvider.Model.LanguageServer
     public interface ILanguageServerSettings
     {
         MessageTraceLevel TraceLevel { get; }
+        LanguageServerStartupSettings StartupSettings { get; }
     }
 
     public record class LanguageServerSettingsGroup : SettingGroup, IDefaultSettingsProvider<LanguageServerSettingsGroup>, ILanguageServerSettings
@@ -43,7 +44,7 @@ namespace Rubberduck.SettingsProvider.Model.LanguageServer
         public LanguageServerSettingsGroup(IEnumerable<RubberduckSetting> settings)
             : base(nameof(LanguageServerSettingsGroup), _description)
         {
-            Settings = settings;
+            Settings = settings ?? DefaultSettings;
         }
 
         public MessageTraceLevel TraceLevel => Enum.Parse<MessageTraceLevel>(Values[nameof(TraceLevelSetting)]);

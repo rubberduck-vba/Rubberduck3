@@ -1,12 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using Rubberduck.Root;
 using Microsoft.Extensions.Logging;
 using Extensibility;
 using Rubberduck.Unmanaged.Registration;
+using Rubberduck.Main.Root;
 
-namespace Rubberduck
+namespace Rubberduck.Main
 {
     /// <remarks>
     /// Special thanks to Carlos Quintero (MZ-Tools) for providing the general structure here.
@@ -38,7 +38,7 @@ namespace Rubberduck
                         // normal execution path - don't initialize just yet, wait for OnStartupComplete to be called by the host.
                         break;
                     case ext_ConnectMode.ext_cm_AfterStartup:
-                        _rubberduck.InitializeAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                        _rubberduck.Initialize();
                         break;
                 }
             }
@@ -50,7 +50,7 @@ namespace Rubberduck
 
         public void OnStartupComplete(ref Array custom)
         {
-            _rubberduck?.InitializeAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            _rubberduck?.Initialize();
         }
 
         public void OnBeginShutdown(ref Array custom)

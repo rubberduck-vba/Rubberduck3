@@ -13,7 +13,7 @@ namespace Rubberduck.InternalApi.ServerPlatform
         Process Start(long clientProcessId, IProcessStartInfoArgumentProvider settings);
     }
 
-    public abstract class ServerProcess<TServer> : IServerProcess
+    public abstract class ServerProcess : IServerProcess
     {
         protected ILogger Logger { get; init; }
 

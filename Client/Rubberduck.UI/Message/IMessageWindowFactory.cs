@@ -1,10 +1,11 @@
 ﻿using Rubberduck.UI.Command;
+using System;
 
 namespace Rubberduck.UI.Message
 {
     public interface IMessageWindowFactory
     {
-        (MessageWindow view, IMessageWindowViewModel viewModel) Create<TModel>(TModel model) where TModel : MessageModel;
+        (MessageWindow view, IMessageWindowViewModel viewModel) Create<TModel>(TModel model, Func<MessageActionsProvider, MessageActionCommand[]>? actions = null) where TModel : MessageModel;
     }
 
     public class MessageWindowFactory : IMessageWindowFactory
@@ -16,9 +17,11 @@ namespace Rubberduck.UI.Message
             _provider = provider;
         }
 
-        public (MessageWindow view, IMessageWindowViewModel viewModel) Create<TModel>(TModel model) where TModel : MessageModel
+        public (MessageWindow view, IMessageWindowViewModel viewModel) Create<TModel>(TModel model, Func<MessageActionsProvider, MessageActionCommand[]>? actions = null) where TModel : MessageModel
         {
-            var viewModel = new MessageWindowViewModel(model, _provider);
+            var buttons = actions?.Invoke(_provider) ?? _provider.OkOnly();
+
+            var viewModel = new MessageWindowViewModel(model, buttons);
             var view = new MessageWindow(viewModel);
             return (view, viewModel);
         }

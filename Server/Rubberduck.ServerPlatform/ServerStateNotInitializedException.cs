@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rubberduck.LanguagePlatform
+namespace Rubberduck.ServerPlatform
 {
     public class ServerStateNotInitializedException : InvalidOperationException { }
 }

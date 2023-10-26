@@ -11,7 +11,6 @@ using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
-using Rubberduck.LanguagePlatform;
 using Rubberduck.LanguageServer.Handlers.Lifecycle;
 using Rubberduck.LanguageServer.Model;
 using Rubberduck.LanguageServer.Services;

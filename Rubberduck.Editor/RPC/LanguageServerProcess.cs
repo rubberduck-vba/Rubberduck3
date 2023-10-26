@@ -4,7 +4,7 @@ using Rubberduck.InternalApi.ServerPlatform;
 
 namespace Rubberduck.Editor.RPC
 {
-    public class LanguageServerProcess : ServerProcess<ILanguageClient>
+    public class LanguageServerProcess : ServerProcess
     {
         public LanguageServerProcess(ILogger logger)
             : base(logger) { }

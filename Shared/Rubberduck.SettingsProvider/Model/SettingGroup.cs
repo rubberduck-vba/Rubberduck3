@@ -8,11 +8,10 @@ namespace Rubberduck.SettingsProvider.Model
         protected SettingGroup(string name, string description)
             : base(SettingDataType.ObjectSetting, name, description)
         {
-            Values = Settings.ToDictionary(setting => setting.Name, setting => setting.GetValue().ToString() ?? string.Empty);
         }
 
         protected abstract IEnumerable<RubberduckSetting> Settings { get; init; }
-        public Dictionary<string, string> Values { get; init; }
+        public Dictionary<string, string> Values => Settings.ToDictionary(setting => setting.Name, setting => setting.GetValue().ToString() ?? string.Empty);
 
         public sealed override object GetValue() => Settings;
     }

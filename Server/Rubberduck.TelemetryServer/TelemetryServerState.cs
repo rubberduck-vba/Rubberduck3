@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.LanguagePlatform;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider.Model;
 

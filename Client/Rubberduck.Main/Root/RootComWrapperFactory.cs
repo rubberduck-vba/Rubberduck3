@@ -3,7 +3,7 @@ using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
-namespace Rubberduck.Root
+namespace Rubberduck.Main.Root
 {
     // Resolves SafeComWrapper providers from raw COM vbe and addin objects.
     // We need these so early that IoC hasn't been set up yet.

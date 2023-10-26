@@ -1,7 +1,7 @@
 ﻿using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.VBERuntime;
 
-namespace Rubberduck.Root
+namespace Rubberduck.Main.Root
 {
     /// <summary>
     /// ANTI-PATTERN: Service locator for COM class. Think carefully before using it, and regret it.

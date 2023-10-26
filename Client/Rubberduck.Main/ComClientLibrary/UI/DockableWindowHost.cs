@@ -1,5 +1,4 @@
-﻿using Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers;
-using Rubberduck.Unmanaged.Events;
+﻿using Rubberduck.Unmanaged.Events;
 using Rubberduck.Unmanaged.Registration;
 using Rubberduck.Unmanaged.WindowsApi;
 using System;

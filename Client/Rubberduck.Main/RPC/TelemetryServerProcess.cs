@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-using OmniSharp.Extensions.LanguageServer.Protocol.Client;
 using Rubberduck.InternalApi.ServerPlatform;
 
-namespace Rubberduck.Editor.RPC
+namespace Rubberduck.Main.RPC
 {
-    public class TelemetryServerProcess : ServerProcess<ILanguageClient>
+    public class TelemetryServerProcess : ServerProcess
     {
         public TelemetryServerProcess(ILogger logger)
             : base(logger)

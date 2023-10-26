@@ -12,6 +12,13 @@ using static Rubberduck.Core.ProjectFile.ProjectFile;
 
 namespace Rubberduck.Core.ProjectFile
 {
+    public interface IProjectFileService
+    {
+        void CreateFile(ProjectFile model);
+        ProjectFile ReadFile(Uri root);
+        Project FromVBProject(IVBProject project, string srcRoot);
+    }
+
     public class ProjectFileService
     {
         private const string _extension = ".rdproj";

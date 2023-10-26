@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Rubberduck
+namespace Rubberduck.Main
 {
     internal class StartupFailedException : Exception
     {

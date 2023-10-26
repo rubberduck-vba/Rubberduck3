@@ -29,5 +29,9 @@
       <Version>19.2.69</Version>
     </PackageReference>
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="ServerPlatform\VBE\" />
+  </ItemGroup>
 
 </Project>

@@ -16,7 +16,7 @@ namespace Rubberduck.UI.Message
             _actions = new[] { new AcceptMessageActionCommand(null!, null!, MessageAction.CloseAction) };
         }
 
-        public MessageWindowViewModel(MessageModel model, MessageActionsProvider actions)
+        public MessageWindowViewModel(MessageModel model, MessageActionCommand[] actions)
         {
             Key = model.Key;
             Message = model.Message;
@@ -24,7 +24,7 @@ namespace Rubberduck.UI.Message
             Title = model.Title;
             Level = model.Level;
 
-            _actions = actions.Close();
+            _actions = actions;
         }
 
         public string Key { get; init; } = "DT-Message";

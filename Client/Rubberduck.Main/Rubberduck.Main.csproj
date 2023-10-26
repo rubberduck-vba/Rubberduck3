@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Rubberduck.Editor\Rubberduck.Editor.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
       <Project>{e794cfc3-3d9f-400f-88d9-69e929d8e8af}</Project>
       <Name>Rubberduck.SettingsProvider</Name>
@@ -86,13 +87,15 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="NLog" Version="5.2.4" />
     <PackageReference Include="NLog.Extensions.Logging" Version="5.3.4" />
+    <PackageReference Include="OmniSharp.Extensions.JsonRpc" Version="0.19.9" />
+    <PackageReference Include="OmniSharp.Extensions.LanguageProtocol" Version="0.19.9" />
     <PackageReference Include="System.IO.Abstractions" Version="19.2.69" />
     <PackageReference Include="System.Text.Json" Version="7.0.3" />
     <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="NLog-client.config">
+    <None Update="NLog-addin.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="NLog-c;oemt.config">
@@ -104,7 +107,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="RPC\Editor\Handlers\" />
+    <Folder Include="Commands\About\" />
   </ItemGroup>
 
 </Project>

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Editor.Command
 {
-    public class ShowLanguageClientSettingsCommand : CommandBase
+    public class ShowSettingsWindowCommand : CommandBase
     {
-        public ShowLanguageClientSettingsCommand(ILogger logger, ISettingsProvider<RubberduckSettings> settings) 
+        public ShowSettingsWindowCommand(ILogger logger, ISettingsProvider<RubberduckSettings> settings) 
             : base(logger, settings)
         {
         }

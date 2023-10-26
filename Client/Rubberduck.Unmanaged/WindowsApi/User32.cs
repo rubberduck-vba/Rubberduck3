@@ -99,6 +99,14 @@ namespace Rubberduck.Unmanaged.WindowsApi
         [DllImport("user32.dll")]
         internal static extern IntPtr GetForegroundWindow();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <returns></returns>
+        [DllImport("user32.dll")]
+        internal static extern bool SetForegroundWindow(IntPtr hWnd);
+
         [DllImport("user32.dll")]
         internal static extern IntPtr GetActiveWindow();
 

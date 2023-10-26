@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.ServerPlatform;
-using Rubberduck.InternalApi.ServerPlatform.UpdateServer;
 
-namespace Rubberduck.Editor.RPC
+namespace Rubberduck.Main.RPC
 {
-    public class UpdateServerProcess : ServerProcess<IUpdateClient>
+    public class UpdateServerProcess : ServerProcess
     {
         public UpdateServerProcess(ILogger logger)
             : base(logger) { }

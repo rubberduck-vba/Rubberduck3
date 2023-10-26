@@ -5,7 +5,6 @@ using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
-using Rubberduck.LanguagePlatform;
 using System;
 using System.Globalization;
 using System.Text.Json;
