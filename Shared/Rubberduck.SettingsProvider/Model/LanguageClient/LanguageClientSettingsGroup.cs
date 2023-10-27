@@ -18,9 +18,6 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
 
     public record class LanguageClientSettingsGroup : SettingGroup, IDefaultSettingsProvider<LanguageClientSettingsGroup>, ILanguageClientSettings
     {
-        public static LanguageClientSettingsGroup Default { get; } = new();
-        LanguageClientSettingsGroup IDefaultSettingsProvider<LanguageClientSettingsGroup>.Default => Default;
-
         private static readonly RubberduckSetting[] DefaultSettings =
             new RubberduckSetting[]
             {
@@ -32,11 +29,13 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
                 new LanguageClientStartupSettings(),
             };
 
+        public static LanguageClientSettingsGroup Default { get; } = new(DefaultSettings);
+        LanguageClientSettingsGroup IDefaultSettingsProvider<LanguageClientSettingsGroup>.Default => Default;
 
         // TODO localize
         private static readonly string _description = "Configures LSP (Language Server Protocol) client options. The LSP client runs in the Rubberduck Editor process.";
 
-        public LanguageClientSettingsGroup(LanguageClientSettingsGroup original, IEnumerable<RubberduckSetting>? settings = null)
+        public LanguageClientSettingsGroup(LanguageClientSettingsGroup original, IEnumerable<RubberduckSetting> settings)
             : base(original)
         {
             var values = original.Settings.ToDictionary(e => e.Name);
@@ -50,21 +49,33 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
             }
 
             Settings = settings ?? DefaultSettings;
+            DefaultWorkspaceRoot = Settings.OfType<DefaultWorkspaceRootSetting>().Single().Value;
+            RequireAddInHost = Settings.OfType<RequireAddInHostSetting>().Single().Value;
+            RequireSavedHost = Settings.OfType<RequireSavedHostSetting>().Single().Value;
+            RequireDefaultWorkspaceRootHost = Settings.OfType<RequireDefaultWorkspaceRootHostSetting>().Single().Value;
+            EnableUncWorkspaces = Settings.OfType<EnableUncWorkspacesSetting>().Single().Value;
+            StartupSettings = Settings.OfType<LanguageClientStartupSettings>().Single();
         }
 
-        public LanguageClientSettingsGroup(IEnumerable<RubberduckSetting>? settings = null)
+        public LanguageClientSettingsGroup(IEnumerable<RubberduckSetting> settings)
             : base(nameof(LanguageClientSettingsGroup), _description) 
         {
             Settings = settings ?? DefaultSettings;
+            DefaultWorkspaceRoot = Settings.OfType<DefaultWorkspaceRootSetting>().Single().Value;
+            RequireAddInHost = Settings.OfType<RequireAddInHostSetting>().Single().Value;
+            RequireSavedHost = Settings.OfType<RequireSavedHostSetting>().Single().Value;
+            RequireDefaultWorkspaceRootHost = Settings.OfType<RequireDefaultWorkspaceRootHostSetting>().Single().Value;
+            EnableUncWorkspaces = Settings.OfType<EnableUncWorkspacesSetting>().Single().Value;
+            StartupSettings = Settings.OfType<LanguageClientStartupSettings>().Single();
         }
 
-        public Uri DefaultWorkspaceRoot => new(Values[nameof(DefaultWorkspaceRootSetting)]);
-        public bool RequireAddInHost => bool.Parse(Values[nameof(RequireAddInHostSetting)]);
-        public bool RequireSavedHost => bool.Parse(Values[nameof(RequireSavedHostSetting)]);
-        public bool RequireDefaultWorkspaceRootHost => bool.Parse(Values[nameof(RequireDefaultWorkspaceRootHostSetting)]);
-        public bool EnableUncWorkspaces => bool.Parse(Values[nameof(EnableUncWorkspacesSetting)]);
-        public LanguageClientStartupSettings StartupSettings => JsonSerializer.Deserialize<LanguageClientStartupSettings>(Values[nameof(LanguageClientStartupSettings)]) ?? new();
+        public LanguageClientSettingsGroup() : base(nameof(LanguageClientSettingsGroup), _description) { }
 
-        protected override IEnumerable<RubberduckSetting> Settings { get; init; }
+        public Uri DefaultWorkspaceRoot { get; init; }
+        public bool RequireAddInHost { get; init; }
+        public bool RequireSavedHost { get; init; }
+        public bool RequireDefaultWorkspaceRootHost { get; init; }
+        public bool EnableUncWorkspaces { get; init; }
+        public LanguageClientStartupSettings StartupSettings { get; init; }
     }
 }

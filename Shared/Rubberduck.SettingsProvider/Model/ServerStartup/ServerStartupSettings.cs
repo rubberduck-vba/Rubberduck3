@@ -2,6 +2,7 @@
 using Rubberduck.InternalApi.Settings;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Rubberduck.SettingsProvider.Model.ServerStartup
@@ -50,19 +51,17 @@ namespace Rubberduck.SettingsProvider.Model.ServerStartup
         }
 
         protected abstract string DefaultServerExecutablePath { get; }
-        public string ServerExecutablePath => Values[nameof(ServerExecutablePathSetting)];
+        public string ServerExecutablePath => Settings.OfType<ServerExecutablePathSetting>().Single().Value.LocalPath;
 
-        public TransportType ServerTransportType => Enum.Parse<TransportType>(Values[nameof(ServerTransportTypeSetting)]);
+        public TransportType ServerTransportType => Settings.OfType<ServerTransportTypeSetting>().Single().Value;
 
         protected abstract string DefaultServerPipeName { get; }
-        public string ServerPipeName => Values[nameof(ServerPipeNameSetting)];
-        public MessageMode ServerMessageMode => Enum.Parse<MessageMode>(Values[nameof(ServerMessageModeSetting)]);
+        public string ServerPipeName => Settings.OfType<ServerPipeNameSetting>().Single().Value;
+        public MessageMode ServerMessageMode => Settings.OfType<ServerMessageModeSetting>().Single().Value;
 
-        public MessageTraceLevel ServerTraceLevel => Enum.Parse<MessageTraceLevel>(Values[nameof(TraceLevelSetting)]);
+        public MessageTraceLevel ServerTraceLevel => Settings.OfType<TraceLevelSetting>().Single().Value;
 
-        public TimeSpan ClientHealthCheckInterval => TimeSpan.Parse(Values[nameof(ClientHealthCheckIntervalSetting)]);
-
-        protected override IEnumerable<RubberduckSetting> Settings { get; init; }
+        public TimeSpan ClientHealthCheckInterval => Settings.OfType<ClientHealthCheckIntervalSetting>().Single().Value;
 
         public override string ToString() => ToProcessStartInfoArguments(0);
 

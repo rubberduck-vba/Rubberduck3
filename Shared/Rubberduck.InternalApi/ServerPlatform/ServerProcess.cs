@@ -22,32 +22,25 @@ namespace Rubberduck.InternalApi.ServerPlatform
             Logger = logger;
         }
 
-        protected virtual string GetRelativePath(IProcessStartInfoArgumentProvider settings) => settings.ServerExecutablePath;
         protected abstract string ExecutableFileName { get; }
 
         public virtual Process Start(long clientProcessId, IProcessStartInfoArgumentProvider settings)
         {
-            var root = Directory.GetParent(Assembly.GetExecutingAssembly().Location)!
-#if DEBUG
-                .Parent! // net7.0
-                .Parent! // Debug
-                .Parent! // bin
-                .Parent! // Rubberduck.Main
-                .Parent! // Client
-                .Parent! // Rubberduck3
-#endif
-            ;
-            var path = Path.Combine(root!.FullName
-#if DEBUG
-                , @"Server\Rubberduck.LanguageServer\bin\Debug\net7.0\win-x64"
-#endif
-            );
+            var path = settings.ServerExecutablePath;
+            var filename = Path.GetFileName(path);
+            if (!string.Equals(filename, ExecutableFileName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                Logger.LogWarning(TraceLevel.Verbose, $"ServerExecutablePath configured filename is unexpected.", $"expected: '{ExecutableFileName}' actual: '{filename}'");
+            }
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException($"ServerExecutablePath configuration is invalid.");
+            }
 
-            var filename = Path.Combine(path, ExecutableFileName);
             var info = new ProcessStartInfo
             {
-                FileName = filename,
-                WorkingDirectory = Path.GetDirectoryName(filename),
+                FileName = path,
+                WorkingDirectory = Path.GetDirectoryName(path),
                 Arguments = settings.ToProcessStartInfoArguments(clientProcessId),
                 CreateNoWindow = true,
                 UseShellExecute = false,
@@ -64,7 +57,7 @@ namespace Rubberduck.InternalApi.ServerPlatform
             }
             catch (Exception exception)
             {
-                Logger.LogWarning(exception, "Could not start server process.", $"FileName: '{filename}'");
+                Logger.LogWarning(exception, "Could not start server process.", $"FileName: '{path}'");
                 throw;
             }
             return process;

@@ -78,7 +78,7 @@ namespace Rubberduck.UI.Message
             }
             else
             {
-                _logger.LogTrace(trace, "Message key was disabled by the user; message will not be shown.", $"Key: {model.Key}  ({model.Level})");
+                _logger.LogTrace(trace, "Message key was disabled by the user; message will not be shown.", $"Key: {model.Key} ({model.Level})");
             }
 
             return MessageActionResult.Disabled;
@@ -124,6 +124,6 @@ namespace Rubberduck.UI.Message
             ShowMessage(model, provider => provider.OkOnly());
         }
 
-        private bool CanShowMessageKey(string key) => _settings.Settings.GeneralSettings.DisabledMessageKeys.Contains(key);
+        private bool CanShowMessageKey(string key) => !_settings.Settings.GeneralSettings.DisabledMessageKeys.Contains(key);
     }
 }

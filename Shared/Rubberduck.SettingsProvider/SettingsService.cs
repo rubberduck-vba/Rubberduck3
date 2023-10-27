@@ -34,7 +34,7 @@ namespace Rubberduck.SettingsProvider
     }
 
     public class SettingsService<TSettings> : ISettingsService<TSettings>
-        where TSettings : new()
+        where TSettings : NameValueSetting, new()
     {
         private static readonly JsonSerializerOptions _options = new() { PropertyNameCaseInsensitive = true };
 
@@ -50,7 +50,7 @@ namespace Rubberduck.SettingsProvider
         private UpdateServerSettingsGroup UpdateServerSettings => _services.GetRequiredService<ISettingsProvider<UpdateServerSettingsGroup>>().Settings;
         private TelemetryServerSettingsGroup TelemetryServerSettings => _services.GetRequiredService<ISettingsProvider<TelemetryServerSettingsGroup>>().Settings;
 
-        private TSettings _cached = new();
+        private TSettings _cached;
 
         public SettingsService(ILogger<SettingsService<TSettings>> logger,
             IServiceProvider serviceProvider,
@@ -171,7 +171,7 @@ namespace Rubberduck.SettingsProvider
             var success = TimedAction.TryRun(async () =>
             {
                 var content = JsonSerializer.Serialize(settings, _options);
-                await Task.Run(() => fileSystem.File.Create(path));
+                await Task.Run(() => fileSystem.File.WriteAllText(path, content));
 
             }, out var elapsed, out var exception);
             

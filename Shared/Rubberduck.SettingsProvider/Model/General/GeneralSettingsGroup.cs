@@ -57,7 +57,7 @@ namespace Rubberduck.SettingsProvider.Model
             Settings = settings ?? DefaultSettings;
         }
 
-        public static GeneralSettingsGroup Default { get; } = new();
+        public static GeneralSettingsGroup Default { get; } = new(DefaultSettings);
 
         public string Locale => Values[nameof(LocaleSetting)];
         public bool ShowSplash => bool.Parse(Values[nameof(ShowSplashSetting)]);
@@ -68,9 +68,6 @@ namespace Rubberduck.SettingsProvider.Model
 
         public bool DisableInitialLogLevelReset => bool.Parse(Values[nameof(DisableInitialLogLevelResetSetting)]);
         public string[] DisabledMessageKeys => JsonArray.Parse(Values[nameof(DisabledMessageKeysSetting)])?.AsArray().Select(e => e!.ToString()).ToArray() ?? Array.Empty<string>();
-
-
-        protected override IEnumerable<RubberduckSetting> Settings { get; init; }
 
         GeneralSettingsGroup IDefaultSettingsProvider<GeneralSettingsGroup>.Default => Default;
     }

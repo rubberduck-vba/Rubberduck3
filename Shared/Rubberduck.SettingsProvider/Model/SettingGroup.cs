@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model
 {
@@ -11,10 +13,53 @@ namespace Rubberduck.SettingsProvider.Model
         {
         }
 
-        protected abstract IEnumerable<RubberduckSetting> Settings { get; init; }
-        public Dictionary<string, string> Values => Settings.ToDictionary(
-            setting => setting.Name,
-            setting => setting.GetValue() is Array values ? $"[\"{string.Join("\",\"", values)}\"]" : setting.GetValue().ToString() ?? string.Empty);
+        private IEnumerable<RubberduckSetting> _settings;
+        protected IEnumerable<RubberduckSetting> Settings
+        {
+            get => _settings;
+            init
+            {
+                string GetStringValue(object obj)
+                {
+                    if (obj is Array values)
+                    {
+                        var jsonValues = new List<string>();
+                        foreach (var value in values)
+                        {
+                            if (value is string)
+                            {
+                                jsonValues.Add(value.ToString() ?? string.Empty);
+                            }
+                            if (value is object)
+                            {
+                                jsonValues.Add(JsonSerializer.Serialize(value));
+                            }
+                        }
+                        return $"[\"{string.Join("\",\"", jsonValues)}\"]";
+                    }
+                    else
+                    {
+                        return obj.ToString() ?? string.Empty;
+                    }
+                };
+
+                if (value is not null)
+                {
+                    _settings = value;
+                    Values = Settings.ToDictionary(
+                        setting => setting.Name, 
+                        setting => GetStringValue(setting.GetValue())
+                    );
+                }
+                else
+                {
+                    // WTF?
+                }
+            }
+        }
+
+        [JsonIgnore]
+        public Dictionary<string, string> Values { get; init; }
 
         public sealed override object GetValue() => Settings;
     }

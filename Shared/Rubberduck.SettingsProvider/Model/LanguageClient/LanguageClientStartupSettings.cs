@@ -1,13 +1,14 @@
 ﻿using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
 using System;
+using System.Linq;
 
 namespace Rubberduck.SettingsProvider.Model.LanguageClient
 {
     public record class LanguageClientStartupSettings : ServerStartupSettings
     {
         // TODO localize
-        private static readonly string _description = "Configures the command-line startup options of the language server.";
+        private static readonly string _description = "Configures the command-line startup options of the Rubberduck Editor LSP client.";
 
         public LanguageClientStartupSettings()
             : base(nameof(LanguageClientStartupSettings), _description)

@@ -1,9 +1,16 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model
 {
-    public abstract record class RubberduckSetting
+    public abstract record class NameValueSetting
+    {
+        public string Name { get; init; }
+        public abstract object GetValue();
+    }
+
+    public abstract record class RubberduckSetting : NameValueSetting
     {
         public RubberduckSetting(SettingDataType type, string name, string description, bool readOnlyRecommended = false)
         {
@@ -13,13 +20,11 @@ namespace Rubberduck.SettingsProvider.Model
             ReadOnlyRecommended = readOnlyRecommended;
         }
 
+        [JsonIgnore]
         public SettingDataType SettingDataType { get; init; }
-        public string Name { get; init; }
-
+        [JsonIgnore]
         public string Description { get; init; }
-
-        public abstract object GetValue();
-
+        [JsonIgnore]
         public bool ReadOnlyRecommended { get; init; }
     }
 

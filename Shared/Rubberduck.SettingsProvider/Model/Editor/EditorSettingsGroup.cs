@@ -45,9 +45,7 @@ namespace Rubberduck.SettingsProvider.Model.Editor
             Settings = settings ?? DefaultSettings;
         }
 
-        protected override IEnumerable<RubberduckSetting> Settings { get; init; }
-
-        public static EditorSettingsGroup Default { get; } = new();
+        public static EditorSettingsGroup Default { get; } = new(DefaultSettings);
         EditorSettingsGroup IDefaultSettingsProvider<EditorSettingsGroup>.Default => Default;
     }
 }

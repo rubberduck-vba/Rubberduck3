@@ -53,7 +53,7 @@ namespace Rubberduck.SettingsProvider.Model
             Settings = settings ?? DefaultSettings;
         }
 
-        public TelemetryServerSettingsGroup() : this(DefaultSettings) { }
+        public TelemetryServerSettingsGroup() : base(nameof(TelemetryServerSettingsGroup), _description) { }
 
         public TelemetryServerSettingsGroup(IEnumerable<RubberduckSetting> settings)
             : base(nameof(TelemetryServerSettingsGroup), _description)
@@ -84,11 +84,9 @@ namespace Rubberduck.SettingsProvider.Model
         public IReadOnlyDictionary<string, TraceTelemetrySetting> TraceTelemetryConfig { get; init; } =
             Enum.GetValues<LogLevel>().Select(e => new TraceTelemetrySetting { Id = e, IsEnabled = true, Verbose = true }).ToDictionary(e => e.Key);
 
-        public TelemetryServerStartupSettings StartupSettings => JsonSerializer.Deserialize<TelemetryServerStartupSettings>(Values[nameof(StartupSettings)]) ?? new();
+        public TelemetryServerStartupSettings StartupSettings => Settings.OfType<TelemetryServerStartupSettings>().Single();
 
-        protected override IEnumerable<RubberduckSetting> Settings { get; init; }
-
-        public static TelemetryServerSettingsGroup Default { get; } = new();
+        public static TelemetryServerSettingsGroup Default { get; } = new(DefaultSettings);
         TelemetryServerSettingsGroup IDefaultSettingsProvider<TelemetryServerSettingsGroup>.Default => Default;
 
         public abstract record class TelemetrySetting

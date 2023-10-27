@@ -4,14 +4,17 @@ using Rubberduck.SettingsProvider.Model.LanguageServer;
 
 namespace Rubberduck.SettingsProvider.Model
 {
-    public record class RubberduckSettings : IDefaultSettingsProvider<RubberduckSettings>
+    public record class RubberduckSettings : NameValueSetting, IDefaultSettingsProvider<RubberduckSettings>
     {
         public RubberduckSettings()
         {
+            Name = nameof(RubberduckSettings);
         }
 
         public RubberduckSettings(GeneralSettingsGroup generalSettings, LanguageClientSettingsGroup languageClientSettings, LanguageServerSettingsGroup languageServerSettings, UpdateServerSettingsGroup updateServerSettings, TelemetryServerSettingsGroup telemetryServerSettings)
         {
+            Name = nameof(RubberduckSettings);
+
             GeneralSettings = generalSettings;
             LanguageClientSettings = languageClientSettings;
             LanguageServerSettings = languageServerSettings;
@@ -28,5 +31,10 @@ namespace Rubberduck.SettingsProvider.Model
         public static RubberduckSettings Default { get; } = new();
 
         RubberduckSettings IDefaultSettingsProvider<RubberduckSettings>.Default => Default;
+
+        public override object GetValue()
+        {
+            return this;
+        }
     }
 }

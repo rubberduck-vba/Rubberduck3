@@ -35,7 +35,7 @@ namespace Rubberduck.Main
     internal class RubberduckAddIn : IVBIDEAddIn
     {
         private RubberduckSettings? _initialSettings;
-        private RubberduckSettings InitialSettings => _initialSettings ?? new RubberduckSettings();
+        private RubberduckSettings InitialSettings => _initialSettings!;
         private TraceLevel TraceLevel => InitialSettings.LanguageServerSettings.TraceLevel.ToTraceLevel();
 
         private IVBE _vbe = null!;

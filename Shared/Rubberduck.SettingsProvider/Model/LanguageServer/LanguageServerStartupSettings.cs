@@ -16,7 +16,6 @@ namespace Rubberduck.SettingsProvider.Model.LanguageServer
 
         protected override string DefaultServerExecutablePath
             => @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Rubberduck\LanguageServer\{ServerPlatformSettings.TelemetryServerExecutable}";
-
         protected override string DefaultServerPipeName => ServerPlatformSettings.LanguageServerDefaultPipeName;
     }
 }

@@ -21,6 +21,7 @@ namespace Rubberduck.SettingsProvider.Model.LanguageServer
             new RubberduckSetting[]
             {
                 new TraceLevelSetting(nameof(TraceLevelSetting), MessageTraceLevel.Verbose),
+                new LanguageServerStartupSettings(),
             };
 
         public LanguageServerSettingsGroup(LanguageServerSettingsGroup original, IEnumerable<RubberduckSetting>? settings = null)
@@ -39,21 +40,21 @@ namespace Rubberduck.SettingsProvider.Model.LanguageServer
             Settings = settings ?? DefaultSettings;
         }
 
-        public LanguageServerSettingsGroup() : this(DefaultSettings) { }
+        public LanguageServerSettingsGroup() : base(nameof(LanguageServerSettingsGroup), _description) { }
 
         public LanguageServerSettingsGroup(IEnumerable<RubberduckSetting> settings)
             : base(nameof(LanguageServerSettingsGroup), _description)
         {
             Settings = settings ?? DefaultSettings;
+
+            StartupSettings = Settings.OfType<LanguageServerStartupSettings>().Single();
         }
 
-        public MessageTraceLevel TraceLevel => Enum.Parse<MessageTraceLevel>(Values[nameof(TraceLevelSetting)]);
+        public MessageTraceLevel TraceLevel { get; init; }
 
-        public LanguageServerStartupSettings StartupSettings => JsonSerializer.Deserialize<LanguageServerStartupSettings>(Values[nameof(StartupSettings)]) ?? new();
+        public LanguageServerStartupSettings StartupSettings { get; init; }
 
-        protected override IEnumerable<RubberduckSetting> Settings { get; init; }
-
-        public static LanguageServerSettingsGroup Default { get; } = new();
+        public static LanguageServerSettingsGroup Default { get; } = new(DefaultSettings);
         LanguageServerSettingsGroup IDefaultSettingsProvider<LanguageServerSettingsGroup>.Default => Default;
     }
 }
