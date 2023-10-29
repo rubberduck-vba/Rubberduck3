@@ -7,8 +7,6 @@
 
         public SendMetricTelemetrySetting(bool defaultValue) : this(defaultValue, defaultValue) { }
         public SendMetricTelemetrySetting(bool defaultValue, bool value)
-            : base(SettingDataType.BooleanSetting, nameof(SendMetricTelemetrySetting), _description, defaultValue, value)
-        {
-        }
+            : base(nameof(SendMetricTelemetrySetting), value, SettingDataType.BooleanSetting, defaultValue) { }
     }
 }

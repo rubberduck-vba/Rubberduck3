@@ -8,13 +8,9 @@
         private static readonly string _description = "Whether projects are required to be created from a saved host document.";
 
         public RequireSavedHostSetting()
-            : base(SettingDataType.BooleanSetting, nameof(RequireSavedHostSetting), _description, DefaultSettingValue)
-        {
-        }
+            : base(nameof(RequireSavedHostSetting), DefaultSettingValue, SettingDataType.BooleanSetting, DefaultSettingValue) { }
 
         public RequireSavedHostSetting(bool value)
-            : base(SettingDataType.BooleanSetting, nameof(RequireSavedHostSetting), _description, DefaultSettingValue, value)
-        {
-        }
+            : base(nameof(RequireSavedHostSetting), value, SettingDataType.BooleanSetting, DefaultSettingValue) { }
     }
 }

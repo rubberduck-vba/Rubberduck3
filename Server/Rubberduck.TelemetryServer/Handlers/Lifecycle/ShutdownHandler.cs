@@ -15,10 +15,10 @@ namespace Rubberduck.TelemetryServer.Handlers.Lifecycle
     public class ShutdownHandler : ShutdownHandlerBase
     {
         private readonly ILogger _logger;
-        private readonly ISettingsProvider<TelemetryServerSettingsGroup> _settingsProvider;
+        private readonly ISettingsProvider<TelemetryServerSettings> _settingsProvider;
         private readonly IServerStateWriter _serverState;
 
-        public ShutdownHandler(ILogger<ShutdownHandler> logger, ISettingsProvider<TelemetryServerSettingsGroup> settings, IServerStateWriter serverState)
+        public ShutdownHandler(ILogger<ShutdownHandler> logger, ISettingsProvider<TelemetryServerSettings> settings, IServerStateWriter serverState)
         {
             _logger = logger;
             _settingsProvider = settings;

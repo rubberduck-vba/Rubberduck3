@@ -47,7 +47,7 @@ namespace Rubberduck.Main.Root
         private void Configure(IVBE vbe, IAddIn addin)
         {
             _services.AddLogging(ConfigureLogging);
-            _services.AddScoped<App>();
+            _services.AddSingleton<App>();
 
             this.WithAssemblyInfo()
                 .WithNativeServices(vbe, addin)
@@ -61,34 +61,34 @@ namespace Rubberduck.Main.Root
         {
             builder.AddNLog("NLog-client.config");
 
-            _services.AddScoped<ILogLevelService, LogLevelService>();
+            _services.AddSingleton<ILogLevelService, LogLevelService>();
         }
 
         private RubberduckServicesBuilder WithAssemblyInfo()
         {
-            _services.AddScoped(provider => Assembly.GetExecutingAssembly().GetName().Version!);
-            _services.AddScoped<IOperatingSystem, WindowsOperatingSystem>();
+            _services.AddSingleton(provider => Assembly.GetExecutingAssembly().GetName().Version!);
+            _services.AddSingleton<IOperatingSystem, WindowsOperatingSystem>();
 
             return this;
         }
 
         private RubberduckServicesBuilder WithNativeServices(IVBE vbe, IAddIn addin)
         {
-            _services.AddScoped(provider => vbe);
-            _services.AddScoped(provider => addin);
-            _services.AddScoped(provider => vbe.TempSourceFileHandler);
+            _services.AddSingleton(provider => vbe);
+            _services.AddSingleton(provider => addin);
+            _services.AddSingleton(provider => vbe.TempSourceFileHandler);
 
-            _services.AddScoped<IProjectsRepository>(provider => new ProjectsRepository(vbe, provider.GetRequiredService<ILogger<ProjectsRepository>>()));
-            _services.AddScoped<IProjectsProvider>(provider => provider.GetRequiredService<IProjectsRepository>());
+            _services.AddSingleton<IProjectsRepository>(provider => new ProjectsRepository(vbe, provider.GetRequiredService<ILogger<ProjectsRepository>>()));
+            _services.AddSingleton<IProjectsProvider>(provider => provider.GetRequiredService<IProjectsRepository>());
 
             var nativeApi = new VbeNativeApiAccessor();
-            _services.AddScoped<IVbeNativeApi>(provider => nativeApi);
-            _services.AddScoped<IVbeEvents>(provider => VbeEvents.Initialize(vbe));
-            _services.AddScoped<IVBETypeLibsAPI, VBETypeLibsAPI>();
+            _services.AddSingleton<IVbeNativeApi>(provider => nativeApi);
+            _services.AddSingleton<IVbeEvents>(provider => VbeEvents.Initialize(vbe));
+            _services.AddSingleton<IVBETypeLibsAPI, VBETypeLibsAPI>();
 
             #region still needed?
-            _services.AddScoped<IUiDispatcher, UiDispatcher>();
-            _services.AddScoped<IUiContextProvider>(provider => UiContextProvider.Instance());
+            _services.AddSingleton<IUiDispatcher, UiDispatcher>();
+            _services.AddSingleton<IUiContextProvider>(provider => UiContextProvider.Instance());
             #endregion
 
             return this;
@@ -97,21 +97,21 @@ namespace Rubberduck.Main.Root
         private RubberduckServicesBuilder WithSettingsProviders()
         {
             // ISettingsService<TSettings> provides file I/O
-            _services.AddScoped<ISettingsService<RubberduckSettings>, SettingsService<RubberduckSettings>>();
+            _services.AddSingleton<ISettingsService<RubberduckSettings>, SettingsService<RubberduckSettings>>();
 
             // IDefaultSettingsProvider<TSettings> provide the default configuration settings for injectable setting groups
-            _services.AddScoped<IDefaultSettingsProvider<RubberduckSettings>>(provider => RubberduckSettings.Default);
-            _services.AddScoped<IDefaultSettingsProvider<GeneralSettingsGroup>>(provider => GeneralSettingsGroup.Default);
-            _services.AddScoped<IDefaultSettingsProvider<LanguageServerSettingsGroup>>(provider => LanguageServerSettingsGroup.Default);
-            _services.AddScoped<IDefaultSettingsProvider<UpdateServerSettingsGroup>>(provider => UpdateServerSettingsGroup.Default);
-            _services.AddScoped<IDefaultSettingsProvider<TelemetryServerSettingsGroup>>(provider => TelemetryServerSettingsGroup.Default);
+            _services.AddSingleton<IDefaultSettingsProvider<RubberduckSettings>>(provider => RubberduckSettings.Default);
+            _services.AddSingleton<IDefaultSettingsProvider<GeneralSettings>>(provider => GeneralSettings.Default);
+            _services.AddSingleton<IDefaultSettingsProvider<LanguageServerSettings>>(provider => LanguageServerSettings.Default);
+            _services.AddSingleton<IDefaultSettingsProvider<UpdateServerSettingsGroup>>(provider => UpdateServerSettingsGroup.Default);
+            _services.AddSingleton<IDefaultSettingsProvider<TelemetryServerSettings>>(provider => TelemetryServerSettings.Default);
 
             // ISettingsProvider<TSettings> provide current applicable settings for injectable setting groups
-            _services.AddScoped<ISettingsProvider<RubberduckSettings>, SettingsService<RubberduckSettings>>();
-            _services.AddScoped<ISettingsProvider<GeneralSettingsGroup>, SettingsService<GeneralSettingsGroup>>();
-            _services.AddScoped<ISettingsProvider<LanguageServerSettingsGroup>, SettingsService<LanguageServerSettingsGroup>>();
-            _services.AddScoped<ISettingsProvider<UpdateServerSettingsGroup>, SettingsService<UpdateServerSettingsGroup>>();
-            _services.AddScoped<ISettingsProvider<TelemetryServerSettingsGroup>, SettingsService<TelemetryServerSettingsGroup>>();
+            _services.AddSingleton<ISettingsProvider<RubberduckSettings>, SettingsService<RubberduckSettings>>();
+            _services.AddSingleton<ISettingsProvider<GeneralSettings>, SettingsService<GeneralSettings>>();
+            _services.AddSingleton<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
+            _services.AddSingleton<ISettingsProvider<UpdateServerSettingsGroup>, SettingsService<UpdateServerSettingsGroup>>();
+            _services.AddSingleton<ISettingsProvider<TelemetryServerSettings>, SettingsService<TelemetryServerSettings>>();
 
             return this;
         }
@@ -168,11 +168,11 @@ namespace Rubberduck.Main.Root
 
         private RubberduckServicesBuilder WithServices()
         {
-            _services.AddScoped<IFileSystem, FileSystem>();
+            _services.AddSingleton<IFileSystem, FileSystem>();
 
-            _services.AddScoped<IMessageService, MessageService>();
-            _services.AddScoped<IMessageWindowFactory, MessageWindowFactory>();
-            _services.AddScoped<MessageActionsProvider>();
+            _services.AddSingleton<IMessageService, MessageService>();
+            _services.AddSingleton<IMessageWindowFactory, MessageWindowFactory>();
+            _services.AddSingleton<MessageActionsProvider>();
 
             _services.AddSingleton<IEditorServerProcessService, EditorServerProcessService>();
 

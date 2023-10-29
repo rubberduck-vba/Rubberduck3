@@ -40,14 +40,14 @@ namespace Rubberduck.TelemetryServer
     internal class TelemetryService : ITelemetryService
     {
         private readonly ILogger<TelemetryService> _logger;
-        private readonly ISettingsProvider<TelemetryServerSettingsGroup> _settingsProvider;
+        private readonly ISettingsProvider<TelemetryServerSettings> _settingsProvider;
         private readonly ConcurrentQueue<TelemetryEventPayload> _queue;
         private readonly ITelemetryTransmitter _transmitter;
         //private readonly Func<ILanguageServer> _server;
 
         private TraceLevel TraceLevel => _settingsProvider.Settings.TraceLevel.ToTraceLevel();
 
-        public TelemetryService(ILogger<TelemetryService> logger, ISettingsProvider<TelemetryServerSettingsGroup> settingsProvider, 
+        public TelemetryService(ILogger<TelemetryService> logger, ISettingsProvider<TelemetryServerSettings> settingsProvider, 
             ITelemetryTransmitter transmitter/*, Func<ILanguageServer> server*/)
         {
             _logger = logger;
@@ -112,22 +112,14 @@ namespace Rubberduck.TelemetryServer
             }
         }
 
-        private bool CanTransmitTelemetry(TelemetryEventPayload telemetryItem, TelemetryServerSettingsGroup settings)
+        private bool CanTransmitTelemetry(TelemetryEventPayload telemetryItem, TelemetryServerSettings settings)
         {
             if (settings.SendEventTelemetry && telemetryItem is EventTelemetry eventTelemetry)
             {
-                if (!settings.EventTelemetryConfig.TryGetValue(eventTelemetry.Name, out var config))
+                if (settings.EventTelemetrySettings.IsEnabled(eventTelemetry.Key))
                 {
-                    _logger.LogWarning(TraceLevel, $"EventTelemetry '{eventTelemetry.Name}' has no configuration and will be ignored.");
-                }
-                else
-                {
-                    if (config.IsEnabled)
-                    {
-                        _logger.LogTrace(TraceLevel, $"EventTelemetry '{eventTelemetry.Name}' payload is accepted.");
-                    }
-
-                    return config.IsEnabled;
+                    _logger.LogTrace(TraceLevel, $"EventTelemetry '{eventTelemetry.Name}' payload is accepted.");
+                    return true;
                 }
             }
 

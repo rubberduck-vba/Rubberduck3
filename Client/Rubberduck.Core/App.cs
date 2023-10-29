@@ -131,7 +131,7 @@ namespace Rubberduck.Core
             }
 
             var updatedSettings = new RubberduckSettings(
-                new GeneralSettingsGroup(currentSettings.GeneralSettings, new RubberduckSetting[] { new LogLevelSetting(LogLevel.None) }),
+                new GeneralSettings(currentSettings.GeneralSettings, new IRubberduckSetting[] { new LogLevelSetting(LogLevel.None) }),
                 currentSettings.LanguageClientSettings,
                 currentSettings.LanguageServerSettings,
                 currentSettings.UpdateServerSettings,
@@ -169,7 +169,7 @@ namespace Rubberduck.Core
 
         private void ApplyCultureConfig()
         {
-            var currentCulture = Resources.RubberduckUI.Culture;
+            var currentCulture = RubberduckUI.Culture;
             var currentSettings = _settingsService.Settings;
 
             try
@@ -186,7 +186,7 @@ namespace Rubberduck.Core
                 _messageBox.ShowMessage(MessageModel.For(exception));
 
                 var updatedSettings = new RubberduckSettings(
-                    new GeneralSettingsGroup(currentSettings.GeneralSettings, new RubberduckSetting[] { new LogLevelSetting(LogLevel.None) }),
+                    new GeneralSettings(currentSettings.GeneralSettings, new IRubberduckSetting[] { new LogLevelSetting(LogLevel.None) }),
                     currentSettings.LanguageClientSettings,
                     currentSettings.LanguageServerSettings,
                     currentSettings.UpdateServerSettings,

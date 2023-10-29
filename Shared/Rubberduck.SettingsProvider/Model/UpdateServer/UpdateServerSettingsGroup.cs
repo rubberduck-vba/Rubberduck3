@@ -2,6 +2,7 @@
 using Rubberduck.SettingsProvider.Model.ServerStartup;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.SettingsProvider.Model
 {
@@ -17,7 +18,7 @@ namespace Rubberduck.SettingsProvider.Model
     {
         // TODO localize
         private static readonly string _description = "Configures the update server settings.";
-        public static RubberduckSetting[] DefaultSettings = new RubberduckSetting[]
+        public static IRubberduckSetting[] DefaultSettings = new IRubberduckSetting[]
         {
             new TraceLevelSetting(nameof(TraceLevelSetting), MessageTraceLevel.Verbose),
             new IsUpdateServerEnabledSetting(true),
@@ -25,27 +26,23 @@ namespace Rubberduck.SettingsProvider.Model
             new WebApiBaseUrlSetting(new Uri("https://api.rubberduckvba.com/api/v1")),
         };
 
+
+        public UpdateServerSettingsGroup() 
+            : base(nameof(UpdateServerSettingsGroup), DefaultSettings, DefaultSettings){ }
+
+        public UpdateServerSettingsGroup(params IRubberduckSetting[] settings)
+            : base(nameof(UpdateServerSettingsGroup), settings, DefaultSettings) { }
+
+        public UpdateServerSettingsGroup(IEnumerable<IRubberduckSetting> settings)
+            : base(nameof(UpdateServerSettingsGroup), settings, DefaultSettings) { }
+
+
+        public MessageTraceLevel TraceLevel => GetSetting<TraceLevelSetting>().Value;
+        public bool IsEnabled => GetSetting<IsUpdateServerEnabledSetting>().Value;
+        public bool IncludePreReleases => GetSetting<IncludePreReleasesSetting>().Value;
+        public Uri RubberduckWebApiBaseUrl => GetSetting<WebApiBaseUrlSetting>().Value;
+
         public static UpdateServerSettingsGroup Default { get; } = new(DefaultSettings);
         UpdateServerSettingsGroup IDefaultSettingsProvider<UpdateServerSettingsGroup>.Default => Default;
-
-        public UpdateServerSettingsGroup() : base(nameof(UpdateServerSettingsGroup), _description) { }
-
-        public UpdateServerSettingsGroup(UpdateServerSettingsGroup original, IEnumerable<RubberduckSetting>? settings = null)
-            : base(original)
-        {
-            Settings = settings ?? DefaultSettings;
-        }
-
-        public UpdateServerSettingsGroup(IEnumerable<RubberduckSetting> settings)
-            : base(nameof(UpdateServerSettingsGroup), _description)
-        {
-            Settings = settings;
-        }
-
-        public MessageTraceLevel TraceLevel => Enum.Parse<MessageTraceLevel>(Values[nameof(TraceLevelSetting)]);
-
-        public bool IsEnabled => bool.Parse(Values[nameof(IsUpdateServerEnabledSetting)]);
-        public bool IncludePreReleases => bool.Parse(Values[nameof(IncludePreReleasesSetting)]);
-        public Uri RubberduckWebApiBaseUrl => new(Values[nameof(WebApiBaseUrlSetting)]);
     }
 }

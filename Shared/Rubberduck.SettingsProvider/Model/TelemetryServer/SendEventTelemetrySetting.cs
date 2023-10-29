@@ -7,8 +7,6 @@
 
         public SendEventTelemetrySetting(bool defaultValue) : this(defaultValue, defaultValue) { }
         public SendEventTelemetrySetting(bool defaultValue, bool value)
-            : base(SettingDataType.BooleanSetting, nameof(SendEventTelemetrySetting), _description, defaultValue, value)
-        {
-        }
+            : base(nameof(SendEventTelemetrySetting), value, SettingDataType.BooleanSetting, defaultValue) { }
     }
 }

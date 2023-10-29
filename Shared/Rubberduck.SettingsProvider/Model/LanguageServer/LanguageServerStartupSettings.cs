@@ -1,6 +1,7 @@
 ﻿using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
 using System;
+using System.Collections.Generic;
 
 namespace Rubberduck.SettingsProvider.Model.LanguageServer
 {
@@ -9,13 +10,17 @@ namespace Rubberduck.SettingsProvider.Model.LanguageServer
         // TODO localize
         private static readonly string _description = "Configures the command-line startup options of the language server.";
 
-        public LanguageServerStartupSettings()
-            : base(nameof(LanguageServerStartupSettings), _description)
-        {
-        }
+        private static readonly IRubberduckSetting[] DefaultSettings = GetDefaultSettings(nameof(LanguageServerStartupSettings),
+            ServerPlatformSettings.LanguageServerDefaultPipeName,
+            @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Rubberduck\LanguageServer\{ServerPlatformSettings.LanguageServerExecutable}");
 
-        protected override string DefaultServerExecutablePath
-            => @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Rubberduck\LanguageServer\{ServerPlatformSettings.TelemetryServerExecutable}";
-        protected override string DefaultServerPipeName => ServerPlatformSettings.LanguageServerDefaultPipeName;
+        public LanguageServerStartupSettings()
+            : base(nameof(LanguageServerStartupSettings), DefaultSettings, DefaultSettings) { }
+
+        public LanguageServerStartupSettings(params IRubberduckSetting[] settings)
+            : base(nameof(LanguageServerStartupSettings), settings, DefaultSettings) { }
+
+        public LanguageServerStartupSettings(IEnumerable<IRubberduckSetting> settings)
+            : base(nameof(LanguageServerStartupSettings), settings, DefaultSettings) { }
     }
 }

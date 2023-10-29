@@ -12,8 +12,6 @@ namespace Rubberduck.SettingsProvider.Model
         public LogLevelSetting() : this(DefaultSettingValue) { }
 
         public LogLevelSetting(LogLevel value)
-            : base(SettingDataType.EnumSetting, nameof(LogLevelSetting), _description, DefaultSettingValue, value)
-        {
-        }
+            : base(nameof(LogLevelSetting), value, SettingDataType.EnumSetting, DefaultSettingValue) { }
     }
 }

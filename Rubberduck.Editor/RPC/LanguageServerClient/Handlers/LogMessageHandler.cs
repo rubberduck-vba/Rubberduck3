@@ -34,7 +34,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
     {
         private readonly ILogger<WorkspaceFoldersHandler> _logger;
 
-        public LogMessageHandler(ILogger<WorkspaceFoldersHandler> logger, ISettingsProvider<LanguageServerSettingsGroup> settingsProvider)
+        public LogMessageHandler(ILogger<WorkspaceFoldersHandler> logger, ISettingsProvider<LanguageServerSettings> settingsProvider)
         {
             _logger = logger;
         }

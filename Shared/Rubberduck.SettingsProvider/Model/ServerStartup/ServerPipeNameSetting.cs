@@ -8,8 +8,6 @@
             : this(name, defaultValue, defaultValue) { }
 
         public ServerPipeNameSetting(string name, string defaultValue, string value)
-            : base(SettingDataType.TextSetting, name, _description, defaultValue, value, readOnlyRecommended: true)
-        {
-        }
+            : base(name, value, SettingDataType.TextSetting, defaultValue, readOnlyRecommended: true) { }
     }
 }

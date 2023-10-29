@@ -9,8 +9,6 @@
         public ShowSplashSetting() : this(DefaultSettingValue) { }
 
         public ShowSplashSetting(bool value)
-            : base(SettingDataType.BooleanSetting, nameof(ShowSplashSetting), _description, DefaultSettingValue, value)
-        {
-        }
+            : base(nameof(ShowSplashSetting), value, SettingDataType.BooleanSetting, DefaultSettingValue) { }
     }
 }

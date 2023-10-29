@@ -7,8 +7,6 @@
 
         public StreamTransmissionSetting(bool defaultValue) : this(defaultValue, defaultValue) { }
         public StreamTransmissionSetting(bool defaultValue, bool value)
-            : base(SettingDataType.BooleanSetting, nameof(StreamTransmissionSetting), _description, defaultValue, value)
-        {
-        }
+            : base(nameof(StreamTransmissionSetting), value, SettingDataType.BooleanSetting, defaultValue) { }
     }
 }

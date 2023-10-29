@@ -7,8 +7,6 @@
 
         public SendExceptionTelemetrySetting(bool defaultValue) : this(defaultValue, defaultValue) { }
         public SendExceptionTelemetrySetting(bool defaultValue, bool value)
-            : base(SettingDataType.BooleanSetting, nameof(SendExceptionTelemetrySetting), _description, defaultValue, value, readOnlyRecommended: defaultValue)
-        {
-        }
+            : base(nameof(SendExceptionTelemetrySetting), value, SettingDataType.BooleanSetting, defaultValue, readOnlyRecommended: defaultValue) { }
     }
 }

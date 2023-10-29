@@ -19,10 +19,10 @@ namespace Rubberduck.TelemetryServer.Handlers
     public class TelemetryEventHandler : TelemetryEventHandlerBase<TelemetryEventPayload>
     {
         private readonly ILogger _logger;
-        private readonly ISettingsProvider<TelemetryServerSettingsGroup> _settingsProvider;
+        private readonly ISettingsProvider<TelemetryServerSettings> _settingsProvider;
         private readonly ITelemetryService _telemetryService;
 
-        public TelemetryEventHandler(ILogger<TelemetryEventHandler> logger, ISettingsProvider<TelemetryServerSettingsGroup> settings,
+        public TelemetryEventHandler(ILogger<TelemetryEventHandler> logger, ISettingsProvider<TelemetryServerSettings> settings,
             ITelemetryService service)
         {
             _logger = logger;

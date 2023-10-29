@@ -7,8 +7,6 @@
 
         public TelemetryEventQueueSizeSetting(double defaultValue) : this(defaultValue, defaultValue) { }
         public TelemetryEventQueueSizeSetting(double defaultValue, double value)
-            : base(SettingDataType.NumericSetting, nameof(TelemetryEventQueueSizeSetting), _description, defaultValue, value)
-        {
-        }
+            : base(nameof(TelemetryEventQueueSizeSetting), value, SettingDataType.NumericSetting, defaultValue) { }
     }
 }

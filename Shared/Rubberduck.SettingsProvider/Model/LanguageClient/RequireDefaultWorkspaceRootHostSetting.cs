@@ -8,13 +8,9 @@
         private static readonly string _description = "Whether host documents are required to be saved in a folder under the default workspace root.";
 
         public RequireDefaultWorkspaceRootHostSetting()
-            : base(SettingDataType.BooleanSetting, nameof(RequireDefaultWorkspaceRootHostSetting), _description, DefaultSettingValue)
-        {
-        }
+            : base(nameof(RequireDefaultWorkspaceRootHostSetting), DefaultSettingValue, SettingDataType.BooleanSetting, DefaultSettingValue) { }
 
         public RequireDefaultWorkspaceRootHostSetting(bool value)
-            : base(SettingDataType.BooleanSetting, nameof(RequireDefaultWorkspaceRootHostSetting), _description, DefaultSettingValue, value)
-        {
-        }
+            : base(nameof(RequireDefaultWorkspaceRootHostSetting), value, SettingDataType.BooleanSetting, DefaultSettingValue) { }
     }
 }

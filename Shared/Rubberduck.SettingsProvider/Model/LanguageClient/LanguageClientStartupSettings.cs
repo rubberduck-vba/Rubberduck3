@@ -1,6 +1,8 @@
 ﻿using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.SettingsProvider.Model.LanguageServer;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.SettingsProvider.Model.LanguageClient
@@ -9,14 +11,17 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
     {
         // TODO localize
         private static readonly string _description = "Configures the command-line startup options of the Rubberduck Editor LSP client.";
+        private static readonly IRubberduckSetting[] DefaultSettings = GetDefaultSettings(nameof(LanguageServerStartupSettings),
+            ServerPlatformSettings.EditorServerDefaultPipeName,
+            @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Rubberduck\Editor\{ServerPlatformSettings.EditorServerExecutable}");
 
         public LanguageClientStartupSettings()
-            : base(nameof(LanguageClientStartupSettings), _description)
-        {
-        }
+            : base(nameof(LanguageClientStartupSettings), DefaultSettings, DefaultSettings) { }
 
-        protected override string DefaultServerExecutablePath
-            => @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Rubberduck\Editor\{ServerPlatformSettings.EditorServerExecutable}";
-        protected override string DefaultServerPipeName => ServerPlatformSettings.EditorServerDefaultPipeName;
+        public LanguageClientStartupSettings(params IRubberduckSetting[] settings)
+            : base(nameof(LanguageClientStartupSettings), settings, DefaultSettings) { }
+
+        public LanguageClientStartupSettings(IEnumerable<IRubberduckSetting> settings)
+            : base(nameof(LanguageClientStartupSettings), settings.ToArray(), DefaultSettings) { }
     }
 }

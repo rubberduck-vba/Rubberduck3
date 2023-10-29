@@ -2,79 +2,46 @@
 using Rubberduck.InternalApi.Settings;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Rubberduck.SettingsProvider.Model.ServerStartup
 {
-    public interface IServerStartupSettings
-    {
-        string ServerExecutablePath { get; }
-        TransportType ServerTransportType { get; }
-        string ServerPipeName { get; }
-        MessageMode ServerMessageMode { get; }
-
-        MessageTraceLevel ServerTraceLevel { get; }
-
-        TimeSpan ClientHealthCheckInterval { get; }
-    }
-
-    public abstract record class ServerStartupSettings : SettingGroup, IServerStartupSettings,
-        IProcessStartInfoArgumentProvider,
+    public abstract record class ServerStartupSettings : SettingGroup, 
+        IProcessStartInfoArgumentProvider, 
         IHealthCheckSettingsProvider
     {
-        protected ServerStartupSettings(ServerStartupSettings original, IEnumerable<RubberduckSetting>? settings = null)
-            : base(original)
+        protected static IRubberduckSetting[] GetDefaultSettings(string name, string pipe, string path)
         {
-            Name = original.Name;
-            Description = original.Description;
-            Settings = settings ?? GetDefaultSettings(original.Name, DefaultServerExecutablePath);
-        }
-
-        protected ServerStartupSettings(string name, string description)
-            : base(name, description) 
-        {
-            Settings = GetDefaultSettings(name, DefaultServerExecutablePath);
-        }
-
-        private static RubberduckSetting[] GetDefaultSettings(string name, string path)
-        {
-            return new RubberduckSetting[]
+            return new IRubberduckSetting[]
             {
-                new ServerExecutablePathSetting($"{name}.{nameof(ServerStartupSettings)}", new Uri(path)),
+                new ServerExecutablePathSetting($"{name}.{nameof(ServerExecutablePathSetting)}", new Uri(path)),
                 new ServerTransportTypeSetting($"{name}.{nameof(ServerTransportTypeSetting)}", TransportType.StdIO),
-                new ServerPipeNameSetting($"{name}.{nameof(ServerPipeNameSetting)}", string.Empty),
+                new ServerPipeNameSetting($"{name}.{nameof(ServerPipeNameSetting)}", pipe),
                 new ServerMessageModeSetting($"{name}.{nameof(ServerMessageModeSetting)}", MessageMode.Message),
                 new TraceLevelSetting($"{name}.{nameof(TraceLevelSetting)}", MessageTraceLevel.Verbose),
                 new ClientHealthCheckIntervalSetting($"{name}.{nameof(ClientHealthCheckIntervalSetting)}", TimeSpan.FromSeconds(10)),
             };
         }
 
-        protected abstract string DefaultServerExecutablePath { get; }
-        public string ServerExecutablePath => Settings.OfType<ServerExecutablePathSetting>().Single().Value.LocalPath;
+        protected ServerStartupSettings(string name, IEnumerable<IRubberduckSetting> settings, IEnumerable<IRubberduckSetting> defaults)
+            : base(name, settings, defaults) { }
 
-        public TransportType ServerTransportType => Settings.OfType<ServerTransportTypeSetting>().Single().Value;
+        public string ServerExecutablePath => GetSetting<ServerExecutablePathSetting>().Value.AbsolutePath;
+        public TransportType ServerTransportType => GetSetting<ServerTransportTypeSetting>().Value;
 
-        protected abstract string DefaultServerPipeName { get; }
-        public string ServerPipeName => Settings.OfType<ServerPipeNameSetting>().Single().Value;
-        public MessageMode ServerMessageMode => Settings.OfType<ServerMessageModeSetting>().Single().Value;
+        public string ServerPipeName => GetSetting<ServerPipeNameSetting>().Value;
+        public MessageMode ServerMessageMode => GetSetting<ServerMessageModeSetting>().Value;
 
-        public MessageTraceLevel ServerTraceLevel => Settings.OfType<TraceLevelSetting>().Single().Value;
+        public MessageTraceLevel ServerTraceLevel => GetSetting<TraceLevelSetting>().Value;
 
-        public TimeSpan ClientHealthCheckInterval => Settings.OfType<ClientHealthCheckIntervalSetting>().Single().Value;
-
-        public override string ToString() => ToProcessStartInfoArguments(0);
-
+        public TimeSpan ClientHealthCheckInterval => GetSetting<ClientHealthCheckIntervalSetting>().Value;
 
         MessageTraceLevel IHealthCheckSettingsProvider.ServerTraceLevel => ServerTraceLevel;
-
         TimeSpan IHealthCheckSettingsProvider.ClientHealthCheckInterval => ClientHealthCheckInterval;
 
-
         MessageTraceLevel IProcessStartInfoArgumentProvider.ServerTraceLevel => ServerTraceLevel;
-
-        string IProcessStartInfoArgumentProvider.ServerExecutablePath => ServerExecutablePath;
-
+        string IProcessStartInfoArgumentProvider.ServerExecutablePath => ServerExecutablePath;        
+        string IProcessStartInfoArgumentProvider.ToProcessStartInfoArguments(long clientProcessId) => ToProcessStartInfoArguments(clientProcessId);
         private string ToProcessStartInfoArguments(long clientProcessId)
         {
             var builder = new StringBuilder();
@@ -112,7 +79,5 @@ namespace Rubberduck.SettingsProvider.Model.ServerStartup
 
             return builder.ToString();
         }
-
-        string IProcessStartInfoArgumentProvider.ToProcessStartInfoArguments(long clientProcessId) => ToProcessStartInfoArguments(clientProcessId);
     }
 }

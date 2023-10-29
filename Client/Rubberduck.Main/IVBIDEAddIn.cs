@@ -10,7 +10,7 @@ namespace Rubberduck.Main
         /// <remarks>
         /// Some hosts connect VBE add-ins in different ways, more or less compliant with how IDTExtensibility2 intended it.
         /// </remarks>
-        void Initialize();
+        Task InitializeAsync();
 
         /// <summary>
         /// Shuts down the add-in. Any subsequent invocation should be no-op.

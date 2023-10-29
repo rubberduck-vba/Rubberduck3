@@ -89,8 +89,8 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<Func<LanguageServerState>>(provider => () => _serverState);
             services.AddSingleton<IServerStateWriter>(provider => provider.GetRequiredService<LanguageServerState>());
 
-            services.AddSingleton<IDefaultSettingsProvider<LanguageServerSettingsGroup>>(provider => LanguageServerSettingsGroup.Default);
-            services.AddSingleton<ISettingsProvider<LanguageServerSettingsGroup>, SettingsService<LanguageServerSettingsGroup>>();
+            services.AddSingleton<IDefaultSettingsProvider<LanguageServerSettings>>(provider => LanguageServerSettings.Default);
+            services.AddSingleton<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
 
             services.AddSingleton<SupportedLanguage, VisualBasicForApplicationsLanguage>();
             services.AddSingleton<DocumentContentStore>();

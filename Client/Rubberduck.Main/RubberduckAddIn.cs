@@ -26,6 +26,7 @@ using System.IO.Abstractions;
 using System.IO.Pipes;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 using EditorClient = OmniSharp.Extensions.LanguageServer.Client.LanguageClient;
 using EditorClientOptions = OmniSharp.Extensions.LanguageServer.Client.LanguageClientOptions;
@@ -95,7 +96,7 @@ namespace Rubberduck.Main
                 : version.ToString();
         }
 
-        public void Initialize()
+        public async Task InitializeAsync()
         {
             if (_isInitialized)
             {

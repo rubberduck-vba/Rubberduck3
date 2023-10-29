@@ -7,8 +7,6 @@
 
         public IsUpdateServerEnabledSetting(bool defaultValue) : this(defaultValue, defaultValue) { }
         public IsUpdateServerEnabledSetting(bool defaultValue, bool value)
-            : base(SettingDataType.BooleanSetting, nameof(IsUpdateServerEnabledSetting), _description, defaultValue, value)
-        {
-        }
+            : base(nameof(IsUpdateServerEnabledSetting), value, SettingDataType.BooleanSetting, defaultValue) { }
     }
 }

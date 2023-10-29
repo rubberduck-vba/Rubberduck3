@@ -16,10 +16,10 @@ namespace Rubberduck.LanguageServer.Handlers.Lifecycle
     public class ShutdownHandler : ShutdownHandlerBase
     {
         private readonly ILogger _logger;
-        private readonly ISettingsProvider<LanguageServerSettingsGroup> _settingsProvider;
+        private readonly ISettingsProvider<LanguageServerSettings> _settingsProvider;
         private readonly IServerStateWriter _serverState;
 
-        public ShutdownHandler(ILogger<ShutdownHandler> logger, ISettingsProvider<LanguageServerSettingsGroup> settings, IServerStateWriter serverState)
+        public ShutdownHandler(ILogger<ShutdownHandler> logger, ISettingsProvider<LanguageServerSettings> settings, IServerStateWriter serverState)
         {
             _logger = logger;
             _settingsProvider = settings;

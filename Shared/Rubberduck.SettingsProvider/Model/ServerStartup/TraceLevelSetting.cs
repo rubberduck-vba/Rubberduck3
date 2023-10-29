@@ -11,8 +11,6 @@ namespace Rubberduck.SettingsProvider.Model.ServerStartup
             : this(name, defaultValue, defaultValue) { }
 
         public TraceLevelSetting(string name, MessageTraceLevel defaultValue, MessageTraceLevel value)
-            : base(SettingDataType.EnumSetting, name, _description, defaultValue, value)
-        {
-        }
+            : base(name, value, SettingDataType.EnumSetting, defaultValue) { }
     }
 }

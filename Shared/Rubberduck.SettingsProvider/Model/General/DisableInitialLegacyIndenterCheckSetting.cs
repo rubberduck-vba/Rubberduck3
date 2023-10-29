@@ -6,12 +6,9 @@
 
         private static readonly string _description = "Allow Rubberduck to scan the registry for legacy Smart Indenter settings after a successful initialization and shutdown; this initial check normally gets automatically disabled otherwise.";
 
-
         public DisableInitialLegacyIndenterCheckSetting() : this(DefaultSettingValue) { }
 
         public DisableInitialLegacyIndenterCheckSetting(bool value)
-            : base(SettingDataType.BooleanSetting, nameof(DisableInitialLegacyIndenterCheckSetting), _description, DefaultSettingValue, value)
-        {
-        }
+            : base(nameof(DisableInitialLegacyIndenterCheckSetting), value, SettingDataType.BooleanSetting, DefaultSettingValue) { }
     }
 }

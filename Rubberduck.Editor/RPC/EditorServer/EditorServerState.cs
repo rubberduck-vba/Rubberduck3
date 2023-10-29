@@ -16,7 +16,7 @@ namespace Rubberduck.Editor.EditorServer
         void AddWorkspaceFolders(IEnumerable<WorkspaceFolder> workspaceFolders);
     }
 
-    public class EditorServerState : ServerState<EditorSettingsGroup, LanguageClientStartupSettings>, ILanguageServerState
+    public class EditorServerState : ServerState<EditorSettings, LanguageClientStartupSettings>, ILanguageServerState
     {
         private readonly IExitHandler _exitHandler;
 

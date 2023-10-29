@@ -4,10 +4,10 @@ using Rubberduck.SettingsProvider.Model;
 
 namespace Rubberduck.TelemetryServer
 {
-    public class TelemetryServerState : ServerState<TelemetryServerSettingsGroup, TelemetryServerStartupSettings>
+    public class TelemetryServerState : ServerState<TelemetryServerSettings, TelemetryServerStartupSettings>
     {
         public TelemetryServerState(
-            ILogger<ServerState<TelemetryServerSettingsGroup, TelemetryServerStartupSettings>> logger,
+            ILogger<ServerState<TelemetryServerSettings, TelemetryServerStartupSettings>> logger,
             IHealthCheckService<TelemetryServerStartupSettings> healthCheck)
             : base(logger, healthCheck)
         {

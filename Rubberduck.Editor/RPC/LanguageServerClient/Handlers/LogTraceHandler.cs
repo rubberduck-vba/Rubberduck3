@@ -15,11 +15,11 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
     public class LogTraceHandler : LogTraceHandlerBase
     {
         private readonly ILogger<WorkspaceFoldersHandler> _logger;
-        private readonly ISettingsProvider<LanguageServerSettingsGroup> _settingsProvider;
+        private readonly ISettingsProvider<LanguageServerSettings> _settingsProvider;
 
         TraceLevel TraceLevel => _settingsProvider.Settings.TraceLevel.ToTraceLevel();
 
-        public LogTraceHandler(ILogger<WorkspaceFoldersHandler> logger, ISettingsProvider<LanguageServerSettingsGroup> settingsProvider)
+        public LogTraceHandler(ILogger<WorkspaceFoldersHandler> logger, ISettingsProvider<LanguageServerSettings> settingsProvider)
         {
             _logger = logger;
             _settingsProvider = settingsProvider;

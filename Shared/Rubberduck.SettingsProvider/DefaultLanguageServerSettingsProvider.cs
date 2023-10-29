@@ -3,8 +3,8 @@ using Rubberduck.SettingsProvider.Model.LanguageServer;
 
 namespace Rubberduck.SettingsProvider
 {
-    public class DefaultLanguageServerSettingsProvider : IDefaultSettingsProvider<LanguageServerSettingsGroup>
+    public class DefaultLanguageServerSettingsProvider : IDefaultSettingsProvider<LanguageServerSettings>
     {
-        public LanguageServerSettingsGroup Default { get; } = LanguageServerSettingsGroup.Default;
+        public LanguageServerSettings Default { get; } = LanguageServerSettings.Default;
     }
 }

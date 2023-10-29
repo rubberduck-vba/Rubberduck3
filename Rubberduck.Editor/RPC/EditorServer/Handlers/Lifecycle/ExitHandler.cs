@@ -21,10 +21,10 @@ namespace Rubberduck.Editor.RPC.EditorServer.Handlers.Lifecycle
         */ 
 
         private readonly ILogger _logger;
-        private readonly ISettingsProvider<GeneralSettingsGroup> _settingsProvider;
+        private readonly ISettingsProvider<GeneralSettings> _settingsProvider;
         private readonly Func<EditorServerState> _state;
 
-        public ExitHandler(ILogger<ExitHandler> logger, ISettingsProvider<GeneralSettingsGroup> settingsProvider, Func<EditorServerState> state)
+        public ExitHandler(ILogger<ExitHandler> logger, ISettingsProvider<GeneralSettings> settingsProvider, Func<EditorServerState> state)
         {
             _logger = logger;
             _settingsProvider = settingsProvider;

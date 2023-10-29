@@ -15,10 +15,10 @@ namespace Rubberduck.TelemetryServer.Handlers.Lifecycle
     public class ExitHandler : ExitHandlerBase
     {
         private readonly ILogger _logger;
-        private readonly ISettingsProvider<TelemetryServerSettingsGroup> _settingsProvider;
+        private readonly ISettingsProvider<TelemetryServerSettings> _settingsProvider;
         private readonly Func<TelemetryServerState> _stateProvider;
 
-        public ExitHandler(ILogger<ExitHandler> logger, ISettingsProvider<TelemetryServerSettingsGroup> settingsProvider, Func<TelemetryServerState> state)
+        public ExitHandler(ILogger<ExitHandler> logger, ISettingsProvider<TelemetryServerSettings> settingsProvider, Func<TelemetryServerState> state)
         {
             _logger = logger;
             _settingsProvider = settingsProvider;

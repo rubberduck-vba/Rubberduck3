@@ -7,8 +7,6 @@
 
         public IsTelemetryEnabledSetting(bool defaultValue) : this(defaultValue, defaultValue) { }
         public IsTelemetryEnabledSetting(bool defaultValue, bool value)
-            : base(SettingDataType.BooleanSetting, nameof(IsTelemetryEnabledSetting), _description, defaultValue, value)
-        {
-        }
+            : base(nameof(IsTelemetryEnabledSetting), value, SettingDataType.BooleanSetting, defaultValue) { }
     }
 }

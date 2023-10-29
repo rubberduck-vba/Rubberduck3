@@ -11,7 +11,7 @@ namespace Rubberduck.SettingsProvider.Model.ServerStartup
             : this(name, defaultValue, defaultValue) { }
 
         public ServerMessageModeSetting(string name, MessageMode defaultValue, MessageMode value)
-            : base(SettingDataType.EnumSetting, name, _description, defaultValue, value, readOnlyRecommended: true)
+            : base(name, value, SettingDataType.EnumSetting, defaultValue, readOnlyRecommended: true)
         {
         }
     }

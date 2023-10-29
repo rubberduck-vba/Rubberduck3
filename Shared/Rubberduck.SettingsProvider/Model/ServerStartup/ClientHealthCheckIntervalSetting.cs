@@ -11,8 +11,6 @@ namespace Rubberduck.SettingsProvider.Model.ServerStartup
             : this(name, defaultValue, defaultValue) { }
 
         public ClientHealthCheckIntervalSetting(string name, TimeSpan defaultValue, TimeSpan value) 
-            : base(SettingDataType.TimeSpanSetting, name, _description, defaultValue, value, readOnlyRecommended: true)
-        {
-        }
+            : base(name, value, SettingDataType.TimeSpanSetting, defaultValue, readOnlyRecommended:true) { }
     }
 }

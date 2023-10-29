@@ -15,7 +15,7 @@ namespace Rubberduck.LanguageServer
         void AddWorkspaceFolders(IEnumerable<WorkspaceFolder> workspaceFolders);
     }
 
-    public class LanguageServerState : ServerState<LanguageServerSettingsGroup, LanguageServerStartupSettings>, ILanguageServerState
+    public class LanguageServerState : ServerState<LanguageServerSettings, LanguageServerStartupSettings>, ILanguageServerState
     {
         private readonly IExitHandler _exitHandler;
 

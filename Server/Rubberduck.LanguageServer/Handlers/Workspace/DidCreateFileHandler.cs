@@ -29,13 +29,13 @@ namespace Rubberduck.LanguageServer.Handlers.Workspace
         private readonly SupportedLanguage _language;
         private readonly DocumentContentStore _contentStore;
         private readonly IFileSystem _fileSystem;
-        private readonly ISettingsProvider<LanguageServerSettingsGroup> _settings;
+        private readonly ISettingsProvider<LanguageServerSettings> _settings;
 
         public DidCreateFileHandler(ILogger<DidCreateFileHandler> logger, ILanguageServerFacade server,
             SupportedLanguage language,
             DocumentContentStore contentStore,
             IFileSystem fileSystem,
-            ISettingsProvider<LanguageServerSettingsGroup> settings)
+            ISettingsProvider<LanguageServerSettings> settings)
         {
             _logger = logger;
             _server = server;

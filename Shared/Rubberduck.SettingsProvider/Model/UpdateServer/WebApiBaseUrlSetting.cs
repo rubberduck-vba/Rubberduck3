@@ -9,8 +9,6 @@ namespace Rubberduck.SettingsProvider.Model
 
         public WebApiBaseUrlSetting(Uri defaultValue) : this(defaultValue, defaultValue) { }
         public WebApiBaseUrlSetting(Uri defaultValue, Uri value)
-            : base(SettingDataType.UriSetting, nameof(WebApiBaseUrlSetting), _description, defaultValue, value, readOnlyRecommended: true)
-        {
-        }
+            : base(nameof(WebApiBaseUrlSetting), value, SettingDataType.UriSetting, defaultValue, readOnlyRecommended: true) { }
     }
 }

@@ -34,7 +34,7 @@ namespace Rubberduck.SettingsProvider
     }
 
     public class SettingsService<TSettings> : ISettingsService<TSettings>
-        where TSettings : NameValueSetting, new()
+        where TSettings : IRubberduckSetting, new()
     {
         private static readonly JsonSerializerOptions _options = new() { PropertyNameCaseInsensitive = true };
 
@@ -44,11 +44,7 @@ namespace Rubberduck.SettingsProvider
         private readonly string _path;
 
         private readonly IServiceProvider _services;
-        private GeneralSettingsGroup GeneralSettings => _services.GetRequiredService<ISettingsProvider<GeneralSettingsGroup>>().Settings;
-        private LanguageClientSettingsGroup LanguageClientSettings => _services.GetRequiredService<ISettingsProvider<LanguageClientSettingsGroup>>().Settings;
-        private LanguageServerSettingsGroup LanguageServerSettings => _services.GetRequiredService<ISettingsProvider<LanguageServerSettingsGroup>>().Settings;
-        private UpdateServerSettingsGroup UpdateServerSettings => _services.GetRequiredService<ISettingsProvider<UpdateServerSettingsGroup>>().Settings;
-        private TelemetryServerSettingsGroup TelemetryServerSettings => _services.GetRequiredService<ISettingsProvider<TelemetryServerSettingsGroup>>().Settings;
+        private GeneralSettings GeneralSettings => _services.GetRequiredService<ISettingsProvider<GeneralSettings>>().Settings;
 
         private TSettings _cached;
 
@@ -92,7 +88,7 @@ namespace Rubberduck.SettingsProvider
             {
                 _cached = value;
                 didChange = true;
-                _logger.LogInformation(traceLevel, "Settings have changed.");
+                _logger.LogInformation(traceLevel, $"{typeof(TSettings).Name} was modified.");
                 OnSettingsChanged(oldValue);
             }
 
@@ -117,24 +113,21 @@ namespace Rubberduck.SettingsProvider
 
                 if (_fileSystem.File.Exists(path))
                 {
-                    if (TimedAction.TryRun(async () =>
+                    if (TimedAction.TryRun(() =>
                     {
-                        await Task.Run(() =>
-                        {
-                            var content = _fileSystem.File.ReadAllText(path);
-                            _logger.LogTrace(traceLevel, "File content successfully read from file.", $"File: '{path}'");
+                        var content = _fileSystem.File.ReadAllText(path);
+                        _logger.LogTrace(traceLevel, "File content successfully read from file.", $"File: '{path}'");
 
-                            if (!string.IsNullOrWhiteSpace(content))
-                            {
-                                var newValue = JsonSerializer.Deserialize<TSettings>(content, _options) ?? new();
-                                _logger.LogTrace(traceLevel, "File content successfully deserialized.");
-                                TrySetValue(newValue);
-                            }
-                            else
-                            {
-                                _logger.LogWarning(traceLevel, "File was found, but no content was loaded.");
-                            }
-                        });
+                        if (!string.IsNullOrWhiteSpace(content))
+                        {
+                            var newValue = JsonSerializer.Deserialize<TSettings>(content, _options) ?? new();
+                            _logger.LogTrace(traceLevel, "File content successfully deserialized.");
+                            TrySetValue(newValue);
+                        }
+                        else
+                        {
+                            _logger.LogWarning(traceLevel, "File was found, but no content was loaded.");
+                        }
                     }, out var elapsed, out var exception))
                     {
                         _logger.LogPerformance(traceLevel, "Deserialized settings from file.", elapsed);

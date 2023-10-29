@@ -7,8 +7,6 @@
 
         public IncludePreReleasesSetting(bool defaultValue) : this(defaultValue, defaultValue) { }
         public IncludePreReleasesSetting(bool defaultValue, bool value)
-            : base(SettingDataType.BooleanSetting, nameof(IncludePreReleasesSetting), _description, defaultValue, value)
-        {
-        }
+            : base(nameof(IncludePreReleasesSetting), value, SettingDataType.BooleanSetting, defaultValue) { }
     }
 }

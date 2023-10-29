@@ -11,8 +11,6 @@ namespace Rubberduck.SettingsProvider.Model.ServerStartup
             : this(name, defaultValue, defaultValue) { }
 
         public ServerTransportTypeSetting(string name, TransportType defaultValue, TransportType value)
-            : base(SettingDataType.EnumSetting, name, _description, defaultValue, value, readOnlyRecommended: true)
-        {
-        }
+            : base(name, value, SettingDataType.EnumSetting, defaultValue, readOnlyRecommended: true) { }
     }
 }

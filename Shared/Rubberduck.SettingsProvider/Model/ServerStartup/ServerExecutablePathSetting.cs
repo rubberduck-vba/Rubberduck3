@@ -11,7 +11,7 @@ namespace Rubberduck.SettingsProvider.Model.ServerStartup
             : this(name, defaultValue, defaultValue) { }
 
         public ServerExecutablePathSetting(string name, Uri defaultValue, Uri value) 
-            : base(SettingDataType.UriSetting, name, _description, defaultValue, value, readOnlyRecommended: true)
+            : base(name, value, SettingDataType.UriSetting, defaultValue, readOnlyRecommended: true)
         {
         }
     }

@@ -10,13 +10,9 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
         private static readonly string _description = "The default location for new projects hosted in a document that isn't saved yet.";
 
         public DefaultWorkspaceRootSetting()
-            : base(SettingDataType.UriSetting, nameof(DefaultWorkspaceRootSetting), _description, DefaultSettingValue)
-        {
-        }
+            : base(nameof(DefaultWorkspaceRootSetting), DefaultSettingValue, SettingDataType.UriSetting, DefaultSettingValue) { }
 
         public DefaultWorkspaceRootSetting(Uri value)
-            : base(SettingDataType.UriSetting, nameof(DefaultWorkspaceRootSetting), _description, DefaultSettingValue, value)
-        {
-        }
+            : base(nameof(DefaultWorkspaceRootSetting), value, SettingDataType.UriSetting, DefaultSettingValue) { }
     }
 }

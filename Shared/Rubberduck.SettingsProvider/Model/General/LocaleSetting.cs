@@ -10,8 +10,6 @@
         public LocaleSetting() : this(DefaultSettingValue) { }
 
         public LocaleSetting(string value)
-            : base(SettingDataType.TextSetting, nameof(LocaleSetting), _description, DefaultSettingValue, value)
-        {
-        }
+            : base(nameof(LocaleSetting), value, SettingDataType.TextSetting, DefaultSettingValue) { }
     }
 }

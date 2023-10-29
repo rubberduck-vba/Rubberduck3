@@ -20,8 +20,12 @@ namespace Rubberduck.ServerPlatform.Model.Telemetry
         public EventTelemetry(EventTelemetryName name, TelemetryEventParams request, TelemetryContext context) 
             : base(TelemetryEventName.Event, request, context) 
         {
+            Key = name;
             Name = name.ToString();
         }
+
+        [JsonIgnore]
+        public EventTelemetryName Key { get; init; }
 
         /// <summary>
         /// The name of the event.

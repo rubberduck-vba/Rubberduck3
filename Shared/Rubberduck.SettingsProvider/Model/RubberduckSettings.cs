@@ -1,40 +1,47 @@
 ﻿using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.SettingsProvider.Model
 {
-    public record class RubberduckSettings : NameValueSetting, IDefaultSettingsProvider<RubberduckSettings>
+    public record class RubberduckSettings : SettingGroup, IDefaultSettingsProvider<RubberduckSettings>
     {
+        // TODO localize
+        private static readonly string _description = "A container for all configuration settings.";
+        private static readonly IRubberduckSetting[] DefaultSettings =
+            new IRubberduckSetting[]
+            {
+                new GeneralSettings(),
+                new LanguageClientSettings(),
+                new LanguageServerSettings(),
+                new UpdateServerSettingsGroup(),
+                new TelemetryServerSettings(),
+            };
+
         public RubberduckSettings()
+            : base(nameof(RubberduckSettings), DefaultSettings, DefaultSettings) { }
+
+        public RubberduckSettings(params IRubberduckSetting[] settings)
+            : base(nameof(RubberduckSettings), settings, DefaultSettings) { }
+
+        public RubberduckSettings(IEnumerable<IRubberduckSetting> settings)
+            : base(nameof(RubberduckSettings), settings, DefaultSettings) { }
+
+        public RubberduckSettings(RubberduckSettings original, IEnumerable<IRubberduckSetting> settings)
+            : base(original)
         {
-            Name = nameof(RubberduckSettings);
+            Value = settings.ToArray();
         }
 
-        public RubberduckSettings(GeneralSettingsGroup generalSettings, LanguageClientSettingsGroup languageClientSettings, LanguageServerSettingsGroup languageServerSettings, UpdateServerSettingsGroup updateServerSettings, TelemetryServerSettingsGroup telemetryServerSettings)
-        {
-            Name = nameof(RubberduckSettings);
+        public GeneralSettings GeneralSettings => GetSetting<GeneralSettings>();
+        public LanguageClientSettings LanguageClientSettings => GetSetting<LanguageClientSettings>();
+        public LanguageServerSettings LanguageServerSettings => GetSetting<LanguageServerSettings>();
+        public UpdateServerSettingsGroup UpdateServerSettings => GetSetting<UpdateServerSettingsGroup>();
+        public TelemetryServerSettings TelemetryServerSettings => GetSetting<TelemetryServerSettings>();
 
-            GeneralSettings = generalSettings;
-            LanguageClientSettings = languageClientSettings;
-            LanguageServerSettings = languageServerSettings;
-            UpdateServerSettings = updateServerSettings;
-            TelemetryServerSettings = telemetryServerSettings;
-        }
-
-        public GeneralSettingsGroup GeneralSettings { get; init; } = new();
-        public LanguageClientSettingsGroup LanguageClientSettings { get; init; } = new();
-        public LanguageServerSettingsGroup LanguageServerSettings { get; init; } = new();
-        public UpdateServerSettingsGroup UpdateServerSettings { get; init; } = new();
-        public TelemetryServerSettingsGroup TelemetryServerSettings { get; init; } = new();
-
-        public static RubberduckSettings Default { get; } = new();
-
+        public static RubberduckSettings Default { get; } = new(DefaultSettings);
         RubberduckSettings IDefaultSettingsProvider<RubberduckSettings>.Default => Default;
-
-        public override object GetValue()
-        {
-            return this;
-        }
     }
 }

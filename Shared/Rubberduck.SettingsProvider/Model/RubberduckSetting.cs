@@ -1,59 +1,70 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model
 {
-    public abstract record class NameValueSetting
+    /// <summary>
+    /// Non-generic interface for generic type constraints.
+    /// </summary>
+    public interface IRubberduckSetting 
     {
-        public string Name { get; init; }
-        public abstract object GetValue();
-    }
-
-    public abstract record class RubberduckSetting : NameValueSetting
-    {
-        public RubberduckSetting(SettingDataType type, string name, string description, bool readOnlyRecommended = false)
-        {
-            SettingDataType = type;
-            Name = name;
-            Description = description;
-            ReadOnlyRecommended = readOnlyRecommended;
-        }
-
+        /// <summary>
+        /// The resource key for this setting.
+        /// </summary>
+        public string NameKey { get; init; }
+        /// <summary>
+        /// The supported data type of the setting value.
+        /// </summary>
         [JsonIgnore]
         public SettingDataType SettingDataType { get; init; }
-        [JsonIgnore]
-        public string Description { get; init; }
+        /// <summary>
+        /// Whether this setting is probably better left alone, but can still be changed if the user knows what they're doing.
+        /// </summary>
         [JsonIgnore]
         public bool ReadOnlyRecommended { get; init; }
     }
 
-    public record class RubberduckSetting<TValue> : RubberduckSetting
+    public abstract record class RubberduckSetting<TValue> : IRubberduckSetting
     {
-        public RubberduckSetting(SettingDataType type, string name, string description, TValue defaultValue)
-            : this(type, name, description, defaultValue, defaultValue) { }
+        /// <summary>
+        /// Default constructor for deserialization.
+        /// </summary>
+        protected RubberduckSetting() { }
 
-        public RubberduckSetting(SettingDataType type, string name, string description, TValue defaultValue, TValue value, bool readOnlyRecommended = false)
-            : base(type, name, description, readOnlyRecommended)
+        protected RubberduckSetting(string nameKey, TValue? value, SettingDataType settingDataType, TValue defaultValue, bool readOnlyRecommended = false)
         {
-            //if (SettingDataTypeMap.TypeMap[type] != typeof(TValue))
-            //{
-            //    throw new InvalidCastException();
-            //}
-
+            NameKey = nameKey;
+            Value = value ?? defaultValue;
+            SettingDataType = settingDataType;
             DefaultValue = defaultValue;
-            Value = value;
+            ReadOnlyRecommended = readOnlyRecommended;
         }
 
-        public TValue DefaultValue { get; init; }
+        /// <summary>
+        /// The resource key for this setting.
+        /// </summary>
+        public string NameKey { get; init; }
 
+        /// <summary>
+        /// The current value/configuration of this setting.
+        /// </summary>
         public TValue Value { get; init; }
 
-        public override object GetValue()
-        {
-            return Value ?? throw new NullReferenceException();
-        }
+        /// <summary>
+        /// The value returned by <c>Value</c> absent any initialization.
+        /// </summary>
+        [JsonIgnore]
+        public TValue DefaultValue { get; init; }
 
-        public override string ToString() => Value?.ToString() ?? string.Empty;
+        /// <summary>
+        /// The supported data type of the setting value.
+        /// </summary>
+        [JsonIgnore]
+        public SettingDataType SettingDataType { get; init; }
+
+        /// <summary>
+        /// Whether this setting is probably better left alone, but can still be changed if the user knows what they're doing.
+        /// </summary>
+        [JsonIgnore]
+        public bool ReadOnlyRecommended { get; init; }
     }
 }

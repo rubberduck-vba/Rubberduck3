@@ -7,8 +7,6 @@
 
         public SendTraceTelemetrySetting(bool defaultValue) : this(defaultValue, defaultValue) { }
         public SendTraceTelemetrySetting(bool defaultValue, bool value)
-            : base(SettingDataType.BooleanSetting, nameof(SendTraceTelemetrySetting), _description, defaultValue, value)
-        {
-        }
+            : base(nameof(SendTraceTelemetrySetting), value, SettingDataType.BooleanSetting, defaultValue) { }
     }
 }

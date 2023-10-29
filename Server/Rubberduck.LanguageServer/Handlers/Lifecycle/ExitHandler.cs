@@ -2,11 +2,9 @@
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
-using Rubberduck.LanguageServer;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
 using System;
@@ -23,10 +21,10 @@ namespace Rubberduck.LanguageServer.Handlers.Lifecycle
         */ 
 
         private readonly ILogger _logger;
-        private readonly ISettingsProvider<LanguageServerSettingsGroup> _settingsProvider;
+        private readonly ISettingsProvider<LanguageServerSettings> _settingsProvider;
         private readonly Func<LanguageServerState> _state;
 
-        public ExitHandler(ILogger<ExitHandler> logger, ISettingsProvider<LanguageServerSettingsGroup> settingsProvider, Func<LanguageServerState> state)
+        public ExitHandler(ILogger<ExitHandler> logger, ISettingsProvider<LanguageServerSettings> settingsProvider, Func<LanguageServerState> state)
         {
             _logger = logger;
             _settingsProvider = settingsProvider;

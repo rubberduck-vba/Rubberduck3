@@ -6,12 +6,9 @@
 
         private static readonly string _description = "Allow the minimum log level to remain at a verbose TRACE level after a successful initialization and shutdown; logging normally gets automatically disabled otherwise.";
 
-
         public DisableInitialLogLevelResetSetting() : this(DefaultSettingValue) { }
 
         public DisableInitialLogLevelResetSetting(bool value)
-            : base(SettingDataType.BooleanSetting, nameof(DisableInitialLogLevelResetSetting), _description, DefaultSettingValue, value)
-        {
-        }
+            : base(nameof(DisableInitialLogLevelResetSetting), value, SettingDataType.BooleanSetting, DefaultSettingValue) { }
     }
 }
