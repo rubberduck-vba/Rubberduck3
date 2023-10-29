@@ -34,7 +34,7 @@ namespace Rubberduck.SettingsProvider
     }
 
     public class SettingsService<TSettings> : ISettingsService<TSettings>
-        where TSettings : IRubberduckSetting, new()
+        where TSettings : RubberduckSetting, new()
     {
         private static readonly JsonSerializerOptions _options = new() { PropertyNameCaseInsensitive = true };
 

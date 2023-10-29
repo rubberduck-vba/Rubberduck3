@@ -2,7 +2,7 @@
 
 namespace Rubberduck.SettingsProvider.Model.ServerStartup
 {
-    public record class ServerMessageModeSetting : RubberduckSetting<MessageMode>
+    public record class ServerMessageModeSetting : TypedRubberduckSetting<MessageMode>
     {
         // TODO localize
         private static readonly string _description = "The serialization mode of the JSON-RPC messages, when transport type uses pipes.";

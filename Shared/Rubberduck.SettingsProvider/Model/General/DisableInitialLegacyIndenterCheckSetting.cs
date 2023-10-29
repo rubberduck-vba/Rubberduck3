@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.SettingsProvider.Model
 {
-    public record class DisableInitialLegacyIndenterCheckSetting : RubberduckSetting<bool>
+    public record class DisableInitialLegacyIndenterCheckSetting : TypedRubberduckSetting<bool>
     {
         public static bool DefaultSettingValue { get; } = false;
 

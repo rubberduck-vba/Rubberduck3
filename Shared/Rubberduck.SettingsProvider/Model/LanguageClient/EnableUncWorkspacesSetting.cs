@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.SettingsProvider.Model.LanguageClient
 {
-    public record class EnableUncWorkspacesSetting : RubberduckSetting<bool>
+    public record class EnableUncWorkspacesSetting : TypedRubberduckSetting<bool>
     {
         public static bool DefaultSettingValue { get; } = false;
 

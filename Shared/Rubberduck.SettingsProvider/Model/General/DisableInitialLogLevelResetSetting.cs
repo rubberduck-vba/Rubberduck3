@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.SettingsProvider.Model
 {
-    public record class DisableInitialLogLevelResetSetting : RubberduckSetting<bool>
+    public record class DisableInitialLogLevelResetSetting : TypedRubberduckSetting<bool>
     {
         public static bool DefaultSettingValue { get; } = false;
 

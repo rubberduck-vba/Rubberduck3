@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.SettingsProvider.Model.LanguageClient
 {
-    public record class RequireDefaultWorkspaceRootHostSetting : RubberduckSetting<bool>
+    public record class RequireDefaultWorkspaceRootHostSetting : TypedRubberduckSetting<bool>
     {
         public static bool DefaultSettingValue { get; } = true;
 

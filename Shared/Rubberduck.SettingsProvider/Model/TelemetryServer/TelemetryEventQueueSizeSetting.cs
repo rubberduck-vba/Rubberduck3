@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.SettingsProvider.Model
 {
-    public record class TelemetryEventQueueSizeSetting : RubberduckSetting<double>
+    public record class TelemetryEventQueueSizeSetting : TypedRubberduckSetting<double>
     {
         // TODO localize
         private static readonly string _description = "The maximum number of telemetry events transmission payload.";

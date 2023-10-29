@@ -2,7 +2,7 @@
 
 namespace Rubberduck.SettingsProvider.Model.LanguageClient
 {
-    public record class DefaultWorkspaceRootSetting : RubberduckSetting<Uri>
+    public record class DefaultWorkspaceRootSetting : TypedRubberduckSetting<Uri>
     {
         public static Uri DefaultSettingValue { get; } = new(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Rubberduck", "Workspaces"));
 

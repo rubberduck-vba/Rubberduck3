@@ -2,7 +2,7 @@
 
 namespace Rubberduck.SettingsProvider.Model.ServerStartup
 {
-    public record class ServerTransportTypeSetting : RubberduckSetting<TransportType>
+    public record class ServerTransportTypeSetting : TypedRubberduckSetting<TransportType>
     {
         // TODO localize
         private static readonly string _description = "The type of communication channel between this server and its client.";

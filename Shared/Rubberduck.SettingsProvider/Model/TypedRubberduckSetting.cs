@@ -1,16 +1,21 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model
 {
     /// <summary>
     /// Non-generic interface for generic type constraints.
     /// </summary>
-    public interface IRubberduckSetting 
+    public record class RubberduckSetting 
     {
         /// <summary>
         /// The resource key for this setting.
         /// </summary>
-        public string NameKey { get; init; }
+        public string Key { get; init; }
+        /// <summary>
+        /// The current value of this setting.
+        /// </summary>
+        public virtual object Value { get; init; }
         /// <summary>
         /// The supported data type of the setting value.
         /// </summary>
@@ -23,31 +28,25 @@ namespace Rubberduck.SettingsProvider.Model
         public bool ReadOnlyRecommended { get; init; }
     }
 
-    public abstract record class RubberduckSetting<TValue> : IRubberduckSetting
+    public abstract record class TypedRubberduckSetting<TValue> : RubberduckSetting
     {
         /// <summary>
         /// Default constructor for deserialization.
         /// </summary>
-        protected RubberduckSetting() { }
+        protected TypedRubberduckSetting() { }
 
-        protected RubberduckSetting(string nameKey, TValue? value, SettingDataType settingDataType, TValue defaultValue, bool readOnlyRecommended = false)
+        protected TypedRubberduckSetting(string key, TValue? value, SettingDataType settingDataType, TValue defaultValue, bool readOnlyRecommended = false)
         {
-            NameKey = nameKey;
-            Value = value ?? defaultValue;
+            Key = key;
+            TypedValue = value ?? defaultValue;
             SettingDataType = settingDataType;
             DefaultValue = defaultValue;
             ReadOnlyRecommended = readOnlyRecommended;
         }
-
-        /// <summary>
-        /// The resource key for this setting.
-        /// </summary>
-        public string NameKey { get; init; }
-
         /// <summary>
         /// The current value/configuration of this setting.
         /// </summary>
-        public TValue Value { get; init; }
+        public TValue TypedValue { get; init; }
 
         /// <summary>
         /// The value returned by <c>Value</c> absent any initialization.
@@ -55,16 +54,6 @@ namespace Rubberduck.SettingsProvider.Model
         [JsonIgnore]
         public TValue DefaultValue { get; init; }
 
-        /// <summary>
-        /// The supported data type of the setting value.
-        /// </summary>
-        [JsonIgnore]
-        public SettingDataType SettingDataType { get; init; }
-
-        /// <summary>
-        /// Whether this setting is probably better left alone, but can still be changed if the user knows what they're doing.
-        /// </summary>
-        [JsonIgnore]
-        public bool ReadOnlyRecommended { get; init; }
+        public override object Value { get => TypedValue!; init => TypedValue = JsonSerializer.Deserialize<TValue>(value.ToString())!; }
     }
 }

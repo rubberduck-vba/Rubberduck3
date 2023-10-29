@@ -51,8 +51,8 @@ namespace Rubberduck.UpdateServer
             {
                 var services = new ServiceCollection();
                 services.AddLogging(ConfigureLogging);
-                services.AddSingleton<IDefaultSettingsProvider<UpdateServerSettingsGroup>>(provider => UpdateServerSettingsGroup.Default);
-                services.AddSingleton<ISettingsProvider<UpdateServerSettingsGroup>, SettingsService<UpdateServerSettingsGroup>>();
+                services.AddSingleton<IDefaultSettingsProvider<UpdateServerSettings>>(provider => UpdateServerSettings.Default);
+                services.AddSingleton<ISettingsProvider<UpdateServerSettings>, SettingsService<UpdateServerSettings>>();
                 ConfigureServices(services);
 
                 _serviceProvider = services.BuildServiceProvider();

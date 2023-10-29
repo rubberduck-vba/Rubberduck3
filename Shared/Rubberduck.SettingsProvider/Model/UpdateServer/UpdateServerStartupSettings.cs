@@ -10,17 +10,17 @@ namespace Rubberduck.SettingsProvider.Model
     {
         // TODO localize
         private static readonly string _description = "Configures the command-line startup options of the update server.";
-        private static readonly IRubberduckSetting[] DefaultSettings = GetDefaultSettings(nameof(UpdateServerStartupSettings),
+        private static readonly RubberduckSetting[] DefaultSettings = GetDefaultSettings(nameof(UpdateServerStartupSettings),
             ServerPlatformSettings.UpdateServerDefaultPipeName,
             @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Rubberduck\Update\{ServerPlatformSettings.UpdateServerExecutable}");
 
         public UpdateServerStartupSettings() 
             : base(nameof(UpdateServerStartupSettings), DefaultSettings, DefaultSettings) { }
 
-        public UpdateServerStartupSettings(params IRubberduckSetting[] settings)
+        public UpdateServerStartupSettings(params RubberduckSetting[] settings)
             : base(nameof(UpdateServerStartupSettings), settings, DefaultSettings) { }
 
-        public UpdateServerStartupSettings(IEnumerable<IRubberduckSetting> settings)
+        public UpdateServerStartupSettings(IEnumerable<RubberduckSetting> settings)
             : base(nameof(UpdateServerStartupSettings), settings.ToArray(), DefaultSettings) { }
 
     }

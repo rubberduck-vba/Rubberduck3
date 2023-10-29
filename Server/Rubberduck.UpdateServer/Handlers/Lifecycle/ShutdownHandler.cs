@@ -15,10 +15,10 @@ namespace Rubberduck.UpdateServer.Handlers.Lifecycle
     public class ShutdownHandler : ShutdownHandlerBase
     {
         private readonly ILogger _logger;
-        private readonly ISettingsProvider<UpdateServerSettingsGroup> _settingsProvider;
+        private readonly ISettingsProvider<UpdateServerSettings> _settingsProvider;
         private readonly IServerStateWriter _serverState;
 
-        public ShutdownHandler(ILogger<ShutdownHandler> logger, ISettingsProvider<UpdateServerSettingsGroup> settings, IServerStateWriter serverState)
+        public ShutdownHandler(ILogger<ShutdownHandler> logger, ISettingsProvider<UpdateServerSettings> settings, IServerStateWriter serverState)
         {
             _logger = logger;
             _settingsProvider = settings;

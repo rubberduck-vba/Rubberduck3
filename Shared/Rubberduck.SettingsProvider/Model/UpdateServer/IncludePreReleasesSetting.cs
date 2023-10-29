@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.SettingsProvider.Model
 {
-    public record class IncludePreReleasesSetting : RubberduckSetting<bool>
+    public record class IncludePreReleasesSetting : TypedRubberduckSetting<bool>
     {
         // TODO localize
         private static readonly string _description = "Determines whether checking for a newer version includes or ignores pre-release builds.";

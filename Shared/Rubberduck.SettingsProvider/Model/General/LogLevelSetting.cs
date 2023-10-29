@@ -2,7 +2,7 @@
 
 namespace Rubberduck.SettingsProvider.Model
 {
-    public record class LogLevelSetting : RubberduckSetting<LogLevel>
+    public record class LogLevelSetting : TypedRubberduckSetting<LogLevel>
     {
         public static LogLevel DefaultSettingValue { get; } = LogLevel.Trace;
 

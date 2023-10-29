@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.SettingsProvider.Model
 {
-    public record class SendTraceTelemetrySetting : RubberduckSetting<bool>
+    public record class SendTraceTelemetrySetting : TypedRubberduckSetting<bool>
     {
         // TODO localize
         private static readonly string _description = "Determines whether trace telemetry data is transmitted.";

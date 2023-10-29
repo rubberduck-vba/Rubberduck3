@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.SettingsProvider.Model.LanguageClient
 {
-    public record class RequireAddInHostSetting : RubberduckSetting<bool>
+    public record class RequireAddInHostSetting : TypedRubberduckSetting<bool>
     {
         // TODO localize
         private static readonly string _description = "Whether the Rubberduck Editor is allowed to run without a VBIDE-connected Rubberduck add-in host; disables host-dependent features when false.";

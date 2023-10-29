@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.SettingsProvider.Model
 {
-    public record class IsUpdateServerEnabledSetting : RubberduckSetting<bool>
+    public record class IsUpdateServerEnabledSetting : TypedRubberduckSetting<bool>
     {
         // TODO localize
         private static readonly string _description = "Determines whether the update server is enabled at all.";

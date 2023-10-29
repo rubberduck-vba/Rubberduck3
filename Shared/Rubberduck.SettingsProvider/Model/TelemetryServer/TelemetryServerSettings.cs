@@ -4,17 +4,17 @@ using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model
 {
-    public record class TelemetryServerSettings : SettingGroup, IDefaultSettingsProvider<TelemetryServerSettings>
+    public record class TelemetryServerSettings : TypedSettingGroup, IDefaultSettingsProvider<TelemetryServerSettings>
     {
         // TODO localize
         private static readonly string _description = "Configures telemetry server options.";
-        private static readonly IRubberduckSetting[] DefaultSettings = 
-            new IRubberduckSetting[]
+        private static readonly RubberduckSetting[] DefaultSettings = 
+            new RubberduckSetting[]
             {
                 new TelemetryServerStartupSettings(),
                 new TraceLevelSetting(nameof(TraceLevelSetting), MessageTraceLevel.Verbose),
@@ -34,47 +34,59 @@ namespace Rubberduck.SettingsProvider.Model
         public TelemetryServerSettings() 
             : base(nameof(TelemetryServerSettings), DefaultSettings, DefaultSettings) { }
 
-        public TelemetryServerSettings(TelemetryServerSettings original, IEnumerable<IRubberduckSetting>? settings)
+        public TelemetryServerSettings(TelemetryServerSettings original, IEnumerable<RubberduckSetting>? settings)
             : base(original) 
         {
             Value = settings?.ToArray() ?? DefaultSettings;
         }
 
-        public TelemetryServerSettings(params IRubberduckSetting[] settings)
+        public TelemetryServerSettings(params RubberduckSetting[] settings)
             : base(nameof(TelemetryServerSettings), settings, DefaultSettings) { }
 
-        public TelemetryServerSettings(IEnumerable<IRubberduckSetting> settings)
+        public TelemetryServerSettings(IEnumerable<RubberduckSetting> settings)
             : base(nameof(TelemetryServerSettings), settings, DefaultSettings) { }
 
 
-        public bool IsEnabled => GetSetting<IsTelemetryEnabledSetting>().Value;
-        public MessageTraceLevel TraceLevel => GetSetting<TraceLevelSetting>().Value;
-        public bool StreamTransmission => GetSetting<StreamTransmissionSetting>().Value;
-        public int QueueSize => (int)GetSetting<TelemetryEventQueueSizeSetting>().Value;
-        public bool SendEventTelemetry => GetSetting<SendEventTelemetrySetting>().Value;
-        public bool SendExceptionTelemetry => GetSetting<SendExceptionTelemetrySetting>().Value;
-        public bool SendMetricTelemetry => GetSetting<SendMetricTelemetrySetting>().Value;
-        public bool SendTraceTelemetry => GetSetting<SendTraceTelemetrySetting>().Value;
+        [JsonIgnore]
+        public bool IsEnabled => GetSetting<IsTelemetryEnabledSetting>().TypedValue;
+        [JsonIgnore]
+        public MessageTraceLevel TraceLevel => GetSetting<TraceLevelSetting>().TypedValue;
+        [JsonIgnore]
+        public bool StreamTransmission => GetSetting<StreamTransmissionSetting>().TypedValue;
+        [JsonIgnore]
+        public int QueueSize => (int)GetSetting<TelemetryEventQueueSizeSetting>().TypedValue;
+        [JsonIgnore]
+        public bool SendEventTelemetry => GetSetting<SendEventTelemetrySetting>().TypedValue;
+        [JsonIgnore]
+        public bool SendExceptionTelemetry => GetSetting<SendExceptionTelemetrySetting>().TypedValue;
+        [JsonIgnore]
+        public bool SendMetricTelemetry => GetSetting<SendMetricTelemetrySetting>().TypedValue;
+        [JsonIgnore]
+        public bool SendTraceTelemetry => GetSetting<SendTraceTelemetrySetting>().TypedValue;
+        [JsonIgnore]
         public TelemetryServerStartupSettings StartupSettings => GetSetting<TelemetryServerStartupSettings>();
+        [JsonIgnore]
         public EventTelemetrySettings EventTelemetrySettings => GetSetting<EventTelemetrySettings>();
+        [JsonIgnore]
         public ExceptionTelemetrySettings ExceptionTelemetrySettings => GetSetting<ExceptionTelemetrySettings>();
+        [JsonIgnore]
         public MetricTelemetrySettings MetricTelemetrySettings => GetSetting<MetricTelemetrySettings>();
+        [JsonIgnore]
         public TraceTelemetrySettings TraceTelemetrySettings => GetSetting<TraceTelemetrySettings>();
 
         public static TelemetryServerSettings Default { get; } = new(DefaultSettings);
         TelemetryServerSettings IDefaultSettingsProvider<TelemetryServerSettings>.Default => Default;
     }
 
-    public abstract record class TelemetrySettingGroup<TKey> : SettingGroup
+    public abstract record class TelemetrySettingGroup<TKey> : EnumSettingGroup<TKey>
+        where TKey : struct, Enum
     {
         public TelemetrySettingGroup(string name, IEnumerable<TelemetrySetting> defaults)
             : base(name, defaults, defaults) { }
         public TelemetrySettingGroup(string name, IEnumerable<TelemetrySetting> settings, IEnumerable<TelemetrySetting> defaults)
             : base(name, settings, defaults) { }
 
-        public TelemetrySetting GetSetting(TKey key) => Value.OfType<TelemetrySetting>().Single(e => e.NameKey == key!.ToString());
-
-        public bool IsEnabled(TKey key) => GetSetting(key).Value;
+        public bool IsEnabled(TKey key) => ((TelemetrySetting)GetSetting(key)).TypedValue;
     }
 
     public record class EventTelemetrySettings : TelemetrySettingGroup<EventTelemetryName>
@@ -122,7 +134,7 @@ namespace Rubberduck.SettingsProvider.Model
             : base(nameof(TraceTelemetrySettings), settings, DefaultSettings) { }
     }
 
-    public abstract record class TelemetrySetting : RubberduckSetting<bool>
+    public abstract record class TelemetrySetting : TypedRubberduckSetting<bool>
     {
         protected TelemetrySetting(string name, bool defaultValue, bool readonlyRecommended = false)
             : base(name, defaultValue, SettingDataType.BooleanSetting, defaultValue, readonlyRecommended) { }
@@ -131,24 +143,24 @@ namespace Rubberduck.SettingsProvider.Model
     public record class EventTelemetrySetting : TelemetrySetting
     {
         public EventTelemetrySetting(EventTelemetryName name, bool defaultValue, bool readonlyRecommended = false)
-            : base($"{nameof(EventTelemetrySetting)}.{name}", defaultValue, readonlyRecommended) { }
+            : base(name.ToString(), defaultValue, readonlyRecommended) { }
     }
 
     public record class ExceptionTelemetrySetting : TelemetrySetting
     {
         public ExceptionTelemetrySetting(LogLevel name, bool defaultValue, bool readonlyRecommended = true)
-            : base($"{nameof(ExceptionTelemetrySetting)}.{name}", defaultValue, readonlyRecommended) { }
+            : base(name.ToString(), defaultValue, readonlyRecommended) { }
     }
 
     public record class MetricTelemetrySetting : TelemetrySetting
     {
         public MetricTelemetrySetting(MetricTelemetryName name, bool defaultValue, bool readonlyRecommended = false)
-            : base($"{nameof(MetricTelemetrySetting)}.{name}", defaultValue, readonlyRecommended) { }
+            : base(name.ToString(), defaultValue, readonlyRecommended) { }
     }
 
     public record class TraceTelemetrySetting : TelemetrySetting
     {
         public TraceTelemetrySetting(LogLevel name, bool defaultValue, bool readonlyRecommended = false)
-            : base($"{nameof(TraceTelemetrySetting)}.{name}", defaultValue, readonlyRecommended) { }
+            : base(name.ToString(), defaultValue, readonlyRecommended) { }
     }
 }

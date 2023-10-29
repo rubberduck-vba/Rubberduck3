@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.SettingsProvider.Model
 {
-    public record class ShowSplashSetting : RubberduckSetting<bool>
+    public record class ShowSplashSetting : TypedRubberduckSetting<bool>
     {
         public static bool DefaultSettingValue { get; } = true;
 

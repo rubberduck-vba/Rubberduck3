@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.SettingsProvider.Model.ServerStartup
 {
-    public record class ServerPipeNameSetting : RubberduckSetting<string>
+    public record class ServerPipeNameSetting : TypedRubberduckSetting<string>
     {
         // TODO localize
         private static readonly string _description = "The name of the named pipe, when transport type uses pipes.";

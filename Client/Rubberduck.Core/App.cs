@@ -131,7 +131,7 @@ namespace Rubberduck.Core
             }
 
             var updatedSettings = new RubberduckSettings(
-                new GeneralSettings(currentSettings.GeneralSettings, new IRubberduckSetting[] { new LogLevelSetting(LogLevel.None) }),
+                new GeneralSettings(currentSettings.GeneralSettings, new RubberduckSetting[] { new LogLevelSetting(LogLevel.None) }),
                 currentSettings.LanguageClientSettings,
                 currentSettings.LanguageServerSettings,
                 currentSettings.UpdateServerSettings,
@@ -186,7 +186,7 @@ namespace Rubberduck.Core
                 _messageBox.ShowMessage(MessageModel.For(exception));
 
                 var updatedSettings = new RubberduckSettings(
-                    new GeneralSettings(currentSettings.GeneralSettings, new IRubberduckSetting[] { new LogLevelSetting(LogLevel.None) }),
+                    new GeneralSettings(currentSettings.GeneralSettings, new RubberduckSetting[] { new LogLevelSetting(LogLevel.None) }),
                     currentSettings.LanguageClientSettings,
                     currentSettings.LanguageServerSettings,
                     currentSettings.UpdateServerSettings,

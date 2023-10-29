@@ -2,15 +2,16 @@
 using Rubberduck.SettingsProvider.Model.ServerStartup;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model.LanguageServer
 {
-    public record class LanguageServerSettings : SettingGroup, IDefaultSettingsProvider<LanguageServerSettings>
+    public record class LanguageServerSettings : TypedSettingGroup, IDefaultSettingsProvider<LanguageServerSettings>
     {
         // TODO localize
         private static readonly string _description = "Configures LSP (Language Server Protocol) server options.";
-        private static readonly IRubberduckSetting[] DefaultSettings =
-            new IRubberduckSetting[]
+        private static readonly RubberduckSetting[] DefaultSettings =
+            new RubberduckSetting[]
             {
                 new TraceLevelSetting(nameof(TraceLevelSetting), MessageTraceLevel.Verbose),
                 new LanguageServerStartupSettings(),
@@ -19,20 +20,22 @@ namespace Rubberduck.SettingsProvider.Model.LanguageServer
         public LanguageServerSettings() 
             : base(nameof(LanguageServerSettings), DefaultSettings, DefaultSettings) { }
 
-        public LanguageServerSettings(LanguageServerSettings original, IEnumerable<IRubberduckSetting>? settings)
+        public LanguageServerSettings(LanguageServerSettings original, IEnumerable<RubberduckSetting>? settings)
             : base(original)
         {
             Value = settings?.ToArray() ?? DefaultSettings;
         }
 
-        public LanguageServerSettings(params IRubberduckSetting[] settings)
+        public LanguageServerSettings(params RubberduckSetting[] settings)
             : base(nameof(LanguageServerSettings), settings, DefaultSettings) { }
 
-        public LanguageServerSettings(IEnumerable<IRubberduckSetting> settings)
+        public LanguageServerSettings(IEnumerable<RubberduckSetting> settings)
             : base(nameof(LanguageServerSettings), settings, DefaultSettings) { }
 
 
-        public MessageTraceLevel TraceLevel => GetSetting<TraceLevelSetting>().Value;
+        [JsonIgnore]
+        public MessageTraceLevel TraceLevel => GetSetting<TraceLevelSetting>().TypedValue;
+        [JsonIgnore]
         public LanguageServerStartupSettings StartupSettings => GetSetting<LanguageServerStartupSettings>();
 
         public static LanguageServerSettings Default { get; } = new(DefaultSettings);

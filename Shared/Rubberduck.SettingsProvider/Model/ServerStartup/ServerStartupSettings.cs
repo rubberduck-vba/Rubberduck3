@@ -3,16 +3,17 @@ using Rubberduck.InternalApi.Settings;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model.ServerStartup
 {
-    public abstract record class ServerStartupSettings : SettingGroup, 
+    public abstract record class ServerStartupSettings : TypedSettingGroup, 
         IProcessStartInfoArgumentProvider, 
         IHealthCheckSettingsProvider
     {
-        protected static IRubberduckSetting[] GetDefaultSettings(string name, string pipe, string path)
+        protected static RubberduckSetting[] GetDefaultSettings(string name, string pipe, string path)
         {
-            return new IRubberduckSetting[]
+            return new RubberduckSetting[]
             {
                 new ServerExecutablePathSetting($"{name}.{nameof(ServerExecutablePathSetting)}", new Uri(path)),
                 new ServerTransportTypeSetting($"{name}.{nameof(ServerTransportTypeSetting)}", TransportType.StdIO),
@@ -23,18 +24,24 @@ namespace Rubberduck.SettingsProvider.Model.ServerStartup
             };
         }
 
-        protected ServerStartupSettings(string name, IEnumerable<IRubberduckSetting> settings, IEnumerable<IRubberduckSetting> defaults)
+        protected ServerStartupSettings(string name, IEnumerable<RubberduckSetting> settings, IEnumerable<RubberduckSetting> defaults)
             : base(name, settings, defaults) { }
 
-        public string ServerExecutablePath => GetSetting<ServerExecutablePathSetting>().Value.AbsolutePath;
-        public TransportType ServerTransportType => GetSetting<ServerTransportTypeSetting>().Value;
+        [JsonIgnore]
+        public string ServerExecutablePath => GetSetting<ServerExecutablePathSetting>().TypedValue.AbsolutePath;
+        [JsonIgnore]
+        public TransportType ServerTransportType => GetSetting<ServerTransportTypeSetting>().TypedValue;
 
-        public string ServerPipeName => GetSetting<ServerPipeNameSetting>().Value;
-        public MessageMode ServerMessageMode => GetSetting<ServerMessageModeSetting>().Value;
+        [JsonIgnore]
+        public string ServerPipeName => GetSetting<ServerPipeNameSetting>().TypedValue;
+        [JsonIgnore]
+        public MessageMode ServerMessageMode => GetSetting<ServerMessageModeSetting>().TypedValue;
 
-        public MessageTraceLevel ServerTraceLevel => GetSetting<TraceLevelSetting>().Value;
+        [JsonIgnore]
+        public MessageTraceLevel ServerTraceLevel => GetSetting<TraceLevelSetting>().TypedValue;
 
-        public TimeSpan ClientHealthCheckInterval => GetSetting<ClientHealthCheckIntervalSetting>().Value;
+        [JsonIgnore]
+        public TimeSpan ClientHealthCheckInterval => GetSetting<ClientHealthCheckIntervalSetting>().TypedValue;
 
         MessageTraceLevel IHealthCheckSettingsProvider.ServerTraceLevel => ServerTraceLevel;
         TimeSpan IHealthCheckSettingsProvider.ClientHealthCheckInterval => ClientHealthCheckInterval;

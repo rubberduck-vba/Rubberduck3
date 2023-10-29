@@ -2,7 +2,7 @@
 
 namespace Rubberduck.SettingsProvider.Model.ServerStartup
 {
-    public record class ServerExecutablePathSetting : RubberduckSetting<Uri>
+    public record class ServerExecutablePathSetting : TypedRubberduckSetting<Uri>
     {
         // TODO localize
         private static readonly string _description = "The physical location of the server executable.";

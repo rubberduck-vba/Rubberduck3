@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.SettingsProvider.Model
 {
-    public record class StreamTransmissionSetting : RubberduckSetting<bool>
+    public record class StreamTransmissionSetting : TypedRubberduckSetting<bool>
     {
         // TODO localize
         private static readonly string _description = "Determines whether telemetry data is transmitted automatically in periodic batches.";

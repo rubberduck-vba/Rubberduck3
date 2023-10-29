@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.SettingsProvider.Model
 {
-    public record class IsTelemetryEnabledSetting : RubberduckSetting<bool>
+    public record class IsTelemetryEnabledSetting : TypedRubberduckSetting<bool>
     {
         // TODO localize
         private static readonly string _description = "Determines whether telemetry is enabled at all.";

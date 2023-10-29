@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.SettingsProvider.Model
 {
-    public record class LocaleSetting : RubberduckSetting<string>
+    public record class LocaleSetting : TypedRubberduckSetting<string>
     {
         public static string DefaultSettingValue { get; } = "en-US";
 

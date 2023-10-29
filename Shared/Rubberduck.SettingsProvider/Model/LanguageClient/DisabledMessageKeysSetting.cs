@@ -2,7 +2,7 @@
 
 namespace Rubberduck.SettingsProvider.Model.LanguageClient
 {
-    public record class DisabledMessageKeysSetting : RubberduckSetting<string[]>
+    public record class DisabledMessageKeysSetting : TypedRubberduckSetting<string[]>
     {
         // TODO localize
         private static readonly string _description = "Identifies UI messages that should not be displayed.";
