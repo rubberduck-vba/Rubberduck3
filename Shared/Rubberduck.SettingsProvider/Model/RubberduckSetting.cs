@@ -43,6 +43,10 @@ namespace Rubberduck.SettingsProvider.Model
     [JsonDerivedType(typeof(SendTraceTelemetrySetting), nameof(SendTraceTelemetrySetting))]
     [JsonDerivedType(typeof(StreamTransmissionSetting), nameof(StreamTransmissionSetting))]
     [JsonDerivedType(typeof(TelemetryEventQueueSizeSetting), nameof(TelemetryEventQueueSizeSetting))]
+    [JsonDerivedType(typeof(EventTelemetrySettings), nameof(EventTelemetrySettings))]
+    [JsonDerivedType(typeof(ExceptionTelemetrySettings), nameof(ExceptionTelemetrySettings))]
+    [JsonDerivedType(typeof(TraceTelemetrySettings), nameof(TraceTelemetrySettings))]
+    [JsonDerivedType(typeof(MetricTelemetrySettings), nameof(MetricTelemetrySettings))]
 
     [JsonDerivedType(typeof(UpdateServerSettings), nameof(UpdateServerSettings))]
     [JsonDerivedType(typeof(IncludePreReleasesSetting), nameof(IncludePreReleasesSetting))]
