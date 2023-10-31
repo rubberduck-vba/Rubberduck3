@@ -28,6 +28,7 @@ namespace Rubberduck.Main.RPC.EditorServer
         {
             if (_process is null)
             {
+                _settingsProvider.ClearCache();
                 return StartEditor();
             }
 

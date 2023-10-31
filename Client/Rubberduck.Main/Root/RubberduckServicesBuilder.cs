@@ -110,11 +110,11 @@ namespace Rubberduck.Main.Root
             _services.AddSingleton<IDefaultSettingsProvider<TelemetryServerSettings>>(provider => TelemetryServerSettings.Default);
 
             // ISettingsProvider<TSettings> provide current applicable settings for injectable setting groups
-            _services.AddSingleton<ISettingsProvider<RubberduckSettings>, SettingsService<RubberduckSettings>>();
-            _services.AddSingleton<ISettingsProvider<GeneralSettings>, SettingsService<GeneralSettings>>();
-            _services.AddSingleton<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
-            _services.AddSingleton<ISettingsProvider<UpdateServerSettings>, SettingsService<UpdateServerSettings>>();
-            _services.AddSingleton<ISettingsProvider<TelemetryServerSettings>, SettingsService<TelemetryServerSettings>>();
+            _services.AddTransient<ISettingsProvider<RubberduckSettings>, SettingsService<RubberduckSettings>>();
+            _services.AddTransient<ISettingsProvider<GeneralSettings>, SettingsService<GeneralSettings>>();
+            _services.AddTransient<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
+            _services.AddTransient<ISettingsProvider<UpdateServerSettings>, SettingsService<UpdateServerSettings>>();
+            _services.AddTransient<ISettingsProvider<TelemetryServerSettings>, SettingsService<TelemetryServerSettings>>();
 
             return this;
         }
@@ -136,8 +136,7 @@ namespace Rubberduck.Main.Root
 
             _services.AddSingleton<ISettingsCommand, SettingsCommand>();
             _services.AddSingleton<SettingsCommandMenuItem>();
-            //_services.AddSingleton<SettingsService>();
-
+            
             _services.AddSingleton(ConfigureRubberduckMenu);
             return this;
         }
