@@ -3,7 +3,7 @@
     /// <summary>
     /// Determines whether telemetry is enabled at all.
     /// </summary>
-    public class IsTelemetryEnabledSetting : BooleanRubberduckSetting
+    public record class IsTelemetryEnabledSetting : BooleanRubberduckSetting
     {
         public static bool DefaultSettingValue { get; } = true;
 

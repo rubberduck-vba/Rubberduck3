@@ -1,12 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider.Model.General;
+﻿using Rubberduck.SettingsProvider.Model.General;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
 using Rubberduck.SettingsProvider.Model.TelemetryServer;
 using Rubberduck.SettingsProvider.Model.UpdateServer;
-using System;
 using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model
@@ -14,7 +11,7 @@ namespace Rubberduck.SettingsProvider.Model
     /// <summary>
     /// The base type for all settings.
     /// </summary>
-    [JsonPolymorphic(IgnoreUnrecognizedTypeDiscriminators = true, UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor)]
+    [JsonPolymorphic(UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor)]
 
     [JsonDerivedType(typeof(RubberduckSettings), nameof(RubberduckSettings))]
 
@@ -65,7 +62,7 @@ namespace Rubberduck.SettingsProvider.Model
     [JsonDerivedType(typeof(TelemetryServerStartupSettings), nameof(TelemetryServerStartupSettings))]
     [JsonDerivedType(typeof(UpdateServerStartupSettings), nameof(UpdateServerStartupSettings))]
 
-    public class RubberduckSetting 
+    public record class RubberduckSetting 
     {
         public RubberduckSetting()
         {

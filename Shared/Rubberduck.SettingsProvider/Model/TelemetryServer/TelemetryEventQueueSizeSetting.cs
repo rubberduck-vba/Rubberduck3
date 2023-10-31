@@ -3,7 +3,7 @@
     /// <summary>
     /// The maximum number of telemetry events transmission payload.
     /// </summary>
-    public class TelemetryEventQueueSizeSetting : NumericRubberduckSetting
+    public record class TelemetryEventQueueSizeSetting : NumericRubberduckSetting
     {
         public static double DefaultSettingValue { get; } = 10000;
 

@@ -5,9 +5,9 @@ using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model
 {
-    public abstract class StringRubberduckSetting : TypedRubberduckSetting<string>
+    public record class StringRubberduckSetting : TypedRubberduckSetting<string>
     {
-        protected StringRubberduckSetting() 
+        public StringRubberduckSetting() 
         {
             SettingDataType = SettingDataType.TextSetting;
         }
@@ -22,25 +22,25 @@ namespace Rubberduck.SettingsProvider.Model
         public string? RegEx { get; init; }
     }
 
-    public abstract class BooleanRubberduckSetting : TypedRubberduckSetting<bool>
+    public record class BooleanRubberduckSetting : TypedRubberduckSetting<bool>
     {
-        protected BooleanRubberduckSetting()
+        public BooleanRubberduckSetting()
         {
             SettingDataType = SettingDataType.BooleanSetting;
         }
     }
 
-    public abstract class UriRubberduckSetting : TypedRubberduckSetting<Uri>
+    public record class UriRubberduckSetting : TypedRubberduckSetting<Uri>
     {
-        protected UriRubberduckSetting()
+        public UriRubberduckSetting()
         {
             SettingDataType = SettingDataType.UriSetting;
         }
     }
 
-    public abstract class NumericRubberduckSetting : TypedRubberduckSetting<double>
+    public record class NumericRubberduckSetting : TypedRubberduckSetting<double>
     {
-        protected NumericRubberduckSetting()
+        public NumericRubberduckSetting()
         {
             SettingDataType = SettingDataType.NumericSetting;
         }
@@ -55,12 +55,8 @@ namespace Rubberduck.SettingsProvider.Model
         public double MaxValue { get; init; } = 1;
     }
 
-    public abstract class TypedRubberduckSetting<TValue> : RubberduckSetting
+    public record class TypedRubberduckSetting<TValue> : RubberduckSetting
     {
-        protected TypedRubberduckSetting()
-        {
-        }
-
         /// <summary>
         /// The current value/configuration of this setting.
         /// </summary>
@@ -91,11 +87,23 @@ namespace Rubberduck.SettingsProvider.Model
                         TypedValue = (TValue)value!;
                     }
                 }
+                else if (SettingDataType == SettingDataType.EnumSettingGroup)
+                {
+                    if (value is JsonElement json && json.ValueKind == JsonValueKind.Array)
+                    {
+                        object values = json.EnumerateArray().Select(item => item.Deserialize<BooleanRubberduckSetting>()!).ToArray();
+                        TypedValue = (TValue)values;
+                    }
+                    else
+                    {
+                        TypedValue = (TValue)value!;
+                    }
+                }
                 else if (SettingDataType != SettingDataType.NotSet)
                 {
                     if (value is JsonElement json)
                     {
-                        // how?
+                        TypedValue = json.Deserialize<TValue>()!;
                     }
                     else
                     {

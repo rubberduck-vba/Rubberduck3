@@ -1,12 +1,5 @@
-﻿using Rubberduck.InternalApi.Common;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
-using Rubberduck.Unmanaged.TypeLibs.Abstract;
-using Rubberduck.Unmanaged.TypeLibs.Utility;
+﻿using Rubberduck.Unmanaged.TypeLibs.Utility;
 using System;
-using System.Collections.Generic;
-using System.IO.Abstractions;
-using System.Linq;
-using System.Windows.Documents;
 
 namespace Rubberduck.Core.ProjectFile
 {

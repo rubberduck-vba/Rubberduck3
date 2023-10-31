@@ -1,6 +1,5 @@
 ﻿using System.IO.Abstractions;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Rubberduck.InternalApi.Extensions
 {

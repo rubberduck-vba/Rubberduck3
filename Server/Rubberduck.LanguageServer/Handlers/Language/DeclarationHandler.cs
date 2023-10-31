@@ -4,7 +4,6 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.LanguageServer.Model;
 using Rubberduck.LanguageServer.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;

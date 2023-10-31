@@ -1,6 +1,4 @@
-﻿using Rubberduck.UI;
-
-namespace Rubberduck.UI.Message
+﻿namespace Rubberduck.UI.Message
 {
     public interface IMessageWindowViewModel : IDialogWindowViewModel
     {

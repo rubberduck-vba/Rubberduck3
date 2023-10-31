@@ -5,7 +5,7 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
     /// <summary>
     /// Identifies UI messages that should not be displayed.
     /// </summary>
-    public class DisabledMessageKeysSetting : TypedRubberduckSetting<string[]>
+    public record class DisabledMessageKeysSetting : TypedRubberduckSetting<string[]>
     {
         public static string[] DefaultSettingValue { get; } = Array.Empty<string>();
 

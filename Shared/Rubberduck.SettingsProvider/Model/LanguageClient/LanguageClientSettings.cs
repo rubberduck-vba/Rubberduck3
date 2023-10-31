@@ -1,8 +1,5 @@
 ﻿using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider.Model.Editor;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model.LanguageClient
@@ -10,7 +7,7 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
     /// <summary>
     /// Configures LSP (Language Server Protocol) client options. The LSP client runs in the Rubberduck Editor process.
     /// </summary>
-    public class LanguageClientSettings : TypedSettingGroup, IDefaultSettingsProvider<LanguageClientSettings>
+    public record class LanguageClientSettings : TypedSettingGroup, IDefaultSettingsProvider<LanguageClientSettings>
     {
         private static readonly RubberduckSetting[] DefaultSettings =
             new RubberduckSetting[]

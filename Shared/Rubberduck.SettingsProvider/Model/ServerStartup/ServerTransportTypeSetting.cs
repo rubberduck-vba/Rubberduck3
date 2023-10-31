@@ -1,12 +1,11 @@
 ﻿using Rubberduck.InternalApi.ServerPlatform;
-using System;
 
 namespace Rubberduck.SettingsProvider.Model.ServerStartup
 {
     /// <summary>
     /// The type of communication channel between this server and its client.
     /// </summary>
-    public class ServerTransportTypeSetting : TypedRubberduckSetting<TransportType>
+    public record class ServerTransportTypeSetting : TypedRubberduckSetting<TransportType>
     {
         public static TransportType DefaultSettingValue { get; } = TransportType.StdIO;
 

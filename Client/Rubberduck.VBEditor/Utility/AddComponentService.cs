@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 //using NLog;
-using Rubberduck.InternalApi.Model;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.Abstract.SourceCodeProvider;

@@ -3,7 +3,7 @@
     /// <summary>
     /// Determines whether metric telemetry data is transmitted.
     /// </summary>
-    public class SendMetricTelemetrySetting : BooleanRubberduckSetting
+    public record class SendMetricTelemetrySetting : BooleanRubberduckSetting
     {
         public static bool DefaultSettingValue { get; } = true;
 

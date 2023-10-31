@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace Rubberduck.SettingsProvider.Model.ServerStartup
+﻿namespace Rubberduck.SettingsProvider.Model.ServerStartup
 {
     /// <summary>
     /// The name of the named pipe, when transport type uses pipes.
     /// </summary>
-    public class ServerPipeNameSetting : StringRubberduckSetting
+    public record class ServerPipeNameSetting : StringRubberduckSetting
     {
         public ServerPipeNameSetting()
         {

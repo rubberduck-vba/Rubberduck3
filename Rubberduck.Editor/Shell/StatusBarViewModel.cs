@@ -1,8 +1,5 @@
 ﻿using Rubberduck.InternalApi.Model.Abstract;
 using Rubberduck.UI;
-using System;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace Rubberduck.Editor.Shell
 {

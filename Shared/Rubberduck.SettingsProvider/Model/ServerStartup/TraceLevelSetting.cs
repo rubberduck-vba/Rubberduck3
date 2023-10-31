@@ -5,7 +5,7 @@ namespace Rubberduck.SettingsProvider.Model.ServerStartup
     /// <summary>
     /// The server trace verbosity level.
     /// </summary>
-    public class TraceLevelSetting : TypedRubberduckSetting<MessageTraceLevel>
+    public record class TraceLevelSetting : TypedRubberduckSetting<MessageTraceLevel>
     {
         public static MessageTraceLevel DefaultSettingValue { get; } = MessageTraceLevel.Verbose;
 

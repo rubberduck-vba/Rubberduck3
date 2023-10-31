@@ -9,7 +9,7 @@ namespace Rubberduck.SettingsProvider.Model.General
     /// <summary>
     /// Configures general-scope options that aren't necessarily tied to a specific Rubberduck component.
     /// </summary>
-    public class GeneralSettings : TypedSettingGroup, IDefaultSettingsProvider<GeneralSettings>
+    public record class GeneralSettings : TypedSettingGroup, IDefaultSettingsProvider<GeneralSettings>
     {
         private static readonly RubberduckSetting[] DefaultSettings =
             new RubberduckSetting[]

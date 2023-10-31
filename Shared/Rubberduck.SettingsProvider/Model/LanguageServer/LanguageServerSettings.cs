@@ -7,7 +7,7 @@ namespace Rubberduck.SettingsProvider.Model.LanguageServer
     /// <summary>
     /// Configures LSP (Language Server Protocol) server options.
     /// </summary>
-    public class LanguageServerSettings : TypedSettingGroup, IDefaultSettingsProvider<LanguageServerSettings>
+    public record class LanguageServerSettings : TypedSettingGroup, IDefaultSettingsProvider<LanguageServerSettings>
     {
         private static readonly RubberduckSetting[] DefaultSettings =
             new RubberduckSetting[]

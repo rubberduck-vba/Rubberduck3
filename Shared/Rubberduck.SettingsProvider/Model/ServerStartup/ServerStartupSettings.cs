@@ -1,7 +1,6 @@
 ﻿using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -10,7 +9,7 @@ namespace Rubberduck.SettingsProvider.Model.ServerStartup
     /// <summary>
     /// The base type for server startup settings.
     /// </summary>
-    public abstract class ServerStartupSettings : TypedSettingGroup, 
+    public abstract record class ServerStartupSettings : TypedSettingGroup, 
         IProcessStartInfoArgumentProvider, 
         IHealthCheckSettingsProvider
     {

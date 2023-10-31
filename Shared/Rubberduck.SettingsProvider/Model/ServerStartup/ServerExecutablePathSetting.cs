@@ -1,12 +1,10 @@
-﻿using System;
-
-namespace Rubberduck.SettingsProvider.Model.ServerStartup
+﻿namespace Rubberduck.SettingsProvider.Model.ServerStartup
 {
     [TelemetrySensitive]
     /// <summary>
     /// The physical location of the server executable.
     /// </summary>
-    public class ServerExecutablePathSetting : UriRubberduckSetting
+    public record class ServerExecutablePathSetting : UriRubberduckSetting
     {
         public ServerExecutablePathSetting()
         {

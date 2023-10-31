@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Windows.Media;
-using Icons = Rubberduck.Resources.RubberduckUI;
-//using Rubberduck.Parsing.Annotations.Concrete;
+﻿//using Rubberduck.Parsing.Annotations.Concrete;
 //using Rubberduck.Parsing.Symbols;
 //using Rubberduck.Resources.CodeExplorer;
 

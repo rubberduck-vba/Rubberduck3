@@ -6,14 +6,11 @@ using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider.Model.General;
-using Rubberduck.SettingsProvider.Model.LanguageClient;
-using Rubberduck.SettingsProvider.Model.LanguageServer;
 using System;
 using System.Diagnostics;
 using System.IO.Abstractions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Rubberduck.SettingsProvider
 {
@@ -169,11 +166,10 @@ namespace Rubberduck.SettingsProvider
             var path = _path;
             var fileSystem = _fileSystem;
 
-            var success = TimedAction.TryRun(async () =>
+            var success = TimedAction.TryRun(() =>
             {
                 var content = JsonSerializer.Serialize(settings, _options);
-                await Task.Run(() => fileSystem.File.WriteAllText(path, content));
-
+                fileSystem.File.WriteAllText(path, content);
             }, out var elapsed, out var exception);
             
             if (success)

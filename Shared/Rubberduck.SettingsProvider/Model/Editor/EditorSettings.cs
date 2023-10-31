@@ -1,13 +1,11 @@
 ﻿using Rubberduck.InternalApi.Settings;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Rubberduck.SettingsProvider.Model.Editor
 {
     /// <summary>
     /// Configures Rubberduck Editor settings.
     /// </summary>
-    public class EditorSettings : TypedSettingGroup, IDefaultSettingsProvider<EditorSettings>
+    public record class EditorSettings : TypedSettingGroup, IDefaultSettingsProvider<EditorSettings>
     {
         private static readonly RubberduckSetting[] DefaultSettings =
             new RubberduckSetting[]

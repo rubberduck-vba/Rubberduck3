@@ -3,7 +3,7 @@
     /// <summary>
     /// Whether host documents are required to be saved in a folder under the default workspace root.
     /// </summary>
-    public class RequireDefaultWorkspaceRootHostSetting : BooleanRubberduckSetting
+    public record class RequireDefaultWorkspaceRootHostSetting : BooleanRubberduckSetting
     {
         public static bool DefaultSettingValue { get; } = true;
 

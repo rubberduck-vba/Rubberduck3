@@ -3,7 +3,7 @@
     /// <summary>
     /// Whether the Rubberduck Editor is allowed to run without a VBIDE-connected Rubberduck add-in host; disables host-dependent features when false.
     /// </summary>
-    public class RequireAddInHostSetting : BooleanRubberduckSetting
+    public record class RequireAddInHostSetting : BooleanRubberduckSetting
     {
         public static bool DefaultSettingValue { get; } = true;
 

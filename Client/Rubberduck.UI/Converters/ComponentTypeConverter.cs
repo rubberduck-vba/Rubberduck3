@@ -1,8 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Windows.Data;
-
-namespace Rubberduck.UI.Converters
+﻿namespace Rubberduck.UI.Converters
 {
     /*
     class ComponentTypeConverter : IValueConverter

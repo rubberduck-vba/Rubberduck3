@@ -7,11 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Rubberduck.InternalApi.Common;
-using System;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Window;
-using OmniSharp.Extensions.LanguageServer.Protocol;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model.TelemetryServer;
 

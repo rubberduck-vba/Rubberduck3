@@ -6,7 +6,7 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
     /// <summary>
     /// The default location for new projects hosted in a document that isn't saved yet.
     /// </summary>
-    public class DefaultWorkspaceRootSetting : UriRubberduckSetting
+    public record class DefaultWorkspaceRootSetting : UriRubberduckSetting
     {
         private static readonly string LocalAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 

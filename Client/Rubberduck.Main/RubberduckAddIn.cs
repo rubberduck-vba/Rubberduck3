@@ -109,23 +109,26 @@ namespace Rubberduck.Main
             var sw = new Stopwatch();
             try
             {
-                var tokenSource = new CancellationTokenSource();
+                await Task.Run(() =>
+                {
+                    var tokenSource = new CancellationTokenSource();
 
-                var provider = new RubberduckServicesBuilder(_vbe, _addin).Build();
-                var scope = provider.CreateScope();
+                    var provider = new RubberduckServicesBuilder(_vbe, _addin).Build();
+                    var scope = provider.CreateScope();
 
-                _serviceScope = scope;
-                _logger = scope.ServiceProvider.GetRequiredService<ILogger<RubberduckAddIn>>();
-                _messageService = scope.ServiceProvider.GetRequiredService<IMessageService>();
+                    _serviceScope = scope;
+                    _logger = scope.ServiceProvider.GetRequiredService<ILogger<RubberduckAddIn>>();
+                    _messageService = scope.ServiceProvider.GetRequiredService<IMessageService>();
 
-                _initialSettings = GetInitialSettings(scope);
-                _showEditorCommand = scope.ServiceProvider.GetRequiredService<IShowRubberduckEditorCommand>();
-                _showEditorCommand.Executed += ShowRubberduckEditorCommand_Executed;
+                    _initialSettings = GetInitialSettings(scope);
+                    _showEditorCommand = scope.ServiceProvider.GetRequiredService<IShowRubberduckEditorCommand>();
+                    _showEditorCommand.Executed += ShowRubberduckEditorCommand_Executed;
 
-                var version = GetVersionString();
+                    var version = GetVersionString();
 
-                sw.Start();
-                Startup();
+                    sw.Start();
+                    Startup();
+                });
             }
             catch (StartupFailedException exception) when (exception.InnerException is ServerStartupFailedException serverException)
             {

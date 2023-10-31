@@ -1,9 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider.Model;
-using Rubberduck.UI.Command;
-using System.Threading.Tasks;
-using System;
+﻿using System;
 
 namespace Rubberduck.VBEditor.UI.OfficeMenus
 {

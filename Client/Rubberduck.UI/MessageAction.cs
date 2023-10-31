@@ -1,5 +1,4 @@
 ﻿using Rubberduck.Resources;
-using System;
 
 namespace Rubberduck.UI
 {

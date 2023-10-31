@@ -8,7 +8,7 @@ namespace Rubberduck.SettingsProvider.Model.UpdateServer
     /// <summary>
     /// Configures the update server settings.
     /// </summary>
-    public class UpdateServerSettings : TypedSettingGroup, IDefaultSettingsProvider<UpdateServerSettings>
+    public record class UpdateServerSettings : TypedSettingGroup, IDefaultSettingsProvider<UpdateServerSettings>
     {
         public static RubberduckSetting[] DefaultSettings { get; } = new RubberduckSetting[]
         {

@@ -3,7 +3,7 @@
     /// <summary>
     /// Whether non-default workspaces are allowed to be defined using a UNC path (not recommended).
     /// </summary>
-    public class EnableUncWorkspacesSetting : BooleanRubberduckSetting
+    public record class EnableUncWorkspacesSetting : BooleanRubberduckSetting
     {
         public static bool DefaultSettingValue { get; } = false;
 

@@ -3,7 +3,7 @@
     /// <summary>
     /// Determines whether exception telemetry data is transmitted.
     /// </summary>
-    public class SendExceptionTelemetrySetting : BooleanRubberduckSetting
+    public record class SendExceptionTelemetrySetting : BooleanRubberduckSetting
     {
         public static bool DefaultSettingValue { get; } = true;
 

@@ -3,7 +3,7 @@
     /// <summary>
     /// Allow the minimum log level to remain at a verbose TRACE level after a successful initialization and shutdown; logging normally gets automatically disabled otherwise.
     /// </summary>
-    public class DisableInitialLogLevelResetSetting : BooleanRubberduckSetting
+    public record class DisableInitialLogLevelResetSetting : BooleanRubberduckSetting
     {
         public static bool DefaultSettingValue { get; } = false;
 

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using System;
 using System.Linq;

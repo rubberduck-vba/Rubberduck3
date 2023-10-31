@@ -4,8 +4,6 @@ using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
 using Rubberduck.SettingsProvider.Model.TelemetryServer;
 using Rubberduck.SettingsProvider.Model.UpdateServer;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model
@@ -13,7 +11,7 @@ namespace Rubberduck.SettingsProvider.Model
     /// <summary>
     /// A container for all configuration settings.
     /// </summary>
-    public class RubberduckSettings : TypedSettingGroup, IDefaultSettingsProvider<RubberduckSettings>
+    public record class RubberduckSettings : TypedSettingGroup, IDefaultSettingsProvider<RubberduckSettings>
     {
         private static readonly RubberduckSetting[] DefaultSettings =
             new RubberduckSetting[]

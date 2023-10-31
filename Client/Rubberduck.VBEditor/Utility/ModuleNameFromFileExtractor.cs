@@ -2,7 +2,6 @@
 using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
-using Rubberduck.InternalApi.Common;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
 using Rubberduck.VBEditor.Extensions;

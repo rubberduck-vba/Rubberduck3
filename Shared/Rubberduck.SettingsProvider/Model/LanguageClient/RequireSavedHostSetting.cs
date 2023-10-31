@@ -3,7 +3,7 @@
     /// <summary>
     /// Whether projects are required to be created from a saved host document.
     /// </summary>
-    public class RequireSavedHostSetting : BooleanRubberduckSetting
+    public record class RequireSavedHostSetting : BooleanRubberduckSetting
     {
         public static bool DefaultSettingValue { get; } = true;
 

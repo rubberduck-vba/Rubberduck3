@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.SettingsProvider.Model
 {
-    public abstract class TypedSettingGroup : TypedRubberduckSetting<RubberduckSetting[]>
+    public abstract record class TypedSettingGroup : TypedRubberduckSetting<RubberduckSetting[]>
     {
         public TSetting GetSetting<TSetting>() where TSetting : RubberduckSetting => ((RubberduckSetting[])Value).OfType<TSetting>().Single();
         public RubberduckSetting GetSetting(Type type) => ((RubberduckSetting[])Value).Single(e => e.GetType() == type);
@@ -15,10 +14,10 @@ namespace Rubberduck.SettingsProvider.Model
         }
     }
 
-    public abstract class EnumSettingGroup<TEnum> : TypedRubberduckSetting<RubberduckSetting[]>
+    public abstract record class EnumSettingGroup<TEnum> : TypedRubberduckSetting<BooleanRubberduckSetting[]>
         where TEnum : struct, Enum
     {
-        public RubberduckSetting GetSetting(TEnum key) => ((RubberduckSetting[])Value).Single(e => e.Key == key.ToString());
+        public BooleanRubberduckSetting GetSetting(TEnum key) => ((BooleanRubberduckSetting[])Value).Single(e => e.Key == key.ToString());
 
         protected EnumSettingGroup()
         {

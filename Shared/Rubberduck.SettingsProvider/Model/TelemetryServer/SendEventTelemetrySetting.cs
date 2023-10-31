@@ -3,7 +3,7 @@
     /// <summary>
     /// Determines whether event telemetry data is transmitted.
     /// </summary>
-    public class SendEventTelemetrySetting : BooleanRubberduckSetting
+    public record class SendEventTelemetrySetting : BooleanRubberduckSetting
     {
         public static bool DefaultSettingValue { get; } = false;
 

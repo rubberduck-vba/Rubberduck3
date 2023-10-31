@@ -93,9 +93,9 @@ namespace Rubberduck.UI.Command
         {
             var traceLevel = SettingsProvider.Settings.LanguageServerSettings.TraceLevel.ToTraceLevel();
 
-            if (TimedAction.TryRun(async () =>
+            if (TimedAction.TryRun(() =>
             {
-                await OnExecuteAsync(parameter);
+                OnExecuteAsync(parameter).Wait();
             }, out var elapsed, out var exception))
             {
                 Logger.LogPerformance(traceLevel, $"{GetType().Name}.Execute completed.", elapsed);

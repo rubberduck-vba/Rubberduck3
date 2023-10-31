@@ -2,7 +2,6 @@
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.NewProject;
 
 namespace Rubberduck.UI.Settings
 {

@@ -15,7 +15,6 @@ using System.Text.Json;
 using OmniSharp.Extensions.JsonRpc;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.Editor.RPC.LanguageServerClient.Handlers;
-using EditorClient = OmniSharp.Extensions.LanguageServer.Client.LanguageClient;
 using EditorClientOptions = OmniSharp.Extensions.LanguageServer.Client.LanguageClientOptions;
 using Newtonsoft.Json.Linq;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;

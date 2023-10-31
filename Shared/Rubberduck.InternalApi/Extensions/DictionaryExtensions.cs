@@ -1,9 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Rubberduck.InternalApi.Extensions
+﻿namespace Rubberduck.InternalApi.Extensions
 {
     // should be covered by BCL under .net7+
 

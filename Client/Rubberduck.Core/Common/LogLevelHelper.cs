@@ -1,8 +1,5 @@
-﻿using System.Linq;
-//using NLog;
+﻿//using NLog;
 //using NLog.Config;
-using System;
-using System.Collections.Generic;
 
 namespace Rubberduck.Common
 {

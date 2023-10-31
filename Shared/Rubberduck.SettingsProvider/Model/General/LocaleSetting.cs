@@ -3,7 +3,7 @@
     /// <summary>
     /// Determines the display language of localized user interface elements.
     /// </summary>
-    public class LocaleSetting : StringRubberduckSetting
+    public record class LocaleSetting : StringRubberduckSetting
     {
         public static string DefaultSettingValue { get; } = "en-US";
 

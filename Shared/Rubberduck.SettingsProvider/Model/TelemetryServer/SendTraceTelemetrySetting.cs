@@ -3,7 +3,7 @@
     /// <summary>
     /// Determines whether trace telemetry data is transmitted.
     /// </summary>
-    public class SendTraceTelemetrySetting : BooleanRubberduckSetting
+    public record class SendTraceTelemetrySetting : BooleanRubberduckSetting
     {
         public static bool DefaultSettingValue { get; } = false;
 

@@ -11,7 +11,7 @@ namespace Rubberduck.SettingsProvider.Model.TelemetryServer
     /// <summary>
     /// Configures telemetry server options.
     /// </summary>
-    public class TelemetryServerSettings : TypedSettingGroup, IDefaultSettingsProvider<TelemetryServerSettings>
+    public record class TelemetryServerSettings : TypedSettingGroup, IDefaultSettingsProvider<TelemetryServerSettings>
     {
         private static readonly RubberduckSetting[] DefaultSettings =
             new RubberduckSetting[]
@@ -67,13 +67,13 @@ namespace Rubberduck.SettingsProvider.Model.TelemetryServer
         TelemetryServerSettings IDefaultSettingsProvider<TelemetryServerSettings>.Default => Default;
     }
 
-    public abstract class TelemetrySettingGroup<TKey> : EnumSettingGroup<TKey>
+    public abstract record class TelemetrySettingGroup<TKey> : EnumSettingGroup<TKey>
         where TKey : struct, Enum
     {
         public bool IsEnabled(TKey key) => ((TelemetrySetting)GetSetting(key)).TypedValue;
     }
 
-    public class EventTelemetrySettings : TelemetrySettingGroup<EventTelemetryName>
+    public record class EventTelemetrySettings : TelemetrySettingGroup<EventTelemetryName>
     {
         public static TelemetrySetting[] DefaultSettings { get; } =
             Enum.GetValues<EventTelemetryName>().Select(e => new TelemetrySetting { Key = $"{nameof(EventTelemetrySettings)}.{e}", Value = false, DefaultValue = false }).ToArray();
@@ -85,7 +85,7 @@ namespace Rubberduck.SettingsProvider.Model.TelemetryServer
         }
     }
 
-    public class ExceptionTelemetrySettings : TelemetrySettingGroup<LogLevel>
+    public record class ExceptionTelemetrySettings : TelemetrySettingGroup<LogLevel>
     {
         public static TelemetrySetting[] DefaultSettings { get; } =
             Enum.GetValues<LogLevel>().Select(e => new TelemetrySetting { Key = $"{nameof(ExceptionTelemetrySettings)}.{e}", Value = true, DefaultValue = true }).ToArray();
@@ -97,7 +97,7 @@ namespace Rubberduck.SettingsProvider.Model.TelemetryServer
         }
     }
 
-    public class MetricTelemetrySettings : TelemetrySettingGroup<MetricTelemetryName>
+    public record class MetricTelemetrySettings : TelemetrySettingGroup<MetricTelemetryName>
     {
         public static TelemetrySetting[] DefaultSettings { get; } =
             Enum.GetValues<MetricTelemetryName>().Select(e => new TelemetrySetting { Key = $"{nameof(MetricTelemetrySettings)}.{e}", Value = false, DefaultValue = false }).ToArray();
@@ -109,7 +109,7 @@ namespace Rubberduck.SettingsProvider.Model.TelemetryServer
         }
     }
 
-    public class TraceTelemetrySettings : TelemetrySettingGroup<LogLevel>
+    public record class TraceTelemetrySettings : TelemetrySettingGroup<LogLevel>
     {
         public static TelemetrySetting[] DefaultSettings { get; } =
             Enum.GetValues<LogLevel>().Select(e => new TelemetrySetting { Key = $"{nameof(TraceTelemetrySettings)}.{e}", Value = e >= LogLevel.Warning, DefaultValue = e >= LogLevel.Warning }).ToArray();
@@ -124,11 +124,10 @@ namespace Rubberduck.SettingsProvider.Model.TelemetryServer
     /// <summary>
     /// The base class for enabling/disabling individual granular telemetry events.
     /// </summary>
-    public class TelemetrySetting : TypedRubberduckSetting<bool>
+    public record class TelemetrySetting : BooleanRubberduckSetting
     {
         public TelemetrySetting()
         {
-            SettingDataType = SettingDataType.BooleanSetting;
         }
     }
 }
