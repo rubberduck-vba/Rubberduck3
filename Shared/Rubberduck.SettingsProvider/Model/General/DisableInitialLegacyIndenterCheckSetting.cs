@@ -1,14 +1,18 @@
-﻿namespace Rubberduck.SettingsProvider.Model
+﻿using System.Text.Json.Serialization;
+
+namespace Rubberduck.SettingsProvider.Model.General
 {
-    public record class DisableInitialLegacyIndenterCheckSetting : TypedRubberduckSetting<bool>
+    /// <summary>
+    /// Allow Rubberduck to scan the registry for legacy Smart Indenter settings after a successful initialization and shutdown; this initial check normally gets automatically disabled otherwise.
+    /// </summary>
+    public class DisableInitialLegacyIndenterCheckSetting : BooleanRubberduckSetting
     {
         public static bool DefaultSettingValue { get; } = false;
 
-        private static readonly string _description = "Allow Rubberduck to scan the registry for legacy Smart Indenter settings after a successful initialization and shutdown; this initial check normally gets automatically disabled otherwise.";
-
-        public DisableInitialLegacyIndenterCheckSetting() : this(DefaultSettingValue) { }
-
-        public DisableInitialLegacyIndenterCheckSetting(bool value)
-            : base(nameof(DisableInitialLegacyIndenterCheckSetting), value, SettingDataType.BooleanSetting, DefaultSettingValue) { }
+        public DisableInitialLegacyIndenterCheckSetting()
+        {
+            DefaultValue = DefaultSettingValue;
+            Tags = SettingTags.ReadOnlyRecommended;
+        }
     }
 }

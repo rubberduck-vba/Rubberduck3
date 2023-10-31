@@ -2,7 +2,7 @@
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.ServerPlatform;
-using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.UpdateServer;
 using System.Collections.Generic;
 using System.Threading;
 

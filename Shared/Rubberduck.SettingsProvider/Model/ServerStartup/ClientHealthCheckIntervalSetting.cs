@@ -2,15 +2,17 @@
 
 namespace Rubberduck.SettingsProvider.Model.ServerStartup
 {
-    public record class ClientHealthCheckIntervalSetting : TypedRubberduckSetting<TimeSpan>
+    public class ClientHealthCheckIntervalSetting : TypedRubberduckSetting<TimeSpan>
     {
         // TODO localize
         private static readonly string _description = "The amount of time between periodic server-side verifications of client connection.";
+        public static TimeSpan DefaultSettingValue { get; } = TimeSpan.FromSeconds(10);
 
-        public ClientHealthCheckIntervalSetting(string name, TimeSpan defaultValue)
-            : this(name, defaultValue, defaultValue) { }
-
-        public ClientHealthCheckIntervalSetting(string name, TimeSpan defaultValue, TimeSpan value) 
-            : base(name, value, SettingDataType.TimeSpanSetting, defaultValue, readOnlyRecommended:true) { }
+        public ClientHealthCheckIntervalSetting()
+        {
+            SettingDataType = SettingDataType.TimeSpanSetting;
+            DefaultValue = DefaultSettingValue;
+            Tags = SettingTags.ReadOnlyRecommended;
+        }
     }
 }

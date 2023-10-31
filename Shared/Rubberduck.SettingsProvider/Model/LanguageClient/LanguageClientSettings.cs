@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.Settings;
+using Rubberduck.SettingsProvider.Model.Editor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,35 +7,26 @@ using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model.LanguageClient
 {
-    public record class LanguageClientSettings : TypedSettingGroup, IDefaultSettingsProvider<LanguageClientSettings>
+    /// <summary>
+    /// Configures LSP (Language Server Protocol) client options. The LSP client runs in the Rubberduck Editor process.
+    /// </summary>
+    public class LanguageClientSettings : TypedSettingGroup, IDefaultSettingsProvider<LanguageClientSettings>
     {
-        // TODO localize
-        private static readonly string _description = "Configures LSP (Language Server Protocol) client options. The LSP client runs in the Rubberduck Editor process.";
         private static readonly RubberduckSetting[] DefaultSettings =
             new RubberduckSetting[]
             {
-                new DefaultWorkspaceRootSetting(),
-                new RequireAddInHostSetting(),
-                new RequireSavedHostSetting(),
-                new RequireDefaultWorkspaceRootHostSetting(),
-                new EnableUncWorkspacesSetting(),
-                new LanguageClientStartupSettings(),
+                new DefaultWorkspaceRootSetting { Value = DefaultWorkspaceRootSetting.DefaultSettingValue },
+                new RequireAddInHostSetting { Value = RequireAddInHostSetting.DefaultSettingValue },
+                new RequireSavedHostSetting { Value = RequireSavedHostSetting.DefaultSettingValue },
+                new RequireDefaultWorkspaceRootHostSetting { Value = RequireDefaultWorkspaceRootHostSetting.DefaultSettingValue },
+                new EnableUncWorkspacesSetting { Value = EnableUncWorkspacesSetting.DefaultSettingValue },
+                new LanguageClientStartupSettings { Value = LanguageClientStartupSettings.DefaultSettings },
             };
 
         public LanguageClientSettings()
-            : base(nameof(LanguageClientSettings), DefaultSettings, DefaultSettings) { }
-
-        public LanguageClientSettings(LanguageClientSettings original, IEnumerable<RubberduckSetting> settings)
-            : base(original)
         {
-            Value = settings?.ToArray() ?? DefaultSettings;
+            DefaultValue = DefaultSettings;
         }
-
-        public LanguageClientSettings(params RubberduckSetting[] settings)
-            : base(nameof(LanguageClientSettings), settings, DefaultSettings) { }
-
-        public LanguageClientSettings(IEnumerable<RubberduckSetting> settings)
-            : base(nameof(LanguageClientSettings), settings, DefaultSettings) { }
 
         [JsonIgnore]
         public Uri DefaultWorkspaceRoot => GetSetting<DefaultWorkspaceRootSetting>().TypedValue;
@@ -49,7 +41,7 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
         [JsonIgnore]
         public LanguageClientStartupSettings StartupSettings => GetSetting<LanguageClientStartupSettings>();
 
-        public static LanguageClientSettings Default { get; } = new(DefaultSettings);
+        public static LanguageClientSettings Default { get; } = new() { Value = DefaultSettings, DefaultValue = DefaultSettings };
         LanguageClientSettings IDefaultSettingsProvider<LanguageClientSettings>.Default => Default;
     }
 }

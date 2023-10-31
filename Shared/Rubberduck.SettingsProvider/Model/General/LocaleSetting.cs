@@ -1,15 +1,17 @@
-﻿namespace Rubberduck.SettingsProvider.Model
+﻿namespace Rubberduck.SettingsProvider.Model.General
 {
-    public record class LocaleSetting : TypedRubberduckSetting<string>
+    /// <summary>
+    /// Determines the display language of localized user interface elements.
+    /// </summary>
+    public class LocaleSetting : StringRubberduckSetting
     {
         public static string DefaultSettingValue { get; } = "en-US";
 
-        // TODO localize. Yes, irony :D
-        private static readonly string _description = "Determines the display language of localized user interface elements.";
-
-        public LocaleSetting() : this(DefaultSettingValue) { }
-
-        public LocaleSetting(string value)
-            : base(nameof(LocaleSetting), value, SettingDataType.TextSetting, DefaultSettingValue) { }
+        public LocaleSetting()
+        {
+            DefaultValue = DefaultSettingValue;
+            IsRequired = true;
+            RegEx = @"[a-z]{2}\-[A-Z]{2}";
+        }
     }
 }

@@ -1,12 +1,15 @@
-﻿namespace Rubberduck.SettingsProvider.Model
+﻿namespace Rubberduck.SettingsProvider.Model.TelemetryServer
 {
-    public record class StreamTransmissionSetting : TypedRubberduckSetting<bool>
+    /// <summary>
+    /// Determines whether telemetry data is transmitted automatically in periodic batches.
+    /// </summary>
+    public class StreamTransmissionSetting : BooleanRubberduckSetting
     {
-        // TODO localize
-        private static readonly string _description = "Determines whether telemetry data is transmitted automatically in periodic batches.";
+        public static bool DefaultSettingValue { get; } = false;
 
-        public StreamTransmissionSetting(bool defaultValue) : this(defaultValue, defaultValue) { }
-        public StreamTransmissionSetting(bool defaultValue, bool value)
-            : base(nameof(StreamTransmissionSetting), value, SettingDataType.BooleanSetting, defaultValue) { }
+        public StreamTransmissionSetting()
+        {
+            DefaultValue = DefaultSettingValue;
+        }
     }
 }

@@ -1,14 +1,15 @@
-﻿namespace Rubberduck.SettingsProvider.Model
+﻿namespace Rubberduck.SettingsProvider.Model.General
 {
-    public record class ShowSplashSetting : TypedRubberduckSetting<bool>
+    /// <summary>
+    /// Determines whether or not to display a splash screen showing ongoing operations while initializing the Rubberduck Editor.
+    /// </summary>
+    public class ShowSplashSetting : BooleanRubberduckSetting
     {
         public static bool DefaultSettingValue { get; } = true;
 
-        private static readonly string _description = "Determines whether or not to display a splash screen showing ongoing operations while initializing the Rubberduck Editor.";
-
-        public ShowSplashSetting() : this(DefaultSettingValue) { }
-
-        public ShowSplashSetting(bool value)
-            : base(nameof(ShowSplashSetting), value, SettingDataType.BooleanSetting, DefaultSettingValue) { }
+        public ShowSplashSetting()
+        {
+            DefaultValue = DefaultSettingValue;
+        }
     }
 }

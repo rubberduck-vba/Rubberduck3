@@ -13,6 +13,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using Rubberduck.InternalApi.Settings;
+using Rubberduck.SettingsProvider.Model.TelemetryServer;
 
 namespace Rubberduck.TelemetryServer
 {

@@ -1,13 +1,18 @@
-﻿namespace Rubberduck.SettingsProvider.Model.ServerStartup
-{
-    public record class ServerPipeNameSetting : TypedRubberduckSetting<string>
-    {
-        // TODO localize
-        private static readonly string _description = "The name of the named pipe, when transport type uses pipes.";
-        public ServerPipeNameSetting(string name, string defaultValue)
-            : this(name, defaultValue, defaultValue) { }
+﻿using System;
 
-        public ServerPipeNameSetting(string name, string defaultValue, string value)
-            : base(name, value, SettingDataType.TextSetting, defaultValue, readOnlyRecommended: true) { }
+namespace Rubberduck.SettingsProvider.Model.ServerStartup
+{
+    /// <summary>
+    /// The name of the named pipe, when transport type uses pipes.
+    /// </summary>
+    public class ServerPipeNameSetting : StringRubberduckSetting
+    {
+        public ServerPipeNameSetting()
+        {
+            Tags = SettingTags.ReadOnlyRecommended | SettingTags.Advanced;
+            IsRequired = true;
+            MinLength = 7;
+            MaxLength = 255;
+        }
     }
 }

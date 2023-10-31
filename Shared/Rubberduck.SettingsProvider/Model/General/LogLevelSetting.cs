@@ -1,17 +1,18 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace Rubberduck.SettingsProvider.Model
+namespace Rubberduck.SettingsProvider.Model.General
 {
-    public record class LogLevelSetting : TypedRubberduckSetting<LogLevel>
+    /// <summary>
+    /// The minimum log level for log messages to be written to log files.
+    /// </summary>
+    public class LogLevelSetting : TypedRubberduckSetting<LogLevel>
     {
         public static LogLevel DefaultSettingValue { get; } = LogLevel.Trace;
 
-        private static readonly string _description = "The minimum log level for log messages to be written to log files.";
-
-
-        public LogLevelSetting() : this(DefaultSettingValue) { }
-
-        public LogLevelSetting(LogLevel value)
-            : base(nameof(LogLevelSetting), value, SettingDataType.EnumSetting, DefaultSettingValue) { }
+        public LogLevelSetting()
+        {
+            SettingDataType = SettingDataType.EnumValueSetting;
+            DefaultValue = DefaultSettingValue;
+        }
     }
 }

@@ -1,12 +1,15 @@
-﻿namespace Rubberduck.SettingsProvider.Model
+﻿namespace Rubberduck.SettingsProvider.Model.TelemetryServer
 {
-    public record class IsTelemetryEnabledSetting : TypedRubberduckSetting<bool>
+    /// <summary>
+    /// Determines whether telemetry is enabled at all.
+    /// </summary>
+    public class IsTelemetryEnabledSetting : BooleanRubberduckSetting
     {
-        // TODO localize
-        private static readonly string _description = "Determines whether telemetry is enabled at all.";
+        public static bool DefaultSettingValue { get; } = true;
 
-        public IsTelemetryEnabledSetting(bool defaultValue) : this(defaultValue, defaultValue) { }
-        public IsTelemetryEnabledSetting(bool defaultValue, bool value)
-            : base(nameof(IsTelemetryEnabledSetting), value, SettingDataType.BooleanSetting, defaultValue) { }
+        public IsTelemetryEnabledSetting()
+        {
+            DefaultValue = DefaultSettingValue;
+        }
     }
 }

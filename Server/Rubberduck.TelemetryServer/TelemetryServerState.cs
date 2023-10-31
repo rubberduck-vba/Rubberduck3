@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.ServerPlatform;
-using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.TelemetryServer;
 
 namespace Rubberduck.TelemetryServer
 {

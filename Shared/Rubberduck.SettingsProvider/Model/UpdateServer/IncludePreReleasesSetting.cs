@@ -1,12 +1,15 @@
-﻿namespace Rubberduck.SettingsProvider.Model
+﻿namespace Rubberduck.SettingsProvider.Model.UpdateServer
 {
-    public record class IncludePreReleasesSetting : TypedRubberduckSetting<bool>
+    /// <summary>
+    /// Determines whether checking for a newer version includes or ignores pre-release builds.
+    /// </summary>
+    public class IncludePreReleasesSetting : BooleanRubberduckSetting
     {
-        // TODO localize
-        private static readonly string _description = "Determines whether checking for a newer version includes or ignores pre-release builds.";
+        public static bool DefaultSettingValue { get; } = true;
 
-        public IncludePreReleasesSetting(bool defaultValue) : this(defaultValue, defaultValue) { }
-        public IncludePreReleasesSetting(bool defaultValue, bool value)
-            : base(nameof(IncludePreReleasesSetting), value, SettingDataType.BooleanSetting, defaultValue) { }
+        public IncludePreReleasesSetting()
+        {
+            DefaultValue = DefaultSettingValue;
+        }
     }
 }

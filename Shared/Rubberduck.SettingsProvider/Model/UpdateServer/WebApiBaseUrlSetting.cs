@@ -1,14 +1,17 @@
 ﻿using System;
 
-namespace Rubberduck.SettingsProvider.Model
+namespace Rubberduck.SettingsProvider.Model.UpdateServer
 {
-    public record class WebApiBaseUrlSetting : TypedRubberduckSetting<Uri>
+    /// <summary>
+    /// Determines the base address of the web API that responds to Rubberduck version checks.
+    /// </summary>
+    public class WebApiBaseUrlSetting : UriRubberduckSetting
     {
-        // TODO localize
-        private static readonly string _description = "Determines the base address of the web API that responds to Rubberduck version checks.";
+        public static Uri DefaultSettingValue { get; } = new("https://api.rubberduckvba.com/api/v1");
 
-        public WebApiBaseUrlSetting(Uri defaultValue) : this(defaultValue, defaultValue) { }
-        public WebApiBaseUrlSetting(Uri defaultValue, Uri value)
-            : base(nameof(WebApiBaseUrlSetting), value, SettingDataType.UriSetting, defaultValue, readOnlyRecommended: true) { }
+        public WebApiBaseUrlSetting()
+        {
+            DefaultValue = DefaultSettingValue;
+        }
     }
 }

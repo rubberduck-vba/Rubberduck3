@@ -1,16 +1,20 @@
 ﻿using Rubberduck.InternalApi.ServerPlatform;
+using System;
 
 namespace Rubberduck.SettingsProvider.Model.ServerStartup
 {
-    public record class ServerTransportTypeSetting : TypedRubberduckSetting<TransportType>
+    /// <summary>
+    /// The type of communication channel between this server and its client.
+    /// </summary>
+    public class ServerTransportTypeSetting : TypedRubberduckSetting<TransportType>
     {
-        // TODO localize
-        private static readonly string _description = "The type of communication channel between this server and its client.";
+        public static TransportType DefaultSettingValue { get; } = TransportType.StdIO;
 
-        public ServerTransportTypeSetting(string name, TransportType defaultValue)
-            : this(name, defaultValue, defaultValue) { }
-
-        public ServerTransportTypeSetting(string name, TransportType defaultValue, TransportType value)
-            : base(name, value, SettingDataType.EnumSetting, defaultValue, readOnlyRecommended: true) { }
+        public ServerTransportTypeSetting()
+        {
+            SettingDataType = SettingDataType.EnumValueSetting;
+            DefaultValue = DefaultSettingValue;
+            Tags = SettingTags.ReadOnlyRecommended | SettingTags.Advanced;
+        }
     }
 }

@@ -2,15 +2,17 @@
 
 namespace Rubberduck.SettingsProvider.Model.ServerStartup
 {
-    public record class TraceLevelSetting : TypedRubberduckSetting<MessageTraceLevel>
+    /// <summary>
+    /// The server trace verbosity level.
+    /// </summary>
+    public class TraceLevelSetting : TypedRubberduckSetting<MessageTraceLevel>
     {
-        // TODO localize
-        private static readonly string _description = "The server trace verbosity level.";
+        public static MessageTraceLevel DefaultSettingValue { get; } = MessageTraceLevel.Verbose;
 
-        public TraceLevelSetting(string name, MessageTraceLevel defaultValue)
-            : this(name, defaultValue, defaultValue) { }
-
-        public TraceLevelSetting(string name, MessageTraceLevel defaultValue, MessageTraceLevel value)
-            : base(name, value, SettingDataType.EnumSetting, defaultValue) { }
+        public TraceLevelSetting()
+        {
+            SettingDataType = SettingDataType.EnumValueSetting;
+            DefaultValue = DefaultSettingValue;
+        }
     }
 }

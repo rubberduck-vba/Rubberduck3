@@ -1,12 +1,15 @@
-﻿namespace Rubberduck.SettingsProvider.Model
+﻿namespace Rubberduck.SettingsProvider.Model.UpdateServer
 {
-    public record class IsUpdateServerEnabledSetting : TypedRubberduckSetting<bool>
+    /// <summary>
+    /// Determines whether the update server is enabled at all.
+    /// </summary>
+    public class IsUpdateServerEnabledSetting : BooleanRubberduckSetting
     {
-        // TODO localize
-        private static readonly string _description = "Determines whether the update server is enabled at all.";
+        public static bool DefaultSettingValue { get; } = true;
 
-        public IsUpdateServerEnabledSetting(bool defaultValue) : this(defaultValue, defaultValue) { }
-        public IsUpdateServerEnabledSetting(bool defaultValue, bool value)
-            : base(nameof(IsUpdateServerEnabledSetting), value, SettingDataType.BooleanSetting, defaultValue) { }
+        public IsUpdateServerEnabledSetting()
+        {
+            DefaultValue = DefaultSettingValue;
+        }
     }
 }

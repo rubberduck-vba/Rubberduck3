@@ -1,18 +1,21 @@
 ﻿using System;
+using System.IO;
 
 namespace Rubberduck.SettingsProvider.Model.LanguageClient
 {
-    public record class DefaultWorkspaceRootSetting : TypedRubberduckSetting<Uri>
+    /// <summary>
+    /// The default location for new projects hosted in a document that isn't saved yet.
+    /// </summary>
+    public class DefaultWorkspaceRootSetting : UriRubberduckSetting
     {
-        public static Uri DefaultSettingValue { get; } = new(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Rubberduck", "Workspaces"));
+        private static readonly string LocalAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
-        // TODO localize
-        private static readonly string _description = "The default location for new projects hosted in a document that isn't saved yet.";
+        public static Uri DefaultSettingValue { get; } = new(Path.Combine(LocalAppData, "Rubberduck", "Workspaces"));
 
         public DefaultWorkspaceRootSetting()
-            : base(nameof(DefaultWorkspaceRootSetting), DefaultSettingValue, SettingDataType.UriSetting, DefaultSettingValue) { }
-
-        public DefaultWorkspaceRootSetting(Uri value)
-            : base(nameof(DefaultWorkspaceRootSetting), value, SettingDataType.UriSetting, DefaultSettingValue) { }
+        {
+            DefaultValue = DefaultSettingValue;
+            Tags = SettingTags.Advanced | SettingTags.ReadOnlyRecommended;
+        }
     }
 }

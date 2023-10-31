@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Settings;
+using Rubberduck.SettingsProvider.Model.TelemetryServer;
 
 namespace Rubberduck.TelemetryServer.Handlers
 {

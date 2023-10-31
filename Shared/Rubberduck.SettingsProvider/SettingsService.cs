@@ -5,12 +5,14 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.General;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
 using System;
 using System.Diagnostics;
 using System.IO.Abstractions;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Rubberduck.SettingsProvider
@@ -36,7 +38,13 @@ namespace Rubberduck.SettingsProvider
     public class SettingsService<TSettings> : ISettingsService<TSettings>
         where TSettings : RubberduckSetting, new()
     {
-        private static readonly JsonSerializerOptions _options = new() { PropertyNameCaseInsensitive = true };
+        private static readonly JsonSerializerOptions _options = new() 
+        { 
+            IgnoreReadOnlyProperties = true,
+            PropertyNameCaseInsensitive = true,
+            WriteIndented = true,
+            UnknownTypeHandling = JsonUnknownTypeHandling.JsonElement,
+        };
 
         private readonly ILogger _logger;
         private readonly IFileSystem _fileSystem;

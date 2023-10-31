@@ -7,6 +7,7 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.UpdateServer;
 using System.Threading;
 using System.Threading.Tasks;
 

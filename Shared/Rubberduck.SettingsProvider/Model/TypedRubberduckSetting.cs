@@ -1,52 +1,71 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Linq;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model
 {
-    /// <summary>
-    /// Non-generic interface for generic type constraints.
-    /// </summary>
-    public record class RubberduckSetting 
+    public abstract class StringRubberduckSetting : TypedRubberduckSetting<string>
     {
-        /// <summary>
-        /// The resource key for this setting.
-        /// </summary>
-        public string Key { get; init; }
-        /// <summary>
-        /// The current value of this setting.
-        /// </summary>
-        public virtual object Value { get; init; }
-        /// <summary>
-        /// The supported data type of the setting value.
-        /// </summary>
+        protected StringRubberduckSetting() 
+        {
+            SettingDataType = SettingDataType.TextSetting;
+        }
+
         [JsonIgnore]
-        public SettingDataType SettingDataType { get; init; }
-        /// <summary>
-        /// Whether this setting is probably better left alone, but can still be changed if the user knows what they're doing.
-        /// </summary>
+        public bool IsRequired { get; init; } = true;
         [JsonIgnore]
-        public bool ReadOnlyRecommended { get; init; }
+        public int? MinLength { get; init; } = 1;
+        [JsonIgnore]
+        public int? MaxLength { get; init; } = short.MaxValue;
+        [JsonIgnore]
+        public string? RegEx { get; init; }
     }
 
-    public abstract record class TypedRubberduckSetting<TValue> : RubberduckSetting
+    public abstract class BooleanRubberduckSetting : TypedRubberduckSetting<bool>
     {
-        /// <summary>
-        /// Default constructor for deserialization.
-        /// </summary>
-        protected TypedRubberduckSetting() { }
-
-        protected TypedRubberduckSetting(string key, TValue? value, SettingDataType settingDataType, TValue defaultValue, bool readOnlyRecommended = false)
+        protected BooleanRubberduckSetting()
         {
-            Key = key;
-            TypedValue = value ?? defaultValue;
-            SettingDataType = settingDataType;
-            DefaultValue = defaultValue;
-            ReadOnlyRecommended = readOnlyRecommended;
+            SettingDataType = SettingDataType.BooleanSetting;
         }
+    }
+
+    public abstract class UriRubberduckSetting : TypedRubberduckSetting<Uri>
+    {
+        protected UriRubberduckSetting()
+        {
+            SettingDataType = SettingDataType.UriSetting;
+        }
+    }
+
+    public abstract class NumericRubberduckSetting : TypedRubberduckSetting<double>
+    {
+        protected NumericRubberduckSetting()
+        {
+            SettingDataType = SettingDataType.NumericSetting;
+        }
+
+        [JsonIgnore]
+        public bool AllowNegative { get; init; } = false;
+        [JsonIgnore]
+        public bool AllowDecimals { get; init; } = true;
+        [JsonIgnore]
+        public double MinValue { get; init; } = 0;
+        [JsonIgnore]
+        public double MaxValue { get; init; } = 1;
+    }
+
+    public abstract class TypedRubberduckSetting<TValue> : RubberduckSetting
+    {
+        protected TypedRubberduckSetting()
+        {
+        }
+
         /// <summary>
         /// The current value/configuration of this setting.
         /// </summary>
-        public TValue TypedValue { get; init; }
+        [JsonIgnore]
+        public TValue TypedValue { get; private set; }
 
         /// <summary>
         /// The value returned by <c>Value</c> absent any initialization.
@@ -54,6 +73,47 @@ namespace Rubberduck.SettingsProvider.Model
         [JsonIgnore]
         public TValue DefaultValue { get; init; }
 
-        public override object Value { get => TypedValue!; init => TypedValue = JsonSerializer.Deserialize<TValue>(value.ToString())!; }
+        [JsonPropertyOrder(1)]
+        public override object Value
+        {
+            get => TypedValue!;
+            set
+            {
+                if (SettingDataType == SettingDataType.SettingGroup)
+                {
+                    if (value is JsonElement json && json.ValueKind == JsonValueKind.Array)
+                    {
+                        object values = json.EnumerateArray().Select(item => item.Deserialize<RubberduckSetting>()!).ToArray();
+                        TypedValue = (TValue)values;
+                    }
+                    else
+                    {
+                        TypedValue = (TValue)value!;
+                    }
+                }
+                else if (SettingDataType != SettingDataType.NotSet)
+                {
+                    if (value is JsonElement json)
+                    {
+                        // how?
+                    }
+                    else
+                    {
+                        TypedValue = (TValue)value!;
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException($"SettingDataType is unset for setting type '{Key}'.");
+                }
+            }
+        }
+
+        public TypedRubberduckSetting<TValue> WithValue(TValue value)
+        {
+            _ = value ?? throw new ArgumentNullException(nameof(value));
+            Value = value;
+            return this;
+        }
     }
 }

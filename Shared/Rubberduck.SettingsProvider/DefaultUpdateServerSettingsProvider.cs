@@ -1,5 +1,5 @@
 ﻿using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.UpdateServer;
 
 namespace Rubberduck.SettingsProvider
 {

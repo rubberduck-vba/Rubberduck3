@@ -6,10 +6,11 @@ namespace Rubberduck.SettingsProvider.Model
 {
     public enum SettingDataType
     {
+        NotSet,
         /// <summary>
         /// Represents a group of configurable values.
         /// </summary>
-        ObjectSetting,
+        SettingGroup,
         /// <summary>
         /// A configuration setting that represents a string value.
         /// </summary>
@@ -34,10 +35,11 @@ namespace Rubberduck.SettingsProvider.Model
         /// <summary>
         /// A configuration setting that represents an enum constant value.
         /// </summary>
-        /// <remarks>
-        /// Templated as a <c>ComboBox</c> input field in the settings UI.
-        /// </remarks>
-        EnumSetting,
+        EnumSettingGroup,
+        /// <summary>
+        /// A configuration setting that represents an enum constant value.
+        /// </summary>
+        EnumValueSetting,
         /// <summary>
         /// A configuration setting that represents a numeric value.
         /// </summary>
@@ -59,19 +61,5 @@ namespace Rubberduck.SettingsProvider.Model
         /// Templated as a <c>ListView</c> in the settings UI.
         /// </remarks>
         ListSetting,
-    }
-
-    public static class SettingDataTypeMap
-    {
-        public static readonly Dictionary<SettingDataType, Type> TypeMap = new()
-        {
-            [SettingDataType.TextSetting] = typeof(string),
-            [SettingDataType.UriSetting] = typeof(Uri),
-            [SettingDataType.BooleanSetting] = typeof(bool),
-            [SettingDataType.EnumSetting] = typeof(string),
-            [SettingDataType.NumericSetting] = typeof(double),
-            [SettingDataType.TimeSpanSetting] = typeof(TimeSpan),
-            [SettingDataType.ListSetting] = typeof(string[]),
-        };
     }
 }

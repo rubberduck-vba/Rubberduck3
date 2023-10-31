@@ -1,12 +1,15 @@
-﻿namespace Rubberduck.SettingsProvider.Model
+﻿namespace Rubberduck.SettingsProvider.Model.TelemetryServer
 {
-    public record class SendMetricTelemetrySetting : TypedRubberduckSetting<bool>
+    /// <summary>
+    /// Determines whether metric telemetry data is transmitted.
+    /// </summary>
+    public class SendMetricTelemetrySetting : BooleanRubberduckSetting
     {
-        // TODO localize
-        private static readonly string _description = "Determines whether metric telemetry data is transmitted.";
+        public static bool DefaultSettingValue { get; } = true;
 
-        public SendMetricTelemetrySetting(bool defaultValue) : this(defaultValue, defaultValue) { }
-        public SendMetricTelemetrySetting(bool defaultValue, bool value)
-            : base(nameof(SendMetricTelemetrySetting), value, SettingDataType.BooleanSetting, defaultValue) { }
+        public SendMetricTelemetrySetting()
+        {
+            DefaultValue = DefaultSettingValue;
+        }
     }
 }

@@ -7,6 +7,7 @@ using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.General;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

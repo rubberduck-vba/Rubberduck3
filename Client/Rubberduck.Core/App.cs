@@ -4,6 +4,7 @@ using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.General;
 using Rubberduck.UI;
 using Rubberduck.UI.Message;
 using Rubberduck.Unmanaged.UIContext;
@@ -130,14 +131,10 @@ namespace Rubberduck.Core
                 return;
             }
 
-            var updatedSettings = new RubberduckSettings(
-                new GeneralSettings(currentSettings.GeneralSettings, new RubberduckSetting[] { new LogLevelSetting(LogLevel.None) }),
-                currentSettings.LanguageClientSettings,
-                currentSettings.LanguageServerSettings,
-                currentSettings.UpdateServerSettings,
-                currentSettings.TelemetryServerSettings);
+            currentSettings.GeneralSettings.GetSetting<LogLevelSetting>().Value = LogLevel.None;
+            currentSettings.GeneralSettings.GetSetting<DisableInitialLogLevelResetSetting>().Value = true;
 
-            _settingsService.Write(updatedSettings);
+            _settingsService.Write(currentSettings);
         }
 
         public void Startup()
@@ -185,14 +182,8 @@ namespace Rubberduck.Core
                 // not accessing resources here, because setting resource culture literally just failed.
                 _messageBox.ShowMessage(MessageModel.For(exception));
 
-                var updatedSettings = new RubberduckSettings(
-                    new GeneralSettings(currentSettings.GeneralSettings, new RubberduckSetting[] { new LogLevelSetting(LogLevel.None) }),
-                    currentSettings.LanguageClientSettings,
-                    currentSettings.LanguageServerSettings,
-                    currentSettings.UpdateServerSettings,
-                    currentSettings.TelemetryServerSettings);
-
-                _settingsService.Write(updatedSettings);
+                currentSettings.GeneralSettings.GetSetting<LogLevelSetting>().Value = LogLevel.None;
+                _settingsService.Write(currentSettings);
             }
         }
 

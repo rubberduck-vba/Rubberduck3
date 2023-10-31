@@ -1,18 +1,20 @@
 ﻿using Rubberduck.InternalApi.Settings;
+using System;
 
 namespace Rubberduck.SettingsProvider.Model.ServerStartup
 {
-    public record class ServerMessageModeSetting : TypedRubberduckSetting<MessageMode>
+    /// <summary>
+    /// The serialization mode of the JSON-RPC messages, when transport type uses pipes.
+    /// </summary>
+    public class ServerMessageModeSetting : TypedRubberduckSetting<MessageMode>
     {
-        // TODO localize
-        private static readonly string _description = "The serialization mode of the JSON-RPC messages, when transport type uses pipes.";
+        public static MessageMode DefaultSettingValue { get; } = MessageMode.Message;
 
-        public ServerMessageModeSetting(string name, MessageMode defaultValue)
-            : this(name, defaultValue, defaultValue) { }
-
-        public ServerMessageModeSetting(string name, MessageMode defaultValue, MessageMode value)
-            : base(name, value, SettingDataType.EnumSetting, defaultValue, readOnlyRecommended: true)
+        public ServerMessageModeSetting()
         {
+            SettingDataType = SettingDataType.EnumValueSetting;
+            DefaultValue = DefaultSettingValue;
+            Tags = SettingTags.ReadOnlyRecommended | SettingTags.Advanced;
         }
     }
 }

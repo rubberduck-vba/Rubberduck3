@@ -1,39 +1,34 @@
 ﻿using Rubberduck.InternalApi.Settings;
+using Rubberduck.SettingsProvider.Model.General;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
+using Rubberduck.SettingsProvider.Model.TelemetryServer;
+using Rubberduck.SettingsProvider.Model.UpdateServer;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model
 {
-    public record class RubberduckSettings : TypedSettingGroup, IDefaultSettingsProvider<RubberduckSettings>
+    /// <summary>
+    /// A container for all configuration settings.
+    /// </summary>
+    public class RubberduckSettings : TypedSettingGroup, IDefaultSettingsProvider<RubberduckSettings>
     {
-        // TODO localize
-        private static readonly string _description = "A container for all configuration settings.";
         private static readonly RubberduckSetting[] DefaultSettings =
             new RubberduckSetting[]
             {
-                new GeneralSettings(),
-                new LanguageClientSettings(),
-                new LanguageServerSettings(),
-                new UpdateServerSettings(),
-                new TelemetryServerSettings(),
+                GeneralSettings.Default,
+                LanguageClientSettings.Default,
+                LanguageServerSettings.Default,
+                UpdateServerSettings.Default,
+                TelemetryServerSettings.Default,
             };
 
-        public RubberduckSettings()
-            : base(nameof(RubberduckSettings), DefaultSettings, DefaultSettings) { }
-
-        public RubberduckSettings(params RubberduckSetting[] settings)
-            : base(nameof(RubberduckSettings), settings, DefaultSettings) { }
-
-        public RubberduckSettings(IEnumerable<RubberduckSetting> settings)
-            : base(nameof(RubberduckSettings), settings, DefaultSettings) { }
-
-        public RubberduckSettings(RubberduckSettings original, IEnumerable<RubberduckSetting> settings)
-            : base(original)
+        public RubberduckSettings() 
         {
-            Value = settings.ToArray();
+            SettingDataType = SettingDataType.SettingGroup;
+            DefaultValue = DefaultSettings;
         }
 
         [JsonIgnore]
@@ -47,7 +42,7 @@ namespace Rubberduck.SettingsProvider.Model
         [JsonIgnore]
         public TelemetryServerSettings TelemetryServerSettings => GetSetting<TelemetryServerSettings>();
 
-        public static RubberduckSettings Default { get; } = new(DefaultSettings);
+        public static RubberduckSettings Default { get; } = new() { Value = DefaultSettings };
         RubberduckSettings IDefaultSettingsProvider<RubberduckSettings>.Default => Default;
     }
 }

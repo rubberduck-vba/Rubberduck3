@@ -14,7 +14,7 @@ using Rubberduck.InternalApi.Settings;
 using Rubberduck.InternalApi.WebApi;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
-using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.TelemetryServer;
 using Rubberduck.TelemetryServer.Handlers;
 using Rubberduck.TelemetryServer.Handlers.Lifecycle;
 using System;

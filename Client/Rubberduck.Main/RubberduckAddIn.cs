@@ -148,7 +148,10 @@ namespace Rubberduck.Main
             finally
             {
                 sw.Stop();
-                _logger.LogPerformance(TraceLevel, "Initialization completed.", sw.Elapsed);
+                if (_initialSettings != null)
+                {
+                    _logger.LogPerformance(TraceLevel, "Initialization completed.", sw.Elapsed);
+                }
             }
         }
 

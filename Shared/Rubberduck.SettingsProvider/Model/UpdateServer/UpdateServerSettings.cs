@@ -1,34 +1,28 @@
 ﻿using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
 using System;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Rubberduck.SettingsProvider.Model
+namespace Rubberduck.SettingsProvider.Model.UpdateServer
 {
-    public record class UpdateServerSettings : TypedSettingGroup, IDefaultSettingsProvider<UpdateServerSettings>
+    /// <summary>
+    /// Configures the update server settings.
+    /// </summary>
+    public class UpdateServerSettings : TypedSettingGroup, IDefaultSettingsProvider<UpdateServerSettings>
     {
-        // TODO localize
-        private static readonly string _description = "Configures the update server settings.";
-        public static RubberduckSetting[] DefaultSettings = new RubberduckSetting[]
+        public static RubberduckSetting[] DefaultSettings { get; } = new RubberduckSetting[]
         {
-            new UpdateServerStartupSettings(),
-            new TraceLevelSetting(nameof(TraceLevelSetting), MessageTraceLevel.Verbose),
-            new IsUpdateServerEnabledSetting(true),
-            new IncludePreReleasesSetting(true),
-            new WebApiBaseUrlSetting(new Uri("https://api.rubberduckvba.com/api/v1")),
+            new UpdateServerStartupSettings { Value = UpdateServerStartupSettings.DefaultSettings },
+            new TraceLevelSetting { Value = TraceLevelSetting.DefaultSettingValue },
+            new IsUpdateServerEnabledSetting { Value = IsUpdateServerEnabledSetting.DefaultSettingValue },
+            new IncludePreReleasesSetting { Value = IncludePreReleasesSetting.DefaultSettingValue },
+            new WebApiBaseUrlSetting { Value = WebApiBaseUrlSetting.DefaultSettingValue },
         };
 
-
-        public UpdateServerSettings() 
-            : base(nameof(UpdateServerSettings), DefaultSettings, DefaultSettings){ }
-
-        public UpdateServerSettings(params RubberduckSetting[] settings)
-            : base(nameof(UpdateServerSettings), settings, DefaultSettings) { }
-
-        public UpdateServerSettings(IEnumerable<RubberduckSetting> settings)
-            : base(nameof(UpdateServerSettings), settings, DefaultSettings) { }
-
+        public UpdateServerSettings()
+        {
+            DefaultValue = DefaultSettings;
+        }
 
         [JsonIgnore]
         public UpdateServerStartupSettings StartupSettings => GetSetting<UpdateServerStartupSettings>();
@@ -41,7 +35,7 @@ namespace Rubberduck.SettingsProvider.Model
         [JsonIgnore]
         public Uri RubberduckWebApiBaseUrl => GetSetting<WebApiBaseUrlSetting>().TypedValue;
 
-        public static UpdateServerSettings Default { get; } = new(DefaultSettings);
+        public static UpdateServerSettings Default { get; } = new() { Value = DefaultSettings };
         UpdateServerSettings IDefaultSettingsProvider<UpdateServerSettings>.Default => Default;
     }
 }

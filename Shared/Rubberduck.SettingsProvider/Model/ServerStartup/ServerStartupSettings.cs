@@ -7,25 +7,31 @@ using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model.ServerStartup
 {
-    public abstract record class ServerStartupSettings : TypedSettingGroup, 
+    /// <summary>
+    /// The base type for server startup settings.
+    /// </summary>
+    public abstract class ServerStartupSettings : TypedSettingGroup, 
         IProcessStartInfoArgumentProvider, 
         IHealthCheckSettingsProvider
     {
-        protected static RubberduckSetting[] GetDefaultSettings(string name, string pipe, string path)
+        protected static RubberduckSetting[] GetDefaultSettings(string pipe, string path)
         {
             return new RubberduckSetting[]
             {
-                new ServerExecutablePathSetting($"{name}.{nameof(ServerExecutablePathSetting)}", new Uri(path)),
-                new ServerTransportTypeSetting($"{name}.{nameof(ServerTransportTypeSetting)}", TransportType.StdIO),
-                new ServerPipeNameSetting($"{name}.{nameof(ServerPipeNameSetting)}", pipe),
-                new ServerMessageModeSetting($"{name}.{nameof(ServerMessageModeSetting)}", MessageMode.Message),
-                new TraceLevelSetting($"{name}.{nameof(TraceLevelSetting)}", MessageTraceLevel.Verbose),
-                new ClientHealthCheckIntervalSetting($"{name}.{nameof(ClientHealthCheckIntervalSetting)}", TimeSpan.FromSeconds(10)),
+                new ServerExecutablePathSetting { Value = new Uri(path) },
+                new ServerTransportTypeSetting { Value = TransportType.StdIO },
+                new ServerPipeNameSetting { Value = pipe },
+                new ServerMessageModeSetting { Value = MessageMode.Message },
+                new TraceLevelSetting { Value = MessageTraceLevel.Verbose },
+                new ClientHealthCheckIntervalSetting { Value = TimeSpan.FromSeconds(10) },
             };
         }
 
-        protected ServerStartupSettings(string name, IEnumerable<RubberduckSetting> settings, IEnumerable<RubberduckSetting> defaults)
-            : base(name, settings, defaults) { }
+        protected ServerStartupSettings()
+        {
+            SettingDataType = SettingDataType.SettingGroup;
+            Tags = SettingTags.ReadOnlyRecommended;
+        }
 
         [JsonIgnore]
         public string ServerExecutablePath => GetSetting<ServerExecutablePathSetting>().TypedValue.AbsolutePath;

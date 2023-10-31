@@ -13,7 +13,7 @@ using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
-using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.UpdateServer;
 using Rubberduck.UpdateServer.Handlers.Lifecycle;
 using System;
 using System.Diagnostics;

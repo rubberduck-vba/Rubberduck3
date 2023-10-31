@@ -1,12 +1,20 @@
-﻿namespace Rubberduck.SettingsProvider.Model
+﻿namespace Rubberduck.SettingsProvider.Model.TelemetryServer
 {
-    public record class TelemetryEventQueueSizeSetting : TypedRubberduckSetting<double>
+    /// <summary>
+    /// The maximum number of telemetry events transmission payload.
+    /// </summary>
+    public class TelemetryEventQueueSizeSetting : NumericRubberduckSetting
     {
-        // TODO localize
-        private static readonly string _description = "The maximum number of telemetry events transmission payload.";
+        public static double DefaultSettingValue { get; } = 10000;
 
-        public TelemetryEventQueueSizeSetting(double defaultValue) : this(defaultValue, defaultValue) { }
-        public TelemetryEventQueueSizeSetting(double defaultValue, double value)
-            : base(nameof(TelemetryEventQueueSizeSetting), value, SettingDataType.NumericSetting, defaultValue) { }
+        public TelemetryEventQueueSizeSetting()
+        {
+            SettingDataType = SettingDataType.NumericSetting;
+            DefaultValue = DefaultSettingValue;
+            AllowDecimals = false;
+            AllowNegative = false;
+            MinValue = 0;
+            MaxValue = short.MaxValue;
+        }
     }
 }
