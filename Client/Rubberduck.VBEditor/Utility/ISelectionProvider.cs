@@ -1,5 +1,4 @@
-﻿using Rubberduck.InternalApi.Model;
-using Rubberduck.Unmanaged.Model;
+﻿using Rubberduck.Unmanaged.Model;
 using Rubberduck.Unmanaged.Model.Abstract;
 using System.Collections.Generic;
 

@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Settings;
+using Rubberduck.SettingsProvider.Model;
 using Rubberduck.Unmanaged.Abstract;
 
 namespace Rubberduck.UI.Command
@@ -7,8 +9,8 @@ namespace Rubberduck.UI.Command
     {
         private readonly IVbeEvents _vbeEvents;
 
-        protected ComCommandBase(ILogger logger, IVbeEvents vbeEvents)
-            : base(logger)
+        protected ComCommandBase(ILogger logger, ISettingsProvider<RubberduckSettings> settingsProvider, IVbeEvents vbeEvents)
+            : base(logger, settingsProvider)
         {
             _vbeEvents = vbeEvents;
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute, true);

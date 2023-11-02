@@ -1,17 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Version>3.0.0</Version>
-    <TargetFramework>net481</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
-    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU</Platforms>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Resource Include="Ducky.ico" />
     <Resource Include="Icons\Custom\attribution.txt" />
     <Resource Include="Icons\Custom\cc_license.txt" />
     <Resource Include="Icons\Custom\Mask\AddPropertyMask.bmp" />
@@ -164,7 +161,6 @@
     <Resource Include="Icons\Custom\PNG\Task.png" />
     <Resource Include="Icons\Custom\PNG\TestManager.png" />
     <Resource Include="Icons\Custom\PNG\TestMethod.png" />
-    <Resource Include="Icons\Ducky.ico" />
     <Resource Include="Icons\Fugue\application-resize.png" />
     <Resource Include="Icons\Fugue\arrow-090-dimmed.png" />
     <Resource Include="Icons\Fugue\arrow-090.png" />
@@ -207,14 +203,21 @@
     <Resource Include="Icons\Fugue\document-block.png" />
     <Resource Include="Icons\Fugue\document-copy.png" />
     <Resource Include="Icons\Fugue\document-excel.png" />
+    <Resource Include="Icons\Fugue\document-export.png" />
     <Resource Include="Icons\Fugue\document-globe.png" />
     <Resource Include="Icons\Fugue\document-import.png" />
     <Resource Include="Icons\Fugue\document-office.png" />
     <Resource Include="Icons\Fugue\document-outlook.png" />
     <Resource Include="Icons\Fugue\document-powerpoint.png" />
+    <Resource Include="Icons\Fugue\document-search-result.png" />
     <Resource Include="Icons\Fugue\document-smiley-sad.png" />
+    <Resource Include="Icons\Fugue\document-smiley.png" />
+    <Resource Include="Icons\Fugue\document-stand.png" />
+    <Resource Include="Icons\Fugue\document-sticky-note.png" />
+    <Resource Include="Icons\Fugue\document-text.png" />
     <Resource Include="Icons\Fugue\document-word.png" />
     <Resource Include="Icons\Fugue\drive-download.png" />
+    <Resource Include="Icons\Fugue\drive-network.png" />
     <Resource Include="Icons\Fugue\drive-upload.png" />
     <Resource Include="Icons\Fugue\edit-list-order.png" />
     <Resource Include="Icons\Fugue\edit-size.png" />
@@ -287,7 +290,6 @@
     <Resource Include="Icons\Fugue\document--plus.png" />
     <Resource Include="Icons\Fugue\selection-input.png" />
     <Resource Include="Icons\Fugue\document-code.png" />
-    <Resource Include="Icons\faint-ducky.png" />
     <Resource Include="Icons\Fugue\control-pause.png" />
     <Resource Include="Icons\Fugue\control-power.png" />
     <Resource Include="Icons\Fugue\drive--exclamation.png" />
@@ -295,14 +297,24 @@
     <Resource Include="Icons\Fugue\socket.png" />
     <Resource Include="Icons\Fugue\user-silhouette.png" />
     <Resource Include="Icons\Fugue\user-medium-silhouette.png" />
-    <Resource Include="Splash.png" />
+    <Resource Include="Icons\ducky.ico" />
+    <Resource Include="ducky.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     <PackageReference Include="System.Resources.Extensions" Version="7.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="RubberduckUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RubberduckUI.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="RubberduckUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

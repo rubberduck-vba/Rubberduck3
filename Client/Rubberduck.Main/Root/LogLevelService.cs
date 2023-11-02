@@ -2,11 +2,11 @@
 using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Extensions;
 
-namespace Rubberduck.Root
+namespace Rubberduck.Main.Root
 {
     public class LogLevelService : ILogLevelService
     {
-        public void SetMinimumLogLevel(LogLevel level) 
+        public void SetMinimumLogLevel(LogLevel level)
         {
             //TODO port from RD2: LogLevelHelper.SetMinimumLogLevel(LogLevel.FromOrdinal(_config.UserSettings.GeneralSettings.MinimumLogLevel));
         }

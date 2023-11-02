@@ -1,6 +1,5 @@
 ﻿using System.IO.Abstractions;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Rubberduck.InternalApi.Extensions
 {
@@ -24,12 +23,12 @@ namespace Rubberduck.InternalApi.Extensions
     {
         public const char FolderDelimiter = '.';
 
-        public static string RootFolder(this string folder)
+        public static string? RootFolder(this string folder)
         {
             return (folder ?? string.Empty).Split(FolderExtensions.FolderDelimiter).FirstOrDefault();
         }
 
-        public static string SubFolderName(this string folder)
+        public static string? SubFolderName(this string folder)
         {
             return (folder ?? string.Empty).Split(FolderExtensions.FolderDelimiter).LastOrDefault();
         }
@@ -51,7 +50,7 @@ namespace Rubberduck.InternalApi.Extensions
                 return string.Empty;
             }
 
-            return subFolder.Substring(folder.Length + 1);
+            return subFolder[(folder.Length + 1)..];
         }
 
         public static string SubFolderRoot(this string subFolder, string folder)
@@ -68,7 +67,7 @@ namespace Rubberduck.InternalApi.Extensions
             }
 
             var lastDelimiterIndex = folder.LastIndexOf(FolderDelimiter);
-            return folder.Substring(0, lastDelimiterIndex);
+            return folder[..lastDelimiterIndex];
         }
 
         public static bool IsSubFolderOf(this string subFolder, string folder)

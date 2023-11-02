@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Nerdbank.Streams;
 using NLog;
@@ -11,27 +10,24 @@ using OmniSharp.Extensions.LanguageServer.Server;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.LanguageServer.Handlers.Lifecycle;
 using Rubberduck.LanguageServer.Model;
 using Rubberduck.LanguageServer.Services;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
-using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.LanguageServer;
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO.Abstractions;
 using System.IO.Pipes;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.LanguageServer;
 
 namespace Rubberduck.LanguageServer
 {
-    public class ServerStateNotInitializedException : InvalidOperationException { }
-
     public sealed class ServerApp : IDisposable
     {
         private readonly ServerStartupOptions _options;
@@ -66,7 +62,7 @@ namespace Rubberduck.LanguageServer
                 _logger = _serviceProvider.GetRequiredService<ILogger<ServerApp>>();
                 _serverState = _serviceProvider.GetRequiredService<LanguageServerState>();
 
-                _languageServer = await OmniSharpLanguageServer.From(ConfigureLanguageServer, _serviceProvider);
+                _languageServer = await OmniSharpLanguageServer.From(ConfigureServer, _serviceProvider, _tokenSource.Token);
                 
                 await _languageServer.WaitForExit;
             }
@@ -100,7 +96,7 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<DocumentContentStore>();
 
             services.AddSingleton<IExitHandler, ExitHandler>();
-            services.AddSingleton<IHealthCheckService, ClientProcessHealthCheckService>();
+            services.AddSingleton<IHealthCheckService<LanguageServerStartupSettings>, ClientProcessHealthCheckService<LanguageServerStartupSettings>>();
         }
 
         private void ConfigureLogging(ILoggingBuilder builder)
@@ -124,7 +120,7 @@ namespace Rubberduck.LanguageServer
             });
         }
 
-        private void ConfigureLanguageServer(LanguageServerOptions options)
+        private void ConfigureServer(LanguageServerOptions options)
         {
             // example LSP server: https://github.com/OmniSharp/csharp-language-server-protocol/blob/master/sample/SampleServer/Program.cs
 
@@ -178,6 +174,12 @@ namespace Rubberduck.LanguageServer
                 {
                     _logger?.LogDebug("Language server started.");
                     token.ThrowIfCancellationRequested();
+
+                    // todo: read workspace folder from _serverState.RootUri
+                    // todo: parse all .vba/.vb6 files in folder
+                    // todo: this needs to return immediately so the server can start without killing things
+                    //       it also needs to capture the `server` param (or otherwise retain access to the server object)
+                    //       to send notifications to the client (e.g. parsing, parse ended, resolving, inspecting, etc.)
 
                     _logger?.LogDebug("Handled Started notification.");
                     return Task.CompletedTask;
@@ -317,14 +319,6 @@ namespace Rubberduck.LanguageServer
                 _languageServer.Dispose();
                 _languageServer = null!;
             }
-        }
-
-        public class UnsupportedTransportTypeException : NotSupportedException
-        {
-            public UnsupportedTransportTypeException(TransportType transportType)
-                : base($"Transport type '{transportType}' is not supported.") { }
-
-            public TransportType UnsupportedTransportType { get; }
         }
     }
 }

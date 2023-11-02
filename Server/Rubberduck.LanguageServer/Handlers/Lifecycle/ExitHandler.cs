@@ -2,12 +2,11 @@
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.LanguageServer;
-using Rubberduck.SettingsProvider;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.LanguageServer;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

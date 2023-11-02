@@ -2,7 +2,7 @@
 using System.Text;
 using Rubberduck.Resources;
 using Rubberduck.Unmanaged;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.Abstract.SourceCodeProvider;
 
 namespace Rubberduck.VBEditor.VBA

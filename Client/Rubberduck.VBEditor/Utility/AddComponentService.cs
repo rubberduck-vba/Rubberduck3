@@ -1,8 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 //using NLog;
-using Rubberduck.InternalApi.Model;
 using Rubberduck.Unmanaged;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.Abstract.SourceCodeProvider;
 using Rubberduck.Unmanaged.Model;
 
@@ -26,46 +25,42 @@ namespace Rubberduck.VBEditor.Utility
             _attributeSourceCodeHandler = attributesComponentSourceCodeProvider;
         }
 
-        public void AddComponent(string projectId, ComponentType componentType, string code = null, string additionalPrefixInModule = null, string componentName = null)
+        public void AddComponent(string projectId, ComponentType componentType, string? code = null, string? additionalPrefixInModule = null, string? componentName = null)
         {
             AddComponent(_codePaneSourceCodeHandler, projectId, componentType, code, additionalPrefixInModule, componentName);
         }
 
-        public void AddComponentWithAttributes(string projectId, ComponentType componentType, string code, string prefixInModule = null, string componentName = null)
+        public void AddComponentWithAttributes(string projectId, ComponentType componentType, string code, string? prefixInModule = null, string? componentName = null)
         {
             AddComponent(_attributeSourceCodeHandler, projectId, componentType, code, prefixInModule, componentName);
         }
 
-        public void AddComponent(IComponentSourceCodeHandler sourceCodeHandler, string projectId, ComponentType componentType, string code = null, string prefixInModule = null, string componentName = null)
+        public void AddComponent(IComponentSourceCodeHandler sourceCodeHandler, string projectId, ComponentType componentType, string? code = null, string? prefixInModule = null, string? componentName = null)
         {
-            using (var newComponent = CreateComponent(projectId, componentType))
+            using var newComponent = CreateComponent(projectId, componentType);
+            if (newComponent is null)
             {
-                if (newComponent == null)
-                {
-                    return;
-                }
+                return;
+            }
 
-                if (code != null)
-                {
-                    using (var loadedComponent = sourceCodeHandler.SubstituteCode(newComponent, code))
-                    {
-                        AddPrefix(loadedComponent, prefixInModule);
-                        RenameComponent(loadedComponent, componentName);
-                        ShowComponent(loadedComponent);
-                    }
-                }
-                else
-                {
-                    AddPrefix(newComponent, prefixInModule);
-                    RenameComponent(newComponent, componentName);
-                    ShowComponent(newComponent);
-                }
+            if (code != null)
+            {
+                using var loadedComponent = sourceCodeHandler.SubstituteCode(newComponent, code);
+                AddPrefix(loadedComponent, prefixInModule);
+                RenameComponent(loadedComponent, componentName);
+                ShowComponent(loadedComponent);
+            }
+            else
+            {
+                AddPrefix(newComponent, prefixInModule);
+                RenameComponent(newComponent, componentName);
+                ShowComponent(newComponent);
             }
         }
 
-        private static void RenameComponent(IVBComponent newComponent, string componentName)
+        private static void RenameComponent(IVBComponent newComponent, string? componentName)
         {
-            if (componentName == null)
+            if (componentName is null)
             {
                 return;
             }
@@ -82,44 +77,38 @@ namespace Rubberduck.VBEditor.Utility
 
         private static void ShowComponent(IVBComponent component)
         {
-            if (component == null)
+            if (component is null)
             {
                 return;
             }
 
-            using (var codeModule = component.CodeModule)
+            using var codeModule = component.CodeModule;
+            if (codeModule is null)
             {
-                if (codeModule == null)
-                {
-                    return;
-                }
-
-                using (var codePane = codeModule.CodePane)
-                {
-                    codePane.Show();
-                }
+                return;
             }
+
+            using var codePane = codeModule.CodePane;
+            codePane.Show();
         }
 
-        private static void AddPrefix(IVBComponent module, string prefix)
+        private static void AddPrefix(IVBComponent module, string? prefix)
         {
-            if (prefix == null || module == null)
+            if (prefix is null || module is null)
             {
                 return;
             }
 
-            using (var codeModule = module.CodeModule)
-            {
-                codeModule.InsertLines(1, prefix);
-            }
+            using var codeModule = module.CodeModule;
+            codeModule.InsertLines(1, prefix);
         }
 
-        private IVBComponent CreateComponent(string projectId, ComponentType componentType)
+        private IVBComponent CreateComponent(string? projectId, ComponentType componentType)
         {
             var componentsCollection = _projectsProvider.ComponentsCollection(projectId);
-            if (componentsCollection == null)
+            if (componentsCollection is null)
             {
-                return null;
+                return null!;
             }
 
             return componentsCollection.Add(componentType);

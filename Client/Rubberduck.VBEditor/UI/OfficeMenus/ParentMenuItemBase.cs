@@ -58,7 +58,7 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
 
         public Func<string> Caption { get { return () => RubberduckMenus.ResourceManager.GetString(ResourceKey, CultureInfo.CurrentUICulture) ?? ResourceKey; } }
 
-        public virtual string ToolTipKey { get; set; }
+        public virtual string? ToolTipKey { get; set; }
         public virtual Func<string> ToolTipText
         {
             get
@@ -129,20 +129,26 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
 
         private void RemoveChildren()
         {
-            foreach (var child in _items.Keys.Select(item => item as IParentMenuItem).Where(child => child != null))
+            foreach (var child in _items.Keys.Select(item => item as IParentMenuItem))
             {
-                child.RemoveMenu();
-                child.Parent.Dispose();
+                if (child is not null)
+                {
+                    child.RemoveMenu();
+                    child.Parent?.Dispose();
+                }
             }
-            foreach (var child in _items.Values.Select(item => item as ICommandBarButton).Where(child => child != null))
+            foreach (var child in _items.Values.Select(item => item as ICommandBarButton))
             {
-                child.Click -= ChildMenuCommandClick;
-                child.Delete();
-                child.Dispose();
+                if (child is not null)
+                {
+                    child.Click -= ChildMenuCommandClick;
+                    child.Delete();
+                    child.Dispose();
+                }
             }
         }
 
-        public async Task EvaluateCanExecuteAsync(object parameter, CancellationToken token)
+        public async Task EvaluateCanExecuteAsync(object? parameter, CancellationToken token)
         {
             foreach (var (key, value) in _items)
             {
@@ -169,27 +175,27 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
             }
         }
 
-        private ICommandBarControl InitializeChildControl(IParentMenuItem item)
+        private ICommandBarControl? InitializeChildControl(IParentMenuItem? item)
         {
-            if (item == null)
+            if (item is null)
             {
                 return null;
             }
 
-            item.Parent = Item.Controls;
+            item.Parent = Item!.Controls;
             item.Initialize();
             return item.Item;
         }
 
-        private ICommandBarControl InitializeChildControl(ICommandMenuItem item)
+        private ICommandBarControl? InitializeChildControl(ICommandMenuItem? item)
         {
-            if (item == null)
+            if (item is null)
             {
                 return null;
             }
 
             ICommandBarButton child;
-            using (var controls = Item.Controls)
+            using (var controls = Item!.Controls)
             {
                 child = controls.AddButton();                
             }
@@ -212,9 +218,9 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
             return child;
         }
 
-        private void ChildMenuCommandClick(object sender, CommandBarButtonClickEventArgs e)
+        private void ChildMenuCommandClick(object? sender, CommandBarButtonClickEventArgs e)
         {
-            if (!(_items.Select(kvp => kvp.Key).SingleOrDefault(menu => e.Tag.EndsWith(menu.GetType().Name)) is ICommandMenuItem item))
+            if (_items.Select(kvp => kvp.Key).SingleOrDefault(menu => e.Tag.EndsWith(menu.GetType().Name)) is not ICommandMenuItem item)
             {
                 return;
             }

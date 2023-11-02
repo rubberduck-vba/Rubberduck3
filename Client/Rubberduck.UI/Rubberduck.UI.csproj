@@ -1,0 +1,82 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Version>3.0.0</Version>
+    <TargetFramework>net7.0</TargetFramework>
+    <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <Platforms>AnyCPU</Platforms>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="RubberduckEditor\**" />
+    <EmbeddedResource Remove="RubberduckEditor\**" />
+    <None Remove="RubberduckEditor\**" />
+    <Page Remove="RubberduckEditor\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Resources\FontAwesome\gear-solid.png" />
+    <None Remove="Resources\FontAwesome\rectangle-xmark-solid.png" />
+    <None Remove="Resources\FontAwesome\square-xmark-solid-red.png" />
+    <None Remove="Resources\FontAwesome\square-xmark-solid.png" />
+    <None Remove="Resources\FontAwesome\window-maximize-regular.png" />
+    <None Remove="Resources\FontAwesome\window-minimize-regular.png" />
+    <None Remove="Resources\FontAwesome\window-restore-regular.png" />
+    <None Remove="Resources\vector-ducky-blur-1480.png" />
+    <None Remove="Resources\vector-ducky-color.png" />
+    <None Remove="Resources\vector-ducky-shadow-1480.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+    <PackageReference Include="MdXaml" Version="1.21.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
+    <PackageReference Include="SharpVectors" Version="1.8.2" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.Unmanaged\Rubberduck.Unmanaged.csproj" />
+    <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
+    <ProjectReference Include="..\..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj" />
+    <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Resource Include="Ducky.ico" />
+    <Resource Include="Resources\FontAwesome\gear-solid.png" />
+    <Resource Include="Resources\FontAwesome\rectangle-xmark-solid.png" />
+    <Resource Include="Resources\FontAwesome\square-xmark-solid-red.png" />
+    <Resource Include="Resources\FontAwesome\square-xmark-solid.png" />
+    <Resource Include="Resources\FontAwesome\window-maximize-regular.png" />
+    <Resource Include="Resources\FontAwesome\window-minimize-regular.png" />
+    <Resource Include="Resources\FontAwesome\window-restore-regular.png" />
+    <Resource Include="Resources\vector-ducky-blur-1480.png" />
+    <Resource Include="Resources\vector-ducky-color.png" />
+    <Resource Include="Resources\vector-ducky-shadow-1480.png" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Update="About\AboutWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Message\MessageWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="NewProject\NewProjectWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Shell\DuckyBackgroundControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Shell\FlatButton.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Shell\ThunderFrame.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Styles\ControlBoxCanvas.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>

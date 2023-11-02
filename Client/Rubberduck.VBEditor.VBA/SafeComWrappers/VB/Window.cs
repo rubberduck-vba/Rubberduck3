@@ -1,6 +1,8 @@
 ﻿using System;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
 using Rubberduck.Unmanaged.WindowsApi;
 using VB = Microsoft.Vbe.Interop;
 

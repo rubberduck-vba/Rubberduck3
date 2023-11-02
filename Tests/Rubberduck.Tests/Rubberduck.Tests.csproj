@@ -4,8 +4,6 @@
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
     <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
-    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <Platforms>AnyCPU</Platforms>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <IsPackable>false</IsPackable>
@@ -21,11 +19,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Client\Rubberduck.VBEditor\Rubberduck.VBEditor.csproj" />
-    <ProjectReference Include="..\..\Rubberduck.UnmanagedWrappers\Rubberduck.Unmanaged.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,8 +3,6 @@
     <Version>3.0.0</Version>
     <TargetFramework>net7.0</TargetFramework>
     <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
-    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
@@ -21,14 +19,6 @@
     <InternalsVisibleTo Include="Rubberduck.Tests" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <!-- TODO remove Settings.settings -->
-    <None Include="Properties\Settings.settings">
-      <Generator>PublicSettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
@@ -36,10 +26,6 @@
     <PackageReference Include="System.Management" Version="7.0.2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\shared\Rubberduck.Interaction\Rubberduck.Interaction.csproj">
-      <Project>{3EE4CCB7-42FC-49D2-8221-88A2FEF2F762}</Project>
-      <Name>Rubberduck.Interaction</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj">
       <Project>{5E2588A5-2EF2-4267-952D-53AEC8F5F173}</Project>
       <Name>Rubberduck.InternalApi</Name>
@@ -52,25 +38,13 @@
       <Project>{E794CFC3-3D9F-400F-88D9-69E929D8E8AF}</Project>
       <Name>Rubberduck.SettingsProvider</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Client\Rubberduck.Client.csproj">
-      <Project>{36e18087-fe84-4e3a-9c65-07ca0fd7d303}</Project>
-      <Name>Rubberduck.Client</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.UI.WinForms\Rubberduck.UI.WinForms.csproj">
-      <Project>{A1F54935-FE6D-4013-B618-5251DE4466CF}</Project>
-      <Name>Rubberduck.UI.WinForms</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\shared\Rubberduck.UI\Rubberduck.UI.csproj">
-      <Project>{FC5ECD51-175B-42D6-B46C-130B57AA1EBC}</Project>
-      <Name>Rubberduck.UI</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.UI\Rubberduck.UI.csproj" />
     <ProjectReference Include="..\Rubberduck.VBEditor\Rubberduck.VBEditor.csproj">
       <Project>{030FDE59-C347-4B81-AB80-5B4B80B757A0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Editor\Commands\" />
-    <Folder Include="Editor\Tools\" />
+    <Folder Include="Editor\" />
   </ItemGroup>
 </Project>

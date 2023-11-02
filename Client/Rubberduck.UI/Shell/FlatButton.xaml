@@ -1,0 +1,44 @@
+﻿<Button x:Class="Rubberduck.UI.Shell.FlatButton"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:Rubberduck.UI.Shell"
+        mc:Ignorable="d" 
+        
+        d:DesignHeight="20" d:DesignWidth="24">
+    <Button.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="FlatButtonCanvasStyle" TargetType="{x:Type Canvas}">
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+        </ResourceDictionary>
+    </Button.Resources>
+    <Button.Style>
+        <Style TargetType="Button">
+            <Style.Setters>
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Margin" Value="1,0" />
+                <Setter Property="MinHeight" Value="20" />
+                <Setter Property="MinWidth" Value="24" />
+            </Style.Setters>
+        </Style>
+    </Button.Style>
+    
+    <Canvas Style="{DynamicResource FlatButtonCanvasStyle}">
+        <Image Source="{Binding Icon, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}" 
+               Height="16" Width="16" Stretch="UniformToFill"
+               Canvas.Left="-8" Canvas.Top="-8" />
+        <Rectangle Fill="{DynamicResource ThemeBlackLightColorBrush}"
+               Height="16" Width="16" Stretch="UniformToFill"
+               Canvas.Left="-8" Canvas.Top="-8">
+            <Rectangle.OpacityMask>
+                <ImageBrush ImageSource="{Binding Icon, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}" />
+            </Rectangle.OpacityMask>
+        </Rectangle>
+    </Canvas>
+</Button>

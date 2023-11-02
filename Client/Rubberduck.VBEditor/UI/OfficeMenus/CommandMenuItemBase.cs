@@ -1,6 +1,5 @@
 ﻿using Rubberduck.Resources.Menus;
-using Rubberduck.UI.Command;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office.Enums;
 using System;
 using System.Drawing;
 using System.Globalization;
@@ -45,7 +44,7 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
         /// </summary>
         /// <returns>Returns <c>true</c> if command can be executed.</returns>
         /// <remarks>Returns <c>true</c> unless overridden.</remarks>
-        public virtual bool EvaluateCanExecute(object parameter)
+        public virtual bool EvaluateCanExecute(object? parameter)
         {
             return true;
         }

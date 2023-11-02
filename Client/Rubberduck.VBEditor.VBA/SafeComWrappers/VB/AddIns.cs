@@ -1,5 +1,6 @@
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using System;
 using System.Collections;
 using System.Collections.Generic;

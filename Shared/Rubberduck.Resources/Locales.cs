@@ -8,7 +8,7 @@ namespace Rubberduck.Resources
 {
     public static class Locales
     {
-        private static List<CultureInfo> _cultures;
+        private static List<CultureInfo>? _cultures;
 
         public static CultureInfo DefaultCulture => CultureInfo.GetCultureInfo("en-US");
 
@@ -17,18 +17,18 @@ namespace Rubberduck.Resources
         {
             get
             {
-                if (!(_cultures is null))
+                if (_cultures is not null)
                 {
                     return _cultures;
                 }
 
-                _cultures = new List<CultureInfo> { DefaultCulture };
-                var resources = new ResourceManager("Rubberduck.Resources.RubberduckUI", Assembly.GetAssembly(typeof(Locales)));
+                _cultures = new() { DefaultCulture };
+                var resources = new ResourceManager("Rubberduck.Resources.RubberduckUI", Assembly.GetAssembly(typeof(Locales))!);
                 foreach (var culture in CultureInfo.GetCultures(CultureTypes.AllCultures).Where(locale => !locale.Equals(CultureInfo.InvariantCulture)))
                 {
                     try
                     {
-                        if (!(resources.GetResourceSet(culture, true, false) is null))
+                        if (resources.GetResourceSet(culture, true, false) is not null)
                         {
                             _cultures.Add(culture);
                         }
