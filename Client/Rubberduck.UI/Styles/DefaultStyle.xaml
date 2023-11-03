@@ -371,7 +371,17 @@
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
         </Style.Setters>
     </Style>
-    
+
+    <Style x:Key="FormTitleLabelStyle" TargetType="Label">
+        <Style.Setters>
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="MinHeight" Value="24" />
+            <Setter Property="Margin" Value="0,5,0,0" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
+        </Style.Setters>
+    </Style>
+
     <Style x:Key="FormFieldNameLabelStyle" TargetType="Label">
         <Style.Setters>
             <Setter Property="FontWeight" Value="SemiBold" />

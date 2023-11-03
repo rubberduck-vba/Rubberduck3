@@ -130,7 +130,7 @@ namespace Rubberduck.Core
                 return;
             }
 
-            currentSettings.GeneralSettings.GetSetting<LogLevelSetting>().Value = LogLevel.None;
+            currentSettings.GeneralSettings.GetSetting<LogLevelSetting>().WithValue(LogLevel.None);
             currentSettings.GeneralSettings.GetSetting<DisableInitialLogLevelResetSetting>().Value = true;
 
             _settingsService.Write(currentSettings);

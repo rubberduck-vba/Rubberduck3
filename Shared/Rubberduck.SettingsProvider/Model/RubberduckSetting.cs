@@ -72,12 +72,10 @@ namespace Rubberduck.SettingsProvider.Model
         /// <summary>
         /// The resource key for this setting.
         /// </summary>
-        [JsonPropertyOrder(0)]
         public virtual string Key { get; init; }
         /// <summary>
         /// The current value of this setting.
         /// </summary>
-        [JsonPropertyOrder(1)]
         public virtual object Value { get; set; }
         /// <summary>
         /// The supported data type of the setting value.
@@ -89,5 +87,7 @@ namespace Rubberduck.SettingsProvider.Model
         /// </summary>
         [JsonIgnore]
         public SettingTags Tags { get; init; }
+
+        public RubberduckSetting WithValue(object value) => new RubberduckSetting() with { Value = value };
     }
 }
