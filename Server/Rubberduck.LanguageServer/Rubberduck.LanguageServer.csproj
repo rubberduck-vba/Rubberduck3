@@ -5,8 +5,6 @@
     <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
-    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <Platforms>AnyCPU</Platforms>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputType>Exe</OutputType>
@@ -36,8 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\Rubberduck.RPC\Rubberduck.ServerPlatform.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
+    <ProjectReference Include="..\Rubberduck.ServerPlatform\Rubberduck.ServerPlatform.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,6 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Model\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 

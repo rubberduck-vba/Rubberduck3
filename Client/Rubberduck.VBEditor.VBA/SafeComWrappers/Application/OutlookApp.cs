@@ -1,5 +1,5 @@
 using Rubberduck.Unmanaged;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using System.Runtime.InteropServices;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities

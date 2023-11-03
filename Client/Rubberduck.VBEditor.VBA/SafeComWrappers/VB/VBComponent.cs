@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.Model;
 using Rubberduck.Unmanaged.Model.Abstract;
 using Rubberduck.VBEditor.Extensions;
@@ -50,14 +51,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             get
             {
-                using (var designer = IsWrappingNullReference
-                    ? null
-                    : new UserForm((Target.Designer as VB.Forms.UserForm)!))
-                {
-                    return designer == null
-                        ? new Controls(null)
-                        : designer.Controls;
-                }
+                using var designer = IsWrappingNullReference ? null : new UserForm((Target.Designer as VB.Forms.UserForm)!);
+                return designer == null
+                    ? new Controls(null)
+                    : designer.Controls;
             }
         }
 
@@ -65,14 +62,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             get
             {
-                using (var designer = IsWrappingNullReference
-                    ? null
-                    : new UserForm((Target.Designer as VB.Forms.UserForm)!))
-                {
-                    return designer == null
-                        ? new Controls(null)
-                        : designer.Selected;
-                }
+                using var designer = IsWrappingNullReference ? null : new UserForm((Target.Designer as VB.Forms.UserForm)!);
+                return designer == null
+                    ? new Controls(null)
+                    : designer.Selected;
             }
         }
         
@@ -86,10 +79,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     {
                         return false;
                     }
-                    using (var designer = new UserForm((Target.Designer as VB.Forms.UserForm)!))
-                    {
-                        return !designer.IsWrappingNullReference;
-                    }
+                    using var designer = new UserForm((Target.Designer as VB.Forms.UserForm)!);
+                    return !designer.IsWrappingNullReference;
                 }
                 catch
                 {
@@ -150,10 +141,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             get
             {
-                using (var collection = Collection)
-                {
-                    return collection.Parent;
-                }
+                using var collection = Collection;
+                return collection.Parent;
             }
         }
 
@@ -171,7 +160,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
 
             var tempFile = ExportToTempFile();
-            var tempFilePath = _fileSystem.Directory.GetParent(tempFile).FullName;
+            var tempFilePath = _fileSystem.Directory.GetParent(tempFile)!.FullName;
             var fileEncoding = Encoding.Default;    //We use the current ANSI codepage because that is what the VBE does.
             var contents = _fileSystem.File.ReadAllLines(tempFile, fileEncoding);
             var nonAttributeLines = contents.TakeWhile(line => !line.StartsWith("Attribute")).Count();
@@ -197,7 +186,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 if (line.Contains("OleObjectBlob"))
                 {
                     var binaryFileName = line.Trim().Split('"')[1];
-                    var destPath = _fileSystem.Directory.GetParent(path).FullName;
+                    var destPath = _fileSystem.Directory.GetParent(path)!.FullName;
                     if (_fileSystem.File.Exists(_fileSystem.Path.Combine(tempFilePath, binaryFileName)) && !destPath.Equals(tempFilePath))
                     {
                         System.Diagnostics.Debug.WriteLine(_fileSystem.Path.Combine(destPath, binaryFileName));
@@ -221,16 +210,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private void ExportDocumentModule(string path)
         {
-            using (var codeModule = CodeModule)
+            using var codeModule = CodeModule;
+            var lineCount = codeModule.CountOfLines;
+            if (lineCount > 0)
             {
-                var lineCount = codeModule.CountOfLines;
-                if (lineCount > 0)
-                {
-                    //One cannot reimport document modules as such in the VBE; so we simply export and import the contents of the code pane.
-                    //Because of this, it is OK, and actually preferable, to use the default UTF8 encoding.
-                    var text = codeModule.GetLines(1, lineCount);
-                    _fileSystem.File.WriteAllText(path, text, Encoding.UTF8);
-                }
+                //One cannot reimport document modules as such in the VBE; so we simply export and import the contents of the code pane.
+                //Because of this, it is OK, and actually preferable, to use the default UTF8 encoding.
+                var text = codeModule.GetLines(1, lineCount);
+                _fileSystem.File.WriteAllText(path, text, Encoding.UTF8);
             }
         }
 
@@ -275,10 +262,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
             if (HasDesigner)
             {
-                using (var controls = Controls)
-                {
-                    hashes.AddRange(controls.Select(control => control.Name));
-                }
+                using var controls = Controls;
+                hashes.AddRange(controls.Select(control => control.Name));
             }
 
             return HashCode.Combine(hashes);

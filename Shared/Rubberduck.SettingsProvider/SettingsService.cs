@@ -2,15 +2,15 @@
 using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.General;
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.Abstractions;
 using System.Text.Json;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider
 {
@@ -19,7 +19,6 @@ namespace Rubberduck.SettingsProvider
     /// </summary>
     /// <typeparam name="TSettings"></typeparam>
     public interface ISettingsService<TSettings> : ISettingsProvider<TSettings>
-        where TSettings : struct
     {
         /// <summary>
         /// Reads and deserializes settings from disk into a <c>TSettings</c> value.
@@ -34,9 +33,15 @@ namespace Rubberduck.SettingsProvider
     }
 
     public class SettingsService<TSettings> : ISettingsService<TSettings>
-        where TSettings : struct
+        where TSettings : RubberduckSetting, new()
     {
-        private static readonly JsonSerializerOptions _options = new() { PropertyNameCaseInsensitive = true };
+        private static readonly JsonSerializerOptions _options = new() 
+        { 
+            IgnoreReadOnlyProperties = true,
+            PropertyNameCaseInsensitive = true,
+            WriteIndented = true,
+            UnknownTypeHandling = JsonUnknownTypeHandling.JsonElement,
+        };
 
         private readonly ILogger _logger;
         private readonly IFileSystem _fileSystem;
@@ -44,8 +49,9 @@ namespace Rubberduck.SettingsProvider
         private readonly string _path;
 
         private readonly IServiceProvider _services;
-        private LanguageServerSettings ServerSettings => _services.GetRequiredService<ISettingsProvider<LanguageServerSettings>>().Settings;
-        private TSettings _cached = new();
+        private GeneralSettings GeneralSettings => _services.GetRequiredService<ISettingsProvider<GeneralSettings>>().Settings;
+
+        private TSettings _cached;
 
         public SettingsService(ILogger<SettingsService<TSettings>> logger,
             IServiceProvider serviceProvider,
@@ -75,9 +81,11 @@ namespace Rubberduck.SettingsProvider
 
         public TSettings Settings => _cached;
 
+        public TraceLevel TraceLevel => GeneralSettings.TraceLevel.ToTraceLevel();
+
         private bool TrySetValue(TSettings value)
         {
-            var traceLevel = ServerSettings.TraceLevel.ToTraceLevel();
+            var traceLevel = TraceLevel;
             var didChange = false;
 
             var oldValue = _cached;
@@ -85,7 +93,7 @@ namespace Rubberduck.SettingsProvider
             {
                 _cached = value;
                 didChange = true;
-                _logger.LogInformation(traceLevel, "Settings have changed.");
+                _logger.LogInformation(traceLevel, $"{typeof(TSettings).Name} was modified.");
                 OnSettingsChanged(oldValue);
             }
 
@@ -94,7 +102,7 @@ namespace Rubberduck.SettingsProvider
 
         public TSettings Read()
         {
-            var traceLevel = ServerSettings.TraceLevel.ToTraceLevel();
+            var traceLevel = TraceLevel;
             _logger.LogTrace(traceLevel, "Reading settings from file...", _path);
 
             try
@@ -110,24 +118,21 @@ namespace Rubberduck.SettingsProvider
 
                 if (_fileSystem.File.Exists(path))
                 {
-                    if (TimedAction.TryRun(async () =>
+                    if (TimedAction.TryRun(() =>
                     {
-                        await Task.Run(() =>
-                        {
-                            var content = _fileSystem.File.ReadAllText(path);
-                            _logger.LogTrace(traceLevel, "File content successfully read from file.", $"File: '{path}'");
+                        var content = _fileSystem.File.ReadAllText(path);
+                        _logger.LogTrace(traceLevel, "File content successfully read from file.", $"File: '{path}'");
 
-                            if (!string.IsNullOrWhiteSpace(content))
-                            {
-                                var newValue = JsonSerializer.Deserialize<TSettings>(content, _options);
-                                _logger.LogTrace(traceLevel, "File content successfully deserialized.");
-                                TrySetValue(newValue);
-                            }
-                            else
-                            {
-                                _logger.LogWarning(traceLevel, "File was found, but no content was loaded.");
-                            }
-                        });
+                        if (!string.IsNullOrWhiteSpace(content))
+                        {
+                            var newValue = JsonSerializer.Deserialize<TSettings>(content, _options) ?? new();
+                            _logger.LogTrace(traceLevel, "File content successfully deserialized.");
+                            TrySetValue(newValue);
+                        }
+                        else
+                        {
+                            _logger.LogWarning(traceLevel, "File was found, but no content was loaded.");
+                        }
                     }, out var elapsed, out var exception))
                     {
                         _logger.LogPerformance(traceLevel, "Deserialized settings from file.", elapsed);
@@ -155,17 +160,16 @@ namespace Rubberduck.SettingsProvider
 
         public void Write(TSettings settings)
         {
-            var traceLevel = ServerSettings.TraceLevel.ToTraceLevel();
+            var traceLevel = TraceLevel;
             _logger.LogTrace(traceLevel, "Writing to settings file...", _path);
 
             var path = _path;
             var fileSystem = _fileSystem;
 
-            var success = TimedAction.TryRun(async () =>
+            var success = TimedAction.TryRun(() =>
             {
                 var content = JsonSerializer.Serialize(settings, _options);
-                await Task.Run(() => fileSystem.File.Create(path));
-
+                fileSystem.File.WriteAllText(path, content);
             }, out var elapsed, out var exception);
             
             if (success)

@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office.Enums;
 using System;
 using MSO = Microsoft.Office.Core;
 

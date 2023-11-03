@@ -1,6 +1,5 @@
-﻿using Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers;
-using Rubberduck.Resources.Registration;
-using Rubberduck.Unmanaged.Events;
+﻿using Rubberduck.Unmanaged.Events;
+using Rubberduck.Unmanaged.Registration;
 using Rubberduck.Unmanaged.WindowsApi;
 using System;
 using System.ComponentModel;
@@ -86,7 +85,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI
         public static string RegisteredProgId => RubberduckProgId.DockableWindowHostProgId;
         //private readonly ILogger _logger;
 
-        private ExposedUserControl _userControl = new ExposedUserControl();
+        private ExposedUserControl _userControl = new();
         private Wrapper_IOleClientSite _cachedClientSite = null!;
 
         private bool _releaseHasBeenCalled;
@@ -412,10 +411,10 @@ namespace Rubberduck.Main.ComClientLibrary.UI
         }
 
         [DllImport("User32.dll")]
-        static extern IntPtr GetParent(IntPtr hWnd);
+        private static extern IntPtr GetParent(IntPtr hWnd);
 
         [DllImport("User32.dll", EntryPoint = "GetClientRect")]
-        static extern int GetClientRect(IntPtr hWnd, ref Rect lpRect);
+        private static extern int GetClientRect(IntPtr hWnd, ref Rect lpRect);
 
         private IntPtr _parentHandle;
         private ParentWindow? _subClassingWindow;
@@ -439,7 +438,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI
         {
             //private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-            private const int MF_BYPOSITION = 0x400;
+            //private const int MF_BYPOSITION = 0x400;
 
             public event SubClassingWindowEventHandler? CallBackEvent;
             public delegate void SubClassingWindowEventHandler(object sender, SubClassingWindowEventArgs e);
@@ -448,7 +447,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI
 
             private IntPtr _containerHwnd;
             private ToolWindowState _windowState;
-            private IntPtr _menuHandle;
+            //private IntPtr _menuHandle;
 
             private enum ToolWindowState
             {
@@ -458,7 +457,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI
                 Undockable
             }
 
-            private ToolWindowState GetWindowState(IntPtr containerHwnd)
+            private static ToolWindowState GetWindowState(IntPtr containerHwnd)
             {
                 var className = new StringBuilder(255);
                 if (NativeMethods.GetClassName(containerHwnd, className, className.Capacity) > 0)
@@ -477,6 +476,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI
                 return ToolWindowState.Unknown;
             }
 
+            /*
             private void DisplayUndockableContextMenu(IntPtr handle, IntPtr lParam)
             {
                 if (_menuHandle == IntPtr.Zero)
@@ -501,6 +501,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI
                     //_logger.Warn("Failed to set the context menu for undockable tool windows");
                 };
             }
+            */
 
             private void OnCallBackEvent(SubClassingWindowEventArgs e)
             {
@@ -550,13 +551,13 @@ namespace Rubberduck.Main.ComClientLibrary.UI
                         if (!_closing) User32.SendMessage(_vbeHwnd, WM.RUBBERDUCK_CHILD_FOCUS, Hwnd, IntPtr.Zero);
                         break;
                     case (uint)WM.DESTROY:
-                        if (_menuHandle != IntPtr.Zero)
-                        {
-                            if (!NativeMethods.DestroyMenu(_menuHandle))
-                            {
-                                //_logger.Fatal($"Failed to destroy the menu handle {_menuHandle}");
-                            }
-                        }
+                        //if (_menuHandle != IntPtr.Zero)
+                        //{
+                        //    if (!NativeMethods.DestroyMenu(_menuHandle))
+                        //    {
+                        //        //_logger.Fatal($"Failed to destroy the menu handle {_menuHandle}");
+                        //    }
+                        //}
                         break;
                 }
                 return base.SubClassProc(hWnd, msg, wParam, lParam, uIdSubclass, dwRefData);
@@ -593,8 +594,8 @@ namespace Rubberduck.Main.ComClientLibrary.UI
                 //_logger.Log(LogLevel.Trace, "ExposedUserControl constructor called");
 
                 // Gain access to the IOleObject and IOleInPlaceObject interfaces implemented by the UserControl
-                IOleObject = (COM_IOleObject)AggregationHelper.ObtainInternalInterface(this, GetType().GetInterface("IOleObject"));
-                IOleInPlaceObject = (COM_IOleInPlaceObject)AggregationHelper.ObtainInternalInterface(this, GetType().GetInterface("IOleInPlaceObject"));
+                IOleObject = (COM_IOleObject)AggregationHelper.ObtainInternalInterface(this, GetType().GetInterface("IOleObject")!);
+                IOleInPlaceObject = (COM_IOleInPlaceObject)AggregationHelper.ObtainInternalInterface(this, GetType().GetInterface("IOleInPlaceObject")!);
             }
 
             protected override void Dispose(bool disposing)
@@ -640,7 +641,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI
                             }
                             break;
                         case Keys.Return:
-                            if (hostedUserControl.ActiveControl.GetType() == typeof(Button))
+                            if (hostedUserControl.ActiveControl?.GetType() == typeof(Button))
                             {
                                 var activeButton = (Button)hostedUserControl.ActiveControl;
                                 activeButton.PerformClick();

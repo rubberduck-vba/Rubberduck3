@@ -5,6 +5,7 @@ using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office.Enums;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 using MSO = Microsoft.Office.Core;
 

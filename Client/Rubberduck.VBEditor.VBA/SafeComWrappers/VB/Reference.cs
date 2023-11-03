@@ -2,6 +2,8 @@ using System;
 using System.Runtime.InteropServices;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
 using VB = Microsoft.Vbe.Interop;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities

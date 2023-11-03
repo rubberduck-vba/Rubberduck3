@@ -14,7 +14,7 @@ namespace Rubberduck.SettingsProvider.Model
                 && IsEnabled == other.IsEnabled;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null || obj.GetType() != GetType())
             {

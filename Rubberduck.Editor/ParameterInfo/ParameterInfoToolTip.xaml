@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="Rubberduck.Editor.ParameterInfo.ParameterInfoToolTip"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Converters;assembly=Rubberduck.UI"
+             mc:Ignorable="d"
+             d:DesignHeight="72" d:DesignWidth="300">
+    <UserControl.Resources>
+        <converters:MemberTypeToIconConverter x:Key="MemberTypeToIconConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="2">
+            <Image Height="16" Source="{Binding MemberType, Converter={StaticResource MemberTypeToIconConverter}}" />
+            <TextBlock FontSize="10" FontFamily="Consolas" Text="{Binding Signature}" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <TextBlock Grid.Row="1" FontFamily="Consolas" Text="{Binding Signature}" />
+
+        <StackPanel Orientation="Horizontal" Grid.Row="2">
+            <TextBlock FontWeight="Bold" Text="{Binding CurrentParameter.Name}" />
+            <TextBlock FontStyle="Italic" Text="{Binding CurrentParameter.DocString}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

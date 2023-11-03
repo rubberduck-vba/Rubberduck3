@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Extensions.Logging;
-using Rubberduck.Resources.Registration;
 using Rubberduck.UI;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
+using Rubberduck.Unmanaged.Registration;
 
 namespace Rubberduck.VBEditor.UI
 {

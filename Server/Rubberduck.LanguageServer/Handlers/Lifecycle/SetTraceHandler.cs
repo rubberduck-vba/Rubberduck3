@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
+using Rubberduck.ServerPlatform;
 using System.Threading;
 using System.Threading.Tasks;
 

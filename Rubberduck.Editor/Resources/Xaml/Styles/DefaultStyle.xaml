@@ -1,0 +1,428 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Rubberduck.UI.Styles"
+                    xmlns:converters="clr-namespace:Rubberduck.UI.Converters;assembly=Rubberduck.UI">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Icons.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/DarkTheme.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <converters:BoolToVisibleVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
+    <converters:InvertBoolValueConverter x:Key="InverseBoolConverter" />
+    <converters:SelectedItemToBooleanConverter x:Key="HasSelectedItems"/>
+    <converters:WindowStateToVisibilityConverter x:Key="WindowStateToRestoreVisibility" VisibleState="Maximized" HiddenState="Normal" />
+    <converters:WindowStateToVisibilityConverter x:Key="WindowStateToMaximizeVisibility" VisibleState="Normal" HiddenState="Maximized" />
+
+    <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="{DynamicResource BackgroundLightColor}"/>
+    <SolidColorBrush x:Key="TextBox.Focus.Border" Color="{DynamicResource ThemeBackgroundMediumColor}"/>
+    
+    <Style x:Key="OptionMarkFocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="14,0,0,0" StrokeDashArray="1 2" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" SnapsToDevicePixels="true" StrokeThickness="1"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <SolidColorBrush x:Key="OptionMark.Static.Glyph" Color="{DynamicResource ThemeTextColor}"/>
+    <SolidColorBrush x:Key="OptionMark.MouseOver.Background" Color="{DynamicResource ThemeBackgroundLightColor}"/>
+    <SolidColorBrush x:Key="OptionMark.MouseOver.Border" Color="{DynamicResource ThemeBackgroundMediumColor}"/>
+    <SolidColorBrush x:Key="OptionMark.MouseOver.Glyph" Color="{DynamicResource ThemeTextColor}"/>
+    <SolidColorBrush x:Key="OptionMark.Pressed.Background" Color="{DynamicResource ThemeBackgroundLightColor}"/>
+    <SolidColorBrush x:Key="OptionMark.Pressed.Border" Color="{DynamicResource ThemeBackgroundMediumColor}"/>
+    <SolidColorBrush x:Key="OptionMark.Pressed.Glyph" Color="{DynamicResource ThemeTextColor}"/>
+    <SolidColorBrush x:Key="OptionMark.Disabled.Background" Color="#FFE6E6E6"/>
+    <SolidColorBrush x:Key="OptionMark.Disabled.Border" Color="#FFBCBCBC"/>
+    <SolidColorBrush x:Key="OptionMark.Disabled.Glyph" Color="{DynamicResource ThemeTextInactiveColor}"/>
+
+    <ControlTemplate x:Key="FormFieldCheckBoxTemplate" TargetType="{x:Type CheckBox}">
+        <Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border x:Name="checkBoxBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="1" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                <Grid x:Name="markGrid">
+                    <Path x:Name="optionMark" Data="F1 M 9.97498,1.22334L 4.6983,9.09834L 4.52164,9.09834L 0,5.19331L 1.27664,3.52165L 4.255,6.08833L 8.33331,1.52588e-005L 9.97498,1.22334 Z " Fill="{StaticResource OptionMark.Static.Glyph}" Margin="1" Opacity="0" Stretch="None"/>
+                    <Rectangle x:Name="indeterminateMark" Fill="{StaticResource OptionMark.Static.Glyph}" Margin="2" Opacity="0"/>
+                </Grid>
+            </Border>
+            <ContentPresenter x:Name="contentPresenter" Grid.Column="1" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="HasContent" Value="true">
+                <Setter Property="FocusVisualStyle" Value="{StaticResource OptionMarkFocusVisual}"/>
+                <Setter Property="Padding" Value="4,-1,0,0"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter Property="Background" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.MouseOver.Background}"/>
+                <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.MouseOver.Border}"/>
+                <Setter Property="Fill" TargetName="optionMark" Value="{StaticResource OptionMark.MouseOver.Glyph}"/>
+                <Setter Property="Fill" TargetName="indeterminateMark" Value="{StaticResource OptionMark.MouseOver.Glyph}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Background" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.Disabled.Background}"/>
+                <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.Disabled.Border}"/>
+                <Setter Property="Fill" TargetName="optionMark" Value="{StaticResource OptionMark.Disabled.Glyph}"/>
+                <Setter Property="Fill" TargetName="indeterminateMark" Value="{StaticResource OptionMark.Disabled.Glyph}"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="true">
+                <Setter Property="Background" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.Pressed.Background}"/>
+                <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.Pressed.Border}"/>
+                <Setter Property="Fill" TargetName="optionMark" Value="{StaticResource OptionMark.Pressed.Glyph}"/>
+                <Setter Property="Fill" TargetName="indeterminateMark" Value="{StaticResource OptionMark.Pressed.Glyph}"/>
+            </Trigger>
+            <Trigger Property="IsChecked" Value="true">
+                <Setter Property="Opacity" TargetName="optionMark" Value="1"/>
+                <Setter Property="Opacity" TargetName="indeterminateMark" Value="0"/>
+            </Trigger>
+            <Trigger Property="IsChecked" Value="{x:Null}">
+                <Setter Property="Opacity" TargetName="optionMark" Value="0"/>
+                <Setter Property="Opacity" TargetName="indeterminateMark" Value="1"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+    
+    <Style x:Key="ScrollViewerStyle" TargetType="{x:Type ScrollViewer}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                    <Grid x:Name="Grid" Background="{TemplateBinding Background}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Rectangle x:Name="Corner" Grid.Column="1" Fill="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Grid.Row="1"/>
+                        <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanHorizontallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" CanVerticallyScroll="False" Grid.Column="0" Content="{TemplateBinding Content}" CanContentScroll="{TemplateBinding CanContentScroll}" Margin="{TemplateBinding Padding}" Grid.Row="0"/>
+                        <ScrollBar x:Name="PART_VerticalScrollBar" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Grid.Column="1" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Grid.Row="0" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource Mode=TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/>
+                        <ScrollBar x:Name="PART_HorizontalScrollBar" AutomationProperties.AutomationId="HorizontalScrollBar" Cursor="Arrow" Grid.Column="0" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Orientation="Horizontal" Grid.Row="1" Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource Mode=TemplatedParent}}" ViewportSize="{TemplateBinding ViewportWidth}" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <ControlTemplate x:Key="BrowseTextBoxTemplate" TargetType="{x:Type TextBoxBase}">
+        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+            <DockPanel>
+                <ScrollViewer DockPanel.Dock="Left" x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                <Button DockPanel.Dock="Right" x:Name="BrowseButton" HorizontalAlignment="Right" 
+                            Command="{x:Static NavigationCommands.Search}"
+                            Style="{DynamicResource FlatButtonStyle}"
+                            Content="..." />
+            </DockPanel>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Opacity" TargetName="border" Value="0.56"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource TextBox.MouseOver.Border}"/>
+            </Trigger>
+            <Trigger Property="IsKeyboardFocused" Value="true">
+                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource TextBox.Focus.Border}"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+    <ControlTemplate x:Key="WindowTemplate" TargetType="{x:Type Window}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.RowSpan="2" Background="{DynamicResource ThemeBackgroundMediumColorBrush}" />
+
+            <!-- Title bar -->
+            
+            <DockPanel Margin="2"
+                       HorizontalAlignment="Left" 
+                       VerticalAlignment="Top">
+                
+                <Button DockPanel.Dock="Left"
+                        Command="{x:Static SystemCommands.ShowSystemMenuCommand}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image x:Name="AppIcon" 
+                                   Width="16" 
+                                   Height="16" 
+                                   Margin="2,2,2,0" 
+                                   VerticalAlignment="Top" 
+                                   HorizontalAlignment="Left"
+                                   Source="{Binding Icon, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" />
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <TextBlock x:Name="AppTitle" 
+                           DockPanel.Dock="Left"
+                           Margin="2"
+                           Text="{Binding Title, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" 
+                           FontWeight="SemiBold" 
+                           Foreground="{DynamicResource ThemeTextColorBrush}" />
+            </DockPanel>
+            
+            <TextBlock x:Name="ActiveDocumentTitle" Margin="0,2"
+                        VerticalAlignment="Top" 
+                        HorizontalAlignment="Center"
+                        Text="[Project1.rdproj]" /> <!-- TODO binding here -->
+
+            <!-- TODO templates! -->
+            <DockPanel VerticalAlignment="Top" 
+                       HorizontalAlignment="Right">
+
+                <Button x:Name="ControlBoxCloseButton" Margin="1,0" Width="24" Height="20"
+                        DockPanel.Dock="Right"
+                        Style="{DynamicResource ControlBoxButtonStyle}"
+                        Command="{x:Static SystemCommands.CloseWindowCommand}" 
+                        ToolTip="Close">
+                    <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
+                        <Image Source="{DynamicResource WindowCloseIcon}"
+                               Style="{DynamicResource ControlBoxButtonImageStyle}" />
+                        <Rectangle Fill="{Binding Foreground, ElementName=ControlBoxCloseButton, Mode=OneWay}"
+                                                                      Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="{DynamicResource WindowCloseIcon}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Canvas>
+                </Button>
+
+                <Button x:Name="ControlBoxMaximizeButton" Margin="1,0" Width="24" Height="20"
+                        DockPanel.Dock="Right"
+                        Style="{DynamicResource ControlBoxButtonStyle}" 
+                        Command="{x:Static SystemCommands.MaximizeWindowCommand}" 
+                        Visibility="{Binding WindowState, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Converter={StaticResource WindowStateToMaximizeVisibility}}"
+                        ToolTip="Maximize">
+                    <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
+                        <Image Source="{DynamicResource WindowMaximizeIcon}"
+                               Style="{DynamicResource ControlBoxButtonImageStyle}"/>
+                        <Rectangle Fill="{Binding Foreground, ElementName=ControlBoxMaximizeButton}"
+                                   Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="{DynamicResource WindowMaximizeIcon}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Canvas>
+                </Button>
+
+                <Button x:Name="ControlBoxRestoreButton" Margin="1,0" Width="24" Height="20"
+                        DockPanel.Dock="Right"
+                        Style="{DynamicResource ControlBoxButtonStyle}"
+                        Command="{x:Static SystemCommands.RestoreWindowCommand}"
+                        Visibility="{Binding WindowState, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Converter={StaticResource WindowStateToRestoreVisibility}}"
+                        ToolTip="Restore">
+                    <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
+                        <Image Source="{DynamicResource WindowRestoreIcon}"
+                               Style="{DynamicResource ControlBoxButtonImageStyle}"/>
+                        <Rectangle Fill="{Binding Foreground, ElementName=ControlBoxRestoreButton}"
+                                   Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="{DynamicResource WindowRestoreIcon}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Canvas>
+                </Button>
+
+                <Button x:Name="ControlBoxMinimizeButton" Margin="1,0" Width="24" Height="20"
+                        DockPanel.Dock="Right"
+                        Style="{DynamicResource ControlBoxButtonStyle}"
+                        Command="{x:Static SystemCommands.MinimizeWindowCommand}"
+                        ToolTip="Minimize">
+                    <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
+                        <Image Source="{DynamicResource WindowMinimizeIcon}"
+                               Style="{DynamicResource ControlBoxButtonImageStyle}"/>
+                        <Rectangle Fill="{Binding Foreground, ElementName=ControlBoxMinimizeButton}"
+                                   Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="{DynamicResource WindowMinimizeIcon}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Canvas>
+                </Button>
+
+            </DockPanel>
+
+            <Border Grid.Row="1" Background="{DynamicResource ThemeBackgroundLightColorBrush}" Margin="4,0,4,8" CornerRadius="8">
+                <ContentPresenter x:Name="ClientArea" Content="{TemplateBinding Content}" />
+            </Border>
+            
+        </Grid>
+    </ControlTemplate>
+
+        <!-- note: key seems to be required, WindowChrome doesn't seem to work correctly without :( -->
+    <Style x:Key="ThemedWindowStyle" TargetType="{x:Type Window}">
+        <Style.Setters>
+            <Setter Property="Icon" Value="{StaticResource DuckyIcon}" />
+            <Setter Property="Title" Value="Rubberduck" />
+            <Setter Property="SizeToContent" Value="WidthAndHeight" />
+            <Setter Property="MinHeight" Value="300" />
+            <Setter Property="MinWidth" Value="480" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundDarkColorBrush}" />
+            <Setter Property="WindowChrome.WindowChrome">
+                <Setter.Value>
+                    <WindowChrome UseAeroCaptionButtons="False" 
+                                  CaptionHeight="20"
+                                  GlassFrameThickness="0" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template" Value="{DynamicResource WindowTemplate}" />
+        </Style.Setters>
+    </Style>
+
+    <Style x:Key="ControlBoxButtonMaskRectangleStyle" TargetType="{x:Type Rectangle}">
+        <Style.Setters>
+            <Setter Property="Canvas.Left" Value="5" />
+            <Setter Property="Canvas.Top" Value="5" />
+            <Setter Property="Height" Value="10" />
+            <Setter Property="Width" Value="10" />
+            <Setter Property="Fill" Value="{DynamicResource ThemeBlackLightColorBrush}" />
+        </Style.Setters>
+    </Style>
+    <Style x:Key="ControlBoxButtonImageStyle" TargetType="{x:Type Image}">
+        <Setter Property="Canvas.Left" Value="5" />
+        <Setter Property="Canvas.Top" Value="5" />
+        <Setter Property="Height" Value="10" />
+        <Setter Property="Width" Value="10" />
+        <Setter Property="Stretch" Value="Fill" />
+    </Style>
+    <Style x:Key="ControlBoxButtonCanvasStyle" TargetType="{x:Type Canvas}">
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style x:Key="FlatButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template" Value="{DynamicResource FlatButtonTemplate}"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <DataTrigger.Setters>
+                    <Setter Property="Background" Value="{DynamicResource ThemeBlackLightColorBrush}" />
+                    <Setter Property="Foreground" Value="Transparent" />
+                </DataTrigger.Setters>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <DataTrigger.Setters>
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeWhiteLightColorBrush}" />
+                </DataTrigger.Setters>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    
+    <Style x:Key="ControlBoxButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource FlatButtonStyle}">
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+    </Style>
+
+    <ControlTemplate x:Key="FlatButtonTemplate" TargetType="{x:Type ButtonBase}">
+        <Border Background="{Binding Background, RelativeSource={RelativeSource Mode=TemplatedParent}}">
+            <ContentPresenter x:Name="contentPresenter" 
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                Margin="{TemplateBinding Padding}" 
+                                RecognizesAccessKey="True" 
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+        </Border>
+    </ControlTemplate>
+
+    <Style x:Key="ActionButtonStyle" TargetType="Button">
+        <Style.Resources>
+            <Style TargetType="Border">
+                <Setter Property="CornerRadius" Value="4" />
+                <Setter Property="Margin" Value="1,0" />
+            </Style>
+        </Style.Resources>
+        <Style.Setters>
+            <Setter Property="MinWidth" Value="96" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Padding" Value="8,0"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
+        </Style.Setters>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsDefault, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1TextColorBrush}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="FormLabelStyle" TargetType="Label">
+        <Style.Setters>
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="MinHeight" Value="24" />
+            <Setter Property="Margin" Value="0,5,0,0" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
+        </Style.Setters>
+    </Style>
+    
+    <Style x:Key="FormFieldNameLabelStyle" TargetType="Label">
+        <Style.Setters>
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
+        </Style.Setters>
+    </Style>
+
+    <Style x:Key="FormFieldValueLabelStyle" TargetType="Label">
+        <Style.Setters>
+            <Setter Property="IsEnabled" Value="False" />
+            <Setter Property="Margin" Value="5,0" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Border.Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="MinHeight" Value="24" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
+        </Style.Setters>
+    </Style>
+
+    <Style x:Key="FormFieldTextBoxStyle" TargetType="TextBox">
+        <Style.Setters>
+            <Setter Property="Margin" Value="5,0" />
+            <Setter Property="Padding" Value="4" />
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="MinHeight" Value="24" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
+        </Style.Setters>
+    </Style>
+
+    <Style x:Key="FormFieldBrowseBoxStyle" TargetType="TextBox" BasedOn="{StaticResource FormFieldTextBoxStyle}">
+        <Style.Setters>
+            <Setter Property="Template" Value="{DynamicResource BrowseTextBoxTemplate}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
+        </Style.Setters>
+    </Style>
+
+    <Style x:Key="FormFieldCheckBoxStyle" TargetType="CheckBox">
+        <Style.Setters>
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
+        </Style.Setters>
+    </Style>
+
+    <Style x:Key="FormFieldComboBoxStyle" TargetType="ComboBox">
+        <Style.Setters>
+            <Setter Property="Margin" Value="5,0" />
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
+        </Style.Setters>
+    </Style>
+    
+</ResourceDictionary>

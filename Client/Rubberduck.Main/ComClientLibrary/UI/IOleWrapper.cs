@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using NLog;
 
-namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
+namespace Rubberduck.Main.ComClientLibrary.UI
 {
     // Relevant extract from the original comment by Wayne Phillips on 29th Dec 2017 from the DockableWindowHost before this got extracted here: 
 
@@ -58,37 +58,37 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
     [ComImport(), Guid("00000112-0000-0000-C000-000000000046"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface COM_IOleObject
     {
-        [PreserveSig] int SetClientSite([In] IntPtr /* IOleClientSite */ pClientSite);
-        [PreserveSig] int GetClientSite([Out] out IntPtr /* IOleClientSite */ ppClientSite);
+        [PreserveSig] int SetClientSite([In] nint /* IOleClientSite */ pClientSite);
+        [PreserveSig] int GetClientSite([Out] out nint /* IOleClientSite */ ppClientSite);
         [PreserveSig] int SetHostNames([In, MarshalAs(UnmanagedType.LPWStr)] string szContainerApp, [In, MarshalAs(UnmanagedType.LPWStr)] string szContainerObj);
         [PreserveSig] int Close([In] uint dwSaveOption);
-        [PreserveSig] int SetMoniker([In] uint dwWhichMoniker, [In] IntPtr /* IMoniker */ pmk);
-        [PreserveSig] int GetMoniker([In] uint dwAssign, [In] uint dwWhichMoniker, [Out] out IntPtr /* IMoniker */ ppmk);
-        [PreserveSig] int InitFromData([In] IntPtr /* IDataObject */ pDataObject, [In] int fCreation, [In] uint dwReserved);
-        [PreserveSig] int GetClipboardData([In] uint dwReserved, [Out] out IntPtr /*IDataObject*/ ppDataObject);
-        [PreserveSig] int DoVerb([In] int iVerb, [In] IntPtr /* MSG, nullable ref */ lpmsg, [In] IntPtr /* IOleClientSite */ pActiveSite, [In] int lindex, [In] IntPtr hwndParent, [In] IntPtr /* COMRECT */ lprcPosRect);
-        [PreserveSig] int EnumVerbs([Out] out IntPtr /* IEnumOLEVERB */ ppEnumOleVerb);
+        [PreserveSig] int SetMoniker([In] uint dwWhichMoniker, [In] nint /* IMoniker */ pmk);
+        [PreserveSig] int GetMoniker([In] uint dwAssign, [In] uint dwWhichMoniker, [Out] out nint /* IMoniker */ ppmk);
+        [PreserveSig] int InitFromData([In] nint /* IDataObject */ pDataObject, [In] int fCreation, [In] uint dwReserved);
+        [PreserveSig] int GetClipboardData([In] uint dwReserved, [Out] out nint /*IDataObject*/ ppDataObject);
+        [PreserveSig] int DoVerb([In] int iVerb, [In] nint /* MSG, nullable ref */ lpmsg, [In] nint /* IOleClientSite */ pActiveSite, [In] int lindex, [In] nint hwndParent, [In] nint /* COMRECT */ lprcPosRect);
+        [PreserveSig] int EnumVerbs([Out] out nint /* IEnumOLEVERB */ ppEnumOleVerb);
         [PreserveSig] int Update();
         [PreserveSig] int IsUpToDate();
         [PreserveSig] int GetUserClassID([Out] out Guid pClsid);
         [PreserveSig] int GetUserType([In] uint dwFormOfType, [Out, MarshalAs(UnmanagedType.LPWStr)] out string pszUserType);
-        [PreserveSig] int SetExtent([In] uint dwDrawAspect, [In] IntPtr /* tagSIZE */ psizel);
-        [PreserveSig] int GetExtent([In] uint dwDrawAspect, [Out] out IntPtr /* tagSIZE */ psizel);
-        [PreserveSig] int Advise([In] IntPtr /* IAdviseSink */ pAdvSink, [Out] out uint pdwConnection);
+        [PreserveSig] int SetExtent([In] uint dwDrawAspect, [In] nint /* tagSIZE */ psizel);
+        [PreserveSig] int GetExtent([In] uint dwDrawAspect, [Out] out nint /* tagSIZE */ psizel);
+        [PreserveSig] int Advise([In] nint /* IAdviseSink */ pAdvSink, [Out] out uint pdwConnection);
         [PreserveSig] int Unadvise([In] uint pdwConnection);
-        [PreserveSig] int EnumAdvise([Out] out IntPtr /* IEnumSTATDATA */ enumAdvise);
+        [PreserveSig] int EnumAdvise([Out] out nint /* IEnumSTATDATA */ enumAdvise);
         [PreserveSig] int GetMiscStatus([In] uint dwAspect, [Out] out uint pdwStatus);
-        [PreserveSig] int SetColorScheme([In] IntPtr /* tagLOGPALETTE */ pLogpal);
+        [PreserveSig] int SetColorScheme([In] nint /* tagLOGPALETTE */ pLogpal);
     };
 
     [ComImport(), Guid("00000113-0000-0000-C000-000000000046"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface COM_IOleInPlaceObject /* : COM_IOleWindow */
     {
-        [PreserveSig] int GetWindow([Out] out IntPtr hwnd);
+        [PreserveSig] int GetWindow([Out] out nint hwnd);
         [PreserveSig] int ContextSensitiveHelp([In] int fEnterMode);
         [PreserveSig] int InPlaceDeactivate();
         [PreserveSig] int UIDeactivate();
-        [PreserveSig] int SetObjectRects([In] IntPtr /* COMRECT */ lprcPosRect, [In] IntPtr /* COMRECT */ lprcClipRect);
+        [PreserveSig] int SetObjectRects([In] nint /* COMRECT */ lprcPosRect, [In] nint /* COMRECT */ lprcClipRect);
         [PreserveSig] int ReactivateAndUndo();
     }
 
@@ -96,8 +96,8 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
     public interface COM_IOleClientSite
     {
         [PreserveSig] int SaveObject();
-        [PreserveSig] int GetMoniker([In] uint dwAssign, [In] uint dwWhichMoniker, [Out] out IntPtr /* IMoniker */ moniker);
-        [PreserveSig] int GetContainer([Out] out IntPtr /* IOleContainer */ container);
+        [PreserveSig] int GetMoniker([In] uint dwAssign, [In] uint dwWhichMoniker, [Out] out nint /* IMoniker */ moniker);
+        [PreserveSig] int GetContainer([Out] out nint /* IOleContainer */ container);
         [PreserveSig] int ShowObject();
         [PreserveSig] int OnShowWindow([In] int fShow);
         [PreserveSig] int RequestNewObjectLayout();
@@ -106,53 +106,53 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
     [ComImport(), Guid("00000114-0000-0000-C000-000000000046"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface COM_IOleWindow
     {
-        [PreserveSig] int GetWindow([Out] out IntPtr hwnd);
+        [PreserveSig] int GetWindow([Out] out nint hwnd);
         [PreserveSig] int ContextSensitiveHelp([In] int fEnterMode);
     }
 
     [ComImport(), Guid("00000115-0000-0000-C000-000000000046"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface COM_IOleInPlaceUIWindow /* : COM_IOleWindow */
     {
-        [PreserveSig] int GetWindow([Out] out IntPtr hwnd);
+        [PreserveSig] int GetWindow([Out] out nint hwnd);
         [PreserveSig] int ContextSensitiveHelp([In] int fEnterMode);
-        [PreserveSig] int GetBorder([Out] out IntPtr /* COMRECT */ lprectBorder);
-        [PreserveSig] int RequestBorderSpace([In] IntPtr /* COMRECT */ pborderwidths);
-        [PreserveSig] int SetBorderSpace([In] IntPtr /* COMRECT */ pborderwidths);
-        [PreserveSig] int SetActiveObject([In] IntPtr /* IOleInPlaceActiveObject */ pActiveObject, [In, MarshalAs(UnmanagedType.LPWStr)] string pszObjName);
+        [PreserveSig] int GetBorder([Out] out nint /* COMRECT */ lprectBorder);
+        [PreserveSig] int RequestBorderSpace([In] nint /* COMRECT */ pborderwidths);
+        [PreserveSig] int SetBorderSpace([In] nint /* COMRECT */ pborderwidths);
+        [PreserveSig] int SetActiveObject([In] nint /* IOleInPlaceActiveObject */ pActiveObject, [In, MarshalAs(UnmanagedType.LPWStr)] string pszObjName);
     }
 
     [ComImport(), Guid("00000116-0000-0000-C000-000000000046"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface COM_IOleInPlaceFrame /* : COM_IOleInPlaceUIWindow */
     {
-        [PreserveSig] int GetWindow([Out] out IntPtr hwnd);
+        [PreserveSig] int GetWindow([Out] out nint hwnd);
         [PreserveSig] int ContextSensitiveHelp([In] int fEnterMode);
-        [PreserveSig] int GetBorder([Out] out IntPtr /* COMRECT */ lprectBorder);
-        [PreserveSig] int RequestBorderSpace([In] IntPtr /* COMRECT */ pborderwidths);
-        [PreserveSig] int SetBorderSpace([In] IntPtr /* COMRECT */ pborderwidths);
-        [PreserveSig] int SetActiveObject([In] IntPtr /* IOleInPlaceActiveObject */ pActiveObject, [In, MarshalAs(UnmanagedType.LPWStr)] string pszObjName);
-        [PreserveSig] int InsertMenus([In] IntPtr hmenuShared, [In, Out] ref IntPtr /* tagOleMenuGroupWidths */ lpMenuWidths);
-        [PreserveSig] int SetMenu([In] IntPtr hmenuShared, [In] IntPtr holemenu, [In] IntPtr hwndActiveObject);
-        [PreserveSig] int RemoveMenus([In] IntPtr hmenuShared);
+        [PreserveSig] int GetBorder([Out] out nint /* COMRECT */ lprectBorder);
+        [PreserveSig] int RequestBorderSpace([In] nint /* COMRECT */ pborderwidths);
+        [PreserveSig] int SetBorderSpace([In] nint /* COMRECT */ pborderwidths);
+        [PreserveSig] int SetActiveObject([In] nint /* IOleInPlaceActiveObject */ pActiveObject, [In, MarshalAs(UnmanagedType.LPWStr)] string pszObjName);
+        [PreserveSig] int InsertMenus([In] nint hmenuShared, [In, Out] ref nint /* tagOleMenuGroupWidths */ lpMenuWidths);
+        [PreserveSig] int SetMenu([In] nint hmenuShared, [In] nint holemenu, [In] nint hwndActiveObject);
+        [PreserveSig] int RemoveMenus([In] nint hmenuShared);
         [PreserveSig] int SetStatusText([In, MarshalAs(UnmanagedType.LPWStr)] string pszStatusText);
         [PreserveSig] int EnableModeless([In] bool fEnable);
-        [PreserveSig] int TranslateAccelerator([In] IntPtr lpmsg, [In] ushort wID);
+        [PreserveSig] int TranslateAccelerator([In] nint lpmsg, [In] ushort wID);
     }
 
     [ComImport(), Guid("00000119-0000-0000-C000-000000000046"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface COM_IOleInPlaceSite /* : COM_IOleWindow */
     {
-        [PreserveSig] int GetWindow([Out] out IntPtr hwnd);
+        [PreserveSig] int GetWindow([Out] out nint hwnd);
         [PreserveSig] int ContextSensitiveHelp([In] int fEnterMode);
         [PreserveSig] int CanInPlaceActivate();
         [PreserveSig] int OnInPlaceActivate();
         [PreserveSig] int OnUIActivate();
-        [PreserveSig] int GetWindowContext([Out] out IntPtr /* IOleInPlaceFrame */ ppFrame, [Out] out IntPtr /* IOleInPlaceUIWindow */ ppDoc, [Out] out IntPtr /* COMRECT */ lprcPosRect, [Out] out IntPtr /* COMRECT */ lprcClipRect, [In] IntPtr /* tagOIFI */ lpFrameInfo);
-        [PreserveSig] int Scroll([In] IntPtr /* tagSIZE */ scrollExtant);
+        [PreserveSig] int GetWindowContext([Out] out nint /* IOleInPlaceFrame */ ppFrame, [Out] out nint /* IOleInPlaceUIWindow */ ppDoc, [Out] out nint /* COMRECT */ lprcPosRect, [Out] out nint /* COMRECT */ lprcClipRect, [In] nint /* tagOIFI */ lpFrameInfo);
+        [PreserveSig] int Scroll([In] nint /* tagSIZE */ scrollExtant);
         [PreserveSig] int OnUIDeactivate([In] int fUndoable);
         [PreserveSig] int OnInPlaceDeactivate();
         [PreserveSig] int DiscardUndoState();
         [PreserveSig] int DeactivateAndUndo();
-        [PreserveSig] int OnPosRectChange([In] IntPtr /* COMRECT */ lprcPosRect);
+        [PreserveSig] int OnPosRectChange([In] nint /* COMRECT */ lprcPosRect);
     }
 
     public class AggregationHelper : ICustomQueryInterface, IDisposable
@@ -162,7 +162,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
 
         // CreateAggregatedWrapper returns a reference counted COM pointer to the aggregated object
         // When it gets released in COM, it should in turn release the internal CCW reference on our AggregationHelper object
-        public static IntPtr CreateAggregatedWrapper(object objectToWrap, Type[] supportedTypes)
+        public static nint CreateAggregatedWrapper(object objectToWrap, Type[] supportedTypes)
         {
             return Marshal.CreateAggregatedObject(Marshal.GetIUnknownForObject(objectToWrap),       // aggregated object will own this COM reference, but this is fine, as it is really a managed object
                 new AggregationHelper(objectToWrap, supportedTypes));
@@ -185,9 +185,9 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
             _supportedTypes = supportedTypes;
         }
 
-        public CustomQueryInterfaceResult GetInterface(ref Guid iid, out IntPtr ppv)
+        public CustomQueryInterfaceResult GetInterface(ref Guid iid, out nint ppv)
         {
-            ppv = IntPtr.Zero;
+            ppv = nint.Zero;
             if (_outerObject != null)
             {
                 foreach (Type _interface in _supportedTypes)
@@ -195,7 +195,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
                     if (_interface.GUID == iid)
                     {
                         ppv = Marshal.GetComInterfaceForObject(_outerObject, _interface, CustomQueryInterfaceMode.Ignore);
-                        if (ppv != IntPtr.Zero)
+                        if (ppv != nint.Zero)
                         {
                             return CustomQueryInterfaceResult.Handled;
                         }
@@ -228,7 +228,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
 
     public class AggregatedWrapper : IDisposable
     {
-        private IntPtr _aggregatedObjectPtr;
+        private nint _aggregatedObjectPtr;
 
         // no explicit interface list defined, so use our implemented interfaces list
         public AggregatedWrapper()
@@ -242,13 +242,13 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
             _aggregatedObjectPtr = AggregationHelper.CreateAggregatedWrapper(this, supportedTypes);
         }
 
-        public IntPtr CopyAggregatedReference()
+        public nint CopyAggregatedReference()
         {
             Marshal.AddRef(_aggregatedObjectPtr);
             return _aggregatedObjectPtr;
         }
 
-        public IntPtr PeekAggregatedReference()
+        public nint PeekAggregatedReference()
         {
             return _aggregatedObjectPtr;
         }
@@ -267,10 +267,10 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
                 return;
             }
 
-            if (_aggregatedObjectPtr != IntPtr.Zero)
+            if (_aggregatedObjectPtr != nint.Zero)
             {
                 Marshal.Release(_aggregatedObjectPtr);
-                _aggregatedObjectPtr = IntPtr.Zero;
+                _aggregatedObjectPtr = nint.Zero;
             }
 
             _isDisposed = true;
@@ -279,20 +279,20 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
 
     public class WrapperBase : AggregatedWrapper
     {
-        private IntPtr _hostObjectPtr;
+        private nint _hostObjectPtr;
 
         // no explicit interface list defined, so use our implemented interfaces list
-        public WrapperBase(IntPtr hostObjectPtr)
+        public WrapperBase(nint hostObjectPtr)
         {
             _hostObjectPtr = hostObjectPtr;
-            if (_hostObjectPtr != IntPtr.Zero) Marshal.AddRef(_hostObjectPtr);
+            if (_hostObjectPtr != nint.Zero) Marshal.AddRef(_hostObjectPtr);
         }
 
         // interface list explicitly defined
-        public WrapperBase(IntPtr hostObjectPtr, Type[] supportedTypes) : base(supportedTypes)
+        public WrapperBase(nint hostObjectPtr, Type[] supportedTypes) : base(supportedTypes)
         {
             _hostObjectPtr = hostObjectPtr;
-            if (_hostObjectPtr != IntPtr.Zero) Marshal.AddRef(_hostObjectPtr);
+            if (_hostObjectPtr != nint.Zero) Marshal.AddRef(_hostObjectPtr);
         }
 
         public object GetObject()
@@ -304,10 +304,10 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
         {
             if (disposing)
             {
-                if (_hostObjectPtr != IntPtr.Zero)
+                if (_hostObjectPtr != nint.Zero)
                 {
                     Marshal.Release(_hostObjectPtr);
-                    _hostObjectPtr = IntPtr.Zero;
+                    _hostObjectPtr = nint.Zero;
                 }
             }
 
@@ -321,9 +321,9 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
 
         private COM_IOleInPlaceFrame _IOleInPlaceFrame = null!;         // cached object for accessing the IOleInPlaceFrame interface
 
-        public Wrapper_IOleInPlaceFrame(IntPtr hostObjectPtr) : base(hostObjectPtr)
+        public Wrapper_IOleInPlaceFrame(nint hostObjectPtr) : base(hostObjectPtr)
         {
-            if (hostObjectPtr != IntPtr.Zero)
+            if (hostObjectPtr != nint.Zero)
             {
                 _IOleInPlaceFrame = (COM_IOleInPlaceFrame)GetObject();
             }
@@ -345,7 +345,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
 
         // --------------------------------------------------------------------
 
-        public int /* IOleInPlaceFrame:: */ GetWindow([Out] out IntPtr hwnd)
+        public int /* IOleInPlaceFrame:: */ GetWindow([Out] out nint hwnd)
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceFrame::GetWindow() called");
             return _IOleInPlaceFrame.GetWindow(out hwnd);
@@ -357,25 +357,25 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
             return _IOleInPlaceFrame.ContextSensitiveHelp(fEnterMode);
         }
 
-        public int /* IOleInPlaceFrame:: */ GetBorder([Out] out IntPtr /* COMRECT */ lprectBorder)
+        public int /* IOleInPlaceFrame:: */ GetBorder([Out] out nint /* COMRECT */ lprectBorder)
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceFrame::GetBorder() called");
             return _IOleInPlaceFrame.GetBorder(out lprectBorder);
         }
 
-        public int /* IOleInPlaceFrame:: */ RequestBorderSpace([In] IntPtr /* COMRECT */ pborderwidths)
+        public int /* IOleInPlaceFrame:: */ RequestBorderSpace([In] nint /* COMRECT */ pborderwidths)
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceFrame::RequestBorderSpace() called");
             return _IOleInPlaceFrame.RequestBorderSpace(pborderwidths);
         }
 
-        public int /* IOleInPlaceFrame:: */ SetBorderSpace([In] IntPtr /* COMRECT */ pborderwidths)
+        public int /* IOleInPlaceFrame:: */ SetBorderSpace([In] nint /* COMRECT */ pborderwidths)
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceFrame::SetBorderSpace() called");
             return _IOleInPlaceFrame.SetBorderSpace(pborderwidths);
         }
 
-        public int /* IOleInPlaceFrame:: */ SetActiveObject([In] IntPtr /* IOleInPlaceActiveObject */ pActiveObject, [In, MarshalAs(UnmanagedType.LPWStr)] string pszObjName)
+        public int /* IOleInPlaceFrame:: */ SetActiveObject([In] nint /* IOleInPlaceActiveObject */ pActiveObject, [In, MarshalAs(UnmanagedType.LPWStr)] string pszObjName)
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceFrame::SetActiveObject() called");
             // need to wrap IOleInPlaceActiveObject to support this.  Used by VBE on focus. Doesn't seem to be needed by UserControl?
@@ -383,19 +383,19 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
             return (int)ComConstants.E_NOTIMPL;
         }
 
-        public int /* IOleInPlaceFrame:: */ InsertMenus([In] IntPtr hmenuShared, [In, Out] ref IntPtr /* tagOleMenuGroupWidths */ lpMenuWidths)
+        public int /* IOleInPlaceFrame:: */ InsertMenus([In] nint hmenuShared, [In, Out] ref nint /* tagOleMenuGroupWidths */ lpMenuWidths)
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceFrame::InsertMenus() called");
             return _IOleInPlaceFrame.InsertMenus(hmenuShared, lpMenuWidths);
         }
 
-        public int /* IOleInPlaceFrame:: */ SetMenu([In] IntPtr hmenuShared, [In] IntPtr holemenu, [In] IntPtr hwndActiveObject)
+        public int /* IOleInPlaceFrame:: */ SetMenu([In] nint hmenuShared, [In] nint holemenu, [In] nint hwndActiveObject)
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceFrame::SetMenu() called");
             return _IOleInPlaceFrame.SetMenu(hmenuShared, holemenu, hwndActiveObject);
         }
 
-        public int /* IOleInPlaceFrame:: */ RemoveMenus([In] IntPtr hmenuShared)
+        public int /* IOleInPlaceFrame:: */ RemoveMenus([In] nint hmenuShared)
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceFrame::RemoveMenus() called");
             return _IOleInPlaceFrame.RemoveMenus(hmenuShared);
@@ -413,7 +413,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
             return _IOleInPlaceFrame.EnableModeless(fEnable);
         }
 
-        public int /* IOleInPlaceFrame:: */ TranslateAccelerator([In] IntPtr lpmsg, [In] ushort wID)
+        public int /* IOleInPlaceFrame:: */ TranslateAccelerator([In] nint lpmsg, [In] ushort wID)
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceFrame::TranslateAccelerator() called");
             return _IOleInPlaceFrame.TranslateAccelerator(lpmsg, wID);
@@ -428,9 +428,9 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
         COM_IOleInPlaceSite _IOleInPlaceSite = null!;       // cached object for accessing the IOleInPlaceSite interface
         public Wrapper_IOleInPlaceFrame _cachedFrame = null!;           // cache the frame object returned from GetWindowContext, so that we can control the tear down
 
-        public Wrapper_IOleClientSite(IntPtr hostObjectPtr) : base(hostObjectPtr)
+        public Wrapper_IOleClientSite(nint hostObjectPtr) : base(hostObjectPtr)
         {
-            if (hostObjectPtr != IntPtr.Zero)
+            if (hostObjectPtr != nint.Zero)
             {
                 _IOleClientSite = (COM_IOleClientSite)GetObject();
                 _IOleInPlaceSite = (COM_IOleInPlaceSite)GetObject();
@@ -468,22 +468,22 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
             return _IOleClientSite.SaveObject();
         }
 
-        public int /* IOleClientSite:: */ GetMoniker([In] uint dwAssign, [In] uint dwWhichMoniker, [Out] out IntPtr /* IMoniker */ moniker)
+        public int /* IOleClientSite:: */ GetMoniker([In] uint dwAssign, [In] uint dwWhichMoniker, [Out] out nint /* IMoniker */ moniker)
         {
             _logger.Log(LogLevel.Trace, "IOleClientSite::GetMoniker() called");
             // need to wrap IMoniker to support this.  Not used by VBE anyway?
             //return _IOleClientSite.GetMoniker(dwAssign, dwWhichMoniker, out moniker);
-            moniker = IntPtr.Zero;
+            moniker = nint.Zero;
             Debug.Assert(false);
             return (int)ComConstants.E_NOTIMPL;
         }
 
-        public int /* IOleClientSite:: */ GetContainer([Out] out IntPtr /* IOleContainer */ container)
+        public int /* IOleClientSite:: */ GetContainer([Out] out nint /* IOleContainer */ container)
         {
             _logger.Log(LogLevel.Trace, "IOleClientSite::GetContainer() called");
             // need to wrap IOleContainer to support this.  VBE doesn't implement this anyway (returns E_NOTIMPL)
             //return _IOleClientSite.GetContainer(out container);
-            container = IntPtr.Zero;
+            container = nint.Zero;
             return (int)ComConstants.E_NOTIMPL;
         }
 
@@ -507,7 +507,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
 
         // --------------------------------------------------------------------
 
-        public int /* IOleInPlaceSite:: */ GetWindow([Out] out IntPtr hwnd)
+        public int /* IOleInPlaceSite:: */ GetWindow([Out] out nint hwnd)
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceSite::GetWindow() called");
             return _IOleInPlaceSite.GetWindow(out hwnd);
@@ -537,7 +537,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
             return _IOleInPlaceSite.OnUIActivate();
         }
 
-        public int /* IOleInPlaceSite:: */ GetWindowContext([Out] out IntPtr /* IOleInPlaceFrame */ ppFrame, [Out] out IntPtr /* IOleInPlaceUIWindow */ ppDoc, [Out] out IntPtr /* COMRECT */ lprcPosRect, [Out] out IntPtr /* COMRECT */ lprcClipRect, [In] IntPtr /* tagOIFI */ lpFrameInfo)
+        public int /* IOleInPlaceSite:: */ GetWindowContext([Out] out nint /* IOleInPlaceFrame */ ppFrame, [Out] out nint /* IOleInPlaceUIWindow */ ppDoc, [Out] out nint /* COMRECT */ lprcPosRect, [Out] out nint /* COMRECT */ lprcClipRect, [In] nint /* tagOIFI */ lpFrameInfo)
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceSite::GetWindowContext() called");
             int hr = _IOleInPlaceSite.GetWindowContext(out ppFrame, out ppDoc, out lprcPosRect, out lprcClipRect, lpFrameInfo);
@@ -550,13 +550,13 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
                 Marshal.Release(ppFrame);    // the Wrapper_IOleInPlaceFrame took its own reference, so we can release this one.
                 ppFrame = _cachedFrame.CopyAggregatedReference();
 
-                Debug.Assert(ppDoc == IntPtr.Zero);  // ppDoc not used by VBE, so no need to wrap it
+                Debug.Assert(ppDoc == nint.Zero);  // ppDoc not used by VBE, so no need to wrap it
             }
 
             return hr;
         }
 
-        public int /* IOleInPlaceSite:: */ Scroll([In] IntPtr /* SIZE */ scrollExtant)
+        public int /* IOleInPlaceSite:: */ Scroll([In] nint /* SIZE */ scrollExtant)
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceSite::Scroll() called");
             return _IOleInPlaceSite.Scroll(scrollExtant);
@@ -586,7 +586,7 @@ namespace Rubberduck.Main.ComClientLibrary.UI.CustomComWrappers
             return _IOleInPlaceSite.DeactivateAndUndo();
         }
 
-        public int /* IOleInPlaceSite:: */ OnPosRectChange([In] IntPtr /* COMRECT */ lprcPosRect)
+        public int /* IOleInPlaceSite:: */ OnPosRectChange([In] nint /* COMRECT */ lprcPosRect)
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceSite::OnPosRectChange() called");
             return _IOleInPlaceSite.OnPosRectChange(lprcPosRect);

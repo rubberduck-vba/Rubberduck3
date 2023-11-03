@@ -2,9 +2,8 @@
 using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
-using Rubberduck.InternalApi.Common;
 using Rubberduck.Unmanaged;
-using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
 using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor.Utility
@@ -22,12 +21,12 @@ namespace Rubberduck.VBEditor.Utility
         {
             if (!_fileSystem.File.Exists(filename))
             {
-                return null;
+                return null!;
             }
 
             if (!SupportedExtensions.Contains(_fileSystem.Path.GetExtension(filename)))
             {
-                return null;
+                return null!;
             }
 
             var contents = _fileSystem.File.ReadLines(filename, Encoding.Default);

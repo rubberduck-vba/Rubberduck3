@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
 using Rubberduck.Unmanaged.Events;
 using VB = Microsoft.Vbe.Interop;
 

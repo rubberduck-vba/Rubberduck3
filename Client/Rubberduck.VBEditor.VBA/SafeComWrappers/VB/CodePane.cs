@@ -3,6 +3,8 @@ using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Model;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
 using Rubberduck.Unmanaged.Model.Abstract;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA

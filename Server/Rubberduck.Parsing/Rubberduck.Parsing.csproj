@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+    <LangVersion>10.0</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Antlr4" Version="4.6.6" />
+	<PackageReference Include="Antlr4.CodeGenerator" Version="4.6.6" />
+	<PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
+    <PackageReference Include="NLog" Version="5.2.4" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Client\Rubberduck.Unmanaged\Rubberduck.Unmanaged.csproj" />
+    <ProjectReference Include="..\..\Client\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj" />
+    <ProjectReference Include="..\..\Client\Rubberduck.VBEditor\Rubberduck.VBEditor.csproj" />
+    <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Antlr4 Update="Parsers\Grammar\VBAConditionalCompilationParser.g4">
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Update="Parsers\Grammar\VBADate.g4">
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Update="Parsers\Grammar\VBALexer.g4">
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Update="Parsers\Grammar\VBALike.g4">
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Update="Parsers\Grammar\VBAMemberParser.g4">
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Update="Parsers\Grammar\VBAParser.g4">
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+    </Antlr4>
+  </ItemGroup>
+
+</Project>

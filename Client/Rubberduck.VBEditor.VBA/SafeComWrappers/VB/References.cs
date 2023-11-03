@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers;
+using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.Events;
 using Rubberduck.Unmanaged.Model;
 using VB = Microsoft.Vbe.Interop;
