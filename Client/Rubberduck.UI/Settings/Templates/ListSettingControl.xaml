@@ -1,0 +1,73 @@
+﻿<UserControl x:Class="Rubberduck.UI.Settings.Templates.ListSettingControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Rubberduck.UI.Settings.Templates"
+             xmlns:viewmodels="clr-namespace:Rubberduck.UI.Settings.ViewModels" xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
+             d:DataContext="{d:DesignInstance Type=viewmodels:ListSettingViewModel}"
+             Background="{DynamicResource ThemeBackgroundColorBrush}"
+             Padding="4" MinHeight="192" MinWidth="255"
+             mc:Ignorable="d" 
+             d:DesignHeight="84" d:DesignWidth="255">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
+            BorderBrush="{DynamicResource ThemeBackgroundMediumColorBrush}" BorderThickness="1" HorizontalAlignment="Left" Width="247">
+        <DockPanel>
+            <DockPanel.Style>
+                <Style TargetType="DockPanel">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=local:BooleanSettingControl, Mode=FindAncestor}}" Value="true">
+                            <DataTrigger.Setters>
+                                <Setter Property="Background" Value="{DynamicResource ThemeAccent1HighlightColorBrush}" />
+                                <Setter Property="Opacity" Value="0.6" />
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DockPanel.Style>
+            <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0">
+                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
+            </Label>
+            <ScrollViewer DockPanel.Dock="Top" MinHeight="48" VerticalScrollBarVisibility="Auto">
+                <Label Style="{DynamicResource FormLabelStyle}" Margin="4,0">
+                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+                </Label>
+            </ScrollViewer>
+            <ScrollViewer DockPanel.Dock="Top" MinHeight="48" VerticalScrollBarVisibility="Auto">
+                <ListView Background="{StaticResource ThemeBackgroundDarkColorBrush}" ItemsSource="{Binding ListItems}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="{DynamicResource ThemeAccent1DarkColorBrush}" 
+                                    Background="{DynamicResource ThemeAccent1LightColorBrush}"
+                                    BorderThickness="1" CornerRadius="4" Cursor="Hand">
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="{Binding}" Foreground="{DynamicResource ThemeAccent1TextColorBrush}" />
+                                    <shell:FlatButton Icon="{DynamicResource XMarkIcon}" Command="{Binding DataContext.RemoveListSettingItemCommand, RelativeSource={RelativeSource AncestorType=local:ListSettingControl, Mode=FindAncestor}}" CommandParameter="{Binding}" />
+                                </StackPanel>
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListViewItem, Mode=FindAncestor}}" Value="true">
+                                                <DataTrigger.Setters>
+                                                    <Setter Property="Background" Value="{DynamicResource ThemeAccent1MediumColorBrush}" />
+                                                </DataTrigger.Setters>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollViewer>
+        </DockPanel>
+    </Border>
+</UserControl>

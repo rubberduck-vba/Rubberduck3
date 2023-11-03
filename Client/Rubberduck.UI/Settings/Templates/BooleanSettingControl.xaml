@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.UI.Settings.Templates" 
-             xmlns:viewmodels="clr-namespace:Rubberduck.UI.Settings.ViewModels" 
+             xmlns:viewmodels="clr-namespace:Rubberduck.UI.Settings.ViewModels" xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
              d:DataContext="{d:DesignInstance Type=viewmodels:BooleanSettingViewModel}"
              Background="{DynamicResource ThemeBackgroundColorBrush}"
              Padding="4" MinHeight="84" MinWidth="255"
@@ -33,12 +33,17 @@
                     </Style.Triggers>
                 </Style>
             </DockPanel.Style>
-            <CheckBox DockPanel.Dock="Left" Style="{DynamicResource FormFieldCheckBoxStyle}" IsChecked="{Binding Value}" Margin="8,8,4,8" />
-            <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0">
+            <CheckBox DockPanel.Dock="Left" Margin="8,8,4,8" 
+                      Style="{DynamicResource FormFieldCheckBoxStyle}" 
+                      IsChecked="{Binding Value}" 
+                      IsEnabled="{Binding IsEnabled}" />
+            <shell:FlatButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8"
+                              Icon="{DynamicResource LockedIcon}" Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
+            <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0" IsEnabled="{Binding IsEnabled}">
                 <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
             </Label>
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <Label DockPanel.Dock="Top" Style="{DynamicResource FormLabelStyle}" Margin="4,0">
+                <Label DockPanel.Dock="Top" Style="{DynamicResource FormLabelStyle}" Margin="4,0" IsEnabled="{Binding IsEnabled}">
                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
                 </Label>
             </ScrollViewer>

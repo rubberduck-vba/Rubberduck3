@@ -16,6 +16,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Resources\FontAwesome\gear-solid.png" />
+    <None Remove="Resources\FontAwesome\lock-open-solid.png" />
+    <None Remove="Resources\FontAwesome\lock-solid.png" />
     <None Remove="Resources\FontAwesome\rectangle-xmark-solid.png" />
     <None Remove="Resources\FontAwesome\square-xmark-solid-red.png" />
     <None Remove="Resources\FontAwesome\square-xmark-solid.png" />
@@ -45,6 +47,8 @@
   <ItemGroup>
     <Resource Include="Ducky.ico" />
     <Resource Include="Resources\FontAwesome\gear-solid.png" />
+    <Resource Include="Resources\FontAwesome\lock-open-solid.png" />
+    <Resource Include="Resources\FontAwesome\lock-solid.png" />
     <Resource Include="Resources\FontAwesome\rectangle-xmark-solid.png" />
     <Resource Include="Resources\FontAwesome\square-xmark-solid-red.png" />
     <Resource Include="Resources\FontAwesome\square-xmark-solid.png" />

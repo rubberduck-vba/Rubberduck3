@@ -2,13 +2,16 @@
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.UI.Command;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Rubberduck.UI.Settings.ViewModels
@@ -39,11 +42,19 @@ namespace Rubberduck.UI.Settings.ViewModels
         {
             _setting = setting;
             _value = setting.TypedValue;
+
+            IsEnabled = !IsReadOnlyRecommended;
         }
 
         public string Name => _setting.Key; // TODO fetch from resources
         public string Description => _setting.Key; // TODO fetch from resources
+        
         public SettingTags Tags => _setting.Tags;
+        public bool IsReadOnlyRecommended => _setting.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
+        public bool IsAdvancedSetting => _setting.Tags.HasFlag(SettingTags.Advanced);
+        public bool IsExperimental => _setting.Tags.HasFlag(SettingTags.Experimental);
+
+        public bool IsEnabled { get; set; }
 
 
         private TValue _value;
@@ -52,43 +63,36 @@ namespace Rubberduck.UI.Settings.ViewModels
             get => _value;
             set
             {
-                if (!_value.Equals(value))
+                if (_value is null || !_value.Equals(value))
                 {
-                    _value = value ?? throw new ArgumentNullException(nameof(value));
+                    _value = value ?? throw new ArgumentNullException(nameof(value), "Value cannot be null.");
                     OnPropertyChanged();
                 }
             }
         }
 
-        public RubberduckSetting ToSetting() => _setting with { Value = Value };
-    }
-
-    public class StringValueViewModel : ViewModelBase
-    {
-        public StringValueViewModel(string value)
-        {
-            _value = value;
-        }
-
-        private string _value;
-        public string Value 
-        {
-            get => _value;
-            set
-            {
-                if (_value != value)
-                {
-                    _value = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        public RubberduckSetting ToSetting() => _setting with { Value = Value ?? throw new InvalidOperationException("Value is unexpectedly null.") };
     }
 
     public class ListSettingViewModel : SettingViewModel<string[]>
     {
-        public ListSettingViewModel(TypedRubberduckSetting<string[]> setting) : base(setting)
+        public ListSettingViewModel(ILogger logger, ISettingsProvider<RubberduckSettings> settingsProvider, TypedRubberduckSetting<string[]> setting) : base(setting)
         {
+            ListItems = new ObservableCollection<string>(setting.TypedValue);
+            RemoveListSettingItemCommand = new DelegateCommand(logger, settingsProvider, ExecuteRemoveListSettingItemCommand);
+        }
+
+        public ObservableCollection<string> ListItems { get; }
+
+        public ICommand RemoveListSettingItemCommand { get; }
+
+        private void ExecuteRemoveListSettingItemCommand(object? parameter)
+        {
+            if (parameter is string value)
+            {
+                ListItems.Remove(value);
+                Value = ListItems.ToArray();
+            }
         }
     }
 
