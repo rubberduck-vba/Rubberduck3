@@ -36,7 +36,7 @@
                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
                 </Label>
             </ScrollViewer>
-            <ComboBox DockPanel.Dock="Top" Style="{DynamicResource FormFieldComboBoxStyle}" Height="24" ItemsSource="{Binding Values}" SelectedValue="{Binding Value}" />
+            <ComboBox Template="{DynamicResource ComboBoxTemplate1}" DockPanel.Dock="Top" Style="{DynamicResource FormFieldComboBoxStyle}" Height="24" ItemsSource="{Binding Values}" SelectedValue="{Binding Value}" />
         </DockPanel>
     </Border>
 </UserControl>

@@ -112,6 +112,7 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    
     <ControlTemplate x:Key="BrowseTextBoxTemplate" TargetType="{x:Type TextBoxBase}">
         <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
             <DockPanel>

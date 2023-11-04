@@ -22,7 +22,7 @@
     <Border Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
             BorderBrush="{DynamicResource ThemeBackgroundMediumColorBrush}" BorderThickness="1">
         <DockPanel LastChildFill="True">
-            <CheckBox DockPanel.Dock="Left" Margin="8,8,4,8" 
+            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" DockPanel.Dock="Left" Margin="8,8,4,8" 
                       Style="{DynamicResource FormFieldCheckBoxStyle}" 
                       IsChecked="{Binding Value}" 
                       IsEnabled="{Binding IsEnabled}" />
