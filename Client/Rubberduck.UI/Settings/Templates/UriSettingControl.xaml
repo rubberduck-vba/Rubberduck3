@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.UI.Settings.Templates"
-             xmlns:viewmodels="clr-namespace:Rubberduck.UI.Settings.ViewModels" xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
-             d:DataContext="{d:DesignInstance Type=viewmodels:StringSettingViewModel}"
+             xmlns:vm="clr-namespace:Rubberduck.UI.Settings.ViewModels"
+             xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
+             d:DataContext="{d:DesignInstance Type=vm:UriSettingViewModel}"
              Background="{DynamicResource ThemeBackgroundColorBrush}"
              Padding="4" MinHeight="96" MinWidth="255"
              mc:Ignorable="d" 
@@ -20,19 +21,7 @@
     </UserControl.Resources>
     <Border Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
             BorderBrush="{DynamicResource ThemeBackgroundMediumColorBrush}" BorderThickness="1">
-        <DockPanel>
-            <DockPanel.Style>
-                <Style TargetType="DockPanel">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=local:BooleanSettingControl, Mode=FindAncestor}}" Value="true">
-                            <DataTrigger.Setters>
-                                <Setter Property="Background" Value="{DynamicResource ThemeAccent1HighlightColorBrush}" />
-                                <Setter Property="Opacity" Value="0.6" />
-                            </DataTrigger.Setters>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </DockPanel.Style>
+        <DockPanel LastChildFill="True">
             <DockPanel DockPanel.Dock="Top">
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
                                     Icon="{DynamicResource LockedIcon}" 

@@ -1,4 +1,5 @@
 ﻿using Rubberduck.SettingsProvider.Model;
+using Rubberduck.UI.Settings.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,9 +35,12 @@ namespace Rubberduck.UI.Settings.Templates
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            if (item is RubberduckSetting setting && TemplateMap.TryGetValue(setting.SettingDataType, out var template))
+            if (item is ISettingViewModel setting)
             {
-                return template;
+                if (TemplateMap.TryGetValue(setting.SettingDataType, out var template))
+                {
+                    return template;
+                }
             }
             return null!;
         }

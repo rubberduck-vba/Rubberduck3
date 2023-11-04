@@ -20,19 +20,7 @@
     </UserControl.Resources>
     <Border Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
             BorderBrush="{DynamicResource ThemeBackgroundMediumColorBrush}" BorderThickness="1">
-        <DockPanel>
-            <DockPanel.Style>
-                <Style TargetType="DockPanel">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=local:BooleanSettingControl, Mode=FindAncestor}}" Value="true">
-                            <DataTrigger.Setters>
-                                <Setter Property="Background" Value="{DynamicResource ThemeAccent1HighlightColorBrush}" />
-                                <Setter Property="Opacity" Value="0.6" />
-                            </DataTrigger.Setters>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </DockPanel.Style>
+        <DockPanel LastChildFill="True">
             <DockPanel DockPanel.Dock="Top">
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
                                     Icon="{DynamicResource LockedIcon}" 
@@ -50,8 +38,18 @@
             </ScrollViewer>
             <Expander DockPanel.Dock="Top" Header="Settings" Margin="4" 
                       BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}" BorderThickness="0,1">
-                <ListView Background="{DynamicResource ThemeBackgroundColorBrush}" ItemsSource="{Binding Items}" ItemTemplateSelector="{DynamicResource SettingTemplateSelector}" />
-
+                <ListView Background="{DynamicResource ThemeBackgroundColorBrush}" 
+                          ItemsSource="{Binding Items}" 
+                          HorizontalContentAlignment="Stretch"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          ItemTemplateSelector="{DynamicResource SettingTemplateSelector}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
             </Expander>
         </DockPanel>
     </Border>

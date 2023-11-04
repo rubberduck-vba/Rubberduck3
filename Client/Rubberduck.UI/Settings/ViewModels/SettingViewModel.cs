@@ -18,6 +18,7 @@ namespace Rubberduck.UI.Settings.ViewModels
 {
     public interface ISettingViewModel : INotifyPropertyChanged
     {
+        SettingDataType SettingDataType { get; }
         string Name { get; }
         string Description { get; }
         SettingTags Tags { get; }
@@ -46,6 +47,7 @@ namespace Rubberduck.UI.Settings.ViewModels
             IsEnabled = !IsReadOnlyRecommended;
         }
 
+        public SettingDataType SettingDataType => _setting.SettingDataType;
         public string Name => _setting.Key; // TODO fetch from resources
         public string Description => _setting.Key; // TODO fetch from resources
         
@@ -223,6 +225,7 @@ namespace Rubberduck.UI.Settings.ViewModels
             IsEnabled = !IsReadOnlyRecommended;
         }
 
+        public SettingDataType SettingDataType => _setting.SettingDataType;
         public string Name => _setting.Key; // TODO fetch from resources
         public string Description => _setting.Key; // TODO fetch from resources
         public SettingTags Tags => _setting.Tags;
@@ -348,6 +351,7 @@ namespace Rubberduck.UI.Settings.ViewModels
 
         public ObservableCollection<ISettingViewModel> Items { get; init; }
 
+        public SettingDataType SettingDataType => _settingGroup.SettingDataType;
         public string Name => _settingGroup.Key; // TODO fetch from resources
 
         public string Description => _settingGroup.Key; // TODO fetch from resources

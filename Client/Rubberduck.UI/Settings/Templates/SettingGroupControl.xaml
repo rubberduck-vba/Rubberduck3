@@ -38,8 +38,16 @@
             </ScrollViewer>
             <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
                 <ListView Background="{DynamicResource ThemeBackgroundColorBrush}" 
+                          HorizontalContentAlignment="Stretch"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
                           ItemsSource="{Binding Items}"
                           ItemTemplateSelector="{DynamicResource SettingTemplateSelector}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
                 </ListView>
             </ScrollViewer>
         </DockPanel>

@@ -18,9 +18,10 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+    <Grid>
     <Border Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
             BorderBrush="{DynamicResource ThemeBackgroundMediumColorBrush}" BorderThickness="1">
-        <DockPanel>
+        <DockPanel LastChildFill="True">
             <CheckBox DockPanel.Dock="Left" Margin="8,8,4,8" 
                       Style="{DynamicResource FormFieldCheckBoxStyle}" 
                       IsChecked="{Binding Value}" 
@@ -40,4 +41,5 @@
             </ScrollViewer>
         </DockPanel>
     </Border>
+    </Grid>
 </UserControl>

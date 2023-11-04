@@ -29,8 +29,16 @@
 
                 <ListView MinWidth="160" Margin="4"
                           Background="Transparent" 
+                          VerticalAlignment="Stretch"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           ItemsSource="{Binding Settings.Items}" 
                           SelectedItem="{Binding Selection}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
                     <ListView.ItemTemplate>
                         <DataTemplate DataType="{x:Type vm:SettingGroupViewModel}">
                             <DockPanel>
