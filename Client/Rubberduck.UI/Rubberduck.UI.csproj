@@ -16,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Resources\FontAwesome\gear-solid.png" />
+    <None Remove="Resources\FontAwesome\gear-solid_circle-chevron-left.png" />
     <None Remove="Resources\FontAwesome\lock-open-solid.png" />
     <None Remove="Resources\FontAwesome\lock-solid.png" />
     <None Remove="Resources\FontAwesome\rectangle-xmark-solid.png" />
@@ -33,6 +34,7 @@
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
     <PackageReference Include="MdXaml" Version="1.21.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
     <PackageReference Include="SharpVectors" Version="1.8.2" />
   </ItemGroup>
@@ -47,6 +49,7 @@
   <ItemGroup>
     <Resource Include="Ducky.ico" />
     <Resource Include="Resources\FontAwesome\gear-solid.png" />
+    <Resource Include="Resources\FontAwesome\gear-solid_circle-chevron-left.png" />
     <Resource Include="Resources\FontAwesome\lock-open-solid.png" />
     <Resource Include="Resources\FontAwesome\lock-solid.png" />
     <Resource Include="Resources\FontAwesome\rectangle-xmark-solid.png" />
@@ -71,6 +74,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Shell\DuckyBackgroundControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Shell\FlatToggleButton.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Shell\FlatButton.xaml.cs">

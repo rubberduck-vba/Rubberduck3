@@ -3,13 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Rubberduck.UI.Settings" xmlns:shell="clr-namespace:Rubberduck.UI.Shell" d:DataContext="{d:DesignInstance Type=local:SettingsWindowViewModel}"
+        xmlns:local="clr-namespace:Rubberduck.UI.Settings" xmlns:shell="clr-namespace:Rubberduck.UI.Shell" xmlns:vm="clr-namespace:Rubberduck.UI.Settings.ViewModels" xmlns:templates="clr-namespace:Rubberduck.UI.Settings.Templates"
+        d:DataContext="{d:DesignInstance Type=local:SettingsWindowViewModel}"
         mc:Ignorable="d"
         Title="Settings" 
         WindowStyle="None"
         SizeToContent="WidthAndHeight"
         Style="{DynamicResource ThemedWindowStyle}"
-        Height="450" Width="800">
+        MinHeight="455" MinWidth="600">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -19,8 +20,31 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <shell:ThunderFrame Title="{Binding Title}" AcceptCommand="{Binding Actions[0]}">
-            <!-- TODO -->
+        <shell:ThunderFrame Title="{Binding Title}" AcceptCommand="{Binding Actions[0]}" ShowSettingsCommand="{Binding ShowSettingsCommand}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <ListView MinWidth="160" Margin="4"
+                          Background="Transparent" 
+                          ItemsSource="{Binding Settings.Items}" 
+                          SelectedItem="{Binding Selection}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:SettingGroupViewModel}">
+                            <DockPanel>
+                                <Image DockPanel.Dock="Left" Source="{DynamicResource DuckyIcon}" Style="{DynamicResource IconStyle}" />
+                                <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}">
+                                    <TextBlock Margin="4" Text="{Binding Name}" ToolTip="{Binding Description}" />
+                                </Label>
+                            </DockPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <templates:SettingGroupControl Grid.Column="1" DataContext="{Binding Selection}" />
+            </Grid>
         </shell:ThunderFrame>
     </Grid>
 </Window>

@@ -13,14 +13,14 @@ namespace Rubberduck.UI
         where TView : Window
         where TViewModel : IDialogWindowViewModel
     {
-        private readonly ILogger _logger;
+        protected ILogger Logger { get; init; }
         private readonly IWindowFactory<TView, TViewModel> _factory;
         private readonly ISettingsProvider<RubberduckSettings> _settingsProvider;
         private readonly MessageActionsProvider _actionsProvider;
 
         protected DialogService(ILogger logger, IWindowFactory<TView, TViewModel> factory, ISettingsProvider<RubberduckSettings> settingsProvider, MessageActionsProvider actionsProvider)
         {
-            _logger = logger;
+            Logger = logger;
             _factory = factory;
             _settingsProvider = settingsProvider;
             _actionsProvider = actionsProvider;
@@ -47,23 +47,23 @@ namespace Rubberduck.UI
 
             }, out var elapsed, out var exception))
             {
-                _logger.LogPerformance(trace, $"Created view ({typeof(TView).Name}) and view model ({typeof(TViewModel).Name}) instances.", elapsed);
+                Logger.LogPerformance(trace, $"Created view ({typeof(TView).Name}) and view model ({typeof(TViewModel).Name}) instances.", elapsed);
 
                 if (TimedAction.TryRun(() =>
                 {
                     view.ShowDialog();
                 }, out var elapsedShown, out var exceptionShown))
                 {
-                    _logger.LogPerformance(trace, $"ShowDialog ({typeof(TView).Name}) completed.", elapsedShown);
+                    Logger.LogPerformance(trace, $"ShowDialog ({typeof(TView).Name}) completed.", elapsedShown);
                 }
                 else if(exceptionShown is not null)
                 {
-                    _logger.LogError(trace, exceptionShown);
+                    Logger.LogError(trace, exceptionShown);
                 }
             }
             else if (exception is not null)
             {
-                _logger.LogCritical(trace, exception);
+                Logger.LogCritical(trace, exception);
                 // TODO return a vm with a default SelectedAction instead?
                 throw new InvalidOperationException("The requested dialog could not be shown; an invalid view model cannot be returned.", exception);
             }

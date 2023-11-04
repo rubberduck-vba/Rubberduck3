@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Settings.ViewModels
 
     public interface ISettingGroupViewModel : ISettingViewModel
     {
-        public IEnumerable<ISettingViewModel> Items { get; }
+        public ObservableCollection<ISettingViewModel> Items { get; }
     }
 
     public abstract class SettingViewModel<TValue> : ViewModelBase, ISettingViewModel<TValue>
@@ -50,11 +50,23 @@ namespace Rubberduck.UI.Settings.ViewModels
         public string Description => _setting.Key; // TODO fetch from resources
         
         public SettingTags Tags => _setting.Tags;
-        public bool IsReadOnlyRecommended => _setting.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
-        public bool IsAdvancedSetting => _setting.Tags.HasFlag(SettingTags.Advanced);
-        public bool IsExperimental => _setting.Tags.HasFlag(SettingTags.Experimental);
+        public bool IsReadOnlyRecommended => Tags.HasFlag(SettingTags.ReadOnlyRecommended);
+        public bool IsAdvancedSetting => Tags.HasFlag(SettingTags.Advanced);
+        public bool IsExperimental => Tags.HasFlag(SettingTags.Experimental);
 
-        public bool IsEnabled { get; set; }
+        private bool _isEnabled;
+        public bool IsEnabled
+        {
+            get => _isEnabled;
+            set
+            {
+                if (_isEnabled != value)
+                {
+                    _isEnabled = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
 
         private TValue _value;
@@ -114,6 +126,76 @@ namespace Rubberduck.UI.Settings.ViewModels
     {
         public TimeSpanSettingViewModel(TypedRubberduckSetting<TimeSpan> setting) : base(setting)
         {
+            var value = setting.TypedValue;
+            _hours = value.Hours;
+            _minutes = value.Minutes;
+            _seconds = value.Seconds;
+            _milliseconds = value.Milliseconds;
+        }
+
+        private void UpdateValue()
+        {
+            Value = new TimeSpan(0, _hours, _minutes, _seconds, _milliseconds);
+        }
+
+        private int _hours;
+        public int Hours
+        {
+            get => _hours;
+            set
+            {
+                if (_hours != value)
+                {
+                    _hours = value;
+                    OnPropertyChanged();
+                    UpdateValue();
+                }
+            }
+        }
+
+        private int _minutes;
+        public int Minutes
+        {
+            get => _minutes;
+            set
+            {
+                if (_minutes != value)
+                {
+                    _minutes = value;
+                    OnPropertyChanged();
+                    UpdateValue();
+                }
+            }
+        }
+
+        private int _seconds;
+        public int Seconds
+        {
+            get => _seconds;
+            set
+            {
+                if (_seconds != value)
+                {
+                    _seconds = value;
+                    OnPropertyChanged();
+                    UpdateValue();
+                }
+            }
+        }
+
+        private int _milliseconds;
+        public int Milliseconds
+        {
+            get => _milliseconds;
+            set
+            {
+                if (_milliseconds != value)
+                {
+                    _milliseconds = value;
+                    OnPropertyChanged();
+                    UpdateValue();
+                }
+            }
         }
     }
 
@@ -131,16 +213,88 @@ namespace Rubberduck.UI.Settings.ViewModels
         }
     }
 
-    public abstract class EnumValueSettingViewModel<TEnum> : SettingViewModel<TEnum>
-        where TEnum : struct, Enum
+    public abstract class EnumValueSettingViewModel : ViewModelBase, ISettingViewModel
     {
-        protected static IEnumerable<TEnum> Members { get; } = Enum.GetValues<TEnum>();
+        private readonly RubberduckSetting _setting;
 
-        protected EnumValueSettingViewModel(TypedRubberduckSetting<TEnum> setting) : base(setting)
+        protected EnumValueSettingViewModel(RubberduckSetting setting)
         {
+            _setting = setting;
+            IsEnabled = !IsReadOnlyRecommended;
         }
 
-        public IEnumerable<TEnum> Values { get; } = Members;
+        public string Name => _setting.Key; // TODO fetch from resources
+        public string Description => _setting.Key; // TODO fetch from resources
+        public SettingTags Tags => _setting.Tags;
+
+        private bool _isEnabled;
+        public bool IsEnabled 
+        {
+            get => _isEnabled;
+            set
+            {
+                if (_isEnabled != value) 
+                {
+                    _isEnabled = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public abstract RubberduckSetting ToSetting();
+
+        public abstract IEnumerable<string> Values { get; }
+
+        public bool IsReadOnlyRecommended => Tags.HasFlag(SettingTags.ReadOnlyRecommended);
+        public bool IsAdvancedSetting => Tags.HasFlag(SettingTags.Advanced);
+        public bool IsExperimental => Tags.HasFlag(SettingTags.Experimental);
+    }
+
+    public abstract class EnumValueSettingViewModel<TEnum> :  EnumValueSettingViewModel, ISettingViewModel<TEnum>
+        where TEnum : struct, Enum
+    {
+        protected static IEnumerable<string> Members { get; } = Enum.GetNames<TEnum>();
+        private readonly TypedRubberduckSetting<TEnum> _setting;
+
+        protected EnumValueSettingViewModel(TypedRubberduckSetting<TEnum> setting)
+            : base(setting)
+        {
+            _setting = setting;
+            _selection = setting.Value.ToString()!;
+        }
+
+        public override IEnumerable<string> Values { get; } = Members;
+
+        private string _selection;
+        public string Selection
+        {
+            get => _selection;
+            set
+            {
+                if (_selection != value)
+                {
+                    _selection = value;
+                    OnPropertyChanged();
+                    Value = Enum.Parse<TEnum>(value);
+                }
+            }
+        }
+
+        private TEnum _value;
+        public TEnum Value 
+        {
+            get => Enum.Parse<TEnum>(_selection);
+            set
+            {
+                if (!Equals(_value, value))
+                {
+                    _value = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public override RubberduckSetting ToSetting() => _setting with { Value = Value };
     }
 
     public class LogLevelSettingViewModel : EnumValueSettingViewModel<LogLevel>
@@ -173,21 +327,49 @@ namespace Rubberduck.UI.Settings.ViewModels
 
     public class SettingGroupViewModel : ViewModelBase, ISettingGroupViewModel
     {
-        private readonly TypedSettingGroup _settingGroup;
+        private readonly RubberduckSetting _settingGroup;
+
+        internal SettingGroupViewModel()
+        {
+            /* designer */
+        }
 
         public SettingGroupViewModel(TypedSettingGroup settingGroup, IEnumerable<ISettingViewModel> items)
         {
             _settingGroup = settingGroup;
-            Items = items;
+            Items = new ObservableCollection<ISettingViewModel>(items);
         }
 
-        public IEnumerable<ISettingViewModel> Items { get; init; }
+        public SettingGroupViewModel(TypedRubberduckSetting<BooleanRubberduckSetting[]> settingGroup, IEnumerable<ISettingViewModel> items)
+        {
+            _settingGroup = settingGroup;
+            Items = new ObservableCollection<ISettingViewModel>(items);
+        }
+
+        public ObservableCollection<ISettingViewModel> Items { get; init; }
 
         public string Name => _settingGroup.Key; // TODO fetch from resources
 
         public string Description => _settingGroup.Key; // TODO fetch from resources
 
         public SettingTags Tags => _settingGroup.Tags;
+        public bool IsReadOnlyRecommended => Tags.HasFlag(SettingTags.ReadOnlyRecommended);
+        public bool IsAdvancedSetting => Tags.HasFlag(SettingTags.Advanced);
+        public bool IsExperimental => Tags.HasFlag(SettingTags.Experimental);
+
+        private bool _isEnabled;
+        public bool IsEnabled
+        {
+            get => _isEnabled;
+            set
+            {
+                if (_isEnabled != value)
+                {
+                    _isEnabled = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public RubberduckSetting ToSetting() => _settingGroup with { Value = Items.Select(e => e.ToSetting()).ToArray() };
     }

@@ -33,9 +33,16 @@
                     </Style.Triggers>
                 </Style>
             </DockPanel.Style>
-            <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0">
-                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
-            </Label>
+            <DockPanel DockPanel.Dock="Top">
+                <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
+                                    Icon="{DynamicResource LockedIcon}" 
+                                    PressedIcon="{DynamicResource UnlockedIcon}"
+                                    IsChecked="{Binding IsEnabled}"
+                                    Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
+                <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0">
+                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
+                </Label>
+            </DockPanel>
             <ScrollViewer DockPanel.Dock="Top" MinHeight="48" VerticalScrollBarVisibility="Auto">
                 <Label Style="{DynamicResource FormLabelStyle}" Margin="4,0">
                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />

@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Message;
 
 namespace Rubberduck.UI.Settings
 {
@@ -17,17 +18,27 @@ namespace Rubberduck.UI.Settings
 
     public class SettingsDialogService : DialogService<SettingsWindow, SettingsWindowViewModel>, ISettingsDialogService
     {
-        public SettingsDialogService(ILogger logger, 
+        private readonly ISettingsService<RubberduckSettings> _settingsService;
+        private readonly IMessageService _messageService;
+        private readonly ISettingViewModelFactory _vmFactory;
+
+        public SettingsDialogService(ILogger<SettingsDialogService> logger, 
             IWindowFactory<SettingsWindow, SettingsWindowViewModel> factory, 
-            ISettingsProvider<RubberduckSettings> settingsProvider, 
+            IMessageService messageService,
+            ISettingsService<RubberduckSettings> settingsService,
+            ISettingViewModelFactory vmFactory,
             MessageActionsProvider actionsProvider) 
-            : base(logger, factory, settingsProvider, actionsProvider)
+            : base(logger, factory, settingsService, actionsProvider)
         {
+            _settingsService = settingsService;
+            _messageService = messageService;
+            _vmFactory = vmFactory;
         }
 
         protected override SettingsWindowViewModel CreateViewModel(RubberduckSettings settings, MessageActionsProvider actions)
         {
-            return new SettingsWindowViewModel(actions.Close());
+            var vm = new SettingsWindowViewModel(Logger, _settingsService, actions.Close(), _messageService, _vmFactory);
+            return vm;
         }
     }
 }

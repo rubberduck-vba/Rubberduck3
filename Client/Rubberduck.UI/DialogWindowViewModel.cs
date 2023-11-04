@@ -1,4 +1,5 @@
 ﻿using Rubberduck.UI.Command;
+using System.Linq;
 using System.Windows.Input;
 
 namespace Rubberduck.UI
@@ -19,12 +20,18 @@ namespace Rubberduck.UI
         protected abstract void ResetToDefaults();
 
         public ICommand? ShowSettingsCommand { get; init; }
+        public bool ShowGearButton => ShowSettingsCommand != null;
 
         public MessageActionCommand[] Actions { get; init; }
+        public bool ShowAcceptButton => Actions.Any(action => action.MessageAction == MessageAction.AcceptAction || action.MessageAction == MessageAction.CloseAction);
+        public string AcceptButtonText => Actions.Single(action => action.MessageAction == MessageAction.AcceptAction || action.MessageAction == MessageAction.CloseAction).MessageAction.Text;
+
+        public bool ShowCancelButton => Actions.Any(action => action.MessageAction == MessageAction.CancelAction);
+        public string CancelButtonText => Actions.SingleOrDefault(action => action.MessageAction == MessageAction.CancelAction)?.MessageAction.Text;
 
         public MessageAction? SelectedAction { get; set; }
 
-        private bool _isEnabled;
+        private bool _isEnabled = true;
         public bool IsEnabled
         {
             get => _isEnabled;

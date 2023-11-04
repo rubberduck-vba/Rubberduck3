@@ -1,13 +1,12 @@
-﻿<Button x:Class="Rubberduck.UI.Shell.FlatButton"
+﻿<ToggleButton x:Class="Rubberduck.UI.Shell.FlatToggleButton"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:local="clr-namespace:Rubberduck.UI.Shell"
         mc:Ignorable="d" 
-        
         d:DesignHeight="20" d:DesignWidth="24">
-    <Button.Resources>
+    <ToggleButton.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
@@ -16,9 +15,9 @@
                 <Setter Property="Background" Value="Transparent" />
             </Style>
         </ResourceDictionary>
-    </Button.Resources>
-    <Button.Style>
-        <Style TargetType="Button">
+    </ToggleButton.Resources>
+    <ToggleButton.Style>
+        <Style TargetType="ToggleButton">
             <Style.Setters>
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Background" Value="Transparent" />
@@ -27,18 +26,28 @@
                 <Setter Property="MinWidth" Value="24" />
             </Style.Setters>
         </Style>
-    </Button.Style>
+    </ToggleButton.Style>
 
     <Canvas Style="{DynamicResource FlatButtonCanvasStyle}">
-        <Image Source="{Binding Icon, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}" 
-               Height="16" Width="16" Stretch="UniformToFill"
-               Canvas.Left="-8" Canvas.Top="-8" HorizontalAlignment="Left" VerticalAlignment="Center" />
-        <Rectangle Fill="{DynamicResource ThemeBlackLightColorBrush}"
-               Height="16" Width="16" Stretch="UniformToFill"
+        <Image Source="{Binding Icon, RelativeSource={RelativeSource AncestorType=ToggleButton, Mode=FindAncestor}}" 
+               Height="16" Width="16" Stretch="Uniform"
                Canvas.Left="-8" Canvas.Top="-8" HorizontalAlignment="Left" VerticalAlignment="Center">
+            <Image.Style>
+                <Style TargetType="Image">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton, Mode=FindAncestor}}" Value="True">
+                            <Setter Property="Source" Value="{Binding PressedIcon, RelativeSource={RelativeSource AncestorType=ToggleButton, Mode=FindAncestor}}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Style>
+        </Image>
+        <Rectangle Fill="{DynamicResource ThemeBlackLightColorBrush}"
+               Height="16" Width="16" Stretch="Uniform"
+               Canvas.Left="-9" Canvas.Top="-8" HorizontalAlignment="Left" VerticalAlignment="Center">
             <Rectangle.OpacityMask>
-                <ImageBrush ImageSource="{Binding Icon, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}" />
+                <ImageBrush Stretch="Uniform" ImageSource="{Binding Icon, RelativeSource={RelativeSource AncestorType=ToggleButton, Mode=FindAncestor}}" />
             </Rectangle.OpacityMask>
         </Rectangle>
     </Canvas>
-</Button>
+</ToggleButton>

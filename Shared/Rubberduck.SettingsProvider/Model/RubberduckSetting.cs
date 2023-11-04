@@ -1,4 +1,5 @@
-﻿using Rubberduck.SettingsProvider.Model.General;
+﻿using Rubberduck.Resources;
+using Rubberduck.SettingsProvider.Model.General;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
@@ -73,6 +74,10 @@ namespace Rubberduck.SettingsProvider.Model
         /// The resource key for this setting.
         /// </summary>
         public virtual string Key { get; init; }
+
+        public string LocalizedName => RubberduckUI.ResourceManager.GetString($"{Key}.Name") ?? Key;
+        public string LocalizedDescription => RubberduckUI.ResourceManager.GetString($"{Key}.Description") ?? Key;
+
         /// <summary>
         /// The current value of this setting.
         /// </summary>
@@ -88,6 +93,6 @@ namespace Rubberduck.SettingsProvider.Model
         [JsonIgnore]
         public SettingTags Tags { get; init; }
 
-        public RubberduckSetting WithValue(object value) => new RubberduckSetting() with { Value = value };
+        public RubberduckSetting WithValue(object value) => this with { Value = value };
     }
 }

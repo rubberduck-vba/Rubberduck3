@@ -16,9 +16,11 @@ using Rubberduck.SettingsProvider.Model.General;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
 using Rubberduck.SettingsProvider.Model.TelemetryServer;
 using Rubberduck.SettingsProvider.Model.UpdateServer;
+using Rubberduck.UI;
 using Rubberduck.UI.About;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Message;
+using Rubberduck.UI.Settings;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.Office;
@@ -175,6 +177,10 @@ namespace Rubberduck.Main.Root
             _services.AddSingleton<IMessageService, MessageService>();
             _services.AddSingleton<IMessageWindowFactory, MessageWindowFactory>();
             _services.AddSingleton<MessageActionsProvider>();
+
+            _services.AddSingleton<ISettingsDialogService, SettingsDialogService>();
+            _services.AddSingleton<IWindowFactory<SettingsWindow, SettingsWindowViewModel>, SettingsWindowFactory>();
+            _services.AddSingleton<ISettingViewModelFactory, SettingViewModelFactory>();
 
             _services.AddSingleton<IEditorServerProcessService, EditorServerProcessService>();
 

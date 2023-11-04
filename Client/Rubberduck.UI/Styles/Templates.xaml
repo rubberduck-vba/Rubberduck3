@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Luna">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Luna" xmlns:templates="clr-namespace:Rubberduck.UI.Settings.Templates">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
     </ResourceDictionary.MergedDictionaries>
@@ -45,6 +45,7 @@
         </Style.Setters>
     </Style>
 
+    <SolidColorBrush x:Key="SystemColors.ControlBrushKey" Color="{DynamicResource ThemeBackgroundMediumColor}"/>
     <SolidColorBrush x:Key="Menu.Static.Background" Color="{DynamicResource ThemeBackgroundMediumColor}"/>
     <SolidColorBrush x:Key="Menu.Static.Border" Color="{DynamicResource ThemeBackgroundLightColor}"/>
     <SolidColorBrush x:Key="Menu.Static.Foreground" Color="{DynamicResource ThemeTextBackgroundMediumColor}"/>
@@ -74,6 +75,33 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+    <Style TargetType="{x:Type ScrollViewer}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                    <Grid x:Name="Grid" Background="{TemplateBinding Background}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Rectangle x:Name="Corner" Grid.Column="1" Fill="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Grid.Row="1"/>
+                        <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanHorizontallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" CanVerticallyScroll="False" Grid.Column="0" Content="{TemplateBinding Content}" CanContentScroll="{TemplateBinding CanContentScroll}" Margin="{TemplateBinding Padding}" Grid.Row="0"/>
+                        <ScrollBar x:Name="PART_VerticalScrollBar" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Grid.Column="1" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Grid.Row="0" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource Mode=TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/>
+                        <ScrollBar x:Name="PART_HorizontalScrollBar" AutomationProperties.AutomationId="HorizontalScrollBar" Cursor="Arrow" Grid.Column="0" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Orientation="Horizontal" Grid.Row="1" Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource Mode=TemplatedParent}}" ViewportSize="{TemplateBinding ViewportWidth}" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
     <Style x:Key="{ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}" BasedOn="{x:Null}" TargetType="{x:Type ScrollViewer}">
         <Setter Property="HorizontalScrollBarVisibility" Value="Hidden"/>
@@ -525,5 +553,39 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
+
+    <DataTemplate x:Key="BooleanSettingTemplate" DataType="viewmodels:BooleanSettingViewModel">
+        <templates:BooleanSettingControl />
+    </DataTemplate>
+    <DataTemplate x:Key="EnumValueSettingTemplate" DataType="viewmodels:EnumValueSettingViewModel">
+        <templates:EnumValueSettingControl />
+    </DataTemplate>
+    <DataTemplate x:Key="ListSettingTemplate" DataType="viewmodels:ListSettingViewModel">
+        <templates:ListSettingControl />
+    </DataTemplate>
+    <DataTemplate x:Key="NumericSettingTemplate" DataType="viewmodels:NumericSettingViewModel">
+        <templates:NumericSettingControl />
+    </DataTemplate>
+    <DataTemplate x:Key="TimeSpanSettingTemplate" DataType="viewmodels:TimeSpanSettingViewModel">
+        <templates:TimeSpanSettingControl />
+    </DataTemplate>
+    <DataTemplate x:Key="StringSettingTemplate" DataType="viewmodels:StringSettingViewModel">
+        <templates:StringSettingControl />
+    </DataTemplate>
+    <DataTemplate x:Key="UriSettingTemplate" DataType="viewmodels:UriSettingViewModel">
+        <templates:UriSettingControl />
+    </DataTemplate>
+    <DataTemplate x:Key="SettingSubGroupTemplate" DataType="viewmodels:SettingGroupViewModel">
+        <templates:SettingSubGroupControl />
+    </DataTemplate>
+    <templates:SettingTemplateSelector x:Key="SettingTemplateSelector" 
+        BooleanSettingTemplate="{StaticResource BooleanSettingTemplate}"
+        EnumValueSettingTemplate="{StaticResource EnumValueSettingTemplate}"
+        ListSettingTemplate="{StaticResource ListSettingTemplate}"
+        NumericSettingTemplate="{StaticResource NumericSettingTemplate}"
+        SettingSubGroupTemplate="{StaticResource SettingSubGroupTemplate}"
+        StringSettingTemplate="{StaticResource StringSettingTemplate}"
+        TimeSpanSettingTemplate="{StaticResource TimeSpanSettingTemplate}"
+        UriSettingTemplate="{StaticResource UriSettingTemplate}" />
 
 </ResourceDictionary>

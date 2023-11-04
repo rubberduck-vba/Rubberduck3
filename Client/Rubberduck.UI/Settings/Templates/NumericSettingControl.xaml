@@ -1,10 +1,11 @@
-﻿<UserControl x:Class="Rubberduck.UI.Settings.Templates.StringSettingControl"
+﻿<UserControl x:Class="Rubberduck.UI.Settings.Templates.NumericSettingControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Rubberduck.UI.Settings.Templates" 
+             xmlns:local="clr-namespace:Rubberduck.UI.Settings.Templates"
              xmlns:viewmodels="clr-namespace:Rubberduck.UI.Settings.ViewModels" xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
+             xmlns:b="clr-namespace:Rubberduck.UI.Behaviors"
              d:DataContext="{d:DesignInstance Type=viewmodels:StringSettingViewModel}"
              Background="{DynamicResource ThemeBackgroundColorBrush}"
              Padding="4" MinHeight="96" MinWidth="255"
@@ -48,7 +49,7 @@
                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
                 </Label>
             </ScrollViewer>
-            <TextBox DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Height="24" Text="{Binding Value}" />
+            <TextBox b:Masking.Mask="\d" MaxLength="5" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="72" Height="24" Text="327678" HorizontalContentAlignment="Center" />
         </DockPanel>
     </Border>
 </UserControl>

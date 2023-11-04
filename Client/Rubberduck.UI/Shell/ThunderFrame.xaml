@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Rubberduck.UI.Shell" 
+             xmlns:local="clr-namespace:Rubberduck.UI.Shell"
              mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -32,31 +32,27 @@
 
                                 <Border Grid.RowSpan="3" Background="{DynamicResource ThemeBackgroundMediumColorBrush}" />
                                 <local:DuckyBackgroundControl Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
-                                <Border Grid.Row="1" BorderBrush="{DynamicResource ThemeWhiteLightColorBrush50}" 
-                                        BorderThickness="0,1" CornerRadius="8"
-                                        Margin="4"
-                                        Background="{DynamicResource ThemeWhiteDarkColorBrush50}"/>
 
-                                <DockPanel Grid.Row="0">
-                                    <Label DockPanel.Dock="Left" 
+                                <DockPanel Grid.Row="0" VerticalAlignment="Top" Margin="5,5,0,0">
+                                    <local:FlatButton DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                      ToolTip="Settings"
+                                                      Visibility="{Binding ShowGearButton, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                      Command="{Binding ShowSettingsCommand}"
+                                                      Icon="{DynamicResource GearIcon}" />
+                                    <Label DockPanel.Dock="Top" VerticalAlignment="Top"
                                        Content="{Binding Title, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
                                        Foreground="{DynamicResource ThemeTextColorBrush}"
                                        FontWeight="Bold" FontSize="18" 
                                        Margin="10,10,10,4" />
-
-                                    <local:FlatButton HorizontalAlignment="Right"
-                                                       ToolTip="Settings"
-                                                       Visibility="{Binding ShowGearButton, Converter={StaticResource BoolToVisibilityConverter}}"
-                                                       Command="{Binding ShowSettingsCommand}"
-                                                       Icon="{DynamicResource GearIcon}" />
                                 </DockPanel>
-                                
-                                <ScrollViewer Grid.Row="1" VerticalAlignment="Top"
-                                              Style="{DynamicResource ScrollViewerStyle}" 
-                                              VerticalScrollBarVisibility="Hidden">
-                                    <ContentPresenter Margin="10,0,10,10" Height="Auto" MinHeight="200"
-                                                      Content="{Binding Content, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"/>
-                                </ScrollViewer>
+
+                                <Border Grid.Row="1" BorderBrush="{DynamicResource ThemeWhiteLightColorBrush50}" 
+                                        BorderThickness="0,1" CornerRadius="8" Margin="4"
+                                        Background="{DynamicResource ThemeWhiteDarkColorBrush50}"/>
+
+
+                                <ContentPresenter Grid.Row="1" Margin="10,0,10,10" Height="Auto" MinHeight="200"
+                                                  Content="{Binding Content, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"/>
 
                                 <DockPanel Grid.Row="2" HorizontalAlignment="Right" 
                                            Margin="16,8,8,8" 
@@ -64,12 +60,14 @@
 
                                     <Button Style="{StaticResource ActionButtonStyle}" 
                                             Command="{Binding AcceptCommand, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
+                                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
                                             Visibility="{Binding ShowAcceptButton, Converter={StaticResource BoolToVisibilityConverter}}"
                                             IsDefault="True">
                                         <TextBlock Text="{Binding AcceptButtonText}" />
                                     </Button>
                                     <Button Style="{StaticResource ActionButtonStyle}"
                                             Command="{Binding CancelCommand, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
+                                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
                                             Visibility="{Binding ShowCancelButton, Converter={StaticResource BoolToVisibilityConverter}}">
                                         <TextBlock Text="{Binding CancelButtonText}" />
                                     </Button>
