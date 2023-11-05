@@ -1,35 +1,35 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Rubberduck.Editor.EditorServer;
-using Rubberduck.ServerPlatform;
-using System.IO.Pipes;
-using System.Threading;
-using System;
-using System.Windows;
-using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.LanguageServer;
-using NLog.Extensions.Logging;
-using System.Globalization;
-using NLog;
-using OmniSharp.Extensions.LanguageServer.Server;
 using Nerdbank.Streams;
-using Rubberduck.InternalApi.ServerPlatform;
+using NLog;
+using NLog.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
-using Rubberduck.InternalApi.Common;
-using System.Diagnostics;
-using System.Threading.Tasks;
+using OmniSharp.Extensions.LanguageServer.Server;
+using Rubberduck.Editor.EditorServer;
 using Rubberduck.Editor.RPC.EditorServer.Handlers.Lifecycle;
 using Rubberduck.Editor.RPC.EditorServer.Handlers.Workspace;
-using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider.Model;
+using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.InternalApi.Settings;
+using Rubberduck.LanguageServer.Model;
+using Rubberduck.ServerPlatform;
+using Rubberduck.SettingsProvider;
+using Rubberduck.SettingsProvider.Model.LanguageServer;
+using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO.Abstractions;
+using System.IO.Pipes;
+using System.Threading;
+using System.Threading.Tasks;
+using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.LanguageServer;
 
 namespace Rubberduck.Editor
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
+    public sealed class ServerApp : IDisposable
     {
         private readonly ServerStartupOptions _options;
         private readonly CancellationTokenSource _tokenSource;
@@ -42,28 +42,61 @@ namespace Rubberduck.Editor
         private OmniSharpLanguageServer _languageServer = default!;
         private EditorServerState _serverState = default!;
 
-        public App(ServerStartupOptions options, CancellationTokenSource tokenSource)
+        public ServerApp(ServerStartupOptions options, CancellationTokenSource tokenSource)
         {
             _options = options;
             _tokenSource = tokenSource;
         }
 
-        protected override async void OnStartup(StartupEventArgs e)
+        /// <summary>
+        /// Configures and starts the editor LSP server, and then awaits an Exit notification.
+        /// </summary>
+        public async Task RunAsync()
         {
-            var services = new ServiceCollection();
-            services.AddLogging(ConfigureLogging);
-            ConfigureServices(services);
+            try
+            {
+                var services = new ServiceCollection();
+                services.AddLogging(ConfigureLogging);
+                ConfigureServices(services);
 
-            _serviceProvider = services.BuildServiceProvider();
-            _logger = _serviceProvider.GetRequiredService<ILogger<ServerApp>>();
-            _serverState = _serviceProvider.GetRequiredService<EditorServerState>();
+                _serviceProvider = services.BuildServiceProvider();
+                _logger = _serviceProvider.GetRequiredService<ILogger<ServerApp>>();
+                _serverState = _serviceProvider.GetRequiredService<EditorServerState>();
 
-            _languageServer = await OmniSharpLanguageServer.From(ConfigureServer, _serviceProvider, _tokenSource.Token);
+                _languageServer = await OmniSharpLanguageServer.From(ConfigureServer, _serviceProvider, _tokenSource.Token);
+                
+                await _languageServer.WaitForExit;
+            }
+            catch (OperationCanceledException)
+            {
+                _logger?.LogTrace("Token was cancelled; server process will exit normally.");
+            }
+            catch (Exception exception)
+            {
+                _logger?.LogError(exception, "An exception was thrown; server process will exit with an error code.");
+                throw;
+            }
         }
 
-        protected override void OnExit(ExitEventArgs e)
+        private void ConfigureServices(IServiceCollection services)
         {
-            base.OnExit(e);
+            services.AddSingleton<Func<ILanguageServer>>(provider => () => _languageServer);
+            services.AddSingleton<ServerStartupOptions>(provider => _options);
+            services.AddSingleton<Process>(provider => Process.GetProcessById((int)_options.ClientProcessId));
+
+            services.AddSingleton<IFileSystem, FileSystem>();
+
+            services.AddSingleton<EditorServerState>();
+            services.AddSingleton<Func<EditorServerState>>(provider => () => _serverState);
+            services.AddSingleton<IServerStateWriter>(provider => provider.GetRequiredService<EditorServerState>());
+
+            services.AddSingleton<IDefaultSettingsProvider<LanguageServerSettings>>(provider => LanguageServerSettings.Default);
+            services.AddSingleton<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
+
+            services.AddSingleton<SupportedLanguage, VisualBasicForApplicationsLanguage>();
+
+            services.AddSingleton<IExitHandler, ExitHandler>();
+            services.AddSingleton<IHealthCheckService<LanguageServerStartupSettings>, ClientProcessHealthCheckService<LanguageServerStartupSettings>>();
         }
 
         private void ConfigureLogging(ILoggingBuilder builder)
@@ -80,20 +113,17 @@ namespace Rubberduck.Editor
                 };
                 factory.Setup(builder =>
                 {
-                    builder.LoadConfigurationFromFile("NLog-editor.config");
+                    builder.LoadConfigurationFromFile("NLog-server.config");
                 });
 
                 return factory;
             });
         }
 
-        private void ConfigureServices(IServiceCollection services)
-        {
-
-        }
-
         private void ConfigureServer(LanguageServerOptions options)
         {
+            // example LSP server: https://github.com/OmniSharp/csharp-language-server-protocol/blob/master/sample/SampleServer/Program.cs
+
             ConfigureTransport(options);
 
             var assembly = GetType().Assembly.GetName();
@@ -145,19 +175,22 @@ namespace Rubberduck.Editor
                     _logger?.LogDebug("Language server started.");
                     token.ThrowIfCancellationRequested();
 
-                    // todo: read workspace folder from _serverState.RootUri
-                    // todo: parse all .vba/.vb6 files in folder
-                    // todo: this needs to return immediately so the server can start without killing things
-                    //       it also needs to capture the `server` param (or otherwise retain access to the server object)
-                    //       to send notifications to the client (e.g. parsing, parse ended, resolving, inspecting, etc.)
+                    // todo: ?
 
                     _logger?.LogDebug("Handled Started notification.");
                     return Task.CompletedTask;
                 })
-                .WithHandler<ShutdownHandler>()
-                .WithHandler<ExitHandler>()
-                .WithHandler<DidChangeConfigurationHandler>()
-                ;
+
+                 /* handlers */
+                 .WithHandler<SetTraceHandler>()
+                 .WithHandler<DidChangeConfigurationHandler>()
+                 //.WithHandler<DidChangeWatchedFileHandler>()
+
+                 /* registrations */
+
+                 .WithHandler<ShutdownHandler>()
+                 .WithHandler<ExitHandler>()
+            ;
         }
 
         private void ConfigureTransport(LanguageServerOptions options)

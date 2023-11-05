@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Rubberduck.ServerPlatform;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,11 +12,10 @@ namespace Rubberduck.Editor
         public static async Task<int> Main(string[] args)
         {
             using var tokenSource = new CancellationTokenSource();
+            var options = await ServerArgs.ParseAsync(args);
 
             try
             {
-                var services = new ServiceCollection();
-                services.AddLogging();
 
                 var app = new App();
                 return app.Run();
@@ -25,7 +25,5 @@ namespace Rubberduck.Editor
                 return -1;
             }
         }
-
-
     }
 }

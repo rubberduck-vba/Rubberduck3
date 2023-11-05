@@ -3,21 +3,20 @@ using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
 using Rubberduck.InternalApi.Common;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Rubberduck.LanguageServer.Handlers.Workspace
+namespace Rubberduck.Editor.RPC.EditorServer.Handlers.Workspace
 {
-    /*TODO move elsewhere and reuse for EditorServer*/
-
     public class DidChangeConfigurationHandler : DidChangeConfigurationHandlerBase
     {
         private readonly ILogger _logger;
         private readonly ISettingsChangedHandler<RubberduckSettings> _settings;
 
-        public DidChangeConfigurationHandler(ILogger<DidChangeConfigurationHandler> logger, ISettingsChangedHandler<RubberduckSettings> settings)
+        public DidChangeConfigurationHandler(ILogger<DidChangeConfigurationHandler> logger, ISettingsChangedHandler<RubberduckSettings> settings) 
         {
             _logger = logger;
             _settings = settings;
@@ -29,7 +28,7 @@ namespace Rubberduck.LanguageServer.Handlers.Workspace
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var settings = request.Settings?.ToObject<RubberduckSettings>()
+                var settings = request.Settings?.ToObject<RubberduckSettings>() 
                     ?? throw new System.InvalidOperationException("ConfigurationParams contains no 'Settings' object.");
 
                 _settings.OnSettingsChanged(settings);

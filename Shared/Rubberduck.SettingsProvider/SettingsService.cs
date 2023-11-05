@@ -18,7 +18,7 @@ namespace Rubberduck.SettingsProvider
     /// Abstracts file I/O operations for a provided <c>TSettings</c> type.
     /// </summary>
     /// <typeparam name="TSettings"></typeparam>
-    public interface ISettingsService<TSettings> : ISettingsProvider<TSettings>
+    public interface ISettingsService<TSettings> : ISettingsProvider<TSettings>, ISettingsChangedHandler<TSettings>
     {
         /// <summary>
         /// Reads and deserializes settings from disk into a <c>TSettings</c> value.
@@ -180,6 +180,11 @@ namespace Rubberduck.SettingsProvider
             {
                 _logger.LogError(traceLevel, exception);
             }
+        }
+
+        void ISettingsChangedHandler<TSettings>.OnSettingsChanged(TSettings settings)
+        {
+            _cached = settings;
         }
     }
 }
