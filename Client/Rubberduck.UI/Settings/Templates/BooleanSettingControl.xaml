@@ -20,9 +20,10 @@
     </UserControl.Resources>
     <Grid>
     <Border Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
-            BorderBrush="{DynamicResource ThemeBackgroundMediumColorBrush}" BorderThickness="1">
+            BorderBrush="{DynamicResource ThemeBackgroundMediumColorBrush}" 
+            BorderThickness="1" CornerRadius="4">
         <DockPanel LastChildFill="True">
-            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" DockPanel.Dock="Left" Margin="8,8,4,8" 
+            <CheckBox DockPanel.Dock="Left" Margin="8,8,4,8" 
                       Style="{DynamicResource FormFieldCheckBoxStyle}" 
                       IsChecked="{Binding Value}" 
                       IsEnabled="{Binding IsEnabled}" />

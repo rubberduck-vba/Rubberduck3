@@ -6,7 +6,6 @@ using Rubberduck.UI.Message;
 
 namespace Rubberduck.UI.Settings
 {
-
     public class SettingsWindowFactory : IWindowFactory<SettingsWindow, SettingsWindowViewModel>
     {
         public SettingsWindow Create(SettingsWindowViewModel model) => new(model);

@@ -40,6 +40,8 @@
                       BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}" BorderThickness="0,1">
                 <ListView Background="{DynamicResource ThemeBackgroundColorBrush}" 
                           ItemsSource="{Binding Items}" 
+                          BorderThickness="0" BorderBrush="Transparent"
+                          Margin="8"
                           HorizontalContentAlignment="Stretch"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
