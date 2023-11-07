@@ -1,7 +1,7 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Settings;
 
-namespace Rubberduck.Editor.RPC.LanguageServerClient
+namespace Rubberduck.Editor.RPC
 {
     public static class InitializeParamsExtensions
     {

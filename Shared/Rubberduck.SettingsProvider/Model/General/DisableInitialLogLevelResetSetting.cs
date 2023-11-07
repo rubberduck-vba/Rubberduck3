@@ -10,7 +10,7 @@
         public DisableInitialLogLevelResetSetting()
         {
             DefaultValue = DefaultSettingValue;
-            Tags = SettingTags.ReadOnlyRecommended;
+            Tags = SettingTags.Hidden;
         }
     }
 }

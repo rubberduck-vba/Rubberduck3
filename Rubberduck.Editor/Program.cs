@@ -16,8 +16,7 @@ namespace Rubberduck.Editor
 
             try
             {
-
-                var app = new App();
+                var app = new App(options, tokenSource);
                 return app.Run();
             }
             catch

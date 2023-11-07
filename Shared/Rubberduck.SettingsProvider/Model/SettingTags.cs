@@ -22,5 +22,9 @@ namespace Rubberduck.SettingsProvider.Model
         /// Tags a setting intended for advanced users and/or Rubberduck developers.
         /// </summary>
         Advanced = 8,
+        /// <summary>
+        /// Tags a setting that does not need a corresponding UI template, e.g. first-startup flags.
+        /// </summary>
+        Hidden = 128,
     }
 }

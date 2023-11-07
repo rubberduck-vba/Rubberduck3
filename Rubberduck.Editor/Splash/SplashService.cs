@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.Model.Abstract;
+﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Model.Abstract;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI;
@@ -9,8 +10,8 @@ namespace Rubberduck.Editor.Splash
     {
         private readonly ISettingsProvider<RubberduckSettings> _settings;
 
-        public SplashService(ISplashViewModel viewModel, ISettingsProvider<RubberduckSettings> settings)
-            : base(viewModel)
+        public SplashService(ILogger<SplashService> logger, ISplashViewModel viewModel, ISettingsProvider<RubberduckSettings> settings)
+            : base(logger, settings, viewModel)
         {
             _settings = settings;
         }
@@ -18,7 +19,8 @@ namespace Rubberduck.Editor.Splash
         public string Status => Model.Status ?? string.Empty;
         public void UpdateStatus(string status) => Model.UpdateStatus(status);
 
-        public bool CanShowSplash => _settings.Settings.GeneralSettings.ShowSplash;
+        protected override bool PreconditionCheck() => _settings.Settings.GeneralSettings.ShowSplash;
+
         protected override SplashWindow CreateWindow(ISplashViewModel model) => new(model);
     }
 }

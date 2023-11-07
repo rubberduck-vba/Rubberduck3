@@ -43,6 +43,9 @@ namespace Rubberduck.Main.RPC.EditorServer
                 var startupOptions = _settingsProvider.Settings.LanguageClientSettings.StartupSettings;
                 var currentProcessId = Environment.ProcessId;
                 _process = helper.Start(currentProcessId, startupOptions);
+
+                // TODO initialize LSP-lite w/EditorServer
+
             }, out var elapsed, out var exception))
             {
                 _logger.LogPerformance(TraceLevel, "Started Rubberduck Editor process.", elapsed);

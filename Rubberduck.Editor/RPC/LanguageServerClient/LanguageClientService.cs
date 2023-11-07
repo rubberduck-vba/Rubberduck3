@@ -19,29 +19,28 @@ using System.Text.Json;
 using OmniSharp.Extensions.JsonRpc;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.Editor.RPC.LanguageServerClient.Handlers;
-using EditorClientOptions = OmniSharp.Extensions.LanguageServer.Client.LanguageClientOptions;
 
 namespace Rubberduck.Editor.RPC.LanguageServerClient
 {
     public class LanguageClientService
     {
-        public static EditorClientOptions ConfigureLanguageClient(Assembly clientAssembly, NamedPipeClientStream pipe, long clientProcessId, RubberduckSettings settings, string path)
+        public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, NamedPipeClientStream pipe, long clientProcessId, RubberduckSettings settings, string workspaceRoot)
         {
-            var options = new EditorClientOptions();
+            var options = new LanguageClientOptions();
             options.WithInput(pipe.UsePipeReader());
             options.WithOutput(pipe.UsePipeWriter());
 
-            ConfigureLanguageClient(options, clientAssembly, clientProcessId, settings, path);
+            ConfigureLanguageClient(options, clientAssembly, clientProcessId, settings, workspaceRoot);
             return options;
         }
 
-        public static EditorClientOptions ConfigureLanguageClient(Assembly clientAssembly, Process serverProcess, long clientProcessId, RubberduckSettings settings, string path)
+        public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, Process serverProcess, long clientProcessId, RubberduckSettings settings, string workspaceRoot)
         {
-            var options = new EditorClientOptions();
+            var options = new LanguageClientOptions();
             options.WithInput(serverProcess.StandardOutput.BaseStream);
             options.WithOutput(serverProcess.StandardInput.BaseStream);
 
-            ConfigureLanguageClient(options, clientAssembly, clientProcessId, settings, path);
+            ConfigureLanguageClient(options, clientAssembly, clientProcessId, settings, workspaceRoot);
             return options;
         }
 
@@ -50,11 +49,11 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
             builder.AddNLog("NLog-client.config");
         }
 
-        private static EditorClientOptions ConfigureLanguageClient(EditorClientOptions options, Assembly clientAssembly, long clientProcessId, RubberduckSettings settings, string path)
+        private static LanguageClientOptions ConfigureLanguageClient(LanguageClientOptions options, Assembly clientAssembly, long clientProcessId, RubberduckSettings settings, string workspaceRoot)
         {
             var info = clientAssembly.ToClientInfo();
 
-            var workspace = new DirectoryInfo(path).ToWorkspaceFolder();
+            var workspace = new DirectoryInfo(workspaceRoot).ToWorkspaceFolder();
             var clientCapabilities = GetClientCapabilities();
 
             options.EnableDynamicRegistration();

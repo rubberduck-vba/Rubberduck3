@@ -1,27 +1,28 @@
-﻿using OmniSharp.Extensions.LanguageServer.Client;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Nerdbank.Streams;
+using Newtonsoft.Json.Linq;
+using NLog.Extensions.Logging;
+using OmniSharp.Extensions.JsonRpc;
+using OmniSharp.Extensions.LanguageServer.Client;
+using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
-using System.Reflection;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.Editor.RPC;
+using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.Main.RPC.EditorServer.Handlers;
+using Rubberduck.SettingsProvider.Model;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
-using Nerdbank.Streams;
-using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using NLog.Extensions.Logging;
-using Rubberduck.InternalApi.ServerPlatform;
-using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 using System.Text.Json;
-using OmniSharp.Extensions.JsonRpc;
-using Rubberduck.SettingsProvider.Model;
-using Rubberduck.Editor.RPC.LanguageServerClient.Handlers;
+using System.Threading.Tasks;
 using EditorClientOptions = OmniSharp.Extensions.LanguageServer.Client.LanguageClientOptions;
-using Newtonsoft.Json.Linq;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using OmniSharp.Extensions.LanguageServer.Protocol;
-using System.Collections.Generic;
 
-namespace Rubberduck.Editor.RPC.LanguageServerClient
+namespace Rubberduck.Main.RPC.EditorServer
 {
     public class EditorClientService
     {
@@ -99,10 +100,12 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
                     return Task.CompletedTask;
                 })
 
-                .WithHandler<WorkspaceFoldersHandler>()
-                .WithHandler<WorkDoneProgressCreateHandler>()
-                .WithHandler<WorkDoneProgressCancelHandler>()
-                .WithHandler<WorkDoneProgressHandler>()
+                // TODO
+
+                //.WithHandler<WorkspaceFoldersHandler>()
+                //.WithHandler<WorkDoneProgressCreateHandler>()
+                //.WithHandler<WorkDoneProgressCancelHandler>()
+                //.WithHandler<WorkDoneProgressHandler>()
 
                 .WithHandler<ApplyWorkspaceEditHandler>()
             ;
@@ -113,7 +116,6 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
         private static ClientCapabilities GetClientCapabilities()
         {
             var supported = new Supports<bool> { Value = true };
-            //var notSupported = new Supports<bool> { Value = false };
 
             var capabilities = new ClientCapabilities
             {
@@ -137,7 +139,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
                         {
                             DidCreate = supported,
                             DidDelete = supported,
-                            DidRename = supported, // or is it?
+                            DidRename = supported, // really?
                         }
                     },
                     WorkspaceEdit = new()

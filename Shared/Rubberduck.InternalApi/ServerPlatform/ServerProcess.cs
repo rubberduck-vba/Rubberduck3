@@ -29,10 +29,12 @@ namespace Rubberduck.InternalApi.ServerPlatform
             var filename = Path.GetFileName(path);
             if (!string.Equals(filename, ExecutableFileName, StringComparison.InvariantCultureIgnoreCase))
             {
-                Logger.LogWarning(TraceLevel.Verbose, $"ServerExecutablePath configured filename is unexpected.", $"expected: '{ExecutableFileName}' actual: '{filename}'");
+                Logger.LogWarning(TraceLevel.Verbose, $"ServerExecutablePath configured filename is unexpected.", $"expected: '{ExecutableFileName}' actual: '{filename}'.");
             }
+
             if (!File.Exists(path))
             {
+                Logger.LogWarning(TraceLevel.Verbose, $"{settings.GetType().Name}.ServerExecutablePath configuration is invalid.", $"Current configured value: '{path}'.");
                 throw new FileNotFoundException($"ServerExecutablePath configuration is invalid.");
             }
 

@@ -14,6 +14,11 @@ using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider
 {
+    public interface IRubberduckSettingsProvider : ISettingsProvider<RubberduckSettings>
+    {
+
+    }
+
     /// <summary>
     /// Abstracts file I/O operations for a provided <c>TSettings</c> type.
     /// </summary>

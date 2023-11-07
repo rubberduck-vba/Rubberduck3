@@ -9,9 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="FileMenu\**" />
     <Compile Remove="Resources\Customoccvondvond\**" />
+    <EmbeddedResource Remove="FileMenu\**" />
     <EmbeddedResource Remove="Resources\Customoccvondvond\**" />
+    <None Remove="FileMenu\**" />
     <None Remove="Resources\Customoccvondvond\**" />
+    <Page Remove="FileMenu\**" />
     <Page Remove="Resources\Customoccvondvond\**" />
   </ItemGroup>
 
@@ -86,7 +90,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="FileMenu\" />
     <Folder Include="RPC\UpdateServerClient\" />
   </ItemGroup>
   <ItemGroup>

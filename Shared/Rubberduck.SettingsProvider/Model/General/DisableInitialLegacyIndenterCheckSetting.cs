@@ -10,7 +10,7 @@
         public DisableInitialLegacyIndenterCheckSetting()
         {
             DefaultValue = DefaultSettingValue;
-            Tags = SettingTags.ReadOnlyRecommended;
+            Tags = SettingTags.Hidden;
         }
     }
 }

@@ -26,6 +26,8 @@ namespace Rubberduck.ServerPlatform
         [Option('s', "silent", SetName = "TraceLevel", HelpText = "Whether or not to enable trace logging.")]
         public bool Silent { get; set; }
 
+        [Option('w', "workspace", HelpText = "A workspace root folder path containing a .rdproj project file.")]
+        public string? WorkspaceRoot { get; set; }
 
         /// <summary>
         /// Gets a string that corresponds to the <c>InitializeTrace</c> value for the specified <c>Verbose</c> and <c>Silent</c> switch arguments.
