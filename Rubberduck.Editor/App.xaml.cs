@@ -162,7 +162,7 @@ namespace Rubberduck.Editor
             var settings = provider.GetRequiredService<IRubberduckSettingsProvider>();
 
             var resolver = new WorkspaceRootResolver(_logger, settings);
-            var workspaceRoot = resolver.GetWorkspaceRootUri(options.RootUri.ToUri().LocalPath);
+            var workspaceRoot = resolver.GetWorkspaceRootUri(_options);
 
             // with a host addin, workspace root folder location may come from LSP init handshake.
             // without a host addin, workspace root folder location would have to be the default as per settings.
