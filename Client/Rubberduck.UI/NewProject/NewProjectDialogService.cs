@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command;
@@ -19,7 +20,7 @@ namespace Rubberduck.UI.NewProject
 
         public NewProjectDialogService(ILogger logger, 
             IWindowFactory<NewProjectWindow, NewProjectWindowViewModel> factory, 
-            IRubberduckSettingsProvider settingsProvider,
+            RubberduckSettingsProvider settingsProvider,
             IProjectsProvider projectsProvider,
             MessageActionsProvider actionsProvider,
             ShowLanguageClientSettingsCommand showSettingsCommand) 

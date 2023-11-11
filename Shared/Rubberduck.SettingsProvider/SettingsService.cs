@@ -13,28 +13,6 @@ using System.Text.Json.Serialization;
 namespace Rubberduck.SettingsProvider
 {
     /// <summary>
-    /// A convenient non-generic settings provider interface for the top-level setting group.
-    /// </summary>
-    public interface IRubberduckSettingsProvider : ISettingsProvider<RubberduckSettings>, ISettingsService<RubberduckSettings>
-    {
-
-    }
-
-    /// <summary>
-    /// A convenient non-generic settings provider type for the top-level setting group.
-    /// </summary>
-    public class RubberduckSettingsService : SettingsService<RubberduckSettings>, IRubberduckSettingsProvider
-    {
-        public RubberduckSettingsService(ILogger<SettingsService<RubberduckSettings>> logger, 
-            ISettingsProvider<RubberduckSettings> settings,
-            IFileSystem fileSystem, 
-            IDefaultSettingsProvider<RubberduckSettings> defaultSettings) 
-            : base(logger, settings, fileSystem, defaultSettings)
-        {
-        }
-    }
-
-    /// <summary>
     /// Abstracts file I/O operations for a provided <c>TSettings</c> type.
     /// </summary>
     /// <typeparam name="TSettings"></typeparam>
@@ -50,6 +28,17 @@ namespace Rubberduck.SettingsProvider
         /// Serializes the provided <c>TSettings</c> value to disk.
         /// </summary>
         void Write(TSettings settings);
+    }
+
+    public class RubberduckSettingsProvider : SettingsService<RubberduckSettings>
+    {
+        public RubberduckSettingsProvider(ILogger<SettingsService<RubberduckSettings>> logger, 
+            IFileSystem fileSystem, 
+            IDefaultSettingsProvider<RubberduckSettings> defaultSettings) 
+            : base(logger, null!, fileSystem, defaultSettings)
+        {
+            SettingsProvider = this;
+        }
     }
 
     public class SettingsService<TSettings> : ServiceBase, ISettingsService<TSettings>
@@ -70,7 +59,7 @@ namespace Rubberduck.SettingsProvider
         private TSettings _cached;
 
         public SettingsService(ILogger<SettingsService<TSettings>> logger,
-            ISettingsProvider<RubberduckSettings> settings,
+            RubberduckSettingsProvider settings,
             IFileSystem fileSystem,
             IDefaultSettingsProvider<TSettings> defaultSettings)
             : base(logger, settings)
@@ -105,8 +94,12 @@ namespace Rubberduck.SettingsProvider
             {
                 _cached = value;
                 didChange = true;
-                LogInformation($"{typeof(TSettings).Name} was modified.");
+                LogInformation($"Cached new {typeof(TSettings).Name} value.");
                 OnSettingsChanged(oldValue);
+            }
+            else
+            {
+                LogWarning("TrySetValue: Settings are unchanged.");
             }
 
             return didChange;
@@ -147,7 +140,7 @@ namespace Rubberduck.SettingsProvider
                 }
                 else
                 {
-                    LogWarning("Settings file does not exist and will be created from defaults.", $"Path: '{path}'");
+                    LogInformation("Settings file does not exist and will be created from defaults.", $"Path: '{path}'");
                     Write(_default);
                 }
             }

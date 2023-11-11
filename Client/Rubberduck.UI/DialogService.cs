@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command;
@@ -14,7 +15,7 @@ namespace Rubberduck.UI
         private readonly IWindowFactory<TView, TViewModel> _factory;
         private readonly MessageActionsProvider _actionsProvider;
 
-        protected DialogService(ILogger logger, IWindowFactory<TView, TViewModel> factory, IRubberduckSettingsProvider settings, MessageActionsProvider actionsProvider)
+        protected DialogService(ILogger logger, IWindowFactory<TView, TViewModel> factory, RubberduckSettingsProvider settings, MessageActionsProvider actionsProvider)
             : base(logger, settings)
         {
             _factory = factory;

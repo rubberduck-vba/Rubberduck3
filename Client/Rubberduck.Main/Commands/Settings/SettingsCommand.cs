@@ -14,10 +14,10 @@ namespace Rubberduck.Main.Settings
     public class SettingsCommand : ComCommandBase, ISettingsCommand
     {
         private readonly ISettingsDialogService _service;
-        private readonly ILanguageClient _lsp;
+        private readonly ILanguageClientFacade _lsp;
 
         public SettingsCommand(ILogger<SettingsCommand> logger, ISettingsProvider<RubberduckSettings> settingsProvider, IVbeEvents vbeEvents, 
-            ILanguageClient lsp,
+            ILanguageClientFacade lsp,
             ISettingsDialogService service)
             : base(logger, settingsProvider, vbeEvents)
         {
@@ -29,7 +29,7 @@ namespace Rubberduck.Main.Settings
 
         private void SettingsProvider_SettingsChanged(object? sender, SettingsChangedEventArgs<RubberduckSettings> e)
         {
-            _lsp.DidChangeConfiguration(new() { Settings = Newtonsoft.Json.Linq.JToken.FromObject(e.NewValue) });
+            _lsp.Workspace.DidChangeConfiguration(new() { Settings = Newtonsoft.Json.Linq.JToken.FromObject(e.NewValue) });
         }
 
         protected async override Task OnExecuteAsync(object? parameter)

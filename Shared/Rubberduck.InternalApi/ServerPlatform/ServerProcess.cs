@@ -10,7 +10,7 @@ namespace Rubberduck.InternalApi.ServerPlatform
 {
     public interface IServerProcess
     {
-        Process Start(long clientProcessId, IProcessStartInfoArgumentProvider settings);
+        Process Start(long clientProcessId, IProcessStartInfoArgumentProvider settings, EventHandler onExit);
     }
 
     public abstract class ServerProcess : IServerProcess
@@ -24,7 +24,7 @@ namespace Rubberduck.InternalApi.ServerPlatform
 
         protected abstract string ExecutableFileName { get; }
 
-        public virtual Process Start(long clientProcessId, IProcessStartInfoArgumentProvider settings)
+        public virtual Process Start(long clientProcessId, IProcessStartInfoArgumentProvider settings, EventHandler onExit)
         {
             var path = settings.ServerExecutablePath;
             var fullPath = Path.Combine(path, ExecutableFileName);
@@ -40,8 +40,8 @@ namespace Rubberduck.InternalApi.ServerPlatform
 
             var info = new ProcessStartInfo
             {
-                FileName = path,
-                WorkingDirectory = Path.GetDirectoryName(path),
+                FileName = fullPath,
+                WorkingDirectory = path,
                 Arguments = settings.ToProcessStartInfoArguments(clientProcessId),
                 CreateNoWindow = true,
                 UseShellExecute = false,
@@ -51,6 +51,7 @@ namespace Rubberduck.InternalApi.ServerPlatform
             };
 
             var process = new Process { StartInfo = info };
+            process.Exited += onExit;
 
             try
             {

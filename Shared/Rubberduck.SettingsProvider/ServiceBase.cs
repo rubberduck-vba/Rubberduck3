@@ -12,16 +12,16 @@ namespace Rubberduck.SettingsProvider
     public abstract class ServiceBase
     {
         private readonly ILogger _logger;
-        private readonly ISettingsProvider<RubberduckSettings> _settingsProvider;
+        protected ISettingsProvider<RubberduckSettings> SettingsProvider { get; init; }
 
-        protected ServiceBase(ILogger logger, ISettingsProvider<RubberduckSettings> settingsProvider)
+        protected ServiceBase(ILogger logger, RubberduckSettingsProvider settingsProvider)
         {
             _logger = logger;
-            _settingsProvider = settingsProvider;
+            SettingsProvider = settingsProvider;
         }
 
-        public RubberduckSettings Settings => _settingsProvider.Settings;
-        public TraceLevel TraceLevel => _settingsProvider.Settings.GeneralSettings.TraceLevel.ToTraceLevel();
+        public RubberduckSettings Settings => SettingsProvider.Settings;
+        public TraceLevel TraceLevel => SettingsProvider.Settings.GeneralSettings.TraceLevel.ToTraceLevel();
 
         public void LogPerformance(TimeSpan elapsed, string? message = default, [CallerMemberName]string? name = default)
         {

@@ -99,9 +99,6 @@ namespace Rubberduck
         {
             UiContextProvider.Initialize();
 
-            _foldersService.EnsureRubberduckRootPathExists();
-            _foldersService.EnsureLogFolderPathExists();
-            _foldersService.EnsureDefaultWorkspacePathExists();
             ApplyCultureConfig();
 
             LogRubberduckStart(_version);
@@ -109,6 +106,13 @@ namespace Rubberduck
             //CheckForLegacyIndenterSettings();
             _appMenus.Initialize();
             _appMenus.Localize();
+        }
+
+        private void CheckRubberduckFolders()
+        {
+            _foldersService.EnsureRubberduckRootPathExists();
+            _foldersService.EnsureLogFolderPathExists();
+            _foldersService.EnsureDefaultWorkspacePathExists();
         }
 
         public void Shutdown()

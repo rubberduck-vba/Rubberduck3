@@ -6,6 +6,7 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider;
+using Rubberduck.SettingsProvider.Model;
 using System;
 using System.Collections.Concurrent;
 using System.Globalization;
@@ -36,7 +37,7 @@ namespace Rubberduck.ServerPlatform
         private readonly ConcurrentDictionary<ProgressToken, WorkDoneProgressReport> _progressTokens = new ConcurrentDictionary<ProgressToken, WorkDoneProgressReport>();
         public event EventHandler<ProgressEventArgs> Progress = delegate { };
 
-        public WorkDoneProgressStateService(ILogger logger, IRubberduckSettingsProvider settingsProvider)
+        public WorkDoneProgressStateService(ILogger<WorkDoneProgressStateService> logger, ISettingsProvider<RubberduckSettings> settingsProvider)
             : base(logger, settingsProvider, null)
         {
         }

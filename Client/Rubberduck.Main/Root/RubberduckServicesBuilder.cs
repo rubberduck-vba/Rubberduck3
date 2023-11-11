@@ -2,13 +2,17 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.Client;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.Editor.Common;
+using Rubberduck.Environment;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Main.About;
 using Rubberduck.Main.Commands.ShowRubberduckEditor;
 using Rubberduck.Main.RPC.EditorServer;
 using Rubberduck.Main.Settings;
+using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider.Model.General;
@@ -41,9 +45,11 @@ namespace Rubberduck.Main.Root
     internal class RubberduckServicesBuilder
     {
         private readonly IServiceCollection _services = new ServiceCollection();
+        private readonly Func<ILanguageClientFacade> _getLanguageClient;
 
-        public RubberduckServicesBuilder(IVBE vbe, IAddIn addin)
+        public RubberduckServicesBuilder(IVBE vbe, IAddIn addin, Func<ILanguageClientFacade> getLanguageClient)
         {
+            _getLanguageClient = getLanguageClient;
             Configure(vbe, addin);
         }
 
@@ -81,7 +87,7 @@ namespace Rubberduck.Main.Root
             _services.AddSingleton(provider => vbe);
             _services.AddSingleton(provider => addin);
             _services.AddSingleton(provider => vbe.TempSourceFileHandler);
-
+            _services.AddSingleton<IRubberduckFoldersService, RubberduckFoldersService>();
             _services.AddSingleton<IProjectsRepository>(provider => new ProjectsRepository(vbe, provider.GetRequiredService<ILogger<ProjectsRepository>>()));
             _services.AddSingleton<IProjectsProvider>(provider => provider.GetRequiredService<IProjectsRepository>());
 
@@ -101,8 +107,8 @@ namespace Rubberduck.Main.Root
         private RubberduckServicesBuilder WithSettingsProviders()
         {
             // ISettingsService<TSettings> provides file I/O
-            _services.AddSingleton<IRubberduckSettingsProvider, RubberduckSettingsService>();
-            _services.AddSingleton<ISettingsService<RubberduckSettings>, SettingsService<RubberduckSettings>>();
+            _services.AddSingleton<RubberduckSettingsProvider>();
+            _services.AddSingleton<ISettingsService<RubberduckSettings>>(provider => provider.GetRequiredService<RubberduckSettingsProvider>());
 
             // IDefaultSettingsProvider<TSettings> provide the default configuration settings for injectable setting groups
             _services.AddSingleton<IDefaultSettingsProvider<RubberduckSettings>>(provider => RubberduckSettings.Default);
@@ -112,11 +118,11 @@ namespace Rubberduck.Main.Root
             _services.AddSingleton<IDefaultSettingsProvider<TelemetryServerSettings>>(provider => TelemetryServerSettings.Default);
 
             // ISettingsProvider<TSettings> provide current applicable settings for injectable setting groups
-            _services.AddTransient<ISettingsProvider<RubberduckSettings>, SettingsService<RubberduckSettings>>();
-            _services.AddTransient<ISettingsProvider<GeneralSettings>, SettingsService<GeneralSettings>>();
-            _services.AddTransient<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
-            _services.AddTransient<ISettingsProvider<UpdateServerSettings>, SettingsService<UpdateServerSettings>>();
-            _services.AddTransient<ISettingsProvider<TelemetryServerSettings>, SettingsService<TelemetryServerSettings>>();
+            _services.AddSingleton<ISettingsProvider<RubberduckSettings>, SettingsService<RubberduckSettings>>();
+            _services.AddSingleton<ISettingsProvider<GeneralSettings>, SettingsService<GeneralSettings>>();
+            _services.AddSingleton<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
+            _services.AddSingleton<ISettingsProvider<UpdateServerSettings>, SettingsService<UpdateServerSettings>>();
+            _services.AddSingleton<ISettingsProvider<TelemetryServerSettings>, SettingsService<TelemetryServerSettings>>();
 
             return this;
         }
@@ -189,7 +195,8 @@ namespace Rubberduck.Main.Root
 
         private RubberduckServicesBuilder WithRubberduckEditorServer()
         {
-
+            _services.AddSingleton<ILanguageClientFacade>(provider => _getLanguageClient());
+            _services.AddSingleton<IWorkDoneProgressStateService, WorkDoneProgressStateService>();
             return this;
         }
     }

@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Extensions.Logging;
 using Rubberduck.UI;
+using Rubberduck.UI.Services;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.Registration;
 
@@ -95,7 +96,7 @@ namespace Rubberduck.VBEditor.UI
             }
         }
 
-        public virtual void Show() => _window.IsVisible = true;
+        public virtual void Show(WindowSize windowSize = WindowSize.MediumDialog) => _window.IsVisible = true;
         public virtual void Hide() => _window.IsVisible = false;
 
         public virtual void Close() => _window.Close();

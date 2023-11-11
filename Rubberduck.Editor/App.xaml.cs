@@ -226,7 +226,7 @@ namespace Rubberduck.Editor
 
         private async Task SendExitServerNotificationAsync()
         {
-            var delay = _services.GetRequiredService<IRubberduckSettingsProvider>().Settings.LanguageClientSettings.ExitNotificationDelay;
+            var delay = _services.GetRequiredService<ISettingsProvider<RubberduckSettings>>().Settings.LanguageClientSettings.ExitNotificationDelay;
             await Task.Delay(delay).ContinueWith(o => _languageClient?.SendExit(new()), _tokenSource.Token, TaskContinuationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
         }
 
@@ -237,13 +237,18 @@ namespace Rubberduck.Editor
                 .LanguageServerSettings.StartupSettings;
             var clientProcessId = Environment.ProcessId;
 
-            _languageServerProcess = new LanguageServerProcess(_logger).Start(clientProcessId, settings);
+            _languageServerProcess = new LanguageServerProcess(_logger).Start(clientProcessId, settings, HandleServerExit);
+        }
+
+        private void HandleServerExit(object? sender, EventArgs e)
+        {
+            _logger.LogInformation("LanguageServer process has exited.");
         }
 
         private void ConfigureClient(LanguageClientOptions options)
         {
             var provider = _services;
-            var settings = provider.GetRequiredService<IRubberduckSettingsProvider>();
+            var settings = provider.GetRequiredService<ISettingsProvider<RubberduckSettings>>();
 
             var resolver = new WorkspaceRootResolver(_logger, settings);
             var workspaceRoot = resolver.GetWorkspaceRootUri(_options);
@@ -311,38 +316,35 @@ namespace Rubberduck.Editor
     /// </summary>
     public partial class App : Application
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly ILogger<App> _logger;
-        private readonly ServerStartupOptions _options;
-        private readonly CancellationTokenSource _tokenSource;
+        private IServiceProvider _serviceProvider;
+        private ILogger<App> _logger;
+        
+        private ServerStartupOptions _options;
+        private CancellationTokenSource _tokenSource;
 
-        private readonly EditorServerApp _editorServer;
-        private readonly LanguageClientApp _languageClient;
+        private EditorServerApp _editorServer;
+        private LanguageClientApp _languageClient;
 
-        private IRubberduckSettingsProvider SettingsProvider { get; }
-
-        public App() { }
-
-        public App(ServerStartupOptions options, CancellationTokenSource tokenSource)
-        {
-            _options = options;
-            _tokenSource = tokenSource;
-
-            var services = new ServiceCollection();
-            services.AddLogging(ConfigureLogging);
-            ConfigureServices(services);
-            _serviceProvider = services.BuildServiceProvider();
-            _logger = _serviceProvider.GetRequiredService<ILogger<App>>();
-
-            _editorServer = new(_serviceProvider.GetRequiredService<ILogger<EditorServerApp>>(), options, tokenSource, _serviceProvider);
-            _languageClient = new(_serviceProvider.GetRequiredService<ILogger<LanguageClientApp>>(), options, tokenSource, _serviceProvider);
-        }
+        private ISettingsProvider<RubberduckSettings> SettingsProvider { get; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "We want to crash the process in case of an exception anyway.")]
         protected override async void OnStartup(StartupEventArgs e)
         {
             try
             {
+                var args = e.Args;
+                _options = await ServerArgs.ParseAsync(args);
+                _tokenSource = new CancellationTokenSource();
+
+                var services = new ServiceCollection();
+                services.AddLogging(ConfigureLogging);
+                ConfigureServices(services);
+                _serviceProvider = services.BuildServiceProvider();
+                _logger = _serviceProvider.GetRequiredService<ILogger<App>>();
+
+                _editorServer = new(_serviceProvider.GetRequiredService<ILogger<EditorServerApp>>(), _options, _tokenSource, _serviceProvider);
+                _languageClient = new(_serviceProvider.GetRequiredService<ILogger<LanguageClientApp>>(), _options, _tokenSource, _serviceProvider);
+
                 var splash = _serviceProvider.GetRequiredService<SplashService>();
                 splash.Show();
 
@@ -413,7 +415,6 @@ namespace Rubberduck.Editor
             services.AddSingleton<IServerStateWriter>(provider => provider.GetRequiredService<EditorServerState>());
 
             services.AddSingleton<IDefaultSettingsProvider<LanguageServerSettings>>(provider => LanguageServerSettings.Default);
-            services.AddSingleton<IRubberduckSettingsProvider, RubberduckSettingsService>();
 
             services.AddSingleton<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
 
@@ -436,9 +437,9 @@ namespace Rubberduck.Editor
     public class WorkspaceRootResolver
     {
         private readonly ILogger _logger;
-        private readonly IRubberduckSettingsProvider _settings;
+        private readonly ISettingsProvider<RubberduckSettings> _settings;
 
-        public WorkspaceRootResolver(ILogger logger, IRubberduckSettingsProvider settings)
+        public WorkspaceRootResolver(ILogger logger, ISettingsProvider<RubberduckSettings> settings)
         {
             _logger = logger;
             _settings = settings;

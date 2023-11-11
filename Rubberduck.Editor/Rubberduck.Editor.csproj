@@ -5,6 +5,7 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <StartupObject>Rubberduck.Editor.App</StartupObject>
     <ApplicationIcon>ducky.ico</ApplicationIcon>
   </PropertyGroup>
 

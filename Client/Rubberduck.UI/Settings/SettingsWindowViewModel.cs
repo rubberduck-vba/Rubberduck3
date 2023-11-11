@@ -114,6 +114,8 @@ namespace Rubberduck.UI.Settings
                     return CreateViewModel(serverMessageModeSetting);
                 case ClientHealthCheckIntervalSetting healthCheckIntervalSetting:
                     return CreateViewModel(healthCheckIntervalSetting);
+                case TypedRubberduckSetting<TimeSpan> timeSpanSetting:
+                    return CreateViewModel(timeSpanSetting);
                 case TypedRubberduckSetting<string[]> listSetting:
                     return new ListSettingViewModel(_logger, _settingsProvider, listSetting);
                 case TypedSettingGroup subGroup:

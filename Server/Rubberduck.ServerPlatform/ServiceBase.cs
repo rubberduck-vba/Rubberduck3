@@ -2,7 +2,7 @@
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.SettingsProvider;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
 using System;
 using System.Diagnostics;
@@ -12,17 +12,17 @@ namespace Rubberduck.ServerPlatform
 {
     public class ServerPlatformServiceHelper : ServiceBase
     {
-        public ServerPlatformServiceHelper(ILogger logger, IRubberduckSettingsProvider settingsProvider, IWorkDoneProgressStateService workdone) 
+        public ServerPlatformServiceHelper(ILogger logger, ISettingsProvider<RubberduckSettings> settingsProvider, IWorkDoneProgressStateService workdone) 
             : base(logger, settingsProvider, workdone) { }
     }
 
     public abstract class ServiceBase
     {
         private readonly ILogger _logger;
-        private readonly IRubberduckSettingsProvider _settingsProvider;
+        private readonly ISettingsProvider<RubberduckSettings> _settingsProvider;
         private readonly IWorkDoneProgressStateService? _workdone;
 
-        protected ServiceBase(ILogger logger, IRubberduckSettingsProvider settingsProvider, IWorkDoneProgressStateService? workdone)
+        protected ServiceBase(ILogger logger, ISettingsProvider<RubberduckSettings> settingsProvider, IWorkDoneProgressStateService? workdone)
         {
             _logger = logger;
             _settingsProvider = settingsProvider;

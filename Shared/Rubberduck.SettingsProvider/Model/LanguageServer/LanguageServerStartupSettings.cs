@@ -10,7 +10,7 @@ namespace Rubberduck.SettingsProvider.Model.LanguageServer
     public record class LanguageServerStartupSettings : ServerStartupSettings
     {
         public static readonly RubberduckSetting[] DefaultSettings = GetDefaultSettings(ServerPlatformSettings.LanguageServerDefaultPipeName,
-            @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Rubberduck\LanguageServer\{ServerPlatformSettings.LanguageServerExecutable}");
+            @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Rubberduck\LanguageServer");
 
         public LanguageServerStartupSettings()
         {

@@ -1,13 +1,15 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Model.Abstract;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider;
-using Rubberduck.UI;
+using Rubberduck.SettingsProvider.Model;
+using Rubberduck.UI.Services;
 
 namespace Rubberduck.Editor.Splash
 {
     public class SplashService : WindowService<SplashWindow, ISplashViewModel>, IStatusUpdate
     {
-        public SplashService(ILogger<SplashService> logger, ISplashViewModel viewModel, IRubberduckSettingsProvider settings)
+        public SplashService(ILogger<SplashService> logger, ISplashViewModel viewModel, RubberduckSettingsProvider settings)
             : base(logger, settings, viewModel)
         {
         }

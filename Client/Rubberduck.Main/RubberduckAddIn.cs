@@ -112,7 +112,7 @@ namespace Rubberduck.Main
                 {
                     var tokenSource = new CancellationTokenSource();
 
-                    var provider = new RubberduckServicesBuilder(_vbe, _addin).Build();
+                    var provider = new RubberduckServicesBuilder(_vbe, _addin, () => _editorClient).Build();
                     var scope = provider.CreateScope();
 
                     _serviceScope = scope;
@@ -218,35 +218,40 @@ namespace Rubberduck.Main
             }
         }
 
-        private void StartEditorClient(int clientProcessId, string projectPath, LanguageClientStartupSettings settings)
-        {
-            _editorServerProcess = new EditorServerProcess(_logger).Start(clientProcessId, settings);
-            EditorClientOptions clientOptions;
-            switch (settings.ServerTransportType)
-            {
-                case TransportType.StdIO:
-                    clientOptions = EditorClientService.ConfigureEditorClient(Assembly.GetExecutingAssembly(), _editorServerProcess, clientProcessId, InitialSettings, projectPath);
-                    break;
+        //private void StartEditorClient(int clientProcessId, string projectPath, LanguageClientStartupSettings settings)
+        //{
+        //    _editorServerProcess = new EditorServerProcess(_logger).Start(clientProcessId, settings, HandleServerExit);
+        //    EditorClientOptions clientOptions;
+        //    switch (settings.ServerTransportType)
+        //    {
+        //        case TransportType.StdIO:
+        //            clientOptions = EditorClientService.ConfigureEditorClient(Assembly.GetExecutingAssembly(), _editorServerProcess, clientProcessId, InitialSettings, projectPath);
+        //            break;
 
-                case TransportType.Pipe:
-                    var name = settings.ServerPipeName ?? ServerPlatformSettings.LanguageServerDefaultPipeName;
-                    _editorServerPipeStream = new NamedPipeClientStream(".", $"{name}__{Env.ProcessId}", PipeDirection.InOut, PipeOptions.Asynchronous);
-                    //await _editorServerPipeStream.ConnectAsync(Convert.ToInt32(TimeSpan.FromSeconds(10).TotalMilliseconds)); // stuck here
-                    clientOptions = EditorClientService.ConfigureEditorClient(Assembly.GetExecutingAssembly(), _editorServerPipeStream, clientProcessId, InitialSettings, projectPath);
-                    break;
+        //        case TransportType.Pipe:
+        //            var name = settings.ServerPipeName ?? ServerPlatformSettings.LanguageServerDefaultPipeName;
+        //            _editorServerPipeStream = new NamedPipeClientStream(".", $"{name}__{Env.ProcessId}", PipeDirection.InOut, PipeOptions.Asynchronous);
+        //            //await _editorServerPipeStream.ConnectAsync(Convert.ToInt32(TimeSpan.FromSeconds(10).TotalMilliseconds)); // stuck here
+        //            clientOptions = EditorClientService.ConfigureEditorClient(Assembly.GetExecutingAssembly(), _editorServerPipeStream, clientProcessId, InitialSettings, projectPath);
+        //            break;
 
-                default:
-                    throw new NotSupportedException();
-            }
+        //        default:
+        //            throw new NotSupportedException();
+        //    }
 
-            if (_editorServerProcess!.HasExited)
-            {
-                throw new ServerStartupFailedException(_editorServerProcess);
-            }
+        //    if (_editorServerProcess!.HasExited)
+        //    {
+        //        throw new ServerStartupFailedException(_editorServerProcess);
+        //    }
 
-            _editorClient = EditorClient.Create(clientOptions, _serviceScope.ServiceProvider);
-            _editorClientInitializeTask = _editorClient.Initialize(_tokenSource.Token);
-        }
+        //    _editorClient = EditorClient.Create(clientOptions, _serviceScope.ServiceProvider);
+        //    _editorClientInitializeTask = _editorClient.Initialize(_tokenSource.Token);
+        //}
+
+        //private void HandleServerExit(object? sender, EventArgs e)
+        //{
+        //    _logger.LogWarning("EditorServer process has exited.");
+        //}
 
         //private async Task StartTelemetryClientAsync(int clientProcessId, string projectPath, TelemetryServerSettings settings)
         //{

@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
 using Rubberduck.ServerPlatform;
-using Rubberduck.SettingsProvider;
+using Rubberduck.SettingsProvider.Model;
 using System;
 using System.IO.Abstractions;
 using System.Windows.Forms;
@@ -29,7 +30,7 @@ namespace Rubberduck.Environment
         private readonly Version _rubberduckVersion;
 
         public HostInfoService(ILogger<HostInfoService> logger, 
-            IRubberduckSettingsProvider settings, 
+            ISettingsProvider<RubberduckSettings> settings, 
             IWorkDoneProgressStateService workdone, 
             Version rubberduckVersion)
             : base(logger, settings, workdone)
@@ -82,7 +83,7 @@ namespace Rubberduck.Environment
     {
         private readonly IFileSystem _fileSystem;
 
-        public RubberduckFoldersService(ILogger<RubberduckFoldersService> logger, IRubberduckSettingsProvider settings, IWorkDoneProgressStateService workdone, IFileSystem fileSystem)
+        public RubberduckFoldersService(ILogger<RubberduckFoldersService> logger, ISettingsProvider<RubberduckSettings> settings, IWorkDoneProgressStateService workdone, IFileSystem fileSystem)
             : base(logger, settings, workdone)
         {
             _fileSystem = fileSystem;
@@ -93,6 +94,7 @@ namespace Rubberduck.Environment
             if (!_fileSystem.Directory.Exists(ApplicationConstants.RUBBERDUCK_FOLDER_PATH))
             {
                 _fileSystem.Directory.CreateDirectory(ApplicationConstants.RUBBERDUCK_FOLDER_PATH);
+                LogInformation("Created Rubberduck root folder.", ApplicationConstants.RUBBERDUCK_FOLDER_PATH);
             }
         });
 
@@ -101,6 +103,7 @@ namespace Rubberduck.Environment
             if (!_fileSystem.Directory.Exists(ApplicationConstants.LOG_FOLDER_PATH))
             {
                 _fileSystem.Directory.CreateDirectory(ApplicationConstants.LOG_FOLDER_PATH);
+                LogInformation("Created Rubberduck logs folder.", ApplicationConstants.LOG_FOLDER_PATH);
             }
         });
 
@@ -110,6 +113,7 @@ namespace Rubberduck.Environment
             if (!_fileSystem.Directory.Exists(defaultWorkspaceRoot.LocalPath))
             {
                 _fileSystem.Directory.CreateDirectory(defaultWorkspaceRoot.LocalPath);
+                LogInformation("Created Rubberduck default workspace folder.", defaultWorkspaceRoot.LocalPath);
             }
         });
     }

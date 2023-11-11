@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.Main.Commands.ShowRubberduckEditor;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
@@ -15,7 +16,7 @@ namespace Rubberduck.Main.RPC.EditorServer
         private readonly ILogger _logger;
         private Process? _process;
 
-        public EditorServerProcessService(ILogger<EditorServerProcessService> logger, IRubberduckSettingsProvider settingsProvider, IWorkDoneProgressStateService workdone)
+        public EditorServerProcessService(ILogger<EditorServerProcessService> logger, RubberduckSettingsProvider settingsProvider, IWorkDoneProgressStateService workdone)
             : base(logger, settingsProvider, workdone)
         {
             _logger = logger;
@@ -39,10 +40,15 @@ namespace Rubberduck.Main.RPC.EditorServer
                 var helper = new EditorServerProcess(_logger);
                 var startupOptions = Settings.LanguageClientSettings.StartupSettings;
                 var currentProcessId = Env.ProcessId;
-                _process = helper.Start(currentProcessId, startupOptions);
+                _process = helper.Start(currentProcessId, startupOptions, HandleServerExit);
             }, out var exception);
 
             return exception;
+        }
+
+        private void HandleServerExit(object? sender, EventArgs e)
+        {
+            LogWarning($"EditorServer process has exited.", $"ExitCode: {(sender as Process)?.ExitCode}");
         }
 
         private Exception? BringToFront()

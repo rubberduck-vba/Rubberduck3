@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command;
@@ -25,7 +26,7 @@ namespace Rubberduck.UI.Settings
         public SettingsDialogService(ILogger<SettingsDialogService> logger, 
             IWindowFactory<SettingsWindow, SettingsWindowViewModel> factory, 
             IMessageService messageService,
-            IRubberduckSettingsProvider settingsService,
+            RubberduckSettingsProvider settingsService,
             ISettingViewModelFactory vmFactory,
             MessageActionsProvider actionsProvider) 
             : base(logger, factory, settingsService, actionsProvider)

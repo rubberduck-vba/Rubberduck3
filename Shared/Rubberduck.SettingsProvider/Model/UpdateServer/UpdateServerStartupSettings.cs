@@ -10,7 +10,7 @@ namespace Rubberduck.SettingsProvider.Model.UpdateServer
     public record class UpdateServerStartupSettings : ServerStartupSettings
     {
         public static readonly RubberduckSetting[] DefaultSettings = GetDefaultSettings(ServerPlatformSettings.UpdateServerDefaultPipeName,
-            @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Rubberduck\Update\{ServerPlatformSettings.UpdateServerExecutable}");
+            @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Rubberduck\Update");
 
         public UpdateServerStartupSettings()
         {

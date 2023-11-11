@@ -46,7 +46,7 @@ namespace Rubberduck.UI.Message
 
         private readonly MessageActionsProvider _actionsProvider;
 
-        public MessageService(IRubberduckSettingsProvider settings, ILogger<MessageService> logger,
+        public MessageService(RubberduckSettingsProvider settings, ILogger<MessageService> logger,
             IMessageWindowFactory viewFactory,
             MessageActionsProvider actionsProvider)
             : base(logger, settings)
