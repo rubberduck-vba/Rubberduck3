@@ -39,7 +39,7 @@ Implementing a setting amounts to specifying a default value and some metadata.
 
 Almost. There's a `[JsonPolymorphic]` attribute on the base `RubberduckSetting` record class, and then a bunch of `[JsonDerivedType]` attributes with `typeof` and `nameof` arguments. You guessed it.
 
-And then yeah, once the JSON serialization understands the new setting, that's it - *Rubberduck* understands the new setting now, but it won't be able to tell you until you add the resource keys for the new setting:
+And then yeah, once the JSON serialization understands the new setting, that's it indeed - *Rubberduck* understands the new setting now, but it won't be able to tell you until you add the resource keys for the new setting:
 - `{Key}.Name` where the value is e.g. the title of the corresponding checkbox in the UI.
 - `{Key}.Description` where the value is a short (?) description of the setting that could be used for a tooltip or a description label.
  
@@ -58,4 +58,4 @@ The control templates are located under `Rubberduck.UI.Settings.Templates` and w
 The control itself should have `Background="{DynamicResource ThemeBackgroundColorBrush}"`, and then inside the border is a `DockPanel` with a `FlatToggleButton` docked at the right, a `Label` with `Style="{DynamicResource FormTitleLabelStyle}"` and a `TextBlock` content (for wrapping) with the setting's `Name` (localized string).
 Then a `ScrollViewer` also docked at the top, with a `<Label Style="{DynamicResource FormLabelStyle}"` label and a `TextBlock` content (for wrapping) binding to the `Description` string.
 
-The rest completely depends on how the data type is to be represented.
+The rest completely depends on how the data type is to be represented... aaaand that makes a very good case for extracting the common parts into a user control with a content presenter - with which the only thing to worry about would be the input controls and the value binding.
