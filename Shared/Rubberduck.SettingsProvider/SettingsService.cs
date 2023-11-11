@@ -1,22 +1,37 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Common;
-using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider.Model.General;
 using System;
-using System.Diagnostics;
 using System.IO.Abstractions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider
 {
-    public interface IRubberduckSettingsProvider : ISettingsProvider<RubberduckSettings>
+    /// <summary>
+    /// A convenient non-generic settings provider interface for the top-level setting group.
+    /// </summary>
+    public interface IRubberduckSettingsProvider : ISettingsProvider<RubberduckSettings>, ISettingsService<RubberduckSettings>
     {
 
+    }
+
+    /// <summary>
+    /// A convenient non-generic settings provider type for the top-level setting group.
+    /// </summary>
+    public class RubberduckSettingsService : SettingsService<RubberduckSettings>, IRubberduckSettingsProvider
+    {
+        public RubberduckSettingsService(ILogger<SettingsService<RubberduckSettings>> logger, 
+            ISettingsProvider<RubberduckSettings> settings,
+            IFileSystem fileSystem, 
+            IDefaultSettingsProvider<RubberduckSettings> defaultSettings) 
+            : base(logger, settings, fileSystem, defaultSettings)
+        {
+        }
     }
 
     /// <summary>
@@ -37,7 +52,7 @@ namespace Rubberduck.SettingsProvider
         void Write(TSettings settings);
     }
 
-    public class SettingsService<TSettings> : ISettingsService<TSettings>
+    public class SettingsService<TSettings> : ServiceBase, ISettingsService<TSettings>
         where TSettings : RubberduckSetting, new()
     {
         private static readonly JsonSerializerOptions _options = new() 
@@ -48,23 +63,18 @@ namespace Rubberduck.SettingsProvider
             UnknownTypeHandling = JsonUnknownTypeHandling.JsonElement,
         };
 
-        private readonly ILogger _logger;
         private readonly IFileSystem _fileSystem;
         private readonly TSettings _default;
         private readonly string _path;
 
-        private readonly IServiceProvider _services;
-        private GeneralSettings GeneralSettings => _services.GetRequiredService<ISettingsProvider<GeneralSettings>>().Settings;
-
         private TSettings _cached;
 
         public SettingsService(ILogger<SettingsService<TSettings>> logger,
-            IServiceProvider serviceProvider,
+            ISettingsProvider<RubberduckSettings> settings,
             IFileSystem fileSystem,
             IDefaultSettingsProvider<TSettings> defaultSettings)
+            : base(logger, settings)
         {
-            _services = serviceProvider;
-            _logger = logger;
             _fileSystem = fileSystem;
 
             var root = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
@@ -84,13 +94,10 @@ namespace Rubberduck.SettingsProvider
             Read();
         }
 
-        public TSettings Settings => _cached;
-
-        public TraceLevel TraceLevel => GeneralSettings.TraceLevel.ToTraceLevel();
+        public new TSettings Settings => _cached;
 
         private bool TrySetValue(TSettings value)
         {
-            var traceLevel = TraceLevel;
             var didChange = false;
 
             var oldValue = _cached;
@@ -98,7 +105,7 @@ namespace Rubberduck.SettingsProvider
             {
                 _cached = value;
                 didChange = true;
-                _logger.LogInformation(traceLevel, $"{typeof(TSettings).Name} was modified.");
+                LogInformation($"{typeof(TSettings).Name} was modified.");
                 OnSettingsChanged(oldValue);
             }
 
@@ -107,56 +114,47 @@ namespace Rubberduck.SettingsProvider
 
         public TSettings Read()
         {
-            var traceLevel = TraceLevel;
-            _logger.LogTrace(traceLevel, "Reading settings from file...", _path);
+            var path = _path;
+            LogTrace("Reading settings from file...", path);
 
             try
             {
-                var path = _path;
-                var root = ApplicationConstants.RUBBERDUCK_FOLDER_PATH;
-
-                if (!_fileSystem.Directory.Exists(root))
-                {
-                    _fileSystem.Directory.CreateDirectory(root);
-                    _logger.LogInformation(traceLevel, "Root application folder was created.", root);
-                }
-
                 if (_fileSystem.File.Exists(path))
                 {
                     if (TimedAction.TryRun(() =>
                     {
                         var content = _fileSystem.File.ReadAllText(path);
-                        _logger.LogTrace(traceLevel, "File content successfully read from file.", $"File: '{path}'");
+                        LogTrace("File content successfully read from file.", $"File: '{path}'");
 
                         if (!string.IsNullOrWhiteSpace(content))
                         {
                             var newValue = JsonSerializer.Deserialize<TSettings>(content, _options) ?? new();
-                            _logger.LogTrace(traceLevel, "File content successfully deserialized.");
+                            LogTrace("File content successfully deserialized.");
                             TrySetValue(newValue);
                         }
                         else
                         {
-                            _logger.LogWarning(traceLevel, "File was found, but no content was loaded.");
+                            LogWarning("File was found, but no content was loaded.");
                         }
                     }, out var elapsed, out var exception))
                     {
-                        _logger.LogPerformance(traceLevel, "Deserialized settings from file.", elapsed);
+                        LogPerformance(elapsed, "Deserialized settings from file.");
                     }
                     else if (exception != default)
                     {
-                        _logger.LogError(traceLevel, exception);
+                        LogException(exception);
                     }
                 }
                 else
                 {
-                    _logger.LogWarning(traceLevel, "Settings file does not exist and will be created from defaults.", $"Path: '{path}'");
+                    LogWarning("Settings file does not exist and will be created from defaults.", $"Path: '{path}'");
                     Write(_default);
                 }
             }
             catch (Exception exception)
             {
-                _logger.LogWarning(traceLevel, "Error reading from settings file. Cached settings remain in effect.", $"Path: '{_path}'");
-                _logger.LogError(traceLevel, exception);
+                LogWarning("Error reading from settings file. Cached settings remain in effect.", $"Path: '{_path}'");
+                LogException(exception);
                 throw;
             }
 
@@ -166,30 +164,22 @@ namespace Rubberduck.SettingsProvider
         public void Write(TSettings settings)
         {
             var traceLevel = TraceLevel;
-            _logger.LogTrace(traceLevel, "Writing to settings file...", _path);
+            LogTrace("Writing to settings file...", _path);
 
             var path = _path;
             var fileSystem = _fileSystem;
 
-            var success = TimedAction.TryRun(() =>
+            TryRunAction(() =>
             {
                 var content = JsonSerializer.Serialize(settings, _options);
                 fileSystem.File.WriteAllText(path, content);
-            }, out var elapsed, out var exception);
-            
-            if (success)
-            {
-                _logger.LogPerformance(traceLevel, $"Serializing and writing content to file '{_path}' completed.", elapsed);
-            }
-            else if (exception != default)
-            {
-                _logger.LogError(traceLevel, exception);
-            }
+            });
         }
 
         void ISettingsChangedHandler<TSettings>.OnSettingsChanged(TSettings settings)
         {
             _cached = settings;
+            Write(settings);
         }
     }
 }

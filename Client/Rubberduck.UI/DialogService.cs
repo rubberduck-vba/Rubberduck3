@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Common;
-using Rubberduck.InternalApi.Extensions;
-using Rubberduck.InternalApi.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command;
 using System;
@@ -9,20 +7,17 @@ using System.Windows;
 
 namespace Rubberduck.UI
 {
-    public abstract class DialogService<TView, TViewModel> : IDialogService<TViewModel>
+    public abstract class DialogService<TView, TViewModel> : ServiceBase, IDialogService<TViewModel>
         where TView : Window
         where TViewModel : IDialogWindowViewModel
     {
-        protected ILogger Logger { get; init; }
         private readonly IWindowFactory<TView, TViewModel> _factory;
-        private readonly ISettingsProvider<RubberduckSettings> _settingsProvider;
         private readonly MessageActionsProvider _actionsProvider;
 
-        protected DialogService(ILogger logger, IWindowFactory<TView, TViewModel> factory, ISettingsProvider<RubberduckSettings> settingsProvider, MessageActionsProvider actionsProvider)
+        protected DialogService(ILogger logger, IWindowFactory<TView, TViewModel> factory, IRubberduckSettingsProvider settings, MessageActionsProvider actionsProvider)
+            : base(logger, settings)
         {
-            Logger = logger;
             _factory = factory;
-            _settingsProvider = settingsProvider;
             _actionsProvider = actionsProvider;
         }
 
@@ -34,41 +29,22 @@ namespace Rubberduck.UI
             TView view = default!;
 
             var actions = _actionsProvider;
-            var settings = _settingsProvider.Settings;
-            var trace = settings.TelemetryServerSettings.TraceLevel.ToTraceLevel();
+            var verbosity = TraceLevel;
 
-            if (TimedAction.TryRun(() =>
+            if (TryRunAction(() =>
             {
-                viewModel = CreateViewModel(settings, actions)
+                viewModel = CreateViewModel(Settings, actions)
                     ?? throw new ArgumentNullException(nameof(viewModel), $"CreateViewModel returned null.");
 
-                view = _factory.Create(viewModel) 
-                    ?? throw new ArgumentNullException(nameof(view), $"View factory returned null.");
-
-            }, out var elapsed, out var exception))
+                view = _factory.Create(viewModel)
+                    ?? throw new ArgumentNullException(nameof(view), $"ViewFactory.Create returned null.");
+            }))
             {
-                Logger.LogPerformance(trace, $"Created view ({typeof(TView).Name}) and view model ({typeof(TViewModel).Name}) instances.", elapsed);
-
-                if (TimedAction.TryRun(() =>
-                {
-                    view.ShowDialog();
-                }, out var elapsedShown, out var exceptionShown))
-                {
-                    Logger.LogPerformance(trace, $"ShowDialog ({typeof(TView).Name}) completed.", elapsedShown);
-                }
-                else if(exceptionShown is not null)
-                {
-                    Logger.LogError(trace, exceptionShown);
-                }
-            }
-            else if (exception is not null)
-            {
-                Logger.LogCritical(trace, exception);
-                // TODO return a vm with a default SelectedAction instead?
-                throw new InvalidOperationException("The requested dialog could not be shown; an invalid view model cannot be returned.", exception);
+                TryRunAction(() => view.ShowDialog());
+                return viewModel;
             }
 
-            return viewModel;
+            throw new InvalidOperationException();
         }
     }
 }

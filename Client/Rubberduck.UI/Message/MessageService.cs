@@ -2,6 +2,7 @@
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
+using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command;
 using System;
@@ -39,28 +40,23 @@ namespace Rubberduck.UI.Message
         void ShowError(string key, Exception exception, LogLevel level = LogLevel.Error);
     }
 
-    public class MessageService : IMessageService
+    public class MessageService : ServiceBase, IMessageService
     {
-        private readonly ISettingsProvider<RubberduckSettings> _settings;
-        private readonly ILogger _logger;
         private readonly IMessageWindowFactory _viewFactory;
 
         private readonly MessageActionsProvider _actionsProvider;
 
-        public MessageService(ISettingsProvider<RubberduckSettings> settings, ILogger<MessageService> logger,
+        public MessageService(IRubberduckSettingsProvider settings, ILogger<MessageService> logger,
             IMessageWindowFactory viewFactory,
             MessageActionsProvider actionsProvider)
+            : base(logger, settings)
         {
-            _settings = settings;
-            _logger = logger;
             _viewFactory = viewFactory;
             _actionsProvider = actionsProvider;
         }
 
         public MessageActionResult ShowMessageRequest(MessageRequestModel model, Func<MessageActionsProvider, MessageActionCommand[]>? actions = null)
         {
-            var trace = _settings.Settings.LanguageServerSettings.TraceLevel.ToTraceLevel();
-
             if (CanShowMessageKey(model.Key))
             {
                 var (view, viewModel) = _viewFactory.Create(model, actions ?? (provider => _actionsProvider.OkCancel()));
@@ -69,16 +65,16 @@ namespace Rubberduck.UI.Message
                 var selection = viewModel.SelectedAction;
                 if (selection is not null)
                 {
-                    _logger.LogTrace(trace, "User has closed the message window.", $"Selected action: {selection.ResourceKey}");
+                    LogTrace("User has closed the message window.", $"Selected action: {selection.ResourceKey}");
                     return new MessageActionResult { MessageAction = selection, IsEnabled = viewModel.IsEnabled };
                 }
 
-                _logger.LogWarning(trace, "User has closed the message window, but no message action was set. This is likely a bug.");
+                LogWarning("User has closed the message window, but no message action was set. This is likely a bug.");
                 return viewModel.IsEnabled ? MessageActionResult.Default : MessageActionResult.Disabled;
             }
             else
             {
-                _logger.LogTrace(trace, "Message key was disabled by the user; message will not be shown.", $"Key: {model.Key} ({model.Level})");
+                LogTrace("Message key was disabled by the user; message will not be shown.", $"Key: {model.Key} ({model.Level})");
             }
 
             return MessageActionResult.Disabled;
@@ -86,8 +82,6 @@ namespace Rubberduck.UI.Message
 
         public MessageActionResult ShowMessage(MessageModel model, Func<MessageActionsProvider, MessageActionCommand[]>? actions = null)
         {
-            var trace = _settings.Settings.LanguageServerSettings.TraceLevel.ToTraceLevel();
-
             if (CanShowMessageKey(model.Key))
             {
                 var (view, viewModel) = _viewFactory.Create(model, actions);
@@ -96,16 +90,16 @@ namespace Rubberduck.UI.Message
                 var selection = viewModel.SelectedAction;
                 if (selection is not null)
                 {
-                    _logger.LogTrace(trace, "User has closed the message window.", $"Selected action: {selection.ResourceKey}");
+                    LogTrace("User has closed the message window.", $"Selected action: {selection.ResourceKey}");
                     return new MessageActionResult { MessageAction = selection, IsEnabled = viewModel.IsEnabled };
                 }
 
-                _logger.LogWarning(trace, "User has closed the message window, but no message action was set. This is likely a bug.");
+                LogWarning("User has closed the message window, but no message action was set. This is likely a bug.");
                 return viewModel.IsEnabled ? MessageActionResult.Default : MessageActionResult.Disabled;
             }
             else
             {
-                _logger.LogTrace(trace, "Message key was disabled by the user; message will not be shown.", $"Key: {model.Key} ({model.Level})");
+                LogTrace("Message key was disabled by the user; message will not be shown.", $"Key: {model.Key} ({model.Level})");
             }
 
             return MessageActionResult.Disabled;
@@ -124,6 +118,6 @@ namespace Rubberduck.UI.Message
             ShowMessage(model, provider => provider.OkOnly());
         }
 
-        private bool CanShowMessageKey(string key) => !_settings.Settings.GeneralSettings.DisabledMessageKeys.Contains(key);
+        private bool CanShowMessageKey(string key) => !Settings.GeneralSettings.DisabledMessageKeys.Contains(key);
     }
 }

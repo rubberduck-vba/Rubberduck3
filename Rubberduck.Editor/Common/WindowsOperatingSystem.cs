@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO.Abstractions;
 using System.Management;
 
-namespace Rubberduck.Common
+namespace Rubberduck.Editor.Common
 {
     public sealed class WindowsOperatingSystem : IOperatingSystem
     {
@@ -47,7 +47,7 @@ namespace Rubberduck.Common
                     int.TryParse(versionElements[2], out var build))
                 {
                     return new WindowsVersion(major, minor, build);
-                }                
+                }
             }
             catch (Exception exception)
             {

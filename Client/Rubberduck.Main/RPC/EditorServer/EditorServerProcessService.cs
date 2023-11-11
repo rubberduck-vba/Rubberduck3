@@ -1,34 +1,31 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Settings;
-using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Main.Commands.ShowRubberduckEditor;
+using Rubberduck.ServerPlatform;
+using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.Unmanaged.WindowsApi;
 using System;
 using System.Diagnostics;
-using Rubberduck.InternalApi.Common;
+using Env = System.Environment;
 
 namespace Rubberduck.Main.RPC.EditorServer
 {
-    class EditorServerProcessService : IEditorServerProcessService, IDisposable
+    class EditorServerProcessService : ServerPlatform.ServiceBase, IEditorServerProcessService, IDisposable
     {
-        private Process? _process;
         private readonly ILogger _logger;
-        private readonly ISettingsProvider<RubberduckSettings> _settingsProvider;
+        private Process? _process;
 
-        public EditorServerProcessService(ILogger<EditorServerProcessService> logger, ISettingsProvider<RubberduckSettings> settingsProvider)
+        public EditorServerProcessService(ILogger<EditorServerProcessService> logger, IRubberduckSettingsProvider settingsProvider, IWorkDoneProgressStateService workdone)
+            : base(logger, settingsProvider, workdone)
         {
             _logger = logger;
-            _settingsProvider = settingsProvider;
         }
-
-        private TraceLevel TraceLevel => _settingsProvider.Settings.GeneralSettings.TraceLevel.ToTraceLevel();
 
         public Exception? ShowEditor()
         {
             if (_process is null)
             {
-                _settingsProvider.ClearCache();
+                (Settings as ISettingsService<RubberduckSettings>)?.ClearCache();
                 return StartEditor();
             }
 
@@ -37,45 +34,27 @@ namespace Rubberduck.Main.RPC.EditorServer
 
         private Exception? StartEditor()
         {
-            if (TimedAction.TryRun(() =>
+            TryRunAction(() =>
             {
                 var helper = new EditorServerProcess(_logger);
-                var startupOptions = _settingsProvider.Settings.LanguageClientSettings.StartupSettings;
-                var currentProcessId = Environment.ProcessId;
+                var startupOptions = Settings.LanguageClientSettings.StartupSettings;
+                var currentProcessId = Env.ProcessId;
                 _process = helper.Start(currentProcessId, startupOptions);
+            }, out var exception);
 
-                // TODO initialize LSP-lite w/EditorServer
-
-            }, out var elapsed, out var exception))
-            {
-                _logger.LogPerformance(TraceLevel, "Started Rubberduck Editor process.", elapsed);
-            }
-            else if (exception is not null)
-            {
-                _logger.LogError(TraceLevel, exception);
-                return exception;
-            }
-
-            return null;
+            return exception;
         }
 
         private Exception? BringToFront()
         {
-            if (TimedAction.TryRun(() =>
+            // TODO move this to a server-side command
+            TryRunAction(() =>
             {
                 var process = _process ?? throw new InvalidOperationException();
                 User32.SetForegroundWindow(process.MainWindowHandle);
-            }, out var elapsed, out var exception))
-            {
-                _logger.LogPerformance(TraceLevel, "Brought Rubberduck Editor process main window to foreground.", elapsed);
-            }
-            else if (exception is not null)
-            {
-                _logger.LogError(TraceLevel, exception);
-                return exception;
-            }
+            }, out var exception);
 
-            return null;
+            return exception;
         }
 
         public void Dispose()

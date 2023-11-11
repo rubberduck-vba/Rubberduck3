@@ -9,14 +9,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Environment\**" />
     <Compile Remove="FileMenu\**" />
     <Compile Remove="Resources\Customoccvondvond\**" />
+    <Compile Remove="RPC\UpdateServerClient\**" />
+    <EmbeddedResource Remove="Environment\**" />
     <EmbeddedResource Remove="FileMenu\**" />
     <EmbeddedResource Remove="Resources\Customoccvondvond\**" />
+    <EmbeddedResource Remove="RPC\UpdateServerClient\**" />
+    <None Remove="Environment\**" />
     <None Remove="FileMenu\**" />
     <None Remove="Resources\Customoccvondvond\**" />
+    <None Remove="RPC\UpdateServerClient\**" />
+    <Page Remove="Environment\**" />
     <Page Remove="FileMenu\**" />
     <Page Remove="Resources\Customoccvondvond\**" />
+    <Page Remove="RPC\UpdateServerClient\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +44,7 @@
     <PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.19.9" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
     <PackageReference Include="SharpVectors" Version="1.8.2" />
+    <PackageReference Include="System.Management" Version="7.0.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -88,9 +97,6 @@
     <Compile Update="Splash\SplashWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="RPC\UpdateServerClient\" />
   </ItemGroup>
   <ItemGroup>
     <None Update="NLog-editor.config">

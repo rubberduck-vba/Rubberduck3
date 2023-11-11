@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rubberduck.Common
+namespace Rubberduck.Editor.Common
 {
     public readonly struct WindowsVersion : IComparable<WindowsVersion>, IEquatable<WindowsVersion>
     {

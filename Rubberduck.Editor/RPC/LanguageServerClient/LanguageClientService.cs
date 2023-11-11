@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
-using Nerdbank.Streams;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -27,8 +26,6 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
         public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, NamedPipeClientStream pipe, long clientProcessId, RubberduckSettings settings, string workspaceRoot)
         {
             var options = new LanguageClientOptions();
-            options.WithInput(pipe.UsePipeReader());
-            options.WithOutput(pipe.UsePipeWriter());
 
             ConfigureLanguageClient(options, clientAssembly, clientProcessId, settings, workspaceRoot);
             return options;
@@ -37,8 +34,6 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
         public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, Process serverProcess, long clientProcessId, RubberduckSettings settings, string workspaceRoot)
         {
             var options = new LanguageClientOptions();
-            options.WithInput(serverProcess.StandardOutput.BaseStream);
-            options.WithOutput(serverProcess.StandardInput.BaseStream);
 
             ConfigureLanguageClient(options, clientAssembly, clientProcessId, settings, workspaceRoot);
             return options;
@@ -49,7 +44,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
             builder.AddNLog("NLog-client.config");
         }
 
-        private static LanguageClientOptions ConfigureLanguageClient(LanguageClientOptions options, Assembly clientAssembly, long clientProcessId, RubberduckSettings settings, string workspaceRoot)
+        public static LanguageClientOptions ConfigureLanguageClient(LanguageClientOptions options, Assembly clientAssembly, long clientProcessId, RubberduckSettings settings, string workspaceRoot)
         {
             var info = clientAssembly.ToClientInfo();
 
@@ -67,7 +62,6 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
             {
                 Timestamp = DateTime.Now,
                 Locale = settings.GeneralSettings.Locale,
-                //LibraryReferences = TODO[]
             };
 
             options
@@ -76,6 +70,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
                 .WithTrace(settings.LanguageServerSettings.TraceLevel.ToInitializeTrace())
                 .WithInitializationOptions(JsonSerializer.Serialize(initializationOptions))
                 .WithWorkspaceFolder(workspace)
+                .WithRootUri(workspaceRoot)
                 .WithContentModifiedSupport(true)
 
                 .OnInitialize((client, request, cancellationToken) =>

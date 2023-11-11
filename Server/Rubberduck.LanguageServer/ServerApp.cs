@@ -277,7 +277,7 @@ namespace Rubberduck.LanguageServer
                     break;
 
                 case TransportType.Pipe:
-                    ConfigurePipe(options);
+                    ConfigurePipeIO(options);
                     break;
 
                 default:
@@ -294,7 +294,7 @@ namespace Rubberduck.LanguageServer
             options.WithOutput(Console.OpenStandardOutput());
         }
 
-        private void ConfigurePipe(LanguageServerOptions options)
+        private void ConfigurePipeIO(LanguageServerOptions options)
         {
             var ioOptions = (PipeServerStartupOptions)_options;
             _logger?.LogInformation("Configuring language server transport to use a named pipe stream (mode: {mode})...", ioOptions.Mode);

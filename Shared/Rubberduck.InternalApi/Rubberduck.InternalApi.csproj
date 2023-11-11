@@ -8,6 +8,11 @@
     <Platforms>AnyCPU</Platforms>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="ServerPlatform\VBE\**" />
+    <EmbeddedResource Remove="ServerPlatform\VBE\**" />
+    <None Remove="ServerPlatform\VBE\**" />
+  </ItemGroup>
   
   <ItemGroup>
     <None Include="app.config" />
@@ -28,10 +33,6 @@
     <PackageReference Include="System.IO.Abstractions">
       <Version>19.2.69</Version>
     </PackageReference>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="ServerPlatform\VBE\" />
   </ItemGroup>
 
 </Project>

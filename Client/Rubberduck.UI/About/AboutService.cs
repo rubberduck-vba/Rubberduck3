@@ -1,9 +1,12 @@
-﻿namespace Rubberduck.UI.About
+﻿using Microsoft.Extensions.Logging;
+using Rubberduck.SettingsProvider;
+
+namespace Rubberduck.UI.About
 {
     public class AboutService : WindowService<AboutWindow, IAboutWindowViewModel>
     {
-        public AboutService(IAboutWindowViewModel viewModel)
-            : base(viewModel)
+        public AboutService(ILogger<WindowService<AboutWindow, IAboutWindowViewModel>> logger, IRubberduckSettingsProvider settings, IAboutWindowViewModel viewModel)
+            : base(logger, settings, viewModel)
         {
         }
 

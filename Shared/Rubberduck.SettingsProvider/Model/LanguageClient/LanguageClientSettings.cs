@@ -18,6 +18,7 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
                 new RequireDefaultWorkspaceRootHostSetting { Value = RequireDefaultWorkspaceRootHostSetting.DefaultSettingValue },
                 new EnableUncWorkspacesSetting { Value = EnableUncWorkspacesSetting.DefaultSettingValue },
                 new LanguageClientStartupSettings { Value = LanguageClientStartupSettings.DefaultSettings },
+                new ExitNotificationDelaySetting { Value = ExitNotificationDelaySetting.DefaultSettingValue },
             };
 
         public LanguageClientSettings()
@@ -37,6 +38,8 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
         public bool EnableUncWorkspaces => GetSetting<EnableUncWorkspacesSetting>().TypedValue;
         [JsonIgnore]
         public LanguageClientStartupSettings StartupSettings => GetSetting<LanguageClientStartupSettings>();
+        [JsonIgnore]
+        public TimeSpan ExitNotificationDelay => GetSetting<ExitNotificationDelaySetting>().TypedValue;
 
         public static LanguageClientSettings Default { get; } = new() { Value = DefaultSettings, DefaultValue = DefaultSettings };
         LanguageClientSettings IDefaultSettingsProvider<LanguageClientSettings>.Default => Default;

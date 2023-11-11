@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Text.Json;
-using static Rubberduck.Core.ProjectFile.ProjectFile;
+using static Rubberduck.ProjectFile.ProjectFile;
 
-namespace Rubberduck.Core.ProjectFile
+namespace Rubberduck.ProjectFile
 {
     public interface IProjectFileService
     {

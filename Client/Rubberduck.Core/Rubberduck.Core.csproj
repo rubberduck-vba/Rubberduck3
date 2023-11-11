@@ -12,6 +12,12 @@
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Editor\**" />
+    <EmbeddedResource Remove="Editor\**" />
+    <None Remove="Editor\**" />
+    <Page Remove="Editor\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Ducky.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -43,8 +49,5 @@
       <Project>{030FDE59-C347-4B81-AB80-5B4B80B757A0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Editor\" />
   </ItemGroup>
 </Project>

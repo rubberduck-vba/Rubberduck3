@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rubberduck.Common
+namespace Rubberduck.Editor.Common
 {
     /// <summary>
     /// Mark a feature as undocumented.

@@ -34,7 +34,7 @@ namespace Rubberduck.Main.Commands.ShowRubberduckEditor
             var exception = _service.ShowEditor();
             if (exception is not null)
             {
-                // TODO add this resource key
+                // TODO localize
                 _message.ShowError("RubberduckEditorProcessStartFailed", exception);
             }
             else

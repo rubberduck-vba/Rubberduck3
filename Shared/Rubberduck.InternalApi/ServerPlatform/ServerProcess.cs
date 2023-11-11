@@ -4,6 +4,7 @@ using Rubberduck.InternalApi.Settings;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Rubberduck.InternalApi.ServerPlatform
 {
@@ -26,15 +27,14 @@ namespace Rubberduck.InternalApi.ServerPlatform
         public virtual Process Start(long clientProcessId, IProcessStartInfoArgumentProvider settings)
         {
             var path = settings.ServerExecutablePath;
-            var filename = Path.GetFileName(path);
-            if (!string.Equals(filename, ExecutableFileName, StringComparison.InvariantCultureIgnoreCase))
-            {
-                Logger.LogWarning(TraceLevel.Verbose, $"ServerExecutablePath configured filename is unexpected.", $"expected: '{ExecutableFileName}' actual: '{filename}'.");
-            }
+            var fullPath = Path.Combine(path, ExecutableFileName);
 
-            if (!File.Exists(path))
+            if (!File.Exists(fullPath))
             {
-                Logger.LogWarning(TraceLevel.Verbose, $"{settings.GetType().Name}.ServerExecutablePath configuration is invalid.", $"Current configured value: '{path}'.");
+                Logger.LogWarning(TraceLevel.Verbose, 
+                    $"{settings.GetType().Name}.ServerExecutablePath configuration is invalid.", 
+                    $"Configured value '{path}' should be a folder that contains the '{ExecutableFileName}' executable.");
+                
                 throw new FileNotFoundException($"ServerExecutablePath configuration is invalid.");
             }
 
@@ -51,6 +51,7 @@ namespace Rubberduck.InternalApi.ServerPlatform
             };
 
             var process = new Process { StartInfo = info };
+
             try
             {
                 process.Start();

@@ -1,7 +1,7 @@
 ﻿//using NLog;
 //using NLog.Config;
 
-namespace Rubberduck.Common
+namespace Rubberduck.Editor.Common
 {
     /*
     public static class LogLevelHelper

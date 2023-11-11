@@ -2,8 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
-using Rubberduck.Common;
-using Rubberduck.Core;
+using Rubberduck.Editor.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Main.About;
@@ -71,7 +70,7 @@ namespace Rubberduck.Main.Root
 
         private RubberduckServicesBuilder WithAssemblyInfo()
         {
-            _services.AddSingleton(provider => Assembly.GetExecutingAssembly().GetName().Version!);
+            _services.AddSingleton<Version>(provider => Assembly.GetExecutingAssembly().GetName().Version!);
             _services.AddSingleton<IOperatingSystem, WindowsOperatingSystem>();
 
             return this;
@@ -102,6 +101,7 @@ namespace Rubberduck.Main.Root
         private RubberduckServicesBuilder WithSettingsProviders()
         {
             // ISettingsService<TSettings> provides file I/O
+            _services.AddSingleton<IRubberduckSettingsProvider, RubberduckSettingsService>();
             _services.AddSingleton<ISettingsService<RubberduckSettings>, SettingsService<RubberduckSettings>>();
 
             // IDefaultSettingsProvider<TSettings> provide the default configuration settings for injectable setting groups

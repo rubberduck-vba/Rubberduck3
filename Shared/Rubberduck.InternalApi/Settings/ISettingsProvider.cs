@@ -30,11 +30,6 @@ namespace Rubberduck.InternalApi.Settings
     public interface ISettingsChangedHandler<TSettings>
     {
         /// <summary>
-        /// Gets the currently applicable settings.
-        /// </summary>
-        TSettings Settings { get; }
-
-        /// <summary>
         /// Replaces the cached settings with the specified value.
         /// </summary>
         void OnSettingsChanged(TSettings settings);

@@ -1,7 +1,7 @@
 ﻿using Rubberduck.Unmanaged.TypeLibs.Utility;
 using System;
 
-namespace Rubberduck.Core.ProjectFile
+namespace Rubberduck.ProjectFile
 {
     public record class ProjectFile
     {

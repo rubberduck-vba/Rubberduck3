@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Rubberduck.Common
+namespace Rubberduck.Editor.Common
 {
     public enum HorizontalAlignment
     {
@@ -71,7 +71,7 @@ namespace Rubberduck.Common
                 }
                 rows[r] = string.Join(",", row);
             }
-            return CsvEncode(title.Replace("\r\n"," ")) + Environment.NewLine + string.Join(",", headerRow) + Environment.NewLine + string.Join(Environment.NewLine, rows);
+            return CsvEncode(title.Replace("\r\n", " ")) + Environment.NewLine + string.Join(",", headerRow) + Environment.NewLine + string.Join(Environment.NewLine, rows);
         }
 
         private static string CsvEncode(object value)
@@ -94,7 +94,7 @@ namespace Rubberduck.Common
             else
             {
                 if (value != null)
-                { 
+                {
                     s = value.ToString() ?? string.Empty;
                 }
             }
@@ -104,20 +104,20 @@ namespace Rubberduck.Common
         public static string HtmlClipboardFragment(object[][] data, string title, ColumnInfo[] columnInfos)
         {
             const string OffsetFormat = "0000000000";
-            const string CFHeaderTemplate = 
+            const string CFHeaderTemplate =
                 "Version:1.0\r\n" +
                 "StartHTML:{0}\r\n" +
                 "EndHTML:{1}\r\n" +
                 "StartFragment:{2}\r\n" +
                 "EndFragment:{3}\r\n";
-            
-            const string HtmlHeader = 
-                "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n" + 
+
+            const string HtmlHeader =
+                "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n" +
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n" +
                 "<body>\r\n" +
                 "<!--StartFragment-->\r\n";
 
-            const string HtmlFooter = 
+            const string HtmlFooter =
                 "<!--EndFragment-->\r\n" +
                 "</body>\r\n" +
                 "</html>";
@@ -135,9 +135,9 @@ namespace Rubberduck.Common
         }
 
         public static string HtmlTable(object[][] data, string title, ColumnInfo[] columnInfos)
-        {            
+        {
 
-            var titleRow = HtmlCell(title,true,false,3,columnInfos.Length);
+            var titleRow = HtmlCell(title, true, false, 3, columnInfos.Length);
 
             var hcells = new string[columnInfos.Length];
             for (var c = 0; c < columnInfos.Length; c++)
@@ -156,7 +156,7 @@ namespace Rubberduck.Common
                 }
                 rows[r] = "  <tr>\r\n" + string.Join(Environment.NewLine, row) + "\r\n</tr>";
             }
-            return  "<table cellspacing=\"0\">\r\n" + titleRow + "\r\n" + headerRow + "\r\n" + string.Join(Environment.NewLine, rows) + "\r\n</table>\r\n";
+            return "<table cellspacing=\"0\">\r\n" + titleRow + "\r\n" + headerRow + "\r\n" + string.Join(Environment.NewLine, rows) + "\r\n</table>\r\n";
         }
 
         private static string HtmlCell(object value, bool bottomBorder = false, bool bold = false, int padding = 3, int colSpan = 1, HorizontalAlignment hAlign = HorizontalAlignment.Left)
@@ -178,7 +178,7 @@ namespace Rubberduck.Common
         {
             const string tdstyle = "vertical-align: bottom; ";
 
-            var sAlign = $"text-align: {hAlign}; " ;
+            var sAlign = $"text-align: {hAlign}; ";
             var sBorder = borderBottom.Length > 0 ? "border-bottom: " + borderBottom + " solid #000000; " : "";
             var sWeight = isBold ? "font-weight: bold; " : "";
             return tdstyle + sAlign + sBorder + sWeight;
@@ -384,12 +384,12 @@ namespace Rubberduck.Common
                 xmlSS.WriteStartElement("Row");
                 for (var c = 0; c < data[r].Length; c++)
                 {
-                    var valueType = (data[r][c] is string || data[r][c] == null) ? "String" : "Number";
+                    var valueType = data[r][c] is string || data[r][c] == null ? "String" : "Number";
                     xmlSS.WriteStartElement("Cell");
                     if (columnInfos[c].Data.HorizontalAlignment == HorizontalAlignment.Right)
                     {
                         xmlSS.WriteAttributeString("ss", "StyleID", null,
-                            (r == data.Length - 1 ? "LastRowRightAligned" : "RightAligned"));
+                            r == data.Length - 1 ? "LastRowRightAligned" : "RightAligned");
                     }
                     else
                     {
@@ -422,8 +422,8 @@ namespace Rubberduck.Common
 
             return strm;
         }
-        
-        public static string RTF([NotNull]object[][] data, string title)
+
+        public static string RTF([NotNull] object[][] data, string title)
         {
             const byte fontSize = 16;    //half-points
             const long colWidth = 1440;  //twips
@@ -434,7 +434,7 @@ namespace Rubberduck.Common
             const string borderBottom = @"\clbrdrb\brdrw{0}\brdrs";
             const string borderTop = @"\clbrdrt\brdrw{0}\brdrs";
             const string headerFormat = @"\clvertalb{0}\cellx{1}{2}";
-            const string cellFormat =   @"\clvertalt{0}\cellx{1}{2}";
+            const string cellFormat = @"\clvertalt{0}\cellx{1}{2}";
             const string cellContent = @"\pard\intbl\ql\sb{0}\sa{0}\li{0}\lr{0}{{{1}}}\cell{2}";
             const string rowStart = @"\trowd\intbl{0}";
             const string rowEnd = @"\row{0}";
@@ -453,19 +453,19 @@ namespace Rubberduck.Common
             {
                 if (r == 0)
                 {
-                    sb.AppendFormat(rowStart,newLine);
+                    sb.AppendFormat(rowStart, newLine);
                     for (var c = 0; c < data[r].Length; c++)
                     {
-                        sb.AppendFormat(headerFormat, cellBorders, colWidth * (c+1), newLine);
+                        sb.AppendFormat(headerFormat, cellBorders, colWidth * (c + 1), newLine);
                     }
                     for (var c = 0; c < data[r].Length; c++)
                     {
-                        sb.AppendFormat(cellContent, cellPadding, string.Format(boldFormat,"Col. " + (c+1)), newLine);
+                        sb.AppendFormat(cellContent, cellPadding, string.Format(boldFormat, "Col. " + (c + 1)), newLine);
                     }
-                    sb.AppendFormat(rowEnd,newLine);
+                    sb.AppendFormat(rowEnd, newLine);
                 }
 
-                cellBorders = (r == data.Length - 1) ? string.Format(borderBottom, borderWidth) : "";
+                cellBorders = r == data.Length - 1 ? string.Format(borderBottom, borderWidth) : "";
 
                 sb.AppendFormat(rowStart, newLine);
                 for (var c = 0; c < data[r].Length; c++)

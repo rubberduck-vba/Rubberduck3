@@ -1,10 +1,8 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
-using Rubberduck.InternalApi.Common;
-using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
+using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider.Model;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,31 +11,27 @@ namespace Rubberduck.Editor.RPC.EditorServer.Handlers.Workspace
 {
     public class DidChangeConfigurationHandler : DidChangeConfigurationHandlerBase
     {
-        private readonly ILogger _logger;
-        private readonly ISettingsChangedHandler<RubberduckSettings> _settings;
+        private readonly ServerPlatformServiceHelper _service;
+        private readonly ISettingsChangedHandler<RubberduckSettings> _settingsChangedHandler;
 
-        public DidChangeConfigurationHandler(ILogger<DidChangeConfigurationHandler> logger, ISettingsChangedHandler<RubberduckSettings> settings) 
+        public DidChangeConfigurationHandler(ServerPlatformServiceHelper service, ISettingsChangedHandler<RubberduckSettings> settingsChangedHandler) 
         {
-            _logger = logger;
-            _settings = settings;
+            _service = service;
+            _settingsChangedHandler = settingsChangedHandler;
         }
 
         public override async Task<Unit> Handle(DidChangeConfigurationParams request, CancellationToken cancellationToken)
         {
-            if (TimedAction.TryRun(() =>
+            _service.TryRunAction(() =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var settings = request.Settings?.ToObject<RubberduckSettings>() 
+                var settings = request.Settings?.ToObject<RubberduckSettings>()
                     ?? throw new System.InvalidOperationException("ConfigurationParams contains no 'Settings' object.");
 
-                _settings.OnSettingsChanged(settings);
+                _settingsChangedHandler.OnSettingsChanged(settings);
 
-            }, out var elapsed, out var exception))
-            {
-                var level = _settings.Settings.GeneralSettings.TraceLevel.ToTraceLevel();
-                _logger.LogPerformance(level, "Handled DidChangeConfiguration notification.", elapsed);
-            }
+            }, nameof(DidChangeConfigurationHandler));
 
             return await Task.FromResult(Unit.Value);
         }

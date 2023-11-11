@@ -1,26 +1,20 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Extensions;
-using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider.Model;
-using System;
+using Rubberduck.SettingsProvider;
 using System.ComponentModel;
 using System.Windows;
 
 namespace Rubberduck.UI
 {
-    public abstract class WindowService<TView, TViewModel> : IPresenter
+    public abstract class WindowService<TView, TViewModel> : ServiceBase, IPresenter
         where TView : Window
         where TViewModel : class, INotifyPropertyChanged
     {
-        private readonly ILogger _logger;
-        private readonly ISettingsProvider<RubberduckSettings> _settings;
         private TView? _view;
 
-        protected WindowService(ILogger<WindowService<TView, TViewModel>> logger, ISettingsProvider<RubberduckSettings> settings, TViewModel viewModel)
+        protected WindowService(ILogger<WindowService<TView, TViewModel>> logger, IRubberduckSettingsProvider settings, TViewModel viewModel)
+            : base(logger, settings)
         {
             Model = viewModel;
-            _logger = logger;
-            _settings = settings;
         }
 
         public TViewModel Model { get; }
@@ -34,16 +28,18 @@ namespace Rubberduck.UI
 
         public void Show()
         {
-            if (PreconditionCheck())
+            TryRunAction(() =>
             {
-                _view ??= CreateWindow(Model);
-                _view.Show();
-            }
-            else
-            {
-                var trace = _settings.Settings.GeneralSettings.TraceLevel.ToTraceLevel();
-                _logger.LogDebug(trace, "Precondition check returned false; window will not be displayed.");
-            }
+                if (PreconditionCheck())
+                {
+                    _view ??= CreateWindow(Model);
+                    _view.Show();
+                }
+                else
+                {
+                    LogDebug("Precondition check returned false; window will not be displayed.");
+                }
+            });
         }
     }
 }

@@ -7,7 +7,6 @@ using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Server;
-using Rubberduck.Editor.EditorServer;
 using Rubberduck.Editor.RPC.EditorServer.Handlers.Lifecycle;
 using Rubberduck.Editor.RPC.EditorServer.Handlers.Workspace;
 using Rubberduck.InternalApi.Common;
@@ -27,7 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.LanguageServer;
 
-namespace Rubberduck.Editor
+namespace Rubberduck.Editor.RPC.EditorServer
 {
     public sealed class ServerApp : IDisposable
     {
@@ -64,7 +63,7 @@ namespace Rubberduck.Editor
                 _serverState = _serviceProvider.GetRequiredService<EditorServerState>();
 
                 _languageServer = await OmniSharpLanguageServer.From(ConfigureServer, _serviceProvider, _tokenSource.Token);
-                
+
                 await _languageServer.WaitForExit;
             }
             catch (OperationCanceledException)
@@ -81,8 +80,8 @@ namespace Rubberduck.Editor
         private void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<Func<ILanguageServer>>(provider => () => _languageServer);
-            services.AddSingleton<ServerStartupOptions>(provider => _options);
-            services.AddSingleton<Process>(provider => Process.GetProcessById((int)_options.ClientProcessId));
+            services.AddSingleton(provider => _options);
+            services.AddSingleton(provider => Process.GetProcessById(_options.ClientProcessId));
 
             services.AddSingleton<IFileSystem, FileSystem>();
 
@@ -142,7 +141,7 @@ namespace Rubberduck.Editor
 
             options
                 .WithServerInfo(info)
-                .OnInitialize((ILanguageServer server, InitializeParams request, CancellationToken token) =>
+                .OnInitialize((server, request, token) =>
                 {
                     _logger?.LogDebug("Received Initialize request.");
                     token.ThrowIfCancellationRequested();
@@ -161,7 +160,7 @@ namespace Rubberduck.Editor
                     return Task.CompletedTask;
                 })
 
-                .OnInitialized((ILanguageServer server, InitializeParams request, InitializeResult response, CancellationToken token) =>
+                .OnInitialized((server, request, response, token) =>
                 {
                     _logger?.LogDebug("Received Initialized notification.");
                     token.ThrowIfCancellationRequested();
@@ -170,7 +169,7 @@ namespace Rubberduck.Editor
                     return Task.CompletedTask;
                 })
 
-                .OnStarted((ILanguageServer server, CancellationToken token) =>
+                .OnStarted((server, token) =>
                 {
                     _logger?.LogDebug("Language server started.");
                     token.ThrowIfCancellationRequested();

@@ -5,11 +5,11 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider.Model.Editor;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 
-namespace Rubberduck.Editor.EditorServer
+namespace Rubberduck.Editor.RPC.EditorServer
 {
     public interface ILanguageServerState : IServerStateWriter
     {
@@ -20,7 +20,9 @@ namespace Rubberduck.Editor.EditorServer
     {
         private readonly IExitHandler _exitHandler;
 
-        public EditorServerState(ILogger<EditorServerState> logger, 
+        private readonly HashSet<WorkspaceFolder> _workspaceFolders = new();
+
+        public EditorServerState(ILogger<EditorServerState> logger,
             IHealthCheckService<LanguageClientStartupSettings> healthCheck,
             IExitHandler exitHandler)
             : base(logger, healthCheck)
@@ -28,20 +30,23 @@ namespace Rubberduck.Editor.EditorServer
             _exitHandler = exitHandler;
         }
 
-        private Container<WorkspaceFolder>? _workspaceFolders;
-        public IEnumerable<WorkspaceFolder> Workspacefolders => _workspaceFolders ?? throw new ServerStateNotInitializedException();
+        public IEnumerable<WorkspaceFolder> WorkspaceFolders { get; set; }
 
         public DocumentUri RootUri { get; set; }
 
         public void AddWorkspaceFolders(IEnumerable<WorkspaceFolder> workspaceFolders)
         {
-            _workspaceFolders = _workspaceFolders?.Concat(workspaceFolders).ToContainer() ?? throw new ServerStateNotInitializedException();
+            _workspaceFolders.UnionWith(workspaceFolders);
         }
 
         protected override void OnInitialize(InitializeParams param)
         {
-            _workspaceFolders = param.WorkspaceFolders!;
-            RootUri = param.RootUri!;
+            var folders = param.WorkspaceFolders ?? throw new ArgumentException("Expected non-empty WorkspaceFolders collection.");
+            var root = param.RootUri?.ToUri().LocalPath ?? param.RootPath ?? throw new ArgumentException("Expected non-null root URI or root path.");
+
+            _workspaceFolders.Clear();
+            _workspaceFolders.UnionWith(folders);
+            RootUri = new Uri(root);
         }
 
         protected override void OnClientProcessExited()

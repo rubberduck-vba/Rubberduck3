@@ -1,30 +1,20 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using System.Diagnostics;
 using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Rubberduck.SettingsProvider.Model;
+using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.ServerPlatform;
 using System;
-using System.Threading;
-using Rubberduck.InternalApi.Extensions;
-using Rubberduck.InternalApi.Common;
 using System.Linq;
-using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider.Model.LanguageServer;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
 {
     public class WorkspaceFoldersHandler : WorkspaceFoldersHandlerBase
     {
-        private readonly ILogger<WorkspaceFoldersHandler> _logger;
-        private readonly ISettingsProvider<LanguageServerSettings> _settingsProvider;
-
-        TraceLevel TraceLevel => _settingsProvider.Settings.TraceLevel.ToTraceLevel();
-
-        public WorkspaceFoldersHandler(ILogger<WorkspaceFoldersHandler> logger, ISettingsProvider<LanguageServerSettings> settingsProvider)
+        private readonly ServerPlatformServiceHelper _service;
+        public WorkspaceFoldersHandler(ServerPlatformServiceHelper service)
         {
-            _logger = logger;
-            _settingsProvider = settingsProvider;
+            _service = service;
         }
 
         public override async Task<Container<WorkspaceFolder>?> Handle(WorkspaceFolderParams request, CancellationToken cancellationToken)
@@ -34,21 +24,18 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
 
             try
             {
-                var elapsed = TimedAction.Run(() =>
-                {
-                    var workspaceFolders = Enumerable.Empty<WorkspaceFolder>();
-                    response = new Container<WorkspaceFolder>(workspaceFolders);
-                });
-
-                _logger.LogPerformance(TraceLevel, "Handled WorkspaceFolders request.", elapsed);
-
-                return await Task.FromResult(response);
+                _service.RunAction(() =>
+                    {
+                        var workspaceFolders = Enumerable.Empty<WorkspaceFolder>(); // TODO
+                        response = new Container<WorkspaceFolder>(workspaceFolders);
+                    }, nameof(WorkspaceFoldersHandler));
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
-                _logger.LogError(TraceLevel, exception);
-                throw;
+                throw new RequestFailedException(nameof(WorkspaceFoldersHandler), exception);
             }
+
+            return await Task.FromResult(response);
         }
     }
 }

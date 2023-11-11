@@ -5,7 +5,7 @@
 //using System.Windows;
 //using System.Windows.Media.Imaging;
 
-//namespace Rubberduck.Common
+//namespace Rubberduck.Editor.Common
 //{
 //    public interface IClipboardWriter
 //    {

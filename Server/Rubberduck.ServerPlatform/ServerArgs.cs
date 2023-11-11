@@ -43,8 +43,8 @@ namespace Rubberduck.ServerPlatform
         public PipeServerStartupOptions() : base(TransportType.Pipe) { }
 
 
-        [Option('n', "Name", Default = ServerPlatformSettings.LanguageServerDefaultPipeName, HelpText = "The name of the transport pipe.")]
-        public string Name { get; set; } = ServerPlatformSettings.LanguageServerDefaultPipeName;
+        [Option('n', "Name", Default = null, HelpText = "The name of the transport pipe.")]
+        public string? Name { get; set; }
 
         [Option('m', "Mode", Default = PipeTransmissionMode.Byte, HelpText = "The pipe's transmission mode. Use 'Message' for RPC-level trace debugging.")]
         public PipeTransmissionMode Mode { get; set; } = PipeTransmissionMode.Byte;

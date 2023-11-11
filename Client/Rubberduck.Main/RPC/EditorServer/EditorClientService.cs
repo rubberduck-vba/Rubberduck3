@@ -69,7 +69,7 @@ namespace Rubberduck.Main.RPC.EditorServer
             {
                 Timestamp = DateTime.Now,
                 Locale = settings.GeneralSettings.Locale,
-                //LibraryReferences = TODO[]
+                HostApplication = Path.GetFileName(System.Windows.Forms.Application.ExecutablePath).ToUpper()
             };
 
             options

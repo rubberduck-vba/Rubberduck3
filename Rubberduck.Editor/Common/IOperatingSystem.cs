@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.Common
+﻿namespace Rubberduck.Editor.Common
 {
     public interface IOperatingSystem
     {

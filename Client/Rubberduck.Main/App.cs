@@ -13,13 +13,16 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Abstractions;
 using System.Linq;
+using Env = System.Environment;
 using Application = System.Windows.Forms.Application;
+using Rubberduck.Environment;
 
-namespace Rubberduck.Core
+namespace Rubberduck
 {
     public sealed class App : IDisposable
     {
         private readonly Version _version;
+        private readonly IRubberduckFoldersService _foldersService;
 
         private readonly IMessageService _messageBox;
         private readonly ISettingsService<RubberduckSettings> _settingsService;
@@ -35,9 +38,11 @@ namespace Rubberduck.Core
             IMessageService messageBox,
             ISettingsService<RubberduckSettings> settingsService,
             IRubberduckMenu appMenu,
-            IFileSystem filesystem)
+            IFileSystem filesystem,
+            IRubberduckFoldersService folders)
         {
             _version = version;
+            _foldersService = folders;
 
             _logger = logger;
             _logLevelService = logLevelService;
@@ -61,55 +66,9 @@ namespace Rubberduck.Core
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, "Error handling SettingsChanged event.");
+                _logger.LogError(exception, "Unexpected error while handling SettingsChanged event.");
             }
         }
-
-        #region TODO move to something like ShellEnvironment.cs
-        private void EnsureLogFolderPathExists()
-        {
-            try
-            {
-                if (!_filesystem.Directory.Exists(ApplicationConstants.LOG_FOLDER_PATH))
-                {
-                    _filesystem.Directory.CreateDirectory(ApplicationConstants.LOG_FOLDER_PATH);
-                }
-            }
-            catch (Exception exception)
-            {
-                _logger.LogError(exception, "Could not create log folder."); // TODO disable logging then
-                _messageBox.ShowMessage(MessageModel.For(exception));
-            }
-        }
-
-        private void EnsureTempPathExists()
-        {
-            // This is required by the parser - allow this to throw. 
-            if (!_filesystem.Directory.Exists(ApplicationConstants.RUBBERDUCK_TEMP_PATH))
-            {
-                _filesystem.Directory.CreateDirectory(ApplicationConstants.RUBBERDUCK_TEMP_PATH);
-            }
-
-            // The parser swallows the error if deletions fail - clean up any temp files on startup
-            SafeDeleteTempFiles();
-        }
-
-        private void SafeDeleteTempFiles()
-        {
-            try
-            {
-                var tempFolder = _filesystem.DirectoryInfo.New(ApplicationConstants.RUBBERDUCK_TEMP_PATH);
-                foreach (var file in tempFolder.GetFiles())
-                {
-                    file.Delete();
-                }
-            }
-            catch
-            {
-                // do not throw
-            }
-        }
-        #endregion
 
         private void UpdateLoggingLevel()
         {
@@ -140,8 +99,9 @@ namespace Rubberduck.Core
         {
             UiContextProvider.Initialize();
 
-            EnsureLogFolderPathExists();
-            EnsureTempPathExists();
+            _foldersService.EnsureRubberduckRootPathExists();
+            _foldersService.EnsureLogFolderPathExists();
+            _foldersService.EnsureDefaultWorkspacePathExists();
             ApplyCultureConfig();
 
             LogRubberduckStart(_version);
@@ -252,13 +212,13 @@ namespace Rubberduck.Core
             var headers = new List<string>
             {
                 $"\r\n\tRubberduck version {version.ToString(3)} loading:",
-                $"\tOperating System: {Environment.OSVersion.VersionString} {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}"
+                $"\tOperating System: {Env.OSVersion.VersionString} {(Env.Is64BitOperatingSystem ? "x64" : "x86")}"
             };
             try
             {
                 headers.AddRange(new []
                 {
-                    $"\tHost Product: {Application.ProductName} {(Environment.Is64BitProcess ? "x64" : "x86")}",
+                    $"\tHost Product: {Application.ProductName} {(Env.Is64BitProcess ? "x64" : "x86")}",
                     $"\tHost Version: {Application.ProductVersion}",
                     $"\tHost Executable: {_filesystem.Path.GetFileName(Application.ExecutablePath).ToUpper()}", // .ToUpper() used to convert ExceL.EXE -> EXCEL.EXE
                 });
@@ -268,7 +228,7 @@ namespace Rubberduck.Core
                 headers.Add("\tHost could not be determined.");
             }
 
-            _logger.LogInformation("{message}", string.Join(Environment.NewLine, headers));
+            _logger.LogInformation("{message}", string.Join(Env.NewLine, headers));
         }
 
         private bool _disposed;

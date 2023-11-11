@@ -5,12 +5,72 @@ using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
+using Rubberduck.SettingsProvider;
 using System;
+using System.Collections.Concurrent;
 using System.Globalization;
 using System.Text.Json;
 
 namespace Rubberduck.ServerPlatform
 {
+    public class ProgressEventArgs : EventArgs
+    {
+        public ProgressEventArgs(ProgressToken token, WorkDoneProgressReport value)
+        {
+            Token = token;
+            Value = value;
+        }
+
+        public ProgressToken Token { get; init; }
+        public WorkDoneProgressReport Value { get; init; }
+    }
+
+    public interface IWorkDoneProgressStateService
+    {
+        event EventHandler<ProgressEventArgs> Progress;
+        void OnProgress(ProgressToken token, WorkDoneProgressReport value);
+    }
+
+    public class WorkDoneProgressStateService : ServiceBase, IWorkDoneProgressStateService
+    {
+        private readonly ConcurrentDictionary<ProgressToken, WorkDoneProgressReport> _progressTokens = new ConcurrentDictionary<ProgressToken, WorkDoneProgressReport>();
+        public event EventHandler<ProgressEventArgs> Progress = delegate { };
+
+        public WorkDoneProgressStateService(ILogger logger, IRubberduckSettingsProvider settingsProvider)
+            : base(logger, settingsProvider, null)
+        {
+        }
+
+        public override void OnProgress(ProgressToken token, WorkDoneProgressReport value)
+        {
+            var tokens = _progressTokens;
+            if (tokens.TryGetValue(token, out var current))
+            {
+                if (value.Kind == WorkDoneProgressKind.Begin)
+                {
+                    LogWarning("Received WorkDoneProgressReportBegin for an existing token. The new report will be ignored.", $"Token: {token} | Message: '{value.Message}' | Percentage: {value.Percentage}% | Cancellable: {value.Cancellable}");
+                    return;
+                }
+
+                if (current.Kind == WorkDoneProgressKind.End)
+                {
+                    LogWarning("WorkDoneToken is already completed.", $"Token: {token}");
+                    return;
+                }
+
+                if (current.Percentage > value.Percentage)
+                {
+                    LogWarning("Received WorkDoneProgressReport with a percentage value smaller than current. The new value will be ignored.", $"Current: {current.Percentage}% | Value: {value.Percentage}%");
+                    return;
+                }
+            }
+
+            _progressTokens[token] = value;
+            LogInformation("Updated WorkDoneProgress token value.", $"Token: {token} | Value: {value.Percentage}%");
+            Progress?.Invoke(this, new(token, value));
+        }
+    }
+
     public abstract class ServerState<TSettings, TStartupSettings> : IServerStateWriter
         where TStartupSettings : IHealthCheckSettingsProvider
     {
