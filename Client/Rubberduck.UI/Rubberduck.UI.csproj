@@ -25,6 +25,7 @@
     <None Remove="Resources\FontAwesome\window-maximize-regular.png" />
     <None Remove="Resources\FontAwesome\window-minimize-regular.png" />
     <None Remove="Resources\FontAwesome\window-restore-regular.png" />
+    <None Remove="Resources\splash.png" />
     <None Remove="Resources\vector-ducky-blur-1480.png" />
     <None Remove="Resources\vector-ducky-color.png" />
     <None Remove="Resources\vector-ducky-shadow-1480.png" />
@@ -58,6 +59,7 @@
     <Resource Include="Resources\FontAwesome\window-maximize-regular.png" />
     <Resource Include="Resources\FontAwesome\window-minimize-regular.png" />
     <Resource Include="Resources\FontAwesome\window-restore-regular.png" />
+    <Resource Include="Resources\splash.png" />
     <Resource Include="Resources\vector-ducky-blur-1480.png" />
     <Resource Include="Resources\vector-ducky-color.png" />
     <Resource Include="Resources\vector-ducky-shadow-1480.png" />
@@ -83,6 +85,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Shell\ThunderFrame.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Splash\SplashWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Styles\ControlBoxCanvas.xaml.cs">

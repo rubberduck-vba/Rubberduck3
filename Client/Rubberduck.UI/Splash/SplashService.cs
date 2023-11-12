@@ -5,7 +5,7 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Services;
 
-namespace Rubberduck.Editor.Splash
+namespace Rubberduck.UI.Splash
 {
     public class SplashService : WindowService<SplashWindow, ISplashViewModel>, IStatusUpdate
     {
@@ -19,6 +19,6 @@ namespace Rubberduck.Editor.Splash
 
         protected override bool PreconditionCheck() => Settings.GeneralSettings.ShowSplash;
 
-        protected override SplashWindow CreateWindow(ISplashViewModel model) => new(model);
+        protected override SplashWindow CreateWindow(ISplashViewModel model) => new(model) { Height = 380, Width = 340 };
     }
 }

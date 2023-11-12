@@ -1,9 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <BitmapImage x:Key="SplashDucky" UriSource="pack://application:,,,/Rubberduck.Editor;component/Custom/splash.png" />
-    <ImageBrush x:Key="SplashBrush" ImageSource="{DynamicResource SplashDucky}" />
-
     <BitmapImage x:Key="DuckyIcon" UriSource="pack://application:,,,/Rubberduck.Editor;component/ducky.ico"/>
 
     <BitmapImage x:Key="BackgroundDuckyImage" UriSource="pack://application:,,,/Rubberduck.Editor;component/Resources/Custom/vector-ducky-shadow-1480.png" />

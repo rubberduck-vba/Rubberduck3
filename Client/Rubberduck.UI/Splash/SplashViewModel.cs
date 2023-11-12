@@ -2,7 +2,7 @@
 using Rubberduck.UI;
 using System;
 
-namespace Rubberduck.Editor.Splash
+namespace Rubberduck.UI.Splash
 {
     public class SplashViewModel : ViewModelBase, ISplashViewModel
     {

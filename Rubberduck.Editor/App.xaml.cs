@@ -14,26 +14,26 @@ using Rubberduck.Editor.RPC.EditorServer;
 using Rubberduck.Editor.RPC.EditorServer.Handlers.Lifecycle;
 using Rubberduck.Editor.RPC.EditorServer.Handlers.Workspace;
 using Rubberduck.Editor.RPC.LanguageServerClient;
-using Rubberduck.Editor.Splash;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Abstract;
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.LanguageServer.Model;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.General;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
-using Rubberduck.SettingsProvider.Model.ServerStartup;
+using Rubberduck.SettingsProvider.Model.TelemetryServer;
+using Rubberduck.SettingsProvider.Model.UpdateServer;
+using Rubberduck.UI.Splash;
 using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 using System.IO.Abstractions;
-using System.IO.Pipelines;
 using System.IO.Pipes;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,7 +70,6 @@ namespace Rubberduck.Editor
         public async Task StartupAsync()
         {
             _editorServer = await OmniSharpLanguageServer.From(ConfigureServer, _services, _tokenSource.Token);
-            
         }
 
         public OmniSharpLanguageServer LanguageServer => _editorServer ?? throw new InvalidOperationException();
@@ -410,12 +409,18 @@ namespace Rubberduck.Editor
 
             services.AddSingleton<IFileSystem, FileSystem>();
 
+            services.AddSingleton<ServerPlatformServiceHelper>();
             services.AddSingleton<EditorServerState>();
             services.AddSingleton<Func<EditorServerState>>(provider => () => _editorServer.ServerState);
             services.AddSingleton<IServerStateWriter>(provider => provider.GetRequiredService<EditorServerState>());
 
+            services.AddSingleton<IDefaultSettingsProvider<RubberduckSettings>>(provider => RubberduckSettings.Default);
+            services.AddSingleton<IDefaultSettingsProvider<GeneralSettings>>(provider => GeneralSettings.Default);
             services.AddSingleton<IDefaultSettingsProvider<LanguageServerSettings>>(provider => LanguageServerSettings.Default);
+            services.AddSingleton<IDefaultSettingsProvider<UpdateServerSettings>>(provider => UpdateServerSettings.Default);
+            services.AddSingleton<IDefaultSettingsProvider<TelemetryServerSettings>>(provider => TelemetryServerSettings.Default);
 
+            services.AddSingleton<RubberduckSettingsProvider>();
             services.AddSingleton<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
 
             services.AddSingleton<SupportedLanguage, VisualBasicForApplicationsLanguage>();
@@ -423,6 +428,15 @@ namespace Rubberduck.Editor
             services.AddSingleton<IExitHandler, ExitHandler>();
             services.AddSingleton<IHealthCheckService<LanguageServerStartupSettings>, ClientProcessHealthCheckService<LanguageServerStartupSettings>>();
             services.AddSingleton<IHealthCheckService<LanguageClientStartupSettings>, ClientProcessHealthCheckService<LanguageClientStartupSettings>>();
+
+            services.AddSingleton<IWorkDoneProgressStateService, WorkDoneProgressStateService>();
+
+            services.AddSingleton<Version>(provider => Assembly.GetExecutingAssembly().GetName().Version);
+            services.AddSingleton<SplashService>();
+            services.AddSingleton<ISplashViewModel, SplashViewModel>();
+
+            services.AddSingleton<ISettingsChangedHandler<RubberduckSettings>>(provider => provider.GetRequiredService<RubberduckSettingsProvider>());
+            services.AddSingleton<DidChangeConfigurationHandler>();
         }
 
 

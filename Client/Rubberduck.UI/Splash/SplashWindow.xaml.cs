@@ -1,7 +1,7 @@
 ﻿using Rubberduck.InternalApi.Model.Abstract;
 using System.Windows;
 
-namespace Rubberduck.Editor.Splash
+namespace Rubberduck.UI.Splash
 {
     /// <summary>
     /// Interaction logic for Splash.xaml

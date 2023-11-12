@@ -2,6 +2,7 @@
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
 using Rubberduck.ServerPlatform;
+using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using System;
 using System.IO.Abstractions;
@@ -30,7 +31,7 @@ namespace Rubberduck.Environment
         private readonly Version _rubberduckVersion;
 
         public HostInfoService(ILogger<HostInfoService> logger, 
-            ISettingsProvider<RubberduckSettings> settings, 
+            RubberduckSettingsProvider settings, 
             IWorkDoneProgressStateService workdone, 
             Version rubberduckVersion)
             : base(logger, settings, workdone)
@@ -83,7 +84,7 @@ namespace Rubberduck.Environment
     {
         private readonly IFileSystem _fileSystem;
 
-        public RubberduckFoldersService(ILogger<RubberduckFoldersService> logger, ISettingsProvider<RubberduckSettings> settings, IWorkDoneProgressStateService workdone, IFileSystem fileSystem)
+        public RubberduckFoldersService(ILogger<RubberduckFoldersService> logger, RubberduckSettingsProvider settings, IWorkDoneProgressStateService workdone, IFileSystem fileSystem)
             : base(logger, settings, workdone)
         {
             _fileSystem = fileSystem;

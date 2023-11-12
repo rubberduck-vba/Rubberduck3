@@ -3,6 +3,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using System;
 using System.Diagnostics;
@@ -12,25 +13,25 @@ namespace Rubberduck.ServerPlatform
 {
     public class ServerPlatformServiceHelper : ServiceBase
     {
-        public ServerPlatformServiceHelper(ILogger logger, ISettingsProvider<RubberduckSettings> settingsProvider, IWorkDoneProgressStateService workdone) 
-            : base(logger, settingsProvider, workdone) { }
+        public ServerPlatformServiceHelper(ILogger<ServerPlatformServiceHelper> logger, RubberduckSettingsProvider settings, IWorkDoneProgressStateService workdone) 
+            : base(logger, settings, workdone) { }
     }
 
     public abstract class ServiceBase
     {
         private readonly ILogger _logger;
-        private readonly ISettingsProvider<RubberduckSettings> _settingsProvider;
+        private readonly ISettingsProvider<RubberduckSettings> _settings;
         private readonly IWorkDoneProgressStateService? _workdone;
 
-        protected ServiceBase(ILogger logger, ISettingsProvider<RubberduckSettings> settingsProvider, IWorkDoneProgressStateService? workdone)
+        protected ServiceBase(ILogger logger, RubberduckSettingsProvider settings, IWorkDoneProgressStateService? workdone)
         {
             _logger = logger;
-            _settingsProvider = settingsProvider;
+            _settings = settings;
             _workdone = workdone;
         }
 
-        public RubberduckSettings Settings => _settingsProvider.Settings;
-        public TraceLevel TraceLevel => _settingsProvider.Settings.GeneralSettings.TraceLevel.ToTraceLevel();
+        public RubberduckSettings Settings => _settings.Settings;
+        public TraceLevel TraceLevel => _settings.Settings.GeneralSettings.TraceLevel.ToTraceLevel();
 
         public void LogPerformance(TimeSpan elapsed, string? message = default, [CallerMemberName]string? name = default)
         {

@@ -29,10 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Resources\Custom\splash.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Dragablz" Version="0.0.3.234" />
     <PackageReference Include="MdXaml" Version="1.21.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
@@ -58,7 +54,6 @@
   
   <ItemGroup>
     <Resource Include="ducky.ico" />
-    <Resource Include="Resources\Custom\splash.png" />
     <Resource Include="Resources\Custom\vector-ducky-color.png" />
     <Resource Include="Resources\Custom\ducky.ico" />
     <Resource Include="Resources\Custom\background-ducky.png" />
@@ -93,9 +88,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Shell\DuckyBackgroundControl.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Splash\SplashWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

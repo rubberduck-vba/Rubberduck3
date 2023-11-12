@@ -37,7 +37,7 @@ namespace Rubberduck.ServerPlatform
         private readonly ConcurrentDictionary<ProgressToken, WorkDoneProgressReport> _progressTokens = new ConcurrentDictionary<ProgressToken, WorkDoneProgressReport>();
         public event EventHandler<ProgressEventArgs> Progress = delegate { };
 
-        public WorkDoneProgressStateService(ILogger<WorkDoneProgressStateService> logger, ISettingsProvider<RubberduckSettings> settingsProvider)
+        public WorkDoneProgressStateService(ILogger<WorkDoneProgressStateService> logger, RubberduckSettingsProvider settingsProvider)
             : base(logger, settingsProvider, null)
         {
         }
@@ -73,7 +73,7 @@ namespace Rubberduck.ServerPlatform
     }
 
     public abstract class ServerState<TSettings, TStartupSettings> : IServerStateWriter
-        where TStartupSettings : IHealthCheckSettingsProvider
+        where TStartupSettings : RubberduckSetting, IHealthCheckSettingsProvider
     {
         //private readonly ServerStartupOptions _startupOptions;
         private readonly IHealthCheckService<TStartupSettings> _healthCheckService;
