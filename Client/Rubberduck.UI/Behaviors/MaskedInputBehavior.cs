@@ -7,9 +7,64 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace Rubberduck.UI.Behaviors
 {
+    public class WatermarkAdorner : Adorner
+    {
+        private readonly TextBlock _textBlock;
+
+        public WatermarkAdorner(UIElement element, string text, Style style)
+            : base(element)
+        {
+            _textBlock = new()
+            {
+                Text = text,
+                Style = style
+            };
+        }
+
+        protected override Size MeasureOverride(Size constraint)
+        {
+            _textBlock.Measure(constraint);
+            return constraint;
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            _textBlock.Arrange(new Rect(finalSize));
+            return finalSize;
+        }
+
+        protected override Visual GetVisualChild(int index)
+        {
+            return _textBlock;
+        }
+
+        protected override int VisualChildrenCount { get; } = 1;
+    }
+
+    public static class Watermarking
+    {
+        public static readonly DependencyProperty WatermarkTextProperty = DependencyProperty.RegisterAttached("WatermarkText",
+            typeof(string), typeof(Watermarking), new FrameworkPropertyMetadata());
+
+        public static string GetWatermarkText(TextBox textBox)
+        {
+            _ = textBox ?? throw new ArgumentNullException(nameof(textBox));
+            return (string)textBox.GetValue(WatermarkTextProperty);
+        }
+
+        public static void SetWatermarkText(TextBox textBox, string value)
+        {
+            _ = textBox ?? throw new ArgumentNullException(nameof(textBox));
+            textBox.SetValue(WatermarkTextProperty, value);
+        }
+    }
+
+
     /// <summary>
     /// https://stackoverflow.com/a/7572924 by VitalyB and Kent Boogaart
     /// </summary>
@@ -44,12 +99,8 @@ namespace Rubberduck.UI.Behaviors
         /// </returns>
         public static string GetMask(TextBox textBox)
         {
-            if (textBox == null)
-            {
-                throw new ArgumentNullException("textBox");
-            }
-
-            return textBox.GetValue(MaskProperty) as string;
+            _ = textBox ?? throw new ArgumentNullException(nameof(textBox));
+            return (string)textBox.GetValue(MaskProperty);
         }
 
         /// <summary>

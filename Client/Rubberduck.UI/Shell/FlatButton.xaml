@@ -5,7 +5,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:local="clr-namespace:Rubberduck.UI.Shell"
         mc:Ignorable="d" 
-        
         d:DesignHeight="20" d:DesignWidth="24">
     <Button.Resources>
         <ResourceDictionary>

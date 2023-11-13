@@ -61,6 +61,8 @@ namespace Rubberduck.UI.Services
                     _view.Width = size.Width;
                     _view.MaxHeight = size.Height;
                     _view.MaxWidth = size.Width;
+                    _view.InvalidateMeasure();
+                    _view.InvalidateVisual();
                     _view.Show();
                 }
                 else

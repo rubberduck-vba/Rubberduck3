@@ -6,6 +6,8 @@
              xmlns:local="clr-namespace:Rubberduck.Editor.Shell"
              mc:Ignorable="d" 
              d:DesignHeight="24" d:DesignWidth="800" VerticalContentAlignment="Center">
+    <UserControl.CommandBindings>
+    </UserControl.CommandBindings>
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,18 +17,17 @@
     </UserControl.Resources>
     <Menu>
         <MenuItem Header="_File">
-            <MenuItem Header="_New Project...">
-            </MenuItem>
-            <MenuItem Header="_Open..."/>
+            <MenuItem Header="_New Project..." Command="{x:Static ApplicationCommands.New}" CommandParameter="{Binding}" />
+            <MenuItem Header="_Open..." Command="{x:Static ApplicationCommands.Open}" />
             <Separator />
-            <MenuItem Header="_Save"/>
-            <MenuItem Header="Save _As..."/>
-            <MenuItem Header="Save A_ll"/>
+            <MenuItem Header="_Save" Command="{x:Static ApplicationCommands.Save}" />
+            <MenuItem Header="Save _As..." Command="{x:Static ApplicationCommands.SaveAs}" />
+            <MenuItem Header="Save A_ll" Command="{x:Static ApplicationCommands.SelectAll}" />
             <Separator />
-            <MenuItem Header="_Close"/>
+            <MenuItem Header="_Close" Command="{x:Static ApplicationCommands.Close}" />
             <Separator />
             <MenuItem Header="S_ynchronize"/>
-            <MenuItem Header="E_xit"/>
+            <MenuItem Header="E_xit" Command="{x:Static ApplicationCommands.Stop}" />
         </MenuItem>
         <MenuItem Header="_Edit">
             <MenuItem Header="_Go To">
@@ -40,20 +41,20 @@
                 <Separator />
                 <MenuItem Header="_Next Issue"/>
                 <MenuItem Header="_Previous Issue"/>
-                <MenuItem Header="Last Locatio_n"/>
+                <MenuItem Header="Last Locatio_n" />
             </MenuItem>
-            <MenuItem Header="_Find..."/>
-            <MenuItem Header="_Replace..."/>
+            <MenuItem Header="_Find..." Command="{x:Static ApplicationCommands.Find}" />
+            <MenuItem Header="_Replace..." Command="{x:Static ApplicationCommands.Replace}" />
             <Separator />
-            <MenuItem Header="_Undo"/>
-            <MenuItem Header="Re_do"/>
+            <MenuItem Header="_Undo" Command="{x:Static ApplicationCommands.Undo}" />
+            <MenuItem Header="Re_do" Command="{x:Static ApplicationCommands.Redo}"/>
             <Separator />
-            <MenuItem Header="Cu_t"/>
-            <MenuItem Header="_Copy"/>
-            <MenuItem Header="_Paste"/>
-            <MenuItem Header="_Delete"/>
+            <MenuItem Header="Cu_t" Command="{x:Static ApplicationCommands.Cut}" />
+            <MenuItem Header="_Copy" Command="{x:Static ApplicationCommands.Copy}"/>
+            <MenuItem Header="_Paste" Command="{x:Static ApplicationCommands.Paste}"/>
+            <MenuItem Header="_Delete" Command="{x:Static ApplicationCommands.Delete}" />
             <Separator />
-            <MenuItem Header="_Select All"/>
+            <MenuItem Header="_Select All" Command="{x:Static ApplicationCommands.SelectAll}"/>
             <MenuItem Header="E_xpand Selection">
                 <MenuItem Header="Select Containing _Line"/>
                 <MenuItem Header="Select Containing _Block"/>
@@ -77,7 +78,7 @@
                 <MenuItem Header="_Uncomment Selected Lines"/>
             </MenuItem>
             <MenuItem Header="Out_lining">
-                <MenuItem Header="E_xpand All"/>
+                <MenuItem Header="E_xpand All" />
                 <MenuItem Header="_Collapse All"/>
             </MenuItem>
             <Separator />
@@ -137,7 +138,7 @@
             </MenuItem>
             <Separator />
             <MenuItem Header="_References..."/>
-            <MenuItem Header="_Properties..."/>
+            <MenuItem Header="_Properties..." Command="{x:Static ApplicationCommands.Properties}" />
         </MenuItem>
         <MenuItem Header="_Debug">
             <MenuItem Header="_Run"/>
@@ -153,7 +154,7 @@
             <MenuItem Header="Code _Metrics"/>
         </MenuItem>
         <MenuItem Header="_Tools">
-            <MenuItem Header="_Options"/>
+            <MenuItem Header="_Options" />
         </MenuItem>
         <MenuItem Header="_Window">
             <MenuItem Header="New _Horizontal Document Group"/>
@@ -164,7 +165,7 @@
             <MenuItem Header="_Windows..."/>
         </MenuItem>
         <MenuItem Header="_Help">
-            <MenuItem Header="_About Rubberduck"/>
+            <MenuItem Header="_About Rubberduck" />
         </MenuItem>
     </Menu>
 </UserControl>

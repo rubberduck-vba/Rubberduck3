@@ -26,6 +26,7 @@ using Rubberduck.SettingsProvider.Model.TelemetryServer;
 using Rubberduck.SettingsProvider.Model.UpdateServer;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Message;
+using Rubberduck.UI.NewProject;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Splash;
 using System;
@@ -177,6 +178,7 @@ namespace Rubberduck.Editor
             services.AddSingleton<IDefaultSettingsProvider<UpdateServerSettings>>(provider => UpdateServerSettings.Default);
             services.AddSingleton<IDefaultSettingsProvider<TelemetryServerSettings>>(provider => TelemetryServerSettings.Default);
 
+            services.AddSingleton<ShowRubberduckSettingsCommand>();
             services.AddSingleton<RubberduckSettingsProvider>();
             services.AddSingleton<SupportedLanguage, VisualBasicForApplicationsLanguage>();
 
@@ -202,6 +204,9 @@ namespace Rubberduck.Editor
             services.AddSingleton<IMessageService, MessageService>();
             services.AddSingleton<ShowMessageHandler>();
             services.AddSingleton<ShowMessageRequestHandler>();
+
+            services.AddSingleton<NewProjectCommand>();
+            services.AddSingleton<NewProjectWindowFactory>();
         }
 
         public void Dispose()

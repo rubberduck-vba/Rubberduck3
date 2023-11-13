@@ -5,14 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Rubberduck.UI.NewProject" 
         xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
+        xmlns:command="clr-namespace:Rubberduck.UI.Command"
         d:DataContext="{d:DesignInstance Type=local:NewProjectWindowViewModel}"
         mc:Ignorable="d"
         WindowStyle="None"
         SizeToContent="WidthAndHeight"
         Style="{DynamicResource ThemedWindowStyle}"
-        Height="340" Width="480">
+        Title="New Project"
+        Height="300" Width="480">
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static command:DialogCommands.BrowseLocationCommand}" />
+    </Window.CommandBindings>
     <Window.Resources>
         <ResourceDictionary>
+            <KeyBinding x:Key="CloseOnEscape" Key="Esc" Command="{Binding Actions[1]}" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
@@ -27,21 +33,22 @@
             <StackPanel>
 
                 <Label Style="{DynamicResource FormFieldNameLabelStyle}" 
-                       Content="Project"
-                       IsEnabled="{Binding IsEnabled}" />
-                <ComboBox Template="{DynamicResource FormFieldComboBoxTemplate}" 
+                       Content="VBA Project"
+                       IsEnabled="{Binding HasVBProjects}" />
+                <ComboBox Template="{DynamicResource ComboBoxTemplate}" 
                           Style="{DynamicResource FormFieldComboBoxStyle}"
                           ItemsSource="{Binding VBProjects}"
                           SelectedItem="{Binding SelectedVBProject}"
-                          IsEnabled="{Binding IsEnabled}" />
+                          IsEnabled="{Binding HasVBProjects}" />
                 
                 <Label Style="{DynamicResource FormFieldNameLabelStyle}" 
                        Content="Project name"
                        IsEnabled="{Binding IsEnabled}" />
                 <TextBox Style="{DynamicResource FormFieldTextBoxStyle}" 
                          Text="{Binding ProjectName}"
-                         IsEnabled="{Binding IsEnabled}" />
-                
+                         IsEnabled="{Binding IsEnabled}">
+                </TextBox>
+
                 <Label Style="{DynamicResource FormFieldNameLabelStyle}" 
                        Content="Workspace Location"
                        IsEnabled="{Binding IsEnabled}" />
@@ -49,8 +56,8 @@
                          Text="{Binding WorkspaceLocation}"
                          IsEnabled="{Binding IsEnabled}" />
 
-                <Label Style="{DynamicResource FormLabelStyle}" 
-                       IsEnabled="{Binding IsEnabled}"
+                <Label Style="{DynamicResource FormFieldNameLabelStyle}" 
+                       IsEnabled="{Binding IsEnabled}" FontWeight="Normal"
                        Content="Source files will be exported to and will synchronize from:" />
                 <Label Style="{DynamicResource FormFieldValueLabelStyle}" 
                        Content="{Binding SourcePath}"
@@ -60,7 +67,6 @@
         </shell:ThunderFrame>
         
         <CheckBox Template="{DynamicResource FormFieldCheckBoxTemplate}" 
-                  Style="{DynamicResource FormFieldCheckBoxStyle}" 
                   Content="Use defaults and do not prompt again" 
                   VerticalAlignment="Bottom"
                   Margin="10,16" IsChecked="{Binding IsEnabled, Converter={StaticResource InverseBoolConverter}}" />

@@ -1,25 +1,8 @@
-﻿using Rubberduck.UI.Command;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 
 namespace Rubberduck.UI.Shell
 {
-    public class DialogCommandHandlers
-    {
-        private readonly Window _window;
-
-        public DialogCommandHandlers(Window window)
-        {
-            _window = window;
-        }
-
-        public void CloseWindowCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-            => e.CanExecute = true;
-
-        public void CloseWindowCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-            => DialogCommands.BrowseLocation(_window);
-    }
-
     public class SystemCommandHandlers
     {
         private readonly Window _window;

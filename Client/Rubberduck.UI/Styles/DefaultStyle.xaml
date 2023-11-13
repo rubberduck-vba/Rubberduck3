@@ -51,6 +51,7 @@
                 <ScrollViewer DockPanel.Dock="Left" x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
                 <Button DockPanel.Dock="Right" x:Name="BrowseButton" HorizontalAlignment="Right" 
                             Command="{x:Static NavigationCommands.Search}"
+                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}"
                             Style="{DynamicResource FlatButtonStyle}"
                             Content="..." />
             </DockPanel>
@@ -283,7 +284,7 @@
         </Style.Resources>
         <Style.Setters>
             <Setter Property="MinWidth" Value="96" />
-            <Setter Property="Height" Value="32" />
+            <Setter Property="Height" Value="24" />
             <Setter Property="Padding" Value="8,0"/>
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>

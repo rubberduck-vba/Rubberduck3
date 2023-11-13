@@ -22,6 +22,8 @@ namespace Rubberduck.UI.NewProject
         public string Name { get; init; }
         public string ProjectId { get; init; }
         public string? Location { get; init; }
+        public bool IsLocked { get; init; }
+        public bool HasWorkspace { get; init; }
     }
 
     public class NewProjectWindowViewModel : DialogWindowViewModel, INewProjectWindowViewModel
@@ -31,8 +33,13 @@ namespace Rubberduck.UI.NewProject
 
         private static bool Validate(object? param)
         {
-            var vm = param as NewProjectWindowViewModel 
-                ?? throw new ArgumentException("Parameter was not of the expected type.");
+            if (param is null)
+            {
+                return true;
+            }
+
+            var vm = (NewProjectWindowViewModel)(param as NewProjectWindow
+                ?? throw new ArgumentException("Parameter was not of the expected type.")).DataContext;
 
             return !vm.HasErrors;
         }
@@ -42,6 +49,8 @@ namespace Rubberduck.UI.NewProject
         {
             _settings = settings;
             VBProjects = projects;
+            SelectedVBProject = VBProjects.FirstOrDefault();
+            HasVBProjects = IsEnabled && projects.Any();
             ResetToDefaults();
         }
 
@@ -55,7 +64,7 @@ namespace Rubberduck.UI.NewProject
         }
 
         private string _projectName = string.Empty;
-        [Required, MaxLength(31)]
+        [Required, MaxLength(31)] // todo actually validate this
         public string ProjectName 
         {
             get => _projectName;
@@ -89,10 +98,12 @@ namespace Rubberduck.UI.NewProject
         private void OnSourcePathChanged() => OnPropertyChanged(nameof(SourcePath));
         public string SourcePath => Path.Combine(WorkspaceLocation, ProjectName, SourceFolderName);
 
+        public bool HasVBProjects { get; init; }
+
         public IEnumerable<VBProjectInfo?> VBProjects { get; init; }
 
-        private VBProjectInfo _selectedVBProject;
-        public VBProjectInfo SelectedVBProject 
+        private VBProjectInfo? _selectedVBProject;
+        public VBProjectInfo? SelectedVBProject 
         {
             get => _selectedVBProject;
             set
@@ -102,9 +113,9 @@ namespace Rubberduck.UI.NewProject
                     _selectedVBProject = value;
                     OnPropertyChanged();
 
-                    if (_selectedVBProject != default)
+                    if (_selectedVBProject != null)
                     {
-                        ProjectName = _selectedVBProject.Name;
+                        ProjectName = _selectedVBProject.Value.Name;
                     }
                 }
             }
