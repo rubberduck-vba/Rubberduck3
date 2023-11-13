@@ -1,16 +1,14 @@
-﻿using System;
-using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider.Model;
-using Rubberduck.UI.Command;
+﻿using Rubberduck.UI.Command;
+using Rubberduck.UI.Services;
+using System;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Editor.Command
 {
     public class ShowSettingsWindowCommand : CommandBase
     {
-        public ShowSettingsWindowCommand(ILogger logger, ISettingsProvider<RubberduckSettings> settings) 
-            : base(logger, settings)
+        public ShowSettingsWindowCommand(ServiceHelper service) 
+            : base(service)
         {
         }
 

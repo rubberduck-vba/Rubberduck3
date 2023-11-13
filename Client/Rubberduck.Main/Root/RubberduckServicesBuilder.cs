@@ -7,6 +7,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.Editor.Common;
 using Rubberduck.Environment;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Main.About;
 using Rubberduck.Main.Commands.ShowRubberduckEditor;
@@ -23,6 +24,7 @@ using Rubberduck.UI;
 using Rubberduck.UI.About;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Message;
+using Rubberduck.UI.Services;
 using Rubberduck.UI.Settings;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract;
@@ -39,18 +41,20 @@ using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 using System;
 using System.IO.Abstractions;
 using System.Reflection;
+using System.Threading;
+using Env = System.Environment;
 
 namespace Rubberduck.Main.Root
 {
     internal class RubberduckServicesBuilder
     {
         private readonly IServiceCollection _services = new ServiceCollection();
-        private readonly Func<ILanguageClientFacade> _getLanguageClient;
+        private readonly CancellationTokenSource _tokenSource;
 
-        public RubberduckServicesBuilder(IVBE vbe, IAddIn addin, Func<ILanguageClientFacade> getLanguageClient)
+        public RubberduckServicesBuilder(IVBE vbe, IAddIn addin, CancellationTokenSource tokenSource)
         {
-            _getLanguageClient = getLanguageClient;
             Configure(vbe, addin);
+            _tokenSource = tokenSource;
         }
 
         public IServiceProvider Build() => _services.BuildServiceProvider();
@@ -189,13 +193,39 @@ namespace Rubberduck.Main.Root
             _services.AddSingleton<ISettingViewModelFactory, SettingViewModelFactory>();
 
             _services.AddSingleton<IEditorServerProcessService, EditorServerProcessService>();
-
+            _services.AddSingleton<ServiceHelper>();
             return this;
         }
 
         private RubberduckServicesBuilder WithRubberduckEditorServer()
         {
-            _services.AddSingleton<ILanguageClientFacade>(provider => _getLanguageClient());
+            _services.AddSingleton<EditorClientApp>(provider =>
+            {
+                var logger = provider.GetRequiredService<ILogger<EditorClientApp>>();
+                var settings = provider.GetRequiredService<RubberduckSettingsProvider>().Settings.LanguageClientSettings;
+                
+                var startup = settings.StartupSettings;
+                
+                ServerStartupOptions options = 
+                startup.ServerTransportType == TransportType.Pipe
+                    ? new PipeServerStartupOptions
+                    {
+                        ClientProcessId = Env.ProcessId,
+                        WorkspaceRoot = settings.DefaultWorkspaceRoot.LocalPath,
+                        Name = startup.ServerPipeName,
+                        Mode = System.IO.Pipes.PipeTransmissionMode.Message,
+                        Silent = startup.ServerTraceLevel == MessageTraceLevel.Off,
+                        Verbose = startup.ServerTraceLevel == MessageTraceLevel.Verbose,                    
+                    }
+                    : new StandardInOutServerStartupOptions
+                    {
+                        ClientProcessId = Env.ProcessId,
+                        WorkspaceRoot = settings.DefaultWorkspaceRoot.LocalPath,
+                        Silent = startup.ServerTraceLevel == MessageTraceLevel.Off,
+                        Verbose = startup.ServerTraceLevel == MessageTraceLevel.Verbose,
+                    };
+                return new EditorClientApp(logger, options, _tokenSource, provider);
+            });
             _services.AddSingleton<IWorkDoneProgressStateService, WorkDoneProgressStateService>();
             return this;
         }

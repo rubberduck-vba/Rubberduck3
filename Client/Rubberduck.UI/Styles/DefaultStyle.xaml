@@ -296,9 +296,18 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="FormLabelStyle" TargetType="Label">
+    <Style x:Key="FormLabelStyleSmall" TargetType="Label">
         <Style.Setters>
-            <Setter Property="FontSize" Value="10" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="MinHeight" Value="24" />
+            <Setter Property="Margin" Value="0,5,0,0" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
+        </Style.Setters>
+    </Style>
+
+    <Style x:Key="FormLabelStyleMedium" TargetType="Label">
+        <Style.Setters>
+            <Setter Property="FontSize" Value="14" />
             <Setter Property="MinHeight" Value="24" />
             <Setter Property="Margin" Value="0,5,0,0" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
@@ -307,7 +316,7 @@
 
     <Style x:Key="FormTitleLabelStyle" TargetType="Label">
         <Style.Setters>
-            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontSize" Value="16" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="MinHeight" Value="24" />
             <Setter Property="Margin" Value="0,5,0,0" />
@@ -350,13 +359,6 @@
         <Style.Setters>
             <Setter Property="Template" Value="{DynamicResource BrowseTextBoxTemplate}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
-        </Style.Setters>
-    </Style>
-
-    <Style x:Key="FormFieldCheckBoxStyle" TargetType="CheckBox">
-        <Style.Setters>
-            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
-            <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
         </Style.Setters>
     </Style>
 

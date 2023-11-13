@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.ServerPlatform;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,16 +9,18 @@ namespace Rubberduck.LanguageServer.Handlers
 {
     public class InitializedHandler : LanguageProtocolInitializedHandlerBase
     {
-        private readonly ILogger<InitializedHandler> _logger;
+        private readonly ServerPlatformServiceHelper _service;
 
-        public InitializedHandler(ILogger<InitializedHandler> logger) 
+        public InitializedHandler(ServerPlatformServiceHelper service) 
         {
-            _logger = logger;
+            _service = service;
         }
 
         public async override Task<Unit> Handle(InitializedParams request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Initialized.");
+            _service.LogInformation("Received Initialized request.");
+            cancellationToken.ThrowIfCancellationRequested();
+
             return await Task.FromResult(Unit.Value);
         }
     }

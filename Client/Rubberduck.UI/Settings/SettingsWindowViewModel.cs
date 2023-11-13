@@ -9,6 +9,7 @@ using Rubberduck.SettingsProvider.Model.ServerStartup;
 using Rubberduck.SettingsProvider.Model.TelemetryServer;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Message;
+using Rubberduck.UI.Services;
 using Rubberduck.UI.Settings.ViewModels;
 using System;
 using System.Collections;
@@ -38,13 +39,11 @@ namespace Rubberduck.UI.Settings
 
     public class SettingViewModelFactory : ISettingViewModelFactory
     {
-        private readonly ILogger<SettingViewModelFactory> _logger;
-        private readonly ISettingsProvider<RubberduckSettings> _settingsProvider;
+        private readonly ServiceHelper _service;
 
-        public SettingViewModelFactory(ILogger<SettingViewModelFactory> logger, ISettingsProvider<RubberduckSettings> settingsProvider) 
+        public SettingViewModelFactory(ServiceHelper service) 
         {
-            _logger = logger;
-            _settingsProvider = settingsProvider;
+            _service = service;
         }
 
         public ISettingViewModel CreateViewModel(BooleanRubberduckSetting setting) => new BooleanSettingViewModel(setting);
@@ -63,7 +62,7 @@ namespace Rubberduck.UI.Settings
 
         public ISettingViewModel CreateViewModel(ServerMessageModeSetting setting) => new ServerMessageModeSettingViewModel(setting);
         public ISettingViewModel CreateViewModel(TypedRubberduckSetting<TimeSpan> setting) => new TimeSpanSettingViewModel(setting);
-        public ISettingViewModel CreateViewModel(TypedRubberduckSetting<string[]> setting) => new ListSettingViewModel(_logger, _settingsProvider, setting);
+        public ISettingViewModel CreateViewModel(TypedRubberduckSetting<string[]> setting) => new ListSettingViewModel(_service, setting);
 
         public ISettingGroupViewModel CreateViewModel(TypedRubberduckSetting<BooleanRubberduckSetting[]> settingGroup)
         {
@@ -117,7 +116,7 @@ namespace Rubberduck.UI.Settings
                 case TypedRubberduckSetting<TimeSpan> timeSpanSetting:
                     return CreateViewModel(timeSpanSetting);
                 case TypedRubberduckSetting<string[]> listSetting:
-                    return new ListSettingViewModel(_logger, _settingsProvider, listSetting);
+                    return new ListSettingViewModel(_service, listSetting);
                 case TypedSettingGroup subGroup:
                     return CreateViewModel(subGroup);
                 case TypedRubberduckSetting<BooleanRubberduckSetting[]> telemetrySettingGroup:
@@ -133,19 +132,17 @@ namespace Rubberduck.UI.Settings
 
     public class SettingsWindowViewModel : DialogWindowViewModel, ISettingsWindowViewModel
     {
-        private readonly ILogger _logger;
-        private readonly ISettingsService<RubberduckSettings> _service;
         private readonly IMessageService _message;
         private readonly ISettingViewModelFactory _factory;
+        private readonly ServiceHelper _service;
 
-        public SettingsWindowViewModel(ILogger logger, ISettingsService<RubberduckSettings> service, MessageActionCommand[] actions, IMessageService message, ISettingViewModelFactory factory)
+        public SettingsWindowViewModel(ServiceHelper service, MessageActionCommand[] actions, IMessageService message, ISettingViewModelFactory factory)
             : base(RubberduckUI.Settings, actions)
         {
-            _logger = logger;
-            _service = service;
             _message = message;
             _factory = factory;
-            ShowSettingsCommand = new DelegateCommand(logger, service, parameter => ResetToDefaults());
+            _service = service;
+            ShowSettingsCommand = new DelegateCommand(service, parameter => ResetToDefaults());
             Settings = _factory.CreateViewModel(_service.Settings);
         }
 
@@ -170,7 +167,7 @@ namespace Rubberduck.UI.Settings
             var settings = _service.Settings;
             if (settings.Value != settings.DefaultValue && ConfirmReset())
             {
-                _service.Write(settings with { Value = settings.DefaultValue });
+                //_service.Write(settings with { Value = settings.DefaultValue });
                 _message.ShowMessage(new() { Key = $"{nameof(SettingsWindowViewModel)}.{nameof(ResetToDefaults)}.Completed", Level = LogLevel.Information, Title = "Reset Settings", Message = "All settings have been reset to their default value." });
             }
         }
@@ -196,7 +193,7 @@ namespace Rubberduck.UI.Settings
                 var newSetting = generalSettings.TypedValue.OfType<DisabledMessageKeysSetting>().Single().WithValue(newValue);
                 var newGeneralSettings = generalSettings.WithSetting(newSetting);
                 var newRubberduckSettings = (RubberduckSettings)settingsRoot.WithSetting(newGeneralSettings);
-                _service.Write(newRubberduckSettings);
+                //_service.Settings.Write(newRubberduckSettings);
             }
 
             return (!result.IsEnabled && result.MessageAction == MessageAction.Undefined)

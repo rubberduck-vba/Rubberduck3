@@ -22,6 +22,12 @@ namespace Rubberduck.SettingsProvider.Model
             values[setting.GetType()] = setting;
             return this with { Value = values.Values };
         }
+        public TypedSettingGroup WithSetting<TSetting>(TSetting setting) where TSetting : RubberduckSetting
+        {
+            var values = Values;
+            values[typeof(TSetting)] = setting;
+            return this with { Value = values.Values };
+        }
     }
 
     public abstract record class EnumSettingGroup<TEnum> : TypedRubberduckSetting<BooleanRubberduckSetting[]>

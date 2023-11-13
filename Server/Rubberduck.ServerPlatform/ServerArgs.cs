@@ -52,7 +52,9 @@ namespace Rubberduck.ServerPlatform
         /// <summary>
         /// The actual name of the pipe stream concatenates the <c>Name</c> with the <c>ClientProcessId</c> to ensure different hosts/instances use dedicated channels.
         /// </summary>
-        public string PipeName => $"{Name}__{ClientProcessId}";
+        public string PipeName => GetPipeName(Name, ClientProcessId);
+
+        public static string GetPipeName(string name, int processId) => name.EndsWith(processId.ToString()) ? name : $"{name}__{processId}";
     }
 
     [Verb("StdIO", isDefault: true)]

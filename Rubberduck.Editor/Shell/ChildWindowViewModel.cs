@@ -6,7 +6,7 @@ namespace Rubberduck.Editor.Shell
 {
     public class ChildWindowViewModel : IWindowViewModel
     {
-        public ChildWindowViewModel(IInterTabClient interTabClient, IStatusBarViewModel statusBar, object partition)
+        public ChildWindowViewModel(IInterTabClient interTabClient, StatusBarViewModel statusBar, object partition)
         {
             InterTabClient = interTabClient;
             Partition = partition;
@@ -16,7 +16,7 @@ namespace Rubberduck.Editor.Shell
         }
 
         public string Title { get; }
-        public IStatusBarViewModel StatusBar { get; }
+        public StatusBarViewModel StatusBar { get; }
 
         public object /*IInterTabClient*/ InterTabClient { get; }
 

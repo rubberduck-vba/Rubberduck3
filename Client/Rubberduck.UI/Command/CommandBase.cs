@@ -1,14 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Common;
-using Rubberduck.InternalApi.Extensions;
-using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider.Model;
+using Rubberduck.UI.Services;
 
 namespace Rubberduck.UI.Command
 {
@@ -16,12 +10,11 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public abstract class CommandBase : ICommand
     {
-        private static readonly List<MethodBase> ExceptionTargetSites = new();
+        private readonly ServiceHelper _service;
 
-        protected CommandBase(ILogger logger, ISettingsProvider<RubberduckSettings> settings)
+        protected CommandBase(ServiceHelper service)
         {
-            Logger = logger;
-            SettingsProvider = settings;
+            _service = service;
 
             CanExecuteCondition = (parameter => true);
             OnExecuteCondition = (parameter => true);
@@ -29,8 +22,7 @@ namespace Rubberduck.UI.Command
             ShortcutText = string.Empty;
         }
 
-        protected ISettingsProvider<RubberduckSettings> SettingsProvider { get; }
-        protected ILogger Logger { get; }
+        protected ServiceHelper Service => _service;
         protected abstract Task OnExecuteAsync(object? parameter);
 
         protected Func<object?, bool> CanExecuteCondition { get; private set; }
@@ -67,47 +59,22 @@ namespace Rubberduck.UI.Command
 
         public bool CanExecute(object? parameter)
         {
-            var traceLevel = SettingsProvider.Settings.LanguageServerSettings.TraceLevel.ToTraceLevel();
             var allowExecute = false;
 
-            if (TimedAction.TryRun(() =>
+            _service.TryRunAction(() =>
             {
                 allowExecute = CanExecuteCondition(parameter);
-            }, out var elapsed, out var exception))
-            {
-                Logger.LogPerformance(traceLevel, $"{GetType().Name}.CanExecute completed.", elapsed);
-            }
-            else if (exception is not null)
-            {
-                Logger.LogError(traceLevel, exception);
-                if (exception.TargetSite != null && !ExceptionTargetSites.Contains(exception.TargetSite))
-                {
-                    ExceptionTargetSites.Add(exception.TargetSite);
-                }
-                allowExecute = false;
-            }
+            }, $"{GetType().Name}.CanExecute");
+
             return allowExecute;
         }
 
         public void Execute(object? parameter)
         {
-            var traceLevel = SettingsProvider.Settings.LanguageServerSettings.TraceLevel.ToTraceLevel();
-
-            if (TimedAction.TryRun(() =>
+            _service.TryRunAction(() =>
             {
                 OnExecuteAsync(parameter).Wait();
-            }, out var elapsed, out var exception))
-            {
-                Logger.LogPerformance(traceLevel, $"{GetType().Name}.Execute completed.", elapsed);
-            }
-            else if (exception is not null)
-            {
-                Logger.LogError(traceLevel, exception);
-                if (exception.TargetSite != null && !ExceptionTargetSites.Contains(exception.TargetSite))
-                {
-                    ExceptionTargetSites.Add(exception.TargetSite);
-                }
-            }
+            }, $"{GetType().Name}.Execute");
         }
 
         public string ShortcutText { get; set; }

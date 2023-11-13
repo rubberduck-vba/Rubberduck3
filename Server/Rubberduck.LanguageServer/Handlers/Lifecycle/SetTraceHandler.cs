@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.ServerPlatform;
@@ -10,23 +9,25 @@ namespace Rubberduck.LanguageServer.Handlers.Lifecycle
 {
     public class SetTraceHandler : SetTraceHandlerBase
     {
-        private readonly ILogger _logger;
+        private readonly ServerPlatformServiceHelper _service;
         private readonly IServerStateWriter _state;
 
-        public SetTraceHandler(ILogger<SetTraceHandler> logger, IServerStateWriter state)
+        public SetTraceHandler(ServerPlatformServiceHelper service, IServerStateWriter state)
         {
-            _logger = logger;
+            _service = service;
             _state = state;
         }
 
         public async override Task<Unit> Handle(SetTraceParams request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            _logger.LogDebug("Received SetTrace request.");
+            _service.LogTrace("Received SetTrace request.");
 
-            _state.SetTraceLevel(request.Value);
+            _service.TryRunAction(() =>
+            {
+                _state.SetTraceLevel(request.Value);
+            }, nameof(SetTraceHandler));
 
-            _logger.LogDebug("Completed SetTrace request.");
             return await Task.FromResult(Unit.Value);
         }
     }

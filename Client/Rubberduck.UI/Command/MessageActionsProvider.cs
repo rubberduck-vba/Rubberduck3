@@ -1,19 +1,18 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.UI.Services;
 using System;
 
 namespace Rubberduck.UI.Command
 {
     public class MessageActionsProvider
     {
-        private readonly ILogger _logger;
-        private readonly ISettingsProvider<RubberduckSettings> _settings;
+        private readonly ServiceHelper _service;
 
-        public MessageActionsProvider(ILogger<MessageActionsProvider> logger, ISettingsProvider<RubberduckSettings> settings)
+        public MessageActionsProvider(ServiceHelper service)
         {
-            _logger = logger;
-            _settings = settings;
+            _service = service;
         }
 
         /// <summary>
@@ -22,7 +21,7 @@ namespace Rubberduck.UI.Command
         public MessageActionCommand[] Close() =>
             new MessageActionCommand[]
             {
-                new CloseMessageActionCommand(_logger, _settings, MessageAction.CloseAction),
+                new CloseMessageActionCommand(_service, MessageAction.CloseAction),
             };
 
         /// <summary>
@@ -31,7 +30,7 @@ namespace Rubberduck.UI.Command
         public MessageActionCommand[] OkOnly(Func<object?, bool>? validations = null) =>
             new MessageActionCommand[]
             {
-                new AcceptMessageActionCommand(_logger, _settings, MessageAction.AcceptAction, validations),
+                new AcceptMessageActionCommand(_service, MessageAction.AcceptAction, validations),
             };
 
         /// <summary>
@@ -40,8 +39,8 @@ namespace Rubberduck.UI.Command
         public MessageActionCommand[] OkCancel(Func<object?, bool>? validations = null) =>
             new MessageActionCommand[]
             {
-                new AcceptMessageActionCommand(_logger, _settings, MessageAction.AcceptAction, validations),
-                new CancelMessageActionCommand(_logger, _settings, MessageAction.CancelAction)
+                new AcceptMessageActionCommand(_service, MessageAction.AcceptAction, validations),
+                new CancelMessageActionCommand(_service, MessageAction.CancelAction)
             };
     }
 }

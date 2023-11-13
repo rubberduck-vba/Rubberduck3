@@ -96,6 +96,12 @@ namespace Rubberduck.InternalApi.Extensions
             logger.Log(level, LogLevel.Warning, message, exception.ToString());
 
         /// <summary>
+        /// Logs the specified <c>Message</c> at <c>Error</c> level.
+        /// </summary>
+        public static void LogError(this ILogger logger, TraceLevel level, string message, string? verbose = default) =>
+            logger.Log(level, LogLevel.Error, message, verbose);
+
+        /// <summary>
         /// Logs the <c>Message</c> of the specified <c>Exception</c> at <c>Error</c> level, along with the stack trace when <c>level</c> is <c>TraceLevel.Verbose</c>.
         /// </summary>
         public static void LogError(this ILogger logger, TraceLevel level, Exception exception) =>

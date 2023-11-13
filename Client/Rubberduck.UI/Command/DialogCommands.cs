@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
 using System.Threading.Tasks;
+using Rubberduck.UI.Services;
 
 namespace Rubberduck.UI.Command
 {
@@ -43,8 +44,8 @@ namespace Rubberduck.UI.Command
 
     public class ShowRubberduckSettingsCommand : CommandBase
     {
-        public ShowRubberduckSettingsCommand(ILogger logger, ISettingsProvider<RubberduckSettings> settings) 
-            : base(logger, settings)
+        public ShowRubberduckSettingsCommand(ServiceHelper service) 
+            : base(service)
         {
         }
 
@@ -56,8 +57,8 @@ namespace Rubberduck.UI.Command
 
     public class ShowLanguageClientSettingsCommand : CommandBase
     {
-        public ShowLanguageClientSettingsCommand(ILogger logger, ISettingsProvider<RubberduckSettings> settings) 
-            : base(logger, settings)
+        public ShowLanguageClientSettingsCommand(ServiceHelper service)
+            : base(service)
         {
         }
 
@@ -69,8 +70,8 @@ namespace Rubberduck.UI.Command
 
     public class ShowLanguageServerSettingsCommand : CommandBase
     {
-        public ShowLanguageServerSettingsCommand(ILogger logger, ISettingsProvider<RubberduckSettings> settings) 
-            : base(logger, settings)
+        public ShowLanguageServerSettingsCommand(ServiceHelper service)
+            : base(service)
         {
         }
 
@@ -82,8 +83,8 @@ namespace Rubberduck.UI.Command
 
     public class ShowEditorSettingsCommand : CommandBase
     {
-        public ShowEditorSettingsCommand(ILogger logger, ISettingsProvider<RubberduckSettings> settings) 
-            : base(logger, settings)
+        public ShowEditorSettingsCommand(ServiceHelper service)
+            : base(service)
         {
         }
 

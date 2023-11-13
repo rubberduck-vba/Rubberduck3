@@ -23,18 +23,31 @@
             BorderBrush="{DynamicResource ThemeBackgroundMediumColorBrush}" 
             BorderThickness="1" CornerRadius="4">
         <DockPanel LastChildFill="True">
-            <CheckBox DockPanel.Dock="Left" Margin="8,8,4,8" 
-                      Style="{DynamicResource FormFieldCheckBoxStyle}" 
-                      IsChecked="{Binding Value}" 
-                      IsEnabled="{Binding IsEnabled}" />
+            <StackPanel DockPanel.Dock="Top" Margin="8" Orientation="Horizontal">
+                <CheckBox IsChecked="{Binding Value}" 
+                          VerticalContentAlignment="Center" Cursor="Hand"
+                          IsEnabled="{Binding IsEnabled}">
+                        <CheckBox.Resources>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=CheckBox, Mode=FindAncestor}}" Value="True">
+                                        <DataTrigger.Setters>
+                                            <Setter Property="Cursor" Value="Hand" />
+                                        </DataTrigger.Setters>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </CheckBox.Resources>
+                        <Label Style="{DynamicResource FormTitleLabelStyle}" IsEnabled="{Binding IsEnabled}">
+                            <TextBlock Margin="0,0,0,4" Text="{Binding Name}" TextWrapping="Wrap" />
+                    </Label>
+                </CheckBox>
+            </StackPanel>
             <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
                                     Icon="{DynamicResource LockedIcon}" 
                                     PressedIcon="{DynamicResource UnlockedIcon}"
                                     IsChecked="{Binding IsEnabled}"
                                     Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
-            <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0" IsEnabled="{Binding IsEnabled}">
-                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
-            </Label>
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <Label DockPanel.Dock="Top" Style="{DynamicResource FormLabelStyle}" Margin="4,0" IsEnabled="{Binding IsEnabled}">
                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />

@@ -2,7 +2,7 @@
 {
     public enum MessageMode
     {
-        Message,
-        Byte
+        Byte = 0,
+        Message = 1,
     }
 }

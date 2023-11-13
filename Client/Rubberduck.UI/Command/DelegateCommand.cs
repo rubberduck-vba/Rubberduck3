@@ -1,9 +1,7 @@
-using Microsoft.Extensions.Logging;
-using Rubberduck.SettingsProvider.Model;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Rubberduck.InternalApi.Settings;
+using Rubberduck.UI.Services;
 
 namespace Rubberduck.UI.Command
 {
@@ -13,8 +11,8 @@ namespace Rubberduck.UI.Command
         private readonly Predicate<object?>? _canExecute;
         private readonly Action<object?> _execute;
 
-        public DelegateCommand(ILogger logger, ISettingsProvider<RubberduckSettings> settings, Action<object?> execute, Predicate<object?>? canExecute = null) 
-            : base(logger, settings)
+        public DelegateCommand(ServiceHelper service, Action<object?> execute, Predicate<object?>? canExecute = null) 
+            : base(service)
         {
             _canExecute = canExecute;
             _execute = execute;

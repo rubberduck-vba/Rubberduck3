@@ -7,6 +7,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/ComboBoxTemplate.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/CheckBoxTemplate.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <!-- Menu -->
@@ -368,6 +369,7 @@
     <DataTemplate x:Key="SettingSubGroupTemplate" DataType="viewmodels:SettingGroupViewModel">
         <templates:SettingSubGroupControl />
     </DataTemplate>
+    
     <templates:SettingTemplateSelector x:Key="SettingTemplateSelector" 
         BooleanSettingTemplate="{StaticResource BooleanSettingTemplate}"
         EnumValueSettingTemplate="{StaticResource EnumValueSettingTemplate}"

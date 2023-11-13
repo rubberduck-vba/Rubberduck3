@@ -51,10 +51,7 @@ namespace Rubberduck.Main
 
         private readonly CancellationTokenSource _tokenSource = new();
 
-        private IShowRubberduckEditorCommand? _showEditorCommand;
-        private Process? _editorServerProcess;
-        private NamedPipeClientStream? _editorServerPipeStream;
-        private EditorClient? _editorClient;
+        private EditorClientApp? _editorClient;
         private IDisposable? _editorClientInitializeTask;
 
         //private Process? _telemetryServerProcess;
@@ -112,7 +109,7 @@ namespace Rubberduck.Main
                 {
                     var tokenSource = new CancellationTokenSource();
 
-                    var provider = new RubberduckServicesBuilder(_vbe, _addin, () => _editorClient).Build();
+                    var provider = new RubberduckServicesBuilder(_vbe, _addin, _tokenSource).Build();
                     var scope = provider.CreateScope();
 
                     _serviceScope = scope;
@@ -120,8 +117,6 @@ namespace Rubberduck.Main
                     _messageService = scope.ServiceProvider.GetRequiredService<IMessageService>();
 
                     _initialSettings = GetInitialSettings(scope);
-                    _showEditorCommand = scope.ServiceProvider.GetRequiredService<IShowRubberduckEditorCommand>();
-
                     var version = GetVersionString();
 
                     sw.Start();
@@ -322,10 +317,6 @@ namespace Rubberduck.Main
 
             _logger.LogInformation("Rubberduck is shutting down...");
 
-            RunShutdownAction("Sending shutdown notification to Rubberduck Editor...", () =>
-            {
-                _editorClient?.SendShutdown(new());
-            });
             RunShutdownAction("Terminating VbeProvider...", () =>
             {
                 VbeProvider.Terminate();
@@ -351,13 +342,10 @@ namespace Rubberduck.Main
                 AppDomain.CurrentDomain.AssemblyResolve -= LoadFromSameFolder;
                 AppDomain.CurrentDomain.UnhandledException -= HandleAppDomainException;
             });
-            RunShutdownAction("Sending exit notification to Rubberduck Editor...", () =>
-            {
-                _editorClient?.SendExit(new());
-            });
             RunShutdownAction("Disposing Rubberduck Editor task...", () =>
             {
                 _editorClientInitializeTask?.Dispose();
+                _editorClient?.Dispose();
             });
 
             _isInitialized = false;

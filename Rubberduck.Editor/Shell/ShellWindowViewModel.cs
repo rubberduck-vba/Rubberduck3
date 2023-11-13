@@ -10,13 +10,13 @@ namespace Rubberduck.Editor.Shell
     {
         private static readonly string _shellPartition = Guid.NewGuid().ToString();
 
-        public ShellWindowViewModel(IInterTabClient interTabClient, IStatusBarViewModel statusBar, params IDocumentTabViewModel[] items)
+        public ShellWindowViewModel(IInterTabClient interTabClient, StatusBarViewModel statusBar/*, params IDocumentTabViewModel[] items*/)
         {
             InterTabClient = interTabClient;
             Partition = _shellPartition;
 
             StatusBar = statusBar;
-            Items = new ObservableCollection<IDocumentTabViewModel>(items);
+            Items = new ObservableCollection<IDocumentTabViewModel>();
         }
 
         public string Title => "Rubberduck Editor";
@@ -26,7 +26,7 @@ namespace Rubberduck.Editor.Shell
         public object Partition { get; init; }
         public object InterTabClient { get; init; }
 
-        public IStatusBarViewModel StatusBar { get; init; }
+        public StatusBarViewModel StatusBar { get; init; }
 
         public void ClosingTabItemHandler(object sender, EventArgs e)
         {

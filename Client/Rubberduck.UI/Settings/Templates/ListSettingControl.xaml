@@ -19,58 +19,59 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-    <Border Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
-            BorderBrush="{DynamicResource ThemeBackgroundMediumColorBrush}" BorderThickness="1" HorizontalAlignment="Left" Width="247">
-        <DockPanel LastChildFill="True">
-            <DockPanel DockPanel.Dock="Top">
-                <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
-                                    Icon="{DynamicResource LockedIcon}" 
-                                    PressedIcon="{DynamicResource UnlockedIcon}"
-                                    IsChecked="{Binding IsEnabled}"
-                                    Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
-                <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0">
-                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
-                </Label>
-            </DockPanel>
-            <ScrollViewer DockPanel.Dock="Top" MinHeight="48" VerticalScrollBarVisibility="Auto">
-                <Label Style="{DynamicResource FormLabelStyle}" Margin="4,0">
-                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
-                </Label>
-            </ScrollViewer>
+        <Border Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
+                BorderBrush="{DynamicResource ThemeBackgroundMediumColorBrush}" 
+                BorderThickness="1" CornerRadius="4">
+            <DockPanel LastChildFill="True">
+                <DockPanel DockPanel.Dock="Top">
+                    <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
+                                        Icon="{DynamicResource LockedIcon}" 
+                                        PressedIcon="{DynamicResource UnlockedIcon}"
+                                        IsChecked="{Binding IsEnabled}"
+                                        Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0">
+                        <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
+                    </Label>
+                </DockPanel>
+                <ScrollViewer DockPanel.Dock="Top" MinHeight="48" VerticalScrollBarVisibility="Auto">
+                    <Label Style="{DynamicResource FormLabelStyle}" Margin="4,0">
+                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+                    </Label>
+                </ScrollViewer>
 
-            <ListView DockPanel.Dock="Top" Background="{StaticResource ThemeBackgroundDarkColorBrush}" 
-                      HorizontalContentAlignment="Stretch"
-                      VerticalAlignment="Stretch"
-                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                      ScrollViewer.VerticalScrollBarVisibility="Auto"
-                      ItemsSource="{Binding ListItems}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="{DynamicResource ThemeAccent1DarkColorBrush}" 
-                                Background="{DynamicResource ThemeAccent1LightColorBrush}"
-                                BorderThickness="1" CornerRadius="4" Cursor="Hand">
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="{Binding}" Foreground="{DynamicResource ThemeAccent1TextColorBrush}" />
-                                <shell:FlatButton Icon="{DynamicResource XMarkIcon}" 
-                                                  Command="{Binding DataContext.RemoveListSettingItemCommand, RelativeSource={RelativeSource AncestorType=local:ListSettingControl, Mode=FindAncestor}}" 
-                                                  CommandParameter="{Binding}" />
-                            </StackPanel>
-                            <Border.Style>
-                                <Style TargetType="Border">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListViewItem, Mode=FindAncestor}}" Value="true">
-                                            <DataTrigger.Setters>
-                                                <Setter Property="Background" Value="{DynamicResource ThemeAccent1MediumColorBrush}" />
-                                            </DataTrigger.Setters>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Border.Style>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </DockPanel>
-    </Border>
+                <ListView DockPanel.Dock="Top" Background="{StaticResource ThemeBackgroundDarkColorBrush}" 
+                          HorizontalContentAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          ItemsSource="{Binding ListItems}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="{DynamicResource ThemeAccent1DarkColorBrush}" 
+                                    Background="{DynamicResource ThemeAccent1LightColorBrush}"
+                                    BorderThickness="1" CornerRadius="4" Cursor="Hand">
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="{Binding}" Foreground="{DynamicResource ThemeAccent1TextColorBrush}" />
+                                    <shell:FlatButton Icon="{DynamicResource XMarkIcon}" 
+                                                      Command="{Binding DataContext.RemoveListSettingItemCommand, RelativeSource={RelativeSource AncestorType=local:ListSettingControl, Mode=FindAncestor}}" 
+                                                      CommandParameter="{Binding}" />
+                                </StackPanel>
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListViewItem, Mode=FindAncestor}}" Value="true">
+                                                <DataTrigger.Setters>
+                                                    <Setter Property="Background" Value="{DynamicResource ThemeAccent1MediumColorBrush}" />
+                                                </DataTrigger.Setters>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </DockPanel>
+        </Border>
     </Grid>
 </UserControl>

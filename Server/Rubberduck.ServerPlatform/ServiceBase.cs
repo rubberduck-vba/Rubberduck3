@@ -20,7 +20,7 @@ namespace Rubberduck.ServerPlatform
     public abstract class ServiceBase
     {
         private readonly ILogger _logger;
-        private readonly ISettingsProvider<RubberduckSettings> _settings;
+        private readonly RubberduckSettingsProvider _settings;
         private readonly IWorkDoneProgressStateService? _workdone;
 
         protected ServiceBase(ILogger logger, RubberduckSettingsProvider settings, IWorkDoneProgressStateService? workdone)
@@ -29,6 +29,9 @@ namespace Rubberduck.ServerPlatform
             _settings = settings;
             _workdone = workdone;
         }
+
+        public ISettingsService<RubberduckSettings> SettingsService => _settings;
+        public ISettingsProvider<RubberduckSettings> SettingsProvider => _settings;
 
         public RubberduckSettings Settings => _settings.Settings;
         public TraceLevel TraceLevel => _settings.Settings.GeneralSettings.TraceLevel.ToTraceLevel();
@@ -61,6 +64,17 @@ namespace Rubberduck.ServerPlatform
             {
                 _logger.LogError(verbosity, exception, message);
             }
+        }
+
+        public void LogError(string message, string? verbose = default)
+        {
+            var verbosity = TraceLevel;
+            if (verbosity == TraceLevel.Off)
+            {
+                return;
+            }
+
+            _logger.LogError(verbosity, message, verbose);
         }
 
         public void LogWarning(string message, string? verbose = default)

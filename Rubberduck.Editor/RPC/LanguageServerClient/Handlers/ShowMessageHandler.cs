@@ -2,14 +2,12 @@
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Window;
-using Rubberduck.InternalApi.Common;
-using Rubberduck.InternalApi.Extensions;
-using Rubberduck.InternalApi.Settings;
+using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.General;
+using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.UI.Message;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,16 +15,13 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
 {
     public class ShowMessageHandler : ShowMessageHandlerBase
     {
-        private readonly ILogger<ShowMessageHandler> _logger;
-        private readonly IMessageService _service;
-        private readonly ISettingsProvider<RubberduckSettings> _settingsProvider;
-        TraceLevel TraceLevel => _settingsProvider.Settings.LanguageServerSettings.TraceLevel.ToTraceLevel();
+        private readonly ServerPlatformServiceHelper _service;
+        private readonly IMessageService _messages;
 
-        public ShowMessageHandler(ILogger<ShowMessageHandler> logger, IMessageService service, ISettingsProvider<RubberduckSettings> settingsProvider)
+        public ShowMessageHandler(ServerPlatformServiceHelper service, IMessageService messages)
         {
-            _logger = logger;
             _service = service;
-            _settingsProvider = settingsProvider;
+            _messages = messages;
         }
 
         private static readonly IDictionary<MessageType, LogLevel> _typeMap = new Dictionary<MessageType, LogLevel>
@@ -39,37 +34,36 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
         public override async Task<Unit> Handle(ShowMessageParams request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            _logger.LogInformation(TraceLevel, "Handling ShowMessage request.", $"[{request.Type}] {request.Message}");
 
             if (_typeMap.TryGetValue(request.Type, out var level))
             {
-                if (TimedAction.TryRun(() =>
+                _service.TryRunAction(() =>
                 {
                     var model = MessageModel.FromShowMessageParams(request.Message, level);
-                    if (!_settingsProvider.Settings.GeneralSettings.DisabledMessageKeys.Contains(model.Key))
+                    var result = _messages.ShowMessage(model);
+                    if (result != MessageActionResult.Disabled)
                     {
-                        var result = _service.ShowMessage(model);
-
+                        var generalSettings = _service.Settings.GeneralSettings;
                         if (!result.IsEnabled)
                         {
-                            // TODO update settings
-                            //_settingsProvider.Settings.LanguageClientSettings.DisabledMessageKeys.Add(model.Key);
+                            // type casts for clarity.. TODO come up with a better API for updating settings.
+                            var disabledKeysSetting = generalSettings.GetSetting<DisabledMessageKeysSetting>();
+                            var updatedDisabledKeys = disabledKeysSetting.WithDisabledMessageKeys(model.Key);
+                            var updatedGeneralSettings = (GeneralSettings)generalSettings.WithSetting(updatedDisabledKeys);
+                            var updatedSettings = (RubberduckSettings)_service.Settings.WithSetting(updatedGeneralSettings);
+                            _service.SettingsService.Write(updatedSettings);
                         }
                     }
-
-                }, out var elapsed, out var exception))
-                {
-                    _logger.LogPerformance(TraceLevel, "ShowMessage request completed.", elapsed);
-                }
-                else if (exception is not null)
-                {
-                    _logger.LogError(TraceLevel, exception);
-                }
+                    else
+                    {
+                        _service.LogTrace("Key is disabled, message was not shown.", $"Key: '{model.Key}'");
+                    }
+                }, nameof(ShowMessageHandler));
             }
             else
             {
                 // MessageType.Log does not pop a message box, but should appear in a server trace toolwindow.
-                _logger.LogInformation(TraceLevel, request.Message);
+                _service.LogInformation(request.Message);
             }
 
             return await Task.FromResult(Unit.Value);

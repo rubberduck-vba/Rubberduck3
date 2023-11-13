@@ -1,23 +1,19 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Dragablz;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Nerdbank.Streams;
 using NLog;
 using NLog.Extensions.Logging;
-using OmniSharp.Extensions.LanguageServer.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
-using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
-using OmniSharp.Extensions.LanguageServer.Server;
-using Rubberduck.Editor.RPC;
+using Rubberduck.Editor.Document.Tabs;
 using Rubberduck.Editor.RPC.EditorServer;
 using Rubberduck.Editor.RPC.EditorServer.Handlers.Lifecycle;
 using Rubberduck.Editor.RPC.EditorServer.Handlers.Workspace;
-using Rubberduck.Editor.RPC.LanguageServerClient;
+using Rubberduck.Editor.RPC.LanguageServerClient.Handlers;
+using Rubberduck.Editor.Shell;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Abstract;
-using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.LanguageServer.Model;
 using Rubberduck.ServerPlatform;
@@ -28,288 +24,21 @@ using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
 using Rubberduck.SettingsProvider.Model.TelemetryServer;
 using Rubberduck.SettingsProvider.Model.UpdateServer;
+using Rubberduck.UI.Command;
+using Rubberduck.UI.Message;
+using Rubberduck.UI.Services;
 using Rubberduck.UI.Splash;
 using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO.Abstractions;
-using System.IO.Pipes;
 using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
-using OmniSharpLanguageClient = OmniSharp.Extensions.LanguageServer.Client.LanguageClient;
-using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.LanguageServer;
 
 namespace Rubberduck.Editor
 {
-    /// <summary>
-    /// Configures LSP for editor <--> addin communications.
-    /// </summary>
-    public sealed class EditorServerApp : IDisposable
-    {
-        private readonly ILogger _logger;
-        private readonly IServiceProvider _services;
-        private readonly ServerStartupOptions _options;
-        private readonly CancellationTokenSource _tokenSource;
-        private readonly EditorServerState _serverState;
-
-        private NamedPipeServerStream? _editorServerPipe = default;
-        private OmniSharpLanguageServer? _editorServer = default;
-
-        public EditorServerApp(ILogger<EditorServerApp> logger, ServerStartupOptions options, CancellationTokenSource tokenSource, IServiceProvider services)
-        {
-            _logger = logger;
-            _options = options;
-            _tokenSource = tokenSource;
-            _serverState = services.GetRequiredService<EditorServerState>();
-            _services = services;
-        }
-
-        public async Task StartupAsync()
-        {
-            _editorServer = await OmniSharpLanguageServer.From(ConfigureServer, _services, _tokenSource.Token);
-        }
-
-        public OmniSharpLanguageServer LanguageServer => _editorServer ?? throw new InvalidOperationException();
-        public EditorServerState ServerState => _serverState;
-
-        private void ConfigureServer(LanguageServerOptions options)
-        {
-            ConfigureTransport(options);
-
-            var assembly = GetType().Assembly.GetName()!;
-            var name = assembly.Name!;
-            var version = assembly.Version!.ToString(3);
-
-            var info = new ServerInfo
-            {
-                Name = name,
-                Version = version
-            };
-
-            var loggerProvider = new NLogLoggerProvider();
-            loggerProvider.LogFactory.Setup().LoadConfigurationFromFile("NLog-editor.config");
-            options.LoggerFactory = new NLogLoggerFactory(loggerProvider);
-
-            options
-                .WithServerInfo(info)
-                .OnInitialize((ILanguageServer server, InitializeParams request, CancellationToken token) =>
-                {
-                    _logger.LogDebug("Received Initialize request.");
-                    token.ThrowIfCancellationRequested();
-                    if (TimedAction.TryRun(() =>
-                    {
-                        _serverState.Initialize(request);
-                    }, out var elapsed, out var exception))
-                    {
-                        _logger.LogPerformance(TraceLevel.Verbose, "Handling initialize...", elapsed);
-                    }
-                    else if (exception != null)
-                    {
-                        _logger.LogError(TraceLevel.Verbose, exception);
-                    }
-                    _logger.LogDebug("Completed Initialize request.");
-                    return Task.CompletedTask;
-                })
-
-                .OnInitialized((ILanguageServer server, InitializeParams request, InitializeResult response, CancellationToken token) =>
-                {
-                    _logger.LogDebug("Received Initialized notification.");
-                    token.ThrowIfCancellationRequested();
-
-                    _logger.LogDebug("Handled Initialized notification.");
-                    return Task.CompletedTask;
-                })
-
-                .OnStarted(async (ILanguageServer server, CancellationToken token) =>
-                {
-                    _logger.LogDebug("Editor server started.");
-                    token.ThrowIfCancellationRequested();
-
-                    var folders = await server.RequestWorkspaceFolders(new(), token);
-                    _serverState.WorkspaceFolders = folders ?? Container.From(Array.Empty<WorkspaceFolder>());
-
-                    _logger.LogDebug("Handled Started notification.");
-                })
-                .WithHandler<ShutdownHandler>()
-                .WithHandler<ExitHandler>()
-                .WithHandler<DidChangeConfigurationHandler>()
-                ;
-        }
-
-        private void ConfigureTransport(LanguageServerOptions options)
-        {
-            switch (_options.TransportType)
-            {
-                case TransportType.StdIO:
-                    ConfigureStdIO(options);
-                    break;
-
-                case TransportType.Pipe:
-                    ConfigurePipeIO(options);
-                    break;
-
-                default:
-                    _logger?.LogWarning("An unsupported transport type was specified.");
-                    throw new UnsupportedTransportTypeException(_options.TransportType);
-            }
-        }
-
-        private void ConfigureStdIO(LanguageServerOptions options)
-        {
-            _logger.LogInformation($"Configuring language server transport to use standard input/output streams...");
-
-            options.WithInput(Console.OpenStandardInput());
-            options.WithOutput(Console.OpenStandardOutput());
-        }
-
-        private void ConfigurePipeIO(LanguageServerOptions options)
-        {
-            var ioOptions = (PipeServerStartupOptions)_options;
-            _logger.LogInformation("Configuring language server transport to use a named pipe stream (mode: {mode})...", ioOptions.Mode);
-
-            _editorServerPipe = new NamedPipeServerStream(ioOptions.PipeName, PipeDirection.InOut, 1, ioOptions.Mode, System.IO.Pipes.PipeOptions.Asynchronous);
-            options.WithInput(_editorServerPipe.UsePipeReader());
-            options.WithOutput(_editorServerPipe.UsePipeWriter());
-        }
-
-        public void Dispose()
-        {
-            _editorServerPipe?.Dispose();
-            _editorServer?.Dispose();
-
-            _editorServer = null;
-            _editorServerPipe = null;
-        }
-    }
-
-    /// <summary>
-    /// Configures LSP for editor <--> language server communications.
-    /// </summary>
-    public sealed class LanguageClientApp : IDisposable
-    {
-        private readonly ILogger _logger;
-        private readonly IServiceProvider _services;
-        private readonly ServerStartupOptions _options;
-        private readonly CancellationTokenSource _tokenSource;
-
-
-        private Process? _languageServerProcess = default;
-        private NamedPipeClientStream? _languageClientPipe = default;
-        private OmniSharpLanguageClient? _languageClient = default;
-        private IDisposable? _languageClientInitializeTask = default;
-
-        public LanguageClientApp(ILogger<LanguageClientApp> logger, ServerStartupOptions options, CancellationTokenSource tokenSource, IServiceProvider services)
-        {
-            _logger = logger;
-            _options = options;
-            _services = services;
-            _tokenSource = tokenSource;
-        }
-
-        public async Task StartupAsync()
-        {
-            StartLanguageServerProcess();
-
-            _languageClient = await OmniSharpLanguageClient.From(ConfigureClient, _services, _tokenSource.Token);
-            _languageClientInitializeTask = _languageClient.Initialize(_tokenSource.Token);
-        }
-
-        public async Task ExitAsync()
-        {
-            _languageClient?.SendShutdown(new());
-            await SendExitServerNotificationAsync();
-        }
-
-        private async Task SendExitServerNotificationAsync()
-        {
-            var delay = _services.GetRequiredService<ISettingsProvider<RubberduckSettings>>().Settings.LanguageClientSettings.ExitNotificationDelay;
-            await Task.Delay(delay).ContinueWith(o => _languageClient?.SendExit(new()), _tokenSource.Token, TaskContinuationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
-        }
-
-        private void StartLanguageServerProcess()
-        {
-            var settings = _services
-                .GetRequiredService<ISettingsProvider<RubberduckSettings>>().Settings
-                .LanguageServerSettings.StartupSettings;
-            var clientProcessId = Environment.ProcessId;
-
-            _languageServerProcess = new LanguageServerProcess(_logger).Start(clientProcessId, settings, HandleServerExit);
-        }
-
-        private void HandleServerExit(object? sender, EventArgs e)
-        {
-            _logger.LogInformation("LanguageServer process has exited.");
-        }
-
-        private void ConfigureClient(LanguageClientOptions options)
-        {
-            var provider = _services;
-            var settings = provider.GetRequiredService<ISettingsProvider<RubberduckSettings>>();
-
-            var resolver = new WorkspaceRootResolver(_logger, settings);
-            var workspaceRoot = resolver.GetWorkspaceRootUri(_options);
-
-            ConfigureClient(options, settings.Settings, workspaceRoot);
-        }
-
-        private void ConfigureClient(LanguageClientOptions options, RubberduckSettings settings, Uri workspaceRoot)
-        {
-            switch (_options.TransportType)
-            {
-                case TransportType.StdIO:
-                    ConfigureStdIO(options, settings, workspaceRoot);
-                    break;
-
-                case TransportType.Pipe:
-                    ConfigurePipeIO(options, settings, workspaceRoot);
-                    break;
-
-                default:
-                    _logger?.LogWarning("An unsupported transport type was specified.");
-                    throw new UnsupportedTransportTypeException(_options.TransportType);
-            }
-        }
-
-        private void ConfigureStdIO(LanguageClientOptions options, RubberduckSettings settings, Uri workspaceRoot)
-        {
-            _logger.LogInformation($"Configuring language client transport to use standard input/output streams...");
-            var serverProcess = _languageServerProcess ?? throw new InvalidOperationException("BUG: Server process is not initialized.");
-
-            options.WithInput(serverProcess.StandardOutput.BaseStream);
-            options.WithOutput(serverProcess.StandardInput.BaseStream);
-
-            LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), serverProcess, Environment.ProcessId, settings, workspaceRoot.LocalPath);
-        }
-
-        private void ConfigurePipeIO(LanguageClientOptions options, RubberduckSettings settings, Uri workspaceRoot)
-        {
-            var ioOptions = (PipeServerStartupOptions)_options;
-            var pipeName = ioOptions.PipeName ?? settings.LanguageServerSettings.StartupSettings.ServerPipeName;
-            _logger.LogInformation("Configuring language client transport to use a named pipe stream (name: {pipeName} mode: {mode})...", pipeName, ioOptions.Mode);
-
-            var pipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut);
-            options.WithInput(pipe.UsePipeReader());
-            options.WithOutput(pipe.UsePipeWriter());
-            LanguageClientService.ConfigureLanguageClient(Assembly.GetExecutingAssembly(), _languageClientPipe, Environment.ProcessId, settings, workspaceRoot.LocalPath);
-        }
-
-        public void Dispose()
-        {
-            _languageServerProcess?.Dispose();
-            _languageClientPipe?.Dispose();
-            _languageClient?.Dispose();
-            _languageClientInitializeTask?.Dispose();
-
-            _languageServerProcess = null;
-            _languageClientPipe = null;
-            _languageClient = null;
-            _languageClientInitializeTask = null;
-        }
-    }
-
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
@@ -324,7 +53,7 @@ namespace Rubberduck.Editor
         private EditorServerApp _editorServer;
         private LanguageClientApp _languageClient;
 
-        private ISettingsProvider<RubberduckSettings> SettingsProvider { get; }
+        private RubberduckSettingsProvider _settings;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "We want to crash the process in case of an exception anyway.")]
         protected override async void OnStartup(StartupEventArgs e)
@@ -338,38 +67,65 @@ namespace Rubberduck.Editor
                 var services = new ServiceCollection();
                 services.AddLogging(ConfigureLogging);
                 ConfigureServices(services);
+
                 _serviceProvider = services.BuildServiceProvider();
                 _logger = _serviceProvider.GetRequiredService<ILogger<App>>();
 
-                _editorServer = new(_serviceProvider.GetRequiredService<ILogger<EditorServerApp>>(), _options, _tokenSource, _serviceProvider);
                 _languageClient = new(_serviceProvider.GetRequiredService<ILogger<LanguageClientApp>>(), _options, _tokenSource, _serviceProvider);
+                _settings = _serviceProvider.GetRequiredService<RubberduckSettingsProvider>();
 
                 var splash = _serviceProvider.GetRequiredService<SplashService>();
                 splash.Show();
 
-                splash.UpdateStatus("Initializing language server protocol (addin/editor)...");
-                await _editorServer.StartupAsync();
+                splash.UpdateStatus("Loading configuration...");
+                _settings.ClearCache();
+
+                if (_options.ClientProcessId > 0)
+                {
+                    _editorServer = new(_serviceProvider.GetRequiredService<ILogger<EditorServerApp>>(), _options, _tokenSource, _serviceProvider);
+
+                    splash.UpdateStatus("Initializing language server protocol (addin/editor)...");
+                    await _editorServer.StartupAsync();
+                }
+                else if (_settings.Settings.LanguageClientSettings.RequireAddInHost)
+                {
+                    throw new InvalidOperationException("Editor is not configured for standalone execution.");
+                }
 
                 splash.UpdateStatus("Initializing language server protocol (editor/server)...");
                 await _languageClient.StartupAsync();
 
+                splash.UpdateStatus("Quack!");
+                ShowEditor();
                 splash.Close();
             }
             catch (Exception exception)
             {
                 _logger?.LogError(exception, "An exception was thrown; editor process will exit with an error code.");
-                throw; // unhandled async void exception should crash the process here
+                Shutdown(1);
+                throw;
             }
+        }
+
+        private void ShowEditor()
+        {
+            var model = _serviceProvider.GetRequiredService<ShellWindowViewModel>();
+
+            // prompt for new workspace here if there's no addin host?
+
+            var view = new ShellWindow() { DataContext = model };
+            view.Show();
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
-            var level = SettingsProvider.Settings.GeneralSettings.TraceLevel.ToTraceLevel();
-            var delay = SettingsProvider.Settings.LanguageClientSettings.ExitNotificationDelay;
+            var level = _settings.Settings.GeneralSettings.TraceLevel.ToTraceLevel();
+            var delay = _settings.Settings.LanguageClientSettings.ExitNotificationDelay;
+
             if (TimedAction.TryRun(() =>
             {
+                _languageClient?.ExitAsync().ConfigureAwait(false).GetAwaiter().GetResult();
                 base.OnExit(e);
-                _languageClient.ExitAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             }, out var elapsed, out var exception))
             {
                 _logger.LogPerformance(level, $"Notified language server to shutdown and exit (delay: {delay.TotalMilliseconds}ms).", elapsed);
@@ -403,12 +159,13 @@ namespace Rubberduck.Editor
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<Func<ILanguageServer>>(provider => () => _editorServer.LanguageServer);
+            services.AddSingleton<Func<ILanguageServer>>(provider => () => _editorServer.EditorServer);
             services.AddSingleton<ServerStartupOptions>(provider => _options);
             services.AddSingleton<Process>(provider => Process.GetProcessById((int)_options.ClientProcessId));
 
             services.AddSingleton<IFileSystem, FileSystem>();
 
+            services.AddSingleton<ServiceHelper>();
             services.AddSingleton<ServerPlatformServiceHelper>();
             services.AddSingleton<EditorServerState>();
             services.AddSingleton<Func<EditorServerState>>(provider => () => _editorServer.ServerState);
@@ -421,8 +178,6 @@ namespace Rubberduck.Editor
             services.AddSingleton<IDefaultSettingsProvider<TelemetryServerSettings>>(provider => TelemetryServerSettings.Default);
 
             services.AddSingleton<RubberduckSettingsProvider>();
-            services.AddSingleton<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
-
             services.AddSingleton<SupportedLanguage, VisualBasicForApplicationsLanguage>();
 
             services.AddSingleton<IExitHandler, ExitHandler>();
@@ -435,10 +190,19 @@ namespace Rubberduck.Editor
             services.AddSingleton<SplashService>();
             services.AddSingleton<ISplashViewModel, SplashViewModel>();
 
+            services.AddSingleton<ShellWindowViewModel>();
+            services.AddSingleton<StatusBarViewModel>();
+            services.AddSingleton<IInterTabClient, ShellInterTabClient>();
+
             services.AddSingleton<ISettingsChangedHandler<RubberduckSettings>>(provider => provider.GetRequiredService<RubberduckSettingsProvider>());
             services.AddSingleton<DidChangeConfigurationHandler>();
-        }
 
+            services.AddSingleton<MessageActionsProvider>();
+            services.AddSingleton<IMessageWindowFactory, MessageWindowFactory>();
+            services.AddSingleton<IMessageService, MessageService>();
+            services.AddSingleton<ShowMessageHandler>();
+            services.AddSingleton<ShowMessageRequestHandler>();
+        }
 
         public void Dispose()
         {

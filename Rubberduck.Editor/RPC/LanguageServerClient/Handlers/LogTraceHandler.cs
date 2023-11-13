@@ -1,37 +1,35 @@
-﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using System.Threading.Tasks;
-using MediatR;
-using System.Threading;
+﻿using MediatR;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client;
-using Microsoft.Extensions.Logging;
-using Rubberduck.SettingsProvider.Model;
-using Rubberduck.InternalApi.Extensions;
-using System.Diagnostics;
-using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider.Model.LanguageServer;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.ServerPlatform;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
 {
     public class LogTraceHandler : LogTraceHandlerBase
     {
-        private readonly ILogger<WorkspaceFoldersHandler> _logger;
-        private readonly ISettingsProvider<LanguageServerSettings> _settingsProvider;
+        private readonly ServerPlatformServiceHelper _service;
 
-        TraceLevel TraceLevel => _settingsProvider.Settings.TraceLevel.ToTraceLevel();
-
-        public LogTraceHandler(ILogger<WorkspaceFoldersHandler> logger, ISettingsProvider<LanguageServerSettings> settingsProvider)
+        public LogTraceHandler(ServerPlatformServiceHelper service)
         {
-            _logger = logger;
-            _settingsProvider = settingsProvider;
+            _service = service;
         }
 
         public override async Task<Unit> Handle(LogTraceParams request, CancellationToken cancellationToken)
         {
-            _logger.LogDebug(TraceLevel, "Received LogTrace request.", string.Empty);
+            var service = _service;
+            service.LogTrace("Received LogTrace request.");
+
             cancellationToken.ThrowIfCancellationRequested();
-            if (TraceLevel != TraceLevel.Off)
+
+            var message = request.Message;
+            var verbose = request.Verbose;
+
+            _service.TryRunAction(() =>
             {
-            }
+                service.LogTrace(message, verbose);
+            }, nameof(LogTraceHandler));
 
             return await Task.FromResult(Unit.Value);
         }

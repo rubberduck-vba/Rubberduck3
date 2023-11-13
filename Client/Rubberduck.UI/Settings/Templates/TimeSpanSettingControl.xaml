@@ -10,7 +10,7 @@
              Background="{DynamicResource ThemeBackgroundColorBrush}"
              Padding="4" MinHeight="96" MinWidth="255"
              mc:Ignorable="d" 
-             d:DesignHeight="96" d:DesignWidth="255">
+             d:DesignHeight="128" d:DesignWidth="255">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -37,12 +37,18 @@
                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
                 </Label>
             </ScrollViewer>
-            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center" Margin="4">
                 <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Hours}" HorizontalContentAlignment="Center" />
+                <TextBlock Text=":" VerticalAlignment="Center" />
                 <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Minutes}" HorizontalContentAlignment="Center" />
+                <TextBlock Text=":" VerticalAlignment="Center" />
                 <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Seconds}" HorizontalContentAlignment="Center" />
+                <TextBlock Text="." VerticalAlignment="Center" />
                 <TextBox b:Masking.Mask="\d" MaxLength="3" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="36" Height="24" Text="{Binding Milliseconds}" HorizontalContentAlignment="Center" />
             </StackPanel>
+            <Label DockPanel.Dock="Top" Style="{DynamicResource FormLabelStyleMedium}" HorizontalAlignment="Center" Margin="-4">
+                <TextBlock Text="hh:mm:ss.ms" />
+            </Label>
         </DockPanel>
     </Border>
 </UserControl>

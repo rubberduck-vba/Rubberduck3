@@ -12,15 +12,18 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.LanguageServer.Handlers.Lifecycle;
+using Rubberduck.LanguageServer.Handlers.Workspace;
 using Rubberduck.LanguageServer.Model;
 using Rubberduck.LanguageServer.Services;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
+using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
 using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO.Abstractions;
+using System.IO.Pipelines;
 using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
@@ -79,24 +82,30 @@ namespace Rubberduck.LanguageServer
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<Func<ILanguageServer>>(provider => () => _languageServer);
+            //services.AddSingleton<ILanguageServerFacade>(provider => _languageServer);
             services.AddSingleton<ServerStartupOptions>(provider => _options);
             services.AddSingleton<Process>(provider => Process.GetProcessById((int)_options.ClientProcessId));
 
             services.AddSingleton<IFileSystem, FileSystem>();
 
+            services.AddSingleton<ServerPlatformServiceHelper>();
             services.AddSingleton<LanguageServerState>();
             services.AddSingleton<Func<LanguageServerState>>(provider => () => _serverState);
             services.AddSingleton<IServerStateWriter>(provider => provider.GetRequiredService<LanguageServerState>());
 
+            services.AddSingleton<IDefaultSettingsProvider<RubberduckSettings>>(provider => RubberduckSettings.Default);
             services.AddSingleton<IDefaultSettingsProvider<LanguageServerSettings>>(provider => LanguageServerSettings.Default);
-            services.AddSingleton<ISettingsProvider<LanguageServerSettings>, SettingsService<LanguageServerSettings>>();
+            services.AddSingleton<RubberduckSettingsProvider>();
 
             services.AddSingleton<SupportedLanguage, VisualBasicForApplicationsLanguage>();
             services.AddSingleton<DocumentContentStore>();
 
             services.AddSingleton<IExitHandler, ExitHandler>();
             services.AddSingleton<IHealthCheckService<LanguageServerStartupSettings>, ClientProcessHealthCheckService<LanguageServerStartupSettings>>();
+
+            services.AddSingleton<IWorkDoneProgressStateService, WorkDoneProgressStateService>();
+            services.AddSingleton<ISettingsChangedHandler<RubberduckSettings>>(provider => provider.GetRequiredService<RubberduckSettingsProvider>());
+            services.AddSingleton<DidChangeConfigurationHandler>();
         }
 
         private void ConfigureLogging(ILoggingBuilder builder)
@@ -297,11 +306,12 @@ namespace Rubberduck.LanguageServer
         private void ConfigurePipeIO(LanguageServerOptions options)
         {
             var ioOptions = (PipeServerStartupOptions)_options;
-            _logger?.LogInformation("Configuring language server transport to use a named pipe stream (mode: {mode})...", ioOptions.Mode);
+            _logger?.LogInformation("Configuring language server transport to use a named pipe stream (name: {name})...", ioOptions.PipeName);
 
-            _pipe = new NamedPipeServerStream(ioOptions.PipeName, PipeDirection.InOut, 1, ioOptions.Mode, PipeOptions.Asynchronous);
-            options.WithInput(_pipe.UsePipeReader());
-            options.WithOutput(_pipe.UsePipeWriter());
+            _pipe = new NamedPipeServerStream(ioOptions.PipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message, System.IO.Pipes.PipeOptions.Asynchronous | System.IO.Pipes.PipeOptions.CurrentUserOnly);
+            
+            options.WithInput(PipeReader.Create(_pipe));
+            options.WithOutput(PipeWriter.Create(_pipe));
         }
 
         public void Dispose()

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.Environment;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
@@ -13,9 +14,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Abstractions;
 using System.Linq;
-using Env = System.Environment;
 using Application = System.Windows.Forms.Application;
-using Rubberduck.Environment;
+using Env = System.Environment;
 
 namespace Rubberduck
 {
@@ -98,12 +98,12 @@ namespace Rubberduck
         public void Startup()
         {
             UiContextProvider.Initialize();
-
+            CheckRubberduckFolders();
             ApplyCultureConfig();
 
             LogRubberduckStart(_version);
             UpdateLoggingLevel();
-            //CheckForLegacyIndenterSettings();
+
             _appMenus.Initialize();
             _appMenus.Localize();
         }

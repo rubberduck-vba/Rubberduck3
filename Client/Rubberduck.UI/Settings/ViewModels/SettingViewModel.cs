@@ -3,6 +3,7 @@ using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -90,10 +91,10 @@ namespace Rubberduck.UI.Settings.ViewModels
 
     public class ListSettingViewModel : SettingViewModel<string[]>
     {
-        public ListSettingViewModel(ILogger logger, ISettingsProvider<RubberduckSettings> settingsProvider, TypedRubberduckSetting<string[]> setting) : base(setting)
+        public ListSettingViewModel(ServiceHelper service, TypedRubberduckSetting<string[]> setting) : base(setting)
         {
             ListItems = new ObservableCollection<string>(setting.TypedValue);
-            RemoveListSettingItemCommand = new DelegateCommand(logger, settingsProvider, ExecuteRemoveListSettingItemCommand);
+            RemoveListSettingItemCommand = new DelegateCommand(service, ExecuteRemoveListSettingItemCommand);
         }
 
         public ObservableCollection<string> ListItems { get; }

@@ -28,6 +28,8 @@ namespace Rubberduck.SettingsProvider
         /// Serializes the provided <c>TSettings</c> value to disk.
         /// </summary>
         void Write(TSettings settings);
+
+        //void Write<TSettingGroup>(TSettingGroup settings) where TSettingGroup : TypedSettingGroup;
     }
 
     public class RubberduckSettingsProvider : SettingsService<RubberduckSettings>

@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider.Model;
+﻿using Rubberduck.UI.Services;
 using System;
 using System.Threading.Tasks;
 
@@ -11,8 +9,8 @@ namespace Rubberduck.UI.Command
         private readonly Func<object?, Task> _execute;
         private readonly Func<object?, Task<bool>>? _canExecute;
 
-        public AsyncDelegateCommand(ILogger logger, ISettingsProvider<RubberduckSettings> settings, Func<object?, Task> execute, Func<object?, Task<bool>>? canExecute = null)
-            : base(logger, settings)
+        public AsyncDelegateCommand(ServiceHelper service, Func<object?, Task> execute, Func<object?, Task<bool>>? canExecute = null)
+            : base(service)
         {
             _execute = execute;
             _canExecute = canExecute ?? ((o) => Task.FromResult(true));

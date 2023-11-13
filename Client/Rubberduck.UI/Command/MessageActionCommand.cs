@@ -4,6 +4,7 @@ using System.Windows;
 using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.UI.Services;
 
 namespace Rubberduck.UI.Command
 {
@@ -12,8 +13,8 @@ namespace Rubberduck.UI.Command
     /// </summary>
     public abstract class MessageActionCommand : CommandBase
     {
-        protected MessageActionCommand(ILogger logger, ISettingsProvider<RubberduckSettings> settings, MessageAction messageAction) 
-            : base(logger, settings)
+        protected MessageActionCommand(ServiceHelper service, MessageAction messageAction)
+            : base(service)
         {
             MessageAction = messageAction;
         }
@@ -34,8 +35,8 @@ namespace Rubberduck.UI.Command
 
     public class AcceptMessageActionCommand : MessageActionCommand
     {
-        public AcceptMessageActionCommand(ILogger logger, ISettingsProvider<RubberduckSettings> settings, MessageAction? acceptAction = null, Func<object?, bool>? validations = null)
-            : base(logger, settings, acceptAction ?? MessageAction.AcceptAction)
+        public AcceptMessageActionCommand(ServiceHelper service, MessageAction? acceptAction = null, Func<object?, bool>? validations = null)
+            : base(service, acceptAction ?? MessageAction.AcceptAction)
         {
             if (validations is not null)
             {
@@ -46,16 +47,16 @@ namespace Rubberduck.UI.Command
 
     public class CloseMessageActionCommand : MessageActionCommand
     {
-        public CloseMessageActionCommand(ILogger logger, ISettingsProvider<RubberduckSettings> settings, MessageAction? closeAction = null) 
-            : base(logger, settings, closeAction ?? MessageAction.CloseAction)
+        public CloseMessageActionCommand(ServiceHelper service, MessageAction? closeAction = null) 
+            : base(service, closeAction ?? MessageAction.CloseAction)
         {
         }
     }
 
     public class CancelMessageActionCommand : MessageActionCommand
     {
-        public CancelMessageActionCommand(ILogger logger, ISettingsProvider<RubberduckSettings> settings, MessageAction? cancelAction = null) 
-            : base(logger, settings, cancelAction ?? MessageAction.CancelAction)
+        public CancelMessageActionCommand(ServiceHelper service, MessageAction? cancelAction = null) 
+            : base(service, cancelAction ?? MessageAction.CancelAction)
         {
         }
     }

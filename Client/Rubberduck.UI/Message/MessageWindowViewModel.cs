@@ -12,7 +12,7 @@ namespace Rubberduck.UI.Message
         /// </summary>
         public MessageWindowViewModel()
         {
-            _actions = new[] { new AcceptMessageActionCommand(null!, null!, MessageAction.CloseAction) };
+            _actions = new[] { new AcceptMessageActionCommand(null!, MessageAction.CloseAction) };
         }
 
         public MessageWindowViewModel(MessageModel model, MessageActionCommand[] actions)

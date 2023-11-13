@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Settings;
 using Rubberduck.Main.Commands.ShowRubberduckEditor;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
@@ -22,28 +21,27 @@ namespace Rubberduck.Main.RPC.EditorServer
             _logger = logger;
         }
 
-        public Exception? ShowEditor()
+        public bool StartEditorProcess()
         {
             if (_process is null)
             {
                 (Settings as ISettingsService<RubberduckSettings>)?.ClearCache();
-                return StartEditor();
+                StartEditor();
+                return true;
             }
 
-            return BringToFront();
+            BringToFront();
+            return false;
         }
 
-        private Exception? StartEditor()
-        {
-            TryRunAction(() =>
-            {
-                var helper = new EditorServerProcess(_logger);
-                var startupOptions = Settings.LanguageClientSettings.StartupSettings;
-                var currentProcessId = Env.ProcessId;
-                _process = helper.Start(currentProcessId, startupOptions, HandleServerExit);
-            }, out var exception);
+        public Process Process => _process ?? throw new NullReferenceException("Process is not initialized.");
 
-            return exception;
+        private void StartEditor()
+        {
+            var helper = new EditorServerProcess(_logger);
+            var startupOptions = Settings.LanguageClientSettings.StartupSettings;
+            var currentProcessId = Env.ProcessId;
+            _process = helper.Start(currentProcessId, startupOptions, HandleServerExit);
         }
 
         private void HandleServerExit(object? sender, EventArgs e)
@@ -51,16 +49,14 @@ namespace Rubberduck.Main.RPC.EditorServer
             LogWarning($"EditorServer process has exited.", $"ExitCode: {(sender as Process)?.ExitCode}");
         }
 
-        private Exception? BringToFront()
+        private void BringToFront()
         {
             // TODO move this to a server-side command
             TryRunAction(() =>
             {
                 var process = _process ?? throw new InvalidOperationException();
                 User32.SetForegroundWindow(process.MainWindowHandle);
-            }, out var exception);
-
-            return exception;
+            });
         }
 
         public void Dispose()

@@ -5,8 +5,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         d:DesignHeight="380" d:DesignWidth="340"
         Height="380" Width="340"
+        MinHeight="380" MinWidth="340"
         MaxHeight="380" MaxWidth="340"
-        SizeToContent="Manual"
         ResizeMode="NoResize"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
@@ -70,7 +70,7 @@
                     <Setter Property="BorderThickness" Value="0,2" />
                     <Setter Property="BorderBrush" Value="White" />
                     <Setter Property="Opacity" Value="0.8" />
-                    <Setter Property="Margin" Value="4,0" />
+                    <Setter Property="Margin" Value="5,0" />
                     <Setter Property="Background">
                         <Setter.Value>
                             <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.35,5">

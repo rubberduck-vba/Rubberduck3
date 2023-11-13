@@ -6,9 +6,9 @@ namespace Rubberduck.Editor.Shell
 {
     public class ShellInterTabClient : IInterTabClient
     {
-        private readonly IStatusBarViewModel _status;
+        private readonly StatusBarViewModel _status;
 
-        public ShellInterTabClient(IStatusBarViewModel status)
+        public ShellInterTabClient(StatusBarViewModel status)
         {
             _status = status;
         }

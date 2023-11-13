@@ -5,9 +5,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol;
 using System.Reflection;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.IO.Pipes;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -23,22 +21,6 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
 {
     public class LanguageClientService
     {
-        public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, NamedPipeClientStream pipe, long clientProcessId, RubberduckSettings settings, string workspaceRoot)
-        {
-            var options = new LanguageClientOptions();
-
-            ConfigureLanguageClient(options, clientAssembly, clientProcessId, settings, workspaceRoot);
-            return options;
-        }
-
-        public static LanguageClientOptions ConfigureLanguageClient(Assembly clientAssembly, Process serverProcess, long clientProcessId, RubberduckSettings settings, string workspaceRoot)
-        {
-            var options = new LanguageClientOptions();
-
-            ConfigureLanguageClient(options, clientAssembly, clientProcessId, settings, workspaceRoot);
-            return options;
-        }
-
         private static void ConfigureClientLogging(ILoggingBuilder builder)
         {
             builder.AddNLog("NLog-client.config");
@@ -50,7 +32,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
 
             var workspace = new DirectoryInfo(workspaceRoot).ToWorkspaceFolder();
             var clientCapabilities = GetClientCapabilities();
-
+            
             options.EnableDynamicRegistration();
             options.EnableProgressTokens();
             options.EnableWorkspaceFolders();

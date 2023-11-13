@@ -1,45 +1,36 @@
-﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider.Model;
+﻿using Rubberduck.Main.RPC.EditorServer;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Message;
+using Rubberduck.UI.Services;
 using Rubberduck.Unmanaged.Abstract;
 using Rubberduck.VBEditor.UI.OfficeMenus;
-using System;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Main.Commands.ShowRubberduckEditor
 {
     class ShowRubberduckEditorCommand : ComCommandBase, IShowRubberduckEditorCommand
     {
-        private readonly IEditorServerProcessService _service;
+        private readonly IEditorServerProcessService _processService;
         private readonly IMessageService _message;
+        private readonly EditorClientApp _client;
 
-        public ShowRubberduckEditorCommand(ILogger<ShowRubberduckEditorCommand> logger, ISettingsProvider<RubberduckSettings> settingsProvider, IVbeEvents vbeEvents, 
-            IEditorServerProcessService service, IMessageService message)
-            : base(logger, settingsProvider, vbeEvents)
+        public ShowRubberduckEditorCommand(ServiceHelper service, IVbeEvents vbeEvents, 
+            IEditorServerProcessService process,
+            EditorClientApp clientApp,
+            IMessageService message)
+            : base(service, vbeEvents)
         {
-            _service = service;
+            _processService = process;
             _message = message;
-        }
-
-        public event EventHandler Executed = delegate { };
-        private void OnExecuted()
-        {
-            Executed?.Invoke(this, EventArgs.Empty);
+            _client = clientApp;
         }
 
         protected async override Task OnExecuteAsync(object? parameter)
         {
-            var exception = _service.ShowEditor();
-            if (exception is not null)
+            if (_processService.StartEditorProcess())
             {
-                // TODO localize
-                _message.ShowError("RubberduckEditorProcessStartFailed", exception);
-            }
-            else
-            {
-                OnExecuted();
+                Service.LogTrace("Editor server process was started; starting addin LSP client...");
+                await _client.StartupAsync();
             }
             await Task.CompletedTask;
         }

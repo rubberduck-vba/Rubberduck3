@@ -4,7 +4,6 @@ namespace Rubberduck.VBEditor.UI.OfficeMenus
 {
     public interface IShowRubberduckEditorCommand : IMenuCommand 
     {
-        public event EventHandler Executed;
     }
 
     public class ShowRubberduckEditorCommandMenuItem : CommandMenuItemBase

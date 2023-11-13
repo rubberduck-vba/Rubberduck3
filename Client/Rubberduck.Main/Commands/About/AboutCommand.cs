@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider.Model;
-using Rubberduck.UI.About;
+﻿using Rubberduck.UI.About;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Services;
 using Rubberduck.Unmanaged.Abstract;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 using System.Threading.Tasks;
@@ -13,10 +11,10 @@ namespace Rubberduck.Main.About
     {
         private readonly AboutService _service;
 
-        public AboutCommand(ILogger<AboutCommand> logger, ISettingsProvider<RubberduckSettings> settingsProvider, IVbeEvents vbeEvents, AboutService service)
-            : base(logger, settingsProvider, vbeEvents)
+        public AboutCommand(ServiceHelper service, IVbeEvents vbeEvents, AboutService aboutService)
+            : base(service, vbeEvents)
         {
-            _service = service;
+            _service = aboutService;
         }
 
         protected async override Task OnExecuteAsync(object? parameter)

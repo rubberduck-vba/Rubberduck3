@@ -3,48 +3,49 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using System.Threading.Tasks;
 using MediatR;
 using System.Threading;
-using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Settings;
-using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
-using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
-using Rubberduck.SettingsProvider.Model.LanguageServer;
+using Rubberduck.ServerPlatform;
+using System;
+using System.Collections.Generic;
 
 namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
 {
-    public class ExecuteCommandHandler : ExecuteCommandHandlerBase
-    {
-        public override Task<Unit> Handle(ExecuteCommandParams request, CancellationToken cancellationToken)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override ExecuteCommandRegistrationOptions CreateRegistrationOptions(ExecuteCommandCapability capability, ClientCapabilities clientCapabilities)
-        {
-            return new()
-            {
-                WorkDoneProgress = true,
-                Commands = new Container<string>(
-                    "CreateProjectWorkspace"
-                )
-            };
-        }
-    }
-
     public class LogMessageHandler : LogMessageHandlerBase
     {
-        private readonly ILogger<WorkspaceFoldersHandler> _logger;
+        private readonly ServerPlatformServiceHelper _service;
 
-        public LogMessageHandler(ILogger<WorkspaceFoldersHandler> logger, ISettingsProvider<LanguageServerSettings> settingsProvider)
+        public LogMessageHandler(ServerPlatformServiceHelper service)
         {
-            _logger = logger;
+            _service = service;
         }
+
+        private static readonly IDictionary<MessageType, Action<ServerPlatformServiceHelper, string>> MessageTypeMap = 
+            new Dictionary<MessageType, Action<ServerPlatformServiceHelper, string>>
+            {
+                [MessageType.Error] = (service, message) => service.LogError(message),
+                [MessageType.Warning] = (service, message) => service.LogWarning(message),
+                [MessageType.Info] = (service, message) => service.LogInformation(message),
+                [MessageType.Log] = (service, message) => service.LogTrace(message),
+            };
 
         public override async Task<Unit> Handle(LogMessageParams request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            var service = _service;
+            var message = request.Message;
+            var type = request.Type;
 
-            // _serverConsole.LogMessage(request.Message, request.Type)
-
+            service.RunAction(() =>
+            {
+                if (MessageTypeMap.TryGetValue(type, out var action))
+                {
+                    action.Invoke(service, message);
+                }
+                else
+                {
+                    service.LogDebug(message);
+                }
+            }, nameof(LogMessageHandler));
+            
             return await Task.FromResult(Unit.Value);
         }
     }

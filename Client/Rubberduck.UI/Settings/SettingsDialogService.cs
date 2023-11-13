@@ -4,6 +4,7 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Message;
+using Rubberduck.UI.Services;
 
 namespace Rubberduck.UI.Settings
 {
@@ -18,28 +19,28 @@ namespace Rubberduck.UI.Settings
 
     public class SettingsDialogService : DialogService<SettingsWindow, SettingsWindowViewModel>, ISettingsDialogService
     {
-        private readonly ISettingsService<RubberduckSettings> _settingsService;
+        private readonly ServiceHelper _service;
         private readonly IMessageService _messageService;
         private readonly ISettingViewModelFactory _vmFactory;
         private readonly ILogger _logger;
 
-        public SettingsDialogService(ILogger<SettingsDialogService> logger, 
+        public SettingsDialogService(ILogger<SettingsDialogService> logger,
+            RubberduckSettingsProvider settings,
+            ServiceHelper service,
             IWindowFactory<SettingsWindow, SettingsWindowViewModel> factory, 
             IMessageService messageService,
-            RubberduckSettingsProvider settingsService,
             ISettingViewModelFactory vmFactory,
             MessageActionsProvider actionsProvider) 
-            : base(logger, factory, settingsService, actionsProvider)
+            : base(logger, factory, settings, actionsProvider)
         {
-            _logger = logger;
-            _settingsService = settingsService;
+            _service = service;
             _messageService = messageService;
             _vmFactory = vmFactory;
         }
 
         protected override SettingsWindowViewModel CreateViewModel(RubberduckSettings settings, MessageActionsProvider actions)
         {
-            var vm = new SettingsWindowViewModel(_logger, _settingsService, actions.Close(), _messageService, _vmFactory);
+            var vm = new SettingsWindowViewModel(_service, actions.Close(), _messageService, _vmFactory);
             return vm;
         }
     }

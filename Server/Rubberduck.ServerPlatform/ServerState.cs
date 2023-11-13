@@ -136,14 +136,14 @@ namespace Rubberduck.ServerPlatform
 
         public void Initialize(InitializeParams param)
         {
-            InvalidInitializeParamsException.ThrowIfNull(param,
-                e => (nameof(e.ClientInfo), param.ClientInfo),
-                e => (nameof(e.InitializationOptions), param.InitializationOptions),
-                e => (nameof(e.Capabilities), param.Capabilities),
-                e => (nameof(e.ProcessId), param.ProcessId),
-                e => (nameof(e.Trace), param.Trace),
-                e => (nameof(e.WorkspaceFolders), param.WorkspaceFolders)
-            );
+            //InvalidInitializeParamsException.ThrowIfNull(param,
+            //    e => (nameof(e.ClientInfo), param.ClientInfo),
+            //    e => (nameof(e.InitializationOptions), param.InitializationOptions),
+            //    e => (nameof(e.Capabilities), param.Capabilities),
+            //    e => (nameof(e.ProcessId), param.ProcessId),
+            //    e => (nameof(e.Trace), param.Trace),
+            //    e => (nameof(e.WorkspaceFolders), param.WorkspaceFolders)
+            //);
 
             var options = param.InitializationOptions!.ToString()!;
             _options = JsonSerializer.Deserialize<InitializationOptions>(options);
