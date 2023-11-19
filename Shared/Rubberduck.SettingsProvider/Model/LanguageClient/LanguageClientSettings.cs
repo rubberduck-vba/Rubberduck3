@@ -12,11 +12,8 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
         private static readonly RubberduckSetting[] DefaultSettings =
             new RubberduckSetting[]
             {
-                new DefaultWorkspaceRootSetting { Value = DefaultWorkspaceRootSetting.DefaultSettingValue },
                 new RequireAddInHostSetting { Value = RequireAddInHostSetting.DefaultSettingValue },
                 new RequireSavedHostSetting { Value = RequireSavedHostSetting.DefaultSettingValue },
-                new RequireDefaultWorkspaceRootHostSetting { Value = RequireDefaultWorkspaceRootHostSetting.DefaultSettingValue },
-                new EnableUncWorkspacesSetting { Value = EnableUncWorkspacesSetting.DefaultSettingValue },
                 new LanguageClientStartupSettings { Value = LanguageClientStartupSettings.DefaultSettings },
                 new ExitNotificationDelaySetting { Value = ExitNotificationDelaySetting.DefaultSettingValue },
             };
@@ -27,15 +24,11 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
         }
 
         [JsonIgnore]
-        public Uri DefaultWorkspaceRoot => GetSetting<DefaultWorkspaceRootSetting>().TypedValue;
+        public WorkspaceSettings WorkspaceSettings => GetSetting<WorkspaceSettings>();
         [JsonIgnore]
         public bool RequireAddInHost => GetSetting<RequireAddInHostSetting>().TypedValue;
         [JsonIgnore]
         public bool RequireSavedHost => GetSetting<RequireSavedHostSetting>().TypedValue;
-        [JsonIgnore]
-        public bool RequireDefaultWorkspaceRootHost => GetSetting<RequireDefaultWorkspaceRootHostSetting>().TypedValue;
-        [JsonIgnore]
-        public bool EnableUncWorkspaces => GetSetting<EnableUncWorkspacesSetting>().TypedValue;
         [JsonIgnore]
         public LanguageClientStartupSettings StartupSettings => GetSetting<LanguageClientStartupSettings>();
         [JsonIgnore]

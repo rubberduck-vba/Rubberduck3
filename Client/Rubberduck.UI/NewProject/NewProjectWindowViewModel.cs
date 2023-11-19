@@ -51,7 +51,7 @@ namespace Rubberduck.UI.NewProject
             : base("New Project", actions.OkCancel(Validate), showSettingsCommand)
         {
             _settings = settings;
-            _rootUri = _settings.LanguageClientSettings.DefaultWorkspaceRoot;
+            _rootUri = _settings.LanguageClientSettings.WorkspaceSettings.DefaultWorkspaceRoot;
 
             VBProjects = projects;
             SelectedVBProject = VBProjects.FirstOrDefault();
@@ -68,7 +68,7 @@ namespace Rubberduck.UI.NewProject
             var vbProject = VBProjects.FirstOrDefault() ?? new VBProjectInfo { Name = "VBAProject", ProjectId = Guid.NewGuid().ToString() };
             _projectName = vbProject.Name;
             _workspaceLocation = (string.IsNullOrWhiteSpace(vbProject.Location)
-                ? _settings.LanguageClientSettings.DefaultWorkspaceRoot
+                ? _settings.LanguageClientSettings.WorkspaceSettings.DefaultWorkspaceRoot
                 : new Uri(vbProject.Location)).LocalPath;
         }
 

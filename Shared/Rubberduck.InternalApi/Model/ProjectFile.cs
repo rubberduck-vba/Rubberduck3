@@ -20,6 +20,9 @@ namespace Rubberduck.InternalApi.Model
 
     public record class ProjectFile
     {
+        public const string FileName = ".rdproj";
+        public const string SourceRoot = ".src";
+
         /// <summary>
         /// The workspace root location where the project file is.
         /// </summary>

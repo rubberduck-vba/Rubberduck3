@@ -9,6 +9,12 @@ using System.Runtime.CompilerServices;
 
 namespace Rubberduck.SettingsProvider
 {
+    public class TimedActionFailedException : ApplicationException
+    {
+        public TimedActionFailedException(Exception inner)
+            : base("A timed action has aborted with an exception.", inner) { }
+    }
+
     public abstract class ServiceBase
     {
         private readonly ILogger _logger;
