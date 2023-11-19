@@ -21,6 +21,14 @@
             "Uri" : "file://Macros.bas"
         },
         {
+            "Name" : "ICancellable",
+            "Uri" : "file://Abstract/ICancellable.frm"
+        },
+        {
+            "Name" : "IView",
+            "Uri" : "file://Abstract/IView.frm"
+        },
+        {
             "Name" : "FeatureModel",
             "Uri" : "file://Feature/FeatureModel.cls"
         },
@@ -32,6 +40,10 @@
             "Name" : "FeatureView",
             "Uri" : "file://Feature/FeatureView.frm"
         },
+        {
+            "Name" : "SomeService",
+            "Uri" : "file://Services/SomeService.cls"
+        }
     ],
     "OtherFiles" : [
         "file://README.md"
