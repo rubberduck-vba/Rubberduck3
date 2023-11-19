@@ -24,6 +24,8 @@
             <MenuItem Header="Save _As..." Command="{x:Static ApplicationCommands.SaveAs}" />
             <MenuItem Header="Save A_ll" Command="{x:Static ApplicationCommands.SelectAll}" />
             <Separator />
+            <MenuItem Header="Save As _Template..." />
+            <Separator />
             <MenuItem Header="_Close" Command="{x:Static ApplicationCommands.Close}" />
             <Separator />
             <MenuItem Header="S_ynchronize"/>

@@ -187,13 +187,9 @@ namespace Rubberduck.UI.Settings
             };
 
             var result = _message.ShowMessageRequest(model, provider => provider.OkCancel());
-            if (!result.IsEnabled && result.MessageAction != MessageAction.Undefined)
+            if (!result.IsEnabled && result.MessageAction.IsDefaultAction)
             {
-                var newValue = generalSettings.DisabledMessageKeys.Append(model.Key);
-                var newSetting = generalSettings.TypedValue.OfType<DisabledMessageKeysSetting>().Single().WithValue(newValue);
-                var newGeneralSettings = generalSettings.WithSetting(newSetting);
-                var newRubberduckSettings = (RubberduckSettings)settingsRoot.WithSetting(newGeneralSettings);
-                //_service.Settings.Write(newRubberduckSettings);
+                DisabledMessageKeysSetting.DisableMessageKey(model.Key, _service.SettingsProvider);
             }
 
             return (!result.IsEnabled && result.MessageAction == MessageAction.Undefined)

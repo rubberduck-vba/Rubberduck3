@@ -31,7 +31,7 @@ namespace Rubberduck.ServerPlatform
         }
 
         public ISettingsService<RubberduckSettings> SettingsService => _settings;
-        public ISettingsProvider<RubberduckSettings> SettingsProvider => _settings;
+        public RubberduckSettingsProvider SettingsProvider => _settings;
 
         public RubberduckSettings Settings => _settings.Settings;
         public TraceLevel TraceLevel => _settings.Settings.GeneralSettings.TraceLevel.ToTraceLevel();

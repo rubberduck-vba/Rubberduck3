@@ -44,14 +44,9 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
                     if (result != MessageActionResult.Disabled)
                     {
                         var generalSettings = _service.Settings.GeneralSettings;
-                        if (!result.IsEnabled)
+                        if (result.MessageAction.IsDefaultAction)
                         {
-                            // type casts for clarity.. TODO come up with a better API for updating settings.
-                            var disabledKeysSetting = generalSettings.GetSetting<DisabledMessageKeysSetting>();
-                            var updatedDisabledKeys = disabledKeysSetting.WithDisabledMessageKeys(model.Key);
-                            var updatedGeneralSettings = (GeneralSettings)generalSettings.WithSetting(updatedDisabledKeys);
-                            var updatedSettings = (RubberduckSettings)_service.Settings.WithSetting(updatedGeneralSettings);
-                            _service.SettingsService.Write(updatedSettings);
+                            DisabledMessageKeysSetting.DisableMessageKey(model.Key, _service.SettingsProvider);
                         }
                     }
                     else

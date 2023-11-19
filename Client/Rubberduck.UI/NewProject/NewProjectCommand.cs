@@ -6,12 +6,20 @@ using Rubberduck.UI.Message;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Shell;
 using System;
+using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Rubberduck.UI.NewProject
 {
+    public interface ITemplatesService
+    {
+        void DeleteTemplate(string name);
+        void SaveAsTemplate(ProjectFile projectFile);
+        IEnumerable<ProjectTemplate> GetProjectTemplates();
+        ProjectTemplate Resolve(ProjectTemplate template);
+    }
 
 
     public class OpenProjectCommand : CommandBase
@@ -64,14 +72,16 @@ namespace Rubberduck.UI.NewProject
         private readonly IMessageService _messages;
         private readonly IWorkspaceFolderService _workspaceFolderService;
         private readonly IProjectFileService _projectFileService;
+        private readonly ITemplatesService _templatesService;
 
         public NewProjectCommand(UIServiceHelper service, NewProjectWindowFactory factory, 
-            IFileSystem fileSystem, IMessageService messages,
+            IFileSystem fileSystem, IMessageService messages, ITemplatesService templatesService,
             MessageActionsProvider actions, ShowRubberduckSettingsCommand showSettingsCommand) 
             : base(service)
         {
             _fileSystem = fileSystem;
             _messages = messages;
+            _templatesService = templatesService;
             _factory = factory;
             _actions = actions;
             _showSettingsCommand = showSettingsCommand;
@@ -81,8 +91,7 @@ namespace Rubberduck.UI.NewProject
         {
             // TODO get VBProjectInfo items from VBE addin client
             var projects = Enumerable.Empty<VBProjectInfo?>();
-            // TODO deserialize project templates from templates folder
-            var templates = new[] { ProjectTemplate.Default };
+            var templates = _templatesService.GetProjectTemplates();
 
             var model = new NewProjectWindowViewModel(Service.Settings, projects, templates, _actions, _showSettingsCommand);
 
@@ -104,9 +113,7 @@ namespace Rubberduck.UI.NewProject
         private ProjectFile CreateProjectFileModel(NewProjectWindowViewModel model)
         {
             return new ProjectFileBuilder(_fileSystem, Service.SettingsProvider)
-                .WithModel(model) // TODO select template in NewProject dialog
-                .WithTemplate(ProjectTemplate.Default)
-                .Build();
+                .WithModel(model).Build();
         }
     }
 }

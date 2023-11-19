@@ -11,6 +11,16 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
     {
         public static string[] DefaultSettingValue { get; } = Array.Empty<string>();
 
+        public static void DisableMessageKey(string key, RubberduckSettingsProvider provider)
+        {
+            var generalSettings = provider.Settings.GeneralSettings;
+            var newValue = generalSettings.DisabledMessageKeys.Append(key);
+            var newSetting = generalSettings.TypedValue.OfType<DisabledMessageKeysSetting>().Single().WithValue(newValue);
+            var newGeneralSettings = generalSettings.WithSetting(newSetting);
+            var newRubberduckSettings = (RubberduckSettings)provider.Settings.WithSetting(newGeneralSettings);
+            provider.Write(newRubberduckSettings);
+        }
+
         public DisabledMessageKeysSetting()
         {
             SettingDataType = SettingDataType.ListSetting;

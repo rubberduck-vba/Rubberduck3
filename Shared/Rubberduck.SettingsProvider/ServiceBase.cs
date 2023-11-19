@@ -12,7 +12,7 @@ namespace Rubberduck.SettingsProvider
     public abstract class ServiceBase
     {
         private readonly ILogger _logger;
-        protected ISettingsProvider<RubberduckSettings> SettingsProvider { get; init; }
+        protected RubberduckSettingsProvider SettingsProvider { get; init; }
 
         protected ServiceBase(ILogger logger, RubberduckSettingsProvider settingsProvider)
         {
