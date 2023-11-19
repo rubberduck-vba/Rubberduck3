@@ -24,9 +24,20 @@ namespace Rubberduck.Editor
             _fileSystem = fileSystem;
         }
 
+        public void SaveAsTemplate(ProjectFile projectFile)
+        {
+            TryRunAction(() =>
+            {
+                var name = projectFile.VBProject.Name;
+                var templatePath = _fileSystem.Path.Combine(Settings.GeneralSettings.TemplatesLocation.LocalPath, name);
+
+
+            });
+        }
+
         public IEnumerable<ProjectTemplate> GetProjectTemplates()
         {
-            foreach(var templateFolder in _fileSystem.Directory.GetDirectories(ApplicationConstants.TEMPLATES_FOLDER_PATH))
+            foreach(var templateFolder in _fileSystem.Directory.GetDirectories(Settings.GeneralSettings.TemplatesLocation.LocalPath))
             {
                 var name = templateFolder;
                 yield return new ProjectTemplate
@@ -41,14 +52,13 @@ namespace Rubberduck.Editor
             var result = template;
             if (!TryRunAction(() =>
             {
-                var templatePath = _fileSystem.Path.Combine(ApplicationConstants.TEMPLATES_FOLDER_PATH, template.Name);
+                var projectPath = _fileSystem.Path.Combine(template.Name, ".rdproj");
+                var content = _fileSystem.File.ReadAllText(projectPath);
 
-                var projectPath = _fileSystem.Path.Combine(templatePath, ".rdproj");
-                var rdproj = _fileSystem.File.ReadAllText(projectPath);
-
-                var projectFile = JsonSerializer.Deserialize<ProjectFile>(rdproj);
+                var projectFile = JsonSerializer.Deserialize<ProjectFile>(content);
                 if (projectFile is null)
                 {
+                    LogWarning("Failed to deserialize project file; using default project template.", $"Content: \n{content}");
                     result = ProjectTemplate.Default;
                 }
                 else
@@ -58,6 +68,7 @@ namespace Rubberduck.Editor
                         Rubberduck = projectFile.Rubberduck,
                         ProjectFile = projectFile,
                     };
+                    LogInformation("Resolved template project file.", $"Template: {template.Name}");
                 }
             }))
             {

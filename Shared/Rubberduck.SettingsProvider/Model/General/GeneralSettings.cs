@@ -2,6 +2,7 @@
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
+using System;
 using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model.General
@@ -21,6 +22,7 @@ namespace Rubberduck.SettingsProvider.Model.General
                 new DisableInitialLogLevelResetSetting { Value = DisableInitialLogLevelResetSetting.DefaultSettingValue },
                 new DisableInitialLegacyIndenterCheckSetting { Value = DisableInitialLegacyIndenterCheckSetting.DefaultSettingValue },
                 new DisabledMessageKeysSetting { Value = DisabledMessageKeysSetting.DefaultSettingValue },
+                new TemplatesLocationSetting { Value = TemplatesLocationSetting.DefaultSettingValue },
             };
 
         public GeneralSettings()
@@ -41,6 +43,8 @@ namespace Rubberduck.SettingsProvider.Model.General
         public bool DisableInitialLegacyIndenterCheck => GetSetting<DisableInitialLegacyIndenterCheckSetting>().TypedValue;
         [JsonIgnore]
         public string[] DisabledMessageKeys => GetSetting<DisabledMessageKeysSetting>().TypedValue;
+        [JsonIgnore]
+        public Uri TemplatesLocation => GetSetting<TemplatesLocationSetting>().TypedValue;
 
         public static GeneralSettings Default { get; } = new GeneralSettings() { Value = DefaultSettings, DefaultValue = DefaultSettings };
         GeneralSettings IDefaultSettingsProvider<GeneralSettings>.Default => Default;
