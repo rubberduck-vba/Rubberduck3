@@ -50,9 +50,10 @@ namespace Rubberduck.UI.NewProject
 
         public ProjectFileBuilder WithTemplate(ProjectTemplate template)
         {
-            _files.AddRange(template.OtherFiles);
-            _modules.AddRange(template.Modules);
-            _references.AddRange(template.References);
+            _name = template.ProjectFile.VBProject.Name;
+            _files.AddRange(template.ProjectFile.VBProject.OtherFiles);
+            _modules.AddRange(template.ProjectFile.VBProject.Modules);
+            _references.AddRange(template.ProjectFile.VBProject.References);
             return this;
         }
 

@@ -77,6 +77,7 @@ namespace Rubberduck.Environment
     {
         void EnsureRubberduckRootPathExists();
         void EnsureLogFolderPathExists();
+        void EnsureTemplatesFolderPathExists();
         void EnsureDefaultWorkspacePathExists();
     }
 
@@ -105,6 +106,15 @@ namespace Rubberduck.Environment
             {
                 _fileSystem.Directory.CreateDirectory(ApplicationConstants.LOG_FOLDER_PATH);
                 LogInformation("Created Rubberduck logs folder.", ApplicationConstants.LOG_FOLDER_PATH);
+            }
+        });
+
+        public void EnsureTemplatesFolderPathExists() => TryRunAction(() =>
+        {
+            if (!_fileSystem.Directory.Exists(ApplicationConstants.TEMPLATES_FOLDER_PATH))
+            {
+                _fileSystem.Directory.CreateDirectory(ApplicationConstants.TEMPLATES_FOLDER_PATH);
+                LogInformation("Created Rubberduck project templates folder.", ApplicationConstants.TEMPLATES_FOLDER_PATH);
             }
         });
 

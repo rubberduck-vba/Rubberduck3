@@ -16,6 +16,11 @@ namespace Rubberduck.Resources
         public static readonly string LOG_FOLDER_PATH = Path.Combine(RUBBERDUCK_FOLDER_PATH, "Logs");
 
         /// <summary>
+        /// The path for project templates, located under the <c>RUBBERDUCK_FOLDER_PATH</c>.
+        /// </summary>
+        public static readonly string TEMPLATES_FOLDER_PATH = Path.Combine(RUBBERDUCK_FOLDER_PATH, "Templates");
+
+        /// <summary>
         /// The root <c>Rubberduck</c> folder directly under the current user's <c>%temp%</c> directory.
         /// </summary>
         public static readonly string RUBBERDUCK_TEMP_PATH = Path.Combine(Path.GetTempPath(), "Rubberduck");

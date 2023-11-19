@@ -22,11 +22,13 @@
     "Modules" : [
         {
             "Name" : "ThisWorkbook",
-            "Uri" : "file://Host/ThisWorkbook.doccls"
+            "Uri" : "file://Host/ThisWorkbook.doccls",
+            "SuperType" : "Workbook"
         },
         {
             "Name" : "Sheet1",
-            "Uri" : "file://Host/Sheet1.doccls"
+            "Uri" : "file://Host/Sheet1.doccls",
+            "SuperType" : "Worksheet"
         },
         {
             "Name" : "Module1",
