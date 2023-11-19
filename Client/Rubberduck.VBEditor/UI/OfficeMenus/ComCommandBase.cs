@@ -7,7 +7,7 @@ namespace Rubberduck.UI.Command
     {
         private readonly IVbeEvents _vbeEvents;
 
-        protected ComCommandBase(ServiceHelper service, IVbeEvents vbeEvents)
+        protected ComCommandBase(UIServiceHelper service, IVbeEvents vbeEvents)
             : base(service)
         {
             _vbeEvents = vbeEvents;

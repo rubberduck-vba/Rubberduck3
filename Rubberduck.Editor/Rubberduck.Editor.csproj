@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <StartupObject>Rubberduck.Editor.App</StartupObject>
@@ -26,6 +26,10 @@
     <Page Remove="FileMenu\**" />
     <Page Remove="Resources\Customoccvondvond\**" />
     <Page Remove="RPC\UpdateServerClient\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\FontAwesome\xmark-solid.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -67,6 +71,7 @@
     <Resource Include="Resources\FontAwesome\window-maximize-regular.png" />
     <Resource Include="Resources\FontAwesome\window-minimize-regular.png" />
     <Resource Include="Resources\FontAwesome\window-restore-regular.png" />
+    <Resource Include="Resources\FontAwesome\xmark-solid.png" />
     <Resource Include="Resources\FugueIcons\cross-circle.png" />
     <Resource Include="Resources\FugueIcons\document-code.png" />
     <Resource Include="Resources\FugueIcons\drive--exclamation.png" />

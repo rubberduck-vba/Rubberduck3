@@ -1,4 +1,8 @@
-﻿using Rubberduck.InternalApi.Settings;
+﻿using Rubberduck.InternalApi.Model;
+using Rubberduck.InternalApi.Settings;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.SettingsProvider.Model.Editor
 {

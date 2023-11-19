@@ -7,7 +7,7 @@ namespace Rubberduck.Editor.Command
 {
     public class ShowSettingsWindowCommand : CommandBase
     {
-        public ShowSettingsWindowCommand(ServiceHelper service) 
+        public ShowSettingsWindowCommand(UIServiceHelper service) 
             : base(service)
         {
         }

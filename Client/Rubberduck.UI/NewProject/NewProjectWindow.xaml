@@ -8,14 +8,12 @@
         xmlns:command="clr-namespace:Rubberduck.UI.Command"
         d:DataContext="{d:DesignInstance Type=local:NewProjectWindowViewModel}"
         mc:Ignorable="d"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
         WindowStyle="None"
-        SizeToContent="WidthAndHeight"
         Style="{DynamicResource ThemedWindowStyle}"
-        Title="New Project"
-        Height="300" Width="480">
-    <Window.CommandBindings>
-        <CommandBinding Command="{x:Static command:DialogCommands.BrowseLocationCommand}" />
-    </Window.CommandBindings>
+        Height="300" Width="500" Icon="/Rubberduck.UI;component/Ducky.ico" 
+        WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ResourceDictionary>
             <KeyBinding x:Key="CloseOnEscape" Key="Esc" Command="{Binding Actions[1]}" />
@@ -30,45 +28,56 @@
                             ShowSettingsCommand="{Binding ShowSettingsCommand}"
                             AcceptCommand="{Binding Actions[0]}" 
                             CancelCommand="{Binding Actions[1]}">
-            <StackPanel>
+            <StackPanel Margin="5,0">
 
+                <!-- VBA Project selection should only be available when running with a VBE add-in client -->
                 <Label Style="{DynamicResource FormFieldNameLabelStyle}" 
                        Content="VBA Project"
-                       IsEnabled="{Binding HasVBProjects}" />
+                       Visibility="{Binding HasVBProjects, Converter={StaticResource BoolToVisibilityConverter}}"/>
                 <ComboBox Template="{DynamicResource ComboBoxTemplate}" 
                           Style="{DynamicResource FormFieldComboBoxStyle}"
                           ItemsSource="{Binding VBProjects}"
                           SelectedItem="{Binding SelectedVBProject}"
-                          IsEnabled="{Binding HasVBProjects}" />
-                
+                          Visibility="{Binding HasVBProjects, Converter={StaticResource BoolToVisibilityConverter}}"
+                          IsTabStop="True" TabIndex="0" />
+
                 <Label Style="{DynamicResource FormFieldNameLabelStyle}" 
                        Content="Project name"
                        IsEnabled="{Binding IsEnabled}" />
                 <TextBox Style="{DynamicResource FormFieldTextBoxStyle}" 
                          Text="{Binding ProjectName}"
-                         IsEnabled="{Binding IsEnabled}">
-                </TextBox>
+                         IsEnabled="{Binding IsEnabled}"
+                         IsTabStop="True" TabIndex="1"
+                         Margin="5,0"/>
 
+                
                 <Label Style="{DynamicResource FormFieldNameLabelStyle}" 
                        Content="Workspace Location"
                        IsEnabled="{Binding IsEnabled}" />
-                <TextBox Style="{DynamicResource FormFieldBrowseBoxStyle}" 
-                         Text="{Binding WorkspaceLocation}"
-                         IsEnabled="{Binding IsEnabled}" />
+                <DockPanel>
+                    <Button  DockPanel.Dock="Right"
+                        Command="{x:Static NavigationCommands.Search}"
+                        CommandParameter="{Binding}"
+                        Style="{DynamicResource FlatButtonStyle}" 
+                        Width="28" Height="24" Margin="0,0,5,0"
+                        Content="…" IsTabStop="True" TabIndex="3" />
+                    <TextBox DockPanel.Dock="Top"
+                        Style="{DynamicResource FormFieldTextBoxStyle}" 
+                        Text="{Binding WorkspaceLocation}"
+                        IsEnabled="{Binding IsEnabled}"
+                        IsTabStop="True" TabIndex="2"
+                        Margin="5,0,2,0"/>
+                </DockPanel>
 
                 <Label Style="{DynamicResource FormFieldNameLabelStyle}" 
                        IsEnabled="{Binding IsEnabled}" FontWeight="Normal"
-                       Content="Source files will be exported to and will synchronize from:" />
+                       Content="Source files location" />
                 <Label Style="{DynamicResource FormFieldValueLabelStyle}" 
                        Content="{Binding SourcePath}"
-                       IsEnabled="{Binding IsEnabled}" />
+                       ToolTip="{Binding SourcePath}"
+                       IsEnabled="{Binding IsEnabled}" Margin="0,-5" />
 
             </StackPanel>
         </shell:ThunderFrame>
-        
-        <CheckBox Template="{DynamicResource FormFieldCheckBoxTemplate}" 
-                  Content="Use defaults and do not prompt again" 
-                  VerticalAlignment="Bottom"
-                  Margin="10,16" IsChecked="{Binding IsEnabled, Converter={StaticResource InverseBoolConverter}}" />
     </Grid>
 </Window>

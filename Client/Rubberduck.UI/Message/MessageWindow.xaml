@@ -8,8 +8,12 @@
         xmlns:local="clr-namespace:Rubberduck.UI.Message" 
         d:DataContext="{d:DesignInstance Type=local:MessageWindowViewModel}"
         mc:Ignorable="d"
+        WindowStyle="None"
+        ResizeMode="NoResize"
         Style="{DynamicResource ThemedWindowStyle}"
         Title="Rubberduck"
+        Height="200"
+        SizeToContent="Height"
         ShowInTaskbar="False">
     <Window.Resources>
         <ResourceDictionary>
@@ -21,23 +25,30 @@
 
     <shell:ThunderFrame AcceptCommand="{Binding Actions[0]}"
                         CancelCommand="{Binding Actions[1]}"
-                        Title="Title goes here.">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+                        Title="{Binding Title}">
+        <DockPanel Margin="0,0,0,0">
 
-            <mdxaml:MarkdownScrollViewer Grid.Row="0" Padding="16,0" 
-                                         Height="180"
+            <Border DockPanel.Dock="Top" Background="{DynamicResource ThemeAccent2LightColorBrush}" BorderBrush="{DynamicResource ThemeAccent2DarkColorBrush}" BorderThickness="0,2">
+                <DockPanel>
+                    <shell:FlatButton DockPanel.Dock="Left"
+                        Icon="{StaticResource WarningMessageIcon}" Height="24" Width="24" 
+                        HorizontalAlignment="Left"
+                        Foreground="{DynamicResource ThemeAccent2DarkColorBrush}" />
+                    <Label DockPanel.Dock="Top"
+                        Foreground="{DynamicResource ThemeAccent2DarkColorBrush}" 
+                        Style="{DynamicResource FormFieldNameLabelStyle}"
+                        Margin="0">
+                        <TextBlock Text="{Binding Level}" />
+                    </Label>
+                </DockPanel>
+            </Border>
+            
+            <mdxaml:MarkdownScrollViewer DockPanel.Dock="Top" Margin="15"
                                          Foreground="{DynamicResource ThemeTextColorBrush}"
-                                         VerticalScrollBarVisibility="Auto" xml:space="preserve">
-This is actually a ***markdown** document*.
+                                         VerticalScrollBarVisibility="Auto"
+                                         Markdown="{Binding Message}" />
 
-            </mdxaml:MarkdownScrollViewer>
-
-            <Expander Grid.Row="2" Header="More information" Margin="4" 
+            <Expander DockPanel.Dock="Bottom" Header="More information" Margin="5,0"
                       BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}" BorderThickness="0,1">
                 <Expander.HeaderTemplate>
                     <DataTemplate>
@@ -55,32 +66,13 @@ This is actually a ***markdown** document*.
                         </Label>
                     </DataTemplate>
                 </Expander.HeaderTemplate>
-                <mdxaml:MarkdownScrollViewer 
-                    Grid.Row="0" Margin="4" Padding="16,0" 
+                
+                <mdxaml:MarkdownScrollViewer Margin="5" Padding="16,0" 
                     Height="Auto" MaxHeight="200" 
-                    FontFamily="Consolas"
-                    VerticalScrollBarVisibility="Auto" xml:space="preserve">
-We ❤️ Markdown!
-```vb
-Option Explicit
-'we can also have code blocks!
-```
-Hopefully we'll figure out how to tweak the fonts.
-
-        </mdxaml:MarkdownScrollViewer>
+                    Markdown="{Binding Verbose}"
+                    VerticalScrollBarVisibility="Auto" />        
             </Expander>
-
-            <StackPanel Grid.Row="4" Margin="16,8" Orientation="Horizontal" HorizontalAlignment="Right">
-                <ItemsControl ItemsSource="{Binding Actions}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Button Style="{StaticResource ActionButtonStyle}" Content="{Binding Title}" IsDefault="{Binding IsDefaultAction}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
-
-        </Grid>
+        </DockPanel>
     </shell:ThunderFrame>
     
 </Window>

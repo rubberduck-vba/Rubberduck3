@@ -39,9 +39,9 @@ namespace Rubberduck.UI.Settings
 
     public class SettingViewModelFactory : ISettingViewModelFactory
     {
-        private readonly ServiceHelper _service;
+        private readonly UIServiceHelper _service;
 
-        public SettingViewModelFactory(ServiceHelper service) 
+        public SettingViewModelFactory(UIServiceHelper service) 
         {
             _service = service;
         }
@@ -134,9 +134,9 @@ namespace Rubberduck.UI.Settings
     {
         private readonly IMessageService _message;
         private readonly ISettingViewModelFactory _factory;
-        private readonly ServiceHelper _service;
+        private readonly UIServiceHelper _service;
 
-        public SettingsWindowViewModel(ServiceHelper service, MessageActionCommand[] actions, IMessageService message, ISettingViewModelFactory factory)
+        public SettingsWindowViewModel(UIServiceHelper service, MessageActionCommand[] actions, IMessageService message, ISettingViewModelFactory factory)
             : base(RubberduckUI.Settings, actions)
         {
             _message = message;

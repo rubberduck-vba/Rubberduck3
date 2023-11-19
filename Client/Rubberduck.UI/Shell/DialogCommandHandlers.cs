@@ -1,15 +1,26 @@
 ﻿using Rubberduck.UI.Command;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Rubberduck.UI.Shell
 {
     public class DialogCommandHandlers
     {
-        public void CloseWindowCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        public static void BrowseLocationCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
             => e.CanExecute = true;
 
-        public void CloseWindowCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-            => DialogCommands.BrowseLocation((TextBox)e.Parameter);
+        public static void BrowseLocationCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+            => DialogCommands.BrowseLocation((IBrowseFolderModel)e.Parameter);
+
+        public static void BrowseFileOpenCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+            => e.CanExecute = true;
+
+        public static void BrowseFileOpenCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+            => DialogCommands.BrowseFileOpen((IBrowseFileModel)e.Parameter);
+
+        public static void BrowseFileSaveAsCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+            => e.CanExecute = true;
+
+        public static void BrowseFileSaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+            => DialogCommands.BrowseFileSaveAs((IBrowseFileModel)e.Parameter);
     }
 }

@@ -134,10 +134,15 @@ namespace Rubberduck.SettingsProvider
             }
             else if (exception is not null)
             {
-                LogException(exception, $"TryRunAction failed: [{name}]");
+                OnError(exception, $"TryRunAction failed: [{name}]");
             }
 
             return false;
+        }
+
+        protected virtual void OnError(Exception exception, string? message)
+        {
+            LogException(exception, message);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Rubberduck.Main.Commands.ShowRubberduckEditor
         private readonly IMessageService _message;
         private readonly EditorClientApp _client;
 
-        public ShowRubberduckEditorCommand(ServiceHelper service, IVbeEvents vbeEvents, 
+        public ShowRubberduckEditorCommand(UIServiceHelper service, IVbeEvents vbeEvents, 
             IEditorServerProcessService process,
             EditorClientApp clientApp,
             IMessageService message)

@@ -714,4 +714,28 @@ Import aborted.</value>
   <data name="SelectionLocationRange" xml:space="preserve">
     <value>L{0}C{1} - L{2}C{3}</value>
   </data>
+  <data name="MessageActionButton_Accept" xml:space="preserve">
+    <value>Accept</value>
+  </data>
+  <data name="MessageActionButton_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="MessageActionButton_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="MessageActionButton_No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="MessageActionButton_Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="MessageActionButton_Confirm" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
+  <data name="MessageTitle_ConfirmOverwriteExistingWorkspace" xml:space="preserve">
+    <value>Overwrite existing workspace</value>
+  </data>
+  <data name="Message_ConfirmOverwriteExistingWorkspace" xml:space="preserve">
+    <value>The specified workspace folder is not empty. Are you sure you want to overwrite an existing project?</value>
+  </data>
 </root>

@@ -19,14 +19,14 @@ namespace Rubberduck.UI.Settings
 
     public class SettingsDialogService : DialogService<SettingsWindow, SettingsWindowViewModel>, ISettingsDialogService
     {
-        private readonly ServiceHelper _service;
+        private readonly UIServiceHelper _service;
         private readonly IMessageService _messageService;
         private readonly ISettingViewModelFactory _vmFactory;
         private readonly ILogger _logger;
 
         public SettingsDialogService(ILogger<SettingsDialogService> logger,
             RubberduckSettingsProvider settings,
-            ServiceHelper service,
+            UIServiceHelper service,
             IWindowFactory<SettingsWindow, SettingsWindowViewModel> factory, 
             IMessageService messageService,
             ISettingViewModelFactory vmFactory,

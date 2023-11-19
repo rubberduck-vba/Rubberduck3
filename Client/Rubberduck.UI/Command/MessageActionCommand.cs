@@ -13,7 +13,7 @@ namespace Rubberduck.UI.Command
     /// </summary>
     public abstract class MessageActionCommand : CommandBase
     {
-        protected MessageActionCommand(ServiceHelper service, MessageAction messageAction)
+        protected MessageActionCommand(UIServiceHelper service, MessageAction messageAction)
             : base(service)
         {
             MessageAction = messageAction;
@@ -25,7 +25,8 @@ namespace Rubberduck.UI.Command
         {
             var view = parameter as Window ?? throw new ArgumentException("Parameter was not a window.", nameof(parameter));
             var viewModel = view.DataContext as IDialogWindowViewModel ?? throw new ArgumentException($"Type '{view.DataContext?.GetType()}' does not implement {nameof(IDialogWindowViewModel)}.");
-
+            
+            view.DialogResult = MessageAction.IsDefaultAction;
             SystemCommands.CloseWindow(view);
             viewModel.SelectedAction = MessageAction;
 
@@ -35,7 +36,7 @@ namespace Rubberduck.UI.Command
 
     public class AcceptMessageActionCommand : MessageActionCommand
     {
-        public AcceptMessageActionCommand(ServiceHelper service, MessageAction? acceptAction = null, Func<object?, bool>? validations = null)
+        public AcceptMessageActionCommand(UIServiceHelper service, MessageAction? acceptAction = null, Func<object?, bool>? validations = null)
             : base(service, acceptAction ?? MessageAction.AcceptAction)
         {
             if (validations is not null)
@@ -47,7 +48,7 @@ namespace Rubberduck.UI.Command
 
     public class CloseMessageActionCommand : MessageActionCommand
     {
-        public CloseMessageActionCommand(ServiceHelper service, MessageAction? closeAction = null) 
+        public CloseMessageActionCommand(UIServiceHelper service, MessageAction? closeAction = null) 
             : base(service, closeAction ?? MessageAction.CloseAction)
         {
         }
@@ -55,7 +56,7 @@ namespace Rubberduck.UI.Command
 
     public class CancelMessageActionCommand : MessageActionCommand
     {
-        public CancelMessageActionCommand(ServiceHelper service, MessageAction? cancelAction = null) 
+        public CancelMessageActionCommand(UIServiceHelper service, MessageAction? cancelAction = null) 
             : base(service, cancelAction ?? MessageAction.CancelAction)
         {
         }

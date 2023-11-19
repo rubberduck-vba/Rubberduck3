@@ -21,7 +21,7 @@ namespace Rubberduck.UI.About
 
         public AboutWindowViewModel() { /* designer ctor */ }
 
-        public AboutWindowViewModel(ServiceHelper service, IWebNavigator web/*, IMessageBox messageBox*/, Version version)
+        public AboutWindowViewModel(UIServiceHelper service, IWebNavigator web/*, IMessageBox messageBox*/, Version version)
         {
             //_messageBox = messageBox;
 

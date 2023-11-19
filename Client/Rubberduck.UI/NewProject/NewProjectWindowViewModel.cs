@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace Rubberduck.UI.NewProject
 {
-    public interface INewProjectWindowViewModel
+    public interface INewProjectWindowViewModel : IBrowseFolderModel
     {
         IEnumerable<VBProjectInfo?> VBProjects { get; }
 
@@ -44,13 +44,19 @@ namespace Rubberduck.UI.NewProject
             return !vm.HasErrors;
         }
 
-        public NewProjectWindowViewModel(RubberduckSettings settings, IEnumerable<VBProjectInfo?> projects, MessageActionsProvider actions, ICommand showSettingsCommand)
+        public NewProjectWindowViewModel(RubberduckSettings settings, IEnumerable<VBProjectInfo?> projects, IEnumerable<ProjectTemplate> projectTemplates, MessageActionsProvider actions, ICommand showSettingsCommand)
             : base("New Project", actions.OkCancel(Validate), showSettingsCommand)
         {
             _settings = settings;
+            _rootUri = _settings.LanguageClientSettings.DefaultWorkspaceRoot;
+
             VBProjects = projects;
             SelectedVBProject = VBProjects.FirstOrDefault();
             HasVBProjects = IsEnabled && projects.Any();
+
+            ProjectTemplates = projectTemplates;
+            SelectedProjectTemplate = HasVBProjects ? null : projectTemplates.FirstOrDefault();
+
             ResetToDefaults();
         }
 
@@ -60,7 +66,7 @@ namespace Rubberduck.UI.NewProject
             _projectName = vbProject.Name;
             _workspaceLocation = (string.IsNullOrWhiteSpace(vbProject.Location)
                 ? _settings.LanguageClientSettings.DefaultWorkspaceRoot
-                : new Uri(vbProject.Location)).ToString();
+                : new Uri(vbProject.Location)).LocalPath;
         }
 
         private string _projectName = string.Empty;
@@ -120,5 +126,25 @@ namespace Rubberduck.UI.NewProject
                 }
             }
         }
+
+        public IEnumerable<ProjectTemplate> ProjectTemplates { get; init; }
+        private ProjectTemplate? _selectedProjectTemplate;
+        public ProjectTemplate? SelectedProjectTemplate
+        {
+            get => _selectedProjectTemplate;
+            set
+            {
+                if (_selectedProjectTemplate != value)
+                {
+                    _selectedProjectTemplate = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Uri _rootUri;
+        Uri IBrowseSelectionModel.RootUri { get => _rootUri; set => _rootUri = value; }
+        string IBrowseSelectionModel.Title { get; set; } = "Workspace location"; // TODO localize
+        string IBrowseSelectionModel.Selection { get => WorkspaceLocation; set => WorkspaceLocation = value; }
     }
 }

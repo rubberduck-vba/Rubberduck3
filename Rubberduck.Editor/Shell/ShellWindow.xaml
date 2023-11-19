@@ -27,6 +27,7 @@
         <local:DuckyBackgroundControl Grid.RowSpan="3" />
 
         <local:MenuBarControl x:Name="MenuBar" Grid.Row="0" />
+        <Border Grid.Row="0" Background="{DynamicResource ThemeWhiteLightColorBrush}" Opacity=".025" IsHitTestVisible="False" />
 
         <local:StatusBarControl x:Name="StatusBar" Grid.Row="2" />
 

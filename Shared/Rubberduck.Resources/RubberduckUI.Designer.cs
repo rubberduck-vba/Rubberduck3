@@ -916,6 +916,78 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified workspace folder is not empty. Are you sure you want to overwrite an existing project?.
+        /// </summary>
+        public static string Message_ConfirmOverwriteExistingWorkspace {
+            get {
+                return ResourceManager.GetString("Message_ConfirmOverwriteExistingWorkspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accept.
+        /// </summary>
+        public static string MessageActionButton_Accept {
+            get {
+                return ResourceManager.GetString("MessageActionButton_Accept", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string MessageActionButton_Cancel {
+            get {
+                return ResourceManager.GetString("MessageActionButton_Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string MessageActionButton_Close {
+            get {
+                return ResourceManager.GetString("MessageActionButton_Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm.
+        /// </summary>
+        public static string MessageActionButton_Confirm {
+            get {
+                return ResourceManager.GetString("MessageActionButton_Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string MessageActionButton_No {
+            get {
+                return ResourceManager.GetString("MessageActionButton_No", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string MessageActionButton_Yes {
+            get {
+                return ResourceManager.GetString("MessageActionButton_Yes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Overwrite existing workspace.
+        /// </summary>
+        public static string MessageTitle_ConfirmOverwriteExistingWorkspace {
+            get {
+                return ResourceManager.GetString("MessageTitle_ConfirmOverwriteExistingWorkspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Module Name.
         /// </summary>
         public static string ModuleName {

@@ -193,7 +193,7 @@ namespace Rubberduck.Main.Root
             _services.AddSingleton<ISettingViewModelFactory, SettingViewModelFactory>();
 
             _services.AddSingleton<IEditorServerProcessService, EditorServerProcessService>();
-            _services.AddSingleton<ServiceHelper>();
+            _services.AddSingleton<UIServiceHelper>();
             return this;
         }
 

@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Command
         private readonly Predicate<object?>? _canExecute;
         private readonly Action<object?> _execute;
 
-        public DelegateCommand(ServiceHelper service, Action<object?> execute, Predicate<object?>? canExecute = null) 
+        public DelegateCommand(UIServiceHelper service, Action<object?> execute, Predicate<object?>? canExecute = null) 
             : base(service)
         {
             _canExecute = canExecute;

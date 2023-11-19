@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Version>3.0.0</Version>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
@@ -15,6 +15,7 @@
     <Page Remove="RubberduckEditor\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Resources\FontAwesome\circle-exclamation-solid.png" />
     <None Remove="Resources\FontAwesome\gear-solid.png" />
     <None Remove="Resources\FontAwesome\gear-solid_circle-chevron-left.png" />
     <None Remove="Resources\FontAwesome\lock-open-solid.png" />
@@ -25,6 +26,7 @@
     <None Remove="Resources\FontAwesome\window-maximize-regular.png" />
     <None Remove="Resources\FontAwesome\window-minimize-regular.png" />
     <None Remove="Resources\FontAwesome\window-restore-regular.png" />
+    <None Remove="Resources\FontAwesome\xmark-solid.png" />
     <None Remove="Resources\splash.png" />
     <None Remove="Resources\vector-ducky-blur-1480.png" />
     <None Remove="Resources\vector-ducky-color.png" />
@@ -33,6 +35,7 @@
 
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+    <PackageReference Include="Dragablz" Version="0.0.3.234" />
     <PackageReference Include="MdXaml" Version="1.21.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
@@ -49,6 +52,7 @@
   
   <ItemGroup>
     <Resource Include="Ducky.ico" />
+    <Resource Include="Resources\FontAwesome\circle-exclamation-solid.png" />
     <Resource Include="Resources\FontAwesome\gear-solid.png" />
     <Resource Include="Resources\FontAwesome\gear-solid_circle-chevron-left.png" />
     <Resource Include="Resources\FontAwesome\lock-open-solid.png" />
@@ -59,6 +63,7 @@
     <Resource Include="Resources\FontAwesome\window-maximize-regular.png" />
     <Resource Include="Resources\FontAwesome\window-minimize-regular.png" />
     <Resource Include="Resources\FontAwesome\window-restore-regular.png" />
+    <Resource Include="Resources\FontAwesome\xmark-solid.png" />
     <Resource Include="Resources\splash.png" />
     <Resource Include="Resources\vector-ducky-blur-1480.png" />
     <Resource Include="Resources\vector-ducky-color.png" />

@@ -14,8 +14,8 @@
     <converters:WindowStateToVisibilityConverter x:Key="WindowStateToRestoreVisibility" VisibleState="Maximized" HiddenState="Normal" />
     <converters:WindowStateToVisibilityConverter x:Key="WindowStateToMaximizeVisibility" VisibleState="Normal" HiddenState="Maximized" />
 
-    <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="{DynamicResource BackgroundLightColor}"/>
-    <SolidColorBrush x:Key="TextBox.Focus.Border" Color="{DynamicResource ThemeBackgroundMediumColor}"/>
+    <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="{DynamicResource ThemeAccent1MediumColor}"/>
+    <SolidColorBrush x:Key="TextBox.Focus.Border" Color="{DynamicResource ThemeAccent1DarkColor}"/>
         
     <Style x:Key="ScrollViewerStyle" TargetType="{x:Type ScrollViewer}">
         <Setter Property="Template">
@@ -45,29 +45,6 @@
         </Style.Triggers>
     </Style>
     
-    <ControlTemplate x:Key="BrowseTextBoxTemplate" TargetType="{x:Type TextBoxBase}">
-        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
-            <DockPanel>
-                <ScrollViewer DockPanel.Dock="Left" x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
-                <Button DockPanel.Dock="Right" x:Name="BrowseButton" HorizontalAlignment="Right" 
-                            Command="{x:Static NavigationCommands.Search}"
-                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}"
-                            Style="{DynamicResource FlatButtonStyle}"
-                            Content="..." />
-            </DockPanel>
-        </Border>
-        <ControlTemplate.Triggers>
-            <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="Opacity" TargetName="border" Value="0.56"/>
-            </Trigger>
-            <Trigger Property="IsMouseOver" Value="true">
-                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource TextBox.MouseOver.Border}"/>
-            </Trigger>
-            <Trigger Property="IsKeyboardFocused" Value="true">
-                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource TextBox.Focus.Border}"/>
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
     <ControlTemplate x:Key="WindowTemplate" TargetType="{x:Type Window}">
         <Grid>
             <Grid.RowDefinitions>
@@ -75,11 +52,12 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <Border Grid.RowSpan="2" Background="{DynamicResource ThemeBackgroundMediumColorBrush}" />
+            <Border Grid.RowSpan="2" 
+                    Background="{DynamicResource ThemeBackgroundMediumColorBrush}" />
 
             <!-- Title bar -->
             
-            <DockPanel Margin="2"
+            <DockPanel Margin="10,10,10,0"
                        HorizontalAlignment="Left" 
                        VerticalAlignment="Top">
                 
@@ -88,15 +66,16 @@
                     <Button.Template>
                         <ControlTemplate>
                             <Image x:Name="AppIcon" 
-                                   Width="16" 
-                                   Height="16" 
-                                   Margin="2,2,2,0" 
+                                   Width="20" 
+                                   Height="20" 
+                                   Stretch="UniformToFill"
                                    VerticalAlignment="Top" 
                                    HorizontalAlignment="Left"
                                    Source="{Binding Icon, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" />
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
+                
                 <TextBlock x:Name="AppTitle" 
                            DockPanel.Dock="Left"
                            Margin="2"
@@ -108,13 +87,13 @@
             <TextBlock x:Name="ActiveDocumentTitle" Margin="0,2"
                         VerticalAlignment="Top" 
                         HorizontalAlignment="Center"
-                        Text="[Project1.rdproj]" /> <!-- TODO binding here -->
+                        Text="" /> <!-- TODO binding here -->
 
             <!-- TODO templates! -->
             <DockPanel VerticalAlignment="Top" 
                        HorizontalAlignment="Right">
 
-                <Button x:Name="ControlBoxCloseButton" Margin="1,0" Width="24" Height="20"
+                <Button x:Name="ControlBoxCloseButton" Margin="1,0" 
                         DockPanel.Dock="Right"
                         Style="{DynamicResource ControlBoxButtonStyle}"
                         Command="{x:Static SystemCommands.CloseWindowCommand}" 
@@ -123,7 +102,7 @@
                         <Image Source="{DynamicResource WindowCloseIcon}"
                                Style="{DynamicResource ControlBoxButtonImageStyle}" />
                         <Rectangle Fill="{Binding Foreground, ElementName=ControlBoxCloseButton, Mode=OneWay}"
-                                                                      Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
+                                   Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
                             <Rectangle.OpacityMask>
                                 <ImageBrush ImageSource="{DynamicResource WindowCloseIcon}" />
                             </Rectangle.OpacityMask>
@@ -131,7 +110,7 @@
                     </Canvas>
                 </Button>
 
-                <Button x:Name="ControlBoxMaximizeButton" Margin="1,0" Width="24" Height="20"
+                <Button x:Name="ControlBoxMaximizeButton" Margin="1,0"
                         DockPanel.Dock="Right"
                         Style="{DynamicResource ControlBoxButtonStyle}" 
                         Command="{x:Static SystemCommands.MaximizeWindowCommand}" 
@@ -149,7 +128,7 @@
                     </Canvas>
                 </Button>
 
-                <Button x:Name="ControlBoxRestoreButton" Margin="1,0" Width="24" Height="20"
+                <Button x:Name="ControlBoxRestoreButton" Margin="1,0"
                         DockPanel.Dock="Right"
                         Style="{DynamicResource ControlBoxButtonStyle}"
                         Command="{x:Static SystemCommands.RestoreWindowCommand}"
@@ -167,7 +146,7 @@
                     </Canvas>
                 </Button>
 
-                <Button x:Name="ControlBoxMinimizeButton" Margin="1,0" Width="24" Height="20"
+                <Button x:Name="ControlBoxMinimizeButton" Margin="1,0" 
                         DockPanel.Dock="Right"
                         Style="{DynamicResource ControlBoxButtonStyle}"
                         Command="{x:Static SystemCommands.MinimizeWindowCommand}"
@@ -186,7 +165,7 @@
 
             </DockPanel>
 
-            <Border Grid.Row="1" Background="{DynamicResource ThemeBackgroundLightColorBrush}" Margin="4,0,4,8" CornerRadius="8">
+            <Border Grid.Row="1" Background="{DynamicResource ThemeBackgroundLightColorBrush}" Margin="8" CornerRadius="12">
                 <ContentPresenter x:Name="ClientArea" Content="{TemplateBinding Content}" />
             </Border>
             
@@ -198,63 +177,63 @@
         <Style.Setters>
             <Setter Property="Icon" Value="{StaticResource DuckyIcon}" />
             <Setter Property="Title" Value="Rubberduck" />
-            <Setter Property="SizeToContent" Value="WidthAndHeight" />
-            <Setter Property="MinHeight" Value="300" />
-            <Setter Property="MinWidth" Value="480" />
+            <Setter Property="MinHeight" Value="200" />
+            <Setter Property="MinWidth" Value="400" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="FontFamily" Value="Segoe UI" />
             <Setter Property="FontSize" Value="12" />
+            <Setter Property="WindowState" Value="Normal" />
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundDarkColorBrush}" />
-            <Setter Property="WindowChrome.WindowChrome">
-                <Setter.Value>
-                    <WindowChrome UseAeroCaptionButtons="False" 
-                                  CaptionHeight="20"
-                                  GlassFrameThickness="0" />
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Template" Value="{DynamicResource WindowTemplate}" />
+            <!--Setter Property="Template" Value="{DynamicResource WindowTemplate}" /-->
         </Style.Setters>
+        <!--<Style.Triggers>
+            <DataTrigger Binding="{Binding ShowInTaskbar, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <DataTrigger.Setters>
+                    <Setter Property="WindowChrome.WindowChrome">
+                        <Setter.Value>
+                            <WindowChrome />
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger.Setters>
+            </DataTrigger>
+        </Style.Triggers>-->
     </Style>
 
     <Style x:Key="ControlBoxButtonMaskRectangleStyle" TargetType="{x:Type Rectangle}">
         <Style.Setters>
-            <Setter Property="Canvas.Left" Value="5" />
-            <Setter Property="Canvas.Top" Value="5" />
-            <Setter Property="Height" Value="10" />
-            <Setter Property="Width" Value="10" />
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Width" Value="16" />
             <Setter Property="Fill" Value="{DynamicResource ThemeBlackLightColorBrush}" />
         </Style.Setters>
     </Style>
     <Style x:Key="ControlBoxButtonImageStyle" TargetType="{x:Type Image}">
-        <Setter Property="Canvas.Left" Value="5" />
-        <Setter Property="Canvas.Top" Value="5" />
-        <Setter Property="Height" Value="10" />
-        <Setter Property="Width" Value="10" />
+        <Setter Property="Height" Value="16" />
+        <Setter Property="Width" Value="16" />
         <Setter Property="Stretch" Value="Fill" />
     </Style>
     <Style x:Key="ControlBoxButtonCanvasStyle" TargetType="{x:Type Canvas}">
-        <Setter Property="Height" Value="20" />
-        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="16" />
+        <Setter Property="Width" Value="16" />
         <Setter Property="Background" Value="Transparent" />
     </Style>
 
     <Style x:Key="FlatButtonStyle" TargetType="Button">
-        <Setter Property="Width" Value="24" />
-        <Setter Property="Height" Value="20" />
-        <Setter Property="Foreground" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
+        <Setter Property="Width" Value="64" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeWhiteLightColorBrush}" />
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Template" Value="{DynamicResource FlatButtonTemplate}"/>
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
                 <DataTrigger.Setters>
-                    <Setter Property="Background" Value="{DynamicResource ThemeBlackLightColorBrush}" />
-                    <Setter Property="Foreground" Value="Transparent" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
                 </DataTrigger.Setters>
             </DataTrigger>
             <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="True">
                 <DataTrigger.Setters>
-                    <Setter Property="Foreground" Value="{DynamicResource ThemeWhiteLightColorBrush}" />
+                    <Setter Property="Background" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1TextColorBrush}" />
                 </DataTrigger.Setters>
             </DataTrigger>
         </Style.Triggers>
@@ -265,7 +244,7 @@
     </Style>
 
     <ControlTemplate x:Key="FlatButtonTemplate" TargetType="{x:Type ButtonBase}">
-        <Border Background="{Binding Background, RelativeSource={RelativeSource Mode=TemplatedParent}}">
+        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{Binding Background, RelativeSource={RelativeSource Mode=TemplatedParent}}">
             <ContentPresenter x:Name="contentPresenter" 
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                 Margin="{TemplateBinding Padding}" 
@@ -279,7 +258,7 @@
         <Style.Resources>
             <Style TargetType="Border">
                 <Setter Property="CornerRadius" Value="4" />
-                <Setter Property="Margin" Value="1,0" />
+                <Setter Property="Margin" Value="5,0" />
             </Style>
         </Style.Resources>
         <Style.Setters>
@@ -297,75 +276,62 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="FormLabelStyleSmall" TargetType="Label">
-        <Style.Setters>
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="MinHeight" Value="24" />
-            <Setter Property="Margin" Value="0,5,0,0" />
-            <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
-        </Style.Setters>
-    </Style>
-
-    <Style x:Key="FormLabelStyleMedium" TargetType="Label">
-        <Style.Setters>
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="MinHeight" Value="24" />
-            <Setter Property="Margin" Value="0,5,0,0" />
-            <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
-        </Style.Setters>
-    </Style>
-
-    <Style x:Key="FormTitleLabelStyle" TargetType="Label">
-        <Style.Setters>
-            <Setter Property="FontSize" Value="16" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="MinHeight" Value="24" />
-            <Setter Property="Margin" Value="0,5,0,0" />
-            <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
-        </Style.Setters>
-    </Style>
-
     <Style x:Key="FormFieldNameLabelStyle" TargetType="Label">
         <Style.Setters>
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
+            <Setter Property="Margin" Value="0,5,0,0" />
+            <Setter Property="MinHeight" Value="24" />
+        </Style.Setters>
+    </Style>
+
+    <Style x:Key="FormLabelStyleMedium" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
+        <Style.Setters>
+            <Setter Property="FontSize" Value="14" />
+        </Style.Setters>
+    </Style>
+
+    <Style x:Key="FormTitleLabelStyle" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
+        <Style.Setters>
+            <Setter Property="FontSize" Value="16" />
+        </Style.Setters>
+    </Style>
+
+    <Style x:Key="FormLabelStyleSmall" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
+        <Style.Setters>
+            <Setter Property="FontSize" Value="12" />
         </Style.Setters>
     </Style>
 
     <Style x:Key="FormFieldValueLabelStyle" TargetType="Label">
         <Style.Setters>
             <Setter Property="IsEnabled" Value="False" />
-            <Setter Property="Margin" Value="5,0" />
             <Setter Property="BorderBrush" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Border.Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
-            <Setter Property="FontSize" Value="10" />
-            <Setter Property="MinHeight" Value="24" />
-            <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Height" Value="24" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextInactiveColorBrush}" />
         </Style.Setters>
+        <!--<Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
+            </DataTrigger>
+        </Style.Triggers>-->
     </Style>
 
     <Style x:Key="FormFieldTextBoxStyle" TargetType="TextBox">
         <Style.Setters>
-            <Setter Property="Margin" Value="5,0" />
             <Setter Property="Padding" Value="4" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Height" Value="24" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
-            <Setter Property="FontSize" Value="10" />
-            <Setter Property="MinHeight" Value="24" />
-            <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
-        </Style.Setters>
-    </Style>
-
-    <Style x:Key="FormFieldBrowseBoxStyle" TargetType="TextBox" BasedOn="{StaticResource FormFieldTextBoxStyle}">
-        <Style.Setters>
-            <Setter Property="Template" Value="{DynamicResource BrowseTextBoxTemplate}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
         </Style.Setters>
     </Style>
 
     <Style x:Key="FormFieldComboBoxStyle" TargetType="ComboBox">
         <Style.Setters>
-            <Setter Property="Margin" Value="5,0" />
+            <Setter Property="Height" Value="24" />
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
         </Style.Setters>

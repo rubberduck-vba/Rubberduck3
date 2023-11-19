@@ -5,6 +5,7 @@ using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Services;
 using System;
 using System.Linq;
 
@@ -40,7 +41,7 @@ namespace Rubberduck.UI.Message
         void ShowError(string key, Exception exception, LogLevel level = LogLevel.Error);
     }
 
-    public class MessageService : ServiceBase, IMessageService
+    public class MessageService : UIServiceHelper, IMessageService
     {
         private readonly IMessageWindowFactory _viewFactory;
 
@@ -55,11 +56,18 @@ namespace Rubberduck.UI.Message
             _actionsProvider = actionsProvider;
         }
 
+        protected override void OnUserFacingException(Exception exception, string? message)
+        {
+            ShowError(exception.TargetSite?.Name ?? exception.GetType().Name, exception);
+        }
+
         public MessageActionResult ShowMessageRequest(MessageRequestModel model, Func<MessageActionsProvider, MessageActionCommand[]>? actions = null)
         {
             if (CanShowMessageKey(model.Key))
             {
-                var (view, viewModel) = _viewFactory.Create(model, actions ?? (provider => _actionsProvider.OkCancel()));
+                static MessageActionCommand[] defaultActions(MessageActionsProvider provider) => provider.OkCancel();
+
+                var (view, viewModel) = _viewFactory.Create(model, actions ?? defaultActions);
                 view.ShowDialog();
 
                 var selection = viewModel.SelectedAction;

@@ -11,7 +11,7 @@ namespace Rubberduck.Main.About
     {
         private readonly AboutService _service;
 
-        public AboutCommand(ServiceHelper service, IVbeEvents vbeEvents, AboutService aboutService)
+        public AboutCommand(UIServiceHelper service, IVbeEvents vbeEvents, AboutService aboutService)
             : base(service, vbeEvents)
         {
             _service = aboutService;

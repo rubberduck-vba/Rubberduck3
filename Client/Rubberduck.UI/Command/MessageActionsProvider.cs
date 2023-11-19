@@ -3,17 +3,23 @@ using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Services;
 using System;
+using System.Linq;
 
 namespace Rubberduck.UI.Command
 {
     public class MessageActionsProvider
     {
-        private readonly ServiceHelper _service;
+        private readonly UIServiceHelper _service;
 
-        public MessageActionsProvider(ServiceHelper service)
+        public MessageActionsProvider(UIServiceHelper service)
         {
             _service = service;
         }
+
+        public MessageActionCommand FromMessageAction(MessageAction action, Func<object?, bool>? validations = null) =>
+            action.IsDefaultAction 
+            ? new AcceptMessageActionCommand(_service, action, validations)
+            : new CancelMessageActionCommand(_service, action);
 
         /// <summary>
         /// Gets a <c>MessageActionCommand[]</c> containing a <c>CloseMessageActionCommand</c>.

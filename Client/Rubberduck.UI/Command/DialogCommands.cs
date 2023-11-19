@@ -7,30 +7,114 @@ using System.Windows.Controls;
 
 namespace Rubberduck.UI.Command
 {
+    public interface IBrowseSelectionModel
+    {
+        Uri RootUri { get; set; }
+        string Title { get; set; }
+        string Selection { get; set; }
+    }
+
+    public interface IBrowseFolderModel : IBrowseSelectionModel
+    {
+    }
+
+    public interface IBrowseFileModel : IBrowseSelectionModel
+    {
+        string DefaultFileExtension { get; set; }
+        string Filter { get; set; }
+    }
+
+    public record class BrowseFileModel : IBrowseFileModel
+    {
+        public string DefaultFileExtension { get; set; }
+        public string Filter { get; set; }
+        public Uri RootUri { get; set; }
+        public string Title { get; set; }
+        public string Selection { get; set; }
+    }
+
     public static class DialogCommands
     {
         public static RoutedCommand BrowseLocationCommand { get; }
             = new RoutedCommand(nameof(BrowseLocationCommand), typeof(TextBox));
 
-        public static void BrowseLocation(TextBox owner)
+        public static bool BrowseLocation(IBrowseFolderModel model)
         {
             var dialog = new VistaFolderBrowserDialog
             {
+                SelectedPath = model.Selection,
+                Description = model.Title,
+                RootFolder = Environment.SpecialFolder.LocalApplicationData,
                 Multiselect = false,
-                RootFolder = Environment.SpecialFolder.MyDocuments,
                 UseDescriptionForTitle = true,
                 ShowNewFolderButton = true,
             };
-            if (dialog.ShowDialog() ?? false)
+
+            var didAccept = dialog.ShowDialog() == true;
+            if (didAccept)
             {
-                owner.Text = dialog.SelectedPath;
+                model.Selection = dialog.SelectedPath;
             }
+
+            return didAccept;
+        }
+
+        public static bool BrowseFileOpen(IBrowseFileModel model)
+        {
+            var dialog = new VistaOpenFileDialog
+            {
+                FileName = model.Selection,
+                InitialDirectory = model.RootUri.LocalPath,
+                Title = model.Title,
+                Filter = model.Filter,
+                DefaultExt = model.DefaultFileExtension,
+                Multiselect = false,
+                AddExtension = true,
+                CheckPathExists = true,
+                CheckFileExists = true,
+                DereferenceLinks = true,
+                RestoreDirectory = true,
+            };
+
+            var didAccept = dialog.ShowDialog() == true;
+            if (didAccept)
+            {
+                model.Selection = dialog.FileName;
+            }
+
+            return didAccept;
+        }
+
+        public static bool BrowseFileSaveAs(IBrowseFileModel model)
+        {
+            var dialog = new VistaSaveFileDialog
+            {
+                FileName = model.Selection,
+                InitialDirectory = model.RootUri.LocalPath,
+                Title = model.Title,
+                Filter = model.Filter,
+                DefaultExt = model.DefaultFileExtension,
+                AddExtension = true,
+                ValidateNames = true,
+                CheckPathExists = true,
+                OverwritePrompt = true,
+                DereferenceLinks = true,
+                RestoreDirectory = true,
+            };
+
+            var didAccept = dialog.ShowDialog() == true;
+            if (didAccept)
+            {
+                model.Selection = dialog.FileName;
+            }
+
+            return didAccept;
         }
     }
 
     public class ShowRubberduckSettingsCommand : CommandBase
     {
-        public ShowRubberduckSettingsCommand(ServiceHelper service) 
+        public ShowRubberduckSettingsCommand(UIServiceHelper service) 
             : base(service)
         {
         }
@@ -43,7 +127,7 @@ namespace Rubberduck.UI.Command
 
     public class ShowLanguageClientSettingsCommand : CommandBase
     {
-        public ShowLanguageClientSettingsCommand(ServiceHelper service)
+        public ShowLanguageClientSettingsCommand(UIServiceHelper service)
             : base(service)
         {
         }
@@ -56,7 +140,7 @@ namespace Rubberduck.UI.Command
 
     public class ShowLanguageServerSettingsCommand : CommandBase
     {
-        public ShowLanguageServerSettingsCommand(ServiceHelper service)
+        public ShowLanguageServerSettingsCommand(UIServiceHelper service)
             : base(service)
         {
         }
@@ -69,7 +153,7 @@ namespace Rubberduck.UI.Command
 
     public class ShowEditorSettingsCommand : CommandBase
     {
-        public ShowEditorSettingsCommand(ServiceHelper service)
+        public ShowEditorSettingsCommand(UIServiceHelper service)
             : base(service)
         {
         }

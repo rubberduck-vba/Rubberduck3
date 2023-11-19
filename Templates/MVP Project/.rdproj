@@ -1,0 +1,39 @@
+{
+    "Rubberduck" : "3.0",
+    "Name" : "MvpApplication",
+    "References" : [
+        {
+            "Name" : "VBA",
+            "Uri" : "file://C:/Program Files/Common Files/Microsoft Shared/VBA/VBA7.1/VBE7.DLL"
+        },
+        {
+            "Name" : "StdOle",
+            "Uri" : "file://C:/Windows/System32/stdole2.tlb"
+        },
+        {
+            "Name" : "MSForms",
+            "Uri" : "file://C:/Windows/System32/FM20.DLL"
+        }
+    ],
+    "Modules" : [
+        {
+            "Name" : "Macros",
+            "Uri" : "file://Macros.bas"
+        },
+        {
+            "Name" : "FeatureModel",
+            "Uri" : "file://Feature/FeatureModel.cls"
+        },
+        {
+            "Name" : "FeaturePresenter",
+            "Uri" : "file://Feature/FeaturePresenter.cls"
+        },
+        {
+            "Name" : "FeatureView",
+            "Uri" : "file://Feature/FeatureView.frm"
+        },
+    ],
+    "OtherFiles" : [
+        "file://README.md"
+    ]
+}

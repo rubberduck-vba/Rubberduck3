@@ -9,7 +9,7 @@ namespace Rubberduck.UI.Command
         private readonly Func<object?, Task> _execute;
         private readonly Func<object?, Task<bool>>? _canExecute;
 
-        public AsyncDelegateCommand(ServiceHelper service, Func<object?, Task> execute, Func<object?, Task<bool>>? canExecute = null)
+        public AsyncDelegateCommand(UIServiceHelper service, Func<object?, Task> execute, Func<object?, Task<bool>>? canExecute = null)
             : base(service)
         {
             _execute = execute;

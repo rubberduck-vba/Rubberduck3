@@ -1,4 +1,4 @@
-﻿using Rubberduck.Resources;
+﻿using Rubberduck.Resources.Messages;
 
 namespace Rubberduck.UI
 {
@@ -6,9 +6,12 @@ namespace Rubberduck.UI
     {
         public static MessageAction Undefined { get; } = new MessageAction();
 
-        public static MessageAction AcceptAction { get; } = new MessageAction(nameof(RubberduckUI.OK), nameof(RubberduckUI.OK), true);
-        public static MessageAction CancelAction { get; } = new MessageAction(nameof(RubberduckUI.CancelButtonText), nameof(RubberduckUI.CancelButtonText));
-        public static MessageAction CloseAction { get; } = new MessageAction(nameof(RubberduckUI.CloseButtonText), nameof(RubberduckUI.CloseButtonText), true);
+        public static MessageAction AcceptAction { get; } = new MessageAction(nameof(RubberduckMessages.MessageActionButton_Accept), isDefaultAction: true);
+        public static MessageAction AcceptConfirmAction { get; } = new MessageAction(nameof(RubberduckMessages.MessageActionButton_Confirm), isDefaultAction: true);
+        public static MessageAction AcceptYesAction { get; } = new MessageAction(nameof(RubberduckMessages.MessageActionButton_Yes), isDefaultAction: true);
+        public static MessageAction DeclineNoAction { get; } = new MessageAction(nameof(RubberduckMessages.MessageActionButton_No));
+        public static MessageAction CancelAction { get; } = new MessageAction(nameof(RubberduckMessages.MessageActionButton_Cancel), nameof(RubberduckMessages.MessageActionButton_Cancel));
+        public static MessageAction CloseAction { get; } = new MessageAction(nameof(RubberduckMessages.MessageActionButton_Close), nameof(RubberduckMessages.MessageActionButton_Close), isDefaultAction: true);
 
         public MessageAction() : this(string.Empty) { }
         public MessageAction(string key, string? tooltipKey = default, bool isDefaultAction = false)
@@ -24,7 +27,7 @@ namespace Rubberduck.UI
 
         public bool IsDefaultAction { get; init; }
 
-        public string Text => RubberduckUI.ResourceManager.GetString(ResourceKey) ?? $"[MissingKey:{ResourceKey}]";
-        public string? ToolTip => ToolTip is not null ? RubberduckUI.ResourceManager.GetString(ToolTip) ?? $"[MissingKey:{ToolTipKey}]" : null;
+        public string Text => RubberduckMessages.ResourceManager.GetString(ResourceKey) ?? $"[MissingKey:{ResourceKey}]";
+        public string? ToolTip => ToolTipKey is not null ? RubberduckMessages.ResourceManager.GetString(ToolTipKey) ?? $"[MissingKey:{ToolTipKey}]" : null;
     }
 }

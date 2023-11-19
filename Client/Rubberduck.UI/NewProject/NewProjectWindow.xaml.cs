@@ -1,6 +1,9 @@
 ﻿using Ookii.Dialogs.Wpf;
+using Rubberduck.UI.Command;
+using Rubberduck.UI.Shell;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Rubberduck.UI.NewProject
 {
@@ -14,31 +17,34 @@ namespace Rubberduck.UI.NewProject
             DataContext = viewModel;
         }
 
+        private static readonly ExecutedRoutedEventHandler _browseCommandExecute = DialogCommandHandlers.BrowseLocationCommandBinding_Executed;
+        private static readonly CanExecuteRoutedEventHandler _browseCommandCanExecute = DialogCommandHandlers.BrowseLocationCommandBinding_CanExecute;
+
+        private readonly SystemCommandHandlers _systemCommandHandlers;
+
         public NewProjectWindow()
         {
             InitializeComponent();
+            MouseDown += OnMouseDown;
+
+            _systemCommandHandlers = new SystemCommandHandlers(this);
+
+            var bindings = new CommandBinding[]
+            {
+                new(SystemCommands.CloseWindowCommand, _systemCommandHandlers.CloseWindowCommandBinding_Executed, _systemCommandHandlers.CloseWindowCommandBinding_CanExecute),
+                new(NavigationCommands.Search, _browseCommandExecute, _browseCommandCanExecute),
+            };
+
+            CommandBindings.AddRange(bindings);
         }
 
         private NewProjectWindowViewModel ViewModel => (NewProjectWindowViewModel)DataContext;
 
-        private void BrowseCommandBinding_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            var textBox = e.Parameter as TextBox;
-            if (VistaFolderBrowserDialog.IsVistaFolderDialogSupported)
+            if (e.ChangedButton == MouseButton.Left)
             {
-                var dialog = new VistaFolderBrowserDialog();
-                // configure?
-                if (dialog.ShowDialog() == true)
-                {
-                    if (textBox != null)
-                    {
-                        textBox.Text = dialog.SelectedPath;
-                    }
-                    else
-                    {
-                        ViewModel.WorkspaceLocation = dialog.SelectedPath;
-                    }
-                }
+                DragMove();
             }
         }
     }

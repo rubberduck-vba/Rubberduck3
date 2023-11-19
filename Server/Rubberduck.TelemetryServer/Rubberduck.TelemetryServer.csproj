@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Version>0.0.1</Version>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>

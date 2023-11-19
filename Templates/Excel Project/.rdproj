@@ -1,0 +1,39 @@
+{
+    "Rubberduck" : "3.0",
+    "Name" : "ExcelProject",
+    "References" : [
+        {
+            "Name" : "VBA",
+            "Uri" : "file://C:/Program Files/Common Files/Microsoft Shared/VBA/VBA7.1/VBE7.DLL"
+        },
+        {
+            "Name" : "Excel",
+            "Uri" : "file://C:/Program Files/Microsoft Office/root/Office16/EXCEL.EXE"
+        },
+        {
+            "Name" : "StdOle",
+            "Uri" : "file://C:/Windows/System32/stdole2.tlb"
+        },
+        {
+            "Name" : "Office",
+            "Uri" : "file://C:/Program Files/Common Files/Microsoft Shared/OFFICE16/MSO.DLL"
+        }
+    ],
+    "Modules" : [
+        {
+            "Name" : "ThisWorkbook",
+            "Uri" : "file://Host/ThisWorkbook.doccls"
+        },
+        {
+            "Name" : "Sheet1",
+            "Uri" : "file://Host/Sheet1.doccls"
+        },
+        {
+            "Name" : "Module1",
+            "Uri" : "file://Module1.bas"
+        }
+    ],
+    "OtherFiles" : [
+        "file://README.md"
+    ]
+}

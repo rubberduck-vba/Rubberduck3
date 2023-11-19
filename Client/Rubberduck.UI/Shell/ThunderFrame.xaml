@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.UI.Shell"
+             xmlns:drgz="clr-namespace:Dragablz;assembly=Dragablz"
              mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -31,19 +32,20 @@
                                 </Grid.RowDefinitions>
 
                                 <Border Grid.RowSpan="3" Background="{DynamicResource ThemeBackgroundMediumColorBrush}" />
-                                <local:DuckyBackgroundControl Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+                                <local:DuckyBackgroundControl Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Opacity="0.1" />
 
                                 <DockPanel Grid.Row="0" VerticalAlignment="Top" Margin="5,5,0,0">
-                                    <local:FlatButton DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                    <local:FlatButton DockPanel.Dock="Right" 
+                                                      HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                      Margin="5"
                                                       ToolTip="Settings"
                                                       Visibility="{Binding ShowGearButton, Converter={StaticResource BoolToVisibilityConverter}}"
                                                       Command="{Binding ShowSettingsCommand}"
                                                       Icon="{DynamicResource GearIcon}" />
-                                    <Label DockPanel.Dock="Top" VerticalAlignment="Top"
+                                    <Label DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left"
                                        Content="{Binding Title, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
                                        Foreground="{DynamicResource ThemeTextColorBrush}"
-                                       FontWeight="Bold" FontSize="18" 
-                                       Margin="10,10,10,4" />
+                                       FontWeight="Bold" FontSize="16" />
                                 </DockPanel>
 
                                 <Border Grid.Row="1" BorderBrush="{DynamicResource ThemeWhiteLightColorBrush50}" 
@@ -51,7 +53,7 @@
                                         Background="{DynamicResource ThemeWhiteDarkColorBrush50}"/>
 
 
-                                <ContentPresenter Grid.Row="1" Margin="10,0,10,10" Height="Auto" MinHeight="200"
+                                <ContentPresenter Grid.Row="1" Margin="8,4" Height="Auto" MinHeight="200"
                                                   Content="{Binding Content, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"/>
 
                                 <DockPanel Grid.Row="2" HorizontalAlignment="Right" 

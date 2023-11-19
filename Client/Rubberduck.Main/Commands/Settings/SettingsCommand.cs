@@ -13,7 +13,7 @@ namespace Rubberduck.Main.Settings
         private readonly ISettingsDialogService _service;
         //private readonly ILanguageClientFacade _lsp;
 
-        public SettingsCommand(ServiceHelper service, IVbeEvents vbeEvents, 
+        public SettingsCommand(UIServiceHelper service, IVbeEvents vbeEvents, 
             //ILanguageClientFacade lsp,
             ISettingsDialogService dialogService)
             : base(service, vbeEvents)

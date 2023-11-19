@@ -24,11 +24,11 @@ namespace Rubberduck.Unmanaged.TypeLibs.Utility
     /// </summary>
     public enum DocClassType
     {
-        Unrecognized,
-        ExcelWorkbook,
-        ExcelWorksheet,
-        AccessForm,
-        AccessReport,
+        Unrecognized = 0,
+        ExcelWorkbook = 1,
+        ExcelWorksheet = 2,
+        AccessForm = 3,
+        AccessReport = 4,
     }
 
     /// <summary>

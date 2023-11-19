@@ -166,7 +166,7 @@ namespace Rubberduck.Editor
 
             services.AddSingleton<IFileSystem, FileSystem>();
 
-            services.AddSingleton<ServiceHelper>();
+            services.AddSingleton<UIServiceHelper>();
             services.AddSingleton<ServerPlatformServiceHelper>();
             services.AddSingleton<EditorServerState>();
             services.AddSingleton<Func<EditorServerState>>(provider => () => _editorServer.ServerState);

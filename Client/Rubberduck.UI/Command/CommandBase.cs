@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using Rubberduck.UI.Services;
 
@@ -10,9 +11,9 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public abstract class CommandBase : ICommand
     {
-        private readonly ServiceHelper _service;
+        private readonly UIServiceHelper _service;
 
-        protected CommandBase(ServiceHelper service)
+        protected CommandBase(UIServiceHelper service)
         {
             _service = service;
 
@@ -22,7 +23,7 @@ namespace Rubberduck.UI.Command
             ShortcutText = string.Empty;
         }
 
-        protected ServiceHelper Service => _service;
+        protected UIServiceHelper Service => _service;
         protected abstract Task OnExecuteAsync(object? parameter);
 
         protected Func<object?, bool> CanExecuteCondition { get; private set; }
@@ -84,5 +85,11 @@ namespace Rubberduck.UI.Command
             add => CommandManager.RequerySuggested += value;
             remove => CommandManager.RequerySuggested -= value;
         }
+
+        public CanExecuteRoutedEventHandler CanExecuteRouted() =>
+            (object sender, CanExecuteRoutedEventArgs e) => CanExecute(e.Parameter);
+
+        public ExecutedRoutedEventHandler ExecutedRouted() =>
+            (object sender, ExecutedRoutedEventArgs e) => Execute(e.Parameter);
     }
 }

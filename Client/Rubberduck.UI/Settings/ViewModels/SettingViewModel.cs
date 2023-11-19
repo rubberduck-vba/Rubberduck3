@@ -91,7 +91,7 @@ namespace Rubberduck.UI.Settings.ViewModels
 
     public class ListSettingViewModel : SettingViewModel<string[]>
     {
-        public ListSettingViewModel(ServiceHelper service, TypedRubberduckSetting<string[]> setting) : base(setting)
+        public ListSettingViewModel(UIServiceHelper service, TypedRubberduckSetting<string[]> setting) : base(setting)
         {
             ListItems = new ObservableCollection<string>(setting.TypedValue);
             RemoveListSettingItemCommand = new DelegateCommand(service, ExecuteRemoveListSettingItemCommand);
