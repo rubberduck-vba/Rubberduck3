@@ -4,8 +4,10 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.LanguageClient;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 
 namespace Rubberduck.ServerPlatform
@@ -24,6 +26,7 @@ namespace Rubberduck.ServerPlatform
         private readonly Process _process;
 
         private readonly Timer _timer;
+        private readonly Func<TSettings> _settingsProvider;
 
         public event EventHandler<EventArgs>? ChildProcessExited = delegate { };
         private TimeSpan Interval => HealthCheckSettings.ClientHealthCheckInterval;
@@ -31,19 +34,21 @@ namespace Rubberduck.ServerPlatform
         public ClientProcessHealthCheckService(
             ILogger<ClientProcessHealthCheckService<TSettings>> logger, 
             RubberduckSettingsProvider settings,
+            Func<TSettings> settingsProvider,
             IWorkDoneProgressStateService workdone,
             Process process)
             : base(logger, settings, workdone)
         {
             _logger = logger;
             _process = process;
+            _settingsProvider = settingsProvider;
 
             _timer = new Timer(RunHealthCheck);
         }
 
         public bool IsAlive => !_process.HasExited;
 
-        public TSettings HealthCheckSettings => Settings.GetSetting<TSettings>();
+        public TSettings HealthCheckSettings => _settingsProvider.Invoke();
 
         public void Dispose()
         {

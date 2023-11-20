@@ -28,7 +28,7 @@ namespace Rubberduck.UI.NewProject
         }
 
         private Uri DefaultUri => new(_fileSystem.Path.Combine(
-            _settings.Settings.LanguageClientSettings.DefaultWorkspaceRoot.LocalPath, _name));
+            _settings.Settings.LanguageClientSettings.WorkspaceSettings.DefaultWorkspaceRoot.LocalPath, _name));
 
         public ProjectFile Build() => new()
         {

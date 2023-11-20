@@ -21,22 +21,27 @@ namespace Rubberduck.UI.NewProject
     {
         private readonly ICommand _showSettingsCommand;
         private readonly IVBProjectInfoProvider _projectsProvider;
+        private readonly ITemplatesService _templatesService;
+
         public NewProjectDialogService(ILogger logger, 
             IWindowFactory<NewProjectWindow, NewProjectWindowViewModel> factory, 
             RubberduckSettingsProvider settingsProvider,
             IVBProjectInfoProvider projectsProvider,
+            ITemplatesService templatesService,
             MessageActionsProvider actionsProvider,
             ShowLanguageClientSettingsCommand showSettingsCommand) 
             : base(logger, factory, settingsProvider, actionsProvider)
         {
             _projectsProvider = projectsProvider;
             _showSettingsCommand = showSettingsCommand;
+            _templatesService = templatesService;
         }
 
         protected override NewProjectWindowViewModel CreateViewModel(RubberduckSettings settings, MessageActionsProvider actions)
         {
             var projects = _projectsProvider.GetProjectInfo();
-            return new NewProjectWindowViewModel(settings, projects, actions, _showSettingsCommand);
+            var templates = _templatesService.GetProjectTemplates();
+            return new NewProjectWindowViewModel(settings, projects, templates, actions, _showSettingsCommand);
         }
     }
 }

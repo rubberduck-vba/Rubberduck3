@@ -13,12 +13,12 @@ using System.Text.Json;
 
 namespace Rubberduck.Editor
 {
-    public class TemplatesService : ServiceBase
+    public class TemplatesService : ServiceBase, ITemplatesService
     {
         private readonly IFileSystem _fileSystem;
         private readonly IMessageService _messages;
         
-        public TemplatesService(ILogger logger, RubberduckSettingsProvider settingsProvider,
+        public TemplatesService(ILogger<TemplatesService> logger, RubberduckSettingsProvider settingsProvider,
             IFileSystem fileSystem, IMessageService messages) 
             : base(logger, settingsProvider)
         {

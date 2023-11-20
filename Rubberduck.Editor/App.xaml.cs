@@ -61,12 +61,15 @@ namespace Rubberduck.Editor
         {
             try
             {
+                ShutdownMode = ShutdownMode.OnLastWindowClose;
+
                 var args = e.Args;
                 _options = await ServerArgs.ParseAsync(args);
                 _tokenSource = new CancellationTokenSource();
 
                 var services = new ServiceCollection();
                 services.AddLogging(ConfigureLogging);
+
                 ConfigureServices(services);
 
                 _serviceProvider = services.BuildServiceProvider();
@@ -183,6 +186,9 @@ namespace Rubberduck.Editor
             services.AddSingleton<SupportedLanguage, VisualBasicForApplicationsLanguage>();
 
             services.AddSingleton<IExitHandler, ExitHandler>();
+
+            services.AddSingleton<Func<LanguageClientStartupSettings>>(provider => () => provider.GetRequiredService<RubberduckSettingsProvider>().Settings.LanguageClientSettings.StartupSettings);
+            services.AddSingleton<Func<LanguageServerStartupSettings>>(provider => () => provider.GetRequiredService<RubberduckSettingsProvider>().Settings.LanguageServerSettings.StartupSettings);
             services.AddSingleton<IHealthCheckService<LanguageServerStartupSettings>, ClientProcessHealthCheckService<LanguageServerStartupSettings>>();
             services.AddSingleton<IHealthCheckService<LanguageClientStartupSettings>, ClientProcessHealthCheckService<LanguageClientStartupSettings>>();
 
@@ -207,6 +213,10 @@ namespace Rubberduck.Editor
 
             services.AddSingleton<NewProjectCommand>();
             services.AddSingleton<NewProjectWindowFactory>();
+
+            services.AddSingleton<ITemplatesService, TemplatesService>();
+            services.AddSingleton<IWorkspaceFolderService, WorkspaceFolderService>();
+            services.AddSingleton<IProjectFileService, ProjectFileService>();
         }
 
         public void Dispose()
@@ -233,7 +243,7 @@ namespace Rubberduck.Editor
         public Uri GetWorkspaceRootUri(ServerStartupOptions options)
         {
             var settings = _settings.Settings.LanguageClientSettings;
-            var setting = settings.GetSetting<DefaultWorkspaceRootSetting>();
+            var setting = settings.WorkspaceSettings.GetSetting<DefaultWorkspaceRootSetting>();
             var uri = setting.DefaultValue;
 
             var argsRoot = options.WorkspaceRoot;
@@ -259,15 +269,15 @@ namespace Rubberduck.Editor
                 _logger.LogWarning($"Could not parse value '{argsRoot}' into a valid URI. Falling back to default workspace root.");
             }
 
-            if (settings.RequireDefaultWorkspaceRootHost && !uri.LocalPath.StartsWith(setting.DefaultValue.LocalPath))
+            if (settings.WorkspaceSettings.RequireDefaultWorkspaceRootHost && !uri.LocalPath.StartsWith(setting.DefaultValue.LocalPath))
             {
                 _logger.LogWarning(TraceLevel, $"Configuration requires a workspace root under the default folder, but a folder under a different root was supplied.", uri.LocalPath);
                 throw new NotSupportedException($"Configuration requires a workspace root under the default folder, but a folder under a different root was supplied.");
             }
 
-            if (!settings.EnableUncWorkspaces && uri.IsUnc)
+            if (!settings.WorkspaceSettings.EnableUncWorkspaces && uri.IsUnc)
             {
-                _logger.LogWarning(TraceLevel, $"UNC URI is not allowed: {nameof(settings.EnableUncWorkspaces)} setting is disabled. Default setting value will be used instead.", uri.ToString());
+                _logger.LogWarning(TraceLevel, $"UNC URI is not allowed: {nameof(settings.WorkspaceSettings.EnableUncWorkspaces)} setting is disabled. Default setting value will be used instead.", uri.ToString());
                 uri = setting.DefaultValue;
             }
 

@@ -18,6 +18,7 @@ using Rubberduck.LanguageServer.Services;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
 using System;
 using System.Diagnostics;
@@ -93,6 +94,8 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<Func<LanguageServerState>>(provider => () => _serverState);
             services.AddSingleton<IServerStateWriter>(provider => provider.GetRequiredService<LanguageServerState>());
 
+            services.AddSingleton<Func<LanguageClientStartupSettings>>(provider => () => provider.GetRequiredService<RubberduckSettingsProvider>().Settings.LanguageClientSettings.StartupSettings);
+            services.AddSingleton<Func<LanguageServerStartupSettings>>(provider => () => provider.GetRequiredService<RubberduckSettingsProvider>().Settings.LanguageServerSettings.StartupSettings);
             services.AddSingleton<IDefaultSettingsProvider<RubberduckSettings>>(provider => RubberduckSettings.Default);
             services.AddSingleton<IDefaultSettingsProvider<LanguageServerSettings>>(provider => LanguageServerSettings.Default);
             services.AddSingleton<RubberduckSettingsProvider>();

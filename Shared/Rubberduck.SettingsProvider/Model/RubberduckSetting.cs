@@ -26,11 +26,14 @@ namespace Rubberduck.SettingsProvider.Model
     [JsonDerivedType(typeof(ExitNotificationDelaySetting), nameof(ExitNotificationDelaySetting))]
 
     [JsonDerivedType(typeof(LanguageClientSettings), nameof(LanguageClientSettings))] // ~ Language client
-    [JsonDerivedType(typeof(DefaultWorkspaceRootSetting), nameof(DefaultWorkspaceRootSetting))]
-    [JsonDerivedType(typeof(EnableUncWorkspacesSetting), nameof(EnableUncWorkspacesSetting))]
     [JsonDerivedType(typeof(RequireAddInHostSetting), nameof(RequireAddInHostSetting))]
-    [JsonDerivedType(typeof(RequireDefaultWorkspaceRootHostSetting), nameof(RequireDefaultWorkspaceRootHostSetting))]
     [JsonDerivedType(typeof(RequireSavedHostSetting), nameof(RequireSavedHostSetting))]
+
+    [JsonDerivedType(typeof(WorkspaceSettings), nameof(WorkspaceSettings))] // ~ workspace settings (language client)
+    [JsonDerivedType(typeof(DefaultWorkspaceRootSetting), nameof(DefaultWorkspaceRootSetting))]
+    [JsonDerivedType(typeof(RequireDefaultWorkspaceRootHostSetting), nameof(RequireDefaultWorkspaceRootHostSetting))]
+    [JsonDerivedType(typeof(EnableUncWorkspacesSetting), nameof(EnableUncWorkspacesSetting))]
+    [JsonDerivedType(typeof(EnableFileSystemWatchersSetting), nameof(EnableFileSystemWatchersSetting))]
 
     [JsonDerivedType(typeof(LanguageServerSettings), nameof(LanguageServerSettings))] // ~ Language server
 

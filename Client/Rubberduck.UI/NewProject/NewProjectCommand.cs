@@ -2,6 +2,7 @@
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Message;
 using Rubberduck.UI.Services;
+using System;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,13 +21,17 @@ namespace Rubberduck.UI.NewProject
         private readonly ITemplatesService _templatesService;
 
         public NewProjectCommand(UIServiceHelper service, NewProjectWindowFactory factory, 
-            IFileSystem fileSystem, IMessageService messages, ITemplatesService templatesService,
+            IWorkspaceFolderService workspaceFolderService, 
+            IFileSystem fileSystem, IProjectFileService projectFileService,
+            IMessageService messages, ITemplatesService templatesService,
             MessageActionsProvider actions, ShowRubberduckSettingsCommand showSettingsCommand) 
             : base(service)
         {
             _fileSystem = fileSystem;
             _messages = messages;
             _templatesService = templatesService;
+            _workspaceFolderService = workspaceFolderService;
+            _projectFileService = projectFileService;
             _factory = factory;
             _actions = actions;
             _showSettingsCommand = showSettingsCommand;
@@ -45,7 +50,17 @@ namespace Rubberduck.UI.NewProject
                 var view = _factory.Create(model);
                 if (view.ShowDialog() == true)
                 {
-                    _workspaceFolderService.CreateWorkspace(model.WorkspaceLocation);
+                    if (Service.Settings.LanguageClientSettings.WorkspaceSettings.RequireDefaultWorkspaceRootHost)
+                    {
+                        if (model.WorkspaceLocation != Service.Settings.LanguageClientSettings.WorkspaceSettings.DefaultWorkspaceRoot.LocalPath)
+                        {
+                            Service.LogWarning("Cannot create workspace. Project workspace location is required to be under the default workspace root as per current configuration.");
+                            throw new InvalidOperationException();
+                        }
+                    }
+
+                    var root = _fileSystem.Path.Combine(model.WorkspaceLocation, model.ProjectName);
+                    _workspaceFolderService.CreateWorkspace(root);
 
                     var projectFile = CreateProjectFileModel(model);
                     _projectFileService.CreateFile(projectFile);

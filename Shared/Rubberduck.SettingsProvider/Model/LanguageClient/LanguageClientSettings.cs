@@ -16,6 +16,7 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
                 new RequireSavedHostSetting { Value = RequireSavedHostSetting.DefaultSettingValue },
                 new LanguageClientStartupSettings { Value = LanguageClientStartupSettings.DefaultSettings },
                 new ExitNotificationDelaySetting { Value = ExitNotificationDelaySetting.DefaultSettingValue },
+                WorkspaceSettings.Default,
             };
 
         public LanguageClientSettings()

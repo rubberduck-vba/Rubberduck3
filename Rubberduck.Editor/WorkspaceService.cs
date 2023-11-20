@@ -74,7 +74,7 @@ namespace Rubberduck.Editor
             });
         }
 
-        private void EnableFileSystemWatcher(Uri root)
+        public void EnableFileSystemWatcher(Uri root)
         {
             if (!Settings.LanguageClientSettings.WorkspaceSettings.EnableFileSystemWatchers)
             {
@@ -90,6 +90,19 @@ namespace Rubberduck.Editor
 
             watcher.EnableRaisingEvents = true;
             LogInformation($"FileSystemWatcher is now active for workspace and subfolders.", $"WorkspaceRoot: {root}");
+        }
+
+        public void DisableFileSystemWatcher(Uri root)
+        {
+            if (_watchers.TryGetValue(root, out var watcher))
+            {
+                watcher.EnableRaisingEvents = false;
+                LogInformation($"FileSystemWatcher is now deactived for workspace and subfolders.", $"WorkspaceRoot: {root}");
+            }
+            else
+            {
+                LogWarning($"There is no file system watcher configured for this workspace.", $"WorkspaceRoot: {root}");
+            }
         }
 
         private IFileSystemWatcher ConfigureWatcher(string path)
@@ -224,19 +237,6 @@ namespace Rubberduck.Editor
             if (sender is IFileSystemWatcher watcher)
             {
                 DisableFileSystemWatcher(new Uri(watcher.Path));
-            }
-        }
-
-        private void DisableFileSystemWatcher(Uri root)
-        {
-            if (_watchers.TryGetValue(root, out var watcher))
-            {
-                watcher.EnableRaisingEvents = false;
-                LogInformation($"FileSystemWatcher is now deactived for workspace and subfolders.", $"WorkspaceRoot: {root}");
-            }
-            else
-            {
-                LogWarning($"There is no file system watcher configured for this workspace.", $"WorkspaceRoot: {root}");
             }
         }
 

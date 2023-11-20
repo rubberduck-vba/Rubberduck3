@@ -211,7 +211,7 @@ namespace Rubberduck.Main.Root
                     ? new PipeServerStartupOptions
                     {
                         ClientProcessId = Env.ProcessId,
-                        WorkspaceRoot = settings.DefaultWorkspaceRoot.LocalPath,
+                        WorkspaceRoot = settings.WorkspaceSettings.DefaultWorkspaceRoot.LocalPath,
                         Name = startup.ServerPipeName,
                         Mode = System.IO.Pipes.PipeTransmissionMode.Message,
                         Silent = startup.ServerTraceLevel == MessageTraceLevel.Off,
@@ -220,7 +220,7 @@ namespace Rubberduck.Main.Root
                     : new StandardInOutServerStartupOptions
                     {
                         ClientProcessId = Env.ProcessId,
-                        WorkspaceRoot = settings.DefaultWorkspaceRoot.LocalPath,
+                        WorkspaceRoot = settings.WorkspaceSettings.DefaultWorkspaceRoot.LocalPath,
                         Silent = startup.ServerTraceLevel == MessageTraceLevel.Off,
                         Verbose = startup.ServerTraceLevel == MessageTraceLevel.Verbose,
                     };

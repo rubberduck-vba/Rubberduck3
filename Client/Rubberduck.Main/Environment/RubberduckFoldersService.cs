@@ -120,7 +120,7 @@ namespace Rubberduck.Environment
 
         public void EnsureDefaultWorkspacePathExists() => TryRunAction(() =>
         {
-            var defaultWorkspaceRoot = Settings.LanguageClientSettings.DefaultWorkspaceRoot;
+            var defaultWorkspaceRoot = Settings.LanguageClientSettings.WorkspaceSettings.DefaultWorkspaceRoot;
             if (!_fileSystem.Directory.Exists(defaultWorkspaceRoot.LocalPath))
             {
                 _fileSystem.Directory.CreateDirectory(defaultWorkspaceRoot.LocalPath);

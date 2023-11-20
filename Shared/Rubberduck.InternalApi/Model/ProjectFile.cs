@@ -26,6 +26,7 @@ namespace Rubberduck.InternalApi.Model
         /// <summary>
         /// The workspace root location where the project file is.
         /// </summary>
+        /// <remarks>This property is not serialized.</remarks>
         [JsonIgnore]
         public Uri Uri { get; set; }
 
