@@ -1,22 +1,15 @@
-﻿using System;
+﻿using Rubberduck.InternalApi.Model;
+using Rubberduck.UI.Services.Abstract;
+using System;
 using System.Collections.Concurrent;
 using System.Linq;
 
 namespace Rubberduck.Editor
 {
-    /// <summary>
-    /// Manages the state and content of each file in a workspace.
-    /// </summary>
-    public class WorkspaceStateManager
+    public class WorkspaceStateManager : IWorkspaceStateManager
     {
         private readonly ConcurrentDictionary<Uri, ConcurrentQueue<WorkspaceFileInfo>> _workspaceFiles = [];
-        private const int CacheCapacity = 3; // TODO make this a setting / NOTE: this is not the editor's undo stack!
 
-        /// <summary>
-        /// Marks the file at the specified URI as opened in the editor.
-        /// </summary>
-        /// <param name="uri">The URI referring to the file to open in the editor.</param>
-        /// <returns>The latest available version of the file.</returns>
         public WorkspaceFileInfo? OpenWorkspaceFile(Uri uri)
         {
             if (_workspaceFiles.TryGetValue(uri, out var cache) 
@@ -29,12 +22,6 @@ namespace Rubberduck.Editor
             return default;
         }
 
-        /// <summary>
-        /// Attempts to retrieve the specified file.
-        /// </summary>
-        /// <param name="uri">The URI referring to the file to retrieve.</param>
-        /// <param name="fileInfo">The retrieved <c>WorkspaceFileInfo</c>, if found.</param>
-        /// <returns><c>true</c> if the specified version was found.</returns>
         public bool TryGetWorkspaceFile(Uri uri, out WorkspaceFileInfo? fileInfo)
         {
             if (_workspaceFiles.TryGetValue(uri, out var cache))
@@ -46,13 +33,6 @@ namespace Rubberduck.Editor
             return false;
         }
 
-        /// <summary>
-        /// Attempts to retrieve the specified version of the specified file.
-        /// </summary>
-        /// <param name="uri">The URI referring to the file to retrieve.</param>
-        /// <param name="version">The specific version number to retrieve.</param>
-        /// <param name="fileInfo">The retrieved <c>WorkspaceFileInfo</c>, if found.</param>
-        /// <returns><c>true</c> if the specified version was found.</returns>
         public bool TryGetWorkspaceFile(Uri uri, int version, out WorkspaceFileInfo? fileInfo)
         {
             if (_workspaceFiles.TryGetValue(uri, out var cache))
@@ -65,12 +45,6 @@ namespace Rubberduck.Editor
             return false;
         }
 
-        /// <summary>
-        /// Marks the file at the specified URI as closed in the editor.
-        /// </summary>
-        /// <param name="uri">The URI referring to the file to mark as closed.</param>
-        /// <param name="fileInfo">Holds a non-null reference if the file was found.</param>
-        /// <returns><c>true</c> if the workspace file was correctly found and marked as closed.</returns>
         public bool CloseWorkspaceFile(Uri uri, out WorkspaceFileInfo? fileInfo)
         {
             if (_workspaceFiles.TryGetValue(uri, out var cache)
@@ -87,14 +61,7 @@ namespace Rubberduck.Editor
             return false;
         }
 
-        /// <summary>
-        /// Loads the specified file into the workspace.
-        /// </summary>
-        /// <param name="file">The file (including its content) to be added.</param>
-        /// <param name="cacheCapacity">The number of versions held in cache.</param>
-        /// <returns><c>true</c> if the file was successfully added to the workspace.</returns>
-        /// <remarks>This method will overwrite a cached URI for a newer version if the content is different.</remarks>
-        public bool LoadWorkspaceFile(WorkspaceFileInfo file, int cacheCapacity = CacheCapacity)
+        public bool LoadWorkspaceFile(WorkspaceFileInfo file, int cacheCapacity = 3)
         {
             if (!_workspaceFiles.TryGetValue(file.Uri, out var existingCache))
             {

@@ -2,6 +2,7 @@
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Message;
 using Rubberduck.UI.Services;
+using Rubberduck.UI.Services.Abstract;
 using System;
 using System.IO.Abstractions;
 using System.Linq;
@@ -60,9 +61,10 @@ namespace Rubberduck.UI.NewProject
                     }
 
                     var root = _fileSystem.Path.Combine(model.WorkspaceLocation, model.ProjectName);
-                    _workspaceFolderService.CreateWorkspace(root);
-
                     var projectFile = CreateProjectFileModel(model);
+                    
+                    _workspaceFolderService.CreateWorkspace(projectFile);
+                    
                     _projectFileService.CreateFile(projectFile);
                 }
             }, nameof(NewProjectCommand));

@@ -4,16 +4,17 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
 using Rubberduck.InternalApi.Model;
 using Rubberduck.SettingsProvider;
-using Rubberduck.UI.NewProject;
+using Rubberduck.UI.Services.Abstract;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Editor
 {
-    public class WorkspaceService : ServiceBase, IDisposable
+    public class WorkspaceService : ServiceBase, IWorkspaceService, IDisposable
     {
         private readonly WorkspaceStateManager _state;
         private readonly IFileSystem _fileSystem;
@@ -32,6 +33,8 @@ namespace Rubberduck.Editor
             _projectFile = projectFile;
             _lsp = lsp;
         }
+
+        public IFileSystem FileSystem => _fileSystem;
 
         public async Task<bool> OpenProjectWorkspaceAsync(Uri uri)
         {
@@ -59,9 +62,19 @@ namespace Rubberduck.Editor
                         throw new NotSupportedException("This project was created with a version of Rubberduck greater than the one currently running.");
                     }
 
-                    LoadSourceFiles(sourceRoot, projectFile);
-                    LoadNonSourceFiles(sourceRoot, projectFile);
+                    var folders = _fileSystem.DirectoryInfo.New(sourceRoot).EnumerateDirectories("*", SearchOption.AllDirectories).ToList();
+                    foreach (var folder in folders)
+                    {
+                        if (folder.FullName == sourceRoot)
+                        {
+                            continue;
+                        }
+
+                    }
+
+                    LoadWorkspaceFiles(sourceRoot, projectFile);
                     EnableFileSystemWatcher(uri);
+
                 }, out var exception) && exception is not null)
                 {
                     LogException(exception);
@@ -74,6 +87,7 @@ namespace Rubberduck.Editor
             });
         }
 
+        public bool IsFileSystemWatcherEnabled(Uri root) => _watchers[root].EnableRaisingEvents;
         public void EnableFileSystemWatcher(Uri root)
         {
             if (!Settings.LanguageClientSettings.WorkspaceSettings.EnableFileSystemWatchers)
@@ -104,6 +118,7 @@ namespace Rubberduck.Editor
                 LogWarning($"There is no file system watcher configured for this workspace.", $"WorkspaceRoot: {root}");
             }
         }
+
 
         private IFileSystemWatcher ConfigureWatcher(string path)
         {
@@ -240,19 +255,12 @@ namespace Rubberduck.Editor
             }
         }
 
-        private void LoadSourceFiles(string sourceRoot, ProjectFile projectFile)
-        {
-            foreach (var sourceFile in projectFile.VBProject.Modules)
-            {
-                LoadWorkspaceFile(sourceFile.Uri, sourceRoot, isSourceFile: true);
-            }
-        }
 
-        private void LoadNonSourceFiles(string sourceRoot, ProjectFile projectFile)
+        private void LoadWorkspaceFiles(string sourceRoot, ProjectFile projectFile)
         {
-            foreach (var file in projectFile.VBProject.OtherFiles)
+            foreach (var file in projectFile.VBProject.Modules.Concat(projectFile.VBProject.OtherFiles))
             {
-                LoadWorkspaceFile(file, sourceRoot, isSourceFile: false);
+                LoadWorkspaceFile(file.Uri, sourceRoot, isSourceFile: file is ProjectFile.Module, file.IsAutoOpen);
             }
         }
 

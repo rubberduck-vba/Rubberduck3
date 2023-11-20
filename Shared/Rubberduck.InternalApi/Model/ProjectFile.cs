@@ -51,16 +51,20 @@ namespace Rubberduck.InternalApi.Model
             /// </summary>
             public Reference[] References { get; set; }
             /// <summary>
-            /// Project modules <em>that can be synchronized</em> with the VBIDE.
+            /// Project source files that synchronize with a host VBA project.
             /// </summary>
             public Module[] Modules { get; set; }
             /// <summary>
-            /// Any other files in the workspace, code or non-code content.
+            /// Any other files in the workspace, whether for code or non-code content.
             /// </summary>
             /// <remarks>
             /// For example a <c>README.md</c> or <c>LICENSE.md</c> markdown file could be part of the project (/repository) without synchronizing with the VBE.
             /// </remarks>
-            public Uri[] OtherFiles { get; set; }
+            public File[] OtherFiles { get; set; }
+            /// <summary>
+            /// All folders in the project, whether they contain any files or not.
+            /// </summary>
+            public Folder[] Folders { get; set; }
         }
 
         public record class Reference
@@ -77,10 +81,39 @@ namespace Rubberduck.InternalApi.Model
             public Uri? TypeLibInfoUri { get; set; }
         }
 
-        public record class Module
+        public record class Folder
         {
+            /// <summary>
+            /// The name of the file; must be unique across the entire workspace.
+            /// </summary>
             public string Name { get; set; }
+            /// <summary>
+            /// The location of the module in the workspace, relative to the source root.
+            /// </summary>
             public Uri Uri { get; set; }
+        }
+
+        public record class File
+        {
+            /// <summary>
+            /// The name of the file; must be unique across the entire workspace.
+            /// </summary>
+            public string Name { get; set; }
+            /// <summary>
+            /// The location of the module in the workspace, relative to the source root.
+            /// </summary>
+            public Uri Uri { get; set; }
+            /// <summary>
+            /// <c>true</c> if the module should open when the workspace is loaded in the Rubberduck Editor.
+            /// </summary>
+            public bool IsAutoOpen { get; set; }
+        }
+
+        public record class Module : File
+        {
+            /// <summary>
+            /// Identifies the base class (supertype) for specific types of supported document modules, if applicable.
+            /// </summary>
             public DocClassType? Super { get; set; }
         }
     }

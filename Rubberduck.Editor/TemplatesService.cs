@@ -5,6 +5,7 @@ using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.UI;
 using Rubberduck.UI.Message;
 using Rubberduck.UI.NewProject;
+using Rubberduck.UI.Services.Abstract;
 using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
@@ -45,21 +46,16 @@ namespace Rubberduck.Editor
                 var templateRoot = CreateTemplateRoot(name);
                 CreateProjectFile(projectFile, templateRoot);
 
-                var sourceRoot = CreateTemplateSourceFolder(templateRoot);
+                var sourceRoot = CreateTemplateSourceFolder(templateRoot, projectFile.VBProject.Folders);
                 
-                var (sourceFiles, sourceBytes) = CopyProjectSourceFiles(projectFile, sourceRoot);
-                var (otherFiles, otherBytes) = CopyProjectOtherFiles(projectFile, sourceRoot);
-                
-                var templateFiles = sourceFiles + otherFiles;
-                var templateBytes = sourceBytes + otherBytes;
-
-                if (templateBytes == 0 && templateFiles != 0)
+                var (files, bytes) = CopyProjectFiles(projectFile, sourceRoot);
+                if (bytes == 0 && files != 0)
                 {
-                    LogWarning($"Template was created for {templateFiles}, totalling {templateBytes} bytes.");
+                    LogWarning($"Template was created for {files}, totalling 0 bytes.");
                 }
 
                 LogInformation("New project template created.", 
-                    $"Template: {name}; {templateFiles} files, {templateBytes} bytes; source files: {sourceFiles} files, {sourceBytes} bytes; other: {otherFiles} files, {otherBytes} bytes.");
+                    $"Template: {name}; {files} files ({bytes} bytes); {projectFile.VBProject.Folders.Length} folders.");
 
             }, out var exception) && exception is not null)
             {
@@ -67,77 +63,39 @@ namespace Rubberduck.Editor
             }
         }
 
-        private (int, long) CopyProjectOtherFiles(ProjectFile projectFile, string sourceRoot)
+        private (int, long) CopyProjectFiles(ProjectFile projectFile, string sourceRoot)
         {
-            var files = projectFile.VBProject.OtherFiles.Length;
+            var files = projectFile.VBProject.OtherFiles.Concat(projectFile.VBProject.Modules).ToList().Count;
             var filesCopied = 0;
             var bytesCopied = 0L;
 
             if (TryRunAction(() =>
             {
-                foreach (var uri in projectFile.VBProject.OtherFiles.Select((e, i) => (Element: e, Index: i)))
+                foreach (var indexedFile in projectFile.VBProject.OtherFiles.Select((e, i) => (File: e, Index: i)))
                 {
                     if (!TryRunAction(() =>
                     {
-                        var originalPath = _fileSystem.Path.Combine(projectFile.Uri.LocalPath, ProjectFile.SourceRoot, uri.Element.LocalPath);
+                        var originalPath = _fileSystem.Path.Combine(projectFile.Uri.LocalPath, ProjectFile.SourceRoot, indexedFile.File.Uri.LocalPath);
                         var fileLength = _fileSystem.FileInfo.New(originalPath).Length;
 
-                        var newPath = _fileSystem.Path.Combine(sourceRoot, uri.Element.LocalPath);
-
+                        var newPath = _fileSystem.Path.Combine(sourceRoot, indexedFile.File.Uri.LocalPath);
+                        _fileSystem.Directory.CreateDirectory(newPath);
                         _fileSystem.File.Copy(originalPath, newPath, overwrite: true);
 
                         filesCopied++;
                         bytesCopied += fileLength;
-                        LogTrace($"Copied misc. file {uri.Index + 1} of {files}.", $"File: '{uri.Element}' ({fileLength} bytes)");
+                        LogTrace($"Copied file {indexedFile.Index + 1} of {files}.", $"File: '{indexedFile.File}' ({(indexedFile.File is ProjectFile.Module ? "code" : "misc.")}, {fileLength} bytes)");
                     }, out var exception))
                     {
                         if (exception is not null)
                         {
-                            LogException(exception, $"Ignoring file: '{uri.Element}'");
+                            LogException(exception, $"Ignoring file: '{indexedFile.File.Uri}'");
                         }
                     }
                 }
             }) && filesCopied > 0)
             {
                 LogInformation("Project template miscellaneous files created.", $"Path: {sourceRoot}; {filesCopied} files ({bytesCopied} bytes)");
-            }
-
-            return (filesCopied, bytesCopied);
-        }
-
-        private (int, long) CopyProjectSourceFiles(ProjectFile projectFile, string sourceRoot)
-        {
-            var modules = projectFile.VBProject.Modules.Length;
-            var filesCopied = 0;
-            var bytesCopied = 0L;
-
-            if (TryRunAction(() =>
-            {
-                foreach (var module in projectFile.VBProject.Modules.Select((e, i) => (Element: e, Index: i)))
-                {
-                    if (!TryRunAction(() =>
-                    {
-                        var originalPath = _fileSystem.Path.Combine(projectFile.Uri.LocalPath, ProjectFile.SourceRoot, module.Element.Uri.LocalPath);
-                        var fileLength = _fileSystem.FileInfo.New(originalPath).Length;
-
-                        var newPath = _fileSystem.Path.Combine(sourceRoot, module.Element.Uri.LocalPath);
-
-                        _fileSystem.File.Copy(originalPath, newPath, overwrite: true);
-
-                        filesCopied++;
-                        bytesCopied += fileLength;
-                        LogTrace($"Copied source file {module.Index + 1} of {modules}.", $"File: '{module.Element.Uri}' ({fileLength} bytes)");
-                    }, out var exception))
-                    {
-                        if (exception is not null)
-                        {
-                            LogException(exception, $"Ignoring source file: '{module.Element.Uri}'");
-                        }
-                    }
-                }
-            }) && filesCopied > 0)
-            {
-                LogInformation("Project template source files created.", $"Path: {sourceRoot}; {filesCopied} files ({bytesCopied} bytes)");
             }
 
             return (filesCopied, bytesCopied);
@@ -188,13 +146,19 @@ namespace Rubberduck.Editor
             return path;
         }
 
-        private string CreateTemplateSourceFolder(string root)
+        private string CreateTemplateSourceFolder(string root, IEnumerable<ProjectFile.Folder> folders)
         {
             var path = _fileSystem.Path.Combine(root, ProjectTemplate.TemplateSourceFolderName);
             if (!TryRunAction(() =>
             {
                 _fileSystem.Directory.CreateDirectory(path);
                 LogTrace($"Created .template source folder.", $"Path: {path}");
+
+                foreach (var folder in folders)
+                {
+                    _fileSystem.Directory.CreateDirectory(folder.Uri.LocalPath);
+                    LogTrace($"Created folder: {folder.Uri}");
+                }
             }, out var exception))
             {
                 if (exception is not null)

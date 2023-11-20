@@ -2,6 +2,7 @@
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Services.Abstract;
 using System.Collections.Generic;
 using System.Windows.Input;
 

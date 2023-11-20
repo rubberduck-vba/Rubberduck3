@@ -1,7 +1,8 @@
 ﻿using Rubberduck.InternalApi.Model;
+using Rubberduck.UI.NewProject;
 using System.Collections.Generic;
 
-namespace Rubberduck.UI.NewProject
+namespace Rubberduck.UI.Services.Abstract
 {
     public interface ITemplatesService
     {

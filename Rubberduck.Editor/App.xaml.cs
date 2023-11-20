@@ -28,6 +28,7 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Message;
 using Rubberduck.UI.NewProject;
 using Rubberduck.UI.Services;
+using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Splash;
 using System;
 using System.Diagnostics;

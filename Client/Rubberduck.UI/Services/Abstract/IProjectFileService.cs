@@ -1,0 +1,133 @@
+﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Model;
+using Rubberduck.SettingsProvider;
+using System;
+using System.IO.Abstractions;
+using System.Text.Json;
+
+namespace Rubberduck.UI.Services.Abstract
+{
+    /// <summary>
+    /// Manages the state and content of each file in a workspace.
+    /// </summary>
+    public interface IWorkspaceStateManager
+    {
+        /// <summary>
+        /// Marks the file at the specified URI as opened in the editor.
+        /// </summary>
+        /// <param name="uri">The URI referring to the file to open in the editor.</param>
+        /// <returns>The latest available version of the file.</returns>
+        WorkspaceFileInfo? OpenWorkspaceFile(Uri uri);
+        /// <summary>
+        /// Attempts to retrieve the specified file.
+        /// </summary>
+        /// <param name="uri">The URI referring to the file to retrieve.</param>
+        /// <param name="fileInfo">The retrieved <c>WorkspaceFileInfo</c>, if found.</param>
+        /// <returns><c>true</c> if the specified version was found.</returns>
+        bool TryGetWorkspaceFile(Uri uri, out WorkspaceFileInfo? fileInfo);
+        /// <summary>
+        /// Attempts to retrieve the specified version of the specified file.
+        /// </summary>
+        /// <param name="uri">The URI referring to the file to retrieve.</param>
+        /// <param name="version">The specific version number to retrieve.</param>
+        /// <param name="fileInfo">The retrieved <c>WorkspaceFileInfo</c>, if found.</param>
+        /// <returns><c>true</c> if the specified version was found.</returns>
+        bool TryGetWorkspaceFile(Uri uri, int version, out WorkspaceFileInfo? fileInfo);
+        /// <summary>
+        /// Marks the file at the specified URI as closed in the editor.
+        /// </summary>
+        /// <param name="uri">The URI referring to the file to mark as closed.</param>
+        /// <param name="fileInfo">Holds a non-null reference if the file was found.</param>
+        /// <returns><c>true</c> if the workspace file was correctly found and marked as closed.</returns>
+        bool CloseWorkspaceFile(Uri uri, out WorkspaceFileInfo? fileInfo);
+        /// <summary>
+        /// Loads the specified file into the workspace.
+        /// </summary>
+        /// <param name="file">The file (including its content) to be added.</param>
+        /// <param name="cacheCapacity">The number of versions held in cache.</param>
+        /// <returns><c>true</c> if the file was successfully added to the workspace.</returns>
+        /// <remarks>This method will overwrite a cached URI for a newer version if the content is different.</remarks>
+        bool LoadWorkspaceFile(WorkspaceFileInfo file, int cacheCapacity = 3);
+        /// <summary>
+        /// Renames the specified workspace URI.
+        /// </summary>
+        /// <param name="oldUri">The old URI.</param>
+        /// <param name="newUri">The new URI.</param>
+        /// <returns><c>true</c> if the rename was successful.</returns>
+        bool RenameWorkspaceFile(Uri oldUri, Uri newUri);
+        /// <summary>
+        /// Unloads the specified workspace URI.
+        /// </summary>
+        /// <param name="uri">The file URI to unload.</param>
+        /// <returns><c>true</c> if the file was successfully unloaded.</returns>
+        bool UnloadWorkspaceFile(Uri uri);
+        /// <summary>
+        /// Unloads the entire workspace.
+        /// </summary>
+        void UnloadWorkspace();
+    }
+
+    public interface IProjectFileService
+    {
+        void CreateFile(ProjectFile model);
+        ProjectFile ReadFile(Uri root);
+    }
+
+    public interface IWorkspaceFolderService
+    {
+        void CreateWorkspace(ProjectFile projectFile);
+    }
+
+    public class ProjectFileService : ServiceBase, IProjectFileService
+    {
+        private readonly IFileSystem _fileSystem;
+
+        public ProjectFileService(ILogger<ProjectFileService> logger, RubberduckSettingsProvider settingsProvider,
+            IFileSystem fileSystem)
+            : base(logger, settingsProvider)
+        {
+            _fileSystem = fileSystem;
+        }
+
+        public void CreateFile(ProjectFile model)
+        {
+            var path = _fileSystem.Path.Combine(model.Uri.LocalPath, model.VBProject.Name, ProjectFile.FileName);
+            var content = JsonSerializer.Serialize(model);
+            _fileSystem.File.WriteAllText(path, content);
+        }
+
+        public ProjectFile ReadFile(Uri root)
+        {
+            var path = _fileSystem.Path.Combine(root.LocalPath, ProjectFile.FileName);
+            var content = _fileSystem.File.ReadAllText(path);
+            return JsonSerializer.Deserialize<ProjectFile>(content)
+                ?? throw new InvalidOperationException();
+        }
+    }
+
+    public class WorkspaceFolderService : ServiceBase, IWorkspaceFolderService
+    {
+        private readonly IFileSystem _fileSystem;
+
+        public WorkspaceFolderService(ILogger<WorkspaceFolderService> logger, RubberduckSettingsProvider settingsProvider,
+            IFileSystem fileSystem)
+            : base(logger, settingsProvider)
+        {
+            _fileSystem = fileSystem;
+        }
+
+        public void CreateWorkspace(ProjectFile projectFile)
+        {
+            var workspaceRoot = projectFile.Uri.LocalPath;
+            _fileSystem.Directory.CreateDirectory(workspaceRoot);
+
+            var sourceRoot = _fileSystem.Path.Combine(workspaceRoot, ProjectFile.SourceRoot);
+            _fileSystem.Directory.CreateDirectory(sourceRoot);
+
+            foreach (var folder in projectFile.VBProject.Folders)
+            {
+                _fileSystem.Directory.CreateDirectory(folder.Uri.LocalPath);
+            }
+        }
+    }
+}

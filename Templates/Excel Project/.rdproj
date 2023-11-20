@@ -36,6 +36,20 @@
         }
     ],
     "OtherFiles" : [
-        "file://README.md"
+        {
+            "Name" : "README",
+            "Uri" : "file://README.md",
+            "IsAutoOpen" : true
+        }
+    ],
+    "Folders" : [
+        {
+            "Name" : "Host",
+            "Uri" : "file://Host"
+        },
+        {
+            "Name" : "Tests",
+            "Uri" : "file://Tests"
+        }
     ]
 }
