@@ -75,7 +75,8 @@ namespace Rubberduck.UI.Services.Abstract
 
     public interface IWorkspaceFolderService
     {
-        void CreateWorkspace(ProjectFile projectFile);
+        void CreateWorkspaceFolders(ProjectFile projectFile, string workspaceRoot);
+        void CopyTemplateFiles(ProjectFile projectFile, string workspaceSourceRoot, string templateSourceRoot);
     }
 
     public class ProjectFileService : ServiceBase, IProjectFileService
@@ -83,8 +84,8 @@ namespace Rubberduck.UI.Services.Abstract
         private readonly IFileSystem _fileSystem;
 
         public ProjectFileService(ILogger<ProjectFileService> logger, RubberduckSettingsProvider settingsProvider,
-            IFileSystem fileSystem)
-            : base(logger, settingsProvider)
+            IFileSystem fileSystem, PerformanceRecordAggregator performance)
+            : base(logger, settingsProvider, performance)
         {
             _fileSystem = fileSystem;
         }
@@ -110,15 +111,27 @@ namespace Rubberduck.UI.Services.Abstract
         private readonly IFileSystem _fileSystem;
 
         public WorkspaceFolderService(ILogger<WorkspaceFolderService> logger, RubberduckSettingsProvider settingsProvider,
-            IFileSystem fileSystem)
-            : base(logger, settingsProvider)
+            IFileSystem fileSystem, PerformanceRecordAggregator performance)
+            : base(logger, settingsProvider, performance)
         {
             _fileSystem = fileSystem;
         }
 
-        public void CreateWorkspace(ProjectFile projectFile)
+        public void CopyTemplateFiles(ProjectFile projectFile, string workspaceSourceRoot, string templateSourceRoot)
         {
-            var workspaceRoot = projectFile.Uri.LocalPath;
+            foreach (var file in projectFile.VBProject.AllFiles)
+            {
+                var sourcePath = _fileSystem.Path.Combine(templateSourceRoot, file.Uri);
+                var destinationPath = _fileSystem.Path.Combine(workspaceSourceRoot, file.Uri);
+
+                var folder = _fileSystem.Path.GetDirectoryName(destinationPath)!;
+                _fileSystem.Directory.CreateDirectory(folder);
+                _fileSystem.File.Copy(sourcePath, destinationPath, overwrite: true);
+            }
+        }
+
+        public void CreateWorkspaceFolders(ProjectFile projectFile, string workspaceRoot)
+        {
             _fileSystem.Directory.CreateDirectory(workspaceRoot);
 
             var sourceRoot = _fileSystem.Path.Combine(workspaceRoot, ProjectFile.SourceRoot);
@@ -126,7 +139,7 @@ namespace Rubberduck.UI.Services.Abstract
 
             foreach (var folder in projectFile.VBProject.Folders)
             {
-                _fileSystem.Directory.CreateDirectory(folder.Uri.LocalPath);
+                _fileSystem.Directory.CreateDirectory(folder.Uri);
             }
         }
     }

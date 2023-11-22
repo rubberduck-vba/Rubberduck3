@@ -16,5 +16,7 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
         {
             DefaultValue = DefaultSettings;
         }
+
+        public static LanguageClientStartupSettings Default { get; } = new() { Value = DefaultSettings, DefaultValue = DefaultSettings };
     }
 }

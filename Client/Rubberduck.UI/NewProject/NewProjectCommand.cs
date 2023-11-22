@@ -62,10 +62,20 @@ namespace Rubberduck.UI.NewProject
 
                     var root = _fileSystem.Path.Combine(model.WorkspaceLocation, model.ProjectName);
                     var projectFile = CreateProjectFileModel(model);
-                    
-                    _workspaceFolderService.CreateWorkspace(projectFile);
-                    
+
+                    var workspaceSrcRoot = _fileSystem.Path.Combine(root, ProjectFile.SourceRoot);
+                    _workspaceFolderService.CreateWorkspaceFolders(projectFile, root);
                     _projectFileService.CreateFile(projectFile);
+
+                    if (model.SelectedProjectTemplate is not null)
+                    {
+                        var template = _templatesService.Resolve(model.SelectedProjectTemplate);
+                        var templateName = template.Name;
+                        var templatesRoot = _fileSystem.DirectoryInfo.New(Service.Settings.GeneralSettings.TemplatesLocation.LocalPath).FullName;
+                        var templateSrcRoot = _fileSystem.Path.Combine(templatesRoot, templateName, ProjectTemplate.TemplateSourceFolderName);
+                        _workspaceFolderService.CopyTemplateFiles(template.ProjectFile, workspaceSrcRoot, templateSrcRoot);
+                        
+                    }
                 }
             }, nameof(NewProjectCommand));
 

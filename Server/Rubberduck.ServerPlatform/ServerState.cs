@@ -37,8 +37,8 @@ namespace Rubberduck.ServerPlatform
         private readonly ConcurrentDictionary<ProgressToken, WorkDoneProgressReport> _progressTokens = new ConcurrentDictionary<ProgressToken, WorkDoneProgressReport>();
         public event EventHandler<ProgressEventArgs> Progress = delegate { };
 
-        public WorkDoneProgressStateService(ILogger<WorkDoneProgressStateService> logger, RubberduckSettingsProvider settingsProvider)
-            : base(logger, settingsProvider, null)
+        public WorkDoneProgressStateService(ILogger<WorkDoneProgressStateService> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
+            : base(logger, settingsProvider, null, performance)
         {
         }
 

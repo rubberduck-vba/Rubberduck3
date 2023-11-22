@@ -25,15 +25,15 @@ namespace Rubberduck.SettingsProvider.Model.UpdateServer
         }
 
         [JsonIgnore]
-        public UpdateServerStartupSettings StartupSettings => GetSetting<UpdateServerStartupSettings>();
+        public UpdateServerStartupSettings StartupSettings => GetSetting<UpdateServerStartupSettings>() ?? UpdateServerStartupSettings.Default;
         [JsonIgnore]
-        public MessageTraceLevel TraceLevel => GetSetting<TraceLevelSetting>().TypedValue;
+        public MessageTraceLevel TraceLevel => GetSetting<TraceLevelSetting>()?.TypedValue ?? TraceLevelSetting.DefaultSettingValue;
         [JsonIgnore]
-        public bool IsEnabled => GetSetting<IsUpdateServerEnabledSetting>().TypedValue;
+        public bool IsEnabled => GetSetting<IsUpdateServerEnabledSetting>()?.TypedValue ?? IsUpdateServerEnabledSetting.DefaultSettingValue;
         [JsonIgnore]
-        public bool IncludePreReleases => GetSetting<IncludePreReleasesSetting>().TypedValue;
+        public bool IncludePreReleases => GetSetting<IncludePreReleasesSetting>()?.TypedValue ?? IncludePreReleasesSetting.DefaultSettingValue;
         [JsonIgnore]
-        public Uri RubberduckWebApiBaseUrl => GetSetting<WebApiBaseUrlSetting>().TypedValue;
+        public Uri RubberduckWebApiBaseUrl => GetSetting<WebApiBaseUrlSetting>()?.TypedValue ?? WebApiBaseUrlSetting.DefaultSettingValue;
 
         public static UpdateServerSettings Default { get; } = new() { Value = DefaultSettings };
         UpdateServerSettings IDefaultSettingsProvider<UpdateServerSettings>.Default => Default;

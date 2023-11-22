@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.SettingsProvider.Model.LanguageServer;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
 using System;
 
@@ -17,5 +18,7 @@ namespace Rubberduck.SettingsProvider.Model.UpdateServer
             SettingDataType = SettingDataType.SettingGroup;
             DefaultValue = DefaultSettings;
         }
+
+        public static UpdateServerStartupSettings Default { get; } = new() { DefaultValue = DefaultSettings, Value = DefaultSettings };
     }
 }

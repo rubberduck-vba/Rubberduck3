@@ -25,15 +25,15 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
         }
 
         [JsonIgnore]
-        public WorkspaceSettings WorkspaceSettings => GetSetting<WorkspaceSettings>();
+        public WorkspaceSettings WorkspaceSettings => GetSetting<WorkspaceSettings>() ?? WorkspaceSettings.Default;
         [JsonIgnore]
-        public bool RequireAddInHost => GetSetting<RequireAddInHostSetting>().TypedValue;
+        public bool RequireAddInHost => GetSetting<RequireAddInHostSetting>()?.TypedValue ?? RequireAddInHostSetting.DefaultSettingValue;
         [JsonIgnore]
-        public bool RequireSavedHost => GetSetting<RequireSavedHostSetting>().TypedValue;
+        public bool RequireSavedHost => GetSetting<RequireSavedHostSetting>()?.TypedValue ?? RequireSavedHostSetting.DefaultSettingValue;
         [JsonIgnore]
-        public LanguageClientStartupSettings StartupSettings => GetSetting<LanguageClientStartupSettings>();
+        public LanguageClientStartupSettings StartupSettings => GetSetting<LanguageClientStartupSettings>() ?? LanguageClientStartupSettings.Default;
         [JsonIgnore]
-        public TimeSpan ExitNotificationDelay => GetSetting<ExitNotificationDelaySetting>().TypedValue;
+        public TimeSpan ExitNotificationDelay => GetSetting<ExitNotificationDelaySetting>()?.TypedValue ?? ExitNotificationDelaySetting.DefaultSettingValue;
 
         public static LanguageClientSettings Default { get; } = new() { Value = DefaultSettings, DefaultValue = DefaultSettings };
         LanguageClientSettings IDefaultSettingsProvider<LanguageClientSettings>.Default => Default;

@@ -88,6 +88,7 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<Process>(provider => Process.GetProcessById((int)_options.ClientProcessId));
 
             services.AddSingleton<IFileSystem, FileSystem>();
+            services.AddSingleton<PerformanceRecordAggregator>();
 
             services.AddSingleton<ServerPlatformServiceHelper>();
             services.AddSingleton<LanguageServerState>();

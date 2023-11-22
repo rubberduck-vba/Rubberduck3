@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.SettingsProvider.Model.General
+﻿namespace Rubberduck.SettingsProvider.Model.Logging
 {
     /// <summary>
     /// Allow the minimum log level to remain at a verbose TRACE level after a successful initialization and shutdown; logging normally gets automatically disabled otherwise.

@@ -5,7 +5,7 @@ using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
-using Rubberduck.SettingsProvider.Model.General;
+using Rubberduck.SettingsProvider.Model.Logging;
 using Rubberduck.UI.Message;
 using Rubberduck.Unmanaged.UIContext;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
@@ -72,7 +72,7 @@ namespace Rubberduck
 
         private void UpdateLoggingLevel()
         {
-            _logLevelService.SetMinimumLogLevel(_settingsService.Settings.GeneralSettings.LogLevel);
+            _logLevelService.SetMinimumLogLevel(_settingsService.Settings.LoggerSettings.LogLevel);
         }
 
         /// <summary>
@@ -84,13 +84,13 @@ namespace Rubberduck
         private void UpdateLoggingLevelOnShutdown()
         {
             var currentSettings = _settingsService.Settings;
-            if (currentSettings.GeneralSettings.DisableInitialLogLevelReset || currentSettings.GeneralSettings.LogLevel != LogLevel.Trace)
+            if (currentSettings.LoggerSettings.DisableInitialLogLevelReset || currentSettings.LoggerSettings.LogLevel != LogLevel.Trace)
             {
                 return;
             }
 
-            currentSettings.GeneralSettings.GetSetting<LogLevelSetting>().WithValue(LogLevel.None);
-            currentSettings.GeneralSettings.GetSetting<DisableInitialLogLevelResetSetting>().Value = true;
+            currentSettings.LoggerSettings.GetSetting<LogLevelSetting>().WithValue(LogLevel.None);
+            currentSettings.LoggerSettings.GetSetting<DisableInitialLogLevelResetSetting>().Value = true;
 
             _settingsService.Write(currentSettings);
         }
@@ -145,7 +145,7 @@ namespace Rubberduck
                 // not accessing resources here, because setting resource culture literally just failed.
                 _messageBox.ShowMessage(MessageModel.For(exception));
 
-                currentSettings.GeneralSettings.GetSetting<LogLevelSetting>().Value = LogLevel.None;
+                currentSettings.LoggerSettings.GetSetting<LogLevelSetting>().Value = LogLevel.None;
                 _settingsService.Write(currentSettings);
             }
         }

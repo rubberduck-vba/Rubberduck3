@@ -37,7 +37,7 @@ namespace Rubberduck.SettingsProvider
         public RubberduckSettingsProvider(ILogger<SettingsService<RubberduckSettings>> logger, 
             IFileSystem fileSystem, 
             IDefaultSettingsProvider<RubberduckSettings> defaultSettings) 
-            : base(logger, null!, fileSystem, defaultSettings)
+            : base(logger, null!, fileSystem, defaultSettings, null!)
         {
             SettingsProvider = this;
         }
@@ -63,8 +63,9 @@ namespace Rubberduck.SettingsProvider
         public SettingsService(ILogger<SettingsService<TSettings>> logger,
             RubberduckSettingsProvider settings,
             IFileSystem fileSystem,
-            IDefaultSettingsProvider<TSettings> defaultSettings)
-            : base(logger, settings)
+            IDefaultSettingsProvider<TSettings> defaultSettings,
+            PerformanceRecordAggregator performance)
+            : base(logger, settings, performance)
         {
             _fileSystem = fileSystem;
 

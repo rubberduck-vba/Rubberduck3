@@ -6,9 +6,11 @@ namespace Rubberduck.SettingsProvider.Model
 {
     public abstract record class TypedSettingGroup : TypedRubberduckSetting<RubberduckSetting[]>
     {
-        public TSetting GetSetting<TSetting>() where TSetting : RubberduckSetting 
-            => ((RubberduckSetting[])Value).OfType<TSetting>().SingleOrDefault()
-                ?? throw new InvalidOperationException($"Settings type {GetType().Name} does not contain a {typeof(TSetting).Name} child item.");
+        public TSetting? GetSetting<TSetting>() where TSetting : RubberduckSetting
+        {
+            return ((RubberduckSetting[])Value).OfType<TSetting>().SingleOrDefault();
+        }
+
         public RubberduckSetting GetSetting(Type type) => ((RubberduckSetting[])Value).Single(e => e.GetType() == type);
 
         private Dictionary<Type, RubberduckSetting> Values => TypedValue.ToDictionary(e => e.GetType());

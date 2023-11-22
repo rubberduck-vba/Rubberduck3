@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace Rubberduck.SettingsProvider.Model.General
+namespace Rubberduck.SettingsProvider.Model.Logging
 {
     /// <summary>
     /// The minimum log level for log messages to be written to log files.

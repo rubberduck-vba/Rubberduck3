@@ -12,7 +12,7 @@
         ResizeMode="NoResize"
         WindowStyle="None"
         Style="{DynamicResource ThemedWindowStyle}"
-        Height="300" Width="500" Icon="/Rubberduck.UI;component/Ducky.ico" 
+        Height="360" Width="500" Icon="/Rubberduck.UI;component/Ducky.ico" 
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ResourceDictionary>
@@ -39,13 +39,37 @@
                           ItemsSource="{Binding VBProjects}"
                           SelectedItem="{Binding SelectedVBProject}"
                           Visibility="{Binding HasVBProjects, Converter={StaticResource BoolToVisibilityConverter}}"
-                          IsTabStop="True" TabIndex="0" />
+                          Margin="5,0"
+                          IsTabStop="True" TabIndex="0">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type local:VBProjectInfo}">
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <Label Style="{DynamicResource FormFieldNameLabelStyle}" 
+                       Content="Project Template"
+                       Visibility="{Binding HasProjectTemplates, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <ComboBox Template="{DynamicResource ComboBoxTemplate}" 
+                          Style="{DynamicResource FormFieldComboBoxStyle}"
+                          ItemsSource="{Binding ProjectTemplates}"
+                          SelectedItem="{Binding SelectedProjectTemplate}"
+                          Visibility="{Binding HasProjectTemplates, Converter={StaticResource BoolToVisibilityConverter}}"
+                          Margin="5,0"
+                          IsTabStop="True" TabIndex="0">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type local:ProjectTemplate}">
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
 
                 <Label Style="{DynamicResource FormFieldNameLabelStyle}" 
                        Content="Project name"
                        IsEnabled="{Binding IsEnabled}" />
                 <TextBox Style="{DynamicResource FormFieldTextBoxStyle}" 
-                         Text="{Binding ProjectName}"
+                         Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}"
                          IsEnabled="{Binding IsEnabled}"
                          IsTabStop="True" TabIndex="1"
                          Margin="5,0"/>
@@ -58,12 +82,14 @@
                     <Button  DockPanel.Dock="Right"
                         Command="{x:Static NavigationCommands.Search}"
                         CommandParameter="{Binding}"
+                        Background="{DynamicResource ThemeBackgroundMediumColorBrush}"
+                        Foreground="{DynamicResource ThemeAccent1DarkColorBrush}"
                         Style="{DynamicResource FlatButtonStyle}" 
                         Width="28" Height="24" Margin="0,0,5,0"
                         Content="…" IsTabStop="True" TabIndex="3" />
                     <TextBox DockPanel.Dock="Top"
                         Style="{DynamicResource FormFieldTextBoxStyle}" 
-                        Text="{Binding WorkspaceLocation}"
+                        Text="{Binding WorkspaceLocation, UpdateSourceTrigger=PropertyChanged}"
                         IsEnabled="{Binding IsEnabled}"
                         IsTabStop="True" TabIndex="2"
                         Margin="5,0,2,0"/>

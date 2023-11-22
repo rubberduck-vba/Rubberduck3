@@ -16,15 +16,16 @@ namespace Rubberduck.UI.NewProject
         private string _name = "Project1";
         private ProjectTemplate _template = ProjectTemplate.Default;
 
-        private readonly HashSet<Uri> _files = new();
-        private readonly Dictionary<string, ProjectFile.Module> _modules = new();
-        private readonly HashSet<ProjectFile.Reference> _references = new();
+        private readonly HashSet<File> _files = new();
+        private readonly Dictionary<string, Module> _modules = new();
+        private readonly HashSet<Reference> _references = new();
+        private readonly HashSet<Folder> _folders = new();
 
         public ProjectFileBuilder(IFileSystem fileSystem, RubberduckSettingsProvider settings)
         {
             _settings = settings;
             _fileSystem = fileSystem;
-            _references.Add(ProjectFile.Reference.VisualBasicForApplications);
+            _references.Add(Reference.VisualBasicForApplications);
         }
 
         private Uri DefaultUri => new(_fileSystem.Path.Combine(
@@ -58,14 +59,17 @@ namespace Rubberduck.UI.NewProject
         {
             _name = template.ProjectFile.VBProject.Name;
             _files.UnionWith(template.ProjectFile.VBProject.OtherFiles);
+            _folders.UnionWith(template.ProjectFile.VBProject.Folders);
             _references.UnionWith(template.ProjectFile.VBProject.References);
             foreach (var module in template.ProjectFile.VBProject.Modules)
             {
                 _modules.TryAdd(module.Name, module);
             }
+            
             return this;
         }
 
+        /*
         public ProjectFileBuilder WithUri(Uri uri)
         {
             _uri = uri;
@@ -132,5 +136,6 @@ namespace Rubberduck.UI.NewProject
 
             return this;
         }
+        */
     }
 }

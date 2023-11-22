@@ -4,9 +4,53 @@
                     xmlns:converters="clr-namespace:Rubberduck.UI.Converters">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Icons.xaml"/>
-        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/DarkTheme.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/LightTheme.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
+    <Color x:Key="ThemeWhiteDarkColor">#FFA9A9A9</Color>
+    <Color x:Key="ThemeWhiteMediumColor">#FFD3D3D3</Color>
+    <Color x:Key="ThemeWhiteLightColor">#FFFFFFFF</Color>
+    <Color x:Key="ThemeWhiteDarkColor50">#0FA9A9A9</Color>
+    <Color x:Key="ThemeWhiteMediumColor50">#0FD3D3D3</Color>
+    <Color x:Key="ThemeWhiteLightColor75">#C0FFFFFF</Color>
+    <Color x:Key="ThemeWhiteLightColor50">#0FFFFFFF</Color>
+    <Color x:Key="ThemeWhiteDarkColor25">#08A9A9A9</Color>
+    <Color x:Key="ThemeWhiteMediumColor25">#08D3D3D3</Color>
+    <Color x:Key="ThemeWhiteLightColor25">#08FFFFFF</Color>
+
+    <SolidColorBrush x:Key="ThemeWhiteDarkColorBrush" Color="{DynamicResource ThemeWhiteDarkColor}" />
+    <SolidColorBrush x:Key="ThemeWhiteMediumColorBrush" Color="{DynamicResource ThemeWhiteMediumColor}" />
+    <SolidColorBrush x:Key="ThemeWhiteLightColorBrush" Color="{DynamicResource ThemeWhiteLightColor}" />
+    <SolidColorBrush x:Key="ThemeWhiteLightColorBrush75" Color="{DynamicResource ThemeWhiteLightColor75}" />
+    <SolidColorBrush x:Key="ThemeWhiteDarkColorBrush50" Color="{DynamicResource ThemeWhiteDarkColor50}" />
+    <SolidColorBrush x:Key="ThemeWhiteMediumColorBrush50" Color="{DynamicResource ThemeWhiteMediumColor50}" />
+    <SolidColorBrush x:Key="ThemeWhiteLightColorBrush50" Color="{DynamicResource ThemeWhiteLightColor50}" />
+    <SolidColorBrush x:Key="ThemeWhiteDarkColorBrush25" Color="{DynamicResource ThemeWhiteDarkColor25}" />
+    <SolidColorBrush x:Key="ThemeWhiteMediumColorBrush25" Color="{DynamicResource ThemeWhiteMediumColor25}" />
+    <SolidColorBrush x:Key="ThemeWhiteLightColorBrush25" Color="{DynamicResource ThemeWhiteLightColor25}" />
+
+    <Color x:Key="ThemeBlackDarkColor">#FF1E1E1E</Color>
+    <Color x:Key="ThemeBlackMediumColor">#FF2E2E2E</Color>
+    <Color x:Key="ThemeBlackLightColor">#FF333333</Color>
+    <Color x:Key="ThemeBlackDarkColor75">#C01E1E1E</Color>
+    <Color x:Key="ThemeBlackDarkColor50">#0F1E1E1E</Color>
+    <Color x:Key="ThemeBlackMediumColor50">#0F2E2E2E</Color>
+    <Color x:Key="ThemeBlackLightColor50">#0F333333</Color>
+    <Color x:Key="ThemeBlackDarkColor25">#081E1E1E</Color>
+    <Color x:Key="ThemeBlackMediumColor25">#082E2E2E</Color>
+    <Color x:Key="ThemeBlackLightColor25">#08333333</Color>
+
+    <SolidColorBrush x:Key="ThemeBlackDarkColorBrush" Color="{DynamicResource ThemeBlackDarkColor}" />
+    <SolidColorBrush x:Key="ThemeBlackMediumColorBrush" Color="{DynamicResource ThemeBlackMediumColor}" />
+    <SolidColorBrush x:Key="ThemeBlackLightColorBrush" Color="{DynamicResource ThemeBlackLightColor}" />
+    <SolidColorBrush x:Key="ThemeBlackDarkColorBrush50" Color="{DynamicResource ThemeBlackDarkColor50}" />
+    <SolidColorBrush x:Key="ThemeBlackMediumColorBrush50" Color="{DynamicResource ThemeBlackMediumColor50}" />
+    <SolidColorBrush x:Key="ThemeBlackLightColorBrush50" Color="{DynamicResource ThemeBlackLightColor50}" />
+    <SolidColorBrush x:Key="ThemeBlackDarkColorBrush25" Color="{DynamicResource ThemeBlackDarkColor25}" />
+    <SolidColorBrush x:Key="ThemeBlackMediumColorBrush25" Color="{DynamicResource ThemeBlackMediumColor25}" />
+    <SolidColorBrush x:Key="ThemeBlackLightColorBrush25" Color="{DynamicResource ThemeBlackLightColor25}" />
+
+    
     <converters:BoolToVisibleVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
     <converters:InvertBoolValueConverter x:Key="InverseBoolConverter" />
@@ -183,6 +227,8 @@
             <Setter Property="FontFamily" Value="Segoe UI" />
             <Setter Property="FontSize" Value="12" />
             <Setter Property="WindowState" Value="Normal" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent1LightColorBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundDarkColorBrush}" />
             <!--Setter Property="Template" Value="{DynamicResource WindowTemplate}" /-->
@@ -219,24 +265,6 @@
     </Style>
 
     <Style x:Key="FlatButtonStyle" TargetType="Button">
-        <Setter Property="Width" Value="64" />
-        <Setter Property="Height" Value="32" />
-        <Setter Property="Foreground" Value="{DynamicResource ThemeWhiteLightColorBrush}" />
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Template" Value="{DynamicResource FlatButtonTemplate}"/>
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
-                <DataTrigger.Setters>
-                    <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
-                </DataTrigger.Setters>
-            </DataTrigger>
-            <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="True">
-                <DataTrigger.Setters>
-                    <Setter Property="Background" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
-                    <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1TextColorBrush}" />
-                </DataTrigger.Setters>
-            </DataTrigger>
-        </Style.Triggers>
     </Style>
     
     <Style x:Key="ControlBoxButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource FlatButtonStyle}">
@@ -311,22 +339,28 @@
             <Setter Property="Height" Value="24" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextInactiveColorBrush}" />
         </Style.Setters>
-        <!--<Style.Triggers>
+        <Style.Triggers>
             <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
             </DataTrigger>
-        </Style.Triggers>-->
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="FormFieldTextBoxStyle" TargetType="TextBox">
         <Style.Setters>
-            <Setter Property="Padding" Value="4" />
+            <Setter Property="Padding" Value="4,0" />
             <Setter Property="FontSize" Value="12" />
             <Setter Property="Height" Value="24" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
         </Style.Setters>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ThemeBackgroundLightColorBrush}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="FormFieldComboBoxStyle" TargetType="ComboBox">
@@ -335,6 +369,11 @@
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
         </Style.Setters>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}">
+                <Setter Property="Cursor" Value="Hand" />
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
     
 </ResourceDictionary>

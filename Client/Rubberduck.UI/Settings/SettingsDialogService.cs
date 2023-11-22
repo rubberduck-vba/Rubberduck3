@@ -30,8 +30,9 @@ namespace Rubberduck.UI.Settings
             IWindowFactory<SettingsWindow, SettingsWindowViewModel> factory, 
             IMessageService messageService,
             ISettingViewModelFactory vmFactory,
-            MessageActionsProvider actionsProvider) 
-            : base(logger, factory, settings, actionsProvider)
+            MessageActionsProvider actionsProvider,
+            PerformanceRecordAggregator performance) 
+            : base(logger, factory, settings, actionsProvider, performance)
         {
             _service = service;
             _messageService = messageService;

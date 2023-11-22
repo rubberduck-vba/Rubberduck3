@@ -24,9 +24,9 @@ namespace Rubberduck.Editor
         private readonly ILanguageClientFacade _lsp;
 
         public WorkspaceService(ILogger logger, RubberduckSettingsProvider settingsProvider,
-            WorkspaceStateManager state, IFileSystem fileSystem, 
+            WorkspaceStateManager state, IFileSystem fileSystem, PerformanceRecordAggregator performance,
             IProjectFileService projectFile, ILanguageClientFacade lsp)
-            : base(logger, settingsProvider)
+            : base(logger, settingsProvider, performance)
         {
             _state = state;
             _fileSystem = fileSystem;
@@ -260,15 +260,15 @@ namespace Rubberduck.Editor
         {
             foreach (var file in projectFile.VBProject.Modules.Concat(projectFile.VBProject.OtherFiles))
             {
-                LoadWorkspaceFile(file.Uri, sourceRoot, isSourceFile: file is ProjectFile.Module, file.IsAutoOpen);
+                LoadWorkspaceFile(file.Uri, sourceRoot, isSourceFile: file is Module, file.IsAutoOpen);
             }
         }
 
-        private void LoadWorkspaceFile(Uri uri, string sourceRoot, bool isSourceFile, bool open = false)
+        private void LoadWorkspaceFile(string uri, string sourceRoot, bool isSourceFile, bool open = false)
         {
             TryRunAction(() =>
             {
-                var filePath = _fileSystem.Path.Combine(sourceRoot, uri.LocalPath);
+                var filePath = _fileSystem.Path.Combine(sourceRoot, uri);
 
                 var isLoadError = false;
                 var isMissing = !_fileSystem.File.Exists(filePath);
@@ -277,7 +277,7 @@ namespace Rubberduck.Editor
 
                 if (isMissing)
                 {
-                    LogWarning($"Missing {(isSourceFile ? "source" : string.Empty)} file: {uri.LocalPath}");
+                    LogWarning($"Missing {(isSourceFile ? "source" : string.Empty)} file: {uri}");
                 }
                 else
                 {
@@ -287,7 +287,7 @@ namespace Rubberduck.Editor
                     }
                     catch (Exception exception)
                     {
-                        LogWarning("Could not load file content.", $"File: {uri.LocalPath}");
+                        LogWarning("Could not load file content.", $"File: {uri}");
                         LogException(exception);
                         isLoadError = true;
                     }
@@ -295,7 +295,7 @@ namespace Rubberduck.Editor
 
                 var info = new WorkspaceFileInfo
                 {
-                    Uri = uri,
+                    Uri = new Uri(uri),
                     Content = content,
                     Version = fileVersion,
                     IsSourceFile = isSourceFile,

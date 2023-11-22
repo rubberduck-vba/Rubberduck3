@@ -8,7 +8,7 @@
     <SolidColorBrush x:Key="TextBox.Static.Background" Color="{DynamicResource ThemeBackgroundColor}"/>
 
     <SolidColorBrush x:Key="ComboBox.Static.Editable.Button.Background" Color="Transparent"/>
-    <SolidColorBrush x:Key="ComboBox.Static.Editable.Button.Border" Color="Transparent"/>
+    <SolidColorBrush x:Key="ComboBox.Static.Editable.Button.Border" Color="{DynamicResource ThemeAccent1DarkColor}"/>
 
     <LinearGradientBrush x:Key="ComboBox.MouseOver.Background" EndPoint="0,1" StartPoint="0,0">
         <GradientStop Color="{DynamicResource ThemeBackgroundMediumColor}" Offset="0.0"/>
@@ -53,11 +53,11 @@
         <GradientStop Color="{DynamicResource ThemeBackgroundLightColor}" Offset="1.0"/>
     </LinearGradientBrush>
 
-    <SolidColorBrush x:Key="ComboBox.Static.Border" Color="{DynamicResource ThemeTextInactiveColor}"/>
+    <SolidColorBrush x:Key="ComboBox.Static.Border" Color="{DynamicResource ThemeWhiteDarkColor}"/>
     <SolidColorBrush x:Key="ComboBox.Static.Glyph" Color="{DynamicResource ThemeTextColor}"/>
 
     <SolidColorBrush x:Key="ComboBox.Static.Editable.Background" Color="{DynamicResource ThemeBackgroundColor}"/>
-    <SolidColorBrush x:Key="ComboBox.Static.Editable.Border" Color="{DynamicResource ThemeBackgroundMediumColor}"/>
+    <SolidColorBrush x:Key="ComboBox.Static.Editable.Border" Color="{DynamicResource ThemeAccent1DarkColor}"/>
 
     <Style x:Key="FocusVisual">
         <Setter Property="Control.Template">
@@ -120,6 +120,7 @@
                                 <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="true"/>
                                 <Condition Binding="{Binding IsEditable, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}" Value="false"/>
                             </MultiDataTrigger.Conditions>
+                            <Setter Property="Cursor" TargetName="templateRoot" Value="Hand"/>
                             <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.MouseOver.Background}"/>
                             <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.MouseOver.Border}"/>
                         </MultiDataTrigger>

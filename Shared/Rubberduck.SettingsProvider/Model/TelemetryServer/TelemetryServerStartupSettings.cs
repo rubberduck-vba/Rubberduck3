@@ -17,5 +17,7 @@ namespace Rubberduck.SettingsProvider.Model.TelemetryServer
             SettingDataType = SettingDataType.SettingGroup;
             DefaultValue = DefaultSettings;
         }
+
+        public static TelemetryServerStartupSettings Default { get; } = new() { DefaultValue = DefaultSettings, Value = DefaultSettings };
     }
 }

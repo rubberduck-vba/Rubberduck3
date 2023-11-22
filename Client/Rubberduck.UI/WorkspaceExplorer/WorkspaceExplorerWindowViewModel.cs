@@ -128,11 +128,11 @@ namespace Rubberduck.UI.WorkspaceExplorer
 
     public class WorkspaceTreeNodeViewModel : ViewModelBase
     {
-        public static WorkspaceTreeNodeViewModel FromModel(ProjectFile.Folder model)
+        public static WorkspaceTreeNodeViewModel FromModel(Folder model)
         {
             return new WorkspaceTreeNodeViewModel
             {
-                Uri = model.Uri,
+                Uri = new Uri(model.Uri),
                 Name = model.Name,
                 IsInProject = true
             };
@@ -186,11 +186,11 @@ namespace Rubberduck.UI.WorkspaceExplorer
 
     public class WorkspaceFileViewModel : WorkspaceTreeNodeViewModel
     {
-        public static WorkspaceFileViewModel FromModel(ProjectFile.File model)
+        public static WorkspaceFileViewModel FromModel(File model)
         {
             return new WorkspaceFileViewModel
             {
-                Uri = model.Uri,
+                Uri = new Uri(model.Uri),
                 Name = model.Name,
                 IsAutoOpen = model.IsAutoOpen,
                 IsInProject = true
@@ -214,11 +214,11 @@ namespace Rubberduck.UI.WorkspaceExplorer
 
     public class WorkspaceSourceFileViewModel : WorkspaceFileViewModel
     {
-        public static WorkspaceSourceFileViewModel FromModel(ProjectFile.Module model)
+        public static WorkspaceSourceFileViewModel FromModel(Module model)
         {
             return new WorkspaceSourceFileViewModel
             {
-                Uri = model.Uri,
+                Uri = new Uri(model.Uri),
                 Name = model.Name,
                 IsAutoOpen = model.IsAutoOpen,
                 DocumentClassType = model.Super,

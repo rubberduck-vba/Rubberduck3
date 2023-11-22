@@ -33,8 +33,8 @@ namespace Rubberduck.Environment
         public HostInfoService(ILogger<HostInfoService> logger, 
             RubberduckSettingsProvider settings, 
             IWorkDoneProgressStateService workdone, 
-            Version rubberduckVersion)
-            : base(logger, settings, workdone)
+            Version rubberduckVersion, PerformanceRecordAggregator performance)
+            : base(logger, settings, workdone, performance)
         {
             _rubberduckVersion = rubberduckVersion;
         }
@@ -85,8 +85,8 @@ namespace Rubberduck.Environment
     {
         private readonly IFileSystem _fileSystem;
 
-        public RubberduckFoldersService(ILogger<RubberduckFoldersService> logger, RubberduckSettingsProvider settings, IWorkDoneProgressStateService workdone, IFileSystem fileSystem)
-            : base(logger, settings, workdone)
+        public RubberduckFoldersService(ILogger<RubberduckFoldersService> logger, RubberduckSettingsProvider settings, IWorkDoneProgressStateService workdone, IFileSystem fileSystem, PerformanceRecordAggregator performance)
+            : base(logger, settings, workdone, performance)
         {
             _fileSystem = fileSystem;
         }

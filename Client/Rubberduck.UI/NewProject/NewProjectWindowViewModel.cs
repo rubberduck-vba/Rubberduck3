@@ -55,10 +55,11 @@ namespace Rubberduck.UI.NewProject
 
             VBProjects = projects;
             SelectedVBProject = VBProjects.FirstOrDefault();
-            HasVBProjects = IsEnabled && projects.Any();
+            HasVBProjects = projects.Any();
 
             ProjectTemplates = projectTemplates;
             SelectedProjectTemplate = HasVBProjects ? null : projectTemplates.FirstOrDefault();
+            HasProjectTemplates = projectTemplates.Any();
 
             ResetToDefaults();
         }
@@ -130,6 +131,7 @@ namespace Rubberduck.UI.NewProject
             }
         }
 
+        public bool HasProjectTemplates { get; init; }
         public IEnumerable<ProjectTemplate> ProjectTemplates { get; init; }
         private ProjectTemplate? _selectedProjectTemplate;
         public ProjectTemplate? SelectedProjectTemplate

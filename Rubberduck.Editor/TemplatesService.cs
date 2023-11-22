@@ -20,8 +20,8 @@ namespace Rubberduck.Editor
         private readonly IMessageService _messages;
         
         public TemplatesService(ILogger<TemplatesService> logger, RubberduckSettingsProvider settingsProvider,
-            IFileSystem fileSystem, IMessageService messages) 
-            : base(logger, settingsProvider)
+            IFileSystem fileSystem, IMessageService messages, PerformanceRecordAggregator performance) 
+            : base(logger, settingsProvider, performance)
         {
             _fileSystem = fileSystem;
             _messages = messages;
@@ -75,16 +75,16 @@ namespace Rubberduck.Editor
                 {
                     if (!TryRunAction(() =>
                     {
-                        var originalPath = _fileSystem.Path.Combine(projectFile.Uri.LocalPath, ProjectFile.SourceRoot, indexedFile.File.Uri.LocalPath);
+                        var originalPath = _fileSystem.Path.Combine(projectFile.Uri.LocalPath, ProjectFile.SourceRoot, indexedFile.File.Uri);
                         var fileLength = _fileSystem.FileInfo.New(originalPath).Length;
 
-                        var newPath = _fileSystem.Path.Combine(sourceRoot, indexedFile.File.Uri.LocalPath);
+                        var newPath = _fileSystem.Path.Combine(sourceRoot, indexedFile.File.Uri);
                         _fileSystem.Directory.CreateDirectory(newPath);
                         _fileSystem.File.Copy(originalPath, newPath, overwrite: true);
 
                         filesCopied++;
                         bytesCopied += fileLength;
-                        LogTrace($"Copied file {indexedFile.Index + 1} of {files}.", $"File: '{indexedFile.File}' ({(indexedFile.File is ProjectFile.Module ? "code" : "misc.")}, {fileLength} bytes)");
+                        LogTrace($"Copied file {indexedFile.Index + 1} of {files}.", $"File: '{indexedFile.File}' ({(indexedFile.File is Module ? "code" : "misc.")}, {fileLength} bytes)");
                     }, out var exception))
                     {
                         if (exception is not null)
@@ -146,7 +146,7 @@ namespace Rubberduck.Editor
             return path;
         }
 
-        private string CreateTemplateSourceFolder(string root, IEnumerable<ProjectFile.Folder> folders)
+        private string CreateTemplateSourceFolder(string root, IEnumerable<Folder> folders)
         {
             var path = _fileSystem.Path.Combine(root, ProjectTemplate.TemplateSourceFolderName);
             if (!TryRunAction(() =>
@@ -156,7 +156,7 @@ namespace Rubberduck.Editor
 
                 foreach (var folder in folders)
                 {
-                    _fileSystem.Directory.CreateDirectory(folder.Uri.LocalPath);
+                    _fileSystem.Directory.CreateDirectory(folder.Uri);
                     LogTrace($"Created folder: {folder.Uri}");
                 }
             }, out var exception))
@@ -199,7 +199,7 @@ namespace Rubberduck.Editor
 
             foreach(var templateFolder in _fileSystem.Directory.GetDirectories(Settings.GeneralSettings.TemplatesLocation.LocalPath))
             {
-                var name = _fileSystem.Path.GetDirectoryName(templateFolder)!;
+                var name = _fileSystem.Path.GetFileName(templateFolder)!;
                 var templateSourceFolder = _fileSystem.Path.Combine(templateFolder, ProjectTemplate.TemplateSourceFolderName);
                 if (!_fileSystem.Directory.Exists(templateSourceFolder))
                 {
@@ -207,7 +207,7 @@ namespace Rubberduck.Editor
                     continue;
                 }
 
-                var projectFilePath = _fileSystem.Path.Combine(templateSourceFolder, ProjectFile.FileName);
+                var projectFilePath = _fileSystem.Path.Combine(templateFolder, ProjectFile.FileName);
                 if (!_fileSystem.File.Exists(projectFilePath))
                 {
                     LogWarning($"Template folder '{name}' is not a valid project template.", $"Project file '{ProjectFile.FileName}' was not found.");
@@ -215,6 +215,7 @@ namespace Rubberduck.Editor
                 }
 
                 // return minimally hydrated objects; Resolve(ProjectTemplate) does the rest.
+                LogInformation($"Found project template: {name}");
                 yield return new ProjectTemplate { Name = name };
             }
         }
@@ -224,7 +225,8 @@ namespace Rubberduck.Editor
             var result = template;
             if (!TryRunAction(() =>
             {
-                var projectPath = _fileSystem.Path.Combine(template.Name, ProjectFile.FileName);
+                var root = Settings.GeneralSettings.TemplatesLocation.LocalPath;
+                var projectPath = _fileSystem.Path.Combine(root, template.Name, ProjectFile.FileName);
                 var content = _fileSystem.File.ReadAllText(projectPath);
 
                 var projectFile = JsonSerializer.Deserialize<ProjectFile>(content);
@@ -238,7 +240,7 @@ namespace Rubberduck.Editor
                     result = template with
                     {
                         Rubberduck = projectFile.Rubberduck,
-                        ProjectFile = projectFile,
+                        ProjectFile = projectFile
                     };
                     LogInformation("Resolved template project file.", $"Template: {template.Name}");
                 }

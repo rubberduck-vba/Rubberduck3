@@ -26,7 +26,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Canvas Opacity="0.225"
+        <Canvas Opacity="0.25"
                 HorizontalAlignment="Stretch" 
                 VerticalAlignment="Stretch">
             <Image x:Name="Ducky" Style="{StaticResource BackgroundDuckyStyle}"/>

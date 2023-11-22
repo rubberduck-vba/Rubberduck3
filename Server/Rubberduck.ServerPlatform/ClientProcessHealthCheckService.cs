@@ -36,8 +36,9 @@ namespace Rubberduck.ServerPlatform
             RubberduckSettingsProvider settings,
             Func<TSettings> settingsProvider,
             IWorkDoneProgressStateService workdone,
-            Process process)
-            : base(logger, settings, workdone)
+            Process process,
+            PerformanceRecordAggregator performance)
+            : base(logger, settings, workdone, performance)
         {
             _logger = logger;
             _process = process;

@@ -7,8 +7,8 @@ namespace Rubberduck.UI.Splash
 {
     public class SplashService : WindowService<SplashWindow, ISplashViewModel>, IStatusUpdate
     {
-        public SplashService(ILogger<SplashService> logger, RubberduckSettingsProvider settings, ISplashViewModel viewModel)
-            : base(logger, settings, viewModel)
+        public SplashService(ILogger<SplashService> logger, RubberduckSettingsProvider settings, ISplashViewModel viewModel, PerformanceRecordAggregator performance)
+            : base(logger, settings, viewModel, performance)
         {
         }
 

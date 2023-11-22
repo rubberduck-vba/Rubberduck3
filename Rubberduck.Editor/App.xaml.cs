@@ -124,7 +124,7 @@ namespace Rubberduck.Editor
 
         protected override void OnExit(ExitEventArgs e)
         {
-            var level = _settings.Settings.GeneralSettings.TraceLevel.ToTraceLevel();
+            var level = _settings.Settings.LoggerSettings.TraceLevel.ToTraceLevel();
             var delay = _settings.Settings.LanguageClientSettings.ExitNotificationDelay;
 
             if (TimedAction.TryRun(() =>
@@ -169,6 +169,7 @@ namespace Rubberduck.Editor
             services.AddSingleton<Process>(provider => Process.GetProcessById((int)_options.ClientProcessId));
 
             services.AddSingleton<IFileSystem, FileSystem>();
+            services.AddSingleton<PerformanceRecordAggregator>();
 
             services.AddSingleton<UIServiceHelper>();
             services.AddSingleton<ServerPlatformServiceHelper>();
@@ -239,7 +240,7 @@ namespace Rubberduck.Editor
             _settings = settings;
         }
 
-        protected TraceLevel TraceLevel => _settings.Settings.GeneralSettings.TraceLevel.ToTraceLevel();
+        protected TraceLevel TraceLevel => _settings.Settings.LoggerSettings.TraceLevel.ToTraceLevel();
 
         public Uri GetWorkspaceRootUri(ServerStartupOptions options)
         {

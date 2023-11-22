@@ -1,73 +1,75 @@
 {
-    "Rubberduck" : "3.0",
-    "Name" : "MvpApplication",
-    "References" : [
-        {
-            "Name" : "VBA",
-            "Uri" : "file://C:/Program Files/Common Files/Microsoft Shared/VBA/VBA7.1/VBE7.DLL"
-        },
-        {
-            "Name" : "StdOle",
-            "Uri" : "file://C:/Windows/System32/stdole2.tlb"
-        },
-        {
-            "Name" : "MSForms",
-            "Uri" : "file://C:/Windows/System32/FM20.DLL"
-        }
-    ],
-    "Modules" : [
-        {
-            "Name" : "Macros",
-            "Uri" : "file://Macros.bas"
-        },
-        {
-            "Name" : "ICancellable",
-            "Uri" : "file://Abstract/ICancellable.frm"
-        },
-        {
-            "Name" : "IView",
-            "Uri" : "file://Abstract/IView.frm"
-        },
-        {
-            "Name" : "FeatureModel",
-            "Uri" : "file://Feature/FeatureModel.cls"
-        },
-        {
-            "Name" : "FeaturePresenter",
-            "Uri" : "file://Feature/FeaturePresenter.cls"
-        },
-        {
-            "Name" : "FeatureView",
-            "Uri" : "file://Feature/FeatureView.frm"
-        },
-        {
-            "Name" : "SomeService",
-            "Uri" : "file://Services/SomeService.cls"
-        }
-    ],
-    "OtherFiles" : [
-        {
-            "Name" : "README",
-            "Uri" : "file://README.md",
-            "IsAutoOpen" : true
-        }
-    ],
-    "Folders" : [
-        {
-            "Name" : "Feature",
-            "Uri" : "file://Feature"
-        },
-        {
-            "Name" : "Abstract",
-            "Uri" : "file://Abstract"
-        },
-        {
-            "Name" : "Services",
-            "Uri" : "file://Services"
-        },
-        {
-            "Name" : "Tests",
-            "Uri" : "file://Tests"
-        }
-    ]
+    "Rubberduck": "3.0",
+    "VBProject": {
+        "Name": "MvpApplication",
+        "References": [
+            {
+                "Name": "VBA",
+                "Uri": "C:/Program Files/Common Files/Microsoft Shared/VBA/VBA7.1/VBE7.DLL"
+            },
+            {
+                "Name": "StdOle",
+                "Uri": "C:/Windows/System32/stdole2.tlb"
+            },
+            {
+                "Name": "MSForms",
+                "Uri": "C:/Windows/System32/FM20.DLL"
+            }
+        ],
+        "Modules": [
+            {
+                "Name": "Macros",
+                "Uri": "Macros.bas"
+            },
+            {
+                "Name": "ICancellable",
+                "Uri": "Abstract/ICancellable.cls"
+            },
+            {
+                "Name": "IView",
+                "Uri": "Abstract/IView.cls"
+            },
+            {
+                "Name": "FeatureModel",
+                "Uri": "Feature/FeatureModel.cls"
+            },
+            {
+                "Name": "FeaturePresenter",
+                "Uri": "Feature/FeaturePresenter.cls"
+            },
+            {
+                "Name": "FeatureView",
+                "Uri": "Feature/FeatureView.frm"
+            },
+            {
+                "Name": "SomeService",
+                "Uri": "Services/SomeService.cls"
+            }
+        ],
+        "OtherFiles": [
+            {
+                "Name": "README",
+                "Uri": "README.md",
+                "IsAutoOpen": true
+            }
+        ],
+        "Folders": [
+            {
+                "Name": "Feature",
+                "Uri": "Feature"
+            },
+            {
+                "Name": "Abstract",
+                "Uri": "Abstract"
+            },
+            {
+                "Name": "Services",
+                "Uri": "Services"
+            },
+            {
+                "Name": "Tests",
+                "Uri": "Tests"
+            }
+        ]
+    }
 }

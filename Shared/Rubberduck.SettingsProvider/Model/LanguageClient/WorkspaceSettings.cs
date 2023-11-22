@@ -21,13 +21,13 @@ namespace Rubberduck.SettingsProvider.Model.LanguageClient
         }
 
         [JsonIgnore]
-        public Uri DefaultWorkspaceRoot => GetSetting<DefaultWorkspaceRootSetting>().TypedValue;
+        public Uri DefaultWorkspaceRoot => GetSetting<DefaultWorkspaceRootSetting>()?.TypedValue ?? DefaultWorkspaceRootSetting.DefaultSettingValue;
         [JsonIgnore]
-        public bool RequireDefaultWorkspaceRootHost => GetSetting<RequireDefaultWorkspaceRootHostSetting>().TypedValue;
+        public bool RequireDefaultWorkspaceRootHost => GetSetting<RequireDefaultWorkspaceRootHostSetting>()?.TypedValue ?? RequireDefaultWorkspaceRootHostSetting.DefaultSettingValue;
         [JsonIgnore]
-        public bool EnableUncWorkspaces => GetSetting<EnableUncWorkspacesSetting>().TypedValue;
+        public bool EnableUncWorkspaces => GetSetting<EnableUncWorkspacesSetting>()?.TypedValue ?? EnableUncWorkspacesSetting.DefaultSettingValue;
         [JsonIgnore]
-        public bool EnableFileSystemWatchers => GetSetting<EnableFileSystemWatchersSetting>().TypedValue;
+        public bool EnableFileSystemWatchers => GetSetting<EnableFileSystemWatchersSetting>()?.TypedValue ?? EnableFileSystemWatchersSetting.DefaultSettingValue;
 
         public static WorkspaceSettings Default { get; } = new() { Value = DefaultSettings, DefaultValue = DefaultSettings };
         WorkspaceSettings IDefaultSettingsProvider<WorkspaceSettings>.Default => Default;

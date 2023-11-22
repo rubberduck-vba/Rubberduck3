@@ -1,22 +1,17 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
-using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
-using Rubberduck.SettingsProvider.Model.General;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
+using Rubberduck.SettingsProvider.Model.Logging;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
-using Rubberduck.SettingsProvider.Model.TelemetryServer;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Message;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Settings.ViewModels;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows.Input;
 
 namespace Rubberduck.UI.Settings
 {

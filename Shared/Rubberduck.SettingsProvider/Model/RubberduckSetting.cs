@@ -2,6 +2,7 @@
 using Rubberduck.SettingsProvider.Model.General;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
+using Rubberduck.SettingsProvider.Model.Logging;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
 using Rubberduck.SettingsProvider.Model.TelemetryServer;
 using Rubberduck.SettingsProvider.Model.UpdateServer;
@@ -24,6 +25,7 @@ namespace Rubberduck.SettingsProvider.Model
     [JsonDerivedType(typeof(LogLevelSetting), nameof(LogLevelSetting))]
     [JsonDerivedType(typeof(ShowSplashSetting), nameof(ShowSplashSetting))]
     [JsonDerivedType(typeof(ExitNotificationDelaySetting), nameof(ExitNotificationDelaySetting))]
+    [JsonDerivedType(typeof(TemplatesLocationSetting), nameof(TemplatesLocationSetting))]
 
     [JsonDerivedType(typeof(LanguageClientSettings), nameof(LanguageClientSettings))] // ~ Language client
     [JsonDerivedType(typeof(RequireAddInHostSetting), nameof(RequireAddInHostSetting))]

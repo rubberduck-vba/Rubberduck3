@@ -20,8 +20,8 @@ namespace Rubberduck.UI.Services
     {
         public event EventHandler<UserFacingExceptionEventArgs> UserFacingException = delegate { };
 
-        public UIServiceHelper(ILogger<UIServiceHelper> logger, RubberduckSettingsProvider settingsProvider) 
-            : base(logger, settingsProvider)
+        public UIServiceHelper(ILogger<UIServiceHelper> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
+            : base(logger, settingsProvider, performance)
         {
             SettingsProvider = settingsProvider;
         }

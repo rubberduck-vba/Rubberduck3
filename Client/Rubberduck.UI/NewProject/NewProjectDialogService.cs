@@ -30,8 +30,9 @@ namespace Rubberduck.UI.NewProject
             IVBProjectInfoProvider projectsProvider,
             ITemplatesService templatesService,
             MessageActionsProvider actionsProvider,
-            ShowLanguageClientSettingsCommand showSettingsCommand) 
-            : base(logger, factory, settingsProvider, actionsProvider)
+            ShowLanguageClientSettingsCommand showSettingsCommand,
+            PerformanceRecordAggregator performance) 
+            : base(logger, factory, settingsProvider, actionsProvider, performance)
         {
             _projectsProvider = projectsProvider;
             _showSettingsCommand = showSettingsCommand;

@@ -49,8 +49,9 @@ namespace Rubberduck.UI.Message
 
         public MessageService(RubberduckSettingsProvider settings, ILogger<MessageService> logger,
             IMessageWindowFactory viewFactory,
-            MessageActionsProvider actionsProvider)
-            : base(logger, settings)
+            MessageActionsProvider actionsProvider,
+            PerformanceRecordAggregator performance)
+            : base(logger, settings, performance)
         {
             _viewFactory = viewFactory;
             _actionsProvider = actionsProvider;

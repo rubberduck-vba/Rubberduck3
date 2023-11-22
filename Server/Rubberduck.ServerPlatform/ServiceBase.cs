@@ -2,7 +2,6 @@
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using System;
@@ -13,8 +12,8 @@ namespace Rubberduck.ServerPlatform
 {
     public class ServerPlatformServiceHelper : ServiceBase
     {
-        public ServerPlatformServiceHelper(ILogger<ServerPlatformServiceHelper> logger, RubberduckSettingsProvider settings, IWorkDoneProgressStateService workdone) 
-            : base(logger, settings, workdone) { }
+        public ServerPlatformServiceHelper(ILogger<ServerPlatformServiceHelper> logger, RubberduckSettingsProvider settings, IWorkDoneProgressStateService workdone, PerformanceRecordAggregator performance) 
+            : base(logger, settings, workdone, performance) { }
     }
 
     public abstract class ServiceBase
@@ -22,19 +21,23 @@ namespace Rubberduck.ServerPlatform
         private readonly ILogger _logger;
         private readonly RubberduckSettingsProvider _settings;
         private readonly IWorkDoneProgressStateService? _workdone;
+        private readonly PerformanceRecordAggregator _performance;
 
-        protected ServiceBase(ILogger logger, RubberduckSettingsProvider settings, IWorkDoneProgressStateService? workdone)
+        protected ServiceBase(ILogger logger, RubberduckSettingsProvider settings, 
+            IWorkDoneProgressStateService? workdone,
+            PerformanceRecordAggregator performance)
         {
             _logger = logger;
             _settings = settings;
             _workdone = workdone;
+            _performance = performance;
         }
 
         public ISettingsService<RubberduckSettings> SettingsService => _settings;
         public RubberduckSettingsProvider SettingsProvider => _settings;
 
         public RubberduckSettings Settings => _settings.Settings;
-        public TraceLevel TraceLevel => _settings.Settings.GeneralSettings.TraceLevel.ToTraceLevel();
+        public TraceLevel TraceLevel => _settings.Settings.LoggerSettings.TraceLevel.ToTraceLevel();
 
         public void LogPerformance(TimeSpan elapsed, string? message = default, [CallerMemberName]string? name = default)
         {
@@ -44,8 +47,18 @@ namespace Rubberduck.ServerPlatform
                 return;
             }
 
-            message ??= $"{name} completed.";
-            _logger.LogPerformance(verbosity, message, elapsed);
+            name ??= "(name:null)";
+            message = message is null ? $"{name} completed." : $"{name} completed; message: {message}";
+
+            if (_settings.Settings.LoggerSettings.AggregatePerformanceLogs)
+            {
+                _performance.Add(new() { Name = name, Elapsed = elapsed });
+            }
+            else
+            {
+                // firehose mode!
+                _logger.LogPerformance(verbosity, message, elapsed);
+            }
         }
 
         public void LogException(Exception exception, string? message = default)

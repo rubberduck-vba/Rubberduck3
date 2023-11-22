@@ -32,7 +32,7 @@
                                 </Grid.RowDefinitions>
 
                                 <Border Grid.RowSpan="3" Background="{DynamicResource ThemeBackgroundMediumColorBrush}" />
-                                <local:DuckyBackgroundControl Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Opacity="0.1" />
+                                <local:DuckyBackgroundControl Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
 
                                 <DockPanel Grid.Row="0" VerticalAlignment="Top" Margin="5,5,0,0">
                                     <local:FlatButton DockPanel.Dock="Right" 
@@ -45,12 +45,12 @@
                                     <Label DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left"
                                        Content="{Binding Title, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
                                        Foreground="{DynamicResource ThemeTextColorBrush}"
-                                       FontWeight="Bold" FontSize="16" />
+                                       FontWeight="SemiBold" FontSize="16" />
                                 </DockPanel>
 
-                                <Border Grid.Row="1" BorderBrush="{DynamicResource ThemeWhiteLightColorBrush50}" 
-                                        BorderThickness="0,1" CornerRadius="8" Margin="4"
-                                        Background="{DynamicResource ThemeWhiteDarkColorBrush50}"/>
+                                <Border Grid.Row="1" BorderBrush="{DynamicResource ThemeBackgroundColorBrush}" 
+                                        BorderThickness="1" CornerRadius="8" Margin="4"
+                                        Background="{DynamicResource ThemeWhiteLightColorBrush75}"/>
 
 
                                 <ContentPresenter Grid.Row="1" Margin="8,4" Height="Auto" MinHeight="200"

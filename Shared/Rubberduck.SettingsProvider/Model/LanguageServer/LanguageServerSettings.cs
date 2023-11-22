@@ -22,9 +22,9 @@ namespace Rubberduck.SettingsProvider.Model.LanguageServer
         }
 
         [JsonIgnore]
-        public MessageTraceLevel TraceLevel => GetSetting<TraceLevelSetting>().TypedValue;
+        public MessageTraceLevel TraceLevel => GetSetting<TraceLevelSetting>()?.TypedValue ?? TraceLevelSetting.DefaultSettingValue;
         [JsonIgnore]
-        public LanguageServerStartupSettings StartupSettings => GetSetting<LanguageServerStartupSettings>();
+        public LanguageServerStartupSettings StartupSettings => GetSetting<LanguageServerStartupSettings>() ?? LanguageServerStartupSettings.Default;
 
         public static LanguageServerSettings Default { get; } = new() { Value = DefaultSettings, DefaultValue = DefaultSettings };
         LanguageServerSettings IDefaultSettingsProvider<LanguageServerSettings>.Default => Default;

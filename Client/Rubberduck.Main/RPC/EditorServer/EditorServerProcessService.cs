@@ -15,8 +15,8 @@ namespace Rubberduck.Main.RPC.EditorServer
         private readonly ILogger _logger;
         private Process? _process;
 
-        public EditorServerProcessService(ILogger<EditorServerProcessService> logger, RubberduckSettingsProvider settingsProvider, IWorkDoneProgressStateService workdone)
-            : base(logger, settingsProvider, workdone)
+        public EditorServerProcessService(ILogger<EditorServerProcessService> logger, RubberduckSettingsProvider settingsProvider, IWorkDoneProgressStateService workdone, PerformanceRecordAggregator performance)
+            : base(logger, settingsProvider, workdone, performance)
         {
             _logger = logger;
         }

@@ -5,6 +5,7 @@ using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
 using System;
 using System.Diagnostics;
+using System.Runtime;
 using System.Runtime.CompilerServices;
 
 namespace Rubberduck.SettingsProvider
@@ -18,16 +19,19 @@ namespace Rubberduck.SettingsProvider
     public abstract class ServiceBase
     {
         private readonly ILogger _logger;
+        private readonly PerformanceRecordAggregator _performance;
+
         protected RubberduckSettingsProvider SettingsProvider { get; init; }
 
-        protected ServiceBase(ILogger logger, RubberduckSettingsProvider settingsProvider)
+        protected ServiceBase(ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
         {
             _logger = logger;
+            _performance = performance;
             SettingsProvider = settingsProvider;
         }
 
         public RubberduckSettings Settings => SettingsProvider.Settings;
-        public TraceLevel TraceLevel => SettingsProvider.Settings.GeneralSettings.TraceLevel.ToTraceLevel();
+        public TraceLevel TraceLevel => SettingsProvider.Settings.LoggerSettings.TraceLevel.ToTraceLevel();
 
         public void LogPerformance(TimeSpan elapsed, string? message = default, [CallerMemberName]string? name = default)
         {
@@ -37,8 +41,18 @@ namespace Rubberduck.SettingsProvider
                 return;
             }
 
-            message ??= $"{name} completed.";
-            _logger.LogPerformance(verbosity, message, elapsed);
+            name ??= "(name:null)";
+            message = message is null ? $"{name} completed." : $"{name} completed; message: {message}";
+
+            if (_performance != null && Settings.LoggerSettings.AggregatePerformanceLogs)
+            {
+                _performance.Add(new() { Name = name, Elapsed = elapsed });
+            }
+            else
+            {
+                // firehose mode!
+                _logger.LogPerformance(verbosity, message, elapsed);
+            }
         }
 
         public void LogException(Exception exception, string? message = default)

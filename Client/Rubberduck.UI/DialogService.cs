@@ -14,8 +14,8 @@ namespace Rubberduck.UI
         private readonly IWindowFactory<TView, TViewModel> _factory;
         private readonly MessageActionsProvider _actionsProvider;
 
-        protected DialogService(ILogger logger, IWindowFactory<TView, TViewModel> factory, RubberduckSettingsProvider settings, MessageActionsProvider actionsProvider)
-            : base(logger, settings)
+        protected DialogService(ILogger logger, IWindowFactory<TView, TViewModel> factory, RubberduckSettingsProvider settings, MessageActionsProvider actionsProvider, PerformanceRecordAggregator performance)
+            : base(logger, settings, performance)
         {
             _factory = factory;
             _actionsProvider = actionsProvider;

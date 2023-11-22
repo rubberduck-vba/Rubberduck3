@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:local="clr-namespace:Rubberduck.UI.Shell"
         mc:Ignorable="d" 
-        x:Name="FlatButtonElement"
+        x:Name="FlatButtonRoot"
         d:DesignHeight="20" d:DesignWidth="24">
     <Button.Resources>
         <ResourceDictionary>
@@ -18,13 +18,13 @@
                            Height="16" Width="16" Stretch="UniformToFill"
                            Canvas.Left="8" Canvas.Top="4" HorizontalAlignment="Left" VerticalAlignment="Center" />
                     <Rectangle Fill="{TemplateBinding Foreground}"
-               Height="16" Width="16" Stretch="UniformToFill"
-               Canvas.Left="8" Canvas.Top="4" HorizontalAlignment="Left" VerticalAlignment="Center">
+                               Height="16" Width="16" Stretch="UniformToFill"
+                               Canvas.Left="8" Canvas.Top="4" HorizontalAlignment="Left" VerticalAlignment="Center">
                         <Rectangle.Resources>
                             <Style TargetType="Rectangle">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsMouseOver, ElementName=FlatButtonElement}" Value="True">
-                                        <Setter Property="Fill" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+                                    <DataTrigger Binding="{Binding IsMouseOver, ElementName=FlatButtonRoot}" Value="True">
+                                        <Setter Property="Fill" Value="{DynamicResource ThemeAccent1LightColorBrush}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -41,13 +41,27 @@
         <Style TargetType="Button">
             <Style.Setters>
                 <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="Background" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
-                <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
                 <Setter Property="Margin" Value="1,0" />
                 <Setter Property="MinHeight" Value="20" />
                 <Setter Property="MinWidth" Value="24" />
                 <Setter Property="Template" Value="{StaticResource FlatButtonTemplate}" />
+                <Setter Property="Foreground" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Template" Value="{DynamicResource FlatButtonTemplate}"/>
             </Style.Setters>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                    <DataTrigger.Setters>
+                        <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+                        <Setter Property="Cursor" Value="Hand" />
+                    </DataTrigger.Setters>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                    <DataTrigger.Setters>
+                        <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1MediumColorBrush}" />
+                    </DataTrigger.Setters>
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
     </Button.Style>
 </Button>

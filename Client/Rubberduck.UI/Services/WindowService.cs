@@ -34,8 +34,8 @@ namespace Rubberduck.UI.Services
     {
         private TView? _view;
 
-        protected WindowService(ILogger<WindowService<TView, TViewModel>> logger, RubberduckSettingsProvider settings, TViewModel viewModel)
-            : base(logger, settings)
+        protected WindowService(ILogger<WindowService<TView, TViewModel>> logger, RubberduckSettingsProvider settings, TViewModel viewModel, PerformanceRecordAggregator performance)
+            : base(logger, settings, performance)
         {
             Model = viewModel;
         }

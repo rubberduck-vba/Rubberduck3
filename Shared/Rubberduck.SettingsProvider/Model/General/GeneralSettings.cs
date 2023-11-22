@@ -1,7 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Settings;
+﻿using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
-using Rubberduck.SettingsProvider.Model.ServerStartup;
 using System;
 using System.Text.Json.Serialization;
 
@@ -16,10 +14,7 @@ namespace Rubberduck.SettingsProvider.Model.General
             new RubberduckSetting[]
             {
                 new LocaleSetting { Value = LocaleSetting.DefaultSettingValue },
-                new LogLevelSetting { Value = LogLevelSetting.DefaultSettingValue },
-                new TraceLevelSetting { Value = TraceLevelSetting.DefaultSettingValue },
                 new ShowSplashSetting { Value = ShowSplashSetting.DefaultSettingValue },
-                new DisableInitialLogLevelResetSetting { Value = DisableInitialLogLevelResetSetting.DefaultSettingValue },
                 new DisableInitialLegacyIndenterCheckSetting { Value = DisableInitialLegacyIndenterCheckSetting.DefaultSettingValue },
                 new DisabledMessageKeysSetting { Value = DisabledMessageKeysSetting.DefaultSettingValue },
                 new TemplatesLocationSetting { Value = TemplatesLocationSetting.DefaultSettingValue },
@@ -30,21 +25,15 @@ namespace Rubberduck.SettingsProvider.Model.General
         }
 
         [JsonIgnore]
-        public string Locale => GetSetting<LocaleSetting>().TypedValue;
+        public string Locale => GetSetting<LocaleSetting>()?.TypedValue ?? LocaleSetting.DefaultSettingValue;
         [JsonIgnore]
-        public LogLevel LogLevel => GetSetting<LogLevelSetting>().TypedValue;
+        public bool ShowSplash => GetSetting<ShowSplashSetting>()?.TypedValue ?? ShowSplashSetting.DefaultSettingValue;
         [JsonIgnore]
-        public MessageTraceLevel TraceLevel => GetSetting<TraceLevelSetting>().TypedValue;
+        public bool DisableInitialLegacyIndenterCheck => GetSetting<DisableInitialLegacyIndenterCheckSetting>()?.TypedValue ?? DisableInitialLegacyIndenterCheckSetting.DefaultSettingValue;
         [JsonIgnore]
-        public bool ShowSplash => GetSetting<ShowSplashSetting>().TypedValue;
+        public string[] DisabledMessageKeys => GetSetting<DisabledMessageKeysSetting>()?.TypedValue ?? DisabledMessageKeysSetting.DefaultSettingValue;
         [JsonIgnore]
-        public bool DisableInitialLogLevelReset => GetSetting<DisableInitialLogLevelResetSetting>().TypedValue;
-        [JsonIgnore]
-        public bool DisableInitialLegacyIndenterCheck => GetSetting<DisableInitialLegacyIndenterCheckSetting>().TypedValue;
-        [JsonIgnore]
-        public string[] DisabledMessageKeys => GetSetting<DisabledMessageKeysSetting>().TypedValue;
-        [JsonIgnore]
-        public Uri TemplatesLocation => GetSetting<TemplatesLocationSetting>().TypedValue;
+        public Uri TemplatesLocation => GetSetting<TemplatesLocationSetting>()?.TypedValue ?? TemplatesLocationSetting.DefaultSettingValue;
 
         public static GeneralSettings Default { get; } = new GeneralSettings() { Value = DefaultSettings, DefaultValue = DefaultSettings };
         GeneralSettings IDefaultSettingsProvider<GeneralSettings>.Default => Default;

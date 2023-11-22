@@ -37,31 +37,31 @@ namespace Rubberduck.SettingsProvider.Model.TelemetryServer
         }
 
         [JsonIgnore]
-        public bool IsEnabled => GetSetting<IsTelemetryEnabledSetting>().TypedValue;
+        public bool IsEnabled => GetSetting<IsTelemetryEnabledSetting>()?.TypedValue ?? IsTelemetryEnabledSetting.DefaultSettingValue;
         [JsonIgnore]
-        public MessageTraceLevel TraceLevel => GetSetting<TraceLevelSetting>().TypedValue;
+        public MessageTraceLevel TraceLevel => GetSetting<TraceLevelSetting>()?.TypedValue ?? TraceLevelSetting.DefaultSettingValue;
         [JsonIgnore]
-        public bool StreamTransmission => GetSetting<StreamTransmissionSetting>().TypedValue;
+        public bool StreamTransmission => GetSetting<StreamTransmissionSetting>()?.TypedValue ?? StreamTransmissionSetting.DefaultSettingValue;
         [JsonIgnore]
-        public int QueueSize => (int)GetSetting<TelemetryEventQueueSizeSetting>().TypedValue;
+        public int QueueSize => (int)(GetSetting<TelemetryEventQueueSizeSetting>()?.TypedValue ?? TelemetryEventQueueSizeSetting.DefaultSettingValue);
         [JsonIgnore]
-        public bool SendEventTelemetry => GetSetting<SendEventTelemetrySetting>().TypedValue;
+        public bool SendEventTelemetry => GetSetting<SendEventTelemetrySetting>()?.TypedValue ?? SendEventTelemetrySetting.DefaultSettingValue;
         [JsonIgnore]
-        public bool SendExceptionTelemetry => GetSetting<SendExceptionTelemetrySetting>().TypedValue;
+        public bool SendExceptionTelemetry => GetSetting<SendExceptionTelemetrySetting>()?.TypedValue ?? SendExceptionTelemetrySetting.DefaultSettingValue;
         [JsonIgnore]
-        public bool SendMetricTelemetry => GetSetting<SendMetricTelemetrySetting>().TypedValue;
+        public bool SendMetricTelemetry => GetSetting<SendMetricTelemetrySetting>()?.TypedValue ?? SendMetricTelemetrySetting.DefaultSettingValue;
         [JsonIgnore]
-        public bool SendTraceTelemetry => GetSetting<SendTraceTelemetrySetting>().TypedValue;
+        public bool SendTraceTelemetry => GetSetting<SendTraceTelemetrySetting>()?.TypedValue ?? SendTraceTelemetrySetting.DefaultSettingValue;
         [JsonIgnore]
-        public TelemetryServerStartupSettings StartupSettings => GetSetting<TelemetryServerStartupSettings>();
+        public TelemetryServerStartupSettings StartupSettings => GetSetting<TelemetryServerStartupSettings>() ?? TelemetryServerStartupSettings.Default;
         [JsonIgnore]
-        public EventTelemetrySettings EventTelemetrySettings => GetSetting<EventTelemetrySettings>();
+        public EventTelemetrySettings EventTelemetrySettings => GetSetting<EventTelemetrySettings>() ?? EventTelemetrySettings.Default;
         [JsonIgnore]
-        public ExceptionTelemetrySettings ExceptionTelemetrySettings => GetSetting<ExceptionTelemetrySettings>();
+        public ExceptionTelemetrySettings ExceptionTelemetrySettings => GetSetting<ExceptionTelemetrySettings>() ?? ExceptionTelemetrySettings.Default;
         [JsonIgnore]
-        public MetricTelemetrySettings MetricTelemetrySettings => GetSetting<MetricTelemetrySettings>();
+        public MetricTelemetrySettings MetricTelemetrySettings => GetSetting<MetricTelemetrySettings>() ?? MetricTelemetrySettings.Default;
         [JsonIgnore]
-        public TraceTelemetrySettings TraceTelemetrySettings => GetSetting<TraceTelemetrySettings>();
+        public TraceTelemetrySettings TraceTelemetrySettings => GetSetting<TraceTelemetrySettings>() ?? TraceTelemetrySettings.Default;
 
         public static TelemetryServerSettings Default { get; } = new TelemetryServerSettings { Value = DefaultSettings };
         TelemetryServerSettings IDefaultSettingsProvider<TelemetryServerSettings>.Default => Default;
@@ -83,6 +83,8 @@ namespace Rubberduck.SettingsProvider.Model.TelemetryServer
             SettingDataType = SettingDataType.EnumSettingGroup;
             DefaultValue = DefaultSettings;
         }
+
+        public static EventTelemetrySettings Default { get; } = new() { DefaultValue = DefaultSettings, Value = DefaultSettings };
     }
 
     public record class ExceptionTelemetrySettings : TelemetrySettingGroup<LogLevel>
@@ -95,6 +97,8 @@ namespace Rubberduck.SettingsProvider.Model.TelemetryServer
             SettingDataType = SettingDataType.EnumSettingGroup;
             DefaultValue = DefaultSettings;
         }
+
+        public static ExceptionTelemetrySettings Default { get; } = new() { DefaultValue = DefaultSettings, Value = DefaultSettings };
     }
 
     public record class MetricTelemetrySettings : TelemetrySettingGroup<MetricTelemetryName>
@@ -107,6 +111,8 @@ namespace Rubberduck.SettingsProvider.Model.TelemetryServer
             SettingDataType = SettingDataType.EnumSettingGroup;
             DefaultValue = DefaultSettings;
         }
+
+        public static MetricTelemetrySettings Default { get; } = new() { DefaultValue = DefaultSettings, Value = DefaultSettings };
     }
 
     public record class TraceTelemetrySettings : TelemetrySettingGroup<LogLevel>
@@ -119,6 +125,8 @@ namespace Rubberduck.SettingsProvider.Model.TelemetryServer
             SettingDataType = SettingDataType.EnumSettingGroup;
             DefaultValue = DefaultSettings;
         }
+
+        public static TraceTelemetrySettings Default { get; } = new() { DefaultValue = DefaultSettings, Value = DefaultSettings };
     }
 
     /// <summary>
