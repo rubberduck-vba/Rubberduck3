@@ -46,7 +46,7 @@
                 <Setter Property="MinWidth" Value="24" />
                 <Setter Property="Template" Value="{StaticResource FlatButtonTemplate}" />
                 <Setter Property="Foreground" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
-                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}"/>
                 <Setter Property="Template" Value="{DynamicResource FlatButtonTemplate}"/>
             </Style.Setters>
             <Style.Triggers>
@@ -59,6 +59,12 @@
                 <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="True">
                     <DataTrigger.Setters>
                         <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1MediumColorBrush}" />
+                    </DataTrigger.Setters>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="False">
+                    <DataTrigger.Setters>
+                        <Setter Property="Background" Value="{DynamicResource ThemeWhiteMediumColorBrush}" />
+                        <Setter Property="Foreground" Value="{DynamicResource ThemeTextInactiveColorBrush}" />
                     </DataTrigger.Setters>
                 </DataTrigger>
             </Style.Triggers>

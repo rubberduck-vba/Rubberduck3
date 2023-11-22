@@ -110,6 +110,8 @@ namespace Rubberduck.UI.NewProject
 
         public bool HasVBProjects { get; init; }
 
+        public bool IsWorkspaceLocationEditable => !_settings.LanguageClientSettings.WorkspaceSettings.RequireDefaultWorkspaceRootHost;
+
         public IEnumerable<VBProjectInfo?> VBProjects { get; init; }
 
         private VBProjectInfo? _selectedVBProject;

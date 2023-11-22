@@ -301,6 +301,10 @@
                 <Setter Property="Background" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
                 <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1TextColorBrush}" />
             </DataTrigger>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
+            </DataTrigger>
         </Style.Triggers>
     </Style>
 
@@ -357,6 +361,10 @@
         </Style.Setters>
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ThemeBackgroundLightColorBrush}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsKeyboardFocused, RelativeSource={RelativeSource Mode=Self}}" Value="True">
                 <Setter Property="Background" Value="{DynamicResource ThemeBackgroundLightColorBrush}" />
                 <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
             </DataTrigger>

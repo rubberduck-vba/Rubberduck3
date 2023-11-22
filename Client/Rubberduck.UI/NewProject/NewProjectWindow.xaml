@@ -77,7 +77,7 @@
                 
                 <Label Style="{DynamicResource FormFieldNameLabelStyle}" 
                        Content="Workspace Location"
-                       IsEnabled="{Binding IsEnabled}" />
+                       IsEnabled="{Binding IsWorkspaceLocationEditable}" />
                 <DockPanel>
                     <Button  DockPanel.Dock="Right"
                         Command="{x:Static NavigationCommands.Search}"
@@ -85,12 +85,13 @@
                         Background="{DynamicResource ThemeBackgroundMediumColorBrush}"
                         Foreground="{DynamicResource ThemeAccent1DarkColorBrush}"
                         Style="{DynamicResource FlatButtonStyle}" 
+                        IsEnabled="{Binding IsWorkspaceLocationEditable}"
                         Width="28" Height="24" Margin="0,0,5,0"
                         Content="…" IsTabStop="True" TabIndex="3" />
                     <TextBox DockPanel.Dock="Top"
                         Style="{DynamicResource FormFieldTextBoxStyle}" 
                         Text="{Binding WorkspaceLocation, UpdateSourceTrigger=PropertyChanged}"
-                        IsEnabled="{Binding IsEnabled}"
+                        IsEnabled="{Binding IsWorkspaceLocationEditable}"
                         IsTabStop="True" TabIndex="2"
                         Margin="5,0,2,0"/>
                 </DockPanel>
