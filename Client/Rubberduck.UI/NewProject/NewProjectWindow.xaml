@@ -26,6 +26,7 @@
     <Grid>
         <shell:ThunderFrame Title="{Binding Title}" 
                             ShowSettingsCommand="{Binding ShowSettingsCommand}"
+                            ShowSettingsCommandParameter="{Binding ShowSettingsCommandParameter}"
                             AcceptCommand="{Binding Actions[0]}" 
                             CancelCommand="{Binding Actions[1]}">
             <StackPanel Margin="5,0">

@@ -76,6 +76,9 @@ namespace Rubberduck.UI.NewProject
                         _workspaceFolderService.CopyTemplateFiles(template.ProjectFile, workspaceSrcRoot, templateSrcRoot);
                         
                     }
+
+                    // TODO project files created, now open them!
+
                 }
             }, nameof(NewProjectCommand));
 

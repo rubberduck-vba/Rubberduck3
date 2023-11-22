@@ -8,17 +8,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Rubberduck.UI.Settings.ViewModels
 {
     public interface ISettingViewModel : INotifyPropertyChanged
     {
+        string Key { get; }
         SettingDataType SettingDataType { get; }
         string Name { get; }
         string Description { get; }
@@ -49,6 +46,7 @@ namespace Rubberduck.UI.Settings.ViewModels
         }
 
         public SettingDataType SettingDataType => _setting.SettingDataType;
+        public string Key => _setting.Key;
         public string Name => _setting.Key; // TODO fetch from resources
         public string Description => _setting.Key; // TODO fetch from resources
         
@@ -227,6 +225,7 @@ namespace Rubberduck.UI.Settings.ViewModels
         }
 
         public SettingDataType SettingDataType => _setting.SettingDataType;
+        public string Key => _setting.Key;
         public string Name => _setting.Key; // TODO fetch from resources
         public string Description => _setting.Key; // TODO fetch from resources
         public SettingTags Tags => _setting.Tags;
@@ -353,6 +352,7 @@ namespace Rubberduck.UI.Settings.ViewModels
         public ObservableCollection<ISettingViewModel> Items { get; init; }
 
         public SettingDataType SettingDataType => _settingGroup.SettingDataType;
+        public string Key => _settingGroup.Key;
         public string Name => _settingGroup.Key; // TODO fetch from resources
 
         public string Description => _settingGroup.Key; // TODO fetch from resources

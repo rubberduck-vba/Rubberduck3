@@ -9,17 +9,20 @@ namespace Rubberduck.UI
         public static MessageAction[] ActionCloseOnly { get; } = new[] { MessageAction.CloseAction };
         public static MessageAction[] ActionAcceptCancel { get; } = new[] { MessageAction.AcceptAction, MessageAction.CancelAction };
 
-        protected DialogWindowViewModel(string title, MessageActionCommand[] actions, ICommand? showSettingsCommand = null)
+        protected DialogWindowViewModel(string title, MessageActionCommand[] actions, ICommand? showSettingsCommand = null, object? showSettingsCommandParameter = null)
         {
             Title = title;
             Actions = actions;
             IsEnabled = true;
             ShowSettingsCommand = showSettingsCommand;
+            ShowSettingsCommandParameter = showSettingsCommandParameter;
         }
 
         protected abstract void ResetToDefaults();
 
         public ICommand? ShowSettingsCommand { get; init; }
+        public object? ShowSettingsCommandParameter { get; init; }
+
         public bool ShowGearButton => ShowSettingsCommand != null;
 
         public MessageActionCommand[] Actions { get; init; }

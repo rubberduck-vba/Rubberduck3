@@ -27,6 +27,10 @@ namespace Rubberduck.UI.Shell
         public static readonly DependencyProperty ShowSettingsCommandProperty =
             DependencyProperty.Register(nameof(ShowSettingsCommand), typeof(ICommand), typeof(ThunderFrame));
 
+        public object? ShowSettingsCommandParameter { get; set; }
+        public static readonly DependencyProperty ShowSettingsCommandParameterProperty =
+            DependencyProperty.Register(nameof(ShowSettingsCommandParameter), typeof(object), typeof(ThunderFrame));
+
         public ICommand? AcceptCommand { get; set; }
         public static readonly DependencyProperty AcceptCommandProperty =
             DependencyProperty.Register(nameof(AcceptCommand), typeof(ICommand), typeof(ThunderFrame));

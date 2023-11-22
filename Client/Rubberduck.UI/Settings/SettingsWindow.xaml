@@ -8,7 +8,6 @@
         mc:Ignorable="d"
         Title="Settings" 
         WindowStyle="None"
-        SizeToContent="WidthAndHeight"
         Style="{DynamicResource ThemedWindowStyle}"
         MinHeight="455" MinWidth="600">
     <Window.Resources>
@@ -20,7 +19,7 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <shell:ThunderFrame Title="{Binding Title}" AcceptCommand="{Binding Actions[0]}" ShowSettingsCommand="{Binding ShowSettingsCommand}">
+        <shell:ThunderFrame Title="{Binding Title}" AcceptCommand="{Binding Actions[0]}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />

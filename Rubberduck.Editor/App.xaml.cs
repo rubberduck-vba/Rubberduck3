@@ -24,11 +24,13 @@ using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
 using Rubberduck.SettingsProvider.Model.TelemetryServer;
 using Rubberduck.SettingsProvider.Model.UpdateServer;
+using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Message;
 using Rubberduck.UI.NewProject;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
+using Rubberduck.UI.Settings;
 using Rubberduck.UI.Splash;
 using System;
 using System.Diagnostics;
@@ -219,6 +221,10 @@ namespace Rubberduck.Editor
             services.AddSingleton<ITemplatesService, TemplatesService>();
             services.AddSingleton<IWorkspaceFolderService, WorkspaceFolderService>();
             services.AddSingleton<IProjectFileService, ProjectFileService>();
+
+            services.AddSingleton<ISettingsDialogService, SettingsDialogService>();
+            services.AddSingleton<IWindowFactory<SettingsWindow, SettingsWindowViewModel>, SettingsWindowFactory>();
+            services.AddSingleton<ISettingViewModelFactory, SettingViewModelFactory>();
         }
 
         public void Dispose()

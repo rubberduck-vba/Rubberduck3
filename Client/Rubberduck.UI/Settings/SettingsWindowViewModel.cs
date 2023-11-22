@@ -86,7 +86,7 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private ISettingViewModel GetChildItem(RubberduckSetting setting)
+        private ISettingViewModel GetChildItem<TSetting>(TSetting setting) where TSetting : RubberduckSetting
         {
             switch (setting)
             {
@@ -117,7 +117,7 @@ namespace Rubberduck.UI.Settings
                 case TypedRubberduckSetting<BooleanRubberduckSetting[]> telemetrySettingGroup:
                     return CreateViewModel(telemetrySettingGroup);
                 default:
-                    Debug.WriteLine($"**BUG** Missing case for '{setting.GetType()}' in SettingViewModelFactory.");
+                    Debug.WriteLine($"**BUG** Missing case for '{setting.Key}' (data type: {setting.SettingDataType}) in SettingViewModelFactory.");
                     throw new NotSupportedException();
             }
         }

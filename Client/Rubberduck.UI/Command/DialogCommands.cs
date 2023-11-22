@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Rubberduck.UI.Services;
 using System.Windows.Controls;
+using Rubberduck.UI.Settings;
 
 namespace Rubberduck.UI.Command
 {
@@ -114,14 +115,24 @@ namespace Rubberduck.UI.Command
 
     public class ShowRubberduckSettingsCommand : CommandBase
     {
-        public ShowRubberduckSettingsCommand(UIServiceHelper service) 
+        private readonly ISettingsDialogService _settingsDialog;
+
+        public ShowRubberduckSettingsCommand(UIServiceHelper service, ISettingsDialogService settingsDialog) 
             : base(service)
         {
+            _settingsDialog = settingsDialog;
         }
 
         protected async override Task OnExecuteAsync(object? parameter)
         {
-            throw new NotImplementedException();
+            if (parameter is string key)
+            {
+                _settingsDialog.ShowDialog(key);
+            }
+            else
+            {
+                _settingsDialog.ShowDialog();
+            }
         }
     }
 

@@ -1,4 +1,5 @@
 ﻿using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.UI.Command;
 using System;
 using System.Collections.Generic;
@@ -48,7 +49,7 @@ namespace Rubberduck.UI.NewProject
         }
 
         public NewProjectWindowViewModel(RubberduckSettings settings, IEnumerable<VBProjectInfo?> projects, IEnumerable<ProjectTemplate> projectTemplates, MessageActionsProvider actions, ICommand showSettingsCommand)
-            : base("New Project", actions.OkCancel(Validate), showSettingsCommand)
+            : base("New Project", actions.OkCancel(Validate), showSettingsCommand, typeof(LanguageClientSettings).Name)
         {
             _settings = settings;
             _rootUri = _settings.LanguageClientSettings.WorkspaceSettings.DefaultWorkspaceRoot;
@@ -68,9 +69,9 @@ namespace Rubberduck.UI.NewProject
         {
             var vbProject = VBProjects.FirstOrDefault() ?? new VBProjectInfo { Name = "VBAProject", ProjectId = Guid.NewGuid().ToString() };
             _projectName = vbProject.Name;
-            _workspaceLocation = (string.IsNullOrWhiteSpace(vbProject.Location)
-                ? _settings.LanguageClientSettings.WorkspaceSettings.DefaultWorkspaceRoot
-                : new Uri(vbProject.Location)).LocalPath;
+            _workspaceLocation = string.IsNullOrWhiteSpace(vbProject.Location)
+                ? _settings.LanguageClientSettings.WorkspaceSettings.DefaultWorkspaceRoot.LocalPath
+                : vbProject.Location;
         }
 
         private string _projectName = string.Empty;

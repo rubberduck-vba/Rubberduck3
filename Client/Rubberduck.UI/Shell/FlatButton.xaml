@@ -30,7 +30,7 @@
                             </Style>
                         </Rectangle.Resources>
                         <Rectangle.OpacityMask>
-                            <ImageBrush ImageSource="{Binding Icon, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}" />
+                            <ImageBrush ImageSource="{Binding Icon, RelativeSource={RelativeSource AncestorType=local:FlatButton, Mode=FindAncestor}}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </Canvas>

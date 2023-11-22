@@ -41,6 +41,7 @@
                                                       ToolTip="Settings"
                                                       Visibility="{Binding ShowGearButton, Converter={StaticResource BoolToVisibilityConverter}}"
                                                       Command="{Binding ShowSettingsCommand}"
+                                                      CommandParameter="{Binding ShowSettingsCommandParameter}"
                                                       Icon="{DynamicResource GearIcon}" />
                                     <Label DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left"
                                        Content="{Binding Title, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
