@@ -1,5 +1,6 @@
 ﻿using Rubberduck.InternalApi.Model;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Message;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
@@ -18,11 +19,12 @@ namespace Rubberduck.UI.NewProject
         private readonly IFileSystem _fileSystem;
         private readonly IMessageService _messages;
         private readonly IWorkspaceFolderService _workspaceFolderService;
+        private readonly IWorkspaceService _workspace;
         private readonly IProjectFileService _projectFileService;
         private readonly ITemplatesService _templatesService;
 
         public NewProjectCommand(UIServiceHelper service, NewProjectWindowFactory factory, 
-            IWorkspaceFolderService workspaceFolderService, 
+            IWorkspaceFolderService workspaceFolderService, IWorkspaceService workspace,
             IFileSystem fileSystem, IProjectFileService projectFileService,
             IMessageService messages, ITemplatesService templatesService,
             MessageActionsProvider actions, ShowRubberduckSettingsCommand showSettingsCommand) 
@@ -32,6 +34,7 @@ namespace Rubberduck.UI.NewProject
             _messages = messages;
             _templatesService = templatesService;
             _workspaceFolderService = workspaceFolderService;
+            _workspace = workspace;
             _projectFileService = projectFileService;
             _factory = factory;
             _actions = actions;
@@ -77,8 +80,8 @@ namespace Rubberduck.UI.NewProject
                         
                     }
 
-                    // TODO project files created, now open them!
-
+                    Service.LogInformation("Workspace was successfully created.", $"Workspace root: {root}");
+                    _workspace.OpenProjectWorkspaceAsync(new Uri(root));
                 }
             }, nameof(NewProjectCommand));
 

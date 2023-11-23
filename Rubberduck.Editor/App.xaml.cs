@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.Editor.Document.Tabs;
@@ -31,6 +32,7 @@ using Rubberduck.UI.NewProject;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Settings;
+using Rubberduck.UI.Shell;
 using Rubberduck.UI.Splash;
 using System;
 using System.Diagnostics;
@@ -167,6 +169,7 @@ namespace Rubberduck.Editor
         private void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<Func<ILanguageServer>>(provider => () => _editorServer.EditorServer);
+            services.AddSingleton<Func<ILanguageClient>>(provider => () => _languageClient.LanguageClient);
             services.AddSingleton<ServerStartupOptions>(provider => _options);
             services.AddSingleton<Process>(provider => Process.GetProcessById((int)_options.ClientProcessId));
 
@@ -215,9 +218,6 @@ namespace Rubberduck.Editor
             services.AddSingleton<ShowMessageHandler>();
             services.AddSingleton<ShowMessageRequestHandler>();
 
-            services.AddSingleton<NewProjectCommand>();
-            services.AddSingleton<NewProjectWindowFactory>();
-
             services.AddSingleton<ITemplatesService, TemplatesService>();
             services.AddSingleton<IWorkspaceFolderService, WorkspaceFolderService>();
             services.AddSingleton<IProjectFileService, ProjectFileService>();
@@ -225,6 +225,14 @@ namespace Rubberduck.Editor
             services.AddSingleton<ISettingsDialogService, SettingsDialogService>();
             services.AddSingleton<IWindowFactory<SettingsWindow, SettingsWindowViewModel>, SettingsWindowFactory>();
             services.AddSingleton<ISettingViewModelFactory, SettingViewModelFactory>();
+
+            services.AddSingleton<IWorkspaceService, WorkspaceService>();
+            services.AddSingleton<WorkspaceStateManager>();
+
+            services.AddSingleton<FileCommandHandlers>();
+            services.AddSingleton<NewProjectCommand>();
+            services.AddSingleton<NewProjectWindowFactory>();
+
         }
 
         public void Dispose()

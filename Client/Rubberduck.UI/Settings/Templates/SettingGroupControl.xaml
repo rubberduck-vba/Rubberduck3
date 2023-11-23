@@ -7,9 +7,8 @@
              xmlns:viewmodels="clr-namespace:Rubberduck.UI.Settings.ViewModels" xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
              d:DataContext="{d:DesignInstance Type=viewmodels:SettingGroupViewModel}"
              Background="{DynamicResource ThemeBackgroundColorBrush}"
-             Padding="4" MinHeight="300" MinWidth="255"
-             mc:Ignorable="d" 
-             d:DesignHeight="96" d:DesignWidth="255">
+             Padding="4" MinHeight="128" MinWidth="300"
+             mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,37 +17,44 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
-            BorderBrush="{DynamicResource ThemeBackgroundMediumColorBrush}" BorderThickness="1">
+    <Border Background="{DynamicResource ThemeBackgroundMediumColorBrush}" 
+            BorderBrush="{DynamicResource ThemeBackgroundDarkColorBrush}" 
+            BorderThickness="1">
         <DockPanel>
             <DockPanel DockPanel.Dock="Top">
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
-                                    Icon="{DynamicResource LockedIcon}" 
-                                    PressedIcon="{DynamicResource UnlockedIcon}"
-                                    IsChecked="{Binding IsEnabled}"
-                                    Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
-                <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0">
+                    Icon="{DynamicResource LockedIcon}" 
+                    PressedIcon="{DynamicResource UnlockedIcon}"
+                    IsChecked="{Binding IsEnabled}"
+                    ToolTip="Locked (read-only recommended). Click to edit."
+                    Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
+                <Label DockPanel.Dock="Top" Style="{DynamicResource SectionTitleLabelStyle}" Margin="0">
                     <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
                 </Label>
             </DockPanel>
             <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
-                <Label Style="{DynamicResource FormLabelStyle}" Margin="4,0">
+                <Label Style="{DynamicResource FormLabelStyleMedium}" Margin="4,0">
                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
                 </Label>
             </ScrollViewer>
             <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
-                <ListView Background="{DynamicResource ThemeBackgroundColorBrush}" 
+                <ListBox Background="{DynamicResource ThemeBackgroundColorBrush}" 
                           HorizontalContentAlignment="Stretch"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
                           ItemsSource="{Binding Items}"
                           ItemTemplateSelector="{DynamicResource SettingTemplateSelector}">
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                         </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
             </ScrollViewer>
         </DockPanel>
     </Border>

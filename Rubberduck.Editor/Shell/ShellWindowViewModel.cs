@@ -1,38 +1,38 @@
 ﻿using Dragablz;
 using Rubberduck.InternalApi.Model.Abstract;
-using Rubberduck.UI.NewProject;
+using Rubberduck.UI.Shell;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 
 namespace Rubberduck.Editor.Shell
 {
-    public class ShellWindowViewModel : IWindowViewModel
+    public class ShellWindowViewModel : IShellWindowViewModel
     {
         private static readonly string _shellPartition = Guid.NewGuid().ToString();
 
-        public ShellWindowViewModel(IInterTabClient interTabClient, StatusBarViewModel statusBar/*, params IDocumentTabViewModel[] items*/,
-            NewProjectCommand newProjectCommand)
+        public ShellWindowViewModel(IInterTabClient interTabClient, StatusBarViewModel statusBar,
+            FileCommandHandlers fileCommandHandlers)
         {
             InterTabClient = interTabClient;
             Partition = _shellPartition;
 
             StatusBar = statusBar;
-            Items = new ObservableCollection<IDocumentTabViewModel>();
+            Documents = new ObservableCollection<IDocumentTabViewModel>();
 
-            NewProjectCommand = newProjectCommand;
+            FileCommandHandlers = fileCommandHandlers;
         }
 
         public string Title => "Rubberduck Editor";
 
-        public IEnumerable<IDocumentTabViewModel> Items { get; init; }
+        public IEnumerable<IDocumentTabViewModel> Documents { get; init; }
 
         public object Partition { get; init; }
         public object InterTabClient { get; init; }
 
-        public NewProjectCommand NewProjectCommand { get; init; }
-        public StatusBarViewModel StatusBar { get; init; }
+        public IStatusBarViewModel StatusBar { get; init; }
+
+        public FileCommandHandlers FileCommandHandlers { get; init; }
 
         public void ClosingTabItemHandler(object sender, EventArgs e)
         {

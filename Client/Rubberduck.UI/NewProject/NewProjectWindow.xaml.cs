@@ -1,8 +1,5 @@
-﻿using Ookii.Dialogs.Wpf;
-using Rubberduck.UI.Command;
-using Rubberduck.UI.Shell;
+﻿using Rubberduck.UI.Shell;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Rubberduck.UI.NewProject
@@ -37,8 +34,6 @@ namespace Rubberduck.UI.NewProject
 
             CommandBindings.AddRange(bindings);
         }
-
-        private NewProjectWindowViewModel ViewModel => (NewProjectWindowViewModel)DataContext;
 
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {

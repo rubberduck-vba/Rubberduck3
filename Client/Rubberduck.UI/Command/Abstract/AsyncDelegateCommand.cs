@@ -1,4 +1,5 @@
-﻿using Rubberduck.UI.Services;
+﻿using Rubberduck.UI.Command.Abstract;
+using Rubberduck.UI.Services;
 using System;
 using System.Threading.Tasks;
 

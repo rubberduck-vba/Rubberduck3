@@ -3,7 +3,7 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Editor.Shell
 {
-    public class StatusBarViewModel : ViewModelBase
+    public class StatusBarViewModel : ViewModelBase, IStatusBarViewModel
     {
         private ServerConnectionState _serverConnectionState = ServerConnectionState.Disconnected;
         ServerConnectionState ServerConnectionState
@@ -34,5 +34,15 @@ namespace Rubberduck.Editor.Shell
                 }
             }
         }
+
+        public int DocumentLines { get; set; }
+        public int DocumentLength { get; set; }
+        public int CaretOffset { get; set; }
+        public int CaretLine { get; set; }
+        public int CaretColumn { get; set; }
+        public int IssuesCount { get; set; }
+        ServerConnectionState IStatusBarViewModel.ServerConnectionState { get; set; }
+        public int ProgressValue { get; set; }
+        public int ProgressMaxValue { get; set; }
     }
 }

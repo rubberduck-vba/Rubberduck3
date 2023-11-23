@@ -1,25 +1,20 @@
-﻿using Rubberduck.InternalApi.Model;
-using Rubberduck.UI.Services.Abstract;
+﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Model;
+using Rubberduck.SettingsProvider;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
 
 namespace Rubberduck.Editor
 {
-    public class WorkspaceStateManager : IWorkspaceStateManager
+    public class WorkspaceStateManager : ServiceBase
     {
         private readonly ConcurrentDictionary<Uri, ConcurrentQueue<WorkspaceFileInfo>> _workspaceFiles = [];
 
-        public WorkspaceFileInfo? OpenWorkspaceFile(Uri uri)
+        public WorkspaceStateManager(ILogger<WorkspaceStateManager> logger, 
+            RubberduckSettingsProvider settings, PerformanceRecordAggregator performance)
+            : base(logger, settings, performance)
         {
-            if (_workspaceFiles.TryGetValue(uri, out var cache) 
-                && cache.TryPeek(out var fileInfo))
-            {
-                fileInfo.IsOpened = true;
-                return fileInfo;
-            }
-
-            return default;
         }
 
         public bool TryGetWorkspaceFile(Uri uri, out WorkspaceFileInfo? fileInfo)

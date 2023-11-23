@@ -1,39 +1,10 @@
 ﻿using Ookii.Dialogs.Wpf;
 using System.Windows.Input;
 using System;
-using System.Threading.Tasks;
-using Rubberduck.UI.Services;
 using System.Windows.Controls;
-using Rubberduck.UI.Settings;
 
 namespace Rubberduck.UI.Command
 {
-    public interface IBrowseSelectionModel
-    {
-        Uri RootUri { get; set; }
-        string Title { get; set; }
-        string Selection { get; set; }
-    }
-
-    public interface IBrowseFolderModel : IBrowseSelectionModel
-    {
-    }
-
-    public interface IBrowseFileModel : IBrowseSelectionModel
-    {
-        string DefaultFileExtension { get; set; }
-        string Filter { get; set; }
-    }
-
-    public record class BrowseFileModel : IBrowseFileModel
-    {
-        public string DefaultFileExtension { get; set; }
-        public string Filter { get; set; }
-        public Uri RootUri { get; set; }
-        public string Title { get; set; }
-        public string Selection { get; set; }
-    }
-
     public static class DialogCommands
     {
         public static RoutedCommand BrowseLocationCommand { get; }
@@ -110,68 +81,6 @@ namespace Rubberduck.UI.Command
             }
 
             return didAccept;
-        }
-    }
-
-    public class ShowRubberduckSettingsCommand : CommandBase
-    {
-        private readonly ISettingsDialogService _settingsDialog;
-
-        public ShowRubberduckSettingsCommand(UIServiceHelper service, ISettingsDialogService settingsDialog) 
-            : base(service)
-        {
-            _settingsDialog = settingsDialog;
-        }
-
-        protected async override Task OnExecuteAsync(object? parameter)
-        {
-            if (parameter is string key)
-            {
-                _settingsDialog.ShowDialog(key);
-            }
-            else
-            {
-                _settingsDialog.ShowDialog();
-            }
-        }
-    }
-
-    public class ShowLanguageClientSettingsCommand : CommandBase
-    {
-        public ShowLanguageClientSettingsCommand(UIServiceHelper service)
-            : base(service)
-        {
-        }
-
-        protected async override Task OnExecuteAsync(object? parameter)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class ShowLanguageServerSettingsCommand : CommandBase
-    {
-        public ShowLanguageServerSettingsCommand(UIServiceHelper service)
-            : base(service)
-        {
-        }
-
-        protected async override Task OnExecuteAsync(object? parameter)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class ShowEditorSettingsCommand : CommandBase
-    {
-        public ShowEditorSettingsCommand(UIServiceHelper service)
-            : base(service)
-        {
-        }
-
-        protected async override Task OnExecuteAsync(object? parameter)
-        {
-            throw new NotImplementedException();
         }
     }
 }

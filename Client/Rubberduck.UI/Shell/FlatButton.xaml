@@ -23,7 +23,7 @@
                         <Rectangle.Resources>
                             <Style TargetType="Rectangle">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsMouseOver, ElementName=FlatButtonRoot}" Value="True">
+                                    <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}" Value="True">
                                         <Setter Property="Fill" Value="{DynamicResource ThemeAccent1LightColorBrush}" />
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -47,15 +47,19 @@
                 <Setter Property="Template" Value="{StaticResource FlatButtonTemplate}" />
                 <Setter Property="Foreground" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
                 <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}"/>
-                <Setter Property="Template" Value="{DynamicResource FlatButtonTemplate}"/>
             </Style.Setters>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
-                    <DataTrigger.Setters>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                        <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                        <Setter Property="Background" Value="{DynamicResource ThemeWhiteMediumColorBrush}" />
                         <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
                         <Setter Property="Cursor" Value="Hand" />
-                    </DataTrigger.Setters>
-                </DataTrigger>
+                    </MultiDataTrigger.Setters>
+                </MultiDataTrigger>
                 <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="True">
                     <DataTrigger.Setters>
                         <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1MediumColorBrush}" />

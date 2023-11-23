@@ -1,14 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Message;
 using Rubberduck.UI.Services;
-using System.Windows.Forms;
 using System;
 using System.Linq;
-using Rubberduck.UI.Settings.ViewModels;
 
 namespace Rubberduck.UI.Settings
 {
@@ -27,7 +24,6 @@ namespace Rubberduck.UI.Settings
         private readonly UIServiceHelper _service;
         private readonly IMessageService _messageService;
         private readonly ISettingViewModelFactory _vmFactory;
-        private readonly ILogger _logger;
 
         private readonly MessageActionsProvider _actionsProvider;
         private readonly IWindowFactory<SettingsWindow, SettingsWindowViewModel> _factory;
@@ -67,13 +63,13 @@ namespace Rubberduck.UI.Settings
             if (TryRunAction(() =>
             {
                 viewModel = CreateViewModel(Settings, actions)
-                    ?? throw new ArgumentNullException(nameof(viewModel), $"CreateViewModel returned null.");
+                    ?? throw new InvalidOperationException($"CreateViewModel returned null.");
 
-                var settingGroup = viewModel.Settings.Items.Select(e => (VM:e, Key:e.Key)).SingleOrDefault(e => e.Key == key).VM;
+                var settingGroup = viewModel.Settings.Items.Select(e => (VM:e, e.Key)).SingleOrDefault(e => e.Key == key).VM;
                 viewModel.Selection = settingGroup;
 
                 view = _factory.Create(viewModel)
-                    ?? throw new ArgumentNullException(nameof(view), $"ViewFactory.Create returned null.");
+                    ?? throw new InvalidOperationException($"ViewFactory.Create returned null.");
             }))
             {
                 TryRunAction(() => view.ShowDialog());
@@ -81,7 +77,6 @@ namespace Rubberduck.UI.Settings
             }
 
             throw new InvalidOperationException();
-
         }
     }
 }

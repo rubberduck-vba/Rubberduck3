@@ -14,7 +14,6 @@ namespace Rubberduck.UI.NewProject
 
         private Uri? _uri = default;
         private string _name = "Project1";
-        private ProjectTemplate _template = ProjectTemplate.Default;
 
         private readonly HashSet<File> _files = new();
         private readonly Dictionary<string, Module> _modules = new();
@@ -50,7 +49,8 @@ namespace Rubberduck.UI.NewProject
             _name = viewModel.ProjectName;
             if (viewModel.SelectedProjectTemplate != null)
             {
-                _template = viewModel.SelectedProjectTemplate;
+                return WithTemplate(viewModel.SelectedProjectTemplate)
+                    .WithProjectName(viewModel.ProjectName);
             }
             return this;
         }
@@ -58,18 +58,18 @@ namespace Rubberduck.UI.NewProject
         public ProjectFileBuilder WithTemplate(ProjectTemplate template)
         {
             _name = template.ProjectFile.VBProject.Name;
-            _files.UnionWith(template.ProjectFile.VBProject.OtherFiles);
-            _folders.UnionWith(template.ProjectFile.VBProject.Folders);
             _references.UnionWith(template.ProjectFile.VBProject.References);
+            _folders.UnionWith(template.ProjectFile.VBProject.Folders);
+            _files.UnionWith(template.ProjectFile.VBProject.OtherFiles);
+
             foreach (var module in template.ProjectFile.VBProject.Modules)
             {
                 _modules.TryAdd(module.Name, module);
             }
-            
+
             return this;
         }
 
-        /*
         public ProjectFileBuilder WithUri(Uri uri)
         {
             _uri = uri;
@@ -82,11 +82,9 @@ namespace Rubberduck.UI.NewProject
             return this;
         }
 
-        public ProjectFileBuilder WithModule(Uri uri, DocClassType? supertype = null)
+        public ProjectFileBuilder WithModule(string uri, DocClassType? supertype = null)
         {
-            var localPath = uri.LocalPath;
-            var name = _fileSystem.Path.GetFileNameWithoutExtension(localPath);
-
+            var name = _fileSystem.Path.GetFileNameWithoutExtension(uri);
             _modules.TryAdd(name, new()
             {
                 Name = name,
@@ -97,13 +95,19 @@ namespace Rubberduck.UI.NewProject
             return this;
         }
 
-        public ProjectFileBuilder WithFile(Uri uri)
+        public ProjectFileBuilder WithFile(string uri, bool isAutoOpen = false)
         {
-            _files.Add(uri);
+            var file = new File 
+            {
+                Uri = uri,
+                Name = _fileSystem.Path.GetFileName(uri),
+                IsAutoOpen = isAutoOpen,
+            };
+            _files.Add(file);
             return this;
         }
 
-        public ProjectFileBuilder WithReference(Uri uri, string name)
+        public ProjectFileBuilder WithReference(string uri, string name)
         {
             _references.Add(new()
             {
@@ -114,7 +118,7 @@ namespace Rubberduck.UI.NewProject
             return this;
         }
 
-        public ProjectFileBuilder WithReference(Uri uri, string name, Uri typeLibInfoUri)
+        public ProjectFileBuilder WithReference(string uri, string name, string typeLibInfoUri)
         {
             _references.Add(new()
             {
@@ -126,7 +130,7 @@ namespace Rubberduck.UI.NewProject
             return this;
         }
 
-        public ProjectFileBuilder WithReference(Uri uri, Guid guid)
+        public ProjectFileBuilder WithReference(string uri, Guid guid)
         {
             _references.Add(new()
             {
@@ -136,6 +140,5 @@ namespace Rubberduck.UI.NewProject
 
             return this;
         }
-        */
     }
 }

@@ -1,9 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Extensions;
-using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
-using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Services;
 using System;
@@ -45,16 +42,12 @@ namespace Rubberduck.UI.Message
     {
         private readonly IMessageWindowFactory _viewFactory;
 
-        private readonly MessageActionsProvider _actionsProvider;
-
         public MessageService(RubberduckSettingsProvider settings, ILogger<MessageService> logger,
             IMessageWindowFactory viewFactory,
-            MessageActionsProvider actionsProvider,
             PerformanceRecordAggregator performance)
             : base(logger, settings, performance)
         {
             _viewFactory = viewFactory;
-            _actionsProvider = actionsProvider;
         }
 
         protected override void OnUserFacingException(Exception exception, string? message)

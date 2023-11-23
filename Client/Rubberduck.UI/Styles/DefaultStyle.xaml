@@ -350,11 +350,19 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="FormFieldDescriptionLabelStyle" TargetType="Label">
+        <Style.Setters>
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextInactiveColorBrush}" />
+        </Style.Setters>
+    </Style>
+    
     <Style x:Key="FormFieldTextBoxStyle" TargetType="TextBox">
         <Style.Setters>
             <Setter Property="Padding" Value="4,0" />
             <Setter Property="FontSize" Value="12" />
             <Setter Property="Height" Value="24" />
+            <Setter Property="MaxLines" Value="1" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
@@ -366,6 +374,24 @@
             </DataTrigger>
             <DataTrigger Binding="{Binding IsKeyboardFocused, RelativeSource={RelativeSource Mode=Self}}" Value="True">
                 <Setter Property="Background" Value="{DynamicResource ThemeBackgroundLightColorBrush}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="FormFieldReadOnlyTextBoxStyle" TargetType="TextBox">
+        <Style.Setters>
+            <Setter Property="Padding" Value="4,0" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Height" Value="24" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
+        </Style.Setters>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsKeyboardFocused, RelativeSource={RelativeSource Mode=Self}}" Value="True">
                 <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
             </DataTrigger>
         </Style.Triggers>
@@ -383,5 +409,34 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
-    
+
+    <Style x:Key="ListItemTitleLabelStyle" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
+        <Style.Setters>
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="Regular" />
+        </Style.Setters>
+    </Style>
+    <Style x:Key="SectionTitleLabelStyle" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
+        <Style.Setters>
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style.Setters>
+    </Style>
+
+    <Style x:Key="SectionBorderStyle" TargetType="Border">
+        <Style.Setters>
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundMediumColorBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="10,0,10,10" />
+        </Style.Setters>
+    </Style>
+
+    <Style x:Key="SectionExpanderHeaderStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Regular" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
+    </Style>
+
 </ResourceDictionary>

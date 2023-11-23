@@ -18,8 +18,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
-            BorderBrush="{DynamicResource ThemeBackgroundMediumColorBrush}" BorderThickness="1">
+    <Border Style="{DynamicResource SectionBorderStyle}">
         <DockPanel LastChildFill="True">
             <DockPanel DockPanel.Dock="Top">
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
@@ -31,15 +30,13 @@
                     <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
                 </Label>
             </DockPanel>
-            <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
-                <Label Style="{DynamicResource FormLabelStyle}" Margin="4,0">
-                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
-                </Label>
-            </ScrollViewer>
+            <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldDescriptionLabelStyle}" Margin="4,0,4,4">
+                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+            </Label>
             <ComboBox Template="{DynamicResource ComboBoxTemplate}" 
-                      DockPanel.Dock="Top" 
+                      DockPanel.Dock="Top" HorizontalAlignment="Left"
                       Style="{DynamicResource FormFieldComboBoxStyle}" 
-                      Height="24" 
+                      Width="128"
                       ItemsSource="{Binding Values}"
                       SelectedValue="{Binding Selection}" />
         </DockPanel>

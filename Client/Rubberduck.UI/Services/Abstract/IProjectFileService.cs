@@ -13,12 +13,6 @@ namespace Rubberduck.UI.Services.Abstract
     public interface IWorkspaceStateManager
     {
         /// <summary>
-        /// Marks the file at the specified URI as opened in the editor.
-        /// </summary>
-        /// <param name="uri">The URI referring to the file to open in the editor.</param>
-        /// <returns>The latest available version of the file.</returns>
-        WorkspaceFileInfo? OpenWorkspaceFile(Uri uri);
-        /// <summary>
         /// Attempts to retrieve the specified file.
         /// </summary>
         /// <param name="uri">The URI referring to the file to retrieve.</param>

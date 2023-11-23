@@ -8,9 +8,8 @@
              xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
              d:DataContext="{d:DesignInstance Type=vm:UriSettingViewModel}"
              Background="{DynamicResource ThemeBackgroundColorBrush}"
-             Padding="4" MinHeight="96" MinWidth="255"
-             mc:Ignorable="d" 
-             d:DesignHeight="96" d:DesignWidth="255">
+             Padding="4" MinHeight="96" MinWidth="255" MaxWidth="512"
+             mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -19,8 +18,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
-            BorderBrush="{DynamicResource ThemeBackgroundMediumColorBrush}" BorderThickness="1">
+    <Border Style="{DynamicResource SectionBorderStyle}">
         <DockPanel LastChildFill="True">
             <DockPanel DockPanel.Dock="Top">
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
@@ -32,12 +30,22 @@
                     <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
                 </Label>
             </DockPanel>
-            <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
-                <Label Style="{DynamicResource FormLabelStyle}" Margin="4,0">
-                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
-                </Label>
-            </ScrollViewer>
-            <TextBox DockPanel.Dock="Top" Style="{DynamicResource FormFieldBrowseBoxStyle}" Height="24" Text="{Binding Value}" />
+            <Label DockPanel.Dock="Top" Margin="4,0,4,4"
+                   Style="{DynamicResource FormFieldDescriptionLabelStyle}">
+                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+            </Label>
+            <DockPanel DockPanel.Dock="Top" LastChildFill="True">
+                <Button  DockPanel.Dock="Right"
+                        Command="{x:Static NavigationCommands.Search}"
+                        CommandParameter="{Binding}"
+                        Style="{DynamicResource FlatButtonStyle}" 
+                        IsEnabled="{Binding IsWorkspaceLocationEditable}"
+                        Width="28" Height="24" Margin="0,0,5,0"
+                        Content="…" IsTabStop="True" />
+                <TextBox DockPanel.Dock="Top" Style="{DynamicResource FormFieldReadOnlyTextBoxStyle}"
+                         Text="{Binding Value}" Margin="5,5,-1,5" IsReadOnly="True" />
+            </DockPanel>
+
         </DockPanel>
     </Border>
 </UserControl>

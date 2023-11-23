@@ -1,4 +1,5 @@
 ﻿using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
 using System;

@@ -4,7 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.Editor.Shell"
+             xmlns:cmd="clr-namespace:Rubberduck.UI.Command;assembly=Rubberduck.UI"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=local:ShellWindowViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="24" d:DesignWidth="800" VerticalContentAlignment="Center">
     <UserControl.CommandBindings>
     </UserControl.CommandBindings>
@@ -17,154 +19,166 @@
     </UserControl.Resources>
     <Menu>
         <MenuItem Header="_File">
-            <MenuItem Header="_New Project..." Command="{x:Static ApplicationCommands.New}" CommandParameter="{Binding}" />
-            <MenuItem Header="_Open..." Command="{x:Static ApplicationCommands.Open}" />
+            <MenuItem Header="_New Project..." Command="{x:Static cmd:FileCommands.NewProjectCommand}" />
+            <MenuItem Header="_Open..." Command="{x:Static cmd:FileCommands.OpenProjectCommand}" />
             <Separator />
-            <MenuItem Header="_Save" Command="{x:Static ApplicationCommands.Save}" />
-            <MenuItem Header="Save _As..." Command="{x:Static ApplicationCommands.SaveAs}" />
-            <MenuItem Header="Save A_ll" Command="{x:Static ApplicationCommands.SelectAll}" />
+            <MenuItem Header="_Save" Command="{x:Static cmd:FileCommands.SaveDocumentCommand}" />
+            <MenuItem Header="Save _As..." Command="{x:Static cmd:FileCommands.SaveDocumentAsCommand}" />
+            <MenuItem Header="Save A_ll" Command="{x:Static cmd:FileCommands.SaveAllDocumentsCommand}" />
             <Separator />
-            <MenuItem Header="Save As _Template..." />
+            <MenuItem Header="Save As _Template..." Command="{x:Static cmd:FileCommands.SaveProjectAsTemplateCommand}" />
             <Separator />
-            <MenuItem Header="_Close" Command="{x:Static ApplicationCommands.Close}" />
+            <MenuItem Header="_Close" Command="{x:Static cmd:FileCommands.CloseDocumentCommand}" />
+            <MenuItem Header="Close _All" Command="{x:Static cmd:FileCommands.CloseAllDocumentsCommand}" />
+            <MenuItem Header="Close Project" Command="{x:Static cmd:FileCommands.CloseWorkspaceCommand}" />
             <Separator />
-            <MenuItem Header="S_ynchronize"/>
-            <MenuItem Header="E_xit" Command="{x:Static ApplicationCommands.Stop}" />
+            <MenuItem Header="S_ynchronize" Command="{x:Static cmd:FileCommands.SynchronizeWorkspaceCommand}"/>
+            <MenuItem Header="E_xit" Command="{x:Static cmd:FileCommands.ExitCommand}" />
         </MenuItem>
         <MenuItem Header="_Edit">
             <MenuItem Header="_Go To">
-                <MenuItem Header="_Line..."/>
-                <MenuItem Header="_Any..."/>
+                <MenuItem Header="_Line..." Command="{x:Static cmd:EditCommands.GoToLineCommand}"/>
+                <MenuItem Header="_Any..." Command="{x:Static cmd:EditCommands.GoToAnythingCommand}"/>
                 <Separator />
-                <MenuItem Header="_File..."/>
-                <MenuItem Header="_Class..."/>
-                <MenuItem Header="_Member..."/>
-                <MenuItem Header="_Symbol..."/>
+                <MenuItem Header="_File..." Command="{x:Static cmd:EditCommands.GoToFileCommand}"/>
+                <MenuItem Header="_Member..." Command="{x:Static cmd:EditCommands.GoToMemberCommand}"/>
+                <MenuItem Header="_Symbol..." Command="{x:Static cmd:EditCommands.GoToSymbolCommand}" />
                 <Separator />
-                <MenuItem Header="_Next Issue"/>
-                <MenuItem Header="_Previous Issue"/>
-                <MenuItem Header="Last Locatio_n" />
+                <MenuItem Header="_Next Issue" Command="{x:Static cmd:EditCommands.GoToNextIssueCommand}"/>
+                <MenuItem Header="_Previous Issue" Command="{x:Static cmd:EditCommands.GoToPreviousIssueCommand}"/>
+                <MenuItem Header="Last Locatio_n" Command="{x:Static cmd:EditCommands.GoToPreviousLocationCommand}" />
             </MenuItem>
-            <MenuItem Header="_Find..." Command="{x:Static ApplicationCommands.Find}" />
-            <MenuItem Header="_Replace..." Command="{x:Static ApplicationCommands.Replace}" />
+            <MenuItem Header="_Find..." Command="{x:Static cmd:EditCommands.FindCommand}" />
+            <MenuItem Header="_Replace..." Command="{x:Static cmd:EditCommands.ReplaceCommand}" />
             <Separator />
-            <MenuItem Header="_Undo" Command="{x:Static ApplicationCommands.Undo}" />
-            <MenuItem Header="Re_do" Command="{x:Static ApplicationCommands.Redo}"/>
+            <MenuItem Header="_Undo" Command="{x:Static cmd:EditCommands.UndoCommand}" />
+            <MenuItem Header="Re_do" Command="{x:Static cmd:EditCommands.RedoCommand}"/>
             <Separator />
-            <MenuItem Header="Cu_t" Command="{x:Static ApplicationCommands.Cut}" />
-            <MenuItem Header="_Copy" Command="{x:Static ApplicationCommands.Copy}"/>
-            <MenuItem Header="_Paste" Command="{x:Static ApplicationCommands.Paste}"/>
-            <MenuItem Header="_Delete" Command="{x:Static ApplicationCommands.Delete}" />
+            <MenuItem Header="Cu_t" Command="{x:Static cmd:EditCommands.CutCommand}" />
+            <MenuItem Header="_Copy" Command="{x:Static cmd:EditCommands.CopyCommand}"/>
+            <MenuItem Header="_Paste" Command="{x:Static cmd:EditCommands.PasteCommand}"/>
+            <MenuItem Header="_Delete" Command="{x:Static cmd:EditCommands.DeleteCommand}" />
             <Separator />
-            <MenuItem Header="_Select All" Command="{x:Static ApplicationCommands.SelectAll}"/>
+            <MenuItem Header="_Select All" Command="{x:Static cmd:EditCommands.SelectAllCommand}"/>
             <MenuItem Header="E_xpand Selection">
-                <MenuItem Header="Select Containing _Line"/>
-                <MenuItem Header="Select Containing _Block"/>
-                <MenuItem Header="Select Containing _Member"/>
+                <MenuItem Header="Select Containing _Line" Command="{x:Static cmd:EditCommands.SelectContainingLineCommand}"/>
+                <MenuItem Header="Select Containing _Block" Command="{x:Static cmd:EditCommands.SelectContainingBlockCommand}"/>
+                <MenuItem Header="Select Containing _Member" Command="{x:Static cmd:EditCommands.SelectContainingMemberCommand}"/>
             </MenuItem>
             <MenuItem Header="_Advanced">
-                <MenuItem Header="Format _Document"/>
-                <MenuItem Header="Format _Selection"/>
-                <MenuItem Header="_Increase Indentation"/>
-                <MenuItem Header="_Decrease Indentation"/>
+                <MenuItem Header="Format _Document" Command="{x:Static cmd:EditCommands.FormatDocumentCommand}"/>
+                <MenuItem Header="Format _Selection" Command="{x:Static cmd:EditCommands.FormatSelectionCommand}"/>
+                <MenuItem Header="_Increase Indentation" Command="{x:Static cmd:EditCommands.IncreaseIndentationCommand}"/>
+                <MenuItem Header="_Decrease Indentation" Command="{x:Static cmd:EditCommands.DecreaseIndentationCommand}"/>
                 <Separator />
-                <MenuItem Header="Make _Uppercase"/>
-                <MenuItem Header="Make _Lowercase"/>
-                <MenuItem Header="Delete _Horizontal White Space"/>
+                <MenuItem Header="Make _Uppercase" Command="{x:Static cmd:EditCommands.MakeUppercaseCommand}"/>
+                <MenuItem Header="Make _Lowercase" Command="{x:Static cmd:EditCommands.MakeLowercaseCommand}"/>
+                <MenuItem Header="Delete _Horizontal White Space" Command="{x:Static cmd:EditCommands.DeleteHorizontalWhitespaceCommand}"/>
+                <MenuItem Header="Delete _Vertical White Space" Command="{x:Static cmd:EditCommands.DeleteVerticalWhitespaceCommand}"/>
                 <Separator />
-                <MenuItem Header="Move Selected Lines _Up"/>
-                <MenuItem Header="Move Selected Lines _Down"/>
-                <MenuItem Header="Move Containing Member _Up"/>
-                <MenuItem Header="Move Containing Member _Down"/>
-                <MenuItem Header="_Comment Selected Lines"/>
-                <MenuItem Header="_Uncomment Selected Lines"/>
+                <MenuItem Header="Move Selected Lines _Up" Command="{x:Static cmd:EditCommands.MoveSelectedLinesUpCommand}"/>
+                <MenuItem Header="Move Selected Lines _Down" Command="{x:Static cmd:EditCommands.MoveSelectedLinesDownCommand}"/>
+                <MenuItem Header="Move Containing Member _Up" Command="{x:Static cmd:EditCommands.MoveContainingMemberUpCommand}"/>
+                <MenuItem Header="Move Containing Member _Down" Command="{x:Static cmd:EditCommands.MoveContainingMemberDownCommand}"/>
+                <MenuItem Header="_Comment Selected Lines" Command="{x:Static cmd:EditCommands.CommentSelectedLinesCommand}"/>
+                <MenuItem Header="_Uncomment Selected Lines" Command="{x:Static cmd:EditCommands.UncommentSelectedLinesCommand}"/>
             </MenuItem>
             <MenuItem Header="Out_lining">
-                <MenuItem Header="E_xpand All" />
-                <MenuItem Header="_Collapse All"/>
+                <MenuItem Header="E_xpand All" Command="{x:Static cmd:EditCommands.ExpandAllFoldingsCommand}" />
+                <MenuItem Header="_Collapse All" Command="{x:Static cmd:EditCommands.CollapseAllFoldingsCommand}"/>
             </MenuItem>
             <Separator />
             <MenuItem Header="_Completion">
-                <MenuItem Header="List _Members"/>
-                <MenuItem Header="Signature _Help"/>
-                <MenuItem Header="Quick _Info"/>
-                <MenuItem Header="Complete _Word"/>
-                <MenuItem Header="_Surround With..."/>
-                <MenuItem Header="Insert S_nippet..."/>
+                <MenuItem Header="List _Members" Command="{x:Static cmd:EditCommands.ListMembersCommand}"/>
+                <MenuItem Header="Signature _Help" Command="{x:Static cmd:EditCommands.SignatureHelpCommand}"/>
+                <MenuItem Header="Quick _Info" Command="{x:Static cmd:EditCommands.QuickInfoCommand}"/>
+                <MenuItem Header="Complete _Word" Command="{x:Static cmd:EditCommands.CompleteWordCommand}"/>
+                <MenuItem Header="_Surround With..." Command="{x:Static cmd:EditCommands.SurroundWithCommand}"/>
+                <MenuItem Header="Insert S_nippet..." Command="{x:Static cmd:EditCommands.InsertSnippetCommand}"/>
             </MenuItem>
             <MenuItem Header="_Refactor">
-                <MenuItem Header="_Rename..."/>
+                <MenuItem Header="_Rename..." Command="{x:Static cmd:EditCommands.RefactorRenameCommand}"/>
                 <MenuItem Header="_Extract">
-                    <MenuItem Header="_Parameter..."/>
-                    <MenuItem Header="_Method..."/>
-                    <MenuItem Header="_Class..."/>
-                    <MenuItem Header="_Interface..."/>
+                    <MenuItem Header="_Parameter..." Command="{x:Static cmd:EditCommands.ExtractParameterCommand}"/>
+                    <MenuItem Header="_Method..." Command="{x:Static cmd:EditCommands.ExtractMethodCommand}"/>
+                    <MenuItem Header="_Class..." Command="{x:Static cmd:EditCommands.ExtractClassCommand}"/>
+                    <MenuItem Header="_Interface..." Command="{x:Static cmd:EditCommands.ExtractInterfaceCommand}"/>
                 </MenuItem>
-                <MenuItem Header="_Move Declaration Closer To Usage..."/>
-                <MenuItem Header="_Change Signature..."/>
+                <MenuItem Header="_Move Declaration Closer To Usage..." Command="{x:Static cmd:EditCommands.MoveDeclarationNearUsageCommand}"/>
+                <MenuItem Header="_Change Signature..." Command="{x:Static cmd:EditCommands.ChangeSignatureCommand}"/>
             </MenuItem>
         </MenuItem>
         <MenuItem Header="_View">
-            <MenuItem Header="_Code"/>
-            <MenuItem Header="_Designer"/>
+            <MenuItem Header="_Code" Command="{x:Static cmd:ViewCommands.ViewCodeCommand}"/>
+            <MenuItem Header="_Designer" Command="{x:Static cmd:ViewCommands.ViewDesignerCommand}"/>
             <Separator />
-            <MenuItem Header="_Workdpace Explorer"/>
-            <MenuItem Header="Code E_xplorer"/>
-            <MenuItem Header="_Test Explorer"/>
-            <MenuItem Header="Call _Hierarchy"/>
-            <MenuItem Header="_Object Browser"/>
-            <MenuItem Header="_Properties"/>
+            <MenuItem Header="_Workspace Explorer" Command="{x:Static cmd:ViewCommands.ShowWorkspaceExplorerCommand}"/>
+            <MenuItem Header="Code E_xplorer" Command="{x:Static cmd:ViewCommands.ShowCodeExplorerCommand}"/>
+            <MenuItem Header="_Test Explorer" Command="{x:Static cmd:ViewCommands.ShowTestExplorerCommand}"/>
+            <MenuItem Header="Call _Hierarchy" Command="{x:Static cmd:ViewCommands.ShowCallHierarchyCommand}"/>
+            <MenuItem Header="_Object Browser" Command="{x:Static cmd:ViewCommands.ShowObjectBrowserCommand}"/>
+            <MenuItem Header="_Properties" Command="{x:Static cmd:ViewCommands.ShowPropertiesCommand}"/>
             <Separator />
-            <MenuItem Header="_Diagnostics"/>
+            <MenuItem Header="_Diagnostics" Command="{x:Static cmd:ViewCommands.ShowDiagnosticsCommand}"/>
             <!-- Inspection Results? -->
-            <MenuItem Header="_Tasks"/>
+            <MenuItem Header="_Tasks" Command="{x:Static cmd:ViewCommands.ShowTasksCommand}"/>
             <!-- TODO Items? -->
-            <MenuItem Header="_Search Results"/>
+            <MenuItem Header="_Search Results" Command="{x:Static cmd:ViewCommands.ShowSearchResultsCommand}"/>
             <Separator />
-            <MenuItem Header="_Add-in Client Trace"/>
-            <MenuItem Header="_Language Server Trace"/>
-            <MenuItem Header="_Update Server Trace"/>
+            <MenuItem Header="_Editor Trace" Command="{x:Static cmd:ViewCommands.ShowEditorTraceCommand}"/>
+            <MenuItem Header="_Language Server Trace" Command="{x:Static cmd:ViewCommands.ShowLanguageServerTraceCommand}"/>
+            <MenuItem Header="_Update Server Trace" Command="{x:Static cmd:ViewCommands.ShowUpdateServerTraceCommand}"/>
 
         </MenuItem>
         <MenuItem Header="_Project">
             <MenuItem Header="_Add">
-                <MenuItem Header="_Module..."/>
-                <MenuItem Header="_Class..."/>
-                <MenuItem Header="User_Form..."/>
+                <MenuItem Header="_Module..." Command="{x:Static cmd:ProjectCommands.AddModuleCommand}"/>
+                <MenuItem Header="_Class..." Command="{x:Static cmd:ProjectCommands.AddClassCommand}"/>
+                <MenuItem Header="User_Form..." Command="{x:Static cmd:ProjectCommands.AddUserFormCommand}"/>
                 <Separator />
-                <MenuItem Header="_Test Module..."/>
+                <MenuItem Header="_Test Module..." Command="{x:Static cmd:ProjectCommands.AddTestModuleCommand}"/>
                 <Separator />
-                <MenuItem Header="E_xisting..."/>
+                <MenuItem Header="E_xisting..." Command="{x:Static cmd:ProjectCommands.AddExistingFileCommand}"/>
                 <Separator />
-                <MenuItem Header="_New Folder"/>
+                <MenuItem Header="_New Folder" Command="{x:Static cmd:ProjectCommands.AddFolderCommand}"/>
             </MenuItem>
             <Separator />
-            <MenuItem Header="_References..."/>
-            <MenuItem Header="_Properties..." Command="{x:Static ApplicationCommands.Properties}" />
+            <MenuItem Header="_References..." Command="{x:Static cmd:ProjectCommands.ProjectReferencesCommand}"/>
+            <MenuItem Header="_Properties..." Command="{x:Static cmd:ProjectCommands.ProjectPropertiesCommand}" />
         </MenuItem>
         <MenuItem Header="_Debug">
-            <MenuItem Header="_Run"/>
+            <MenuItem Header="_Run" Command="{x:Static cmd:DebugCommands.RunCommand}"/>
         </MenuItem>
         <MenuItem Header="_Test">
-            <MenuItem Header="Run All _Tests"/>
-            <MenuItem Header="_Repeat Last Run"/>
+            <MenuItem Header="Run All _Tests" Command="{x:Static cmd:TestCommands.RunAllTestsCommand}"/>
+            <MenuItem Header="_Repeat Last Run" Command="{x:Static cmd:TestCommands.RepeatLastRunCommand}"/>
             <Separator />
-            <MenuItem Header="Test E_xplorer"/>
+            <MenuItem Header="Test E_xplorer" Command="{x:Static cmd:TestCommands.ShowTestExplorerCommand}"/>
         </MenuItem>
         <MenuItem Header="_Analyze">
-            <MenuItem Header="_Diagnostics"/>
-            <MenuItem Header="Code _Metrics"/>
+            <MenuItem Header="_Diagnostics" Command="{x:Static cmd:AnalyzeCommands.ShowDiagnosticsCommand}"/>
+            <MenuItem Header="Code _Metrics" Command="{x:Static cmd:AnalyzeCommands.ShowCodeMetricsCommand}"/>
         </MenuItem>
         <MenuItem Header="_Tools">
-            <MenuItem Header="_Options" />
+            <MenuItem Header="_Regular Expression..." Command="{x:Static cmd:ToolsCommands.ShowRegularExpressionToolCommand}" />
+            <Separator />
+            <MenuItem Header="_Options" Command="{x:Static cmd:ToolsCommands.ShowRubberduckSettingsCommand}" />
         </MenuItem>
         <MenuItem Header="_Window">
-            <MenuItem Header="New _Horizontal Document Group"/>
-            <MenuItem Header="New _Vertical Document Group"/>
-            <MenuItem Header="_Close All Tabs"/>
+            <MenuItem Header="New _Horizontal Document Group" Command="{x:Static cmd:WindowsCommands.NewHorizontalDocumentGroup}"/>
+            <MenuItem Header="New _Vertical Document Group" Command="{x:Static cmd:WindowsCommands.NewVerticalDocumentGroup}"/>
+            <MenuItem Header="_Close All Tabs" Command="{x:Static cmd:WindowsCommands.CloseAllTabsCommand}"/>
             <Separator />
+            <MenuItem Header="Document" ItemsSource="{Binding Documents}">
+                <MenuItem.ItemContainerStyle>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="Command" Value="{x:Static cmd:WindowsCommands.ShowDocumentWindow}" />
+                        <Setter Property="CommandParameter" Value="{Binding DocumentUri}" />
+                    </Style>
+                </MenuItem.ItemContainerStyle>
+            </MenuItem>
             <Separator />
-            <MenuItem Header="_Windows..."/>
+            <MenuItem Header="_Windows..." Command="{x:Static cmd:WindowsCommands.ShowDocumentWindow}"/>
         </MenuItem>
         <MenuItem Header="_Help">
             <MenuItem Header="_About Rubberduck" />

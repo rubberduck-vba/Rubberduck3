@@ -138,7 +138,7 @@ namespace Rubberduck.UI.WorkspaceExplorer
             };
         }
 
-        private string _name;
+        private string _name = null!;
         public string Name
         {
             get => _name;
@@ -152,7 +152,7 @@ namespace Rubberduck.UI.WorkspaceExplorer
             }
         }
 
-        private Uri _uri;
+        private Uri _uri = null!;
         public Uri Uri
         {
             get => _uri;
@@ -180,7 +180,7 @@ namespace Rubberduck.UI.WorkspaceExplorer
             }
         }
 
-        private ObservableCollection<WorkspaceTreeNodeViewModel> _childNodes = new();
+        private readonly ObservableCollection<WorkspaceTreeNodeViewModel> _childNodes = new();
         public ObservableCollection<WorkspaceTreeNodeViewModel> ChildNodes => _childNodes;
     }
 

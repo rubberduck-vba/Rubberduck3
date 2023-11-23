@@ -8,9 +8,8 @@
              xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
              d:DataContext="{d:DesignInstance Type=viewmodels:StringSettingViewModel}"
              Background="{DynamicResource ThemeBackgroundColorBrush}"
-             Padding="4" MinHeight="96" MinWidth="255"
-             mc:Ignorable="d" 
-             d:DesignHeight="96" d:DesignWidth="255">
+             Padding="4" MinHeight="96" MinWidth="255" MaxWidth="512"
+             mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -19,8 +18,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Background="{DynamicResource ThemeBackgroundDarkColorBrush}" CornerRadius="4"
-            BorderBrush="{DynamicResource ThemeBackgroundMediumColorBrush}" BorderThickness="1">
+    <Border Style="{DynamicResource SectionBorderStyle}">
         <DockPanel LastChildFill="True">
             <DockPanel DockPanel.Dock="Top">
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
@@ -32,12 +30,12 @@
                     <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
                 </Label>
             </DockPanel>
-            <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
-                <Label Style="{DynamicResource FormLabelStyle}" Margin="4,0">
-                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
-                </Label>
-            </ScrollViewer>
-            <TextBox DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Height="24" Text="{Binding Value}" />
+            <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldDescriptionLabelStyle}" Margin="4,0,4,4">
+                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+            </Label>
+            <TextBox DockPanel.Dock="Left" HorizontalContentAlignment="Center"
+                     Style="{DynamicResource FormFieldTextBoxStyle}"
+                     Text="{Binding Value}" Margin="5,5,24,5" IsEnabled="{Binding IsEnabled}" />
         </DockPanel>
     </Border>
 </UserControl>

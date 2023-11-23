@@ -6,6 +6,6 @@ namespace Rubberduck.InternalApi.Model.Abstract
     {
         string Title { get; }
         IStatusBarViewModel StatusBar { get; }
-        IEnumerable<IDocumentTabViewModel> DocumentTabs { get; }
+        IEnumerable<IDocumentTabViewModel> Documents { get; }
     }
 }

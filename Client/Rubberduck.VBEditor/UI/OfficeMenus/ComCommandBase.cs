@@ -1,4 +1,5 @@
-﻿using Rubberduck.UI.Services;
+﻿using Rubberduck.UI.Command.Abstract;
+using Rubberduck.UI.Services;
 using Rubberduck.Unmanaged.Abstract;
 
 namespace Rubberduck.UI.Command

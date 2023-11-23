@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using Rubberduck.UI.Services;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.Abstract
 {
 
     [ComVisible(false)]
@@ -17,8 +17,8 @@ namespace Rubberduck.UI.Command
         {
             _service = service;
 
-            CanExecuteCondition = (parameter => true);
-            OnExecuteCondition = (parameter => true);
+            CanExecuteCondition = parameter => true;
+            OnExecuteCondition = parameter => true;
 
             ShortcutText = string.Empty;
         }
@@ -54,7 +54,7 @@ namespace Rubberduck.UI.Command
             }
 
             var currentOnExecute = OnExecuteCondition;
-            OnExecuteCondition = (parameter) => 
+            OnExecuteCondition = (parameter) =>
                 currentOnExecute(parameter) && furtherCanExecuteEvaluation(parameter);
         }
 
@@ -87,9 +87,9 @@ namespace Rubberduck.UI.Command
         }
 
         public CanExecuteRoutedEventHandler CanExecuteRouted() =>
-            (object sender, CanExecuteRoutedEventArgs e) => CanExecute(e.Parameter);
+            (sender, e) => CanExecute(e.Parameter);
 
         public ExecutedRoutedEventHandler ExecutedRouted() =>
-            (object sender, ExecutedRoutedEventArgs e) => Execute(e.Parameter);
+            (sender, e) => Execute(e.Parameter);
     }
 }

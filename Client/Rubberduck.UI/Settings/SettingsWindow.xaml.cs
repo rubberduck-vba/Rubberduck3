@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using Rubberduck.UI.Shell;
+using System.Windows;
+using System.Windows.Input;
 
 namespace Rubberduck.UI.Settings
 {
@@ -7,6 +9,8 @@ namespace Rubberduck.UI.Settings
     /// </summary>
     public partial class SettingsWindow : Window
     {
+        private readonly SystemCommandHandlers _systemCommandHandlers;
+
         public SettingsWindow(ISettingsWindowViewModel viewModel) : this()
         {
             DataContext = viewModel;
@@ -15,6 +19,25 @@ namespace Rubberduck.UI.Settings
         public SettingsWindow()
         {
             InitializeComponent();
+            MouseDown += OnMouseDown;
+
+            _systemCommandHandlers = new SystemCommandHandlers(this);
+
+            var bindings = new CommandBinding[]
+            {
+                new(SystemCommands.CloseWindowCommand, _systemCommandHandlers.CloseWindowCommandBinding_Executed, _systemCommandHandlers.CloseWindowCommandBinding_CanExecute),
+                //new(NavigationCommands.Search, _filterCommandExecute, _filterCommandCanExecute),
+            };
+
+            CommandBindings.AddRange(bindings);
+        }
+
+        private void OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                DragMove();
+            }
         }
     }
 }

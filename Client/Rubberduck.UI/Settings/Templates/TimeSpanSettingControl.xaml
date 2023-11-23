@@ -8,9 +8,8 @@
              xmlns:b="clr-namespace:Rubberduck.UI.Behaviors"
              d:DataContext="{d:DesignInstance Type=viewmodels:TimeSpanSettingViewModel}"
              Background="{DynamicResource ThemeBackgroundColorBrush}"
-             Padding="4" MinHeight="96" MinWidth="255"
-             mc:Ignorable="d" 
-             d:DesignHeight="128" d:DesignWidth="255">
+             Padding="4" MinHeight="96" MinWidth="255" MaxWidth="512"
+             mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -19,8 +18,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
-            BorderBrush="{DynamicResource ThemeBackgroundMediumColorBrush}" BorderThickness="1">
+    <Border Style="{DynamicResource SectionBorderStyle}">
         <DockPanel LastChildFill="True">
             <DockPanel DockPanel.Dock="Top">
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
@@ -33,20 +31,20 @@
                 </Label>
             </DockPanel>
             <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
-                <Label Style="{DynamicResource FormLabelStyle}" Margin="4,0">
+                <Label Style="{DynamicResource FormFieldDescriptionLabelStyle}" Margin="4,0,4,4">
                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
                 </Label>
             </ScrollViewer>
-            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center" Margin="4">
-                <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Hours}" HorizontalContentAlignment="Center" />
-                <TextBlock Text=":" VerticalAlignment="Center" />
-                <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Minutes}" HorizontalContentAlignment="Center" />
-                <TextBlock Text=":" VerticalAlignment="Center" />
-                <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Seconds}" HorizontalContentAlignment="Center" />
-                <TextBlock Text="." VerticalAlignment="Center" />
-                <TextBox b:Masking.Mask="\d" MaxLength="3" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="36" Height="24" Text="{Binding Milliseconds}" HorizontalContentAlignment="Center" />
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="4">
+                <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Hours}" HorizontalContentAlignment="Center" ToolTip="Hours" />
+                <TextBlock Text=":" VerticalAlignment="Center" Margin="2" />
+                <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Minutes}" HorizontalContentAlignment="Center" ToolTip="Minutes" />
+                <TextBlock Text=":" VerticalAlignment="Center" Margin="2" />
+                <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Seconds}" HorizontalContentAlignment="Center" ToolTip="Seconds" />
+                <TextBlock Text="." VerticalAlignment="Center" Margin="2" />
+                <TextBox b:Masking.Mask="\d" MaxLength="3" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="36" Height="24" Text="{Binding Milliseconds}" HorizontalContentAlignment="Center" ToolTip="Milliseconds" />
             </StackPanel>
-            <Label DockPanel.Dock="Top" Style="{DynamicResource FormLabelStyleMedium}" HorizontalAlignment="Center" Margin="-4">
+            <Label DockPanel.Dock="Top" Style="{DynamicResource FormLabelStyleSmall}" Margin="0,-4">
                 <TextBlock Text="hh:mm:ss.ms" />
             </Label>
         </DockPanel>

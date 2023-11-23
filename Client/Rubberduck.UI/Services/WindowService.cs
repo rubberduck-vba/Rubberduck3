@@ -1,8 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider;
-using Rubberduck.SettingsProvider.Model;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
@@ -19,7 +16,7 @@ namespace Rubberduck.UI.Services
 
     public static class WindowSizeMap
     {
-        public static IDictionary<WindowSize, Size> SizeMap = new Dictionary<WindowSize, Size>
+        public static readonly IDictionary<WindowSize, Size> SizeMap = new Dictionary<WindowSize, Size>
         {
             [WindowSize.SmallWide] = new Size(600, 380),
             [WindowSize.SmallTall] = new Size(480, 600),

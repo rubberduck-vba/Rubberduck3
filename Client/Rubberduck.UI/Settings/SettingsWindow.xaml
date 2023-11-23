@@ -32,7 +32,9 @@
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           ItemsSource="{Binding Settings.Items}" 
-                          SelectedItem="{Binding Selection}">
+                          SelectedItem="{Binding Selection}" d:ItemsSource="{d:SampleData ItemCount=5}">
+                    <ListView.Resources>
+                    </ListView.Resources>
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -41,9 +43,8 @@
                     <ListView.ItemTemplate>
                         <DataTemplate DataType="{x:Type vm:SettingGroupViewModel}">
                             <DockPanel>
-                                <Image DockPanel.Dock="Left" Source="{DynamicResource DuckyIcon}" Style="{DynamicResource IconStyle}" />
-                                <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}">
-                                    <TextBlock Margin="4" Text="{Binding Name}" ToolTip="{Binding Description}" />
+                                <Label DockPanel.Dock="Top" Style="{DynamicResource ListItemTitleLabelStyle}">
+                                    <TextBlock Padding="0,0,0,5" Margin="5" Text="{Binding Name}" ToolTip="{Binding Description}" />
                                 </Label>
                             </DockPanel>
                         </DataTemplate>

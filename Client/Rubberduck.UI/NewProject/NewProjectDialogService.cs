@@ -30,7 +30,7 @@ namespace Rubberduck.UI.NewProject
             IVBProjectInfoProvider projectsProvider,
             ITemplatesService templatesService,
             MessageActionsProvider actionsProvider,
-            ShowLanguageClientSettingsCommand showSettingsCommand,
+            ShowRubberduckSettingsCommand showSettingsCommand,
             PerformanceRecordAggregator performance) 
             : base(logger, factory, settingsProvider, actionsProvider, performance)
         {

@@ -21,11 +21,11 @@ namespace Rubberduck.Editor
         private readonly IProjectFileService _projectFile;
 
         private readonly Dictionary<Uri, IFileSystemWatcher> _watchers = [];
-        private readonly ILanguageClientFacade _lsp;
+        private readonly Func<ILanguageClient> _lsp;
 
-        public WorkspaceService(ILogger logger, RubberduckSettingsProvider settingsProvider,
+        public WorkspaceService(ILogger<WorkspaceService> logger, RubberduckSettingsProvider settingsProvider,
             WorkspaceStateManager state, IFileSystem fileSystem, PerformanceRecordAggregator performance,
-            IProjectFileService projectFile, ILanguageClientFacade lsp)
+            IProjectFileService projectFile, Func<ILanguageClient> lsp)
             : base(logger, settingsProvider, performance)
         {
             _state = state;
@@ -49,17 +49,17 @@ namespace Rubberduck.Editor
                         throw new FileNotFoundException("No project file ('.rdproj') was found under the specified workspace URI.");
                     }
 
-                    var sourceRoot = _fileSystem.Path.Combine(root, ProjectFile.SourceRoot);
-                    if (!_fileSystem.Directory.Exists(sourceRoot))
-                    {
-                        throw new DirectoryNotFoundException("Project source root folder ('.src') was not found under the secified workspace URI.");
-                    }
-
                     var projectFile = _projectFile.ReadFile(uri);
                     var version = new Version(projectFile.Rubberduck);
                     if (version > new Version("3.0"))
                     {
                         throw new NotSupportedException("This project was created with a version of Rubberduck greater than the one currently running.");
+                    }
+
+                    var sourceRoot = _fileSystem.Path.Combine(root, ProjectFile.SourceRoot);
+                    if (!_fileSystem.Directory.Exists(sourceRoot))
+                    {
+                        throw new DirectoryNotFoundException("Project source root folder ('.src') was not found under the secified workspace URI.");
                     }
 
                     var folders = _fileSystem.DirectoryInfo.New(sourceRoot).EnumerateDirectories("*", SearchOption.AllDirectories).ToList();
@@ -170,7 +170,7 @@ namespace Rubberduck.Editor
 
                 // NOTE: this is different than the DidRenameFiles mechanism.
                 LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Renamed: {oldUri} -> {newUri}");
-                _lsp.Workspace.DidChangeWatchedFiles(request);
+                _lsp().Workspace.DidChangeWatchedFiles(request);
             });
         }
 
@@ -195,7 +195,7 @@ namespace Rubberduck.Editor
 
             // NOTE: this is different than the DidDeleteFiles mechanism.
             LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Deleted: {uri}");
-            _lsp.Workspace.DidChangeWatchedFiles(request);
+            _lsp().Workspace.DidChangeWatchedFiles(request);
         }
 
         private void OnWatcherChanged(object sender, FileSystemEventArgs e)
@@ -219,7 +219,7 @@ namespace Rubberduck.Editor
 
             // NOTE: this is different than the document-level syncing mechanism.
             LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Changed: {uri}");
-            _lsp.Workspace.DidChangeWatchedFiles(request);
+            _lsp().Workspace.DidChangeWatchedFiles(request);
         }
 
         private void OnWatcherCreated(object sender, FileSystemEventArgs e)
@@ -241,7 +241,7 @@ namespace Rubberduck.Editor
 
             // NOTE: this is different than the document-level syncing mechanism.
             LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Created: {uri}");
-            _lsp.Workspace.DidChangeWatchedFiles(request);
+            _lsp().Workspace.DidChangeWatchedFiles(request);
         }
 
         private void OnWatcherError(object sender, ErrorEventArgs e)

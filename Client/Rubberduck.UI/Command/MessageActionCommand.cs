@@ -4,6 +4,7 @@ using System.Windows;
 using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
 
 namespace Rubberduck.UI.Command

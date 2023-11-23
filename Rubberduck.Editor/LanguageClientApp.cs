@@ -48,6 +48,8 @@ namespace Rubberduck.Editor
             _tokenSource = tokenSource;
         }
 
+        public OmniSharpLanguageClient LanguageClient => _languageClient;
+
         public async Task StartupAsync()
         {
             StartLanguageServerProcess();
