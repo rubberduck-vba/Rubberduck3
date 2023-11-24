@@ -11,6 +11,110 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.UI.NewProject
 {
+    public class CloseAllDocumentsCommand : CommandBase
+    {
+        private readonly IWorkspaceService _workspace;
+
+        public CloseAllDocumentsCommand(UIServiceHelper service,
+            IWorkspaceService workspace)
+            : base(service)
+        {
+            _workspace = workspace;
+        }
+
+        protected async override Task OnExecuteAsync(object? parameter)
+        {
+            await Task.Yield();
+            _workspace.CloseAllFiles();
+        }
+    }
+
+    public class CloseDocumentCommand : CommandBase
+    {
+        private readonly IWorkspaceService _workspace;
+
+        public CloseDocumentCommand(UIServiceHelper service,
+            IWorkspaceService workspace)
+            : base(service)
+        {
+            _workspace = workspace;
+        }
+
+        protected async override Task OnExecuteAsync(object? parameter)
+        {
+            await Task.Yield();
+            if (parameter is Uri uri)
+            {
+                _workspace.CloseFile(uri);
+                return;
+            }
+
+            // TODO once there's a document state manager, grab the ActiveDocument here
+        }
+    }
+
+    public class SaveAsProjectTemplateCommand : CommandBase
+    {
+        private readonly IWorkspaceService _workspace;
+        private readonly ITemplatesService _templates;
+
+        public SaveAsProjectTemplateCommand(UIServiceHelper service,
+            IWorkspaceService workspace, ITemplatesService templates)
+            : base(service)
+        {
+            _workspace = workspace;
+            _templates = templates;
+        }
+
+        protected override async Task OnExecuteAsync(object? parameter)
+        {
+            await Task.Yield();
+            var template = new ProjectTemplate(); // TODO ExportTemplateService
+            _templates.SaveProjectTemplate(template);
+        }
+    }
+
+    public class SaveAllDocumentsCommand : CommandBase
+    {
+        private readonly IWorkspaceService _workspace;
+
+        public SaveAllDocumentsCommand(UIServiceHelper service,
+            IWorkspaceService workspace)
+            : base(service)
+        {
+            _workspace = workspace;
+        }
+
+        protected async override Task OnExecuteAsync(object? parameter)
+        {
+            await Task.Yield();
+            await _workspace.SaveAllAsync();
+        }
+    }
+
+    public class SaveDocumentCommand : CommandBase
+    {
+        private readonly IWorkspaceService _workspace;
+
+        public SaveDocumentCommand(UIServiceHelper service,
+            IWorkspaceService workspace)
+            : base(service)
+        {
+            _workspace = workspace;
+        }
+
+        protected async override Task OnExecuteAsync(object? parameter)
+        {
+            if (parameter is Uri uri)
+            {
+                await _workspace.SaveWorkspaceFileAsync(uri);
+                return;
+            }
+
+            // TODO once there's a document state manager, grab the ActiveDocument here
+        }
+    }
+
     public class NewProjectCommand : CommandBase
     {
         private readonly NewProjectWindowFactory _factory;
@@ -48,8 +152,9 @@ namespace Rubberduck.UI.NewProject
             var templates = _templatesService.GetProjectTemplates();
 
             var model = new NewProjectWindowViewModel(Service.Settings, projects, templates, _actions, _showSettingsCommand);
+            string? root = default;
 
-            Service.TryRunAction(() =>
+            if (Service.TryRunAction(() =>
             {
                 var view = _factory.Create(model);
                 if (view.ShowDialog() == true)
@@ -63,7 +168,7 @@ namespace Rubberduck.UI.NewProject
                         }
                     }
 
-                    var root = _fileSystem.Path.Combine(model.WorkspaceLocation, model.ProjectName);
+                    root = _fileSystem.Path.Combine(model.WorkspaceLocation, model.ProjectName);
                     var projectFile = CreateProjectFileModel(model);
 
                     var workspaceSrcRoot = _fileSystem.Path.Combine(root, ProjectFile.SourceRoot);
@@ -77,15 +182,14 @@ namespace Rubberduck.UI.NewProject
                         var templatesRoot = _fileSystem.DirectoryInfo.New(Service.Settings.GeneralSettings.TemplatesLocation.LocalPath).FullName;
                         var templateSrcRoot = _fileSystem.Path.Combine(templatesRoot, templateName, ProjectTemplate.TemplateSourceFolderName);
                         _workspaceFolderService.CopyTemplateFiles(template.ProjectFile, workspaceSrcRoot, templateSrcRoot);
-                        
                     }
 
                     Service.LogInformation("Workspace was successfully created.", $"Workspace root: {root}");
-                    _workspace.OpenProjectWorkspaceAsync(new Uri(root));
                 }
-            }, nameof(NewProjectCommand));
-
-            await Task.CompletedTask;
+            }, nameof(NewProjectCommand)) && root != default)
+            {
+                await _workspace.OpenProjectWorkspaceAsync(new Uri(root));
+            }
         }
 
         private ProjectFile CreateProjectFileModel(NewProjectWindowViewModel model)

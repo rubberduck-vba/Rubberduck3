@@ -6,9 +6,10 @@ namespace Rubberduck.UI.Shell
 {
     public class FileCommandHandlers
     {
-        public FileCommandHandlers(NewProjectCommand newProjectCommand)
+        public FileCommandHandlers(NewProjectCommand newProjectCommand, OpenProjectCommand openProjectCommand)
         {
             NewProjectCommand = newProjectCommand;
+            OpenProjectCommand = openProjectCommand;
         }
 
         public ICommand NewProjectCommand { get; init; }
@@ -26,6 +27,16 @@ namespace Rubberduck.UI.Shell
         public IEnumerable<CommandBinding> CreateCommandBindings() => new[]
         {
             new CommandBinding(NewProjectCommand, NewProjectCommandBinding_Executed, NewProjectCommandBinding_CanExecute),
+            new CommandBinding(OpenProjectCommand, OpenProjectCommandBinding_Executed, OpenProjectCommandBinding_CanExecute),
+            new CommandBinding(SaveDocumentCommand, SaveDocumentCommandBinding_Executed, SaveDocumentCommandBinding_CanExecute),
+            new CommandBinding(SaveDocumentAsCommand, SaveDocumentAsCommandBinding_Executed, SaveDocumentAsCommandBinding_CanExecute),
+            new CommandBinding(SaveAllDocumentsCommand, SaveAllDocumentsCommandBinding_Executed, SaveAllDocumentsCommandBinding_CanExecute),
+            new CommandBinding(SaveAsProjectTemplateCommand, SaveAsProjectTemplateCommandBinding_Executed, SaveAsProjectTemplateCommandBinding_CanExecute),
+            new CommandBinding(CloseDocumentCommand, CloseDocumentCommandBinding_Executed, CloseDocumentCommandBinding_CanExecute),
+            new CommandBinding(CloseAllDocumentsCommand, CloseAllDocumentsCommandBinding_Executed, CloseAllDocumentsCommandBinding_CanExecute),
+            new CommandBinding(CloseWorkspaceCommand, CloseWorkspaceCommandBinding_Executed, CloseWorkspaceCommandBinding_CanExecute),
+            new CommandBinding(SynchronizeWorkspaceCommand, SynchronizeWorkspaceCommandBinding_Executed, SynchronizeWorkspaceCommandBinding_CanExecute),
+            new CommandBinding(ExitCommand, ExitCommandBinding_Executed, ExitCommandBinding_CanExecute),
         };
 
         private void NewProjectCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -40,7 +51,7 @@ namespace Rubberduck.UI.Shell
 
         private void SaveDocumentCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
             => e.CanExecute = SaveDocumentCommand.CanExecute(e.Parameter);
-        private void OpenProjectCommandSaveDocumentCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        private void SaveDocumentCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
             => SaveDocumentCommand.Execute(e.Parameter);
 
         private void SaveDocumentAsCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)

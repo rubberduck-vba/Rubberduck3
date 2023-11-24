@@ -2,6 +2,7 @@
 using Rubberduck.InternalApi.Model;
 using Rubberduck.SettingsProvider;
 using System;
+using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Text.Json;
 
@@ -12,6 +13,9 @@ namespace Rubberduck.UI.Services.Abstract
     /// </summary>
     public interface IWorkspaceStateManager
     {
+        Uri? WorkspaceRoot { get; set; }
+        IEnumerable<WorkspaceFileInfo> WorkspaceFiles { get; }
+        void ClearPreviousVersions(Uri uri);
         /// <summary>
         /// Attempts to retrieve the specified file.
         /// </summary>

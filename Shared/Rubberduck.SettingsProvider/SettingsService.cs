@@ -100,10 +100,6 @@ namespace Rubberduck.SettingsProvider
                 LogInformation($"Cached new {typeof(TSettings).Name} value.");
                 OnSettingsChanged(oldValue);
             }
-            else
-            {
-                LogWarning("TrySetValue: Settings are unchanged.");
-            }
 
             return didChange;
         }

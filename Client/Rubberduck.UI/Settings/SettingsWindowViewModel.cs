@@ -162,7 +162,7 @@ namespace Rubberduck.UI.Settings
             var settings = _service.Settings;
             if (settings.Value != settings.DefaultValue && ConfirmReset())
             {
-                //_service.Write(settings with { Value = settings.DefaultValue });
+                _service.SettingsProvider.Write(settings with { Value = settings.DefaultValue });
                 _message.ShowMessage(new() { Key = $"{nameof(SettingsWindowViewModel)}.{nameof(ResetToDefaults)}.Completed", Level = LogLevel.Information, Title = "Reset Settings", Message = "All settings have been reset to their default value." });
             }
         }

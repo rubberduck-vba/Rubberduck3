@@ -1,13 +1,16 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Model;
 using Rubberduck.SettingsProvider;
+using Rubberduck.UI.Services.Abstract;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.Editor
 {
-    public class WorkspaceStateManager : ServiceBase
+    public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
     {
         private readonly ConcurrentDictionary<Uri, ConcurrentQueue<WorkspaceFileInfo>> _workspaceFiles = [];
 
@@ -16,6 +19,9 @@ namespace Rubberduck.Editor
             : base(logger, settings, performance)
         {
         }
+
+        public Uri? WorkspaceRoot { get; set; }
+        public string ProjectName { get; set; }
 
         public bool TryGetWorkspaceFile(Uri uri, out WorkspaceFileInfo? fileInfo)
         {
@@ -40,6 +46,20 @@ namespace Rubberduck.Editor
             return false;
         }
 
+        public IEnumerable<WorkspaceFileInfo> WorkspaceFiles
+        {
+            get
+            {
+                foreach (var file in _workspaceFiles)
+                {
+                    if (file.Value.TryPeek(out var cache))
+                    {
+                        yield return cache;
+                    }
+                }
+            }
+        }
+
         public bool CloseWorkspaceFile(Uri uri, out WorkspaceFileInfo? fileInfo)
         {
             if (_workspaceFiles.TryGetValue(uri, out var cache)
@@ -54,6 +74,16 @@ namespace Rubberduck.Editor
 
             fileInfo = default;
             return false;
+        }
+
+        public void ClearPreviousVersions(Uri uri)
+        {
+            if (_workspaceFiles.TryGetValue(uri, out var cache) && cache.TryDequeue(out var current))
+            {
+                cache.Clear();
+                var file = current with { Version = 1 };
+                cache.Enqueue(file);
+            }
         }
 
         public bool LoadWorkspaceFile(WorkspaceFileInfo file, int cacheCapacity = 3)
@@ -127,6 +157,7 @@ namespace Rubberduck.Editor
         public void UnloadWorkspace()
         {
             _workspaceFiles.Clear();
+            WorkspaceRoot = null;
             // should this force a GC? does it matter?
         }
     }

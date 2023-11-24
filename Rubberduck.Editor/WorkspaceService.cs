@@ -4,12 +4,14 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
 using Rubberduck.InternalApi.Model;
 using Rubberduck.SettingsProvider;
+using Rubberduck.UI.NewProject;
 using Rubberduck.UI.Services.Abstract;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
+using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Editor
@@ -33,6 +35,21 @@ namespace Rubberduck.Editor
             _projectFile = projectFile;
             _lsp = lsp;
         }
+
+        public ProjectTemplate ToProjectTemplate() => new()
+        {
+            Rubberduck = "3.0",
+            Name = _state.ProjectName,
+            ProjectFile = new ProjectFile
+            {
+                Rubberduck = "3.0",
+                Uri = _state.WorkspaceRoot!,
+                VBProject = new Project
+                {
+                    // todo
+                }
+            }
+        };
 
         public IFileSystem FileSystem => _fileSystem;
 
@@ -61,18 +78,10 @@ namespace Rubberduck.Editor
                     {
                         throw new DirectoryNotFoundException("Project source root folder ('.src') was not found under the secified workspace URI.");
                     }
-
-                    var folders = _fileSystem.DirectoryInfo.New(sourceRoot).EnumerateDirectories("*", SearchOption.AllDirectories).ToList();
-                    foreach (var folder in folders)
-                    {
-                        if (folder.FullName == sourceRoot)
-                        {
-                            continue;
-                        }
-
-                    }
-
+                    
                     LoadWorkspaceFiles(sourceRoot, projectFile);
+                    _state.WorkspaceRoot = uri;
+                    _state.ProjectName = _fileSystem.Path.GetFileName(root);
                     EnableFileSystemWatcher(uri);
 
                 }, out var exception) && exception is not null)
@@ -119,6 +128,47 @@ namespace Rubberduck.Editor
             }
         }
 
+        public async Task<bool> SaveWorkspaceFileAsync(Uri uri)
+        {
+            if (_state.WorkspaceRoot != null && _state.TryGetWorkspaceFile(uri, out var file) && file != null)
+            {
+                var path = _fileSystem.Path.Combine(_state.WorkspaceRoot.LocalPath, ProjectFile.SourceRoot, file.Uri.LocalPath);
+                await _fileSystem.File.WriteAllTextAsync(path, file.Content);
+                _state.ClearPreviousVersions(uri);
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> SaveWorkspaceFileAsAsync(Uri uri, string path)
+        {
+            if (_state.WorkspaceRoot != null && _state.TryGetWorkspaceFile(uri, out var file) && file != null)
+            {
+                // note: saves a copy but only keeps the original URI in the workspace
+                await _fileSystem.File.WriteAllTextAsync(path, file.Content);
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> SaveAllAsync()
+        {
+            var tasks = new List<Task>();
+            if (_state.WorkspaceRoot != null)
+            {
+                var srcRoot = _fileSystem.Path.Combine(_state.WorkspaceRoot.LocalPath, ProjectFile.SourceRoot);
+                foreach (var file in _state.WorkspaceFiles.Where(e => e.IsOpened))
+                {
+                    var path = _fileSystem.Path.Combine(srcRoot, file.Uri.LocalPath);
+                    tasks.Add(_fileSystem.File.WriteAllTextAsync(path, file.Content));
+                    _state.ClearPreviousVersions(file.Uri);
+                }
+            }
+
+            return await Task.WhenAll(tasks).ContinueWith(t => !t.IsFaulted, TaskScheduler.Current);
+        }
 
         private IFileSystemWatcher ConfigureWatcher(string path)
         {
@@ -320,6 +370,24 @@ namespace Rubberduck.Editor
                     LogWarning($"{(isSourceFile ? "Source file" : "File")} version {fileVersion} at {uri} was not loaded; a newer version is already cached.'.");
                 }
             });
+        }
+
+        public void CloseFile(Uri uri)
+        {
+            _state.CloseWorkspaceFile(uri, out _);
+        }
+
+        public void CloseAllFiles()
+        {
+            foreach(var file in _state.WorkspaceFiles)
+            {
+                _state.CloseWorkspaceFile(file.Uri, out _);
+            }
+        }
+
+        public void CloseWorkspace()
+        {
+            throw new NotImplementedException();
         }
 
         public void Dispose()

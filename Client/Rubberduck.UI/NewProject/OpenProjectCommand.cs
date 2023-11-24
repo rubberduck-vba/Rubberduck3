@@ -11,16 +11,16 @@ namespace Rubberduck.UI.NewProject
     public class OpenProjectCommand : CommandBase
     {
         private readonly IFileSystem _fileSystem;
-        private readonly IProjectFileService _projectFileService;
+        private readonly IWorkspaceService _workspaceService;
 
         public OpenProjectCommand(UIServiceHelper service, 
-            IProjectFileService projectFileService,
-            IFileSystem fileSystem
+            IFileSystem fileSystem,
+            IWorkspaceService workspace
             )
             : base(service)
         {
-            _projectFileService = projectFileService;
             _fileSystem = fileSystem;
+            _workspaceService = workspace;
         }
 
         protected async override Task OnExecuteAsync(object? parameter)
@@ -47,9 +47,8 @@ namespace Rubberduck.UI.NewProject
 
             if (uri != null)
             {
-                var workspaceUri = new Uri(uri);
-                var model = _projectFileService.ReadFile(workspaceUri);
-                // TODO load the workspace into the editor
+                Service.LogInformation("Opening project workspace...", $"Workspace root: {uri}");
+                await _workspaceService.OpenProjectWorkspaceAsync(new Uri(uri));
             }
         }
     }

@@ -232,6 +232,7 @@ namespace Rubberduck.Editor
             services.AddSingleton<FileCommandHandlers>();
             services.AddSingleton<NewProjectCommand>();
             services.AddSingleton<NewProjectWindowFactory>();
+            services.AddSingleton<OpenProjectCommand>();
 
         }
 

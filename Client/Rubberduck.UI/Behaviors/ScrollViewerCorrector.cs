@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Rubberduck.Editor.Shell
+namespace Rubberduck.UI.Behaviors
 {
     //adapted from https://serialseb.com/blog/2007/09/03/wpf-tips-6-preventing-scrollviewer-from/
     public class ScrollViewerCorrector

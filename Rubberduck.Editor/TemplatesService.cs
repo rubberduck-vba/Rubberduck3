@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Rubberduck.Editor
 {
@@ -37,26 +38,25 @@ namespace Rubberduck.Editor
             });
         }
 
-        public void SaveAsTemplate(ProjectFile projectFile)
+        public void SaveProjectTemplate(ProjectTemplate template)
         {
             if (!TryRunAction(() =>
             {
-                var name = projectFile.VBProject.Name;
+                var name = template.Name;
 
                 var templateRoot = CreateTemplateRoot(name);
-                CreateProjectFile(projectFile, templateRoot);
+                CreateProjectFile(template.ProjectFile, templateRoot);
 
-                var sourceRoot = CreateTemplateSourceFolder(templateRoot, projectFile.VBProject.Folders);
-                
-                var (files, bytes) = CopyProjectFiles(projectFile, sourceRoot);
+                var sourceRoot = CreateTemplateSourceFolder(templateRoot, template.ProjectFile.VBProject.Folders);
+
+                var (files, bytes) = CopyProjectFiles(template.ProjectFile, sourceRoot);
                 if (bytes == 0 && files != 0)
                 {
-                    LogWarning($"Template was created for {files}, totalling 0 bytes.");
+                    LogWarning($"Template '{name}' was created for {files} files totalling 0 bytes.");
                 }
 
-                LogInformation("New project template created.", 
-                    $"Template: {name}; {files} files ({bytes} bytes); {projectFile.VBProject.Folders.Length} folders.");
-
+                LogInformation("New project template created.",
+                    $"Template: {name}; {files} files ({bytes} bytes); {template.ProjectFile.VBProject.Folders.Length} folders.");
             }, out var exception) && exception is not null)
             {
                 throw new TimedActionFailedException(exception);

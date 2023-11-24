@@ -1,11 +1,18 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Rubberduck.UI.Styles"
+                    xmlns:b="clr-namespace:Rubberduck.UI.Behaviors"
                     xmlns:converters="clr-namespace:Rubberduck.UI.Converters">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Icons.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/LightTheme.xaml"/>
     </ResourceDictionary.MergedDictionaries>
+
+    <Style TargetType="ScrollViewer">
+        <Style.Setters>
+            <Setter Property="b:ScrollViewerCorrector.FixScrolling" Value="True" />
+        </Style.Setters>
+    </Style>
 
     <Color x:Key="ThemeWhiteDarkColor">#FFA9A9A9</Color>
     <Color x:Key="ThemeWhiteMediumColor">#FFD3D3D3</Color>
