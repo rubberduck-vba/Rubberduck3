@@ -32,7 +32,8 @@ namespace Rubberduck.UI.NewProject
                 {
                     Title = "Open Project",
                     DefaultFileExtension = "rdproj",
-                    Filter = "Rubberduck Project (.rdproj);*.rdproj",
+                    Filter = "Rubberduck Project (.rdproj)|*.rdproj",
+                    RootUri = new Uri(_fileSystem.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Rubberduck", "Workspaces")),
                 };
                 if (!DialogCommands.BrowseFileOpen(prompt))
                 {
