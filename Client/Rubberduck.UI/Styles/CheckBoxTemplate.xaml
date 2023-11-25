@@ -17,7 +17,7 @@
     </Style>
     <SolidColorBrush x:Key="OptionMark.Static.Glyph" Color="{DynamicResource ThemeTextColor}"/>
     <SolidColorBrush x:Key="OptionMark.MouseOver.Background" Color="{DynamicResource BackgroundLightColor}"/>
-    <SolidColorBrush x:Key="OptionMark.MouseOver.Border" Color="{DynamicResource ThemeWhiteDarkColor}"/>
+    <SolidColorBrush x:Key="OptionMark.MouseOver.Border" Color="{DynamicResource ThemeTextColor}"/>
     <SolidColorBrush x:Key="OptionMark.MouseOver.Glyph" Color="{DynamicResource ThemeTextColor}"/>
     <SolidColorBrush x:Key="OptionMark.Pressed.Background" Color="{DynamicResource ThemeBackgroundLightColor}"/>
     <SolidColorBrush x:Key="OptionMark.Pressed.Border" Color="{DynamicResource ThemeBackgroundMediumColor}"/>
@@ -46,8 +46,6 @@
                 <Setter Property="Padding" Value="4,-1,0,0"/>
             </Trigger>
             <Trigger Property="IsMouseOver" Value="true">
-                <Setter Property="Background" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.MouseOver.Background}"/>
-                <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.MouseOver.Border}"/>
                 <Setter Property="Fill" TargetName="optionMark" Value="{StaticResource OptionMark.MouseOver.Glyph}"/>
                 <Setter Property="Fill" TargetName="indeterminateMark" Value="{StaticResource OptionMark.MouseOver.Glyph}"/>
             </Trigger>
@@ -58,8 +56,6 @@
                 <Setter Property="Fill" TargetName="indeterminateMark" Value="{StaticResource OptionMark.Disabled.Glyph}"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="true">
-                <Setter Property="Background" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.Pressed.Background}"/>
-                <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.Pressed.Border}"/>
                 <Setter Property="Fill" TargetName="optionMark" Value="{StaticResource OptionMark.Pressed.Glyph}"/>
                 <Setter Property="Fill" TargetName="indeterminateMark" Value="{StaticResource OptionMark.Pressed.Glyph}"/>
             </Trigger>
@@ -76,7 +72,7 @@
 
     <Style TargetType="CheckBox">
         <Style.Setters>
-            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundLightColorBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeTextColorBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Template" Value="{StaticResource FormFieldCheckBoxTemplate}" />
         </Style.Setters>

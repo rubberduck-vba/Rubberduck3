@@ -75,7 +75,7 @@ namespace Rubberduck.UI.NewProject
         }
 
         private string _projectName = string.Empty;
-        //[Required, MaxLength(31)] // todo actually validate this
+        [Required, MaxLength(31)] // todo actually validate this
         public string ProjectName 
         {
             get => _projectName;
@@ -91,7 +91,7 @@ namespace Rubberduck.UI.NewProject
         }
 
         private string _workspaceLocation = string.Empty;
-        //[Required, MaxLength(1023)]
+        [Required, MaxLength(1023)]
         public string WorkspaceLocation
         {
             get => _workspaceLocation;

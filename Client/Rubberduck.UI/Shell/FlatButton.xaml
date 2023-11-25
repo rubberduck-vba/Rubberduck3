@@ -14,7 +14,7 @@
             </ResourceDictionary.MergedDictionaries>
             <ControlTemplate x:Key="FlatButtonTemplate">
                 <Canvas>
-                    <Image Source="{Binding Icon, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}"
+                    <Image Source="{Binding Icon, ElementName=FlatButtonRoot}"
                            Height="16" Width="16" Stretch="UniformToFill"
                            Canvas.Left="8" Canvas.Top="4" HorizontalAlignment="Left" VerticalAlignment="Center" />
                     <Rectangle Fill="{TemplateBinding Foreground}"
@@ -23,14 +23,14 @@
                         <Rectangle.Resources>
                             <Style TargetType="Rectangle">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}" Value="True">
+                                    <DataTrigger Binding="{Binding IsMouseOver, ElementName=FlatButtonRoot}" Value="True">
                                         <Setter Property="Fill" Value="{DynamicResource ThemeAccent1LightColorBrush}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Rectangle.Resources>
                         <Rectangle.OpacityMask>
-                            <ImageBrush ImageSource="{Binding Icon, RelativeSource={RelativeSource AncestorType=local:FlatButton, Mode=FindAncestor}}" />
+                            <ImageBrush ImageSource="{Binding Icon, ElementName=FlatButtonRoot}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </Canvas>

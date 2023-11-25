@@ -7,7 +7,7 @@
              xmlns:viewmodels="clr-namespace:Rubberduck.UI.Settings.ViewModels" xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
              d:DataContext="{d:DesignInstance Type=viewmodels:BooleanSettingViewModel}"
              Background="{DynamicResource ThemeBackgroundColorBrush}"
-             Padding="4" MinHeight="84" MinWidth="255"
+             Padding="4" MinHeight="84" 
              mc:Ignorable="d" 
              d:DesignHeight="84" d:DesignWidth="255">
     <UserControl.Resources>
@@ -21,7 +21,12 @@
     <Grid>
         <Border Style="{DynamicResource SectionBorderStyle}">
             <DockPanel LastChildFill="True">
-                <StackPanel DockPanel.Dock="Top" Margin="8" Orientation="Horizontal">
+                <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
+                                        Icon="{DynamicResource LockedIcon}" 
+                                        CheckedIcon="{DynamicResource UnlockedIcon}"
+                                        IsChecked="{Binding IsEnabled, Mode=TwoWay}"
+                                        Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
                     <CheckBox IsChecked="{Binding Value}" 
                               VerticalContentAlignment="Center" Cursor="Hand"
                               IsEnabled="{Binding IsEnabled}">
@@ -41,11 +46,6 @@
                         </Label>
                     </CheckBox>
                 </StackPanel>
-                <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
-                                        Icon="{DynamicResource LockedIcon}" 
-                                        PressedIcon="{DynamicResource UnlockedIcon}"
-                                        IsChecked="{Binding IsEnabled, Mode=TwoWay}"
-                                        Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
                 <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldDescriptionLabelStyle}" Margin="5" IsEnabled="{Binding IsEnabled}">
                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
                 </Label>

@@ -4,12 +4,14 @@ using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Services;
+using Rubberduck.Unmanaged.UIContext;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Rubberduck.UI.Settings.ViewModels
 {
@@ -103,8 +105,11 @@ namespace Rubberduck.UI.Settings.ViewModels
         {
             if (parameter is string value)
             {
-                ListItems.Remove(value);
-                Value = ListItems.ToArray();
+                Dispatcher.CurrentDispatcher.Invoke(() =>
+                {
+                    ListItems.Remove(value);
+                    Value = ListItems.ToArray();
+                });
             }
         }
     }

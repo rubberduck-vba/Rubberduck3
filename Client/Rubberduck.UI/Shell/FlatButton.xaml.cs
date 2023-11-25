@@ -14,8 +14,21 @@ namespace Rubberduck.UI.Shell
             InitializeComponent();
         }
 
-        public ImageSource Icon { get; set; }
         public static readonly DependencyProperty IconProperty =
             DependencyProperty.Register(nameof(Icon), typeof(ImageSource), typeof(FlatButton));
+
+        public ImageSource Icon
+        {
+            get => (ImageSource)GetValue(IconProperty);
+            set
+            {
+                var oldValue = Icon;
+                if (value != oldValue)
+                {
+                    SetValue(IconProperty, value);
+                    OnPropertyChanged(new(IconProperty, oldValue, value));
+                }
+            }
+        }
     }
 }

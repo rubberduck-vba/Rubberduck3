@@ -8,7 +8,7 @@
              xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
              d:DataContext="{d:DesignInstance Type=viewmodels:StringSettingViewModel}"
              Background="{DynamicResource ThemeBackgroundColorBrush}"
-             Padding="4" MinHeight="96" MinWidth="255" MaxWidth="512"
+             Padding="4" MinHeight="96"
              mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -23,7 +23,7 @@
             <DockPanel DockPanel.Dock="Top">
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
                                     Icon="{DynamicResource LockedIcon}" 
-                                    PressedIcon="{DynamicResource UnlockedIcon}"
+                                    CheckedIcon="{DynamicResource UnlockedIcon}"
                                     IsChecked="{Binding IsEnabled}"
                                     Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
                 <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0">

@@ -23,8 +23,8 @@
         <DockPanel>
             <DockPanel DockPanel.Dock="Top">
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
-                    Icon="{DynamicResource LockedIcon}" 
-                    PressedIcon="{DynamicResource UnlockedIcon}"
+                    Icon="{StaticResource LockedIcon}" 
+                    CheckedIcon="{StaticResource UnlockedIcon}"
                     IsChecked="{Binding IsEnabled}"
                     ToolTip="Locked (read-only recommended). Click to edit."
                     Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
@@ -33,7 +33,7 @@
                 </Label>
             </DockPanel>
             <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
-                <Label Style="{DynamicResource FormLabelStyleMedium}" Margin="4,0">
+                <Label Style="{DynamicResource FormFieldValueLabelStyle}" Margin="4,0">
                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
                 </Label>
             </ScrollViewer>
@@ -42,16 +42,18 @@
                           HorizontalContentAlignment="Stretch"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         VerticalContentAlignment="Stretch"
                           ItemsSource="{Binding Items}"
                           ItemTemplateSelector="{DynamicResource SettingTemplateSelector}">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="HorizontalAlignment" Value="Stretch" />
                         </Style>
                     </ListBox.ItemContainerStyle>
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel />
+                            <WrapPanel ItemWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollViewer, Mode=FindAncestor}, Converter={StaticResource WrapPanelItemWidthConverter}}" />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                 </ListBox>

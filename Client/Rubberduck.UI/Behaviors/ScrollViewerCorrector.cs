@@ -20,7 +20,7 @@ namespace Rubberduck.UI.Behaviors
         }
 
         public static readonly DependencyProperty FixScrollingProperty =
-            DependencyProperty.RegisterAttached(nameof(FixScrollingProperty), typeof(bool), typeof(ScrollViewerCorrector), new FrameworkPropertyMetadata(false, OnFixScrollingPropertyChanged));
+            DependencyProperty.RegisterAttached(nameof(FixScrollingProperty)[..("Property".Length+1)], typeof(bool), typeof(ScrollViewerCorrector), new FrameworkPropertyMetadata(false, OnFixScrollingPropertyChanged));
 
         public static void OnFixScrollingPropertyChanged(object sender, DependencyPropertyChangedEventArgs e)
         {

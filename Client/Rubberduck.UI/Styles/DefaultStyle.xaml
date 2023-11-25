@@ -8,11 +8,11 @@
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/LightTheme.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="ScrollViewer">
+    <!--<Style TargetType="ScrollViewer">
         <Style.Setters>
             <Setter Property="b:ScrollViewerCorrector.FixScrolling" Value="True" />
         </Style.Setters>
-    </Style>
+    </Style>-->
 
     <Color x:Key="ThemeWhiteDarkColor">#FFA9A9A9</Color>
     <Color x:Key="ThemeWhiteMediumColor">#FFD3D3D3</Color>
@@ -57,7 +57,7 @@
     <SolidColorBrush x:Key="ThemeBlackMediumColorBrush25" Color="{DynamicResource ThemeBlackMediumColor25}" />
     <SolidColorBrush x:Key="ThemeBlackLightColorBrush25" Color="{DynamicResource ThemeBlackLightColor25}" />
 
-    
+    <converters:WrapPanelItemWidthConverter x:Key="WrapPanelItemWidthConverter" />
     <converters:BoolToVisibleVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
     <converters:InvertBoolValueConverter x:Key="InverseBoolConverter" />
