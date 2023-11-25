@@ -8,7 +8,6 @@ namespace Rubberduck.UI.Services.Abstract
     public interface IWorkspaceService : IDisposable
     {
         IFileSystem FileSystem { get; }
-        ProjectTemplate ToProjectTemplate();
 
         Task<bool> OpenProjectWorkspaceAsync(Uri uri);
         bool IsFileSystemWatcherEnabled(Uri root);

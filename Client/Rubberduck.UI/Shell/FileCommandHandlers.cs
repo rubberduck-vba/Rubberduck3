@@ -1,4 +1,5 @@
-﻿using Rubberduck.UI.NewProject;
+﻿using Rubberduck.UI.Command;
+using Rubberduck.UI.NewProject;
 using System.Collections.Generic;
 using System.Windows.Input;
 
@@ -6,10 +7,29 @@ namespace Rubberduck.UI.Shell
 {
     public class FileCommandHandlers
     {
-        public FileCommandHandlers(NewProjectCommand newProjectCommand, OpenProjectCommand openProjectCommand)
+        public FileCommandHandlers(NewProjectCommand newProjectCommand, 
+            OpenProjectCommand openProjectCommand,
+            SaveDocumentCommand saveDocumentCommand,
+            SaveDocumentAsCommand saveDocumentAsCommand,
+            SaveAllDocumentsCommand saveAllDocumentsCommand,
+            SaveAsProjectTemplateCommand saveAsProjectTemplateCommand,
+            CloseDocumentCommand closeDocumentCommand,
+            CloseAllDocumentsCommand closeAllDocumentsCommand,
+            CloseWorkspaceCommand closeWorkspaceCommand,
+            SynchronizeWorkspaceCommand synchronizeWorkspaceCommand,
+            ExitCommand exitCommand)
         {
             NewProjectCommand = newProjectCommand;
             OpenProjectCommand = openProjectCommand;
+            SaveDocumentCommand = saveDocumentCommand;
+            SaveDocumentAsCommand = saveDocumentAsCommand;
+            SaveAllDocumentsCommand = saveAllDocumentsCommand;
+            SaveAsProjectTemplateCommand = saveAsProjectTemplateCommand;
+            CloseDocumentCommand = closeDocumentCommand;
+            CloseAllDocumentsCommand = closeAllDocumentsCommand;
+            CloseWorkspaceCommand = closeWorkspaceCommand;
+            SynchronizeWorkspaceCommand = synchronizeWorkspaceCommand;
+            ExitCommand = exitCommand;
         }
 
         public ICommand NewProjectCommand { get; init; }
@@ -26,17 +46,17 @@ namespace Rubberduck.UI.Shell
 
         public IEnumerable<CommandBinding> CreateCommandBindings() => new[]
         {
-            new CommandBinding(NewProjectCommand, NewProjectCommandBinding_Executed, NewProjectCommandBinding_CanExecute),
-            new CommandBinding(OpenProjectCommand, OpenProjectCommandBinding_Executed, OpenProjectCommandBinding_CanExecute),
-            new CommandBinding(SaveDocumentCommand, SaveDocumentCommandBinding_Executed, SaveDocumentCommandBinding_CanExecute),
-            new CommandBinding(SaveDocumentAsCommand, SaveDocumentAsCommandBinding_Executed, SaveDocumentAsCommandBinding_CanExecute),
-            new CommandBinding(SaveAllDocumentsCommand, SaveAllDocumentsCommandBinding_Executed, SaveAllDocumentsCommandBinding_CanExecute),
-            new CommandBinding(SaveAsProjectTemplateCommand, SaveAsProjectTemplateCommandBinding_Executed, SaveAsProjectTemplateCommandBinding_CanExecute),
-            new CommandBinding(CloseDocumentCommand, CloseDocumentCommandBinding_Executed, CloseDocumentCommandBinding_CanExecute),
-            new CommandBinding(CloseAllDocumentsCommand, CloseAllDocumentsCommandBinding_Executed, CloseAllDocumentsCommandBinding_CanExecute),
-            new CommandBinding(CloseWorkspaceCommand, CloseWorkspaceCommandBinding_Executed, CloseWorkspaceCommandBinding_CanExecute),
-            new CommandBinding(SynchronizeWorkspaceCommand, SynchronizeWorkspaceCommandBinding_Executed, SynchronizeWorkspaceCommandBinding_CanExecute),
-            new CommandBinding(ExitCommand, ExitCommandBinding_Executed, ExitCommandBinding_CanExecute),
+            new CommandBinding(FileCommands.NewProjectCommand, NewProjectCommandBinding_Executed, NewProjectCommandBinding_CanExecute),
+            new CommandBinding(FileCommands.OpenProjectCommand, OpenProjectCommandBinding_Executed, OpenProjectCommandBinding_CanExecute),
+            new CommandBinding(FileCommands.SaveDocumentCommand, SaveDocumentCommandBinding_Executed, SaveDocumentCommandBinding_CanExecute),
+            new CommandBinding(FileCommands.SaveDocumentAsCommand, SaveDocumentAsCommandBinding_Executed, SaveDocumentAsCommandBinding_CanExecute),
+            new CommandBinding(FileCommands.SaveAllDocumentsCommand, SaveAllDocumentsCommandBinding_Executed, SaveAllDocumentsCommandBinding_CanExecute),
+            new CommandBinding(FileCommands.SaveProjectAsTemplateCommand, SaveAsProjectTemplateCommandBinding_Executed, SaveAsProjectTemplateCommandBinding_CanExecute),
+            new CommandBinding(FileCommands.CloseDocumentCommand, CloseDocumentCommandBinding_Executed, CloseDocumentCommandBinding_CanExecute),
+            new CommandBinding(FileCommands.CloseAllDocumentsCommand, CloseAllDocumentsCommandBinding_Executed, CloseAllDocumentsCommandBinding_CanExecute),
+            new CommandBinding(FileCommands.CloseWorkspaceCommand, CloseWorkspaceCommandBinding_Executed, CloseWorkspaceCommandBinding_CanExecute),
+            new CommandBinding(FileCommands.SynchronizeWorkspaceCommand, SynchronizeWorkspaceCommandBinding_Executed, SynchronizeWorkspaceCommandBinding_CanExecute),
+            new CommandBinding(FileCommands.ExitCommand, ExitCommandBinding_Executed, ExitCommandBinding_CanExecute),
         };
 
         private void NewProjectCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)

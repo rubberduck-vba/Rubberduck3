@@ -150,12 +150,12 @@
                         Command="{x:Static SystemCommands.CloseWindowCommand}" 
                         ToolTip="Close">
                     <Canvas Style="{DynamicResource ControlBoxButtonCanvasStyle}">
-                        <Image Source="{DynamicResource WindowCloseIcon}"
+                        <Image Source="{DynamicResource XMarkIcon}"
                                Style="{DynamicResource ControlBoxButtonImageStyle}" />
                         <Rectangle Fill="{Binding Foreground, ElementName=ControlBoxCloseButton, Mode=OneWay}"
                                    Style="{DynamicResource ControlBoxButtonMaskRectangleStyle}">
                             <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="{DynamicResource WindowCloseIcon}" />
+                                <ImageBrush ImageSource="{DynamicResource XMarkIcon}" />
                             </Rectangle.OpacityMask>
                         </Rectangle>
                     </Canvas>

@@ -21,6 +21,7 @@ namespace Rubberduck.Editor
         private readonly WorkspaceStateManager _state;
         private readonly IFileSystem _fileSystem;
         private readonly IProjectFileService _projectFile;
+        private readonly List<Reference> _references = [];
 
         private readonly Dictionary<Uri, IFileSystemWatcher> _watchers = [];
         private readonly Func<ILanguageClient> _lsp;
@@ -35,21 +36,6 @@ namespace Rubberduck.Editor
             _projectFile = projectFile;
             _lsp = lsp;
         }
-
-        public ProjectTemplate ToProjectTemplate() => new()
-        {
-            Rubberduck = "3.0",
-            Name = _state.ProjectName,
-            ProjectFile = new ProjectFile
-            {
-                Rubberduck = "3.0",
-                Uri = _state.WorkspaceRoot!,
-                VBProject = new Project
-                {
-                    // todo
-                }
-            }
-        };
 
         public IFileSystem FileSystem => _fileSystem;
 
@@ -78,10 +64,11 @@ namespace Rubberduck.Editor
                     {
                         throw new DirectoryNotFoundException("Project source root folder ('.src') was not found under the secified workspace URI.");
                     }
-                    
-                    LoadWorkspaceFiles(sourceRoot, projectFile);
+
                     _state.WorkspaceRoot = uri;
                     _state.ProjectName = _fileSystem.Path.GetFileName(root);
+
+                    LoadWorkspaceFiles(sourceRoot, projectFile);
                     EnableFileSystemWatcher(uri);
 
                 }, out var exception) && exception is not null)

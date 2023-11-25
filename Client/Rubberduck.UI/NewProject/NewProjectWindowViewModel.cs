@@ -21,13 +21,13 @@ namespace Rubberduck.UI.NewProject
         string WorkspaceLocation { get; set; }
     }
 
-    public readonly record struct VBProjectInfo
+    public class VBProjectInfo
     {
-        public string Name { get; init; }
-        public string ProjectId { get; init; }
-        public string? Location { get; init; }
-        public bool IsLocked { get; init; }
-        public bool HasWorkspace { get; init; }
+        public string Name { get; set; }
+        public string ProjectId { get; set; }
+        public string? Location { get; set; }
+        public bool IsLocked { get; set; }
+        public bool HasWorkspace { get; set; }
     }
 
     public class NewProjectWindowViewModel : DialogWindowViewModel, INewProjectWindowViewModel
@@ -75,7 +75,7 @@ namespace Rubberduck.UI.NewProject
         }
 
         private string _projectName = string.Empty;
-        [Required, MaxLength(31)] // todo actually validate this
+        //[Required, MaxLength(31)] // todo actually validate this
         public string ProjectName 
         {
             get => _projectName;
@@ -91,7 +91,7 @@ namespace Rubberduck.UI.NewProject
         }
 
         private string _workspaceLocation = string.Empty;
-        [Required, MaxLength(1023)]
+        //[Required, MaxLength(1023)]
         public string WorkspaceLocation
         {
             get => _workspaceLocation;
@@ -128,7 +128,7 @@ namespace Rubberduck.UI.NewProject
 
                     if (_selectedVBProject != null)
                     {
-                        ProjectName = _selectedVBProject.Value.Name;
+                        ProjectName = _selectedVBProject.Name;
                     }
                 }
             }

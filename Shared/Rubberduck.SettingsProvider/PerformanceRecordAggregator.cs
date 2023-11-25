@@ -172,11 +172,7 @@ namespace Rubberduck.SettingsProvider
 
         public static void Swap<T>(this IList<T> list, int i, int j)
         {
-            if (i == j)   //This check is not required but Partition function may make many calls so its for perf reason
-                return;
-            var temp = list[i];
-            list[i] = list[j];
-            list[j] = temp;
+            (list[j], list[i]) = (list[i], list[j]);
         }
 
         /// <summary>

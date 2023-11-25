@@ -125,7 +125,7 @@ namespace Rubberduck.Editor
             var view = new ShellWindow() { DataContext = model };
             view.Show();
         }
-
+        
         protected override void OnExit(ExitEventArgs e)
         {
             var level = _settings.Settings.LoggerSettings.TraceLevel.ToTraceLevel();
@@ -233,6 +233,15 @@ namespace Rubberduck.Editor
             services.AddSingleton<NewProjectCommand>();
             services.AddSingleton<NewProjectWindowFactory>();
             services.AddSingleton<OpenProjectCommand>();
+            services.AddSingleton<SaveDocumentCommand>();
+            services.AddSingleton<SaveDocumentAsCommand>();
+            services.AddSingleton<SaveAllDocumentsCommand>();
+            services.AddSingleton<SaveAsProjectTemplateCommand>();
+            services.AddSingleton<CloseDocumentCommand>();
+            services.AddSingleton<CloseAllDocumentsCommand>();
+            services.AddSingleton<CloseWorkspaceCommand>();
+            services.AddSingleton<SynchronizeWorkspaceCommand>();
+            services.AddSingleton<ExitCommand>();
 
         }
 
@@ -265,7 +274,7 @@ namespace Rubberduck.Editor
 
             var argsRoot = options.WorkspaceRoot;
 
-            if (argsRoot is null && settings.RequireAddInHost)
+            if (argsRoot is null && options.ClientProcessId == default && settings.RequireAddInHost)
             {
                 _logger.LogDebug("An add-in host is required and should have provided a workspace root command-line argument. The current configuration does not support standalone execution.");
                 throw new NotSupportedException("An add-in host is required and should have provided a workspace root command-line argument. The current configuration does not support standalone execution.");
@@ -283,7 +292,7 @@ namespace Rubberduck.Editor
             }
             else
             {
-                _logger.LogWarning($"Could not parse value '{argsRoot}' into a valid URI. Falling back to default workspace root.");
+                _logger.LogWarning("Could not parse value '{argsRoot}' into a valid URI. Falling back to default workspace root.", argsRoot);
             }
 
             if (settings.WorkspaceSettings.RequireDefaultWorkspaceRootHost && !uri.LocalPath.StartsWith(setting.DefaultValue.LocalPath))

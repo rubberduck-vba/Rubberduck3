@@ -5,12 +5,62 @@ using Rubberduck.UI.Message;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
 using System;
+using System.Configuration;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Rubberduck.UI.NewProject
 {
+    public class ExitCommand : CommandBase
+    {
+        private readonly IWorkspaceService _workspace;
+
+        public ExitCommand(UIServiceHelper service, IWorkspaceService workspace)
+            : base(service)
+        {
+            _workspace = workspace;
+        }
+
+        protected override async Task OnExecuteAsync(object? parameter)
+        {
+            //await _workspace.SaveAllAsync();
+            // TODO synchronize workspace
+            Application.Current.Shutdown();
+        }
+    }
+
+    public class SynchronizeWorkspaceCommand : CommandBase
+    {
+        public SynchronizeWorkspaceCommand(UIServiceHelper service) 
+            : base(service)
+        {
+        }
+
+        protected override Task OnExecuteAsync(object? parameter)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class CloseWorkspaceCommand : CommandBase
+    {
+        private readonly IWorkspaceService _workspace;
+
+        public CloseWorkspaceCommand(UIServiceHelper service,
+            IWorkspaceService workspace)
+            : base(service)
+        {
+            _workspace = workspace;
+        }
+
+        protected async override Task OnExecuteAsync(object? parameter)
+        {
+            _workspace.CloseWorkspace();
+        }
+    }
+
     public class CloseAllDocumentsCommand : CommandBase
     {
         private readonly IWorkspaceService _workspace;
@@ -24,7 +74,6 @@ namespace Rubberduck.UI.NewProject
 
         protected async override Task OnExecuteAsync(object? parameter)
         {
-            await Task.Yield();
             _workspace.CloseAllFiles();
         }
     }
@@ -42,7 +91,6 @@ namespace Rubberduck.UI.NewProject
 
         protected async override Task OnExecuteAsync(object? parameter)
         {
-            await Task.Yield();
             if (parameter is Uri uri)
             {
                 _workspace.CloseFile(uri);
@@ -68,7 +116,6 @@ namespace Rubberduck.UI.NewProject
 
         protected override async Task OnExecuteAsync(object? parameter)
         {
-            await Task.Yield();
             var template = new ProjectTemplate(); // TODO ExportTemplateService
             _templates.SaveProjectTemplate(template);
         }
@@ -87,11 +134,28 @@ namespace Rubberduck.UI.NewProject
 
         protected async override Task OnExecuteAsync(object? parameter)
         {
-            await Task.Yield();
             await _workspace.SaveAllAsync();
         }
     }
 
+    public class SaveDocumentAsCommand : CommandBase
+    {
+        private readonly IWorkspaceService _workspace;
+
+        public SaveDocumentAsCommand(UIServiceHelper service,
+            IWorkspaceService workspace)
+            : base(service)
+        {
+            _workspace = workspace;
+        }
+
+        protected async override Task OnExecuteAsync(object? parameter)
+        {
+            // TODO once there's a document state manager, grab the ActiveDocument here
+            // TODO prompt for file name
+            //_workspace.SaveWorkspaceFileAsync(uri);
+        }
+    }
     public class SaveDocumentCommand : CommandBase
     {
         private readonly IWorkspaceService _workspace;
@@ -105,13 +169,8 @@ namespace Rubberduck.UI.NewProject
 
         protected async override Task OnExecuteAsync(object? parameter)
         {
-            if (parameter is Uri uri)
-            {
-                await _workspace.SaveWorkspaceFileAsync(uri);
-                return;
-            }
-
             // TODO once there's a document state manager, grab the ActiveDocument here
+            //_workspace.SaveWorkspaceFileAsync(uri);
         }
     }
 

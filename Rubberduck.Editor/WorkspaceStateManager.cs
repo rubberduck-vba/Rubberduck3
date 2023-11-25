@@ -3,7 +3,6 @@ using Rubberduck.InternalApi.Model;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Services.Abstract;
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +11,8 @@ namespace Rubberduck.Editor
 {
     public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
     {
+        private readonly HashSet<Reference> _references = [];
+        private readonly HashSet<Folder> _folders = [];
         private readonly ConcurrentDictionary<Uri, ConcurrentQueue<WorkspaceFileInfo>> _workspaceFiles = [];
 
         public WorkspaceStateManager(ILogger<WorkspaceStateManager> logger, 
@@ -21,7 +22,7 @@ namespace Rubberduck.Editor
         }
 
         public Uri? WorkspaceRoot { get; set; }
-        public string ProjectName { get; set; }
+        public string ProjectName { get; set; } = "Project1";
 
         public bool TryGetWorkspaceFile(Uri uri, out WorkspaceFileInfo? fileInfo)
         {
@@ -44,6 +45,46 @@ namespace Rubberduck.Editor
 
             fileInfo = default;
             return false;
+        }
+
+        public IEnumerable<Folder> Folders => _folders;
+        public void AddFolder(Folder folder)
+        {
+            _folders.Add(folder);
+        }
+
+        public void RemoveFolder(Folder folder)
+        {
+            _folders.Remove(folder);
+        }
+
+        public IEnumerable<Reference> References => _references;
+
+        public void AddHostLibraryReference(Reference reference)
+        {
+            reference.IsUnremovable = true;
+            _references.Add(reference);
+        }
+
+        public void AddReference(Reference reference)
+        {
+            _references.Add(reference);
+        }
+
+        public void RemoveReference(Reference reference)
+        {
+            _references.Remove(reference);
+        }
+
+        public void SwapReferences(ref Reference first, ref Reference second)
+        {
+            if (first.IsUnremovable || second.IsUnremovable)
+            {
+                // built-in references (stdlib, hostlib) never move.
+                return;
+            }
+
+            (first, second) = (second, first);
         }
 
         public IEnumerable<WorkspaceFileInfo> WorkspaceFiles

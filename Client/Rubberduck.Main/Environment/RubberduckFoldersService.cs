@@ -12,7 +12,7 @@ using ServiceBase = Rubberduck.ServerPlatform.ServiceBase;
 
 namespace Rubberduck.Environment
 {
-    public record struct HostInfo
+    public readonly record struct HostInfo
     {
         public Version RubberduckVersion { get; init; }
         public string OperatingSystem { get; init; }
@@ -41,7 +41,7 @@ namespace Rubberduck.Environment
 
         public HostInfo GetHostInfo(Application application)
         {
-            string ToBitnessString(bool x64) => x64 ? "x64" : "x86";
+            static string ToBitnessString(bool x64) => x64 ? "x64" : "x86";
 
             var osVersion = Env.OSVersion.VersionString;
             var osBitness = ToBitnessString(Env.Is64BitOperatingSystem);
@@ -60,7 +60,7 @@ namespace Rubberduck.Environment
                     {
                         HostApplication = $"{Application.ProductName} ({ToBitnessString(Env.Is64BitProcess)})",
                         HostVersion = Application.ProductVersion,
-                        HostExecutable = Application.ProductName.ToUpper(),
+                        HostExecutable = Application.ProductName?.ToUpper() ?? string.Empty,
                     };
                 }
                 catch (Exception exception)

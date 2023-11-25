@@ -8,7 +8,7 @@ namespace Rubberduck.Unmanaged.TypeLibs.Utility
     /// </summary>
     internal class StringLineBuilder
     {
-        private readonly StringBuilder _document = new StringBuilder();
+        private readonly StringBuilder _document = new();
 
         public override string ToString() => _document.ToString();
 
@@ -53,14 +53,14 @@ namespace Rubberduck.Unmanaged.TypeLibs.Utility
 
         public static KnownDocType[] KnownDocumentInterfaces =
         {
-            new KnownDocType("Excel._Workbook",     DocClassType.ExcelWorkbook),
-            new KnownDocType("Excel._Worksheet",    DocClassType.ExcelWorksheet),
-            new KnownDocType("Access._Form",        DocClassType.AccessForm),
-            new KnownDocType("Access._Form2",       DocClassType.AccessForm),
-            new KnownDocType("Access._Form3",       DocClassType.AccessForm),
-            new KnownDocType("Access._Report",      DocClassType.AccessReport),
-            new KnownDocType("Access._Report2",     DocClassType.AccessReport),
-            new KnownDocType("Access._Report3",     DocClassType.AccessReport),
+            new("Excel._Workbook",     DocClassType.ExcelWorkbook),
+            new("Excel._Worksheet",    DocClassType.ExcelWorksheet),
+            new("Access._Form",        DocClassType.AccessForm),
+            new("Access._Form2",       DocClassType.AccessForm),
+            new("Access._Form3",       DocClassType.AccessForm),
+            new("Access._Report",      DocClassType.AccessReport),
+            new("Access._Report2",     DocClassType.AccessReport),
+            new("Access._Report3",     DocClassType.AccessReport),
         };
 
         // string array of the above progIDs, created once at runtime
