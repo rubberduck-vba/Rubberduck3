@@ -8,6 +8,7 @@
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/ComboBoxTemplate.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/CheckBoxTemplate.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/ScrollBarTemplate.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <!-- Menu -->

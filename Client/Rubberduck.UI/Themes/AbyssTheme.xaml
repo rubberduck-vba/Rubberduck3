@@ -15,39 +15,12 @@
         ~> [Foreground]/[Background] color groups define colors and brushes used for text and backgrounds, respectively.
     -->
 
-    <Color x:Key="ThemeWhiteDarkColor">#FFA9A9A9</Color>
-    <Color x:Key="ThemeWhiteMediumColor">#FFD3D3D3</Color>
-    <Color x:Key="ThemeWhiteLightColor">#FFFFFFFF</Color>
-    <Color x:Key="ThemeWhiteDarkColor50">#0FA9A9A9</Color>
-    <Color x:Key="ThemeWhiteMediumColor50">#0FD3D3D3</Color>
-    <Color x:Key="ThemeWhiteLightColor50">#0FFFFFFF</Color>
-    <Color x:Key="ThemeWhiteDarkColor25">#08A9A9A9</Color>
-    <Color x:Key="ThemeWhiteMediumColor25">#08D3D3D3</Color>
-    <Color x:Key="ThemeWhiteLightColor25">#08FFFFFF</Color>
-
-    <SolidColorBrush x:Key="ThemeWhiteDarkColorBrush" Color="{DynamicResource ThemeWhiteDarkColor}" />
-    <SolidColorBrush x:Key="ThemeWhiteMediumColorBrush" Color="{DynamicResource ThemeWhiteMediumColor}" />
-    <SolidColorBrush x:Key="ThemeWhiteLightColorBrush" Color="{DynamicResource ThemeWhiteLightColor}" />
-    <SolidColorBrush x:Key="ThemeWhiteDarkColorBrush50" Color="{DynamicResource ThemeWhiteDarkColor50}" />
-    <SolidColorBrush x:Key="ThemeWhiteMediumColorBrush50" Color="{DynamicResource ThemeWhiteMediumColor50}" />
-    <SolidColorBrush x:Key="ThemeWhiteLightColorBrush50" Color="{DynamicResource ThemeWhiteLightColor50}" />
-    <SolidColorBrush x:Key="ThemeWhiteDarkColorBrush25" Color="{DynamicResource ThemeWhiteDarkColor25}" />
-    <SolidColorBrush x:Key="ThemeWhiteMediumColorBrush25" Color="{DynamicResource ThemeWhiteMediumColor25}" />
-    <SolidColorBrush x:Key="ThemeWhiteLightColorBrush25" Color="{DynamicResource ThemeWhiteLightColor25}" />
-
-    <Color x:Key="ThemeBlackDarkColor">#FF010C18</Color>
-    <Color x:Key="ThemeBlackMediumColor">#FF2E2E38</Color>
-    <Color x:Key="ThemeBlackLightColor">#FF333353</Color>
-    <SolidColorBrush x:Key="ThemeBlackDarkColorBrush" Color="{DynamicResource ThemeBlackDarkColor}" />
-    <SolidColorBrush x:Key="ThemeBlackMediumColorBrush" Color="{DynamicResource ThemeBlackMediumColor}" />
-    <SolidColorBrush x:Key="ThemeBlackLightColorBrush" Color="{DynamicResource ThemeBlackLightColor}" />
-
     <!-- TODO work out nice individualized accent color palettes for each theme -->
 
-    <Color x:Key="ThemeAccent1DarkColor">#FF070622</Color>
-    <Color x:Key="ThemeAccent1MediumColor">#FF081337</Color>
-    <Color x:Key="ThemeAccent1LightColor">#FF11192D</Color>
-    <Color x:Key="ThemeAccent1HighlightColor">#AD2A7BCF</Color>
+    <Color x:Key="ThemeAccent1DarkColor">#FF00569A</Color>
+    <Color x:Key="ThemeAccent1MediumColor">#FF0080E2</Color>
+    <Color x:Key="ThemeAccent1LightColor">#FF38A8FF</Color>
+    <Color x:Key="ThemeAccent1HighlightColor">#AD38A8FF</Color>
     <Color x:Key="ThemeAccent1TextColor">#FFFFFFFF</Color>
     <SolidColorBrush x:Key="ThemeAccent1DarkColorBrush" Color="{DynamicResource ThemeAccent1DarkColor}" />
     <SolidColorBrush x:Key="ThemeAccent1MediumColorBrush" Color="{DynamicResource ThemeAccent1MediumColor}" />

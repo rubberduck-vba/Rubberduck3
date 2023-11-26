@@ -19,6 +19,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
+        <ScrollBar Style="{DynamicResource ScrollBarStyle}" Orientation="Horizontal"></ScrollBar>
         <Border Style="{DynamicResource SectionBorderStyle}">
             <DockPanel LastChildFill="True">
                 <DockPanel DockPanel.Dock="Top">

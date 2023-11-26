@@ -8,6 +8,7 @@
         mc:Ignorable="d"
         Title="Settings" 
         WindowStyle="None"
+        ResizeMode="NoResize"
         Style="{DynamicResource ThemedWindowStyle}"
         MinHeight="455" MinWidth="600">
     <Window.Resources>
@@ -19,7 +20,11 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <shell:ThunderFrame Title="{Binding Title}" AcceptCommand="{Binding Actions[0]}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <shell:ThunderFrame Grid.RowSpan="2" Title="{Binding Title}" AcceptCommand="{Binding Actions[0]}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -54,5 +59,13 @@
                 <templates:SettingGroupControl Grid.Column="1" DataContext="{Binding Selection}" />
             </Grid>
         </shell:ThunderFrame>
+        <Thumb Grid.Row="1" HorizontalAlignment="Right" IsEnabled="True" IsHitTestVisible="True" WindowChrome.IsHitTestVisibleInChrome="True"
+               DragDelta="OnResizeGripDragDelta" Cursor="SizeNWSE">
+            <Thumb.Template>
+                <ControlTemplate>
+                    <ResizeGrip Margin="0" />
+                </ControlTemplate>
+            </Thumb.Template>
+        </Thumb>
     </Grid>
 </Window>

@@ -5,7 +5,6 @@
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
-
     <Style x:Key="OptionMarkFocusVisual">
         <Setter Property="Control.Template">
             <Setter.Value>
@@ -22,9 +21,9 @@
     <SolidColorBrush x:Key="OptionMark.Pressed.Background" Color="{DynamicResource ThemeBackgroundLightColor}"/>
     <SolidColorBrush x:Key="OptionMark.Pressed.Border" Color="{DynamicResource ThemeBackgroundMediumColor}"/>
     <SolidColorBrush x:Key="OptionMark.Pressed.Glyph" Color="{DynamicResource ThemeTextColor}"/>
-    <SolidColorBrush x:Key="OptionMark.Disabled.Background" Color="{DynamicResource ThemeWhiteDarkColor}"/>
-    <SolidColorBrush x:Key="OptionMark.Disabled.Border" Color="{DynamicResource ThemeBlackLightColor}"/>
-    <SolidColorBrush x:Key="OptionMark.Disabled.Glyph" Color="{DynamicResource ThemeBackgroundDarkColor}"/>
+    <SolidColorBrush x:Key="OptionMark.Disabled.Background" Color="{DynamicResource ThemeBlackLightColor}"/>
+    <SolidColorBrush x:Key="OptionMark.Disabled.Border" Color="{DynamicResource ThemeTextInactiveColor}"/>
+    <SolidColorBrush x:Key="OptionMark.Disabled.Glyph" Color="{DynamicResource ThemeWhiteDarkColor}"/>
 
     <ControlTemplate x:Key="FormFieldCheckBoxTemplate" TargetType="{x:Type CheckBox}">
         <Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
@@ -72,7 +71,8 @@
 
     <Style TargetType="CheckBox">
         <Style.Setters>
-            <Setter Property="BorderBrush" Value="{DynamicResource ThemeTextColorBrush}" />
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeTextInactiveColorBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Template" Value="{StaticResource FormFieldCheckBoxTemplate}" />
         </Style.Setters>

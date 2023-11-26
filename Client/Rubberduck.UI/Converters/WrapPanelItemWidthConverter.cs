@@ -22,7 +22,7 @@ namespace Rubberduck.UI.Converters
             }
 
             var maxWidthColumns = panelWidth / MaxItemWidth;
-            if (maxWidthColumns > 1.5)
+            if (maxWidthColumns > 2)
             {
                 return panelWidth / (int)maxWidthColumns;
             }

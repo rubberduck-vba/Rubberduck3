@@ -17,9 +17,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Background="{DynamicResource ThemeBackgroundMediumColorBrush}" 
-            BorderBrush="{DynamicResource ThemeBackgroundDarkColorBrush}" 
-            BorderThickness="1">
+    <Border Background="{DynamicResource ThemeBackgroundMediumColorBrush}">
         <DockPanel>
             <DockPanel DockPanel.Dock="Top">
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
@@ -47,6 +45,7 @@
                           ItemTemplateSelector="{DynamicResource SettingTemplateSelector}">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
+                            <Setter Property="MaxHeight" Value="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Grid, Mode=FindAncestor,AncestorLevel=2}}" />
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                             <Setter Property="HorizontalAlignment" Value="Stretch" />
                         </Style>

@@ -4,7 +4,6 @@ using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Services;
-using Rubberduck.Unmanaged.UIContext;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -346,12 +345,14 @@ namespace Rubberduck.UI.Settings.ViewModels
         {
             _settingGroup = settingGroup;
             Items = new ObservableCollection<ISettingViewModel>(items);
+            IsEnabled = !_settingGroup.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
         }
 
         public SettingGroupViewModel(TypedRubberduckSetting<BooleanRubberduckSetting[]> settingGroup, IEnumerable<ISettingViewModel> items)
         {
             _settingGroup = settingGroup;
             Items = new ObservableCollection<ISettingViewModel>(items);
+            IsEnabled = !_settingGroup.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
         }
 
         public ObservableCollection<ISettingViewModel> Items { get; init; }

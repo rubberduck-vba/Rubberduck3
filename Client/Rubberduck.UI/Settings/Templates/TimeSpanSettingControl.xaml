@@ -26,7 +26,7 @@
                                     CheckedIcon="{DynamicResource UnlockedIcon}"
                                     IsChecked="{Binding IsEnabled}"
                                     Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
-                <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0">
+                <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" IsEnabled="{Binding IsEnabled}" Margin="0">
                     <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
                 </Label>
             </DockPanel>
@@ -36,15 +36,15 @@
                 </Label>
             </ScrollViewer>
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="4">
-                <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Hours}" HorizontalContentAlignment="Center" ToolTip="Hours" />
+                <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Hours}" HorizontalContentAlignment="Center" ToolTip="Hours" IsEnabled="{Binding IsEnabled}" />
                 <TextBlock Text=":" VerticalAlignment="Center" Margin="2" />
-                <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Minutes}" HorizontalContentAlignment="Center" ToolTip="Minutes" />
+                <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Minutes}" HorizontalContentAlignment="Center" ToolTip="Minutes" IsEnabled="{Binding IsEnabled}" />
                 <TextBlock Text=":" VerticalAlignment="Center" Margin="2" />
-                <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Seconds}" HorizontalContentAlignment="Center" ToolTip="Seconds" />
+                <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Seconds}" HorizontalContentAlignment="Center" ToolTip="Seconds" IsEnabled="{Binding IsEnabled}" />
                 <TextBlock Text="." VerticalAlignment="Center" Margin="2" />
-                <TextBox b:Masking.Mask="\d" MaxLength="3" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="36" Height="24" Text="{Binding Milliseconds}" HorizontalContentAlignment="Center" ToolTip="Milliseconds" />
+                <TextBox b:Masking.Mask="\d" MaxLength="3" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="36" Height="24" Text="{Binding Milliseconds}" HorizontalContentAlignment="Center" ToolTip="Milliseconds" IsEnabled="{Binding IsEnabled}" />
             </StackPanel>
-            <Label DockPanel.Dock="Top" Style="{DynamicResource FormLabelStyleSmall}" Margin="0,-4">
+            <Label DockPanel.Dock="Top" Style="{DynamicResource FormLabelStyleSmall}" Margin="0,-4" IsEnabled="{Binding IsEnabled}">
                 <TextBlock Text="hh:mm:ss.ms" />
             </Label>
         </DockPanel>

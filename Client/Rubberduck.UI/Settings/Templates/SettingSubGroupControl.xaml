@@ -26,7 +26,7 @@
                                     CheckedIcon="{DynamicResource UnlockedIcon}"
                                     IsChecked="{Binding IsEnabled}"
                                     Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
-                <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0">
+                <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0" IsEnabled="{Binding IsEnabled}">
                     <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
                 </Label>
             </DockPanel>
@@ -35,9 +35,9 @@
                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
                 </Label>
             </ScrollViewer>
-            <Expander DockPanel.Dock="Top" Margin="4">
+            <Expander DockPanel.Dock="Top" Margin="4" IsEnabled="{Binding IsEnabled}">
                 <Expander.Header>
-                    <TextBlock Style="{DynamicResource SectionExpanderHeaderStyle}" Text="Settings" />
+                    <TextBlock Style="{DynamicResource SectionExpanderHeaderStyle}" Text="Settings" IsEnabled="{Binding IsEnabled}" />
                 </Expander.Header>
                 <ListView Background="{DynamicResource ThemeBackgroundColorBrush}" 
                           ItemsSource="{Binding Items}" 

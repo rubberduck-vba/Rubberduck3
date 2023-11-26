@@ -30,7 +30,7 @@
                             </Style>
                         </Rectangle.Resources>
                         <Rectangle.OpacityMask>
-                            <ImageBrush ImageSource="{Binding Icon, ElementName=FlatButtonRoot}" />
+                            <ImageBrush Stretch="UniformToFill" ImageSource="{Binding Icon, ElementName=FlatButtonRoot}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </Canvas>

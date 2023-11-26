@@ -34,9 +34,11 @@
                 <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
             </Label>
             <ComboBox Template="{DynamicResource ComboBoxTemplate}" 
-                      DockPanel.Dock="Top" HorizontalAlignment="Left"
+                      Margin="5,5,20,5"
+                      DockPanel.Dock="Top" HorizontalAlignment="Stretch"
+                      HorizontalContentAlignment="Left"
                       Style="{DynamicResource FormFieldComboBoxStyle}" 
-                      Width="128"
+                      IsEnabled="{Binding IsEnabled}" 
                       ItemsSource="{Binding Values}"
                       SelectedValue="{Binding Selection}" />
         </DockPanel>

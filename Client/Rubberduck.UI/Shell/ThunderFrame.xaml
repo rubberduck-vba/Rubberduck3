@@ -51,7 +51,7 @@
 
                                 <Border Grid.Row="1" BorderBrush="{DynamicResource ThemeBackgroundColorBrush}" 
                                         BorderThickness="1" CornerRadius="8" Margin="4"
-                                        Background="{DynamicResource ThemeWhiteLightColorBrush75}"/>
+                                        Background="{DynamicResource ThemeWhiteLightColorBrush50}"/>
 
 
                                 <ContentPresenter Grid.Row="1" Margin="8,4" Height="Auto" MinHeight="200"
