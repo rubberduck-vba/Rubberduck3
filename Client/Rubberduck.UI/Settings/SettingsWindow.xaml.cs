@@ -1,4 +1,5 @@
 ﻿using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services.Settings;
 using System;
 using System.Linq;
@@ -30,7 +31,9 @@ namespace Rubberduck.UI.Settings
             if (e.NewValue is ICommandBindingProvider provider)
             {
                 CommandBindings.Clear();
+                var handlers = new SystemCommandHandlers(this);
                 CommandBindings.AddRange(provider.CommandBindings.ToArray());
+                CommandBindings.Add(new(SystemCommands.CloseWindowCommand, handlers.CloseWindowCommandBinding_Executed, handlers.CloseWindowCommandBinding_CanExecute));
             }
         }
 

@@ -19,7 +19,7 @@ namespace Rubberduck.UI.Services.Settings
         private readonly ISettingViewModelFactory _factory;
         private readonly UIServiceHelper _service;
 
-        public SettingsWindowViewModel(UIServiceHelper service, MessageActionCommand[] actions, IMessageService message, ISettingViewModelFactory factory, SystemCommandHandlers systemCommandHandlers)
+        public SettingsWindowViewModel(UIServiceHelper service, MessageActionCommand[] actions, IMessageService message, ISettingViewModelFactory factory)
             : base(service, RubberduckUI.Settings, actions)
         {
             _message = message;
@@ -30,7 +30,6 @@ namespace Rubberduck.UI.Services.Settings
 
             CommandBindings = new CommandBinding[]
             {
-                new(SystemCommands.CloseWindowCommand, systemCommandHandlers.CloseWindowCommandBinding_Executed, systemCommandHandlers.CloseWindowCommandBinding_CanExecute),
                 new(NavigationCommands.Search, DialogCommandHandlers.BrowseLocationCommandBinding_Executed, DialogCommandHandlers.BrowseLocationCommandBinding_CanExecute),
             };
         }

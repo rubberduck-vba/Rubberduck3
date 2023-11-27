@@ -22,7 +22,6 @@ namespace Rubberduck.UI.Services.Settings
         private readonly UIServiceHelper _service;
         private readonly IMessageService _messageService;
         private readonly ISettingViewModelFactory _vmFactory;
-        private readonly SystemCommandHandlers _systemCommandHandlers;
         private readonly MessageActionsProvider _actionsProvider;
         private readonly IWindowFactory<SettingsWindow, SettingsWindowViewModel> _factory;
 
@@ -32,7 +31,6 @@ namespace Rubberduck.UI.Services.Settings
             IWindowFactory<SettingsWindow, SettingsWindowViewModel> factory,
             IMessageService messageService,
             ISettingViewModelFactory vmFactory,
-            SystemCommandHandlers systemCommandHandlers,
             MessageActionsProvider actionsProvider,
             PerformanceRecordAggregator performance)
             : base(logger, factory, settings, actionsProvider, performance)
@@ -40,14 +38,13 @@ namespace Rubberduck.UI.Services.Settings
             _service = service;
             _messageService = messageService;
             _vmFactory = vmFactory;
-            _systemCommandHandlers = systemCommandHandlers;
             _actionsProvider = actionsProvider;
             _factory = factory;
         }
 
         protected override SettingsWindowViewModel CreateViewModel(RubberduckSettings settings, MessageActionsProvider actions)
         {
-            var vm = new SettingsWindowViewModel(_service, actions.Close(), _messageService, _vmFactory, _systemCommandHandlers);
+            var vm = new SettingsWindowViewModel(_service, actions.Close(), _messageService, _vmFactory);
             return vm;
         }
 

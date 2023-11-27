@@ -25,6 +25,9 @@
     <BitmapImage x:Key="MemberInfoIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/magnifier-medium.png" />
     <BitmapImage x:Key="IssuesIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/Custom/Icons/severity.png" />
 
+    <BitmapImage x:Key="LockedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/lock-solid.png" />
+    <BitmapImage x:Key="UnlockedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/lock-open-solid.png" />
+
     <Style x:Key="IconStyle" TargetType="Image">
         <Style.Setters>
             <Setter Property="Height" Value="16" />

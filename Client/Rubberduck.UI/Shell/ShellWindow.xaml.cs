@@ -1,5 +1,6 @@
 ﻿using Rubberduck.UI.Command.SharedHandlers;
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -29,6 +30,7 @@ namespace Rubberduck.UI.Shell
             };
 
             var ownerType = typeof(ShellWindow);
+            CommandBindings.AddRange(systemCommands);
             foreach (var commandBinding in systemCommands)
             {
                 CommandManager.RegisterClassCommandBinding(ownerType, commandBinding);
@@ -41,7 +43,9 @@ namespace Rubberduck.UI.Shell
         {
             if (e.NewValue is ICommandBindingProvider provider)
             {
-                foreach (var commandBinding in provider.CommandBindings)
+                var bindings = provider.CommandBindings.ToArray();
+                CommandBindings.AddRange(bindings);
+                foreach (var commandBinding in bindings)
                 {
                     CommandManager.RegisterClassCommandBinding(typeof(ShellWindow), commandBinding);
                 }
@@ -54,7 +58,6 @@ namespace Rubberduck.UI.Shell
         }
 
         private SystemCommandHandlers SystemCommandHandlers { get; }
-        private ICommandBindingProvider ViewModel => (ICommandBindingProvider)DataContext;
 
         private void OnResizeGripDragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
         {

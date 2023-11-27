@@ -16,7 +16,7 @@ namespace Rubberduck.Editor.Shell
 
         public INewTabHost<Window> GetNewHost(IInterTabClient interTabClient, object partition, TabablzControl source)
         {
-            var vm = new ChildWindowViewModel(interTabClient, _status, partition);
+            var vm = new ChildWindowViewModel(interTabClient, _status, partition?.ToString() ?? "main");
             var view = new ChildWindow(vm);
             return new NewTabHost<Window>(view, view.Tabs);
         }

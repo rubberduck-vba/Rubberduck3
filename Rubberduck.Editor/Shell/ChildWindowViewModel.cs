@@ -7,7 +7,7 @@ namespace Rubberduck.Editor.Shell
 {
     public class ChildWindowViewModel : IDragablzWindowViewModel
     {
-        public ChildWindowViewModel(IInterTabClient interTabClient, StatusBarViewModel statusBar, object partition)
+        public ChildWindowViewModel(IInterTabClient interTabClient, StatusBarViewModel statusBar, string partition)
         {
             InterTabClient = interTabClient;
             Partition = partition;
@@ -21,7 +21,7 @@ namespace Rubberduck.Editor.Shell
 
         public IInterTabClient InterTabClient { get; }
 
-        public object Partition { get; }
+        public string Partition { get; }
 
         public void ClosingTabItemHandler(object sender, EventArgs e)
         {

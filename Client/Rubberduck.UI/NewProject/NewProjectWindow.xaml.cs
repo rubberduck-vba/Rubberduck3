@@ -1,5 +1,4 @@
-﻿using Rubberduck.UI.Command;
-using System;
+﻿using Rubberduck.UI.Command.SharedHandlers;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -26,10 +25,12 @@ namespace Rubberduck.UI.NewProject
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            var handlers = new SystemCommandHandlers(this);
             if (e.NewValue is ICommandBindingProvider provider)
             {
                 CommandBindings.Clear();
                 CommandBindings.AddRange(provider.CommandBindings.ToArray());
+                CommandBindings.Add(new CommandBinding(SystemCommands.CloseWindowCommand, handlers.CloseWindowCommandBinding_Executed, handlers.CloseWindowCommandBinding_CanExecute));
             }
         }
 

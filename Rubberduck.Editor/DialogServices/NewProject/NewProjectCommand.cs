@@ -182,7 +182,6 @@ namespace Rubberduck.UI.NewProject
         private readonly NewProjectWindowFactory _factory;
         private readonly MessageActionsProvider _actions;
         private readonly ShowRubberduckSettingsCommand _showSettingsCommand;
-        private readonly SystemCommandHandlers _systemCommandHandlers;
         private readonly IFileSystem _fileSystem;
         private readonly IMessageService _messages;
         private readonly IWorkspaceFolderService _workspaceFolderService;
@@ -193,7 +192,7 @@ namespace Rubberduck.UI.NewProject
         public NewProjectCommand(UIServiceHelper service, NewProjectWindowFactory factory, 
             IWorkspaceFolderService workspaceFolderService, IWorkspaceService workspace,
             IFileSystem fileSystem, IProjectFileService projectFileService,
-            IMessageService messages, ITemplatesService templatesService, SystemCommandHandlers systemCommandHandlers,
+            IMessageService messages, ITemplatesService templatesService,
             MessageActionsProvider actions, ShowRubberduckSettingsCommand showSettingsCommand) 
             : base(service)
         {
@@ -201,7 +200,6 @@ namespace Rubberduck.UI.NewProject
             _messages = messages;
             _templatesService = templatesService;
             _workspaceFolderService = workspaceFolderService;
-            _systemCommandHandlers = systemCommandHandlers;
             _workspace = workspace;
             _projectFileService = projectFileService;
             _factory = factory;
@@ -215,7 +213,7 @@ namespace Rubberduck.UI.NewProject
             var projects = Enumerable.Empty<VBProjectInfo?>();
             var templates = _templatesService.GetProjectTemplates();
 
-            var model = new NewProjectWindowViewModel(Service, projects, templates, _actions, _showSettingsCommand, _systemCommandHandlers);
+            var model = new NewProjectWindowViewModel(Service, projects, templates, _actions, _showSettingsCommand);
             string? root = default;
 
             if (Service.TryRunAction(() =>

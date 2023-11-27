@@ -10,10 +10,11 @@ using Rubberduck.UI.Shell.StatusBar;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Input;
 
 namespace Rubberduck.Editor.Shell
 {
-
     public class ShellWindowViewModel : ViewModelBase, IShellWindowViewModel
     {
         private static readonly string _shellPartition = Guid.NewGuid().ToString();
@@ -32,8 +33,12 @@ namespace Rubberduck.Editor.Shell
 
             FileCommandHandlers = fileCommandHandlers;
             ToolsCommandHandlers = toolsCommandHandlers;
+
+            CommandBindings = fileCommandHandlers.CreateCommandBindings()
+                .Concat(toolsCommandHandlers.CreateCommandBindings()).ToList();
         }
 
+        public override IEnumerable<CommandBinding> CommandBindings { get; }
         public string Title => "Rubberduck Editor";
 
         public IEnumerable<IDocumentTabViewModel> Documents { get; init; }

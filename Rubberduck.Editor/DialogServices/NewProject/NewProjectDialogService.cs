@@ -14,7 +14,6 @@ namespace Rubberduck.Editor.DialogServices.NewProject
     public class NewProjectDialogService : DialogService<NewProjectWindow, NewProjectWindowViewModel>, INewProjectDialogService
     {
         private readonly ICommand _showSettingsCommand;
-        private readonly SystemCommandHandlers _systemCommandHandlers;
         private readonly IVBProjectInfoProvider _projectsProvider;
         private readonly ITemplatesService _templatesService;
         private readonly UIServiceHelper _service;
@@ -27,14 +26,12 @@ namespace Rubberduck.Editor.DialogServices.NewProject
             ITemplatesService templatesService,
             MessageActionsProvider actionsProvider,
             ShowRubberduckSettingsCommand showSettingsCommand,
-            PerformanceRecordAggregator performance,
-            SystemCommandHandlers systemCommandHandlers)
+            PerformanceRecordAggregator performance)
             : base(logger, factory, settingsProvider, actionsProvider, performance)
         {
             _service = service;
             _projectsProvider = projectsProvider;
             _showSettingsCommand = showSettingsCommand;
-            _systemCommandHandlers = systemCommandHandlers;
             _templatesService = templatesService;
         }
 
@@ -42,7 +39,7 @@ namespace Rubberduck.Editor.DialogServices.NewProject
         {
             var projects = _projectsProvider.GetProjectInfo();
             var templates = _templatesService.GetProjectTemplates();
-            return new NewProjectWindowViewModel(_service, projects, templates, actions, _showSettingsCommand, _systemCommandHandlers);
+            return new NewProjectWindowViewModel(_service, projects, templates, actions, _showSettingsCommand);
         }
     }
 }

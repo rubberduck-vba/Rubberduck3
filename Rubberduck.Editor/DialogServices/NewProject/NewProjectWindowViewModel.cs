@@ -35,8 +35,7 @@ namespace Rubberduck.Editor.DialogServices.NewProject
         }
 
         public NewProjectWindowViewModel(UIServiceHelper service, IEnumerable<VBProjectInfo?> projects, IEnumerable<ProjectTemplate> projectTemplates, 
-            MessageActionsProvider actions, ICommand showSettingsCommand,
-            SystemCommandHandlers systemCommandHandlers)
+            MessageActionsProvider actions, ICommand showSettingsCommand)
             : base(service, "New Project", actions.OkCancel(Validate), showSettingsCommand, typeof(LanguageClientSettings).Name)
         {
             _settings = service.Settings;
@@ -53,7 +52,6 @@ namespace Rubberduck.Editor.DialogServices.NewProject
             ResetToDefaults();
             CommandBindings = new CommandBinding[]
             {
-                new(SystemCommands.CloseWindowCommand, systemCommandHandlers.CloseWindowCommandBinding_Executed, systemCommandHandlers.CloseWindowCommandBinding_CanExecute),
                 new(NavigationCommands.Search, DialogCommandHandlers.BrowseLocationCommandBinding_Executed, DialogCommandHandlers.BrowseLocationCommandBinding_CanExecute),
             };
         }
