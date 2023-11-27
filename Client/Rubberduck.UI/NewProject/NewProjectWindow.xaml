@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Rubberduck.UI.NewProject" 
         xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
+        xmlns:model="clr-namespace:Rubberduck.InternalApi.Model.Workspace;assembly=Rubberduck.InternalApi"
         xmlns:command="clr-namespace:Rubberduck.UI.Command"
-        d:DataContext="{d:DesignInstance Type=local:NewProjectWindowViewModel}"
         mc:Ignorable="d"
         ShowInTaskbar="False"
         ResizeMode="NoResize"
@@ -43,7 +43,7 @@
                           Margin="5,0"
                           IsTabStop="True" TabIndex="0">
                     <ComboBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type local:VBProjectInfo}">
+                        <DataTemplate DataType="{x:Type model:VBProjectInfo}">
                             <TextBlock Text="{Binding Name}" />
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
@@ -60,7 +60,7 @@
                           Margin="5,0"
                           IsTabStop="True" TabIndex="0">
                     <ComboBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type local:ProjectTemplate}">
+                        <DataTemplate DataType="{x:Type model:ProjectTemplate}">
                             <TextBlock Text="{Binding Name}" />
                         </DataTemplate>
                     </ComboBox.ItemTemplate>

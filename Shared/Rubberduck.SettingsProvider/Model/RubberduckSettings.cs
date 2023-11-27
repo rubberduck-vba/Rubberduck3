@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.Settings;
+using Rubberduck.SettingsProvider.Model.Editor;
 using Rubberduck.SettingsProvider.Model.General;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
@@ -19,6 +20,7 @@ namespace Rubberduck.SettingsProvider.Model
             {
                 GeneralSettings.Default,
                 LoggingSettings.Default,
+                EditorSettings.Default,
                 LanguageClientSettings.Default,
                 LanguageServerSettings.Default,
                 UpdateServerSettings.Default,
@@ -35,6 +37,8 @@ namespace Rubberduck.SettingsProvider.Model
         public GeneralSettings GeneralSettings => GetSetting<GeneralSettings>() ?? GeneralSettings.Default;
         [JsonIgnore]
         public LoggingSettings LoggerSettings => GetSetting<LoggingSettings>() ?? LoggingSettings.Default;
+        [JsonIgnore]
+        public EditorSettings EditorSettings => GetSetting<EditorSettings>() ?? EditorSettings.Default;
         [JsonIgnore]
         public LanguageClientSettings LanguageClientSettings => GetSetting<LanguageClientSettings>() ?? LanguageClientSettings.Default;
         [JsonIgnore]

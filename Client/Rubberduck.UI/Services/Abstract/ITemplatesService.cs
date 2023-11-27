@@ -1,5 +1,4 @@
-﻿using Rubberduck.InternalApi.Model;
-using Rubberduck.UI.NewProject;
+﻿using Rubberduck.InternalApi.Model.Workspace;
 using System.Collections.Generic;
 
 namespace Rubberduck.UI.Services.Abstract

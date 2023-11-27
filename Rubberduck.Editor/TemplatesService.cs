@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Model;
+using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.UI;
+using Rubberduck.UI.Command;
 using Rubberduck.UI.Message;
-using Rubberduck.UI.NewProject;
 using Rubberduck.UI.Services.Abstract;
 using System;
 using System.Collections.Generic;

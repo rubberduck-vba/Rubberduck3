@@ -1,5 +1,6 @@
 ﻿using Dragablz;
-using Rubberduck.InternalApi.Model.Abstract;
+using Rubberduck.Editor.Shell.StatusBar;
+using Rubberduck.UI.Shell;
 using System.Windows;
 
 namespace Rubberduck.Editor.Shell

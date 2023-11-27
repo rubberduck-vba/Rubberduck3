@@ -6,7 +6,9 @@ using Rubberduck.Resources;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider.Model.General;
 using System;
+using System.Collections;
 using System.IO.Abstractions;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -44,7 +46,7 @@ namespace Rubberduck.SettingsProvider
     }
 
     public class SettingsService<TSettings> : ServiceBase, ISettingsService<TSettings>
-        where TSettings : RubberduckSetting, new()
+        where TSettings : TypedSettingGroup, new()
     {
         private static readonly JsonSerializerOptions _options = new() 
         { 
@@ -78,7 +80,7 @@ namespace Rubberduck.SettingsProvider
 
         public event EventHandler<SettingsChangedEventArgs<TSettings>>? SettingsChanged;
 
-        private void OnSettingsChanged(TSettings oldValue) => SettingsChanged?.Invoke(this, new SettingsChangedEventArgs<TSettings>(oldValue, Settings));
+        private void OnSettingsChanged(TSettings? oldValue) => SettingsChanged?.Invoke(this, new SettingsChangedEventArgs<TSettings>(oldValue, Settings));
 
         public void ClearCache()
         {
@@ -90,19 +92,11 @@ namespace Rubberduck.SettingsProvider
 
         private bool TrySetValue(TSettings value)
         {
-            var didChange = false;
-
-            var oldValue = _cached;
-            if (!value.Equals(oldValue))
-            {
-                _cached = value;
-                didChange = true;
-                LogInformation($"Cached new {typeof(TSettings).Name} value.");
-                OnSettingsChanged(oldValue);
-            }
-
-            return didChange;
+            /*TODO merge defaults*/
+            _cached = value;
+            return true;
         }
+
 
         public TSettings Read()
         {

@@ -6,6 +6,7 @@ using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider.Model.General;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.UI;
+using Rubberduck.UI.Command;
 using Rubberduck.UI.Message;
 using System.Collections.Generic;
 using System.Linq;

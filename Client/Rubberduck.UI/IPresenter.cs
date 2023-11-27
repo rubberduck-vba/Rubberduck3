@@ -1,4 +1,4 @@
-﻿using Rubberduck.UI.Services;
+﻿using Rubberduck.UI.Services.Abstract;
 
 namespace Rubberduck.UI
 {

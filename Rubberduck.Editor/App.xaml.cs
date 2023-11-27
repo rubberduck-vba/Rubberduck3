@@ -6,15 +6,17 @@ using NLog.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
-using Rubberduck.Editor.Document.Tabs;
+using Rubberduck.Editor.Commands;
+using Rubberduck.Editor.DialogServices.NewProject;
 using Rubberduck.Editor.RPC.EditorServer;
 using Rubberduck.Editor.RPC.EditorServer.Handlers.Lifecycle;
 using Rubberduck.Editor.RPC.EditorServer.Handlers.Workspace;
 using Rubberduck.Editor.RPC.LanguageServerClient.Handlers;
 using Rubberduck.Editor.Shell;
+using Rubberduck.Editor.Shell.StatusBar;
+using Rubberduck.Editor.Splash;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.InternalApi.Model.Abstract;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.LanguageServer.Model;
 using Rubberduck.ServerPlatform;
@@ -25,15 +27,17 @@ using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
 using Rubberduck.SettingsProvider.Model.TelemetryServer;
 using Rubberduck.SettingsProvider.Model.UpdateServer;
-using Rubberduck.UI;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Message;
 using Rubberduck.UI.NewProject;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
+using Rubberduck.UI.Services.Settings;
 using Rubberduck.UI.Settings;
 using Rubberduck.UI.Shell;
 using Rubberduck.UI.Splash;
+using Rubberduck.UI.Windows;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -243,6 +247,8 @@ namespace Rubberduck.Editor
             services.AddSingleton<SynchronizeWorkspaceCommand>();
             services.AddSingleton<ExitCommand>();
 
+            services.AddSingleton<ToolsCommandHandlers>();
+            services.AddSingleton<ShowRubberduckSettingsCommand>();
         }
 
         public void Dispose()

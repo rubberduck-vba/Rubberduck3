@@ -4,7 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.UI.Shell"
-             xmlns:drgz="clr-namespace:Dragablz;assembly=Dragablz"
+             xmlns:drgz="clr-namespace:Dragablz;assembly=Dragablz" 
+             xmlns:windows="clr-namespace:Rubberduck.UI.Windows" 
+             d:DataContext="{d:DesignInstance Type=windows:IWindowViewModel}"
              mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>

@@ -1,19 +1,29 @@
 ﻿using Dragablz;
-using Rubberduck.InternalApi.Model.Abstract;
+using Rubberduck.Editor.Commands;
+using Rubberduck.Editor.Shell.StatusBar;
+using Rubberduck.UI;
+using Rubberduck.UI.Chrome;
+using Rubberduck.UI.Services;
 using Rubberduck.UI.Shell;
+using Rubberduck.UI.Shell.Document;
+using Rubberduck.UI.Shell.StatusBar;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Rubberduck.Editor.Shell
 {
-    public class ShellWindowViewModel : IShellWindowViewModel
+
+    public class ShellWindowViewModel : ViewModelBase, IShellWindowViewModel
     {
         private static readonly string _shellPartition = Guid.NewGuid().ToString();
+        private readonly UIServiceHelper _service;
 
-        public ShellWindowViewModel(IInterTabClient interTabClient, StatusBarViewModel statusBar,
-            FileCommandHandlers fileCommandHandlers)
+        public ShellWindowViewModel(UIServiceHelper service, IInterTabClient interTabClient, StatusBarViewModel statusBar,
+            FileCommandHandlers fileCommandHandlers,
+            ToolsCommandHandlers toolsCommandHandlers)
         {
+            _service = service;
             InterTabClient = interTabClient;
             Partition = _shellPartition;
 
@@ -21,6 +31,7 @@ namespace Rubberduck.Editor.Shell
             Documents = new ObservableCollection<IDocumentTabViewModel>();
 
             FileCommandHandlers = fileCommandHandlers;
+            ToolsCommandHandlers = toolsCommandHandlers;
         }
 
         public string Title => "Rubberduck Editor";
@@ -33,6 +44,11 @@ namespace Rubberduck.Editor.Shell
         public IStatusBarViewModel StatusBar { get; init; }
 
         public FileCommandHandlers FileCommandHandlers { get; init; }
+
+        public ToolsCommandHandlers ToolsCommandHandlers { get; set; }
+
+        public IWindowChromeViewModel Chrome => throw new NotImplementedException();
+
 
         public void ClosingTabItemHandler(object sender, EventArgs e)
         {

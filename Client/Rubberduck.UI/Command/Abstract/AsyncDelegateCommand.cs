@@ -1,9 +1,8 @@
-﻿using Rubberduck.UI.Command.Abstract;
-using Rubberduck.UI.Services;
+﻿using Rubberduck.UI.Services;
 using System;
 using System.Threading.Tasks;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.Abstract
 {
     public class AsyncDelegateCommand : CommandBase
     {

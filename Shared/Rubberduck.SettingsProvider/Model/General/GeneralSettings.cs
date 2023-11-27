@@ -1,6 +1,9 @@
 ﻿using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model.General
@@ -22,6 +25,12 @@ namespace Rubberduck.SettingsProvider.Model.General
 
         public GeneralSettings()
         {
+        }
+
+        public GeneralSettings(IDictionary<string, RubberduckSetting> settings) : this()
+        {
+            var defaultKeys = DefaultSettings.Select(e => e.Key).ToHashSet();
+            Value = settings.Where(e => defaultKeys.Contains(e.Key));
         }
 
         [JsonIgnore]

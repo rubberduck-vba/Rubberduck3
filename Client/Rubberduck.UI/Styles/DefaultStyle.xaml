@@ -5,7 +5,7 @@
                     xmlns:converters="clr-namespace:Rubberduck.UI.Converters">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Icons.xaml"/>
-        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/AbyssTheme.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/DarkTheme.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <!--<Style TargetType="ScrollViewer">
@@ -238,19 +238,23 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundDarkColorBrush}" />
-            <!--Setter Property="Template" Value="{DynamicResource WindowTemplate}" /-->
         </Style.Setters>
-        <!--<Style.Triggers>
-            <DataTrigger Binding="{Binding ShowInTaskbar, RelativeSource={RelativeSource Mode=Self}}" Value="True">
-                <DataTrigger.Setters>
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding ShowInTaskbar, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                    <Condition Binding="{Binding ExtendWindowChrome}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Template" Value="{DynamicResource WindowTemplate}" />
                     <Setter Property="WindowChrome.WindowChrome">
                         <Setter.Value>
                             <WindowChrome />
                         </Setter.Value>
                     </Setter>
-                </DataTrigger.Setters>
-            </DataTrigger>
-        </Style.Triggers>-->
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="ControlBoxButtonMaskRectangleStyle" TargetType="{x:Type Rectangle}">

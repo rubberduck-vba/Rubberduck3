@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Resources;
+using Rubberduck.SettingsProvider.Model.Editor;
 using Rubberduck.SettingsProvider.Model.General;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
@@ -36,6 +37,9 @@ namespace Rubberduck.SettingsProvider.Model
     [JsonDerivedType(typeof(RequireDefaultWorkspaceRootHostSetting), nameof(RequireDefaultWorkspaceRootHostSetting))]
     [JsonDerivedType(typeof(EnableUncWorkspacesSetting), nameof(EnableUncWorkspacesSetting))]
     [JsonDerivedType(typeof(EnableFileSystemWatchersSetting), nameof(EnableFileSystemWatchersSetting))]
+
+    [JsonDerivedType(typeof(EditorSettings), nameof(EditorSettings))] // ~ Editor
+    [JsonDerivedType(typeof(ExtendWindowChromeSetting), nameof(ExtendWindowChromeSetting))]
 
     [JsonDerivedType(typeof(LanguageServerSettings), nameof(LanguageServerSettings))] // ~ Language server
 

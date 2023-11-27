@@ -7,23 +7,26 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using MemoryStream = System.IO.MemoryStream;
 
 namespace Rubberduck.UI
 {
-    public abstract class ViewModelBase : INotifyPropertyChanged, INotifyDataErrorInfo
+
+    public abstract class ViewModelBase : ICommandBindingProvider, INotifyPropertyChanged, INotifyDataErrorInfo
     {
         public event PropertyChangedEventHandler? PropertyChanged = delegate { };
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged = delegate { };
 
         private readonly IDictionary<string, List<string>> _errors = new ConcurrentDictionary<string, List<string>>();
 
-        //[NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public virtual IEnumerable<CommandBinding> CommandBindings { get; } = Enumerable.Empty<CommandBinding>();
 
         protected static BitmapImage GetImageSource(Bitmap image)
         {

@@ -1,11 +1,10 @@
-﻿using System.Windows;
-
+﻿
 namespace Rubberduck.UI.About
 {
     /// <summary>
     /// Interaction logic for AboutWindow.xaml
     /// </summary>
-    public partial class AboutWindow : Window
+    public partial class AboutWindow : System.Windows.Window
     {
         public AboutWindow() : this(null!) { }
 

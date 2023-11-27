@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.Resources.Messages;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.SharedHandlers;
 using System;
 using System.Linq;
 using System.Windows.Input;

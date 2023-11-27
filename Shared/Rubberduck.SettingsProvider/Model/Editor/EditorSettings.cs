@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace Rubberduck.SettingsProvider.Model.Editor
 {
+
     /// <summary>
     /// Configures Rubberduck Editor settings.
     /// </summary>
@@ -14,6 +15,7 @@ namespace Rubberduck.SettingsProvider.Model.Editor
         private static readonly RubberduckSetting[] DefaultSettings =
             new RubberduckSetting[]
             {
+                new ExtendWindowChromeSetting(),
                 /*TODO
                  * These settings should be specific to the editor, e.g. theming, fonts/font sizes, etc.
                  * See LanguageClientSettings for editor settings related to its LSP client functionalities.
@@ -29,6 +31,8 @@ namespace Rubberduck.SettingsProvider.Model.Editor
         {
             DefaultValue = DefaultSettings;
         }
+
+        public bool ExtendWindowChrome => GetSetting<ExtendWindowChromeSetting>()?.TypedValue ?? ExtendWindowChromeSetting.DefaultSettingValue;
 
         public static EditorSettings Default { get; } = new() { Value = DefaultSettings };
         EditorSettings IDefaultSettingsProvider<EditorSettings>.Default => Default;

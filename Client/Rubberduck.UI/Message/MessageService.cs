@@ -2,6 +2,7 @@
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services;
 using System;
 using System.Linq;

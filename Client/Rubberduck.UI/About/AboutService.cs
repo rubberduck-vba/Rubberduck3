@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.SettingsProvider;
-using Rubberduck.UI.Services;
+using Rubberduck.UI.Services.Abstract;
 
 namespace Rubberduck.UI.About
 {

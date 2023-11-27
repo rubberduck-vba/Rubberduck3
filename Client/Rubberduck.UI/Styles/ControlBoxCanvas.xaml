@@ -3,10 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:Rubberduck.UI.Styles"
         MinHeight="20" MinWidth="24"
         mc:Ignorable="d" 
-        d:DesignHeight="20" d:DesignWidth="24">
+        d:DesignHeight="20" d:DesignWidth="24"
+        x:Name="CanvasRoot">
     <Canvas.Resources>
         
         <ResourceDictionary>
@@ -16,12 +16,12 @@
         </ResourceDictionary>
     </Canvas.Resources>
 
-    <Image Source="{Binding ImageSource, RelativeSource={RelativeSource AncestorType={x:Type local:ControlBoxCanvas}, Mode=FindAncestor}}"
+    <Image Source="{Binding ImageSource, ElementName=CanvasRoot}"
            Height="20" Width="24" Stretch="UniformToFill" />
     
     <Rectangle Height="20" Width="24" Fill="{DynamicResource ThemeAccent1LightColorBrush}">
         <Rectangle.OpacityMask>
-            <ImageBrush ImageSource="{Binding ImageSource, RelativeSource={RelativeSource AncestorType={x:Type local:ControlBoxCanvas}, Mode=FindAncestor}}" />
+            <ImageBrush ImageSource="{Binding ImageSource, ElementName=CanvasRoot}" />
         </Rectangle.OpacityMask>
         <Rectangle.Style>
             <Style TargetType="Rectangle">

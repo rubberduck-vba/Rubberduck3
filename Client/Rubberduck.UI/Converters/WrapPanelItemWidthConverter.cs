@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Rubberduck.UI.Settings.ViewModels.Abstract;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -16,23 +18,26 @@ namespace Rubberduck.UI.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var panelWidth = (double)value;
-            if (panelWidth <= MinItemWidth)
+            var items = ((IEnumerable<ISettingViewModel>)((CollectionViewSource)parameter)?.Source)?.Count() ?? 0;
+            if (items > 1)
             {
-                return MinItemWidth;
-            }
+                if (panelWidth <= MinItemWidth)
+                {
+                    return MinItemWidth;
+                }
 
-            var maxWidthColumns = panelWidth / MaxItemWidth;
-            if (maxWidthColumns > 2)
-            {
-                return panelWidth / (int)maxWidthColumns;
-            }
+                var maxWidthColumns = panelWidth / MaxItemWidth;
+                if (maxWidthColumns > 2)
+                {
+                    return panelWidth / (int)maxWidthColumns;
+                }
 
-            var minWidthColumns = panelWidth / MinItemWidth;
-            if (minWidthColumns > 1.5)
-            {
-                return panelWidth / (int)minWidthColumns;
+                var minWidthColumns = panelWidth / MinItemWidth;
+                if (minWidthColumns > 1.5)
+                {
+                    return panelWidth / (int)minWidthColumns;
+                }
             }
-
             return panelWidth;
         }
 

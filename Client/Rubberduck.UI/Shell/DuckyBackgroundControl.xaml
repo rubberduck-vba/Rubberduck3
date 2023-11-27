@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Rubberduck.UI.Shell" 
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              mc:Ignorable="d" 
              MinHeight="320" MinWidth="340">
@@ -21,12 +20,13 @@
                     <Setter Property="Stretch" Value="UniformToFill" />
                     <Setter Property="Width" Value="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
                     <Setter Property="Height" Value="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                    <Setter Property="Opacity" Value="0.05" />
                 </Style.Setters>
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Canvas Opacity="0.25"
+        <Canvas Opacity="0.225"
                 HorizontalAlignment="Stretch" 
                 VerticalAlignment="Stretch">
             <Image x:Name="Ducky" Style="{StaticResource BackgroundDuckyStyle}"/>

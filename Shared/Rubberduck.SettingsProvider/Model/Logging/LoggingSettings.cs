@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model.Logging
@@ -22,6 +24,13 @@ namespace Rubberduck.SettingsProvider.Model.Logging
             };
 
         public LoggingSettings() { }
+
+        public LoggingSettings(IDictionary<string, RubberduckSetting> settings) : this()
+        {
+            var defaultKeys = DefaultSettings.Select(e => e.Key).ToHashSet();
+            Value = settings.Where(e => defaultKeys.Contains(e.Key));
+        }
+
 
         [JsonIgnore]
         public bool DisableInitialLogLevelReset => GetSetting<DisableInitialLogLevelResetSetting>()?.TypedValue ?? DisableInitialLogLevelResetSetting.DefaultSettingValue;

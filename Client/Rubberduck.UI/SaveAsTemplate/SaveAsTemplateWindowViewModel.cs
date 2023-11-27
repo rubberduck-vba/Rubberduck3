@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Resources.Menus;
-using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services;
+using Rubberduck.UI.Windows;
 using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
@@ -28,7 +29,7 @@ namespace Rubberduck.UI.SaveAsTemplate
         public SaveAsTemplateWindowViewModel(UIServiceHelper service, MessageActionCommand[] actions,
             IEnumerable<IWorkspaceFileViewModel> files,
             IFileSystem fileSystem)
-            : base("Export Project Template", actions)
+            : base(service, "Export Project Template", actions)
         {
             _service = service;
             _fileSystem = fileSystem;

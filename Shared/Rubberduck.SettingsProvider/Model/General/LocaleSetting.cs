@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.SettingsProvider.Model.General
+﻿using System.Collections.Generic;
+
+namespace Rubberduck.SettingsProvider.Model.General
 {
     /// <summary>
     /// Determines the display language of localized user interface elements.

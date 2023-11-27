@@ -12,24 +12,16 @@
   <ItemGroup>
     <Compile Remove="Environment\**" />
     <Compile Remove="FileMenu\**" />
-    <Compile Remove="Resources\Customoccvondvond\**" />
     <Compile Remove="RPC\UpdateServerClient\**" />
     <EmbeddedResource Remove="Environment\**" />
     <EmbeddedResource Remove="FileMenu\**" />
-    <EmbeddedResource Remove="Resources\Customoccvondvond\**" />
     <EmbeddedResource Remove="RPC\UpdateServerClient\**" />
     <None Remove="Environment\**" />
     <None Remove="FileMenu\**" />
-    <None Remove="Resources\Customoccvondvond\**" />
     <None Remove="RPC\UpdateServerClient\**" />
     <Page Remove="Environment\**" />
     <Page Remove="FileMenu\**" />
-    <Page Remove="Resources\Customoccvondvond\**" />
     <Page Remove="RPC\UpdateServerClient\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Resources\FontAwesome\xmark-solid.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,43 +50,6 @@
   
   <ItemGroup>
     <Resource Include="ducky.ico" />
-    <Resource Include="Resources\Custom\vector-ducky-color.png" />
-    <Resource Include="Resources\Custom\ducky.ico" />
-    <Resource Include="Resources\Custom\background-ducky.png" />
-    <Resource Include="Resources\Custom\Icons\Severity.png" />
-    <Resource Include="Resources\Custom\vector-ducky-blur-1480.png" />
-    <Resource Include="Resources\Custom\vector-ducky-shadow-1480.png" />
-    <Resource Include="Resources\FontAwesome\gear-solid.png" />
-    <Resource Include="Resources\FontAwesome\rectangle-xmark-solid.png" />
-    <Resource Include="Resources\FontAwesome\square-xmark-solid-red.png" />
-    <Resource Include="Resources\FontAwesome\square-xmark-solid.png" />
-    <Resource Include="Resources\FontAwesome\window-maximize-regular.png" />
-    <Resource Include="Resources\FontAwesome\window-minimize-regular.png" />
-    <Resource Include="Resources\FontAwesome\window-restore-regular.png" />
-    <Resource Include="Resources\FontAwesome\xmark-solid.png" />
-    <Resource Include="Resources\FugueIcons\cross-circle.png" />
-    <Resource Include="Resources\FugueIcons\document-code.png" />
-    <Resource Include="Resources\FugueIcons\drive--exclamation.png" />
-    <Resource Include="Resources\FugueIcons\drive-network.png" />
-    <Resource Include="Resources\FugueIcons\exclamation-diamond.png" />
-    <Resource Include="Resources\FugueIcons\information.png" />
-    <Resource Include="Resources\FugueIcons\magnifier-medium.png" />
-    <Resource Include="Resources\FugueIcons\selection-input.png" />
-    <Resource Include="Resources\FugueIcons\tick-circle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Resources\Xaml\Styles\ControlBoxCanvas.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Resources\Xaml\Styles\FlatButton.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Shell\ChildWindow.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Shell\DuckyBackgroundControl.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Update="NLog-editor.config">

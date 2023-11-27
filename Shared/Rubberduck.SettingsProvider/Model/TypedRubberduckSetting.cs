@@ -25,8 +25,6 @@ namespace Rubberduck.SettingsProvider.Model
             get => _typedValue;
             set
             {
-                _ = value ?? throw new ArgumentNullException(nameof(value));
-
                 if (SettingDataType == SettingDataType.SettingGroup)
                 {
                     if (value is JsonElement json && json.ValueKind == JsonValueKind.Array)
@@ -41,16 +39,24 @@ namespace Rubberduck.SettingsProvider.Model
                 }
                 else if (SettingDataType == SettingDataType.EnumSettingGroup)
                 {
-                    if (value is JsonElement json && json.ValueKind == JsonValueKind.Array)
-                    {
+                    // FIXME
 
-                        object values = json.EnumerateArray().Select(item => item.Deserialize<BooleanRubberduckSetting>()).ToArray();
-                        _typedValue = (TValue)values;
-                    }
-                    else
-                    {
-                        _typedValue = (TValue)value;
-                    }
+                    //if (value is JsonElement json && json.ValueKind == JsonValueKind.Array)
+                    //{
+
+                    //    object values = json.EnumerateArray().Select(item => item.Deserialize<BooleanRubberduckSetting>()).ToArray();
+                    //    _typedValue = (TValue)values;
+                    //}
+                    //else
+                    //{
+                    //    try
+                    //    {
+                    //        _typedValue = (TValue)value;
+                    //    }
+                    //    catch (Exception)
+                    //    {
+                    //    }
+                    //}
                 }
                 else if (SettingDataType != SettingDataType.NotSet)
                 {

@@ -1,10 +1,9 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.Abstract
 {
     [ComVisible(false)]
     public class DelegateCommand : CommandBase
@@ -12,7 +11,7 @@ namespace Rubberduck.UI.Command
         private readonly Predicate<object?>? _canExecute;
         private readonly Action<object?> _execute;
 
-        public DelegateCommand(UIServiceHelper service, Action<object?> execute, Predicate<object?>? canExecute = null) 
+        public DelegateCommand(UIServiceHelper service, Action<object?> execute, Predicate<object?>? canExecute = null)
             : base(service)
         {
             _canExecute = canExecute;

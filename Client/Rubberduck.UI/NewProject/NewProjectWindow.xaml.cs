@@ -1,4 +1,6 @@
-﻿using Rubberduck.UI.Shell;
+﻿using Rubberduck.UI.Command;
+using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -7,32 +9,28 @@ namespace Rubberduck.UI.NewProject
     /// <summary>
     /// Interaction logic for NewProjectWindow.xaml
     /// </summary>
-    public partial class NewProjectWindow : Window
+    public partial class NewProjectWindow : System.Windows.Window
     {
-        public NewProjectWindow(NewProjectWindowViewModel viewModel) : this()
+        public NewProjectWindow(INewProjectWindowViewModel viewModel) : this()
         {
             DataContext = viewModel;
         }
 
-        private static readonly ExecutedRoutedEventHandler _browseCommandExecute = DialogCommandHandlers.BrowseLocationCommandBinding_Executed;
-        private static readonly CanExecuteRoutedEventHandler _browseCommandCanExecute = DialogCommandHandlers.BrowseLocationCommandBinding_CanExecute;
-
-        private readonly SystemCommandHandlers _systemCommandHandlers;
-
         public NewProjectWindow()
         {
             InitializeComponent();
+
             MouseDown += OnMouseDown;
+            DataContextChanged += OnDataContextChanged;
+        }
 
-            _systemCommandHandlers = new SystemCommandHandlers(this);
-
-            var bindings = new CommandBinding[]
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue is ICommandBindingProvider provider)
             {
-                new(SystemCommands.CloseWindowCommand, _systemCommandHandlers.CloseWindowCommandBinding_Executed, _systemCommandHandlers.CloseWindowCommandBinding_CanExecute),
-                new(NavigationCommands.Search, _browseCommandExecute, _browseCommandCanExecute),
-            };
-
-            CommandBindings.AddRange(bindings);
+                CommandBindings.Clear();
+                CommandBindings.AddRange(provider.CommandBindings.ToArray());
+            }
         }
 
         private void OnMouseDown(object sender, MouseButtonEventArgs e)

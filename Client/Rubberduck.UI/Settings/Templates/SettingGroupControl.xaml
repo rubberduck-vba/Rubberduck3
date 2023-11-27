@@ -4,8 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.UI.Settings.Templates"
-             xmlns:viewmodels="clr-namespace:Rubberduck.UI.Settings.ViewModels" xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
-             d:DataContext="{d:DesignInstance Type=viewmodels:SettingGroupViewModel}"
+             xmlns:viewmodels="clr-namespace:Rubberduck.UI.Settings.ViewModels" 
+             xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
+             xmlns:converters="clr-namespace:Rubberduck.UI.Converters" 
+             xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              Background="{DynamicResource ThemeBackgroundColorBrush}"
              Padding="4" MinHeight="128" MinWidth="300"
              mc:Ignorable="d">
@@ -15,6 +17,11 @@
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <CollectionViewSource x:Key="ItemsViewSource" Source="{Binding Items}">
+                <CollectionViewSource.SortDescriptions>
+                    <componentmodel:SortDescription PropertyName="SettingDataType" Direction="Descending" />
+                </CollectionViewSource.SortDescriptions>
+            </CollectionViewSource>
         </ResourceDictionary>
     </UserControl.Resources>
     <Border Background="{DynamicResource ThemeBackgroundMediumColorBrush}">
@@ -52,7 +59,7 @@
                     </ListBox.ItemContainerStyle>
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel ItemWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollViewer, Mode=FindAncestor}, Converter={StaticResource WrapPanelItemWidthConverter}}" />
+                            <WrapPanel ItemWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollViewer, Mode=FindAncestor}, Converter={StaticResource WrapPanelItemWidthConverter}, ConverterParameter={StaticResource ItemsViewSource}}" />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                 </ListBox>

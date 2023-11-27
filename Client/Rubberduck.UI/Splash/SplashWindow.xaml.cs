@@ -1,12 +1,11 @@
-﻿using Rubberduck.InternalApi.Model.Abstract;
-using System.Windows;
+﻿using System.Windows;
 
 namespace Rubberduck.UI.Splash
 {
     /// <summary>
     /// Interaction logic for Splash.xaml
     /// </summary>
-    public partial class SplashWindow : Window
+    public partial class SplashWindow : System.Windows.Window
     {
         public SplashWindow(ISplashViewModel viewModel) : this()
         {

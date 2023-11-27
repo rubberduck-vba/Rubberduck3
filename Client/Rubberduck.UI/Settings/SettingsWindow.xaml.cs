@@ -1,5 +1,7 @@
-﻿using Rubberduck.UI.Shell;
+﻿using Rubberduck.UI.Command;
+using Rubberduck.UI.Services.Settings;
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -8,10 +10,8 @@ namespace Rubberduck.UI.Settings
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml
     /// </summary>
-    public partial class SettingsWindow : Window
+    public partial class SettingsWindow : System.Windows.Window
     {
-        private readonly SystemCommandHandlers _systemCommandHandlers;
-
         public SettingsWindow(ISettingsWindowViewModel viewModel) : this()
         {
             DataContext = viewModel;
@@ -20,17 +20,18 @@ namespace Rubberduck.UI.Settings
         public SettingsWindow()
         {
             InitializeComponent();
+
             MouseDown += OnMouseDown;
+            DataContextChanged += OnDataContextChanged;
+        }
 
-            _systemCommandHandlers = new SystemCommandHandlers(this);
-
-            var bindings = new CommandBinding[]
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue is ICommandBindingProvider provider)
             {
-                new(SystemCommands.CloseWindowCommand, _systemCommandHandlers.CloseWindowCommandBinding_Executed, _systemCommandHandlers.CloseWindowCommandBinding_CanExecute),
-                //new(NavigationCommands.Search, _filterCommandExecute, _filterCommandCanExecute),
-            };
-
-            CommandBindings.AddRange(bindings);
+                CommandBindings.Clear();
+                CommandBindings.AddRange(provider.CommandBindings.ToArray());
+            }
         }
 
         private void OnMouseDown(object sender, MouseButtonEventArgs e)

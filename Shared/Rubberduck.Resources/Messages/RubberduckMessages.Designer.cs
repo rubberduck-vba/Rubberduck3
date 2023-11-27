@@ -89,7 +89,7 @@ namespace Rubberduck.Resources.Messages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Quack!.
+        ///   Looks up a localized string similar to Close.
         /// </summary>
         public static string MessageActionButton_Close {
             get {

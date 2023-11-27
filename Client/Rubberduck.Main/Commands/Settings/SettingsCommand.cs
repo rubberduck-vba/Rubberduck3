@@ -1,7 +1,7 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Client;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Services;
-using Rubberduck.UI.Settings;
+using Rubberduck.UI.Services.Settings;
 using Rubberduck.Unmanaged.Abstract;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 using System.Threading.Tasks;

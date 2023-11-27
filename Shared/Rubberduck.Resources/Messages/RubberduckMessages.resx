@@ -124,7 +124,7 @@
     <value>Cancel</value>
   </data>
   <data name="MessageActionButton_Close" xml:space="preserve">
-    <value>Quack!</value>
+    <value>Close</value>
   </data>
   <data name="MessageActionButton_No" xml:space="preserve">
     <value>Wait, no</value>

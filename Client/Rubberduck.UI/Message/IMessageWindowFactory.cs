@@ -1,4 +1,5 @@
 ﻿using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.SharedHandlers;
 using System;
 
 namespace Rubberduck.UI.Message

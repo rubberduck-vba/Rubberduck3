@@ -32,6 +32,32 @@ namespace Rubberduck.SettingsProvider.Model
             values[typeof(TSetting)] = setting;
             return this with { Value = values.Values };
         }
+
+        public IEnumerable<RubberduckSetting> Flatten(TypedSettingGroup? root = default)
+        {
+            foreach (var setting in root?.TypedValue ?? TypedValue)
+            {
+                foreach (var item in Flatten(setting))
+                {
+                    yield return item;
+                }
+            }
+        }
+
+        private IEnumerable<RubberduckSetting> Flatten(RubberduckSetting setting)
+        {
+            if (setting is TypedSettingGroup group)
+            {
+                foreach (var item in Flatten(group))
+                {
+                    yield return item;
+                }
+            }
+            else
+            {
+                yield return setting;
+            }
+        }
     }
 
     public abstract record class EnumSettingGroup<TEnum> : TypedRubberduckSetting<BooleanRubberduckSetting[]>
