@@ -375,7 +375,8 @@ namespace Rubberduck.Editor
 
         public void CloseWorkspace()
         {
-            throw new NotImplementedException();
+            CloseAllFiles();
+            _state.UnloadWorkspace();
         }
 
         public void Dispose()

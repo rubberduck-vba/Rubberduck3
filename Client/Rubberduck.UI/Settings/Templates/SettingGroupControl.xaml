@@ -7,8 +7,7 @@
              xmlns:viewmodels="clr-namespace:Rubberduck.UI.Settings.ViewModels" 
              xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters" 
-             xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-             Background="{DynamicResource ThemeBackgroundColorBrush}"
+             xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase" d:DataContext="{d:DesignInstance Type=viewmodels:SettingGroupViewModel}"
              Padding="4" MinHeight="128" MinWidth="300"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -24,7 +23,7 @@
             </CollectionViewSource>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Background="{DynamicResource ThemeBackgroundMediumColorBrush}">
+    <Border>
         <DockPanel>
             <DockPanel DockPanel.Dock="Top">
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
@@ -43,13 +42,13 @@
                 </Label>
             </ScrollViewer>
             <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
-                <ListBox Background="{DynamicResource ThemeBackgroundColorBrush}" 
-                          HorizontalContentAlignment="Stretch"
-                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                <ListBox HorizontalContentAlignment="Stretch"
+                         Background="Transparent" BorderThickness="0"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
                          VerticalContentAlignment="Stretch"
-                          ItemsSource="{Binding Items}"
-                          ItemTemplateSelector="{DynamicResource SettingTemplateSelector}">
+                         ItemsSource="{Binding Items}"
+                         ItemTemplateSelector="{DynamicResource SettingTemplateSelector}">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="MaxHeight" Value="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Grid, Mode=FindAncestor,AncestorLevel=2}}" />

@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="Rubberduck.UI.WorkspaceExplorer.WorkspaceExplorerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Rubberduck.UI.WorkspaceExplorer" xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
+             d:DataContext="{d:DesignInstance Type=local:WorkspaceExplorerWindowViewModel, CreateList=True}"
+             mc:Ignorable="d" 
+             x:Name="WorkspaceExplorerRoot"
+             Background="{DynamicResource ThemeBackgroundColorBrush}"
+             d:DesignHeight="450" d:DesignWidth="400">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <FrameworkElement x:Key="BindingAnchor" DataContext="{Binding DataContext, RelativeSource={RelativeSource Mode=Self}}" />
+            <DataTemplate x:Key="WorkspaceFolderTemplate" DataType="local:WorkspaceTreeNodeViewModel">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{DynamicResource FolderClosedIcon}" />
+                    <Label Content="{Binding Name}" />
+                </StackPanel>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <shell:ThunderFrame Title="Workspace Explorer" ShowTitle="True" ShowAcceptButton="False" ShowCancelButton="False">
+        <TreeView Margin="5" BorderThickness="0" Background="Transparent">
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="local:WorkspaceViewModel" 
+                                            ItemsSource="{Binding DataContext.Workspaces, ElementName=BindingAnchor}"
+                                            ItemTemplate="{StaticResource WorkspaceFolderTemplate}">
+                </HierarchicalDataTemplate>
+            </TreeView.Resources>
+        </TreeView>
+    </shell:ThunderFrame>
+</UserControl>

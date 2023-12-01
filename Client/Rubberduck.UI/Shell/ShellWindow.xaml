@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Rubberduck.UI.Shell" 
         xmlns:statusbar="clr-namespace:Rubberduck.UI.Shell.StatusBar" 
+        xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
         mc:Ignorable="d"
         ContentRendered="OnContentRendered" 
         Style="{DynamicResource ThemedWindowStyle}"
@@ -30,6 +31,17 @@
         <local:MenuBarControl x:Name="MenuBar" Grid.Row="0" />
         <Border Grid.Row="0" Background="{DynamicResource ThemeBackgroundColorBrush}" Opacity=".025" IsHitTestVisible="False" />
 
+        <DockPanel Grid.Row="1">
+            <dockablz:Layout DockPanel.Dock="Left" Partition="toolwindows" IsFloatDropZoneEnabled="False">
+            </dockablz:Layout>
+            <dockablz:Layout DockPanel.Dock="Right" Partition="toolwindows" IsFloatDropZoneEnabled="False">
+            </dockablz:Layout>
+            <dockablz:Layout DockPanel.Dock="Bottom" Partition="toolwindows" IsFloatDropZoneEnabled="False">
+            </dockablz:Layout>
+            <dockablz:Layout DockPanel.Dock="Top" Partition="documents" IsFloatDropZoneEnabled="True">
+            </dockablz:Layout>
+        </DockPanel>
+               
         <statusbar:StatusBarControl x:Name="StatusBar" Grid.Row="2" />
 
         <Thumb Grid.Row="2" HorizontalAlignment="Right" IsEnabled="True" IsHitTestVisible="True" WindowChrome.IsHitTestVisibleInChrome="True"

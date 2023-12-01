@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Rubberduck.UI.Settings" xmlns:shell="clr-namespace:Rubberduck.UI.Shell" xmlns:vm="clr-namespace:Rubberduck.UI.Settings.ViewModels" xmlns:templates="clr-namespace:Rubberduck.UI.Settings.Templates"
-        d:DataContext="{d:DesignInstance Type=local:SettingsWindowViewModel}"
+        xmlns:local="clr-namespace:Rubberduck.UI.Settings" xmlns:shell="clr-namespace:Rubberduck.UI.Shell" xmlns:vm="clr-namespace:Rubberduck.UI.Settings.ViewModels" xmlns:templates="clr-namespace:Rubberduck.UI.Settings.Templates" xmlns:settings="clr-namespace:Rubberduck.UI.Services.Settings"
+        d:DataContext="{d:DesignInstance Type=settings:SettingsWindowViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d"
         Title="Settings" 
         WindowStyle="None"
@@ -24,37 +24,42 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <shell:ThunderFrame Grid.RowSpan="2" Title="{Binding Title}" AcceptCommand="{Binding Actions[0]}">
-            <Grid>
+        <shell:ThunderFrame Grid.RowSpan="2" Title="{Binding Title}"
+                            ShowAcceptButton="True"
+                            AcceptCommand="{Binding Actions[0]}">
+            <Grid ClipToBounds="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <ListView MinWidth="160" Margin="4"
-                          Background="Transparent" 
-                          VerticalAlignment="Stretch"
-                          ScrollViewer.VerticalScrollBarVisibility="Auto"
-                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                          ItemsSource="{Binding Settings.Items}" 
-                          SelectedItem="{Binding Selection}" d:ItemsSource="{d:SampleData ItemCount=5}">
-                    <ListView.Resources>
-                    </ListView.Resources>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.ItemTemplate>
-                        <DataTemplate DataType="{x:Type vm:SettingGroupViewModel}">
-                            <DockPanel>
-                                <Label DockPanel.Dock="Top" Style="{DynamicResource ListItemTitleLabelStyle}">
-                                    <TextBlock Padding="0,0,0,5" Margin="5" Text="{Binding Name}" ToolTip="{Binding Description}" />
-                                </Label>
-                            </DockPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                <Border Background="{DynamicResource ThemeWhiteLightColorBrush50}">
+                    <ListView MinWidth="160" Margin="4"
+                              Background="Transparent" 
+                              BorderThickness="0"
+                              VerticalAlignment="Stretch"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              ItemsSource="{Binding Settings.Items}" 
+                              SelectedItem="{Binding Selection}" d:ItemsSource="{d:SampleData ItemCount=5}">
+                        <ListView.Resources>
+                        </ListView.Resources>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:SettingGroupViewModel}">
+                                <DockPanel>
+                                    <Label DockPanel.Dock="Top" Style="{DynamicResource ListItemTitleLabelStyle}">
+                                        <TextBlock Padding="0,0,0,5" Margin="5" Text="{Binding Name}" ToolTip="{Binding Description}" />
+                                    </Label>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Border>
 
                 <templates:SettingGroupControl Grid.Column="1" DataContext="{Binding Selection}" />
             </Grid>

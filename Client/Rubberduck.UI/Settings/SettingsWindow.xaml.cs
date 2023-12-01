@@ -22,7 +22,7 @@ namespace Rubberduck.UI.Settings
         {
             InitializeComponent();
 
-            MouseDown += OnMouseDown;
+            //MouseDown += OnMouseDown;
             DataContextChanged += OnDataContextChanged;
         }
 
@@ -37,13 +37,13 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private void OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                DragMove();
-            }
-        }
+        //private void OnMouseDown(object sender, MouseButtonEventArgs e)
+        //{
+        //    if (e.ChangedButton == MouseButton.Left)
+        //    {
+        //        DragMove();
+        //    }
+        //}
 
         private void OnResizeGripDragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
         {

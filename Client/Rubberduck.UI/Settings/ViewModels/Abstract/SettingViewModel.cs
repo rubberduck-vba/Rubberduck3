@@ -25,6 +25,8 @@ namespace Rubberduck.UI.Settings.ViewModels.Abstract
         public bool IsAdvancedSetting => Tags.HasFlag(SettingTags.Advanced);
         public bool IsExperimental => Tags.HasFlag(SettingTags.Experimental);
 
+        public bool IsHidden => Tags.HasFlag(SettingTags.Hidden);
+
         private bool _isEnabled;
         public bool IsEnabled
         {

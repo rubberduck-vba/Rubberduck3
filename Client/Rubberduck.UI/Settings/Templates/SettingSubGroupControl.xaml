@@ -39,7 +39,7 @@
                 <Expander.Header>
                     <TextBlock Style="{DynamicResource SectionExpanderHeaderStyle}" Text="Settings" IsEnabled="{Binding IsEnabled}" />
                 </Expander.Header>
-                <ListView Background="{DynamicResource ThemeBackgroundColorBrush}" 
+                <ListBox Background="{DynamicResource ThemeBackgroundColorBrush}" 
                           ItemsSource="{Binding Items}" 
                           BorderThickness="0" BorderBrush="Transparent"
                           Margin="8"
@@ -47,12 +47,12 @@
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
                           ItemTemplateSelector="{DynamicResource SettingTemplateSelector}">
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                         </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
             </Expander>
         </DockPanel>
     </Border>

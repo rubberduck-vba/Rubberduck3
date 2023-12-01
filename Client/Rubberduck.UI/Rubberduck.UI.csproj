@@ -22,6 +22,13 @@
     <None Remove="Resources\Custom\vector-ducky-color.png" />
     <None Remove="Resources\Custom\vector-ducky-shadow-1480.png" />
     <None Remove="Resources\FontAwesome\circle-exclamation-solid.png" />
+    <None Remove="Resources\FontAwesome\folder-closed-regular.png" />
+    <None Remove="Resources\FontAwesome\folder-minus-solid.png" />
+    <None Remove="Resources\FontAwesome\folder-open-regular.png" />
+    <None Remove="Resources\FontAwesome\folder-open-solid.png" />
+    <None Remove="Resources\FontAwesome\folder-plus-solid.png" />
+    <None Remove="Resources\FontAwesome\folder-solid.png" />
+    <None Remove="Resources\FontAwesome\folder-tree-solid.png" />
     <None Remove="Resources\FontAwesome\gear-solid.png" />
     <None Remove="Resources\FontAwesome\gear-solid_circle-chevron-left.png" />
     <None Remove="Resources\FontAwesome\lock-open-solid.png" />
@@ -74,6 +81,13 @@
     <Resource Include="Resources\Custom\vector-ducky-color.png" />
     <Resource Include="Resources\Custom\vector-ducky-shadow-1480.png" />
     <Resource Include="Resources\FontAwesome\circle-exclamation-solid.png" />
+    <Resource Include="Resources\FontAwesome\folder-closed-regular.png" />
+    <Resource Include="Resources\FontAwesome\folder-minus-solid.png" />
+    <Resource Include="Resources\FontAwesome\folder-open-regular.png" />
+    <Resource Include="Resources\FontAwesome\folder-open-solid.png" />
+    <Resource Include="Resources\FontAwesome\folder-plus-solid.png" />
+    <Resource Include="Resources\FontAwesome\folder-solid.png" />
+    <Resource Include="Resources\FontAwesome\folder-tree-solid.png" />
     <Resource Include="Resources\FontAwesome\gear-solid.png" />
     <Resource Include="Resources\FontAwesome\gear-solid_circle-chevron-left.png" />
     <Resource Include="Resources\FontAwesome\lock-open-solid.png" />

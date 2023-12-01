@@ -28,6 +28,14 @@
     <BitmapImage x:Key="LockedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/lock-solid.png" />
     <BitmapImage x:Key="UnlockedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/lock-open-solid.png" />
 
+    <BitmapImage x:Key="ClearFolderClosedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/folder-closed-regular.png" />
+    <BitmapImage x:Key="ClearFolderOpenIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/folder-open-regular.png" />
+    <BitmapImage x:Key="FolderClosedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/folder-solid.png" />
+    <BitmapImage x:Key="FolderOpenIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/folder-open-solid.png" />
+    <BitmapImage x:Key="AddFolderIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/folder-plus-solid.png" />
+    <BitmapImage x:Key="RemoveFolderIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/folder-minus-solid.png" />
+    <BitmapImage x:Key="FoldersIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/folder-tree-solid.png" />
+
     <Style x:Key="IconStyle" TargetType="Image">
         <Style.Setters>
             <Setter Property="Height" Value="16" />

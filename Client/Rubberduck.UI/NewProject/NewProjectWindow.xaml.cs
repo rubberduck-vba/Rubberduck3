@@ -19,7 +19,7 @@ namespace Rubberduck.UI.NewProject
         {
             InitializeComponent();
 
-            MouseDown += OnMouseDown;
+            //MouseDown += OnMouseDown;
             DataContextChanged += OnDataContextChanged;
         }
 
@@ -34,12 +34,12 @@ namespace Rubberduck.UI.NewProject
             }
         }
 
-        private void OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                DragMove();
-            }
-        }
+        //private void OnMouseDown(object sender, MouseButtonEventArgs e)
+        //{
+        //    if (e.ChangedButton == MouseButton.Left)
+        //    {
+        //        DragMove();
+        //    }
+        //}
     }
 }

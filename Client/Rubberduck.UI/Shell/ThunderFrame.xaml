@@ -48,11 +48,11 @@
                                     <Label DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left"
                                        Content="{Binding Title, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
                                        Foreground="{DynamicResource ThemeTextColorBrush}"
-                                       FontWeight="SemiBold" FontSize="16" />
+                                       FontWeight="SemiBold" FontSize="16"
+                                       Visibility="{Binding ShowTitle, Converter={StaticResource BoolToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}"/>
                                 </DockPanel>
 
-                                <Border Grid.Row="1" BorderBrush="{DynamicResource ThemeBackgroundColorBrush}" 
-                                        BorderThickness="1" CornerRadius="8" Margin="4"
+                                <Border Grid.Row="1" BorderThickness="0" CornerRadius="8" Margin="4"
                                         Background="{DynamicResource ThemeWhiteLightColorBrush50}"/>
 
 
@@ -66,14 +66,14 @@
                                     <Button Style="{StaticResource ActionButtonStyle}" 
                                             Command="{Binding AcceptCommand, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
                                             CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
-                                            Visibility="{Binding ShowAcceptButton, Converter={StaticResource BoolToVisibilityConverter}}"
+                                            Visibility="{Binding ShowAcceptButton, Converter={StaticResource BoolToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}"
                                             IsDefault="True">
                                         <TextBlock Text="{Binding AcceptButtonText}" />
                                     </Button>
                                     <Button Style="{StaticResource ActionButtonStyle}"
                                             Command="{Binding CancelCommand, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
                                             CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
-                                            Visibility="{Binding ShowCancelButton, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            Visibility="{Binding ShowCancelButton, Converter={StaticResource BoolToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}">
                                         <TextBlock Text="{Binding CancelButtonText}" />
                                     </Button>
                                 </DockPanel>

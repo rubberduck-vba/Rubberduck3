@@ -11,6 +11,7 @@
         ShowInTaskbar="False"
         ResizeMode="NoResize"
         WindowStyle="None"
+        d:DataContext="{d:DesignInstance Type=local:INewProjectWindowViewModel, IsDesignTimeCreatable=False}"
         Style="{DynamicResource ThemedWindowStyle}"
         Height="360" Width="500" Icon="/Rubberduck.UI;component/Ducky.ico" 
         WindowStartupLocation="CenterScreen">
@@ -24,11 +25,11 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <shell:ThunderFrame Title="{Binding Title}" 
+        <shell:ThunderFrame Title="{Binding Title}" ShowTitle="True"
                             ShowSettingsCommand="{Binding ShowSettingsCommand}"
                             ShowSettingsCommandParameter="{Binding ShowSettingsCommandParameter}"
-                            AcceptCommand="{Binding Actions[0]}" 
-                            CancelCommand="{Binding Actions[1]}">
+                            AcceptCommand="{Binding Actions[0]}" ShowAcceptButton="True"
+                            CancelCommand="{Binding Actions[1]}" ShowCancelButton="True">
             <StackPanel Margin="5,0">
 
                 <!-- VBA Project selection should only be available when running with a VBE add-in client -->
@@ -67,8 +68,7 @@
                 </ComboBox>
 
                 <Label Style="{DynamicResource FormFieldNameLabelStyle}" 
-                       Content="Project name"
-                       IsEnabled="{Binding IsEnabled}" />
+                       Content="Project name" />
                 <TextBox Style="{DynamicResource FormFieldTextBoxStyle}" 
                          Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}"
                          IsEnabled="{Binding IsEnabled}"
@@ -77,8 +77,7 @@
 
                 
                 <Label Style="{DynamicResource FormFieldNameLabelStyle}" 
-                       Content="Workspace Location"
-                       IsEnabled="{Binding IsWorkspaceLocationEditable}" />
+                       Content="Workspace Location" />
                 <DockPanel>
                     <Button  DockPanel.Dock="Right"
                         Command="{x:Static NavigationCommands.Search}"

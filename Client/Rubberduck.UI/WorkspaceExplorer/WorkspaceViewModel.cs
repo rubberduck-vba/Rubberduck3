@@ -1,6 +1,7 @@
 ﻿using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.UI.Services.Abstract;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -10,8 +11,6 @@ namespace Rubberduck.UI.WorkspaceExplorer
     {
         public static WorkspaceViewModel FromModel(ProjectFile model, IWorkspaceService service)
         {
-            /*TODO refactor*/
-
             var vm = new WorkspaceViewModel
             {
                 IsFileSystemWatcherEnabled = service.IsFileSystemWatcherEnabled(model.Uri),
@@ -27,23 +26,10 @@ namespace Rubberduck.UI.WorkspaceExplorer
 
             foreach (var folder in projectFolders)
             {
-                if (projectFilesByFolder.TryGetValue(folder.Uri.LocalPath, out var projectFiles))
+                if (projectFilesByFolder.TryGetValue(folder.Uri.LocalPath, out var projectFiles) && projectFiles is not null)
                 {
-                    var workspaceFiles = service.FileSystem.Directory.GetFiles(folder.Uri.LocalPath)
-                        .Except(projectFiles.Select(file => file.Uri.LocalPath))
-                        .Select(file => new WorkspaceFileViewModel
-                        {
-                            Uri = new Uri(file),
-                            Name = service.FileSystem.Path.GetFileNameWithoutExtension(file),
-                            IsInProject = false
-                        }).ToList();
-
-                    foreach (var file in projectFiles.Concat(workspaceFiles))
-                    {
-                        folder.ChildNodes.Add(file);
-                    }
-
-                    // remove processed keys to help next iterations
+                    var projectFilePaths = projectFiles.Select(file => file.Uri.LocalPath).ToHashSet();
+                    AddFolderFiles(service, folder, projectFiles, projectFilePaths);
                     projectFilesByFolder.Remove(folder.Uri.LocalPath);
                 }
                 else
@@ -53,38 +39,49 @@ namespace Rubberduck.UI.WorkspaceExplorer
                 }
             }
             
+            // if any keys remain, they are files/folders that do not synchronize with the VBE
             foreach (var key in projectFilesByFolder.Keys)
             {
-                // folder is not in project
-                var folder = new WorkspaceTreeNodeViewModel
-                {
-                    IsInProject = false,
-                    Uri = new Uri(key),
-                    Name = service.FileSystem.Directory.GetParent(key)!.Name
-                };
-
-                var projectFiles = projectFilesByFolder[key];
-                var workspaceFiles = service.FileSystem.Directory.GetFiles(folder.Uri.LocalPath)
-                    .Except(projectFiles.Select(file => file.Uri.LocalPath))
-                    .Select(file => new WorkspaceFileViewModel
-                    {
-                        Uri = new Uri(file),
-                        Name = service.FileSystem.Path.GetFileNameWithoutExtension(file),
-                        IsInProject = false
-                    }).ToList();
-
-                foreach (var file in projectFiles.Concat(workspaceFiles))
-                {
-                    // if the file is in the project, the folder is as well.. this should not happen.
-                    folder.IsInProject = folder.IsInProject || file.IsInProject;
-                    folder.ChildNodes.Add(file);
-                }
-
+                var folder = CreateWorkspaceFolder(service, projectFilesByFolder, key);
                 vm.Folders.Add(folder);
             }
 
             return vm;
         }
+
+        private static void AddFolderFiles(IWorkspaceService service, WorkspaceTreeNodeViewModel folder, IEnumerable<WorkspaceTreeNodeViewModel> projectFiles, HashSet<string> projectFilePaths)
+        {
+            var workspaceFiles = GetWorkspaceFilesNotInProject(service, folder, projectFilePaths);
+            foreach (var file in projectFiles.Concat(workspaceFiles))
+            {
+                folder.ChildNodes.Add(file);
+            }
+        }
+
+        private static WorkspaceTreeNodeViewModel CreateWorkspaceFolder(IWorkspaceService service, Dictionary<string, IEnumerable<WorkspaceTreeNodeViewModel>> projectFilesByFolder, string key)
+        {
+            var folder = new WorkspaceTreeNodeViewModel
+            {
+                IsInProject = true,
+                Uri = new Uri(key),
+                Name = service.FileSystem.Directory.GetParent(key)!.Name
+            };
+
+            var projectFiles = projectFilesByFolder[key];
+            var projectFilePaths = projectFiles.Select(file => file.Uri.LocalPath).ToHashSet();
+
+            AddFolderFiles(service, folder, projectFiles, projectFilePaths);
+            return folder;
+        }
+
+        private static IEnumerable<WorkspaceFileViewModel> GetWorkspaceFilesNotInProject(IWorkspaceService service, WorkspaceTreeNodeViewModel folder, HashSet<string> projectFilePaths)
+            => service.FileSystem.Directory.GetFiles(folder.Uri.LocalPath).Except(projectFilePaths)
+                .Select(file => new WorkspaceFileViewModel
+                {
+                    Uri = new Uri(file),
+                    Name = service.FileSystem.Path.GetFileNameWithoutExtension(file),
+                    IsInProject = false // file exists in a project folder but is not included in the project
+                });
 
         private bool _isFileSystemWatcherEnabled;
         public bool IsFileSystemWatcherEnabled

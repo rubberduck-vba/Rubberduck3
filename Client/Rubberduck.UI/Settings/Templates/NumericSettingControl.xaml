@@ -19,8 +19,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
-            BorderBrush="{DynamicResource ThemeBackgroundMediumColorBrush}" BorderThickness="1">
+    <Border Style="{DynamicResource SectionBorderStyle}">
         <DockPanel LastChildFill="True">
             <DockPanel DockPanel.Dock="Top">
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
