@@ -99,8 +99,9 @@ namespace Rubberduck.UI.Services.Abstract
         {
             var path = _fileSystem.Path.Combine(root.LocalPath, ProjectFile.FileName);
             var content = _fileSystem.File.ReadAllText(path);
-            return JsonSerializer.Deserialize<ProjectFile>(content)
-                ?? throw new InvalidOperationException();
+            var projectFile = JsonSerializer.Deserialize<ProjectFile>(content) ?? throw new InvalidOperationException();
+            projectFile.Uri = new Uri(path);
+            return projectFile;
         }
     }
 

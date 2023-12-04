@@ -36,6 +36,7 @@ using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Services.Settings;
 using Rubberduck.UI.Settings;
 using Rubberduck.UI.Shell;
+using Rubberduck.UI.Shell.StatusBar;
 using Rubberduck.UI.Splash;
 using Rubberduck.UI.Windows;
 using System;
@@ -210,7 +211,7 @@ namespace Rubberduck.Editor
             services.AddSingleton<ISplashViewModel, SplashViewModel>();
 
             services.AddSingleton<ShellWindowViewModel>();
-            services.AddSingleton<StatusBarViewModel>();
+            services.AddSingleton<IShellStatusBarViewModel, ShellStatusBarViewModel>();
             services.AddSingleton<IInterTabClient, ShellInterTabClient>();
 
             services.AddSingleton<ISettingsChangedHandler<RubberduckSettings>>(provider => provider.GetRequiredService<RubberduckSettingsProvider>());
@@ -246,6 +247,9 @@ namespace Rubberduck.Editor
             services.AddSingleton<CloseWorkspaceCommand>();
             services.AddSingleton<SynchronizeWorkspaceCommand>();
             services.AddSingleton<ExitCommand>();
+
+            services.AddSingleton<ViewCommandHandlers>();
+            services.AddSingleton<ShowWorkspaceExplorerCommand>();
 
             services.AddSingleton<ToolsCommandHandlers>();
             services.AddSingleton<ShowRubberduckSettingsCommand>();

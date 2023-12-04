@@ -1,15 +1,15 @@
 ﻿using Dragablz;
-using Rubberduck.Editor.Shell.StatusBar;
 using Rubberduck.UI.Shell;
+using Rubberduck.UI.Shell.StatusBar;
 using System.Windows;
 
 namespace Rubberduck.Editor.Shell
 {
     public class ShellInterTabClient : IInterTabClient
     {
-        private readonly StatusBarViewModel _status;
+        private readonly IShellStatusBarViewModel _status;
 
-        public ShellInterTabClient(StatusBarViewModel status)
+        public ShellInterTabClient(IShellStatusBarViewModel status)
         {
             _status = status;
         }

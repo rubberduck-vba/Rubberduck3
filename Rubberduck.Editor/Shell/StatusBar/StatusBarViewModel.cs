@@ -1,9 +1,73 @@
 ﻿using Rubberduck.UI;
 using Rubberduck.UI.Shell.StatusBar;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Rubberduck.Editor.Shell.StatusBar
 {
-    public class StatusBarViewModel : ViewModelBase, IStatusBarViewModel
+    public class ShellStatusBarViewModel : ViewModelBase, IShellStatusBarViewModel
+    {
+        private string _statusText = "Ready";
+        public string StatusText
+        {
+            get => _statusText;
+            set
+            {
+                if (_statusText != value)
+                {
+                    _statusText = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _progressValue;
+        public int ProgressValue
+        {
+            get => _progressValue;
+            set
+            {
+                if (_progressValue != value)
+                {
+                    _progressValue = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _progressMaxValue;
+        public int ProgressMaxValue
+        {
+            get => _progressMaxValue;
+            set
+            {
+                if (_progressMaxValue != value)
+                {
+                    _progressMaxValue = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _isConnected;
+        public bool IsConnected
+        {
+            get => _isConnected;
+            set
+            {
+                if (_isConnected != value)
+                {
+                    _isConnected = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private readonly ObservableCollection<INotificationViewModel> _notifications = new();
+        public ICollection<INotificationViewModel> Notifications => _notifications;
+    }
+
+    public class StatusBarViewModel : ViewModelBase
     {
         private ServerConnectionState _serverConnectionState = ServerConnectionState.Disconnected;
         public ServerConnectionState ServerConnectionState
@@ -22,7 +86,7 @@ namespace Rubberduck.Editor.Shell.StatusBar
         public bool ShowDocumentStatusItems { get; set; } = false;
 
         private string _serverStateText = ServerConnectionState.Disconnected.ToString(); // TODO localize
-        public string ServerStateText
+        public string StatusText
         {
             get => _serverStateText;
             set

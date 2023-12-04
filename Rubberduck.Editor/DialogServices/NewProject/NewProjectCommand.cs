@@ -256,8 +256,11 @@ namespace Rubberduck.UI.NewProject
 
         private ProjectFile CreateProjectFileModel(NewProjectWindowViewModel model)
         {
-            return new ProjectFileBuilder(_fileSystem, Service.SettingsProvider)
-                .WithModel(model).Build();
+            if (model.SelectedProjectTemplate is not null)
+            {
+                model.SelectedProjectTemplate = _templatesService.Resolve(model.SelectedProjectTemplate);
+            }
+            return new ProjectFileBuilder(_fileSystem, Service.SettingsProvider).WithModel(model).Build();
         }
     }
 }

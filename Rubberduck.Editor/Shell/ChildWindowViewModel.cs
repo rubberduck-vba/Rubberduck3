@@ -1,5 +1,5 @@
 ﻿using Dragablz;
-using Rubberduck.Editor.Shell.StatusBar;
+using Rubberduck.UI.Shell.StatusBar;
 using Rubberduck.UI.Windows;
 using System;
 
@@ -7,7 +7,7 @@ namespace Rubberduck.Editor.Shell
 {
     public class ChildWindowViewModel : IDragablzWindowViewModel
     {
-        public ChildWindowViewModel(IInterTabClient interTabClient, StatusBarViewModel statusBar, string partition)
+        public ChildWindowViewModel(IInterTabClient interTabClient, IShellStatusBarViewModel statusBar, string partition)
         {
             InterTabClient = interTabClient;
             Partition = partition;
@@ -17,7 +17,7 @@ namespace Rubberduck.Editor.Shell
         }
 
         public string Title { get; }
-        public StatusBarViewModel StatusBar { get; }
+        public IShellStatusBarViewModel StatusBar { get; }
 
         public IInterTabClient InterTabClient { get; }
 

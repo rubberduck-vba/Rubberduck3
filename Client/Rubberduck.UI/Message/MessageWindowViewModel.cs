@@ -1,27 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.Resources.Messages;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.SharedHandlers;
+using Rubberduck.UI.Windows;
 using System;
 using System.Linq;
-using System.Windows.Input;
 
 namespace Rubberduck.UI.Message
 {
-    public abstract class WindowViewModel : ViewModelBase
-    {
-        public string Title { get; init; } = "Title";
-
-        public bool ShowGearButton => ShowSettingsCommand != null;
-        public ICommand? ShowSettingsCommand { get; init; }
-
-        public virtual bool ShowAcceptButton { get; } = true;
-        public virtual bool ShowCancelButton { get; } = true;
-
-        public virtual string AcceptButtonText { get; } = RubberduckMessages.MessageActionButton_Accept;
-        public virtual string CancelButtonText { get; } = RubberduckMessages.MessageActionButton_Cancel;
-    }
-
     public class MessageWindowViewModel : WindowViewModel, IMessageWindowViewModel
     {
         /// <summary>

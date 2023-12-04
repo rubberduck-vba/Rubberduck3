@@ -2,17 +2,14 @@
 using OmniSharp.Extensions.LanguageServer.Protocol.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
-using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.SettingsProvider;
-using Rubberduck.UI.NewProject;
 using Rubberduck.UI.Services.Abstract;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
-using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Editor
@@ -20,6 +17,8 @@ namespace Rubberduck.Editor
     public class WorkspaceService : ServiceBase, IWorkspaceService, IDisposable
     {
         private readonly WorkspaceStateManager _state;
+        private readonly HashSet<ProjectFile> _projectFiles = new();
+
         private readonly IFileSystem _fileSystem;
         private readonly IProjectFileService _projectFile;
         private readonly List<Reference> _references = [];
@@ -39,6 +38,8 @@ namespace Rubberduck.Editor
         }
 
         public IFileSystem FileSystem => _fileSystem;
+
+        public IEnumerable<ProjectFile> ProjectFiles => _projectFiles;
 
         public async Task<bool> OpenProjectWorkspaceAsync(Uri uri)
         {
@@ -71,6 +72,7 @@ namespace Rubberduck.Editor
 
                     LoadWorkspaceFiles(sourceRoot, projectFile);
                     EnableFileSystemWatcher(uri);
+                    _projectFiles.Add(projectFile);
 
                 }, out var exception) && exception is not null)
                 {
@@ -84,7 +86,16 @@ namespace Rubberduck.Editor
             });
         }
 
-        public bool IsFileSystemWatcherEnabled(Uri root) => _watchers[root].EnableRaisingEvents;
+        public bool IsFileSystemWatcherEnabled(Uri root)
+        {
+            var localPath = root.LocalPath;
+            if (localPath.EndsWith(ProjectFile.FileName))
+            {
+                root = new Uri(localPath[..^(ProjectFile.FileName.Length + 1)]);
+            }
+            return _watchers[root].EnableRaisingEvents;
+        }
+
         public void EnableFileSystemWatcher(Uri root)
         {
             if (!Settings.LanguageClientSettings.WorkspaceSettings.EnableFileSystemWatchers)
@@ -333,7 +344,7 @@ namespace Rubberduck.Editor
 
                 var info = new WorkspaceFileInfo
                 {
-                    Uri = new Uri(uri),
+                    Uri = new Uri(uri, UriKind.Relative),
                     Content = content,
                     Version = fileVersion,
                     IsSourceFile = isSourceFile,

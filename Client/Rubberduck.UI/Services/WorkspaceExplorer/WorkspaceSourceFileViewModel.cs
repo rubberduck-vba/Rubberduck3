@@ -1,7 +1,7 @@
 ﻿using Rubberduck.InternalApi.Model.Workspace;
 using System;
 
-namespace Rubberduck.UI.WorkspaceExplorer
+namespace Rubberduck.UI.Services.WorkspaceExplorer
 {
     public class WorkspaceSourceFileViewModel : WorkspaceFileViewModel
     {
@@ -9,7 +9,7 @@ namespace Rubberduck.UI.WorkspaceExplorer
         {
             return new WorkspaceSourceFileViewModel
             {
-                Uri = new Uri(model.Uri),
+                Uri = new Uri(model.Uri, UriKind.Relative),
                 Name = model.Name,
                 IsAutoOpen = model.IsAutoOpen,
                 DocumentClassType = model.Super,

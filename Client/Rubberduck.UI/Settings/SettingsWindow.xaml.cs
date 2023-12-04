@@ -1,17 +1,15 @@
-﻿using Rubberduck.UI.Command;
-using Rubberduck.UI.Command.SharedHandlers;
+﻿using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services.Settings;
 using System;
 using System.Linq;
 using System.Windows;
-using System.Windows.Input;
 
 namespace Rubberduck.UI.Settings
 {
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml
     /// </summary>
-    public partial class SettingsWindow : System.Windows.Window
+    public partial class SettingsWindow : Window
     {
         public SettingsWindow(ISettingsWindowViewModel viewModel) : this()
         {
@@ -21,8 +19,6 @@ namespace Rubberduck.UI.Settings
         public SettingsWindow()
         {
             InitializeComponent();
-
-            //MouseDown += OnMouseDown;
             DataContextChanged += OnDataContextChanged;
         }
 
@@ -30,20 +26,11 @@ namespace Rubberduck.UI.Settings
         {
             if (e.NewValue is ICommandBindingProvider provider)
             {
+                var systemHandlers = new SystemCommandHandlers(this);
                 CommandBindings.Clear();
-                var handlers = new SystemCommandHandlers(this);
-                CommandBindings.AddRange(provider.CommandBindings.ToArray());
-                CommandBindings.Add(new(SystemCommands.CloseWindowCommand, handlers.CloseWindowCommandBinding_Executed, handlers.CloseWindowCommandBinding_CanExecute));
+                CommandBindings.AddRange(systemHandlers.CreateCommandBindings().Concat(provider.CommandBindings).ToArray());
             }
         }
-
-        //private void OnMouseDown(object sender, MouseButtonEventArgs e)
-        //{
-        //    if (e.ChangedButton == MouseButton.Left)
-        //    {
-        //        DragMove();
-        //    }
-        //}
 
         private void OnResizeGripDragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
         {

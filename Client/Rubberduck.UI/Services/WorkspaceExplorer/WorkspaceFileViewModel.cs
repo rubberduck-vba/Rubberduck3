@@ -1,7 +1,7 @@
 ﻿using Rubberduck.InternalApi.Model.Workspace;
 using System;
 
-namespace Rubberduck.UI.WorkspaceExplorer
+namespace Rubberduck.UI.Services.WorkspaceExplorer
 {
     public class WorkspaceFileViewModel : WorkspaceTreeNodeViewModel
     {
@@ -9,7 +9,7 @@ namespace Rubberduck.UI.WorkspaceExplorer
         {
             return new WorkspaceFileViewModel
             {
-                Uri = new Uri(model.Uri),
+                Uri = new Uri(model.Uri, UriKind.Relative),
                 Name = model.Name,
                 IsAutoOpen = model.IsAutoOpen,
                 IsInProject = true
@@ -29,5 +29,21 @@ namespace Rubberduck.UI.WorkspaceExplorer
                 }
             }
         }
+
+        private bool _isOpen;
+        public bool IsOpen
+        {
+            get => _isOpen;
+            set
+            {
+                if (_isOpen != value)
+                {
+                    _isOpen = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+
     }
 }

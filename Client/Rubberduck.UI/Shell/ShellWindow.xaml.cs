@@ -1,4 +1,5 @@
-﻿using Rubberduck.UI.Command.SharedHandlers;
+﻿using Dragablz;
+using Rubberduck.UI.Command.SharedHandlers;
 using System;
 using System.Linq;
 using System.Windows;
@@ -15,27 +16,8 @@ namespace Rubberduck.UI.Shell
         {
             InitializeComponent();
             SystemCommandHandlers = new SystemCommandHandlers(this);
-            var systemCommands = new CommandBinding[]
-            {
-                new(SystemCommands.CloseWindowCommand, 
-                    SystemCommandHandlers.CloseWindowCommandBinding_Executed, SystemCommandHandlers.CloseWindowCommandBinding_CanExecute),
-                new(SystemCommands.MaximizeWindowCommand, 
-                    SystemCommandHandlers.MaximizeWindowCommandBinding_Executed, SystemCommandHandlers.MaximizeWindowCommandBinding_CanExecute),
-                new(SystemCommands.MinimizeWindowCommand, 
-                    SystemCommandHandlers.MinimizeWindowCommandBinding_Executed, SystemCommandHandlers.MinimizeWindowCommandBinding_CanExecute),
-                new(SystemCommands.RestoreWindowCommand, 
-                    SystemCommandHandlers.RestoreWindowCommandBinding_Executed, SystemCommandHandlers.RestoreWindowCommandBinding_CanExecute),
-                new(SystemCommands.ShowSystemMenuCommand,
-                    SystemCommandHandlers.ShowSystemMenuCommandBinding_Executed,SystemCommandHandlers.ShowSystemMenuCommandBinding_CanExecute)
-            };
 
             var ownerType = typeof(ShellWindow);
-            CommandBindings.AddRange(systemCommands);
-            foreach (var commandBinding in systemCommands)
-            {
-                CommandManager.RegisterClassCommandBinding(ownerType, commandBinding);
-            }
-
             DataContextChanged += OnDataContextChanged;
         }
 
@@ -43,7 +25,7 @@ namespace Rubberduck.UI.Shell
         {
             if (e.NewValue is ICommandBindingProvider provider)
             {
-                var bindings = provider.CommandBindings.ToArray();
+                var bindings = SystemCommandHandlers.CreateCommandBindings().Concat(provider.CommandBindings).ToArray();
                 CommandBindings.AddRange(bindings);
                 foreach (var commandBinding in bindings)
                 {

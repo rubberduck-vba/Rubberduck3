@@ -41,6 +41,7 @@ namespace Rubberduck.Editor.DialogServices.NewProject
                 Modules = _modules.Values.ToArray(),
                 OtherFiles = _files.ToArray(),
                 References = _references.ToArray(),
+                Folders = _folders.ToArray(),
             },
         };
 
@@ -105,6 +106,24 @@ namespace Rubberduck.Editor.DialogServices.NewProject
                 IsAutoOpen = isAutoOpen,
             };
             _files.Add(file);
+
+            var folder = _fileSystem.Path.GetDirectoryName(uri);
+            if (!string.IsNullOrEmpty(folder))
+            {
+                var folderPath = _fileSystem.Path.Combine(_uri?.LocalPath ?? DefaultUri.LocalPath, folder);
+                return WithFolder(folderPath);
+            }
+            return this;
+        }
+
+        public ProjectFileBuilder WithFolder(string uri)
+        {
+            var folder = new Folder
+            {
+                Uri = uri,
+                Name = _fileSystem.Path.GetDirectoryName(uri) ?? ProjectFile.SourceRoot
+            };
+            _folders.Add(folder);
             return this;
         }
 

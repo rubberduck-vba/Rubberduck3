@@ -1,0 +1,137 @@
+﻿<dragablz:DragablzWindow x:Class="Rubberduck.UI.WorkspaceExplorer.WorkspaceExplorerToolWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
+        xmlns:toolwindows="clr-namespace:Rubberduck.UI.Windows.ToolWindows"
+        xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
+        xmlns:local="clr-namespace:Rubberduck.UI.WorkspaceExplorer" 
+        d:DataContext="{d:DesignInstance Type=local:IWorkspaceExplorerViewModel, IsDesignTimeCreatable=False}"
+        mc:Ignorable="d" 
+        x:Name="WorkspaceExplorerRoot"
+        Title="{Binding Title}"
+        Style="{DynamicResource ThemedWindowStyle}" 
+        d:DesignHeight="450" d:DesignWidth="400">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <FrameworkElement x:Key="BindingAnchor" DataContext="{Binding DataContext, RelativeSource={RelativeSource Mode=Self}}" />
+            <HierarchicalDataTemplate x:Key="WorkspaceFolderTemplate" DataType="local:WorkspaceTreeNodeViewModel" ItemsSource="{Binding Children}">
+                <StackPanel Orientation="Horizontal">
+                    <shell:FlatToggleButton Icon="{DynamicResource FolderClosedIcon}" CheckedIcon="{DynamicResource FolderOpenIcon}"
+                                            IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource AncestorType=TreeViewItem, Mode=FindAncestor}}">
+                        <shell:FlatToggleButton.Style>
+                            <Style TargetType="shell:FlatToggleButton">
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Path=DataContext.IsInProject, RelativeSource={RelativeSource Mode=Self}}" Value="False" />
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Icon" Value="{DynamicResource ClearFolderClosedIcon}" />
+                                            <Setter Property="CheckedIcon" Value="{DynamicResource ClearFolderOpenIcon}" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </shell:FlatToggleButton.Style>
+                    </shell:FlatToggleButton>
+                    <Label Content="{Binding Name}" Style="{DynamicResource FormFieldValueLabelStyle}" />
+                </StackPanel>
+            </HierarchicalDataTemplate>
+            <DataTemplate x:Key="SourceFileTemplate" DataType="local:WorkspaceSourceFileViewModel">
+                <StackPanel Orientation="Horizontal">
+                    <shell:FlatButton Icon="{DynamicResource SourceFileIcon}">
+                        <shell:FlatButton.Style>
+                            <Style TargetType="shell:FlatButton">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=DataContext.IsInProject, RelativeSource={RelativeSource Mode=Self}}" Value="False">
+                                        <Setter Property="Icon" Value="{DynamicResource ClearSourceFileIcon}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </shell:FlatButton.Style>
+                    </shell:FlatButton>
+                    <Label Content="{Binding Name}" Style="{DynamicResource FormFieldValueLabelStyle}" />
+                </StackPanel>
+            </DataTemplate>
+            <DataTemplate x:Key="OtherFileTemplate" DataType="local:WorkspaceFileViewModel">
+                <StackPanel Orientation="Horizontal">
+                    <shell:FlatButton Icon="{DynamicResource GenericFileIcon}">
+                        <shell:FlatButton.Style>
+                            <Style TargetType="shell:FlatButton">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=DataContext.IsInProject, RelativeSource={RelativeSource Mode=Self}}" Value="False">
+                                        <Setter Property="Icon" Value="{DynamicResource ClearGenericFileIcon}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </shell:FlatButton.Style>
+                    </shell:FlatButton>
+                    <Label Content="{Binding Name}" />
+                </StackPanel>
+            </DataTemplate>
+            <local:WorkspaceNodeTemplateSelector x:Key="NodeTemplateSelector" 
+                                                 FolderTemplate="{StaticResource WorkspaceFolderTemplate}"
+                                                 SourceFileTemplate="{StaticResource SourceFileTemplate}"
+                                                 WorkspaceFileTemplate="{StaticResource OtherFileTemplate}"/>
+        </ResourceDictionary>
+    </Window.Resources>
+    <shell:ThunderFrame ShowAcceptButton="False" 
+                        ShowCancelButton="False" 
+                        ShowTitle="True" 
+                        Title="{Binding Title, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TreeView Margin="5" BorderThickness="0" Background="Transparent" AllowDrop="True" 
+                      ItemsSource="{Binding Workspaces}" 
+                      ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
+
+                <TreeView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Open" FontWeight="Bold" Command="{x:Static ApplicationCommands.Open}" CommandParameter="{Binding Selection.Uri}" />
+                        <Separator />
+                        <MenuItem Header="Rename" CommandParameter="{Binding Selection.Uri}" />
+                        <MenuItem Header="Delete" Command="{x:Static ApplicationCommands.Delete}"  CommandParameter="{Binding Selection.Uri}" />
+                    </ContextMenu>
+                </TreeView.ContextMenu>
+                
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate DataType="local:IWorkspaceTreeNode" 
+                            ItemsSource="{Binding Children}"
+                            ItemContainerStyle="{StaticResource TreeViewContainerStyle}"
+                            ItemTemplateSelector="{StaticResource NodeTemplateSelector}">
+                        <HierarchicalDataTemplate.Resources>
+                            <Style x:Key="WorkspaceTreeLabelStyle" TargetType="{x:Type TextBlock}">
+                                <Setter Property="Text" Value="{Binding Name}" />
+                                <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
+                            </Style>
+                        </HierarchicalDataTemplate.Resources>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Style="{DynamicResource FormFieldNameLabelStyle}">
+                                <TextBlock Style="{DynamicResource WorkspaceTreeLabelStyle}" />
+                            </Label>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+
+            <Expander Grid.Row="1" Background="{DynamicResource BackgroundDarkBrush}" Visibility="{Binding HasSelectionInfo, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Expander.Header>
+                    <DockPanel>
+                        <Label DockPanel.Dock="Left" Style="{DynamicResource FormFieldNameLabelStyle}" Content="{Binding Selection.Name}" Margin="5,0" />
+                    </DockPanel>
+                </Expander.Header>
+                <ItemsPresenter />
+            </Expander>
+        </Grid>
+    </shell:ThunderFrame>
+</dragablz:DragablzWindow>

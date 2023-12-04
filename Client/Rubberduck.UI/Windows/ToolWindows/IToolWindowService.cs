@@ -4,7 +4,7 @@
     public interface IToolWindowService<TViewModel>
         where TViewModel : IWindowViewModel
     {
-        void ShowFloating(TViewModel viewModel);
-        void ShowDocked(TViewModel viewModel, ToolDockLocation location);
+        void Float(TViewModel viewModel);
+        void Dock(TViewModel viewModel, ToolDockLocation location);
     }
 }

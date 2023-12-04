@@ -1,9 +1,12 @@
-﻿using System.Windows;
+﻿using Rubberduck.UI.Command.Abstract;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Rubberduck.UI.Command.SharedHandlers
 {
-    public class SystemCommandHandlers
+    public class SystemCommandHandlers : CommandHandlers
     {
         private readonly Window _window;
 
@@ -12,37 +15,15 @@ namespace Rubberduck.UI.Command.SharedHandlers
             _window = window;
         }
 
-        public void CloseWindowCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-            => e.CanExecute = true;
-
-        public void CloseWindowCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-            => SystemCommands.CloseWindow(_window);
-
-        public void MinimizeWindowCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-            => e.CanExecute = _window.WindowState != WindowState.Minimized;
-
-        public void MinimizeWindowCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-            => SystemCommands.MinimizeWindow(_window);
-
-        public void MaximizeWindowCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-            => e.CanExecute = _window.WindowState != WindowState.Maximized;
-
-        public void MaximizeWindowCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-            => SystemCommands.MaximizeWindow(_window);
-
-        public void RestoreWindowCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-            => e.CanExecute = _window.WindowState == WindowState.Maximized;
-
-        public void RestoreWindowCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-            => SystemCommands.RestoreWindow(_window);
-
-        public void ShowSystemMenuCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-            => e.CanExecute = true;
-
-        public void ShowSystemMenuCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            var location = Mouse.GetPosition(_window);
-            SystemCommands.ShowSystemMenu(_window, location);
-        }
+        public override IEnumerable<CommandBinding> CreateCommandBindings() =>
+            Bind(
+                (SystemCommands.CloseWindowCommand, param => SystemCommands.CloseWindow(_window)),
+                (SystemCommands.ShowSystemMenuCommand, (param) => SystemCommands.ShowSystemMenu(_window, Mouse.GetPosition(_window)))
+            ).Concat(
+            Bind(
+                (SystemCommands.MinimizeWindowCommand, (param) => SystemCommands.MinimizeWindow(_window), param => _window.WindowState != WindowState.Minimized),
+                (SystemCommands.MaximizeWindowCommand, (param) => SystemCommands.MaximizeWindow(_window), param => _window.WindowState != WindowState.Maximized),
+                (SystemCommands.RestoreWindowCommand, (param) => SystemCommands.RestoreWindow(_window), param => _window.WindowState != WindowState.Normal)
+            ));
     }
 }

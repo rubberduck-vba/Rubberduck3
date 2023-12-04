@@ -380,6 +380,7 @@
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
             <Setter Property="Margin" Value="0,5,0,0" />
             <Setter Property="MinHeight" Value="24" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style.Setters>
     </Style>
 
@@ -503,6 +504,39 @@
         <Setter Property="FontSize" Value="13" />
         <Setter Property="FontWeight" Value="Regular" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
+    </Style>
+
+
+    <Style x:Key="TreeViewContainerStyle" TargetType="{x:Type TreeViewItem}">
+        <Setter Property="BorderThickness" Value="1.5"/>
+        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWay}" />
+        <Setter Property="Visibility" Value="{Binding Filtered, Mode=OneWay, Converter={StaticResource BoolToHiddenVisibility}}" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <!--<EventSetter Event="MouseDoubleClick" Handler="TreeView_OnMouseDoubleClick" />
+        <EventSetter Event="MouseRightButtonDown" Handler="TreeView_OnMouseRightButtonDown" />
+        <EventSetter Event="DragOver" Handler="TreeView_OnDragOver" />
+        <EventSetter Event="Drop" Handler="TreeView_OnDrop" />
+        <EventSetter Event="PreviewQueryContinueDrag" Handler="TreeView_PreviewContinueDrag" />
+        <EventSetter Event="PreviewMouseLeftButtonDown" Handler="TreeView_PreviewMouseLeftButtonDown" />
+        <EventSetter Event="PreviewMouseMove" Handler="TreeView_PreviewMouseMove" />-->
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="BorderBrush" Value="{StaticResource HighlightBorderActiveBrush}"/>
+            </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsSelected" Value="True"/>
+                    <Condition Property="IsSelectionActive" Value="False"/>
+                </MultiTrigger.Conditions>
+                <Setter Property="BorderBrush" Value="{StaticResource HighlightInactiveBorderBrush}"/>
+            </MultiTrigger>
+        </Style.Triggers>
+        <Style.Resources>
+            <Style TargetType="Border">
+                <Setter Property="CornerRadius" Value="2"/>
+            </Style>
+        </Style.Resources>
     </Style>
 
 </ResourceDictionary>

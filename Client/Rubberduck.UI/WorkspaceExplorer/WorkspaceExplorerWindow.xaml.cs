@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dragablz;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,9 +19,9 @@ namespace Rubberduck.UI.WorkspaceExplorer
     /// <summary>
     /// Interaction logic for WorkspaceExplorerControl.xaml
     /// </summary>
-    public partial class WorkspaceExplorerControl : UserControl
+    public partial class WorkspaceExplorerToolWindow : DragablzWindow
     {
-        public WorkspaceExplorerControl()
+        public WorkspaceExplorerToolWindow()
         {
             InitializeComponent();
         }

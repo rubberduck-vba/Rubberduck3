@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.Model.Workspace
 {
@@ -28,6 +29,8 @@ namespace Rubberduck.InternalApi.Model.Workspace
         /// All folders in the project, whether they contain any files or not.
         /// </summary>
         public Folder[] Folders { get; set; } = Array.Empty<Folder>();
+
+        [JsonIgnore]
         public File[] AllFiles => Modules.Concat(OtherFiles).ToArray();
     }
 }

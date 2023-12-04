@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Shell
     public interface IShellWindowViewModel
     {
         string Title { get; }
-        IStatusBarViewModel StatusBar { get; }
+        IShellStatusBarViewModel StatusBar { get; }
         IEnumerable<IDocumentTabViewModel> Documents { get; }
         IWindowChromeViewModel Chrome { get; }
     }

@@ -2,21 +2,13 @@
 
 namespace Rubberduck.InternalApi.Model
 {
-
-    public readonly struct DocumentOffset : IEquatable<DocumentOffset>, IComparable<DocumentOffset>
+    public readonly record struct DocumentOffset(int Start, int End, int Length) : IComparable<DocumentOffset>
     {
         public static DocumentOffset Invalid { get; } = new DocumentOffset(0, -1);
 
-        public DocumentOffset(int start, int end)
+        public DocumentOffset(int start, int end) : this(start, end, end - start + 1)
         {
-            Start = start;
-            End = end;
-            Length = end - start + 1;
         }
-
-        public int Start { get; }
-        public int End { get; }
-        public int Length { get; }
 
         public int CompareTo(DocumentOffset other)
         {
@@ -42,8 +34,6 @@ namespace Rubberduck.InternalApi.Model
         {
             return other.Start == Start && other.End == End;
         }
-
-        public override bool Equals(object obj) => Equals((DocumentOffset)obj);
 
         public override int GetHashCode() => HashCode.Combine(Start, End);
     }

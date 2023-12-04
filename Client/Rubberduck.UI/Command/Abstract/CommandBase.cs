@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using Rubberduck.UI.Services;
 
@@ -72,9 +71,9 @@ namespace Rubberduck.UI.Command.Abstract
 
         public void Execute(object? parameter)
         {
-            _service.TryRunAction(() =>
+            _service.TryRunAction(async () =>
             {
-                OnExecuteAsync(parameter).Wait();
+                await OnExecuteAsync(parameter);
             }, $"{GetType().Name}.Execute");
         }
 
