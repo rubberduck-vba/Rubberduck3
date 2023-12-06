@@ -8,11 +8,12 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
 {
     public class WorkspaceTreeNodeViewModel : ViewModelBase, IWorkspaceUriInfo, IWorkspaceTreeNode
     {
-        public static WorkspaceTreeNodeViewModel FromModel(Folder model)
+        public static WorkspaceTreeNodeViewModel FromModel(Folder model, Uri srcRoot)
         {
             return new WorkspaceTreeNodeViewModel
             {
-                Uri = new Uri(model.Uri, UriKind.Relative),
+                Uri = new Uri(srcRoot, model.Uri),
+                RelativeUri = model.Name == ProjectFile.SourceRoot ? null : new Uri(model.Name, UriKind.Relative),
                 Name = model.Name,
                 IsInProject = true,
             };
@@ -46,6 +47,20 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
             }
         }
 
+        private Uri? _relativeUri = null!;
+        public Uri? RelativeUri
+        {
+            get => _relativeUri;
+            set
+            {
+                if (_relativeUri != value)
+                {
+                    _relativeUri = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private bool _isInProject;
         public bool IsInProject
         {
@@ -60,8 +75,9 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
             }
         }
 
-        private readonly ObservableCollection<WorkspaceTreeNodeViewModel> _childNodes = new();
-        public ObservableCollection<WorkspaceTreeNodeViewModel> ChildNodes => _childNodes;
+        private readonly ObservableCollection<IWorkspaceTreeNode> _childNodes = new();
+        public ObservableCollection<IWorkspaceTreeNode> ChildNodes => _childNodes;
+
 
         private int _version;
         public int Version
@@ -119,6 +135,11 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
                     OnPropertyChanged();
                 }
             }
+        }
+
+        public void AddChildNode(IWorkspaceTreeNode childNode)
+        {
+            _childNodes.Add(childNode);
         }
 
         private bool _isFiltered;

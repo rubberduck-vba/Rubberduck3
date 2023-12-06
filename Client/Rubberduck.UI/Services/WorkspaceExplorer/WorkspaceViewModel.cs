@@ -15,23 +15,28 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
             var root = model.Uri.LocalPath[..^(ProjectFile.FileName.Length + 1)];
             var rootUri = new Uri(root);
 
+            var srcRoot = service.FileSystem.Path.Combine(root, ProjectFile.SourceRoot);
+
             var vm = new WorkspaceViewModel
             {
                 Name = model.VBProject.Name,
+                Uri = new Uri(service.FileSystem.Path.Combine(root, ProjectFile.SourceRoot + "\\")),
                 IsFileSystemWatcherEnabled = service.IsFileSystemWatcherEnabled(rootUri),
+                IsExpanded = true
             };
 
-            var sourceFiles = model.VBProject.Modules.Select(e => WorkspaceSourceFileViewModel.FromModel(e) as WorkspaceTreeNodeViewModel);
-            var otherFiles = model.VBProject.OtherFiles.Select(e => WorkspaceFileViewModel.FromModel(e) as WorkspaceTreeNodeViewModel);
-            var projectFolders = model.VBProject.Folders.Select(e => WorkspaceTreeNodeViewModel.FromModel(e));
+            var sourceFiles = model.VBProject.Modules.Select(e => WorkspaceSourceFileViewModel.FromModel(e, vm.Uri) as WorkspaceTreeNodeViewModel);
+            var otherFiles = model.VBProject.OtherFiles.Select(e => WorkspaceFileViewModel.FromModel(e, vm.Uri) as WorkspaceTreeNodeViewModel);
+            var projectFolders = model.VBProject.Folders.Select(e => WorkspaceTreeNodeViewModel.FromModel(e, vm.Uri));
 
             var projectFilesByFolder = sourceFiles.Concat(otherFiles)
-                .GroupBy(e => service.FileSystem.Path.GetDirectoryName(e.Uri.ToString())!)
-                .ToDictionary(e => service.FileSystem.Path.Combine(root, ProjectFile.SourceRoot, e.Key), e => e.AsEnumerable());
+                .GroupBy(e => e.Uri.LocalPath[..^(service.FileSystem.Path.GetFileName(e.Uri.LocalPath).Length + 1)])
+                .ToDictionary(e => e.Key, e => e.AsEnumerable());
+
 
             foreach (var folder in projectFolders)
             {
-                if (projectFilesByFolder.TryGetValue(folder.Uri.ToString(), out var projectFiles) && projectFiles is not null)
+                if (projectFilesByFolder.TryGetValue(folder.Uri.LocalPath, out var projectFiles) && projectFiles is not null)
                 {
                     var projectFilePaths = projectFiles.Select(file => file.Uri.LocalPath).ToHashSet();
                     AddFolderFileNodes(service, folder, projectFiles, projectFilePaths);
@@ -40,29 +45,36 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
                 else
                 {
                     // folder is empty
-                    vm.Folders.Add(folder);
                 }
+                vm.AddChildNode(folder);
+            }
+
+            if (projectFilesByFolder.TryGetValue(srcRoot, out var rootFolderFiles))
+            {
+                var rootFilePaths = rootFolderFiles.Select(file => file.Uri.LocalPath).ToHashSet();
+                AddFolderFileNodes(service, vm, rootFolderFiles, rootFilePaths);
+                projectFilesByFolder.Remove(srcRoot);
             }
 
             foreach (var key in projectFilesByFolder.Keys)
             {
                 var folder = CreateWorkspaceFolderNode(service, projectFilesByFolder[key], key);
-                vm.Folders.Add(folder);
+                vm.ChildNodes.Add(folder);
             }
 
             return vm;
         }
 
-        private static void AddFolderFileNodes(IWorkspaceService service, WorkspaceTreeNodeViewModel folder, IEnumerable<WorkspaceTreeNodeViewModel> projectFiles, HashSet<string> projectFilePaths)
+        private static void AddFolderFileNodes(IWorkspaceService service, IWorkspaceTreeNode folder, IEnumerable<IWorkspaceTreeNode> projectFiles, HashSet<string> projectFilePaths)
         {
             var workspaceFiles = GetWorkspaceFilesNotInProject(service, folder, projectFilePaths);
             foreach (var file in projectFiles.Concat(workspaceFiles))
             {
-                folder.ChildNodes.Add(file);
+                folder.AddChildNode(file);
             }
         }
 
-        private static WorkspaceTreeNodeViewModel CreateWorkspaceFolderNode(IWorkspaceService service, IEnumerable<WorkspaceTreeNodeViewModel> projectFiles, string key)
+        private static WorkspaceTreeNodeViewModel CreateWorkspaceFolderNode(IWorkspaceService service, IEnumerable<IWorkspaceTreeNode> projectFiles, string key)
         {
             var folder = new WorkspaceTreeNodeViewModel
             {
@@ -76,7 +88,7 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
             return folder;
         }
 
-        private static IEnumerable<WorkspaceFileViewModel> GetWorkspaceFilesNotInProject(IWorkspaceService service, WorkspaceTreeNodeViewModel folder, HashSet<string> projectFilePaths)
+        private static IEnumerable<WorkspaceFileViewModel> GetWorkspaceFilesNotInProject(IWorkspaceService service, IWorkspaceTreeNode folder, HashSet<string> projectFilePaths)
         {
             var results = service.FileSystem.Directory.GetFiles(folder.Uri.LocalPath).Except(projectFilePaths)
                         .Select(file => new WorkspaceFileViewModel
@@ -102,12 +114,17 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
             }
         }
 
-        private readonly ObservableCollection<WorkspaceTreeNodeViewModel> _folders = new();
-        public ObservableCollection<WorkspaceTreeNodeViewModel> Folders => _folders;
+        private readonly ObservableCollection<IWorkspaceTreeNode> _children = new();
+        public ObservableCollection<IWorkspaceTreeNode> ChildNodes => _children;
 
         public string Name { get; set; }
+        public Uri Uri { get; set; }
 
-        public IEnumerable<IWorkspaceTreeNode> Children => _folders;
+        public IEnumerable<IWorkspaceTreeNode> Children => _children;
+        public void AddChildNode(IWorkspaceTreeNode childNode)
+        {
+            _children.Add(childNode);
+        }
 
         private bool _isSelected;
         public bool IsSelected

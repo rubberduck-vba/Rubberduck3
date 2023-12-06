@@ -5,11 +5,11 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
 {
     public class WorkspaceFileViewModel : WorkspaceTreeNodeViewModel
     {
-        public static WorkspaceFileViewModel FromModel(File model)
+        public static WorkspaceFileViewModel FromModel(File model, Uri srcRoot)
         {
             return new WorkspaceFileViewModel
             {
-                Uri = new Uri(model.Uri, UriKind.Relative),
+                Uri = new Uri(srcRoot, model.Uri),
                 Name = model.Name,
                 IsAutoOpen = model.IsAutoOpen,
                 IsInProject = true
