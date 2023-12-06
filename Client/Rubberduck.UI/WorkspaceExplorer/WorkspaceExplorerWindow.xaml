@@ -12,6 +12,7 @@
         x:Name="WorkspaceExplorerRoot"
         Title="{Binding Title}"
         Style="{DynamicResource ThemedWindowStyle}" 
+        MinWidth="255"
         d:DesignHeight="450" d:DesignWidth="400">
     <Window.Resources>
         <ResourceDictionary>

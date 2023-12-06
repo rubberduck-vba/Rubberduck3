@@ -34,7 +34,7 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
                 .ToDictionary(e => e.Key, e => e.AsEnumerable());
 
 
-            foreach (var folder in projectFolders)
+            foreach (var folder in projectFolders.OrderBy(e => e.Name))
             {
                 if (projectFilesByFolder.TryGetValue(folder.Uri.LocalPath, out var projectFiles) && projectFiles is not null)
                 {
@@ -51,7 +51,7 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
 
             if (projectFilesByFolder.TryGetValue(srcRoot, out var rootFolderFiles))
             {
-                var rootFilePaths = rootFolderFiles.Select(file => file.Uri.LocalPath).ToHashSet();
+                var rootFilePaths = rootFolderFiles.OrderBy(e => e.Name).Select(e => e.Uri.LocalPath).ToHashSet();
                 AddFolderFileNodes(service, vm, rootFolderFiles, rootFilePaths);
                 projectFilesByFolder.Remove(srcRoot);
             }
