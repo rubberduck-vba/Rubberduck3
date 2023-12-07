@@ -39,7 +39,7 @@
                                 <DockPanel Grid.Row="0" VerticalAlignment="Top" Margin="5,5,0,0">
                                     <local:FlatButton DockPanel.Dock="Right" 
                                                       HorizontalAlignment="Right" VerticalAlignment="Top"
-                                                      Margin="5"
+                                                      Margin="10,0"
                                                       ToolTip="Settings"
                                                       Visibility="{Binding ShowGearButton, Converter={StaticResource BoolToVisibilityConverter}}"
                                                       Command="{Binding ShowSettingsCommand}"

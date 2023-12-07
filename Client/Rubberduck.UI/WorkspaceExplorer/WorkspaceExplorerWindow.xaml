@@ -4,7 +4,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
-        xmlns:toolwindows="clr-namespace:Rubberduck.UI.Windows.ToolWindows"
+        xmlns:b="clr-namespace:Rubberduck.UI.Behaviors"
+        xmlns:xb="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
         xmlns:local="clr-namespace:Rubberduck.UI.WorkspaceExplorer" 
         d:DataContext="{d:DesignInstance Type=local:IWorkspaceExplorerViewModel, IsDesignTimeCreatable=False}"
@@ -12,8 +13,8 @@
         x:Name="WorkspaceExplorerRoot"
         Title="{Binding Title}"
         Style="{DynamicResource ThemedWindowStyle}" 
-        WindowStyle="None" ResizeMode="NoResize"
-        MinWidth="255"
+        WindowStyle="ToolWindow"
+        MinWidth="255" Width="400" Height="500"
         d:DesignHeight="450" d:DesignWidth="400">
     <Window.Resources>
         <ResourceDictionary>
@@ -35,19 +36,21 @@
                             </Style>
                         </Image.Style>
                     </Image>
-                    <Label Content="{Binding Name}" Style="{DynamicResource FormFieldNameLabelStyle}" />
+                    <Label Content="{Binding Name}" Style="{DynamicResource FormFieldNameLabelStyle}" Margin="0"/>
                 </StackPanel>
             </HierarchicalDataTemplate>
             <DataTemplate x:Key="SourceFileTemplate" DataType="local:WorkspaceSourceFileViewModel">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{DynamicResource SourceDocumentIcon16}" Style="{DynamicResource IconStyle16}" />
-                    <Label Content="{Binding Name}" Style="{DynamicResource FormFieldNameLabelStyle}" />
+                    <Label Content="{Binding Name}" Style="{DynamicResource FormFieldNameLabelStyle}" Margin="0"/>
+                    <Label Content="Source file" Style="{DynamicResource FormFieldValueLabelStyle}" Margin="0"/>
                 </StackPanel>
             </DataTemplate>
             <DataTemplate x:Key="OtherFileTemplate" DataType="local:WorkspaceFileViewModel">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{DynamicResource DocumentIcon16}" Style="{DynamicResource IconStyle16}" />
-                    <Label Content="{Binding Name}" Style="{DynamicResource FormFieldNameLabelStyle}" />
+                    <Label Content="{Binding Name}" Style="{DynamicResource FormFieldNameLabelStyle}" Margin="0" />
+                    <Label Content="Workspace file" Style="{DynamicResource FormFieldValueLabelStyle}" Margin="0"/>
                 </StackPanel>
             </DataTemplate>
             <local:WorkspaceNodeTemplateSelector x:Key="NodeTemplateSelector" 
@@ -60,13 +63,18 @@
                         Title="{Binding Title, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
             <TreeView Margin="5" BorderThickness="0" Background="Transparent" AllowDrop="True" 
-                      ItemsSource="{Binding Workspaces}" 
+                      ItemsSource="{Binding Workspaces}"
                       ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
+
+                <xb:Interaction.Behaviors>
+                    <b:BindableSelectedItemBehavior SelectedItem="{Binding Selection, Mode=TwoWay}" />
+                </xb:Interaction.Behaviors>
 
                 <TreeView.ContextMenu>
                     <ContextMenu>
@@ -86,24 +94,35 @@
                             <Style x:Key="WorkspaceTreeLabelStyle" TargetType="{x:Type TextBlock}">
                                 <Setter Property="Text" Value="{Binding Name}" />
                                 <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                        <Setter Property="Foreground" Value="{DynamicResource ThemeBlackDarkColorBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
                             </Style>
                         </HierarchicalDataTemplate.Resources>
                         <StackPanel Orientation="Horizontal">
                             <Label Style="{DynamicResource FormFieldNameLabelStyle}">
-                                <TextBlock Style="{DynamicResource WorkspaceTreeLabelStyle}" />
+                                <TextBlock Style="{DynamicResource WorkspaceTreeLabelStyle}" Text="{Binding Name}" />
                             </Label>
                         </StackPanel>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
 
-            <Expander Grid.Row="1" Background="{DynamicResource BackgroundDarkBrush}" Visibility="{Binding HasSelectionInfo, Converter={StaticResource BoolToVisibilityConverter}}">
+            <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Cursor="SizeNS" ShowsPreview="True" Background="{DynamicResource ThemeBackgroundMediumColorBrush}" />
+
+            <Expander Grid.Row="2" Background="{DynamicResource BackgroundDarkBrush}" 
+                      Visibility="{Binding HasSelectionInfo, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Expander.Header>
                     <DockPanel>
                         <Label DockPanel.Dock="Left" Style="{DynamicResource FormFieldNameLabelStyle}" Content="{Binding Selection.Name}" Margin="5,0" />
                     </DockPanel>
                 </Expander.Header>
-                <ItemsPresenter />
+                <Label ToolTip="{Binding Selection.Uri}" Style="{DynamicResource FormFieldValueLabelStyle}">
+                    <!-- TODO -->
+                    <TextBlock TextWrapping="Wrap" Text="{Binding Selection.Uri}" />
+                </Label>
             </Expander>
         </Grid>
     </shell:ThunderFrame>
