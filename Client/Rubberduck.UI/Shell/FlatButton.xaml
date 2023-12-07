@@ -15,10 +15,10 @@
             <ControlTemplate x:Key="FlatButtonTemplate">
                 <Canvas>
                     <Image Source="{Binding Icon, ElementName=FlatButtonRoot}"
-                           Height="16" Width="16" Stretch="UniformToFill"
+                           Height="20" Width="24" Stretch="Uniform"
                            Canvas.Left="8" Canvas.Top="4" HorizontalAlignment="Left" VerticalAlignment="Center" />
                     <Rectangle Fill="{TemplateBinding Foreground}"
-                               Height="16" Width="16" Stretch="UniformToFill"
+                               Height="20" Width="24" Stretch="Uniform"
                                Canvas.Left="8" Canvas.Top="4" HorizontalAlignment="Left" VerticalAlignment="Center">
                         <Rectangle.Resources>
                             <Style TargetType="Rectangle">
@@ -30,7 +30,7 @@
                             </Style>
                         </Rectangle.Resources>
                         <Rectangle.OpacityMask>
-                            <ImageBrush Stretch="UniformToFill" ImageSource="{Binding Icon, ElementName=FlatButtonRoot}" />
+                            <ImageBrush Stretch="Uniform" ImageSource="{Binding Icon, ElementName=FlatButtonRoot}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </Canvas>

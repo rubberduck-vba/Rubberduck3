@@ -404,7 +404,6 @@
 
     <Style x:Key="FormFieldValueLabelStyle" TargetType="Label">
         <Style.Setters>
-            <Setter Property="IsEnabled" Value="False" />
             <Setter Property="BorderBrush" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
             <Setter Property="FontSize" Value="11" />
             <Setter Property="Height" Value="24" />

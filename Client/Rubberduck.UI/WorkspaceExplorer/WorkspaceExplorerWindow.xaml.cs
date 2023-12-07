@@ -19,7 +19,7 @@ namespace Rubberduck.UI.WorkspaceExplorer
     /// <summary>
     /// Interaction logic for WorkspaceExplorerControl.xaml
     /// </summary>
-    public partial class WorkspaceExplorerToolWindow : DragablzWindow
+    public partial class WorkspaceExplorerToolWindow : Window
     {
         public WorkspaceExplorerToolWindow()
         {

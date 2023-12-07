@@ -6,6 +6,7 @@ namespace Rubberduck.UI.WorkspaceExplorer
 {
     public interface IWorkspaceExplorerViewModel : IToolWindowViewModel
     {
+        new string Title { get; }
         WorkspaceTreeNodeViewModel? Selection { get; set; }
         IWorkspaceUriInfo? SelectionInfo { get; }
         bool HasSelectionInfo { get; }

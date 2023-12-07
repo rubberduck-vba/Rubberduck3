@@ -16,10 +16,10 @@
             <Style x:Key="ServerStateImageStyle" TargetType="Image" BasedOn="{StaticResource IconStyle}">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding ServerConnectionState}" Value="Connected">
-                        <Setter Property="Source" Value="{StaticResource ConnectedIcon}" />
+                        <Setter Property="Source" Value="{StaticResource ConnectedIcon16}" />
                     </DataTrigger>
                     <DataTrigger Binding="{Binding ServerConnectionState}" Value="Disconnected">
-                        <Setter Property="Source" Value="{StaticResource ConnectErrorIcon}" />
+                        <Setter Property="Source" Value="{StaticResource ConnectErrorIcon16}" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -42,11 +42,11 @@
             <StatusBarItem Visibility="{Binding ShowDocumentStatusItems, Converter={StaticResource BoolToVisibilityConverter}}">
                 <StackPanel Orientation="Horizontal">
 
-                    <Image Style="{StaticResource IconStyle}" Source="{StaticResource DocInfoIcon}" />
+                    <Image Style="{StaticResource IconStyle16}" Source="{StaticResource DocInfoIcon16}" />
                     <TextBlock Text="{Binding DocumentLines}" Margin="2,0" />
                     <TextBlock Text="lines" Margin="2,0,10,0" />
 
-                    <Image Style="{StaticResource IconStyle}" Source="{StaticResource CaretLocationIcon}" />
+                    <Image Style="{StaticResource IconStyle16}" Source="{StaticResource CaretLocationIcon16}" />
 
                     <TextBlock Text="Ln: " Margin="5,0,0,0" />
                     <TextBlock Text="{Binding CaretLine}" Margin="2,0" />
@@ -62,7 +62,7 @@
 
             <StatusBarItem Visibility="{Binding ShowDocumentStatusItems, Converter={StaticResource BoolToVisibilityConverter}}">
                 <StackPanel Orientation="Horizontal">
-                    <Image Style="{StaticResource IconStyle}" Source="{StaticResource MemberInfoIcon}" />
+                    <Image Style="{StaticResource IconStyle16}" Source="{StaticResource MemberInfoIcon16}" />
                     <TextBlock Text="{Binding CodeLocation}" FontWeight="Medium" />
                 </StackPanel>
             </StatusBarItem>
@@ -73,12 +73,12 @@
 
                     <Button Style="{DynamicResource ControlBoxButtonStyle}" ToolTip="Review diagnostics">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="{StaticResource IssuesIcon}" >
+                            <Image Source="{StaticResource IssuesIcon16}" >
                                 <Image.Style>
-                                    <Style TargetType="Image" BasedOn="{StaticResource IconStyle}">
+                                    <Style TargetType="Image" BasedOn="{StaticResource IconStyle16}">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IssuesCount}" Value="0">
-                                                <Setter Property="Source" Value="{StaticResource NoIssuesIcon}" />
+                                                <Setter Property="Source" Value="{StaticResource NoIssuesIcon16}" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
