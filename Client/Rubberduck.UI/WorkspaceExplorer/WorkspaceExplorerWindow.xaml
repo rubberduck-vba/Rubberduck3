@@ -53,22 +53,55 @@
                     <Label Content="Workspace file" Style="{DynamicResource FormFieldValueLabelStyle}" Margin="0"/>
                 </StackPanel>
             </DataTemplate>
+
+            <DataTemplate x:Key="SourceFileInfoTemplate" DataType="local:WorkspaceSourceFileViewModel">
+                <DockPanel>
+                    <Image DockPanel.Dock="Left" Source="{DynamicResource SourceDocumentIcon16}" Style="{DynamicResource IconStyle16}" />
+                    <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldNameLabelStyle}" Content="{Binding FileName}" />
+                    <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldNameLabelStyle}">
+                        <TextBlock TextWrapping="Wrap" Text="{Binding Uri.LocalPath}" />
+                    </Label>
+                </DockPanel>
+            </DataTemplate>
+            <DataTemplate x:Key="FolderInfoTemplate" DataType="local:WorkspaceTreeNodeViewModel">
+                <DockPanel>
+                    <Image DockPanel.Dock="Left" Source="{DynamicResource SharpFolderClosedIcon}" Style="{DynamicResource IconStyle16}" />
+                    <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldNameLabelStyle}" Content="{Binding FileName}" />
+                </DockPanel>
+            </DataTemplate>
+            <DataTemplate x:Key="WorkspaceFileInfoTemplate" DataType="local:WorkspaceFileViewModel">
+                <DockPanel>
+                    <Image DockPanel.Dock="Left" Source="{DynamicResource DocumentIcon16}" Style="{DynamicResource IconStyle16}" VerticalAlignment="Top" />
+                    <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldNameLabelStyle}">
+                        <TextBlock Text="{Binding FileName}" />
+                    </Label>
+                    <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldNameLabelStyle}" Content="{Binding FileName}" />
+                    <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldNameLabelStyle}">
+                        <TextBlock TextWrapping="Wrap" Text="{Binding Uri.LocalPath}" />
+                    </Label>
+                </DockPanel>
+            </DataTemplate>
             <local:WorkspaceNodeTemplateSelector x:Key="NodeTemplateSelector" 
                                                  FolderTemplate="{StaticResource WorkspaceFolderTemplate}"
                                                  SourceFileTemplate="{StaticResource SourceFileTemplate}"
                                                  WorkspaceFileTemplate="{StaticResource OtherFileTemplate}"/>
+
+            <local:WorkspaceNodeTemplateSelector x:Key="DetailsTemplateSelector" 
+                                                 FolderTemplate="{StaticResource FolderInfoTemplate}"
+                                                 SourceFileTemplate="{StaticResource SourceFileInfoTemplate}"
+                                                 WorkspaceFileTemplate="{StaticResource WorkspaceFileInfoTemplate}"/>
         </ResourceDictionary>
     </Window.Resources>
     <shell:ThunderFrame ShowAcceptButton="False" ShowCancelButton="False" ShowTitle="True" 
                         Title="{Binding Title, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="5" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <TreeView Margin="5" BorderThickness="0" Background="Transparent" AllowDrop="True" 
+            <TreeView Margin="5,5,5,0" BorderThickness="0" Background="Transparent" AllowDrop="True" 
                       ItemsSource="{Binding Workspaces}"
                       ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
 
@@ -101,28 +134,25 @@
                                 </Style.Triggers>
                             </Style>
                         </HierarchicalDataTemplate.Resources>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Style="{DynamicResource FormFieldNameLabelStyle}">
-                                <TextBlock Style="{DynamicResource WorkspaceTreeLabelStyle}" Text="{Binding Name}" />
-                            </Label>
-                        </StackPanel>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
 
             <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Cursor="SizeNS" ShowsPreview="True" Background="{DynamicResource ThemeBackgroundMediumColorBrush}" />
 
-            <Expander Grid.Row="2" Background="{DynamicResource BackgroundDarkBrush}" 
+            <Expander Grid.Row="2"
+                      Background="{DynamicResource BackgroundDarkBrush}" 
                       Visibility="{Binding HasSelectionInfo, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Expander.Header>
                     <DockPanel>
                         <Label DockPanel.Dock="Left" Style="{DynamicResource FormFieldNameLabelStyle}" Content="{Binding Selection.Name}" Margin="5,0" />
                     </DockPanel>
                 </Expander.Header>
-                <Label ToolTip="{Binding Selection.Uri}" Style="{DynamicResource FormFieldValueLabelStyle}">
-                    <!-- TODO -->
-                    <TextBlock TextWrapping="Wrap" Text="{Binding Selection.Uri}" />
-                </Label>
+                <DockPanel>
+                    <ScrollViewer DataContext="{Binding SelectionInfo}" VerticalScrollBarVisibility="Auto" MaxHeight="100"
+                                  ContentTemplateSelector="{DynamicResource DetailsTemplateSelector}">
+                    </ScrollViewer>
+                </DockPanel>
             </Expander>
         </Grid>
     </shell:ThunderFrame>

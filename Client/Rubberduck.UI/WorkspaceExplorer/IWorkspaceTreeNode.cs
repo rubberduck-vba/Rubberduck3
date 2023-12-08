@@ -6,6 +6,7 @@ namespace Rubberduck.UI.WorkspaceExplorer
     public interface IWorkspaceTreeNode
     {
         Uri Uri { get; }
+        string FileName { get; }
         string Name { get; }
         IEnumerable<IWorkspaceTreeNode> Children { get; }
         void AddChildNode(IWorkspaceTreeNode childNode);

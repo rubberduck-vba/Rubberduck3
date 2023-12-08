@@ -3,6 +3,7 @@ using Rubberduck.UI.WorkspaceExplorer;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Rubberduck.UI.Services.WorkspaceExplorer
 {
@@ -43,9 +44,12 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
                 {
                     _uri = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(FileName));
                 }
             }
         }
+
+        public string FileName => Uri.GetComponents(UriComponents.Path, UriFormat.SafeUnescaped).Split('/').Last();
 
         private Uri? _relativeUri = null!;
         public Uri? RelativeUri

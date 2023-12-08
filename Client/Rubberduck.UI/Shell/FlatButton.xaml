@@ -16,10 +16,10 @@
                 <Canvas>
                     <Image Source="{Binding Icon, ElementName=FlatButtonRoot}"
                            Height="20" Width="24" Stretch="Uniform"
-                           Canvas.Left="8" Canvas.Top="4" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                           Canvas.Left="0" Canvas.Top="0" HorizontalAlignment="Left" VerticalAlignment="Center" />
                     <Rectangle Fill="{TemplateBinding Foreground}"
                                Height="20" Width="24" Stretch="Uniform"
-                               Canvas.Left="8" Canvas.Top="4" HorizontalAlignment="Left" VerticalAlignment="Center">
+                               Canvas.Left="0" Canvas.Top="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                         <Rectangle.Resources>
                             <Style TargetType="Rectangle">
                                 <Style.Triggers>

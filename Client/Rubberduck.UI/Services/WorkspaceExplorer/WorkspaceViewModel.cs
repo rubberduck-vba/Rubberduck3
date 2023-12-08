@@ -119,6 +119,7 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
 
         public string Name { get; set; }
         public Uri Uri { get; set; }
+        public string FileName => Uri.GetComponents(UriComponents.Path, UriFormat.SafeUnescaped).Split('/').Last();
 
         public IEnumerable<IWorkspaceTreeNode> Children => _children;
         public void AddChildNode(IWorkspaceTreeNode childNode)
