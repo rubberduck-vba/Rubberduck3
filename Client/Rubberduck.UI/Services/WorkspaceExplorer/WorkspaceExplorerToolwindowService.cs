@@ -1,4 +1,6 @@
-﻿using Rubberduck.UI.Windows.ToolWindows;
+﻿using Rubberduck.UI.Command;
+using Rubberduck.UI.Windows;
+using Rubberduck.UI.Windows.ToolWindows;
 using Rubberduck.UI.WorkspaceExplorer;
 using System;
 using System.Windows;
@@ -7,23 +9,25 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
 {
     public class WorkspaceExplorerToolWindowService : IToolWindowService<IWorkspaceExplorerViewModel>
     {
-        private Window? _window;
+        private readonly ShellProvider _shell;
+        private WorkspaceExplorerControl? _control;
 
-        private static Window CreateWindow(IWorkspaceExplorerViewModel viewModel)
+        public WorkspaceExplorerToolWindowService(ShellProvider shell)
         {
-            return new WorkspaceExplorerToolWindow() { DataContext = viewModel };
+            _shell = shell;
         }
 
-        public void Dock(IWorkspaceExplorerViewModel viewModel, ToolDockLocation location)
+        private static WorkspaceExplorerControl CreateControl(IWorkspaceExplorerViewModel viewModel)
         {
-            var window = _window ??= CreateWindow(viewModel);
-            window.Show();
+            return new WorkspaceExplorerControl() { DataContext = viewModel };
         }
 
-        public void Float(IWorkspaceExplorerViewModel viewModel)
+        public void Dock(IWorkspaceExplorerViewModel viewModel, DockingLocation location)
         {
-            var window = _window ??= CreateWindow(viewModel);
-            window.Show();
+            var control = _control ??= CreateControl(viewModel);
+            _shell.ViewModel.ToolWindows.Add(viewModel);
         }
+
+        public void Float(IWorkspaceExplorerViewModel viewModel) => Dock(viewModel, DockingLocation.None);
     }
 }

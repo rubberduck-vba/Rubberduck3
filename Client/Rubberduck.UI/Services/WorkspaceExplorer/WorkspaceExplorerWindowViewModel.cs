@@ -1,5 +1,6 @@
 ﻿using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.UI.Services.Abstract;
+using Rubberduck.UI.Windows;
 using Rubberduck.UI.WorkspaceExplorer;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -59,6 +60,8 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
         public bool HasSelectionInfo => _selectionInfo != null;
 
         public ICollection<WorkspaceViewModel> Workspaces => _workspaces;
+
+        public DockingLocation DockingLocation { get; set; } = DockingLocation.DockLeft;
 
         public void Load(ProjectFile workspace)
         {

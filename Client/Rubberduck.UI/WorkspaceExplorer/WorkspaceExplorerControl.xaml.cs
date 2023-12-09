@@ -19,9 +19,9 @@ namespace Rubberduck.UI.WorkspaceExplorer
     /// <summary>
     /// Interaction logic for WorkspaceExplorerControl.xaml
     /// </summary>
-    public partial class WorkspaceExplorerToolWindow : Window
+    public partial class WorkspaceExplorerControl : UserControl
     {
-        public WorkspaceExplorerToolWindow()
+        public WorkspaceExplorerControl()
         {
             InitializeComponent();
         }

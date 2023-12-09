@@ -1,4 +1,4 @@
-﻿<Window x:Class="Rubberduck.UI.WorkspaceExplorer.WorkspaceExplorerToolWindow"
+﻿<UserControl x:Class="Rubberduck.UI.WorkspaceExplorer.WorkspaceExplorerControl"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -11,12 +11,10 @@
         d:DataContext="{d:DesignInstance Type=local:IWorkspaceExplorerViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d" 
         x:Name="WorkspaceExplorerRoot"
-        Title="{Binding Title}"
         Style="{DynamicResource ThemedWindowStyle}" 
-        WindowStyle="ToolWindow"
         MinWidth="255" Width="400" Height="500"
         d:DesignHeight="450" d:DesignWidth="400">
-    <Window.Resources>
+    <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
@@ -91,7 +89,7 @@
                                                  SourceFileTemplate="{StaticResource SourceFileInfoTemplate}"
                                                  WorkspaceFileTemplate="{StaticResource WorkspaceFileInfoTemplate}"/>
         </ResourceDictionary>
-    </Window.Resources>
+    </UserControl.Resources>
     <shell:ThunderFrame ShowAcceptButton="False" ShowCancelButton="False" ShowTitle="True" 
                         Title="{Binding Title, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}">
         <Grid>
@@ -156,4 +154,4 @@
             </Expander>
         </Grid>
     </shell:ThunderFrame>
-</Window>
+</UserControl>

@@ -2,30 +2,49 @@
 using Rubberduck.UI.Shell.StatusBar;
 using Rubberduck.UI.Windows;
 using System;
+using System.Collections.ObjectModel;
 
 namespace Rubberduck.Editor.Shell
 {
-    public class ChildWindowViewModel : IDragablzWindowViewModel
+    public abstract class ChildWindowViewModel : IDragablzWindowViewModel
     {
-        public ChildWindowViewModel(IInterTabClient interTabClient, IShellStatusBarViewModel statusBar, string partition)
+        public ChildWindowViewModel(IInterTabClient interTabClient, string partition)
         {
             InterTabClient = interTabClient;
             Partition = partition;
 
-            StatusBar = statusBar;
             Title = "Rubberduck Editor"; // tab title?
         }
 
         public string Title { get; }
-        public IShellStatusBarViewModel StatusBar { get; }
 
         public IInterTabClient InterTabClient { get; }
-
         public string Partition { get; }
 
-        public void ClosingTabItemHandler(object sender, EventArgs e)
+        public ObservableCollection<object> Tabs { get; set; }
+
+        public virtual void ClosingTabItemHandler(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            
+        }
+    }
+
+    public class DocumentShellWindowViewModel : ChildWindowViewModel
+    {
+        public DocumentShellWindowViewModel(IInterTabClient interTabClient, IShellStatusBarViewModel statusBar) 
+            : base(interTabClient, Partitions.Documents)
+        {
+            StatusBar = statusBar;
+        }
+
+        public IShellStatusBarViewModel StatusBar { get; }
+    }
+
+    public class ToolWindowShellWindowViewModel : ChildWindowViewModel
+    {
+        public ToolWindowShellWindowViewModel(IInterTabClient interTabClient) 
+            : base(interTabClient, Partitions.Toolwindows)
+        {
         }
     }
 }

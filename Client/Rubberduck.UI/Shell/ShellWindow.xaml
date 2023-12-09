@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:Rubberduck.UI.Shell" 
         xmlns:statusbar="clr-namespace:Rubberduck.UI.Shell.StatusBar" 
         xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
-        xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
+        xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz" 
+        d:DataContext="{d:DesignInstance Type=local:IShellWindowViewModel}"
         mc:Ignorable="d"
         ContentRendered="OnContentRendered" 
         Style="{DynamicResource ThemedWindowStyle}"
@@ -72,17 +73,46 @@
         <Border Grid.Row="0" Background="{DynamicResource ThemeBackgroundColorBrush}" Opacity=".025" IsHitTestVisible="False" />
 
         <DockPanel Grid.Row="1">
-            <dockablz:Layout DockPanel.Dock="Left" Partition="toolwindows" Style="{DynamicResource ToolWindowLayoutStyle}">
-                <dragablz:TabablzControl x:Name="LeftPanelToolTabs" InterTabController="{DynamicResource ToolWindowInterTabController}" />
+            <dockablz:Layout Name="LeftPane" Partition="toolwindows" DockPanel.Dock="Left">
+                <dockablz:Layout.BranchTemplate>
+                    <DataTemplate>
+                        <dragablz:TabablzControl InterTabController="{DynamicResource ToolWindowInterTabController}"
+                                                    TabStripPlacement="Bottom" Background="{DynamicResource ThemeBackgroundColorBrush}" />
+                    </DataTemplate>
+                </dockablz:Layout.BranchTemplate>
+                <dragablz:TabablzControl InterTabController="{DynamicResource ToolWindowInterTabController}"
+                                            TabStripPlacement="Bottom" Background="{DynamicResource ThemeBackgroundColorBrush}" />
             </dockablz:Layout>
-            <dockablz:Layout DockPanel.Dock="Right" Partition="toolwindows" Style="{DynamicResource ToolWindowLayoutStyle}">
-                <dragablz:TabablzControl x:Name="RightPanelToolTabs" InterTabController="{DynamicResource ToolWindowInterTabController}" />
+            <dockablz:Layout Name="RightPane" Partition="toolwindows" DockPanel.Dock="Right">
+                <dockablz:Layout.BranchTemplate>
+                    <DataTemplate>
+                        <dragablz:TabablzControl InterTabController="{DynamicResource ToolWindowInterTabController}"
+                                                    TabStripPlacement="Bottom" Background="{DynamicResource ThemeBackgroundColorBrush}" />
+                    </DataTemplate>
+                </dockablz:Layout.BranchTemplate>
+                <dragablz:TabablzControl InterTabController="{DynamicResource ToolWindowInterTabController}"
+                                            TabStripPlacement="Bottom" Background="{DynamicResource ThemeBackgroundColorBrush}" />
             </dockablz:Layout>
-            <dockablz:Layout DockPanel.Dock="Bottom" Partition="toolwindows" Style="{DynamicResource ToolWindowLayoutStyle}">
-                <dragablz:TabablzControl x:Name="BottomPanelToolTabs" InterTabController="{DynamicResource ToolWindowInterTabController}" />
+            <dockablz:Layout Name="BottomPane" Partition="toolwindows" DockPanel.Dock="Bottom">
+                <dockablz:Layout.BranchTemplate>
+                    <DataTemplate>
+                        <dragablz:TabablzControl InterTabController="{DynamicResource ToolWindowInterTabController}"
+                                                    TabStripPlacement="Bottom" Background="{DynamicResource ThemeBackgroundColorBrush}" />
+                    </DataTemplate>
+                </dockablz:Layout.BranchTemplate>
+                <dragablz:TabablzControl InterTabController="{DynamicResource ToolWindowInterTabController}"
+                                            TabStripPlacement="Bottom" Background="{DynamicResource ThemeBackgroundColorBrush}" />
             </dockablz:Layout>
-            <dockablz:Layout DockPanel.Dock="Top" Partition="documents" Style="{DynamicResource DocumentWindowLayoutStyle}">
-                <dragablz:TabablzControl x:Name="DocumentPanelToolTabs" InterTabController="{DynamicResource DocumentsInterTabController}" />
+
+            <dockablz:Layout Name="DocumentPane" Partition="documents" DockPanel.Dock="Top">
+                <dockablz:Layout.BranchTemplate>
+                    <DataTemplate>
+                        <dragablz:TabablzControl InterTabController="{DynamicResource DocumentsInterTabController}"
+                                                    TabStripPlacement="Top" Background="{DynamicResource ThemeBackgroundColorBrush}" />
+                    </DataTemplate>
+                </dockablz:Layout.BranchTemplate>
+                <dragablz:TabablzControl InterTabController="{DynamicResource DocumentsInterTabController}"
+                                            TabStripPlacement="Top" Background="{DynamicResource ThemeBackgroundColorBrush}" />
             </dockablz:Layout>
         </DockPanel>
         

@@ -1,11 +1,14 @@
-﻿<Window x:Class="Rubberduck.UI.Shell.ChildWindow"
+﻿<Window x:Class="Rubberduck.UI.Shell.ToolwindowsShellChildWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
+        xmlns:vm="clr-namespace:Rubberduck.UI.Windows" 
+        d:DataContext="{d:DesignInstance Type=vm:IDragablzWindowViewModel}"
         mc:Ignorable="d"
-        Title="ChildWindow" Height="450" Width="800">
+        Title="{Binding Title}"
+        Height="380" Width="300">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -14,7 +17,9 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <dragablz:TabablzControl x:Name="Tabz" Background="Transparent">
+        <dragablz:TabablzControl x:Name="Tabz" TabStripPlacement="Bottom" 
+                                 ItemsSource="{Binding Tabs}"
+                                 Background="{DynamicResource ThemeBackgroundColorBrush}">
             <dragablz:TabablzControl.InterTabController>
                 <dragablz:InterTabController InterTabClient="{Binding InterTabClient}" />
             </dragablz:TabablzControl.InterTabController>

@@ -123,7 +123,7 @@ namespace Rubberduck.Editor
 
         private void ShowEditor()
         {
-            var model = _serviceProvider.GetRequiredService<ShellWindowViewModel>();
+            var model = _serviceProvider.GetRequiredService<IShellWindowViewModel>();
 
             // prompt for new workspace here if there's no addin host?
 
@@ -210,9 +210,10 @@ namespace Rubberduck.Editor
             services.AddSingleton<SplashService>();
             services.AddSingleton<ISplashViewModel, SplashViewModel>();
 
-            services.AddSingleton<ShellWindowViewModel>();
+            services.AddSingleton<ShellProvider>();
+            services.AddSingleton<IShellWindowViewModel, ShellWindowViewModel>();
             services.AddSingleton<IShellStatusBarViewModel, ShellStatusBarViewModel>();
-            services.AddSingleton<IInterTabClient, ShellInterTabClient>();
+            services.AddSingleton<IInterTabClient, DocumentsInterTabClient>();
 
             services.AddSingleton<ISettingsChangedHandler<RubberduckSettings>>(provider => provider.GetRequiredService<RubberduckSettingsProvider>());
             services.AddSingleton<DidChangeConfigurationHandler>();

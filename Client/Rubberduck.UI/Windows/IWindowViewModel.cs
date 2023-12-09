@@ -2,7 +2,7 @@
 {
     public interface IToolWindowViewModel : IWindowViewModel
     {
-
+        DockingLocation DockingLocation { get; set; }
     }
 
     public interface IWindowViewModel

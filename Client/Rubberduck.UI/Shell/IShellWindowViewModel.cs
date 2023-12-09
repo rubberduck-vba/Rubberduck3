@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
+using Dragablz;
 using Rubberduck.UI.Chrome;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
+using Rubberduck.UI.Windows;
 
 namespace Rubberduck.UI.Shell
 {
@@ -9,7 +11,12 @@ namespace Rubberduck.UI.Shell
     {
         string Title { get; }
         IShellStatusBarViewModel StatusBar { get; }
-        IEnumerable<IDocumentTabViewModel> Documents { get; }
+        ObservableCollection<IDocumentTabViewModel> Documents { get; }
+        ObservableCollection<IToolWindowViewModel> ToolWindows { get; }
+
         IWindowChromeViewModel Chrome { get; }
+
+        IInterTabClient DocumentsInterTabClient { get; }
+        IInterTabClient ToolWindowInterTabClient { get; }
     }
 }

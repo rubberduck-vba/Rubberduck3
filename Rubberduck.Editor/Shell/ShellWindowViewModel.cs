@@ -1,6 +1,5 @@
 ﻿using Dragablz;
 using Rubberduck.Editor.Commands;
-using Rubberduck.Editor.Shell.StatusBar;
 using Rubberduck.UI;
 using Rubberduck.UI.Chrome;
 using Rubberduck.UI.Services;
@@ -18,21 +17,23 @@ namespace Rubberduck.Editor.Shell
 {
     public class ShellWindowViewModel : ViewModelBase, IShellWindowViewModel
     {
-        private static readonly string _documentsPartition = "documents";
-        private static readonly string _toolwindowPartition = "toolwindows";
         private readonly UIServiceHelper _service;
 
-        public ShellWindowViewModel(UIServiceHelper service, IInterTabClient interTabClient, IShellStatusBarViewModel statusBar,
+        public ShellWindowViewModel(UIServiceHelper service, 
+            IInterTabClient documentsInterTabClient, 
+            IInterTabClient toolwindowInterTabClient, 
+            IShellStatusBarViewModel statusBar,
             FileCommandHandlers fileCommandHandlers,
             ViewCommandHandlers viewCommandHandlers,
             ToolsCommandHandlers toolsCommandHandlers)
         {
             _service = service;
-            DocumentsInterTabClient = interTabClient;
+            DocumentsInterTabClient = documentsInterTabClient;
+            ToolWindowInterTabClient = toolwindowInterTabClient;
 
             StatusBar = statusBar;
-            Documents = new ObservableCollection<IDocumentTabViewModel>();
-            ToolWindows = new ObservableCollection<IToolWindowViewModel>();
+            Documents = [];
+            ToolWindows = [];
 
             FileCommandHandlers = fileCommandHandlers;
             ViewCommandHandlers = viewCommandHandlers;
@@ -46,8 +47,17 @@ namespace Rubberduck.Editor.Shell
         public override IEnumerable<CommandBinding> CommandBindings { get; }
         public string Title => "Rubberduck Editor";
 
-        public IEnumerable<IDocumentTabViewModel> Documents { get; init; }
-        public IEnumerable<IToolWindowViewModel> ToolWindows { get; init; }
+        public ObservableCollection<IDocumentTabViewModel> Documents { get; init; }
+        public void AddDocument(IDocumentTabViewModel tab)
+        {
+            Documents.Add(tab);
+        }
+
+        public ObservableCollection<IToolWindowViewModel> ToolWindows { get; init; }
+        public void AddToolWindow(IToolWindowViewModel tab)
+        {
+            ToolWindows.Add(tab);
+        }
 
         public IShellStatusBarViewModel StatusBar { get; init; }
 
