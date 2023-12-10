@@ -57,7 +57,9 @@ namespace Rubberduck.Editor
     {
         private IServiceProvider _serviceProvider;
         private ILogger<App> _logger;
-        
+
+        private ShellWindow _shell;
+
         private ServerStartupOptions _options;
         private CancellationTokenSource _tokenSource;
 
@@ -127,7 +129,7 @@ namespace Rubberduck.Editor
 
             // prompt for new workspace here if there's no addin host?
 
-            var view = new ShellWindow() { DataContext = model };
+            var view = _shell ??= new ShellWindow() { DataContext = model };
             view.Show();
         }
         
@@ -210,10 +212,11 @@ namespace Rubberduck.Editor
             services.AddSingleton<SplashService>();
             services.AddSingleton<ISplashViewModel, SplashViewModel>();
 
+            services.AddSingleton<Func<ShellWindow>>(provider => () => _shell);
             services.AddSingleton<ShellProvider>();
             services.AddSingleton<IShellWindowViewModel, ShellWindowViewModel>();
             services.AddSingleton<IShellStatusBarViewModel, ShellStatusBarViewModel>();
-            services.AddSingleton<IInterTabClient, DocumentsInterTabClient>();
+            services.AddSingleton<IInterTabClient, InterTabClient>();
 
             services.AddSingleton<ISettingsChangedHandler<RubberduckSettings>>(provider => provider.GetRequiredService<RubberduckSettingsProvider>());
             services.AddSingleton<DidChangeConfigurationHandler>();

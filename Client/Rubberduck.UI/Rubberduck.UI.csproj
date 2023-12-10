@@ -470,10 +470,7 @@
     <Compile Update="NewProject\NewProjectWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Shell\ToolwindowsShellChildWindow.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Shell\DocumentsShellChildWindow.xaml.cs">
+    <Compile Update="Shell\ShellChildWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Shell\Document\DocumentHostControl.xaml.cs">

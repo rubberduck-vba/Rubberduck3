@@ -25,5 +25,7 @@ namespace Rubberduck.Editor.Shell.Document.Tabs
         public object Content { get; set; }
         public bool IsReadOnly { get; set; }
         public abstract SupportedDocumentType DocumentType { get; }
+        public object Header { get; set; }
+        public bool IsSelected { get; set; }
     }
 }

@@ -11,7 +11,6 @@
         d:DataContext="{d:DesignInstance Type=local:IWorkspaceExplorerViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d" 
         x:Name="WorkspaceExplorerRoot"
-        Style="{DynamicResource ThemedWindowStyle}" 
         MinWidth="255" Width="400" Height="500"
         d:DesignHeight="450" d:DesignWidth="400">
     <UserControl.Resources>
@@ -90,8 +89,7 @@
                                                  WorkspaceFileTemplate="{StaticResource WorkspaceFileInfoTemplate}"/>
         </ResourceDictionary>
     </UserControl.Resources>
-    <shell:ThunderFrame ShowAcceptButton="False" ShowCancelButton="False" ShowTitle="True" 
-                        Title="{Binding Title, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}">
+    <shell:ThunderFrame ShowAcceptButton="False" ShowCancelButton="False" ShowTitle="True" Title="{Binding Title}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />

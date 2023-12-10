@@ -160,7 +160,7 @@ namespace Rubberduck.Editor
                 var srcRoot = _fileSystem.Path.Combine(_state.WorkspaceRoot.LocalPath, ProjectFile.SourceRoot);
                 foreach (var file in _state.WorkspaceFiles.Where(e => e.IsOpened))
                 {
-                    var path = _fileSystem.Path.Combine(srcRoot, file.Uri.LocalPath);
+                    var path = _fileSystem.Path.Combine(srcRoot, file.Uri.ToString());
                     tasks.Add(_fileSystem.File.WriteAllTextAsync(path, file.Content));
                     _state.ClearPreviousVersions(file.Uri);
                 }

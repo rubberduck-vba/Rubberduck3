@@ -20,16 +20,14 @@ namespace Rubberduck.Editor.Shell
         private readonly UIServiceHelper _service;
 
         public ShellWindowViewModel(UIServiceHelper service, 
-            IInterTabClient documentsInterTabClient, 
-            IInterTabClient toolwindowInterTabClient, 
+            IInterTabClient interTabClient, 
             IShellStatusBarViewModel statusBar,
             FileCommandHandlers fileCommandHandlers,
             ViewCommandHandlers viewCommandHandlers,
             ToolsCommandHandlers toolsCommandHandlers)
         {
             _service = service;
-            DocumentsInterTabClient = documentsInterTabClient;
-            ToolWindowInterTabClient = toolwindowInterTabClient;
+            InterTabClient = interTabClient;
 
             StatusBar = statusBar;
             Documents = [];
@@ -48,16 +46,7 @@ namespace Rubberduck.Editor.Shell
         public string Title => "Rubberduck Editor";
 
         public ObservableCollection<IDocumentTabViewModel> Documents { get; init; }
-        public void AddDocument(IDocumentTabViewModel tab)
-        {
-            Documents.Add(tab);
-        }
-
         public ObservableCollection<IToolWindowViewModel> ToolWindows { get; init; }
-        public void AddToolWindow(IToolWindowViewModel tab)
-        {
-            ToolWindows.Add(tab);
-        }
 
         public IShellStatusBarViewModel StatusBar { get; init; }
 
@@ -67,14 +56,15 @@ namespace Rubberduck.Editor.Shell
 
         public IWindowChromeViewModel Chrome => throw new NotImplementedException();
 
+        public IInterTabClient InterTabClient { get; init; }
 
-        public IInterTabClient DocumentsInterTabClient { get; init; }
-        public IInterTabClient ToolWindowInterTabClient { get; init; }
+        public ItemActionCallback ClosingTabItemHandler => OnTabClosed;
 
-        public void ClosingTabItemHandler(object sender, EventArgs e)
+        private void OnTabClosed(ItemActionCallbackArgs<TabablzControl> args)
         {
-            // var item = (ChildWindowViewModel)sender;
-            // TODO notify language server of closed document URI
+            /* TODO prompt to save changes, offer to cancel, etc.*/
+            //var vm = args.DragablzItem.DataContext as ITabViewModel;
+            //args.Cancel();
         }
     }
 }

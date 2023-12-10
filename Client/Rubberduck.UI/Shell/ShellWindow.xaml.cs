@@ -1,8 +1,11 @@
 ﻿using Dragablz;
 using Rubberduck.UI.Command.SharedHandlers;
+using Rubberduck.UI.Windows;
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Rubberduck.UI.Shell
@@ -50,6 +53,33 @@ namespace Rubberduck.UI.Shell
             Width = Math.Max(MinWidth, newWidth);
 
             e.Handled = true;
+        }
+
+        private void LeftPanelToolsSource_Filter(object sender, FilterEventArgs e)
+        {
+            e.Accepted = false;
+            if (e.Item is IToolWindowViewModel vm)
+            {
+                e.Accepted = vm.DockingLocation == DockingLocation.DockLeft;
+            }
+        }
+
+        private void RightPanelToolsSource_Filter(object sender, FilterEventArgs e)
+        {
+            e.Accepted = false;
+            if (e.Item is IToolWindowViewModel vm)
+            {
+                e.Accepted = vm.DockingLocation == DockingLocation.DockRight;
+            }
+        }
+
+        private void BottomPanelToolsSource_Filter(object sender, FilterEventArgs e)
+        {
+            e.Accepted = false;
+            if (e.Item is IToolWindowViewModel vm)
+            {
+                e.Accepted = vm.DockingLocation == DockingLocation.DockBottom;
+            }
         }
     }
 }

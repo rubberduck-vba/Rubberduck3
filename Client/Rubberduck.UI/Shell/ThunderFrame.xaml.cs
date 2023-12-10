@@ -27,11 +27,11 @@ namespace Rubberduck.UI.Shell
             if (e.ChangedButton == MouseButton.Left)
             {
                 var window = FindWindowParent(this);
-                window.DragMove();
+                window?.DragMove();
             }
         }
 
-        private Window FindWindowParent(DependencyObject obj)
+        private Window? FindWindowParent(DependencyObject obj)
         {
             if (obj is Window window)
             {
@@ -44,7 +44,7 @@ namespace Rubberduck.UI.Shell
                 return FindWindowParent(parent);
             }
 
-            throw new InvalidOperationException();
+            return null;
         }
 
         /// <summary>

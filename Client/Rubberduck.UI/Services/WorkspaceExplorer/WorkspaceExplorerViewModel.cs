@@ -8,23 +8,22 @@ using System.Linq;
 
 namespace Rubberduck.UI.Services.WorkspaceExplorer
 {
-    public class WorkspaceExplorerWindowViewModel : ViewModelBase, IWorkspaceExplorerViewModel
+    public class WorkspaceExplorerViewModel : ViewModelBase, IWorkspaceExplorerViewModel
     {
         private readonly IWorkspaceService _service;
-        private readonly ObservableCollection<WorkspaceViewModel> _workspaces = new();
 
-        public WorkspaceExplorerWindowViewModel()
+        public WorkspaceExplorerViewModel()
         {
             /* DESIGNER */
         }
 
-        public WorkspaceExplorerWindowViewModel(IWorkspaceService service)
+        public WorkspaceExplorerViewModel(IWorkspaceService service)
         {
             _service = service;
-            _workspaces = new(service.ProjectFiles.Select(workspace => WorkspaceViewModel.FromModel(workspace, _service)));
+            Workspaces = new(service.ProjectFiles.Select(workspace => WorkspaceViewModel.FromModel(workspace, _service)));
         }
 
-        public string Title => "Workspace Explorer"; // TODO localize
+        public string Title { get; set; } = "Workspace Explorer"; // TODO localize
 
         private WorkspaceTreeNodeViewModel? _selection;
         public WorkspaceTreeNodeViewModel? Selection
@@ -59,13 +58,53 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
 
         public bool HasSelectionInfo => _selectionInfo != null;
 
-        public ICollection<WorkspaceViewModel> Workspaces => _workspaces;
+        public ObservableCollection<WorkspaceViewModel> Workspaces { get; } = new();
 
         public DockingLocation DockingLocation { get; set; } = DockingLocation.DockLeft;
+        public object Header
+        {
+            get => Title;
+            set
+            {
+                if (Title != value?.ToString())
+                {
+                    Title = value?.ToString() ?? string.Empty;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private object _control;
+        public object Content
+        {
+            get => _control;
+            set
+            {
+                if (_control != value) 
+                {
+                    _control = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _isSelected;
+        public bool IsSelected 
+        {
+            get => _isSelected;
+            set
+            {
+                if (_isSelected != value)
+                {
+                    _isSelected = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public void Load(ProjectFile workspace)
         {
-            _workspaces.Add(WorkspaceViewModel.FromModel(workspace, _service));
+            Workspaces.Add(WorkspaceViewModel.FromModel(workspace, _service));
         }
     }
 }
