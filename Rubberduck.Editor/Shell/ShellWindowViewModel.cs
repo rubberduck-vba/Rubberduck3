@@ -37,6 +37,10 @@ namespace Rubberduck.Editor.Shell
             ViewCommandHandlers = viewCommandHandlers;
             ToolsCommandHandlers = toolsCommandHandlers;
 
+            LeftToolPanel = new ToolPanelViewModel(DockingLocation.DockLeft);
+            RightToolPanel = new ToolPanelViewModel(DockingLocation.DockRight);
+            BottomToolPanel = new ToolPanelViewModel(DockingLocation.DockBottom);
+
             CommandBindings = fileCommandHandlers.CreateCommandBindings()
                 .Concat(viewCommandHandlers.CreateCommandBindings())
                 .Concat(toolsCommandHandlers.CreateCommandBindings());
@@ -54,17 +58,62 @@ namespace Rubberduck.Editor.Shell
         public ViewCommandHandlers ViewCommandHandlers { get; init; }
         public ToolsCommandHandlers ToolsCommandHandlers { get; set; }
 
-        public IWindowChromeViewModel Chrome => throw new NotImplementedException();
+        public IWindowChromeViewModel Chrome { get; }
 
         public IInterTabClient InterTabClient { get; init; }
 
         public ItemActionCallback ClosingTabItemHandler => OnTabClosed;
+
+        public IToolPanelViewModel LeftToolPanel { get; }
+
+        public IToolPanelViewModel RightToolPanel { get; }
+
+        public IToolPanelViewModel BottomToolPanel { get; }
 
         private void OnTabClosed(ItemActionCallbackArgs<TabablzControl> args)
         {
             /* TODO prompt to save changes, offer to cancel, etc.*/
             //var vm = args.DragablzItem.DataContext as ITabViewModel;
             //args.Cancel();
+        }
+    }
+
+    public class ToolPanelViewModel : ViewModelBase, IToolPanelViewModel
+    {
+        public ToolPanelViewModel(DockingLocation location)
+        {
+            PanelLocation = location;
+        }
+
+        public DockingLocation PanelLocation { get; init; }
+        public bool IsDocked => PanelLocation != DockingLocation.None;
+
+        private bool _isExpanded;
+        public bool IsExpanded
+        {
+            get => _isExpanded;
+            set
+            {
+                if (_isExpanded != value)
+                {
+                    _isExpanded = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _isPinned;
+        public bool IsPinned
+        {
+            get => _isPinned;
+            set
+            {
+                if (_isPinned != value)
+                {
+                    _isPinned = value;
+                    OnPropertyChanged();
+                }
+            }
         }
     }
 }

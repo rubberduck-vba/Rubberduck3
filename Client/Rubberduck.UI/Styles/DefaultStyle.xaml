@@ -271,7 +271,7 @@
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding ShowInTaskbar, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
-                    <Condition Binding="{Binding ExtendWindowChrome}" Value="True" />
+                    <Condition Binding="{Binding Chrome.ExtendWindowChrome}" Value="True" />
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
                     <Setter Property="Template" Value="{DynamicResource WindowTemplate}" />

@@ -49,7 +49,8 @@ namespace Rubberduck.UI.Command
                 view.DataContext = vm;
                 vm.Content = view;
 
-                _shell.View.LeftPaneToolTabs.AddToSource(vm);
+                _shell.View.LeftPaneToolTabs.AddToSource(view);
+                shell.ToolWindows.Add(vm);
             }
 
             await Task.CompletedTask;

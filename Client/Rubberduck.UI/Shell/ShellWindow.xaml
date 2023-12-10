@@ -9,7 +9,7 @@
         xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
         xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz" 
         d:DataContext="{d:DesignInstance Type=local:IShellWindowViewModel}"
-        mc:Ignorable="d"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
         ContentRendered="OnContentRendered" 
         Style="{DynamicResource ThemedWindowStyle}"
         Title="Rubberduck Editor"
@@ -48,99 +48,112 @@
 
         </ResourceDictionary>
     </Window.Resources>
-    <Grid Background="{DynamicResource ThemeBackgroundColorBrush}"
-          ClipToBounds="True">
+    <Grid Background="{DynamicResource ThemeBackgroundColorBrush}" ClipToBounds="True">
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" MinHeight="200" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" /> <!-- [0]: menu bar -->
+            <RowDefinition Height="*" MinHeight="200" /> <!-- [1]: content -->
+            <RowDefinition Height="Auto" /> <!-- [2]: bottom tooltabs -->
+            <RowDefinition Height="Auto" /> <!-- [3]: status bar -->
         </Grid.RowDefinitions>
 
-        <local:DuckyBackgroundControl Grid.RowSpan="3" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" /> <!-- [0]: left tooltabs -->
+            <ColumnDefinition Width="*" /> <!-- [1]: document tabs -->
+            <ColumnDefinition Width="Auto" /> <!-- [2]: right tooltabs -->
+        </Grid.ColumnDefinitions>
 
-        <local:MenuBarControl x:Name="MenuBar" Grid.Row="0" />
+        <local:DuckyBackgroundControl Grid.RowSpan="4" Grid.ColumnSpan="3"/>
 
-        <DockPanel Grid.Row="1">
-            <dockablz:Layout Name="LeftPane" Partition="toolwindows" DockPanel.Dock="Left">
-                <dockablz:Layout.BranchTemplate>
-                    <DataTemplate>
-                        <dragablz:TabablzControl InterTabController="{DynamicResource InterTabController}"
-                                                 ItemsSource="{Binding View, Source={StaticResource LeftPanelToolsSource}}"
-                                                 ContentTemplate="{StaticResource TabItemTemplate}"
-                                                 HeaderItemTemplate="{StaticResource TabHeaderTemplate}"
-                                                 TabStripPlacement="Bottom" 
-                                                 Background="{DynamicResource ThemeBackgroundColorBrush}" />
-                    </DataTemplate>
-                </dockablz:Layout.BranchTemplate>
-                <dragablz:TabablzControl x:Name="LeftPaneToolTabs" TabStripPlacement="Bottom"
+        <local:MenuBarControl x:Name="MenuBar" Grid.Row="0" Grid.ColumnSpan="3" />
+
+        <Expander x:Name="LeftPaneExpander" Grid.Row="1" Grid.Column="0" ExpandDirection="Right">
+            <Expander.Resources>
+                <DataTemplate x:Key="LeftPanelBranchTemplate">
+                    <dragablz:TabablzControl InterTabController="{DynamicResource InterTabController}"
+                                             ItemsSource="{Binding View, Source={StaticResource LeftPanelToolsSource}}"
+                                             HeaderMemberPath="Title"
+                                             TabStripPlacement="Bottom" 
+                                             Background="{DynamicResource ThemeBackgroundColorBrush}">
+                    </dragablz:TabablzControl>
+                </DataTemplate>
+            </Expander.Resources>
+            <dockablz:Layout Grid.Row="1" Name="LeftPane" Partition="toolwindows" BranchTemplate="{DynamicResource LeftPanelBranchTemplate}">
+                <dragablz:TabablzControl x:Name="LeftPaneToolTabs" 
+                                         TabStripPlacement="Bottom"
                                          ItemsSource="{Binding View, Source={StaticResource LeftPanelToolsSource}}"
-                                         ContentTemplate="{StaticResource TabItemTemplate}"
-                                         HeaderItemTemplate="{StaticResource TabHeaderTemplate}"
+                                         HeaderMemberPath="Title"
                                          InterTabController="{DynamicResource InterTabController}"
-                                         Background="{DynamicResource ThemeBackgroundColorBrush}" />
+                                         Background="{DynamicResource ThemeBackgroundColorBrush}">
+                </dragablz:TabablzControl>
             </dockablz:Layout>
-            <dockablz:Layout Name="RightPane" Partition="toolwindows" DockPanel.Dock="Right">
+        </Expander>
+
+        <Expander x:Name="RightPaneExpander" Grid.Row="1" Grid.Column="2" ExpandDirection="Left">
+            <dockablz:Layout Name="RightPane" Partition="toolwindows">
                 <dockablz:Layout.BranchTemplate>
                     <DataTemplate>
                         <dragablz:TabablzControl InterTabController="{DynamicResource InterTabController}"
-                                                 ItemsSource="{Binding View, Source={StaticResource RightPanelToolsSource}}"
-                                                 ContentTemplate="{StaticResource TabItemTemplate}"
-                                                 HeaderItemTemplate="{StaticResource TabHeaderTemplate}"
-                                                 TabStripPlacement="Bottom" Background="{DynamicResource ThemeBackgroundColorBrush}" />
+                                                ItemsSource="{Binding View, Source={StaticResource RightPanelToolsSource}}"
+                                                ContentTemplate="{StaticResource TabItemTemplate}"
+                                                HeaderItemTemplate="{StaticResource TabHeaderTemplate}"
+                                                TabStripPlacement="Bottom" Background="{DynamicResource ThemeBackgroundColorBrush}" />
                     </DataTemplate>
                 </dockablz:Layout.BranchTemplate>
                 <dragablz:TabablzControl x:Name="RightPaneToolTabs" TabStripPlacement="Bottom"
-                                         ItemsSource="{Binding View, Source={StaticResource RightPanelToolsSource}}"
-                                         ContentTemplate="{StaticResource TabItemTemplate}"
-                                         HeaderItemTemplate="{StaticResource TabHeaderTemplate}"
-                                         InterTabController="{DynamicResource InterTabController}"
-                                         Background="{DynamicResource ThemeBackgroundColorBrush}" />
+                                        ItemsSource="{Binding View, Source={StaticResource RightPanelToolsSource}}"
+                                        ContentTemplate="{StaticResource TabItemTemplate}"
+                                        HeaderItemTemplate="{StaticResource TabHeaderTemplate}"
+                                        InterTabController="{DynamicResource InterTabController}"
+                                        Background="{DynamicResource ThemeBackgroundColorBrush}" />
             </dockablz:Layout>
-            <dockablz:Layout Name="BottomPane" Partition="toolwindows" DockPanel.Dock="Bottom">
+        </Expander>
+        <Expander x:Name="BottomPaneExpander" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" ExpandDirection="Up">
+            <dockablz:Layout Name="BottomPane" Partition="toolwindows">
                 <dockablz:Layout.BranchTemplate>
                     <DataTemplate>
-                        <dragablz:TabablzControl InterTabController="{DynamicResource InterTabController}"
-                                                 ItemsSource="{Binding View, Source={StaticResource BottomPanelToolsSource}}"
-                                                 ContentTemplate="{StaticResource TabItemTemplate}"
-                                                 HeaderItemTemplate="{StaticResource TabHeaderTemplate}"
-                                                 TabStripPlacement="Bottom" Background="{DynamicResource ThemeBackgroundColorBrush}" />
+                        <dragablz:TabablzControl InterTabController="{DynamicResource InterTabController}" MaxHeight="300"
+                                                ItemsSource="{Binding View, Source={StaticResource BottomPanelToolsSource}}"
+                                                ContentTemplate="{StaticResource TabItemTemplate}"
+                                                HeaderItemTemplate="{StaticResource TabHeaderTemplate}"
+                                                TabStripPlacement="Bottom" Background="{DynamicResource ThemeBackgroundColorBrush}" />
                     </DataTemplate>
                 </dockablz:Layout.BranchTemplate>
-                <dragablz:TabablzControl x:Name="BottomPaneToolTabs" TabStripPlacement="Bottom" 
-                                         ItemsSource="{Binding View, Source={StaticResource BottomPanelToolsSource}}"
-                                         ContentTemplate="{StaticResource TabItemTemplate}"
-                                         HeaderItemTemplate="{StaticResource TabHeaderTemplate}"
-                                         InterTabController="{DynamicResource InterTabController}"
-                                         Background="{DynamicResource ThemeBackgroundColorBrush}" />
+                <dragablz:TabablzControl x:Name="BottomPaneToolTabs" TabStripPlacement="Bottom" MaxHeight="300"
+                                        ItemsSource="{Binding View, Source={StaticResource BottomPanelToolsSource}}"
+                                        ContentTemplate="{StaticResource TabItemTemplate}"
+                                        HeaderItemTemplate="{StaticResource TabHeaderTemplate}"
+                                        InterTabController="{DynamicResource InterTabController}"
+                                        Background="{DynamicResource ThemeBackgroundColorBrush}" />
             </dockablz:Layout>
+        </Expander>
 
-            <dockablz:Layout Name="DocumentPane" Partition="documents" DockPanel.Dock="Top">
-                <dockablz:Layout.BranchTemplate>
-                    <DataTemplate>
-                        <dragablz:TabablzControl InterTabController="{DynamicResource InterTabController}"
-                                                 ItemsSource="{Binding View, Source={StaticResource DocumentsSource}}"
-                                                 ContentTemplate="{StaticResource TabItemTemplate}"
-                                                 HeaderItemTemplate="{StaticResource TabHeaderTemplate}"
-                                                 TabStripPlacement="Top" Background="{DynamicResource ThemeBackgroundColorBrush}" />
-                    </DataTemplate>
-                </dockablz:Layout.BranchTemplate>
-                <dragablz:TabablzControl x:Name="DocumentPaneTabs" TabStripPlacement="Top"
-                                         ItemsSource="{Binding View, Source={StaticResource DocumentsSource}}"
-                                         ContentTemplate="{StaticResource TabItemTemplate}"
-                                         HeaderItemTemplate="{StaticResource TabHeaderTemplate}"
-                                         InterTabController="{DynamicResource InterTabController}"
-                                         Background="{DynamicResource ThemeBackgroundColorBrush}" />
-            </dockablz:Layout>
-        </DockPanel>
+
+        <dockablz:Layout Name="DocumentPane" Partition="documents" Grid.Row="1" Grid.Column="1">
+            <dockablz:Layout.BranchTemplate>
+                <DataTemplate>
+                    <dragablz:TabablzControl InterTabController="{DynamicResource InterTabController}" 
+                                                ItemsSource="{Binding View, Source={StaticResource DocumentsSource}}"
+                                                ContentTemplate="{StaticResource TabItemTemplate}"
+                                                HeaderItemTemplate="{StaticResource TabHeaderTemplate}"
+                                                TabStripPlacement="Top" Background="{DynamicResource ThemeBackgroundColorBrush}" />
+                </DataTemplate>
+            </dockablz:Layout.BranchTemplate>
+            <dragablz:TabablzControl x:Name="DocumentPaneTabs" TabStripPlacement="Top"
+                                        ItemsSource="{Binding View, Source={StaticResource DocumentsSource}}"
+                                        ContentTemplate="{StaticResource TabItemTemplate}"
+                                        HeaderItemTemplate="{StaticResource TabHeaderTemplate}"
+                                        InterTabController="{DynamicResource InterTabController}"
+                                        Background="{DynamicResource ThemeBackgroundColorBrush}" />
+        </dockablz:Layout>
         
-        <statusbar:StatusBarControl x:Name="StatusBar" Grid.Row="2" />
+        <statusbar:StatusBarControl x:Name="StatusBar" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" />
 
-        <Thumb Grid.Row="2" HorizontalAlignment="Right" IsEnabled="True" IsHitTestVisible="True" WindowChrome.IsHitTestVisibleInChrome="True"
+        <Thumb Grid.Row="3" Grid.Column="3" HorizontalAlignment="Right" IsEnabled="True" IsHitTestVisible="True" WindowChrome.IsHitTestVisibleInChrome="True"
                DragDelta="OnResizeGripDragDelta" Cursor="SizeNWSE">
             <Thumb.Template>
                 <ControlTemplate>
-                    <ResizeGrip Margin="0">
-                    </ResizeGrip>
+                    <ResizeGrip Margin="0" />
                 </ControlTemplate>
             </Thumb.Template>
         </Thumb>

@@ -14,8 +14,31 @@ namespace Rubberduck.UI.Shell
         ObservableCollection<IDocumentTabViewModel> Documents { get; }
         ObservableCollection<IToolWindowViewModel> ToolWindows { get; }
 
+        IToolPanelViewModel LeftToolPanel { get; }
+        IToolPanelViewModel RightToolPanel { get; }
+        IToolPanelViewModel BottomToolPanel { get; }
+
         IWindowChromeViewModel Chrome { get; }
 
         IInterTabClient InterTabClient { get; }
+    }
+
+    public interface IToolPanelViewModel
+    {
+        /// <summary>
+        /// The location of the tool panel.
+        /// </summary>
+        DockingLocation PanelLocation { get; }
+
+        /// <summary>
+        /// Whether the tool panel is currently expanded.
+        /// </summary>
+        bool IsExpanded { get; set; }
+
+        /// <summary>
+        /// Whether the tool panel remains expanded on mouse leave.
+        /// </summary>
+        bool IsPinned { get; set; }
+        bool IsDocked { get; }
     }
 }

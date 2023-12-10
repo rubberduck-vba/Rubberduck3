@@ -4,7 +4,9 @@ using Rubberduck.UI.Windows;
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -22,6 +24,56 @@ namespace Rubberduck.UI.Shell
 
             var ownerType = typeof(ShellWindow);
             DataContextChanged += OnDataContextChanged;
+
+            LeftPaneExpander.MouseEnter += ToolPaneExpanderMouseEnter;
+            RightPaneExpander.MouseEnter += ToolPaneExpanderMouseEnter;
+            BottomPaneExpander.MouseEnter += ToolPaneExpanderMouseEnter;
+
+            LeftPaneExpander.MouseLeave += ToolPaneExpanderMouseLeave;
+            RightPaneExpander.MouseLeave += ToolPaneExpanderMouseLeave;
+            BottomPaneExpander.MouseLeave += ToolPaneExpanderMouseLeave;
+        }
+
+        private IToolPanelViewModel GetToolPanelModel(Expander expander)
+        {
+            var vm = (IShellWindowViewModel)DataContext;
+
+            if (expander == LeftPaneExpander)
+            {
+                return vm.LeftToolPanel;
+            }
+            else if (expander == RightPaneExpander)
+            {
+                return vm.RightToolPanel;
+            }
+            else if (expander == BottomPaneExpander)
+            {
+                return vm.BottomToolPanel;
+            }
+
+            throw new NotSupportedException();
+        }
+
+        private void ToolPaneExpanderMouseLeave(object sender, MouseEventArgs e)
+        {
+            if (sender is Expander expander)
+            {
+                var vm = GetToolPanelModel(expander);
+                expander.IsExpanded = vm.IsPinned;
+            }
+        }
+
+        private void ToolPaneExpanderMouseEnter(object sender, MouseEventArgs e)
+        {
+            if (sender is Expander expander)
+            {
+                var hasTools = false;
+                var vm = GetToolPanelModel(expander);
+                var shell = (IShellWindowViewModel)DataContext;
+                hasTools = shell.ToolWindows.Any(e => e.DockingLocation == vm.PanelLocation);
+
+                expander.IsExpanded = hasTools || e.LeftButton == MouseButtonState.Pressed;
+            }
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)

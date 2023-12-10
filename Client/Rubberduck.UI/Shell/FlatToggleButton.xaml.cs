@@ -52,7 +52,7 @@ namespace Rubberduck.UI.Shell
             DependencyProperty.Register(nameof(Icon), typeof(ImageSource), typeof(FlatToggleButton));
 
         public ImageSource? CheckedIcon 
-        { 
+        {
             get => (ImageSource?)GetValue(CheckedIconProperty);
             set => SetProperty(CheckedIconProperty, value);
         }

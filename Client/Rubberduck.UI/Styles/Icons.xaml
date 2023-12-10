@@ -12,6 +12,7 @@
     <BitmapImage x:Key="WindowMinimizeIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/window-minimize-regular.png" />
 
     <BitmapImage x:Key="GearIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/gear-solid.png"/>
+    <BitmapImage x:Key="PinIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/thumbtack-solid.png"/>
 
     <BitmapImage x:Key="LockedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/lock-solid.png" />
     <BitmapImage x:Key="UnlockedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/lock-open-solid.png" />

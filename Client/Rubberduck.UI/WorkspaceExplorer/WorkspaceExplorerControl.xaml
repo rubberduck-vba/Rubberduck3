@@ -11,7 +11,7 @@
         d:DataContext="{d:DesignInstance Type=local:IWorkspaceExplorerViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d" 
         x:Name="WorkspaceExplorerRoot"
-        MinWidth="255" Width="400" Height="500"
+        MinWidth="255"
         d:DesignHeight="450" d:DesignWidth="400">
     <UserControl.Resources>
         <ResourceDictionary>
