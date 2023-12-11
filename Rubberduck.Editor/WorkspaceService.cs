@@ -252,7 +252,7 @@ namespace Rubberduck.Editor
             var sourceRoot = e.FullPath[..(e.FullPath.IndexOf(ProjectFile.SourceRoot) + ProjectFile.SourceRoot.Length)];
 
             var relativePath = _fileSystem.Path.GetRelativePath(sourceRoot, e.FullPath);
-            var uri = new Uri(relativePath);
+            var uri = new Uri(relativePath, UriKind.Relative);
 
             _state.UnloadWorkspaceFile(uri);
 

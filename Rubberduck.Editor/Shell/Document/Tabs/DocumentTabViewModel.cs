@@ -11,21 +11,127 @@ namespace Rubberduck.Editor.Shell.Document.Tabs
     {
         public DocumentTabViewModel(Uri documentUri, string language, string title, object content, bool isReadOnly)
         {
-            DocumentUri = documentUri;
-            Language = language;
-            Title = title;
-            Content = content;
-            IsReadOnly = isReadOnly;
+            _uri = documentUri;
+            _language = language;
+            _title = title;
+            _header = title;
+            _content = content;
+            _isReadOnly = isReadOnly;
         }
 
-        public Uri DocumentUri { get; set; }
-        public string Language { get; set; }
-
-        public string Title { get; set; }
-        public object Content { get; set; }
-        public bool IsReadOnly { get; set; }
         public abstract SupportedDocumentType DocumentType { get; }
-        public object Header { get; set; }
-        public bool IsSelected { get; set; }
+
+        private Uri _uri;
+        public Uri DocumentUri
+        {
+            get => _uri;
+            set
+            {
+                if (_uri != value)
+                {
+                    _uri = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _language;
+        public string Language
+        {
+            get => _language;
+            set
+            {
+                if (_language != value)
+                {
+                    _language = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _title;
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                if (_title != value)
+                {
+                    _title = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private object _content;
+        public object Content
+        {
+            get => _content;
+            set
+            {
+                if (_content != value)
+                {
+                    _content = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _isReadOnly;
+        public bool IsReadOnly
+        {
+            get => _isReadOnly;
+            set
+            {
+                if (_isReadOnly != value)
+                {
+                    _isReadOnly = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+
+        private object _header;
+        public object Header
+        {
+            get => _header;
+            set
+            {
+                if (_header != value)
+                {
+                    _header = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                if (_isSelected != value)
+                {
+                    _isSelected = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _isPinned;
+        public bool IsPinned
+        {
+            get => _isPinned;
+            set
+            {
+                if (_isPinned != value)
+                {
+                    _isPinned = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
     }
 }

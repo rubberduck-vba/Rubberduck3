@@ -1,4 +1,5 @@
 ﻿using Dragablz;
+using Rubberduck.SettingsProvider.Model.Tools;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Windows;
 using System;
@@ -7,8 +8,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Rubberduck.UI.Shell
 {
@@ -27,11 +30,11 @@ namespace Rubberduck.UI.Shell
 
             LeftPaneExpander.MouseEnter += ToolPaneExpanderMouseEnter;
             RightPaneExpander.MouseEnter += ToolPaneExpanderMouseEnter;
-            BottomPaneExpander.MouseEnter += ToolPaneExpanderMouseEnter;
+            //BottomPaneExpander.MouseEnter += ToolPaneExpanderMouseEnter;
 
             LeftPaneExpander.MouseLeave += ToolPaneExpanderMouseLeave;
             RightPaneExpander.MouseLeave += ToolPaneExpanderMouseLeave;
-            BottomPaneExpander.MouseLeave += ToolPaneExpanderMouseLeave;
+            //BottomPaneExpander.MouseLeave += ToolPaneExpanderMouseLeave;
         }
 
         private IToolPanelViewModel GetToolPanelModel(Expander expander)
@@ -46,10 +49,10 @@ namespace Rubberduck.UI.Shell
             {
                 return vm.RightToolPanel;
             }
-            else if (expander == BottomPaneExpander)
-            {
-                return vm.BottomToolPanel;
-            }
+            //else if (expander == BottomPaneExpander)
+            //{
+            //    return vm.BottomToolPanel;
+            //}
 
             throw new NotSupportedException();
         }
@@ -58,8 +61,11 @@ namespace Rubberduck.UI.Shell
         {
             if (sender is Expander expander)
             {
-                var vm = GetToolPanelModel(expander);
-                expander.IsExpanded = vm.IsPinned;
+                var vm = (IShellWindowViewModel)DataContext;
+                var toolPanel = GetToolPanelModel(expander);
+                var toolwindows = vm.ToolWindows.Where(e => e.DockingLocation == toolPanel.PanelLocation);
+                toolPanel.IsPinned = toolwindows.Any(e => e.IsPinned);
+                expander.IsExpanded = toolPanel.IsPinned;
             }
         }
 
@@ -96,7 +102,7 @@ namespace Rubberduck.UI.Shell
 
         private SystemCommandHandlers SystemCommandHandlers { get; }
 
-        private void OnResizeGripDragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
+        private void OnResizeGripDragDelta(object sender, DragDeltaEventArgs e)
         {
             var newHeight = Height + e.VerticalChange;
             var newWidth = Width + e.HorizontalChange;
@@ -132,6 +138,39 @@ namespace Rubberduck.UI.Shell
             {
                 e.Accepted = vm.DockingLocation == DockingLocation.DockBottom;
             }
+        }
+
+        private void OnResizeLeftPanelDragDelta(object sender, DragDeltaEventArgs e)
+        {
+            var thumb = (Thumb)sender;
+            var panel = (DockPanel)thumb.Parent;
+
+            var newWidth = Math.Max(100, panel.ActualWidth + e.HorizontalChange);
+            panel.Width = Math.Min(ActualWidth - 32, newWidth);
+
+            e.Handled = true;
+        }
+
+        private void OnResizeRightPanelDragDelta(object sender, DragDeltaEventArgs e)
+        {
+            var thumb = (Thumb)sender;
+            var panel = (DockPanel)thumb.Parent;
+
+            var newWidth = Math.Max(100, panel.ActualWidth - e.HorizontalChange);
+            panel.Width = Math.Min(ActualWidth - 32, newWidth);
+
+            e.Handled = true;
+        }
+
+        private void OnResizeBottomPanelDragDelta(object sender, DragDeltaEventArgs e)
+        {
+            var thumb = (Thumb)sender;
+            var panel = (DockPanel)thumb.Parent;
+
+            var newHeight = Math.Max(100, panel.ActualHeight - e.VerticalChange);
+            panel.Height = Math.Min(ActualHeight - 32, newHeight);
+
+            e.Handled = true;
         }
     }
 }

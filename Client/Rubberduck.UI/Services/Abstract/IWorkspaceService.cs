@@ -23,6 +23,7 @@ namespace Rubberduck.UI.Services.Abstract
         Task<bool> SaveWorkspaceFileAsync(Uri uri);
         Task<bool> SaveWorkspaceFileAsAsync(Uri uri, string path);
         Task<bool> SaveAllAsync();
+
         void CloseFile(Uri uri);
         void CloseAllFiles();
         void CloseWorkspace();

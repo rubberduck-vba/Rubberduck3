@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Rubberduck.UI.Shell"
              xmlns:drgz="clr-namespace:Dragablz;assembly=Dragablz" 
              xmlns:windows="clr-namespace:Rubberduck.UI.Windows" 
-             d:DataContext="{d:DesignInstance Type=windows:IWindowViewModel}"
+             d:DataContext="{d:DesignInstance Type=windows:WindowViewModel}"
              mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -37,14 +37,21 @@
                                 <local:DuckyBackgroundControl Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
 
                                 <DockPanel Grid.Row="0" VerticalAlignment="Top" Margin="5,5,0,0">
-                                    <local:FlatButton DockPanel.Dock="Right" 
+                                    <local:FlatButton DockPanel.Dock="Right"
                                                       HorizontalAlignment="Right" VerticalAlignment="Top"
-                                                      Margin="10,0"
                                                       ToolTip="Settings"
                                                       Visibility="{Binding ShowGearButton, Converter={StaticResource BoolToVisibilityConverter}}"
                                                       Command="{Binding ShowSettingsCommand}"
                                                       CommandParameter="{Binding ShowSettingsCommandParameter}"
                                                       Icon="{DynamicResource GearIcon}" />
+
+                                    <local:FlatToggleButton DockPanel.Dock="Right"
+                                                            HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                            ToolTip="Pin/unpin this tab"
+                                                            Visibility="{Binding ShowPinButton, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                            IsChecked="{Binding IsPinned, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                            Icon="{DynamicResource PinIcon}" />
+
                                     <Label DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left"
                                        Content="{Binding Title, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
                                        Foreground="{DynamicResource ThemeTextColorBrush}"

@@ -1,10 +1,11 @@
 ﻿using Rubberduck.InternalApi.Model.Workspace;
+using Rubberduck.SettingsProvider.Model.Tools;
+using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services.Abstract;
-using Rubberduck.UI.Windows;
 using Rubberduck.UI.WorkspaceExplorer;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 
 namespace Rubberduck.UI.Services.WorkspaceExplorer
 {
@@ -17,13 +18,20 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
             /* DESIGNER */
         }
 
-        public WorkspaceExplorerViewModel(IWorkspaceService service)
+        public WorkspaceExplorerViewModel(IWorkspaceService service, ShowRubberduckSettingsCommand showSettingsCommand)
         {
             _service = service;
+            ShowSettingsCommand = showSettingsCommand;
             Workspaces = new(service.ProjectFiles.Select(workspace => WorkspaceViewModel.FromModel(workspace, _service)));
         }
 
         public string Title { get; set; } = "Workspace Explorer"; // TODO localize
+
+        public ICommand ShowSettingsCommand { get; }
+        public bool ShowPinButton { get; } = true;
+        public bool ShowGearButton { get; } = true;
+
+        public string SettingKey { get; } = nameof(WorkspaceExplorerSettings);
 
         private WorkspaceTreeNodeViewModel? _selection;
         public WorkspaceTreeNodeViewModel? Selection
@@ -97,6 +105,20 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
                 if (_isSelected != value)
                 {
                     _isSelected = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _isPinned;
+        public bool IsPinned
+        {
+            get => _isPinned;
+            set
+            {
+                if (_isPinned != value)
+                {
+                    _isPinned = value;
                     OnPropertyChanged();
                 }
             }

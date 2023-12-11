@@ -6,6 +6,7 @@ using Rubberduck.SettingsProvider.Model.LanguageServer;
 using Rubberduck.SettingsProvider.Model.Logging;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
 using Rubberduck.SettingsProvider.Model.TelemetryServer;
+using Rubberduck.SettingsProvider.Model.Tools;
 using Rubberduck.SettingsProvider.Model.UpdateServer;
 using System.Text.Json.Serialization;
 
@@ -40,6 +41,11 @@ namespace Rubberduck.SettingsProvider.Model
 
     [JsonDerivedType(typeof(EditorSettings), nameof(EditorSettings))] // ~ Editor
     [JsonDerivedType(typeof(ExtendWindowChromeSetting), nameof(ExtendWindowChromeSetting))]
+    [JsonDerivedType(typeof(ToolsSettings), nameof(ToolsSettings))] // ~ Editor/Tool[windows]s
+    [JsonDerivedType(typeof(AutoHideToolWindowSetting), nameof(AutoHideToolWindowSetting))]
+    [JsonDerivedType(typeof(DefaultToolWindowLocationSetting), nameof(DefaultToolWindowLocationSetting))]
+    [JsonDerivedType(typeof(ShowToolWindowOnStartupSetting), nameof(ShowToolWindowOnStartupSetting))]
+    [JsonDerivedType(typeof(WorkspaceExplorerSettings), nameof(WorkspaceExplorerSettings))]
 
     [JsonDerivedType(typeof(LanguageServerSettings), nameof(LanguageServerSettings))] // ~ Language server
 

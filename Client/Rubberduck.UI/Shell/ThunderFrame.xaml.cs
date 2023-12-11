@@ -58,6 +58,14 @@ namespace Rubberduck.UI.Shell
         public static readonly DependencyProperty TitleProperty =
             DependencyProperty.Register(nameof(Title), typeof(string), typeof(ThunderFrame));
 
+        public bool ShowPinButton
+        {
+            get => (bool)GetValue(ShowPinButtonProperty);
+            set => SetValue(ShowPinButtonProperty, value);
+        }
+        public static readonly DependencyProperty ShowPinButtonProperty =
+            DependencyProperty.Register(nameof(ShowPinButton), typeof(bool), typeof(ThunderFrame));
+
         public bool ShowGearButton => ShowSettingsCommand is not null;
         public ICommand? ShowSettingsCommand
         { 

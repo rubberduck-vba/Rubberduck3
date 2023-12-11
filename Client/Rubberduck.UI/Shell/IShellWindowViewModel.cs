@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using Dragablz;
+using Rubberduck.SettingsProvider.Model.Tools;
 using Rubberduck.UI.Chrome;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;

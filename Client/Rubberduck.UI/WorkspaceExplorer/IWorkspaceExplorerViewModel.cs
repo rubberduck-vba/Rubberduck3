@@ -1,6 +1,7 @@
 ﻿using Rubberduck.UI.Services.WorkspaceExplorer;
 using Rubberduck.UI.Windows;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace Rubberduck.UI.WorkspaceExplorer
 {

@@ -22,5 +22,6 @@ namespace Rubberduck.UI.Windows
         object Header { get; set; }
         object Content { get; set; }
         bool IsSelected { get; set; }
+        bool IsPinned { get; set; }
     }
 }

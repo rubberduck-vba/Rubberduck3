@@ -89,7 +89,10 @@
                                                  WorkspaceFileTemplate="{StaticResource WorkspaceFileInfoTemplate}"/>
         </ResourceDictionary>
     </UserControl.Resources>
-    <shell:ThunderFrame ShowAcceptButton="False" ShowCancelButton="False" ShowTitle="True" Title="{Binding Title}">
+    <shell:ThunderFrame ShowAcceptButton="False" ShowCancelButton="False" 
+                        ShowPinButton="True"
+                        ShowSettingsCommand="{Binding ShowSettingsCommand}" ShowSettingsCommandParameter="{Binding SettingKey}"
+                        ShowTitle="True" Title="{Binding Title}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />

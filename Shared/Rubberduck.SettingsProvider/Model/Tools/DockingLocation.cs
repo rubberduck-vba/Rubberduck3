@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.UI.Windows
+﻿namespace Rubberduck.SettingsProvider.Model.Tools
 {
     public enum DockingLocation
     {

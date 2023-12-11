@@ -1,7 +1,13 @@
-﻿namespace Rubberduck.UI.Windows
+﻿using Rubberduck.SettingsProvider.Model.Tools;
+using System.Windows.Input;
+
+namespace Rubberduck.UI.Windows
 {
     public interface IToolWindowViewModel : ITabViewModel
     {
         DockingLocation DockingLocation { get; set; }
+
+        ICommand ShowSettingsCommand { get; }
+        string SettingKey { get; }
     }
 }
