@@ -23,12 +23,12 @@
                 <Canvas Style="{DynamicResource FlatButtonCanvasStyle}">
                     <Image x:Name="CanvasIcon"
                            Style="{DynamicResource FlatToggleButtonImageStyle}"
-                           Height="16" Width="16" Stretch="UniformToFill"
-                           Canvas.Left="8" Canvas.Top="4" HorizontalAlignment="Left" VerticalAlignment="Center">
+                           Height="20" Width="24" Stretch="Uniform"
+                           Canvas.Left="0" Canvas.Top="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                     </Image>
                     <Rectangle Fill="{TemplateBinding Foreground}"
-                               Height="16" Width="16" Stretch="UniformToFill"
-                               Canvas.Left="8" Canvas.Top="4" HorizontalAlignment="Left" VerticalAlignment="Center">
+                               Height="20" Width="24" Stretch="Uniform"
+                               Canvas.Left="0" Canvas.Top="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Rectangle.Resources>
                             <Style TargetType="Rectangle">
                                 <Style.Triggers>
@@ -46,7 +46,7 @@
                                 <Style.Setters>
                                     <Setter Property="OpacityMask">
                                         <Setter.Value>
-                                            <ImageBrush Stretch="UniformToFill" ImageSource="{Binding Source, ElementName=CanvasIcon}" />
+                                            <ImageBrush Stretch="Uniform" ImageSource="{Binding Source, ElementName=CanvasIcon}" />
                                         </Setter.Value>
                                     </Setter>
                                 </Style.Setters>
