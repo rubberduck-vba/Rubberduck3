@@ -1,5 +1,8 @@
 ﻿using Dragablz;
+using Dragablz.Dockablz;
 using Rubberduck.UI.Shell;
+using Rubberduck.UI.Windows;
+using System.Linq;
 using System.Windows;
 
 namespace Rubberduck.Editor.Shell
@@ -13,7 +16,23 @@ namespace Rubberduck.Editor.Shell
             return new NewTabHost<Window>(view, view.Tabs);
         }
 
-        public virtual TabEmptiedResponse TabEmptiedHandler(TabablzControl tabControl, Window window) 
-            => TabEmptiedResponse.CloseWindowOrLayoutBranch;
+        public virtual TabEmptiedResponse TabEmptiedHandler(TabablzControl tabControl, Window window)
+        {
+            if (window is ShellWindow shell)
+            {
+                var vm = (IShellWindowViewModel)shell.DataContext;
+                if (tabControl.Name == "LeftPaneToolTabs")
+                {
+                    // FIXME this should not be necessary, something is off with the bindings.
+                    foreach (var toolwindow in vm.ToolWindows.Where(e => e.DockingLocation == SettingsProvider.Model.Tools.DockingLocation.DockLeft).ToList())
+                    {
+                        vm.ToolWindows.Remove(toolwindow);
+                    }
+                }
+                shell.LeftToolPanel.Width = double.NaN;
+                return TabEmptiedResponse.DoNothing; // do not close the shell window from an intertab client!
+            }
+            return window is ShellWindow ? TabEmptiedResponse.DoNothing : TabEmptiedResponse.CloseWindowOrLayoutBranch;
+        }
     }
 }

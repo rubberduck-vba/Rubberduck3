@@ -20,6 +20,9 @@ namespace Rubberduck.UI.Shell
     /// </summary>
     public partial class ShellWindow : Window
     {
+        public Expander LeftToolPanel => LeftPaneExpander;
+        public Expander RightToolPanel => RightPaneExpander;
+
         public ShellWindow()
         {
             InitializeComponent();
@@ -78,7 +81,7 @@ namespace Rubberduck.UI.Shell
                 var shell = (IShellWindowViewModel)DataContext;
                 hasTools = shell.ToolWindows.Any(e => e.DockingLocation == vm.PanelLocation);
 
-                expander.IsExpanded = hasTools || e.LeftButton == MouseButtonState.Pressed;
+                expander.IsExpanded = hasTools || e.LeftButton == MouseButtonState.Pressed; // FIXME not just pressed, but dragging something
             }
         }
 

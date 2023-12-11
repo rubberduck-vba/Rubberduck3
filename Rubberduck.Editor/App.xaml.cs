@@ -13,6 +13,7 @@ using Rubberduck.Editor.RPC.EditorServer.Handlers.Lifecycle;
 using Rubberduck.Editor.RPC.EditorServer.Handlers.Workspace;
 using Rubberduck.Editor.RPC.LanguageServerClient.Handlers;
 using Rubberduck.Editor.Shell;
+using Rubberduck.Editor.Shell.Chrome;
 using Rubberduck.Editor.Shell.StatusBar;
 using Rubberduck.Editor.Splash;
 using Rubberduck.InternalApi.Common;
@@ -27,6 +28,7 @@ using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
 using Rubberduck.SettingsProvider.Model.TelemetryServer;
 using Rubberduck.SettingsProvider.Model.UpdateServer;
+using Rubberduck.UI.Chrome;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Message;
@@ -208,7 +210,7 @@ namespace Rubberduck.Editor
 
             services.AddSingleton<IWorkDoneProgressStateService, WorkDoneProgressStateService>();
 
-            services.AddSingleton<Version>(provider => Assembly.GetExecutingAssembly().GetName().Version);
+            services.AddSingleton<Version>(provider => Assembly.GetExecutingAssembly().GetName().Version!);
             services.AddSingleton<SplashService>();
             services.AddSingleton<ISplashViewModel, SplashViewModel>();
 
@@ -216,6 +218,7 @@ namespace Rubberduck.Editor
             services.AddSingleton<ShellProvider>();
             services.AddSingleton<IShellWindowViewModel, ShellWindowViewModel>();
             services.AddSingleton<IShellStatusBarViewModel, ShellStatusBarViewModel>();
+            services.AddSingleton<IWindowChromeViewModel, WindowChromeViewModel>();
             services.AddSingleton<IInterTabClient, InterTabClient>();
 
             services.AddSingleton<ISettingsChangedHandler<RubberduckSettings>>(provider => provider.GetRequiredService<RubberduckSettingsProvider>());

@@ -2,8 +2,11 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Rubberduck.UI.Styles"
                     xmlns:b="clr-namespace:Rubberduck.UI.Behaviors"
+                    xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
+                    xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz" 
                     xmlns:converters="clr-namespace:Rubberduck.UI.Converters">
     <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/Generic.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Icons.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/DarkTheme.xaml"/>
     </ResourceDictionary.MergedDictionaries>
@@ -15,6 +18,19 @@
     </Style>-->
 
     <!-- <dragablz> -->
+    <Style x:Key="TabControlStyle" TargetType="dragablz:TabablzControl">
+        <Style.Setters>
+            <Setter Property="ItemContainerStyle" Value="{StaticResource TrapezoidDragableTabItemStyle}" />
+            <Setter Property="ShowDefaultAddButton" Value="False" />
+            <Setter Property="ShowDefaultCloseButton" Value="True" />
+        </Style.Setters>
+    </Style>
+    <Style x:Key="BaseLayoutStyle" TargetType="dockablz:Layout">
+        <Style.Setters>
+            <Setter Property="IsFloatDropZoneEnabled" Value="False" />
+        </Style.Setters>
+    </Style>
+
     <!-- these tab styles are as close as possible to the default .net styles, so the tab will fit straight in to an unstyled app -->
     <SolidColorBrush x:Key="TabItem.Selected.Background" Color="#FFFFFF"/>
     <SolidColorBrush x:Key="TabItem.Selected.Border" Color="#ACACAC"/>

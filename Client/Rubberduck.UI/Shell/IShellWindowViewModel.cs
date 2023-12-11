@@ -15,6 +15,11 @@ namespace Rubberduck.UI.Shell
         ObservableCollection<IDocumentTabViewModel> Documents { get; }
         ObservableCollection<IToolWindowViewModel> ToolWindows { get; }
 
+        int FixedLeftToolTabs { get; }
+        int FixedRightToolTabs { get; }
+        int FixedBottomToolTabs { get; }
+        int FixedDocumentTabs { get; }
+
         IToolPanelViewModel LeftToolPanel { get; }
         IToolPanelViewModel RightToolPanel { get; }
         IToolPanelViewModel BottomToolPanel { get; }

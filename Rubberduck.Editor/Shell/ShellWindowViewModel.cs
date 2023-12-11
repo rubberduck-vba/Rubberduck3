@@ -23,6 +23,7 @@ namespace Rubberduck.Editor.Shell
         public ShellWindowViewModel(UIServiceHelper service, 
             IInterTabClient interTabClient, 
             IShellStatusBarViewModel statusBar,
+            IWindowChromeViewModel chrome,
             FileCommandHandlers fileCommandHandlers,
             ViewCommandHandlers viewCommandHandlers,
             ToolsCommandHandlers toolsCommandHandlers)
@@ -31,6 +32,8 @@ namespace Rubberduck.Editor.Shell
             InterTabClient = interTabClient;
 
             StatusBar = statusBar;
+            Chrome = chrome;
+
             Documents = [];
             ToolWindows = [];
 
@@ -52,6 +55,11 @@ namespace Rubberduck.Editor.Shell
 
         public ObservableCollection<IDocumentTabViewModel> Documents { get; init; }
         public ObservableCollection<IToolWindowViewModel> ToolWindows { get; init; }
+
+        public int FixedDocumentTabs => Documents.Count(e => e.IsPinned);
+        public int FixedLeftToolTabs => ToolWindows.Count(e => e.IsPinned && e.DockingLocation == DockingLocation.DockLeft);
+        public int FixedRightToolTabs => ToolWindows.Count(e => e.IsPinned && e.DockingLocation == DockingLocation.DockRight);
+        public int FixedBottomToolTabs => ToolWindows.Count(e => e.IsPinned && e.DockingLocation == DockingLocation.DockBottom);
 
         public IShellStatusBarViewModel StatusBar { get; init; }
 

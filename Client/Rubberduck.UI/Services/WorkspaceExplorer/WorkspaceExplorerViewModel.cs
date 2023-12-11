@@ -96,7 +96,7 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
             }
         }
 
-        private bool _isSelected;
+        private bool _isSelected = true;
         public bool IsSelected 
         {
             get => _isSelected;
