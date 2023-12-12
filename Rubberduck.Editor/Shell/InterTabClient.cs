@@ -1,5 +1,6 @@
 ﻿using Dragablz;
 using Dragablz.Dockablz;
+using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI.Shell;
 using Rubberduck.UI.Windows;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace Rubberduck.Editor.Shell
                 if (tabControl.Name == "LeftPaneToolTabs")
                 {
                     // FIXME this should not be necessary, something is off with the bindings.
-                    foreach (var toolwindow in vm.ToolWindows.Where(e => e.DockingLocation == SettingsProvider.Model.Tools.DockingLocation.DockLeft).ToList())
+                    foreach (var toolwindow in vm.ToolWindows.Where(e => e.DockingLocation == DockingLocation.DockLeft).ToList())
                     {
                         vm.ToolWindows.Remove(toolwindow);
                     }

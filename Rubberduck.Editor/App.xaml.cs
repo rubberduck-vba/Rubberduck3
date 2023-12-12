@@ -219,6 +219,7 @@ namespace Rubberduck.Editor
             services.AddSingleton<IShellWindowViewModel, ShellWindowViewModel>();
             services.AddSingleton<IShellStatusBarViewModel, ShellStatusBarViewModel>();
             services.AddSingleton<IWindowChromeViewModel, WindowChromeViewModel>();
+
             services.AddSingleton<IInterTabClient, InterTabClient>();
 
             services.AddSingleton<ISettingsChangedHandler<RubberduckSettings>>(provider => provider.GetRequiredService<RubberduckSettingsProvider>());

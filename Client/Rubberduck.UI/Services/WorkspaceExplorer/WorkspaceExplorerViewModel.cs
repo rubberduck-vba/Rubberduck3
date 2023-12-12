@@ -1,5 +1,5 @@
 ﻿using Rubberduck.InternalApi.Model.Workspace;
-using Rubberduck.SettingsProvider.Model.Tools;
+using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.WorkspaceExplorer;

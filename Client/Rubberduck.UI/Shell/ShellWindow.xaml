@@ -63,7 +63,7 @@
             </Style>
 
             <DataTemplate x:Key="ToolTabHeaderItemTemplate" DataType="windows:ITabViewModel">
-                <Label Content="{Binding Header}" />
+                <Label Content="{Binding}" />
             </DataTemplate>
             
             <DataTemplate x:Key="ToolTabItemTemplate" DataType="windows:ITabViewModel">
@@ -80,6 +80,7 @@
                     <Setter Property="ShowDefaultCloseButton" Value="True" />
                     <Setter Property="TabStripPlacement" Value="Top" />
                     <Setter Property="ShowDefaultCloseButton" Value="True" />
+                    <Setter Property="DefaultHeaderItemStyle" Value="{DynamicResource StandardDragablzTabItemStyle}" />
                     <Setter Property="HeaderMemberPath" Value="DataContext.Header" />
                 </Style.Setters>
             </Style>

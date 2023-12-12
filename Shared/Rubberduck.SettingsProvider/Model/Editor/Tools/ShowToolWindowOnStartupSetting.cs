@@ -1,10 +1,10 @@
-﻿namespace Rubberduck.SettingsProvider.Model.Tools
+﻿namespace Rubberduck.SettingsProvider.Model.Editor.Tools
 {
     public record class ShowToolWindowOnStartupSetting : BooleanRubberduckSetting
     {
         public static bool DefaultSettingValue { get; } = false;
 
-        public ShowToolWindowOnStartupSetting() 
+        public ShowToolWindowOnStartupSetting()
         {
             DefaultValue = DefaultSettingValue;
         }

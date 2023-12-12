@@ -1,12 +1,12 @@
 ﻿using Rubberduck.Resources;
 using Rubberduck.SettingsProvider.Model.Editor;
+using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.SettingsProvider.Model.General;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
 using Rubberduck.SettingsProvider.Model.Logging;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
 using Rubberduck.SettingsProvider.Model.TelemetryServer;
-using Rubberduck.SettingsProvider.Model.Tools;
 using Rubberduck.SettingsProvider.Model.UpdateServer;
 using System.Text.Json.Serialization;
 
@@ -45,6 +45,7 @@ namespace Rubberduck.SettingsProvider.Model
     [JsonDerivedType(typeof(AutoHideToolWindowSetting), nameof(AutoHideToolWindowSetting))]
     [JsonDerivedType(typeof(DefaultToolWindowLocationSetting), nameof(DefaultToolWindowLocationSetting))]
     [JsonDerivedType(typeof(ShowToolWindowOnStartupSetting), nameof(ShowToolWindowOnStartupSetting))]
+    [JsonDerivedType(typeof(ToolWindowSettings), nameof(ToolWindowSettings))]
     [JsonDerivedType(typeof(WorkspaceExplorerSettings), nameof(WorkspaceExplorerSettings))]
 
     [JsonDerivedType(typeof(LanguageServerSettings), nameof(LanguageServerSettings))] // ~ Language server

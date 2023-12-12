@@ -1,5 +1,5 @@
 ﻿using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider.Model.Tools;
+using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,15 +13,14 @@ namespace Rubberduck.SettingsProvider.Model.Editor
     public record class EditorSettings : TypedSettingGroup, IDefaultSettingsProvider<EditorSettings>
     {
         private static readonly RubberduckSetting[] DefaultSettings =
-            new RubberduckSetting[]
-            {
+            [
                 new ExtendWindowChromeSetting(),
-                new ToolsSettings(),
+                ToolsSettings.Default,
                 /*TODO
                  * These settings should be specific to the editor, e.g. theming, fonts/font sizes, etc.
                  * See LanguageClientSettings for editor settings related to its LSP client functionalities.
                  */
-            };
+            ];
 
         /*
          * TODO expose each value in the setting group with a property:
@@ -30,13 +29,13 @@ namespace Rubberduck.SettingsProvider.Model.Editor
 
         public EditorSettings()
         {
-            DefaultValue = DefaultSettings;
+            Value = DefaultValue = DefaultSettings;
         }
 
         public bool ExtendWindowChrome => GetSetting<ExtendWindowChromeSetting>()?.TypedValue ?? ExtendWindowChromeSetting.DefaultSettingValue;
         public ToolsSettings ToolsSettings => GetSetting<ToolsSettings>() ?? ToolsSettings.Default;
 
-        public static EditorSettings Default { get; } = new() { Value = DefaultSettings };
+        public static EditorSettings Default { get; } = new() { Value = DefaultSettings, DefaultValue = DefaultSettings };
         EditorSettings IDefaultSettingsProvider<EditorSettings>.Default => Default;
     }
 }

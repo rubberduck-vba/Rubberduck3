@@ -1,4 +1,5 @@
 ﻿using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.SettingsProvider.Model.Logging;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
 using Rubberduck.UI.Services;
@@ -29,6 +30,7 @@ namespace Rubberduck.UI.Services.Settings
         public ISettingViewModel CreateViewModel(UriRubberduckSetting setting) => new UriSettingViewModel(setting);
 
         public ISettingViewModel CreateViewModel(LogLevelSetting setting) => new LogLevelSettingViewModel(setting);
+        public ISettingViewModel CreateViewModel(DefaultToolWindowLocationSetting setting) => new DefaultToolWindowLocationSettingViewModel(setting);
 
         public ISettingViewModel CreateViewModel(TraceLevelSetting setting) => new MessageTraceLevelSettingViewModel(setting);
 
@@ -79,6 +81,8 @@ namespace Rubberduck.UI.Services.Settings
                     return CreateViewModel(uriSetting);
                 case LogLevelSetting loglevelSetting:
                     return CreateViewModel(loglevelSetting);
+                case DefaultToolWindowLocationSetting toolwindowLocationSetting:
+                    return CreateViewModel(toolwindowLocationSetting);
                 case TraceLevelSetting tracelevelSetting:
                     return CreateViewModel(tracelevelSetting);
                 case ServerTransportTypeSetting serverTransportTypeSetting:

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.Json.Serialization;
 
-namespace Rubberduck.SettingsProvider.Model.Tools
+namespace Rubberduck.SettingsProvider.Model.Editor.Tools
 {
     public abstract record class ToolWindowSettings : TypedSettingGroup
     {
@@ -23,12 +23,12 @@ namespace Rubberduck.SettingsProvider.Model.Tools
         }
 
         [JsonIgnore]
-        public bool ShowOnStartup { get; } = false;
+        public bool ShowOnStartup => GetSetting<ShowToolWindowOnStartupSetting>()?.TypedValue ?? ShowToolWindowOnStartupSetting.DefaultSettingValue;
 
         [JsonIgnore]
-        public bool AutoHide { get; } = true;
+        public bool AutoHide => GetSetting<AutoHideToolWindowSetting>()?.TypedValue ?? AutoHideToolWindowSetting.DefaultSettingValue;
 
         [JsonIgnore]
-        public DockingLocation DefaultLocation { get; }
+        public DockingLocation DefaultLocation => GetSetting<DefaultToolWindowLocationSetting>()?.TypedValue ?? DefaultToolWindowLocationSetting.DefaultSettingValue;
     }
 }

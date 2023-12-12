@@ -1,5 +1,5 @@
 ﻿using Dragablz;
-using Rubberduck.SettingsProvider.Model.Tools;
+using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Windows;
 using System;

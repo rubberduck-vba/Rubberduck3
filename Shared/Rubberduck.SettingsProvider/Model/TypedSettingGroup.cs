@@ -13,7 +13,7 @@ namespace Rubberduck.SettingsProvider.Model
 
         public RubberduckSetting GetSetting(Type type) => ((RubberduckSetting[])Value).Single(e => e.GetType() == type);
 
-        private Dictionary<Type, RubberduckSetting> Values => TypedValue.ToDictionary(e => e.GetType());
+        private Dictionary<Type, RubberduckSetting>? Values => TypedValue?.ToDictionary(e => e.GetType());
 
         protected TypedSettingGroup()
         {
@@ -22,13 +22,13 @@ namespace Rubberduck.SettingsProvider.Model
 
         public TypedSettingGroup WithSetting(RubberduckSetting setting)
         {
-            var values = Values;
+            var values = Values ?? throw new InvalidOperationException();
             values[setting.GetType()] = setting;
             return this with { Value = values.Values };
         }
         public TypedSettingGroup WithSetting<TSetting>(TSetting setting) where TSetting : RubberduckSetting
         {
-            var values = Values;
+            var values = Values ?? throw new InvalidOperationException();
             values[typeof(TSetting)] = setting;
             return this with { Value = values.Values };
         }

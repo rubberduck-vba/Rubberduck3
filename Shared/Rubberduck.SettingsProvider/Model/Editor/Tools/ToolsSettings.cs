@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 
-namespace Rubberduck.SettingsProvider.Model.Tools
+namespace Rubberduck.SettingsProvider.Model.Editor.Tools
 {
     public record class ToolsSettings : TypedSettingGroup, IDefaultSettingsProvider<ToolsSettings>
     {
         private static readonly RubberduckSetting[] DefaultSettings =
-            new RubberduckSetting[]
-            {
-                new WorkspaceExplorerSettings(),
-            };
+            [
+                WorkspaceExplorerSettings.Default,
+            ];
 
-        public ToolsSettings() { }
+        public ToolsSettings() 
+        {
+            Value = DefaultValue = DefaultSettings;
+        }
 
         public ToolsSettings(IDictionary<string, RubberduckSetting> settings) : this()
         {

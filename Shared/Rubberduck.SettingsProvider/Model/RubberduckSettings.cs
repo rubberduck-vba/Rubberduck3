@@ -16,8 +16,7 @@ namespace Rubberduck.SettingsProvider.Model
     public record class RubberduckSettings : TypedSettingGroup, IDefaultSettingsProvider<RubberduckSettings>
     {
         private static readonly RubberduckSetting[] DefaultSettings =
-            new RubberduckSetting[]
-            {
+            [
                 GeneralSettings.Default,
                 LoggingSettings.Default,
                 EditorSettings.Default,
@@ -25,12 +24,12 @@ namespace Rubberduck.SettingsProvider.Model
                 LanguageServerSettings.Default,
                 UpdateServerSettings.Default,
                 TelemetryServerSettings.Default,
-            };
+            ];
 
         public RubberduckSettings() 
         {
             SettingDataType = SettingDataType.SettingGroup;
-            DefaultValue = DefaultSettings;
+            Value = DefaultValue = DefaultSettings;
         }
 
         [JsonIgnore]

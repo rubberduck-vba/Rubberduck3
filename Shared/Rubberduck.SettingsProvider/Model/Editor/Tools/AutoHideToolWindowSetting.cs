@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.SettingsProvider.Model.Tools
+﻿namespace Rubberduck.SettingsProvider.Model.Editor.Tools
 {
     public record class AutoHideToolWindowSetting : BooleanRubberduckSetting
     {

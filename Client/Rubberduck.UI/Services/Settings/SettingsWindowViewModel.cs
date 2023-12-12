@@ -36,6 +36,8 @@ namespace Rubberduck.UI.Services.Settings
 
         public override IEnumerable<CommandBinding> CommandBindings { get; }
 
+        public bool ShowPinButton => false;
+        
         public ISettingGroupViewModel Settings { get; }
 
         private ISettingViewModel _selection;

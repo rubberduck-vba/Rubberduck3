@@ -1,6 +1,6 @@
 ﻿using Dragablz;
 using Rubberduck.Editor.Commands;
-using Rubberduck.SettingsProvider.Model.Tools;
+using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI;
 using Rubberduck.UI.Chrome;
 using Rubberduck.UI.Services;

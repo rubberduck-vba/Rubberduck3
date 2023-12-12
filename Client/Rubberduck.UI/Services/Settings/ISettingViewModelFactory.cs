@@ -1,4 +1,5 @@
 ﻿using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.SettingsProvider.Model.Logging;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
 using Rubberduck.UI.Settings.ViewModels.Abstract;
@@ -14,6 +15,7 @@ namespace Rubberduck.UI.Services.Settings
         ISettingViewModel CreateViewModel(UriRubberduckSetting setting);
 
         ISettingViewModel CreateViewModel(LogLevelSetting setting);
+        ISettingViewModel CreateViewModel(DefaultToolWindowLocationSetting setting);
         ISettingViewModel CreateViewModel(TraceLevelSetting setting);
         ISettingViewModel CreateViewModel(ServerTransportTypeSetting setting);
         ISettingViewModel CreateViewModel(ServerMessageModeSetting setting);

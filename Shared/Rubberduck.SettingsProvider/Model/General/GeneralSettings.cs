@@ -14,14 +14,13 @@ namespace Rubberduck.SettingsProvider.Model.General
     public record class GeneralSettings : TypedSettingGroup, IDefaultSettingsProvider<GeneralSettings>
     {
         private static readonly RubberduckSetting[] DefaultSettings =
-            new RubberduckSetting[]
-            {
+            [
                 new LocaleSetting { Value = LocaleSetting.DefaultSettingValue },
                 new ShowSplashSetting { Value = ShowSplashSetting.DefaultSettingValue },
                 new DisableInitialLegacyIndenterCheckSetting { Value = DisableInitialLegacyIndenterCheckSetting.DefaultSettingValue },
                 new DisabledMessageKeysSetting { Value = DisabledMessageKeysSetting.DefaultSettingValue },
                 new TemplatesLocationSetting { Value = TemplatesLocationSetting.DefaultSettingValue },
-            };
+            ];
 
         public GeneralSettings()
         {

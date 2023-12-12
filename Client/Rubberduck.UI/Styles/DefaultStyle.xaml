@@ -16,7 +16,6 @@
             <Setter Property="b:ScrollViewerCorrector.FixScrolling" Value="True" />
         </Style.Setters>
     </Style>-->
-
     
     <Color x:Key="ThemeWhiteDarkColor">#FFA9A9A9</Color>
     <Color x:Key="ThemeWhiteMediumColor">#FFD3D3D3</Color>
@@ -513,6 +512,35 @@
                 <Setter Property="CornerRadius" Value="2"/>
             </Style>
         </Style.Resources>
+    </Style>
+
+    
+    <Style TargetType="{x:Type dockablz:DropZone}">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+        <Setter Property="Opacity" Value=".25" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type dockablz:DropZone}">
+                    <Grid>
+                        <Rectangle VerticalAlignment="Top" HorizontalAlignment="Center" Height="24" Width="100" Fill="{TemplateBinding Foreground}" 
+                                   Visibility="{TemplateBinding Location, Converter={StaticResource EqualityToVisibilityConverter}, ConverterParameter={x:Static dockablz:DropZoneLocation.Top}}" />
+
+                        <Rectangle VerticalAlignment="Center" HorizontalAlignment="Left" Height="100" Width="24" Fill="{TemplateBinding Foreground}" 
+                                   Visibility="{TemplateBinding Location, Converter={StaticResource EqualityToVisibilityConverter}, ConverterParameter={x:Static dockablz:DropZoneLocation.Left}}" />
+
+                        <Rectangle VerticalAlignment="Center" HorizontalAlignment="Right" Height="100" Width="24" Fill="{TemplateBinding Foreground}" 
+                                   Visibility="{TemplateBinding Location, Converter={StaticResource EqualityToVisibilityConverter}, ConverterParameter={x:Static dockablz:DropZoneLocation.Right}}" />
+
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsOffered" Value="True">
+                <Setter Property="Opacity" Value="0.5" />
+                <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1LightColorBrush}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
 </ResourceDictionary>
