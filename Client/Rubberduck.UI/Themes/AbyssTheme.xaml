@@ -88,8 +88,33 @@
     <SolidColorBrush x:Key="ThemeTextBackgroundLightColorBrush" Color="{DynamicResource ThemeWhiteLightColor}" />
     <SolidColorBrush x:Key="ThemeTextBackgroundColorBrush" Color="{DynamicResource ThemeWhiteLightColor}" />
 
-    
-    
+    <!-- dragablz -->
+    <!-- these tab styles are as close as possible to the default .net styles, so the tab will fit straight in to an unstyled app -->
+    <SolidColorBrush x:Key="TabItem.Selected.Background" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="TabItem.Selected.Border" Color="#ACACAC"/>
+    <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
+    <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
+    <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
+    <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
+    <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
+    <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
+    <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+    <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
+    <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+
+    <LinearGradientBrush x:Key="TabItem.Static.Background" EndPoint="0,1" StartPoint="0,0">
+        <GradientStop Color="#F0F0F0" Offset="0.0"/>
+        <GradientStop Color="#E5E5E5" Offset="1.0"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="TabItem.Static.Border" Color="#ACACAC"/>
+    <LinearGradientBrush x:Key="TabItem.MouseOver.Background" EndPoint="0,1" StartPoint="0,0">
+        <GradientStop Color="#ECF4FC" Offset="0.0"/>
+        <GradientStop Color="#DCECFC" Offset="1.0"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="TabItem.MouseOver.Border" Color="#7EB4EA"/>
+    <SolidColorBrush x:Key="TabItem.Disabled.Background" Color="#F0F0F0"/>
+    <SolidColorBrush x:Key="TabItem.Disabled.Border" Color="#D9D9D9"/>
+
     <!-- TODO squeaky wheel test and cleanup -->
 
     <Color x:Key="HighlightGradientStartColor">#FFD9F4FF</Color>

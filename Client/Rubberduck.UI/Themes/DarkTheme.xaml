@@ -116,8 +116,32 @@
     <SolidColorBrush x:Key="ThemeTextBackgroundLightColorBrush" Color="{DynamicResource ThemeWhiteLightColor}" />
     <SolidColorBrush x:Key="ThemeTextBackgroundColorBrush" Color="{DynamicResource ThemeWhiteLightColor}" />
 
-    
-    
+    <!-- dragablz -->
+    <SolidColorBrush x:Key="TabItem.Selected.Background" Color="{DynamicResource ThemeAccent1DarkColor}"/>
+    <SolidColorBrush x:Key="TabItem.Selected.Border" Color="{DynamicResource ThemeAccent1HighlightColor}"/>
+    <SolidColorBrush x:Key="Button.Static.Background" Color="{DynamicResource ThemeBackgroundDarkColor}"/>
+    <SolidColorBrush x:Key="Button.Static.Border" Color="{DynamicResource ThemeBackgroundLightColor}"/>
+    <SolidColorBrush x:Key="Button.MouseOver.Background" Color="{DynamicResource ThemeBackgroundLightColor}"/>
+    <SolidColorBrush x:Key="Button.MouseOver.Border" Color="{DynamicResource ThemeAccent1DarkColor}"/>
+    <SolidColorBrush x:Key="Button.Pressed.Background" Color="{DynamicResource ThemeAccent1HighlightColor}"/>
+    <SolidColorBrush x:Key="Button.Pressed.Border" Color="{DynamicResource ThemeAccent1DarkColor}"/>
+    <SolidColorBrush x:Key="Button.Disabled.Background" Color="{DynamicResource ThemeBlackLightColor}"/>
+    <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
+    <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+
+    <LinearGradientBrush x:Key="TabItem.Static.Background" EndPoint="0,1" StartPoint="0,0">
+        <GradientStop Color="{DynamicResource ThemeBlackDarkColor}" Offset="0.0"/>
+        <GradientStop Color="{DynamicResource ThemeBlackMediumColor}" Offset="1.0"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="TabItem.Static.Border" Color="{DynamicResource ThemeBackgroundMediumColor}"/>
+    <LinearGradientBrush x:Key="TabItem.MouseOver.Background" EndPoint="0,1" StartPoint="0,0">
+        <GradientStop Color="{DynamicResource ThemeBlackMediumColor}" Offset="0.0"/>
+        <GradientStop Color="{DynamicResource ThemeBlackLightColor}" Offset="1.0"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="TabItem.MouseOver.Border" Color="{DynamicResource ThemeAccent1HighlightColor}"/>
+    <SolidColorBrush x:Key="TabItem.Disabled.Background" Color="#F0F0F0"/>
+    <SolidColorBrush x:Key="TabItem.Disabled.Border" Color="#D9D9D9"/>
+
     <!-- TODO squeaky wheel test and cleanup -->
 
     <Color x:Key="HighlightGradientStartColor">#FFD9F4FF</Color>
@@ -155,21 +179,8 @@
     <Color x:Key="BackgroundSoftColor">#FF3D3D3D</Color>
     <Color x:Key="HeaderBackgroundDarkColor">#DD090909</Color>
     <Color x:Key="TabSelectionUnderlineColor">#FF0000FF</Color>
-    <Color x:Key="GrayColor">#FF696969</Color>
-    <Color x:Key="WhiteColor">#FF000000</Color>
-    <Color x:Key="BlackColor">#FFFFFFFF</Color>
 
     <Color x:Key="BusyIndicatorFillColor">#FFFFD54F</Color>
-
-    <Color x:Key="ToolBarButtonHoverColor">#210080FF</Color>
-    <Color x:Key="ToolBarGripperColor">#FF6D6D6D</Color>
-    <Color x:Key="ToolBarBackgroundColor">#FFEEF5FD</Color>
-    <Color x:Key="ToolBarVerticalBackgroundColor">#FFEEF5FD</Color>
-    <Color x:Key="ToolBarHorizontalBackgroundColor">#FFEEF5FD</Color>
-    <Color x:Key="ToolBarToggleButtonVerticalBackgroundColor">#FFEEF5FD</Color>
-    <Color x:Key="ToolBarToggleButtonHorizontalBackgroundColor">#FFEEF5FD</Color>
-    <Color x:Key="ToolBarMenuBorderColor">#FFB6BDC5</Color>
-    <Color x:Key="ToolBarSubMenuBackgroundColor">#FFEEF5FD</Color>
 
     <SolidColorBrush x:Key="HighlightGradientStartBrush" Color="{StaticResource HighlightGradientStartColor}"/>
     <SolidColorBrush x:Key="HighlightGradientEndBrush" Color="{StaticResource HighlightGradientEndColor}"/>
@@ -205,23 +216,10 @@
     <SolidColorBrush x:Key="BackgroundSoftBrush" Color="{StaticResource BackgroundSoftColor}"/>
     <SolidColorBrush x:Key="HeaderBackgroundDarkBrush" Color="{StaticResource HeaderBackgroundDarkColor}"/>
     <SolidColorBrush x:Key="TabSelectionUnderlineBrush" Color="{StaticResource TabSelectionUnderlineColor}"/>
-    <SolidColorBrush x:Key="GrayBrush" Color="{StaticResource GrayColor}"/>
-    <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource BlackColor}"/>
-    <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource WhiteColor}"/>
     <SolidColorBrush x:Key="BusyIndicatorFillBrush" Color="{StaticResource BusyIndicatorFillColor}"/>
 
-    <SolidColorBrush x:Key="ToolBarButtonHoverBrush" Color="{StaticResource ToolBarButtonHoverColor}"/>
-    <SolidColorBrush x:Key="ToolBarGripperBrush" Color="{StaticResource ToolBarGripperColor}"/>
-    <SolidColorBrush x:Key="ToolBarBackgroundBrush" Color="{StaticResource ToolBarBackgroundColor}"/>
-    <SolidColorBrush x:Key="ToolBarVerticalBackgroundBrush" Color="{StaticResource ToolBarVerticalBackgroundColor}"/>
-    <SolidColorBrush x:Key="ToolBarHorizontalBackgroundBrush" Color="{StaticResource ToolBarHorizontalBackgroundColor}"/>
-    <SolidColorBrush x:Key="ToolBarToggleButtonVerticalBackgroundBrush" Color="{StaticResource ToolBarToggleButtonVerticalBackgroundColor}"/>
-    <SolidColorBrush x:Key="ToolBarToggleButtonHorizontalBackgroundBrush" Color="{StaticResource ToolBarToggleButtonHorizontalBackgroundColor}"/>
-    <SolidColorBrush x:Key="ToolBarMenuBorderBrush" Color="{StaticResource ToolBarMenuBorderColor}"/>
-    <SolidColorBrush x:Key="ToolBarSubMenuBackgroundBrush" Color="{StaticResource ToolBarSubMenuBackgroundColor}"/>
-
-    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{StaticResource WhiteColor}" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="{StaticResource BlackColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{StaticResource ThemeWhiteLightColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="{StaticResource ThemeBlackDarkColor}" />
 
     <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
         <GradientStop Color="{StaticResource HighlightGradientStartColor}" Offset="0"/>

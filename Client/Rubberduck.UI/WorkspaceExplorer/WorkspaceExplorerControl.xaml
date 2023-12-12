@@ -137,9 +137,7 @@
                 </TreeView.ItemTemplate>
             </TreeView>
 
-            <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Cursor="SizeNS" ShowsPreview="True" Background="{DynamicResource ThemeBackgroundMediumColorBrush}" />
-
-            <Expander Grid.Row="2"
+            <Expander Grid.Row="2" ExpandDirection="Up"
                       Background="{DynamicResource BackgroundDarkBrush}" 
                       Visibility="{Binding HasSelectionInfo, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Expander.Header>

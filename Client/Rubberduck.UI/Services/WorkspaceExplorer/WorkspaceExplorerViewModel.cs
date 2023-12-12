@@ -26,8 +26,10 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
         }
 
         public string Title { get; set; } = "Workspace Explorer"; // TODO localize
-
+        public string AcceptButtonText { get; set; }
+        public string CancelButtonText { get; set; }
         public ICommand ShowSettingsCommand { get; }
+        public string ShowSettingsCommandParameter => SettingKey;
         public bool ShowPinButton { get; } = true;
         public bool ShowGearButton { get; } = true;
 
