@@ -37,6 +37,8 @@
     <BitmapImage x:Key="CircleCheckFileIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/file-circle-check-solid.png" />
     <BitmapImage x:Key="BlocksIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/cubes-solid.png" />
 
+    <BitmapImage x:Key="HeartMonitorIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/file-waveform-solid.png" />
+
     <!-- RD2.* 16x16 Fugue icons -->
     <BitmapImage x:Key="ErrorIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/cross-circle.png" />
     <BitmapImage x:Key="WarnIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/exclamation-diamond.png" />

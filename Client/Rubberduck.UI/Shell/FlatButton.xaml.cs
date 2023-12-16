@@ -14,21 +14,22 @@ namespace Rubberduck.UI.Shell
             InitializeComponent();
         }
 
+        public static readonly DependencyProperty HighlightBrushProperty =
+            DependencyProperty.Register(nameof(HighlightBrush), typeof(Brush), typeof(FlatButton));
+
+        public Brush HighlightBrush
+        {
+            get => (Brush)GetValue(HighlightBrushProperty);
+            set => SetValue(HighlightBrushProperty, value);
+        }
+
         public static readonly DependencyProperty IconProperty =
             DependencyProperty.Register(nameof(Icon), typeof(ImageSource), typeof(FlatButton));
 
         public ImageSource Icon
         {
             get => (ImageSource)GetValue(IconProperty);
-            set
-            {
-                var oldValue = Icon;
-                if (value != oldValue)
-                {
-                    SetValue(IconProperty, value);
-                    OnPropertyChanged(new(IconProperty, oldValue, value));
-                }
-            }
+            set => SetValue(IconProperty, value);
         }
 
         public static readonly DependencyProperty OffsetXProperty =
@@ -37,15 +38,7 @@ namespace Rubberduck.UI.Shell
         public double OffsetX
         {
             get => (double)GetValue(OffsetXProperty);
-            set
-            {
-                var oldValue = OffsetX;
-                if (value != oldValue)
-                {
-                    SetValue(OffsetXProperty, value);
-                    OnPropertyChanged(new(OffsetXProperty, oldValue, value));
-                }
-            }
+            set => SetValue(OffsetXProperty, value);
         }
 
         public static readonly DependencyProperty OffsetYProperty =
@@ -54,15 +47,7 @@ namespace Rubberduck.UI.Shell
         public double OffsetY
         {
             get => (double)GetValue(OffsetYProperty);
-            set
-            {
-                var oldValue = OffsetY;
-                if (value != oldValue)
-                {
-                    SetValue(OffsetYProperty, value);
-                    OnPropertyChanged(new(OffsetYProperty, oldValue, value));
-                }
-            }
+            set => SetValue(OffsetYProperty, value);
         }
     }
 }

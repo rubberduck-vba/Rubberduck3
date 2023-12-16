@@ -97,6 +97,8 @@
     <SolidColorBrush x:Key="ThemeTextInactiveColorBrush" Color="{DynamicResource ThemeTextInactiveColor}" />
     
     <Color x:Key="ThemeBackgroundDarkColor">#FF1E1E1E</Color>
+    <Color x:Key="ThemeBackgroundDarkColor50">#C01E1E1E</Color>
+    <Color x:Key="ThemeBackgroundDarkColor75">#F01E1E1E</Color>
     <Color x:Key="ThemeBackgroundMediumColor">#FF2E2E2E</Color>
     <Color x:Key="ThemeBackgroundLightColor">#FF333333</Color>
     <Color x:Key="ThemeBackgroundColor">#FF1E1E1E</Color>
@@ -106,6 +108,7 @@
     <Color x:Key="ThemeTextBackgroundLightColor">#FFFFFFFF</Color>
     <Color x:Key="ThemeTextBackgroundColor">#FFFFFFFF</Color>
 
+    <SolidColorBrush x:Key="ThemeBackgroundDarkColorBrush75" Color="{DynamicResource ThemeBackgroundDarkColor75}" />
     <SolidColorBrush x:Key="ThemeBackgroundDarkColorBrush" Color="{DynamicResource ThemeBackgroundDarkColor}" />
     <SolidColorBrush x:Key="ThemeBackgroundMediumColorBrush" Color="{DynamicResource ThemeBackgroundMediumColor}" />
     <SolidColorBrush x:Key="ThemeBackgroundLightColorBrush" Color="{DynamicResource ThemeBackgroundLightColor}" />

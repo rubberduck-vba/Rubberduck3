@@ -41,18 +41,19 @@
     <Color x:Key="ThemeBlackDarkColor">#FF1E1E1E</Color>
     <Color x:Key="ThemeBlackMediumColor">#FF2E2E2E</Color>
     <Color x:Key="ThemeBlackLightColor">#FF333333</Color>
-    <Color x:Key="ThemeBlackDarkColor75">#C01E1E1E</Color>
-    <Color x:Key="ThemeBlackDarkColor50">#0F1E1E1E</Color>
+    <Color x:Key="ThemeBlackDarkColor75">#F01E1E1E</Color>
+    <Color x:Key="ThemeBlackDarkColor50">#C01E1E1E</Color>
     <Color x:Key="ThemeBlackMediumColor50">#0F2E2E2E</Color>
-    <Color x:Key="ThemeBlackLightColor50">#0F333333</Color>
-    <Color x:Key="ThemeBlackDarkColor25">#081E1E1E</Color>
-    <Color x:Key="ThemeBlackMediumColor25">#082E2E2E</Color>
-    <Color x:Key="ThemeBlackLightColor25">#08333333</Color>
+    <Color x:Key="ThemeBlackLightColor50">#C0333333</Color>
+    <Color x:Key="ThemeBlackDarkColor25">#0F1E1E1E</Color>
+    <Color x:Key="ThemeBlackMediumColor25">#0F2E2E2E</Color>
+    <Color x:Key="ThemeBlackLightColor25">#0F333333</Color>
 
     <SolidColorBrush x:Key="ThemeBlackDarkColorBrush" Color="{DynamicResource ThemeBlackDarkColor}" />
     <SolidColorBrush x:Key="ThemeBlackMediumColorBrush" Color="{DynamicResource ThemeBlackMediumColor}" />
     <SolidColorBrush x:Key="ThemeBlackLightColorBrush" Color="{DynamicResource ThemeBlackLightColor}" />
     <SolidColorBrush x:Key="ThemeBlackDarkColorBrush50" Color="{DynamicResource ThemeBlackDarkColor50}" />
+    <SolidColorBrush x:Key="ThemeBlackDarkColorBrush75" Color="{DynamicResource ThemeBlackDarkColor75}" />
     <SolidColorBrush x:Key="ThemeBlackMediumColorBrush50" Color="{DynamicResource ThemeBlackMediumColor50}" />
     <SolidColorBrush x:Key="ThemeBlackLightColorBrush50" Color="{DynamicResource ThemeBlackLightColor50}" />
     <SolidColorBrush x:Key="ThemeBlackDarkColorBrush25" Color="{DynamicResource ThemeBlackDarkColor25}" />
@@ -272,7 +273,7 @@
 
     <Style x:Key="FlatButtonStyle" TargetType="Button">
         <Style.Setters>
-            <Setter Property="Template" Value="{StaticResource FlatButtonTemplate}" />
+            <Setter Property="Template" Value="{DynamicResource FlatButtonTemplate}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Margin" Value="4,2" />
             <Setter Property="Height" Value="20" />

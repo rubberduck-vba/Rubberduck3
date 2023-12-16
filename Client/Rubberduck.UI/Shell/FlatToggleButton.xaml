@@ -81,7 +81,7 @@
                             </Style>
                         </Rectangle.Style>
                         <Rectangle.OpacityMask>
-                            <ImageBrush ImageSource="{Binding Source, ElementName=CanvasIcon}" />
+                            <ImageBrush Stretch="Uniform" ImageSource="{Binding Source, ElementName=CanvasIcon}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </Canvas>
