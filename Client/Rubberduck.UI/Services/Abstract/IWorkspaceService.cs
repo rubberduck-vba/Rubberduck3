@@ -6,8 +6,21 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.UI.Services.Abstract
 {
+    public class WorkspaceServiceEventArgs : EventArgs
+    {
+        public WorkspaceServiceEventArgs(Uri uri)
+        {
+            Uri = uri;
+        }
+
+        public Uri Uri { get; }
+    }
+
     public interface IWorkspaceService : IDisposable
     {
+        event EventHandler<WorkspaceServiceEventArgs> WorkspaceOpened;
+        event EventHandler<WorkspaceServiceEventArgs> WorkspaceClosed;
+
         IFileSystem FileSystem { get; }
 
         /// <summary>

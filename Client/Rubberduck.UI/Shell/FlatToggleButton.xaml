@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Rubberduck.UI.Shell"
         x:Name="FlatToggleButtonRoot"
         mc:Ignorable="d" Padding="4"
+        MinHeight="16" MinWidth="20"
         d:DesignHeight="20" d:DesignWidth="24">
     <ToggleButton.Resources>
         <ResourceDictionary>
@@ -23,12 +24,14 @@
                 <Canvas Style="{DynamicResource FlatButtonCanvasStyle}">
                     <Image x:Name="CanvasIcon"
                            Style="{DynamicResource FlatToggleButtonImageStyle}"
-                           Height="20" Width="24" Stretch="Uniform"
-                           Canvas.Left="0" Canvas.Top="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                           Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Stretch="Uniform"
+                           HorizontalAlignment="Center" VerticalAlignment="Center">
                     </Image>
                     <Rectangle Fill="{TemplateBinding Foreground}"
-                               Height="20" Width="24" Stretch="Uniform"
-                               Canvas.Left="0" Canvas.Top="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                               Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Stretch="Uniform"
+                               Canvas.Left="{TemplateBinding local:FlatToggleButton.OffsetX}"
+                               Canvas.Top="{TemplateBinding local:FlatToggleButton.OffsetY}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Rectangle.Resources>
                             <Style TargetType="Rectangle">
                                 <Style.Triggers>
@@ -46,7 +49,7 @@
                                 <Style.Setters>
                                     <Setter Property="OpacityMask">
                                         <Setter.Value>
-                                            <ImageBrush Stretch="Uniform" ImageSource="{Binding Source, ElementName=CanvasIcon}" />
+                                            <ImageBrush Stretch="Uniform" ImageSource="{Binding IconSource, ElementName=FlatToggleButtonRoot}" />
                                         </Setter.Value>
                                     </Setter>
                                 </Style.Setters>
@@ -90,8 +93,8 @@
             <Style.Setters>
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Margin" Value="1,0" />
-                <Setter Property="MinHeight" Value="20" />
-                <Setter Property="MinWidth" Value="24" />
+                <Setter Property="MinHeight" Value="16" />
+                <Setter Property="MinWidth" Value="20" />
                 <Setter Property="Template" Value="{StaticResource FlatToggleButtonTemplate}" />
                 <Setter Property="Foreground" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
                 <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}"/>

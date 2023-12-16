@@ -189,6 +189,9 @@
     <None Remove="Resources\FontAwesome\window-maximize-regular.png" />
     <None Remove="Resources\FontAwesome\window-minimize-regular.png" />
     <None Remove="Resources\FontAwesome\window-restore-regular.png" />
+    <None Remove="Resources\FontAwesome\windows-16.png" />
+    <None Remove="Resources\FontAwesome\windows-32.png" />
+    <None Remove="Resources\FontAwesome\windows.png" />
     <None Remove="Resources\FontAwesome\xmark-solid.png" />
     <None Remove="Resources\FugueIcons\blue-folder-horizontal-open.png" />
     <None Remove="Resources\FugueIcons\blue-folder-horizontal.png" />
@@ -422,6 +425,9 @@
     <Resource Include="Resources\FontAwesome\window-maximize-regular.png" />
     <Resource Include="Resources\FontAwesome\window-minimize-regular.png" />
     <Resource Include="Resources\FontAwesome\window-restore-regular.png" />
+    <Resource Include="Resources\FontAwesome\windows-16.png" />
+    <Resource Include="Resources\FontAwesome\windows-32.png" />
+    <Resource Include="Resources\FontAwesome\windows.png" />
     <Resource Include="Resources\FontAwesome\xmark-solid.png" />
     <Resource Include="Resources\FugueIcons\blue-folder-horizontal-open.png" />
     <Resource Include="Resources\FugueIcons\blue-folder-horizontal.png" />
@@ -491,9 +497,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Splash\SplashWindow.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Styles\ControlBoxCanvas.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

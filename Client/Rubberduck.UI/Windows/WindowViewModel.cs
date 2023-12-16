@@ -7,6 +7,9 @@ namespace Rubberduck.UI.Windows
     {
         public string Title { get; init; } = "Title";
 
+        public virtual bool ShowCloseButton { get; set; }
+        public virtual bool ShowPinButton { get; set; }
+        public bool IsPinned { get; set; }
         public bool ShowGearButton => ShowSettingsCommand != null;
         public ICommand? ShowSettingsCommand { get; init; }
 

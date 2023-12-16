@@ -3,6 +3,7 @@ using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.WorkspaceExplorer;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -18,20 +19,44 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
             /* DESIGNER */
         }
 
-        public WorkspaceExplorerViewModel(IWorkspaceService service, ShowRubberduckSettingsCommand showSettingsCommand)
+        public WorkspaceExplorerViewModel(IWorkspaceService service, ShowRubberduckSettingsCommand showSettingsCommand, CloseToolWindowCommand closeToolwindowCommand)
         {
             _service = service;
             ShowSettingsCommand = showSettingsCommand;
+            CloseToolWindowCommand = closeToolwindowCommand;
             Workspaces = new(service.ProjectFiles.Select(workspace => WorkspaceViewModel.FromModel(workspace, _service)));
+
+            service.WorkspaceOpened += OnWorkspaceOpened;
+            service.WorkspaceClosed += OnWorkspaceClosed;
+        }
+
+        private void OnWorkspaceClosed(object? sender, WorkspaceServiceEventArgs e)
+        {
+            var item = Workspaces.SingleOrDefault(workspace => workspace.Uri == e.Uri);
+            if (item != null)
+            {
+                Workspaces.Remove(item);
+            }
+        }
+
+        private void OnWorkspaceOpened(object? sender, WorkspaceServiceEventArgs e)
+        {
+            var project = _service.ProjectFiles.SingleOrDefault(file => file.Uri == e.Uri);
+            if (project != null)
+            {
+                Workspaces.Add(WorkspaceViewModel.FromModel(project, _service));
+            }
         }
 
         public string Title { get; set; } = "Workspace Explorer"; // TODO localize
         public string AcceptButtonText { get; set; }
         public string CancelButtonText { get; set; }
         public ICommand ShowSettingsCommand { get; }
+        public ICommand CloseToolWindowCommand { get; }
         public string ShowSettingsCommandParameter => SettingKey;
         public bool ShowPinButton { get; } = true;
         public bool ShowGearButton { get; } = true;
+        public bool ShowCloseButton { get; } = true;
 
         public string SettingKey { get; } = nameof(WorkspaceExplorerSettings);
 

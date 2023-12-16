@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Rubberduck.UI.Shell"
              xmlns:drgz="clr-namespace:Dragablz;assembly=Dragablz" 
              xmlns:windows="clr-namespace:Rubberduck.UI.Windows" 
+             xmlns:commands="clr-namespace:Rubberduck.UI.Command" 
              d:DataContext="{d:DesignInstance Type=windows:WindowViewModel}"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -37,22 +38,30 @@
                                 <local:DuckyBackgroundControl Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
 
                                 <DockPanel Grid.Row="0" VerticalAlignment="Top" Margin="5,5,0,0">
-                                    <local:FlatButton DockPanel.Dock="Right"
-                                                      HorizontalAlignment="Right" VerticalAlignment="Top"
+                                    <local:FlatButton DockPanel.Dock="Right" VerticalAlignment="Center"
+                                                      Height="16" Width="16"
+                                                      ToolTip="Close"
+                                                      Visibility="{Binding ShowCloseButton, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                      Command="{Binding CloseToolWindowCommand}"
+                                                      CommandParameter="{Binding}"
+                                                      Icon="{DynamicResource XMarkIcon}" />
+
+                                    <local:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Center"
+                                                            Height="16" Width="16"
+                                                            ToolTip="Pin/unpin this tab"
+                                                            Visibility="{Binding ShowPinButton, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                            IsChecked="{Binding IsPinned, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                            Icon="{DynamicResource PinIcon}" />
+
+                                    <local:FlatButton DockPanel.Dock="Right" VerticalAlignment="Center"
+                                                      Height="16" Width="16"
                                                       ToolTip="Settings"
                                                       Visibility="{Binding ShowGearButton, Converter={StaticResource BoolToVisibilityConverter}}"
                                                       Command="{Binding ShowSettingsCommand}"
                                                       CommandParameter="{Binding ShowSettingsCommandParameter}"
                                                       Icon="{DynamicResource GearIcon}" />
 
-                                    <local:FlatToggleButton DockPanel.Dock="Right"
-                                                            HorizontalAlignment="Right" VerticalAlignment="Top"
-                                                            ToolTip="Pin/unpin this tab"
-                                                            Visibility="{Binding ShowPinButton, Converter={StaticResource BoolToVisibilityConverter}}"
-                                                            IsChecked="{Binding IsPinned, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                            Icon="{DynamicResource PinIcon}" />
-
-                                    <Label DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left"
+                                    <Label DockPanel.Dock="Top" HorizontalAlignment="Left" VerticalAlignment="Center"
                                        Content="{Binding Title, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
                                        Foreground="{DynamicResource ThemeTextColorBrush}"
                                        FontWeight="SemiBold" FontSize="16"
@@ -62,8 +71,7 @@
                                 <Border Grid.Row="1" BorderThickness="0" CornerRadius="8" Margin="4"
                                         Background="{DynamicResource ThemeWhiteLightColorBrush50}"/>
 
-
-                                <ContentPresenter Grid.Row="1" Margin="8,4" Height="Auto" MinHeight="200"
+                                <ContentPresenter Grid.Row="1" Margin="8,4" Height="Auto"
                                                   Content="{Binding Content, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"/>
 
                                 <DockPanel Grid.Row="2" HorizontalAlignment="Right" 

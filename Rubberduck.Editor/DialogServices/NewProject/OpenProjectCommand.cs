@@ -2,6 +2,8 @@
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
+using Rubberduck.UI.Services.WorkspaceExplorer;
+using Rubberduck.UI.WorkspaceExplorer;
 using System;
 using System.IO.Abstractions;
 using System.Threading.Tasks;
@@ -14,9 +16,7 @@ namespace Rubberduck.Editor.DialogServices.NewProject
         private readonly IWorkspaceService _workspaceService;
 
         public OpenProjectCommand(UIServiceHelper service,
-            IFileSystem fileSystem,
-            IWorkspaceService workspace
-            )
+            IFileSystem fileSystem, IWorkspaceService workspace)
             : base(service)
         {
             _fileSystem = fileSystem;

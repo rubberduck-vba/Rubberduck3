@@ -36,11 +36,13 @@ using Rubberduck.UI.NewProject;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Services.Settings;
+using Rubberduck.UI.Services.WorkspaceExplorer;
 using Rubberduck.UI.Settings;
 using Rubberduck.UI.Shell;
 using Rubberduck.UI.Shell.StatusBar;
 using Rubberduck.UI.Splash;
 using Rubberduck.UI.Windows;
+using Rubberduck.UI.WorkspaceExplorer;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -240,6 +242,7 @@ namespace Rubberduck.Editor
             services.AddSingleton<ISettingViewModelFactory, SettingViewModelFactory>();
 
             services.AddSingleton<IWorkspaceService, WorkspaceService>();
+            services.AddSingleton<WorkspaceExplorerViewModel>();
             services.AddSingleton<WorkspaceStateManager>();
 
             services.AddSingleton<FileCommandHandlers>();
@@ -260,6 +263,7 @@ namespace Rubberduck.Editor
             services.AddSingleton<ShowWorkspaceExplorerCommand>();
 
             services.AddSingleton<ToolsCommandHandlers>();
+            services.AddSingleton<CloseToolWindowCommand>();
             services.AddSingleton<ShowRubberduckSettingsCommand>();
         }
 

@@ -1,4 +1,5 @@
-﻿using Rubberduck.UI.Command.Abstract;
+﻿using Rubberduck.SettingsProvider.Model.Editor.Tools;
+using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
@@ -16,33 +17,51 @@ namespace Rubberduck.UI.Command
         private readonly ShellProvider _shell;
 
         private readonly ShowRubberduckSettingsCommand _settingsCommand;
-        private readonly Lazy<WorkspaceExplorerViewModel> _vm;
+        private readonly CloseToolWindowCommand _closeToolwindowCommand;
+        private readonly IWorkspaceExplorerViewModel _vm;
 
         public ShowWorkspaceExplorerCommand(UIServiceHelper service, ShellProvider shell,
-            IWorkspaceService workspaceService,
-            ShowRubberduckSettingsCommand showSettingsCommand) 
+            IWorkspaceService workspaceService, WorkspaceExplorerViewModel explorer,
+            ShowRubberduckSettingsCommand showSettingsCommand
+,           CloseToolWindowCommand closeToolwindowCommand)
             : base(service)
         {
             _workspace = workspaceService;
             _settingsCommand = showSettingsCommand;
+            _closeToolwindowCommand = closeToolwindowCommand;
             _shell = shell;
 
-            _vm = new Lazy<WorkspaceExplorerViewModel>(() => new WorkspaceExplorerViewModel(_workspace, _settingsCommand));
+            _vm = explorer;
         }
 
+        private WorkspaceExplorerControl? _view;
         protected async override Task OnExecuteAsync(object? parameter)
         {
             var shell = _shell.ViewModel;
-            var vm = _vm.Value;
-            if (!shell.ToolWindows.Any(e => e.Title == vm.Title))
-            {
-                var view = new WorkspaceExplorerControl();
-                view.DataContext = vm;
-                vm.Content = view;
+            _vm.IsSelected = true;
 
-                // TODO get from workspace if available, otherwise get from settings/defaults:
-                _shell.View.LeftPaneToolTabs.AddToSource(view);
-                shell.ToolWindows.Add(vm);
+            if (!shell.ToolWindows.Any(e => e.Title == _vm.Title) || _view is null)
+            {
+                if (_view is null)
+                {
+                    _view = new WorkspaceExplorerControl { DataContext = _vm };
+                    _vm.Content = _view; // <~ FIXME WTF
+
+                    // TODO get from workspace if available, otherwise get from settings/defaults:
+                    _shell.View.LeftPaneToolTabs.AddToSource(_view);
+                }
+
+                shell.ToolWindows.Add(_vm);
+            }
+
+            switch (_vm.DockingLocation)
+            {
+                case DockingLocation.DockLeft:
+                    _shell.View.LeftPaneExpander.IsExpanded = true;
+                    break;
+                case DockingLocation.DockRight:
+                    _shell.View.RightPaneExpander.IsExpanded = true;
+                    break;
             }
 
             await Task.CompletedTask;

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 
@@ -58,6 +57,24 @@ namespace Rubberduck.UI.Shell
         }
         public static readonly DependencyProperty CheckedIconProperty =
             DependencyProperty.Register(nameof(CheckedIcon), typeof(ImageSource), typeof(FlatToggleButton));
+
+        public static readonly DependencyProperty OffsetXProperty =
+            DependencyProperty.Register(nameof(OffsetX), typeof(double), typeof(FlatToggleButton));
+
+        public double OffsetX
+        {
+            get => (double)GetValue(OffsetXProperty);
+            set => SetProperty(OffsetXProperty, value);
+        }
+
+        public static readonly DependencyProperty OffsetYProperty =
+            DependencyProperty.Register(nameof(OffsetY), typeof(double), typeof(FlatToggleButton));
+
+        public double OffsetY
+        {
+            get => (double)GetValue(OffsetYProperty);
+            set => SetProperty(OffsetYProperty, value);
+        }
 
         private void SetProperty<TValue>(DependencyProperty property, TValue value)
         {

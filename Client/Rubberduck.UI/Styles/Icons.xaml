@@ -10,7 +10,9 @@
     <BitmapImage x:Key="WindowMaximizeIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/window-maximize-regular.png" />
     <BitmapImage x:Key="WindowRestoreIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/window-restore-regular.png" />
     <BitmapImage x:Key="WindowMinimizeIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/window-minimize-regular.png" />
+    <BitmapImage x:Key="WindowsIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/windows.png"/>
 
+    <BitmapImage x:Key="XMarkIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/xmark-solid.png"/>
     <BitmapImage x:Key="GearIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/gear-solid.png"/>
     <BitmapImage x:Key="PinIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/thumbtack-solid.png"/>
 

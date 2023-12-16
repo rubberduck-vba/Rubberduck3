@@ -58,6 +58,14 @@ namespace Rubberduck.UI.Shell
         public static readonly DependencyProperty TitleProperty =
             DependencyProperty.Register(nameof(Title), typeof(string), typeof(ThunderFrame));
 
+        public bool ShowCloseButton
+        {
+            get => (bool)GetValue(ShowCloseButtonProperty);
+            set => SetValue(ShowCloseButtonProperty, value);
+        }
+        public static readonly DependencyProperty ShowCloseButtonProperty =
+            DependencyProperty.Register(nameof(ShowCloseButton), typeof(bool), typeof(ThunderFrame));
+
         public bool ShowPinButton
         {
             get => (bool)GetValue(ShowPinButtonProperty);

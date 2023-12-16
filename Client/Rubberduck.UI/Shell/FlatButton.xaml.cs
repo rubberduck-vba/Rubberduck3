@@ -30,5 +30,39 @@ namespace Rubberduck.UI.Shell
                 }
             }
         }
+
+        public static readonly DependencyProperty OffsetXProperty =
+            DependencyProperty.Register(nameof(OffsetX), typeof(double), typeof(FlatButton));
+
+        public double OffsetX
+        {
+            get => (double)GetValue(OffsetXProperty);
+            set
+            {
+                var oldValue = OffsetX;
+                if (value != oldValue)
+                {
+                    SetValue(OffsetXProperty, value);
+                    OnPropertyChanged(new(OffsetXProperty, oldValue, value));
+                }
+            }
+        }
+
+        public static readonly DependencyProperty OffsetYProperty =
+            DependencyProperty.Register(nameof(OffsetY), typeof(double), typeof(FlatButton));
+
+        public double OffsetY
+        {
+            get => (double)GetValue(OffsetYProperty);
+            set
+            {
+                var oldValue = OffsetY;
+                if (value != oldValue)
+                {
+                    SetValue(OffsetYProperty, value);
+                    OnPropertyChanged(new(OffsetYProperty, oldValue, value));
+                }
+            }
+        }
     }
 }

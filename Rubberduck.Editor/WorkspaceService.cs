@@ -26,6 +26,9 @@ namespace Rubberduck.Editor
         private readonly Dictionary<Uri, IFileSystemWatcher> _watchers = [];
         private readonly Func<ILanguageClient> _lsp;
 
+        public event EventHandler<WorkspaceServiceEventArgs> WorkspaceOpened = delegate { };
+        public event EventHandler<WorkspaceServiceEventArgs> WorkspaceClosed = delegate { };
+
         public WorkspaceService(ILogger<WorkspaceService> logger, RubberduckSettingsProvider settingsProvider,
             WorkspaceStateManager state, IFileSystem fileSystem, PerformanceRecordAggregator performance,
             IProjectFileService projectFile, Func<ILanguageClient> lsp)
@@ -36,6 +39,9 @@ namespace Rubberduck.Editor
             _projectFile = projectFile;
             _lsp = lsp;
         }
+
+        public void OnWorkspaceOpened(Uri uri) => WorkspaceOpened(this, new(uri));
+        public void OnWorkspaceClosed(Uri uri) => WorkspaceClosed(this, new(uri));
 
         public IFileSystem FileSystem => _fileSystem;
 
@@ -73,6 +79,8 @@ namespace Rubberduck.Editor
                     LoadWorkspaceFiles(sourceRoot, projectFile);
                     EnableFileSystemWatcher(uri);
                     _projectFiles.Add(projectFile);
+
+                    OnWorkspaceOpened(uri);
 
                 }, out var exception) && exception is not null)
                 {
@@ -386,8 +394,12 @@ namespace Rubberduck.Editor
 
         public void CloseWorkspace()
         {
+            var uri = _state.WorkspaceRoot ?? throw new InvalidOperationException("WorkspaceStateManager.WorkspaceRoot is unexpectedly null.");
+ 
             CloseAllFiles();
             _state.UnloadWorkspace();
+
+            OnWorkspaceClosed(uri);
         }
 
         public void Dispose()
@@ -402,7 +414,7 @@ namespace Rubberduck.Editor
                 watcher.Dispose();
             }
             _watchers.Clear();
-            _state.UnloadWorkspace();
+            CloseWorkspace();
         }
     }
 }

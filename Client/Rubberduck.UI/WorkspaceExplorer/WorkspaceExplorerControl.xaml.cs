@@ -1,4 +1,6 @@
 ﻿using Dragablz;
+using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.SharedHandlers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

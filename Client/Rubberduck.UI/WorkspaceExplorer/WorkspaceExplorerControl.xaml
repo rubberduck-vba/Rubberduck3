@@ -7,8 +7,8 @@
         xmlns:b="clr-namespace:Rubberduck.UI.Behaviors"
         xmlns:xb="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
-        xmlns:local="clr-namespace:Rubberduck.UI.WorkspaceExplorer" 
-        d:DataContext="{d:DesignInstance Type=local:IWorkspaceExplorerViewModel, IsDesignTimeCreatable=False}"
+        xmlns:local="clr-namespace:Rubberduck.UI.WorkspaceExplorer" xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             d:DataContext="{d:DesignInstance Type=local:IWorkspaceExplorerViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d" 
         x:Name="WorkspaceExplorerRoot"
         MinWidth="255"
@@ -20,7 +20,10 @@
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <FrameworkElement x:Key="BindingAnchor" DataContext="{Binding DataContext, RelativeSource={RelativeSource Mode=Self}}" />
-            <HierarchicalDataTemplate x:Key="WorkspaceFolderTemplate" DataType="local:WorkspaceTreeNodeViewModel" ItemsSource="{Binding Children}">
+            <CollectionViewSource x:Key="ChildItemsView" Source="{Binding Workspaces}" />
+
+
+            <HierarchicalDataTemplate x:Key="WorkspaceFolderTemplate" DataType="local:WorkspaceTreeNodeViewModel" ItemsSource="{Binding View, Source={StaticResource ChildItemsView}}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{DynamicResource SharpFolderClosedIcon}">
                         <Image.Style>
@@ -90,7 +93,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <shell:ThunderFrame ShowAcceptButton="False" ShowCancelButton="False" 
-                        ShowPinButton="True"
+                        ShowPinButton="True" ShowCloseButton="True"
                         ShowSettingsCommand="{Binding ShowSettingsCommand}" ShowSettingsCommandParameter="{Binding SettingKey}"
                         ShowTitle="True" Title="{Binding Title}">
         <Grid>
@@ -110,10 +113,13 @@
 
                 <TreeView.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Open" FontWeight="Bold" Command="{x:Static ApplicationCommands.Open}" CommandParameter="{Binding Selection.Uri}" />
+                        <MenuItem Header="Open" FontWeight="Bold" Command="{x:Static local:WorkspaceExplorerCommands.OpenFileCommand}" CommandParameter="{Binding Selection.Uri}" />
                         <Separator />
-                        <MenuItem Header="Rename" CommandParameter="{Binding Selection.Uri}" />
-                        <MenuItem Header="Delete" Command="{x:Static ApplicationCommands.Delete}"  CommandParameter="{Binding Selection.Uri}" />
+                        <MenuItem Header="Rename" Command="{x:Static local:WorkspaceExplorerCommands.RenameUriCommand}" CommandParameter="{Binding Selection.Uri}" />
+                        <MenuItem Header="Delete" Command="{x:Static local:WorkspaceExplorerCommands.DeleteUriCommand}"  CommandParameter="{Binding Selection.Uri}" />
+                        <Separator />
+                        <MenuItem Header="Add Folder" Command="{x:Static local:WorkspaceExplorerCommands.CreateFileCommand}"  CommandParameter="{Binding Selection.Uri}" />
+                        <MenuItem Header="Add File" Command="{x:Static local:WorkspaceExplorerCommands.CreateFileCommand}"  CommandParameter="{Binding Selection.Uri}" />
                     </ContextMenu>
                 </TreeView.ContextMenu>
                 
