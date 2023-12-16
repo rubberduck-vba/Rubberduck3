@@ -48,7 +48,18 @@ namespace Rubberduck.UI.Command
                     _vm.Content = _view; // <~ FIXME WTF
 
                     // TODO get from workspace if available, otherwise get from settings/defaults:
-                    _shell.View.LeftPaneToolTabs.AddToSource(_view);
+                    switch (_vm.DockingLocation)
+                    {
+                        case DockingLocation.DockLeft:
+                            _shell.View.LeftPaneToolTabs.AddToSource(_view);
+                            break;
+                        case DockingLocation.DockRight:
+                            _shell.View.RightPaneToolTabs.AddToSource(_view);
+                            break;
+                        case DockingLocation.DockBottom:
+                            _shell.View.BottomPaneToolTabs.AddToSource(_view);
+                            break;
+                    }
                 }
 
                 shell.ToolWindows.Add(_vm);
@@ -61,6 +72,9 @@ namespace Rubberduck.UI.Command
                     break;
                 case DockingLocation.DockRight:
                     _shell.View.RightPaneExpander.IsExpanded = true;
+                    break;
+                case DockingLocation.DockBottom:
+                    _shell.View.BottomPaneExpander.IsExpanded = true;
                     break;
             }
 

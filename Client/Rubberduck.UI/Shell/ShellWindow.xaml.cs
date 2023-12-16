@@ -33,11 +33,11 @@ namespace Rubberduck.UI.Shell
 
             LeftPaneExpander.MouseEnter += ToolPaneExpanderMouseEnter;
             RightPaneExpander.MouseEnter += ToolPaneExpanderMouseEnter;
-            //BottomPaneExpander.MouseEnter += ToolPaneExpanderMouseEnter;
+            BottomPaneExpander.MouseEnter += ToolPaneExpanderMouseEnter;
 
             LeftPaneExpander.MouseLeave += ToolPaneExpanderMouseLeave;
             RightPaneExpander.MouseLeave += ToolPaneExpanderMouseLeave;
-            //BottomPaneExpander.MouseLeave += ToolPaneExpanderMouseLeave;
+            BottomPaneExpander.MouseLeave += ToolPaneExpanderMouseLeave;
         }
 
         private IToolPanelViewModel GetToolPanelModel(Expander expander)
@@ -52,10 +52,10 @@ namespace Rubberduck.UI.Shell
             {
                 return vm.RightToolPanel;
             }
-            //else if (expander == BottomPaneExpander)
-            //{
-            //    return vm.BottomToolPanel;
-            //}
+            else if (expander == BottomPaneExpander)
+            {
+                return vm.BottomToolPanel;
+            }
 
             throw new NotSupportedException();
         }

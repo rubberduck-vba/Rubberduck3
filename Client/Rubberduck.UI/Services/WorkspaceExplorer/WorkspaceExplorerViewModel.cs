@@ -41,7 +41,7 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
 
         private void OnWorkspaceOpened(object? sender, WorkspaceServiceEventArgs e)
         {
-            var project = _service.ProjectFiles.SingleOrDefault(file => file.Uri == e.Uri);
+            var project = _service.ProjectFiles.SingleOrDefault(file => file.Uri == new Uri(e.Uri, ProjectFile.FileName));
             if (project != null)
             {
                 Workspaces.Add(WorkspaceViewModel.FromModel(project, _service));
@@ -95,7 +95,7 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
 
         public ObservableCollection<WorkspaceViewModel> Workspaces { get; } = new();
 
-        public DockingLocation DockingLocation { get; set; } = DockingLocation.DockLeft;
+        public DockingLocation DockingLocation { get; set; } = DockingLocation.DockBottom;
         public object Header
         {
             get => Title;

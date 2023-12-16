@@ -47,11 +47,25 @@ namespace Rubberduck.UI.Command.SharedHandlers
             if (parameter is IToolWindowViewModel toolwindow)
             {
                 _shell.ViewModel.ToolWindows.Remove(toolwindow);
-                if (toolwindow.DockingLocation == DockingLocation.DockLeft)
+                var keepExpanded = _shell.View.LeftPaneExpander.IsExpanded = _shell.ViewModel.ToolWindows.Any(e => e.IsPinned && e.DockingLocation == toolwindow.DockingLocation);
+                switch (toolwindow.DockingLocation)
                 {
-                    _shell.View.LeftPaneToolTabs.RemoveFromSource(toolwindow);
+                    case DockingLocation.DockLeft:
+                        _shell.View.LeftPaneToolTabs.RemoveFromSource(toolwindow);
+                        _shell.View.LeftPaneExpander.IsExpanded = keepExpanded;
+                        break;
+                    case DockingLocation.DockRight:
+                        _shell.View.RightPaneToolTabs.RemoveFromSource(toolwindow);
+                        _shell.View.RightPaneExpander.IsExpanded = keepExpanded;
+                        break;
+                    case DockingLocation.DockBottom:
+                        _shell.View.BottomPaneToolTabs.RemoveFromSource(toolwindow);
+                        _shell.View.BottomPaneExpander.IsExpanded = keepExpanded;
+                        break;
                 }
             }
+
+            await Task.CompletedTask;
         }
     }
 
