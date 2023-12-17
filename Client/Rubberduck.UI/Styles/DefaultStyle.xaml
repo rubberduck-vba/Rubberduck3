@@ -162,7 +162,8 @@
                     </Border.Style>
                     <shell:FlatButton x:Name="ControlBoxCloseButton" 
                                       WindowChrome.IsHitTestVisibleInChrome="True"
-                                      Margin="2,4" OffsetX="2"
+                                      Height="16" Width="24"
+                                      Margin="4"
                                       Icon="{DynamicResource XMarkIcon}"
                                       Command="{x:Static SystemCommands.CloseWindowCommand}" 
                                       ToolTip="Close" />
@@ -171,7 +172,7 @@
                 <shell:FlatButton x:Name="ControlBoxMaximizeButton" 
                                   WindowChrome.IsHitTestVisibleInChrome="True"
                                   DockPanel.Dock="Right"
-                                  OffsetX="2" 
+                                  Height="16"
                                   Margin="2,0"
                                   Icon="{DynamicResource WindowMaximizeIcon}"
                                   Command="{x:Static SystemCommands.MaximizeWindowCommand}" 
@@ -182,7 +183,7 @@
                 <shell:FlatButton x:Name="ControlBoxRestoreButton" 
                                   WindowChrome.IsHitTestVisibleInChrome="True"
                                   DockPanel.Dock="Right"
-                                  OffsetX="2" 
+                                  Height="16"
                                   Margin="2,0"
                                   Icon="{DynamicResource WindowRestoreIcon}"
                                   Command="{x:Static SystemCommands.RestoreWindowCommand}" 
@@ -193,7 +194,7 @@
                 <shell:FlatButton x:Name="ControlBoxMinimizeButton" 
                                   WindowChrome.IsHitTestVisibleInChrome="True"
                                   DockPanel.Dock="Right"
-                                  OffsetX="2" 
+                                  Height="16"
                                   Margin="2,0"
                                   Icon="{DynamicResource WindowMinimizeIcon}"
                                   Command="{x:Static SystemCommands.MinimizeWindowCommand}" 
@@ -203,9 +204,9 @@
                 <shell:FlatButton x:Name="ControlBoxWindowsButton" 
                                   WindowChrome.IsHitTestVisibleInChrome="True"
                                   VerticalContentAlignment="Center"
+                                  Height="16"
                                   DockPanel.Dock="Right"
-                                  OffsetX="2" OffsetY="0.5"
-                                  Margin="5,0"
+                                  Margin="5,0" OffsetX="2"
                                   Icon="{DynamicResource WindowsIcon}"
                                   Command="{x:Static SystemCommands.RestoreWindowCommand}" />
 
@@ -251,62 +252,6 @@
             </MultiDataTrigger>
         </Style.Triggers>
     </Style>
-
-    <ControlTemplate x:Key="FlatButtonTemplate" TargetType="Button">
-        <Canvas>
-            <Image Source="{Binding Icon, ElementName=FlatButtonRoot}"
-                   Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Stretch="Uniform"
-                   Canvas.Left="0"
-                   Canvas.Top="0"
-                   HorizontalAlignment="Center" VerticalAlignment="Center" />
-            <Rectangle Fill="{TemplateBinding Foreground}"
-                   Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Stretch="Uniform"
-                   Canvas.Left="{TemplateBinding shell:FlatButton.OffsetX}"
-                   Canvas.Top="{TemplateBinding shell:FlatButton.OffsetY}"
-                   HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Rectangle.OpacityMask>
-                    <ImageBrush Stretch="Uniform" ImageSource="{Binding Icon, ElementName=FlatButtonRoot}" />
-                </Rectangle.OpacityMask>
-            </Rectangle>
-        </Canvas>
-    </ControlTemplate>
-
-    <Style x:Key="FlatButtonStyle" TargetType="Button">
-        <Style.Setters>
-            <Setter Property="Template" Value="{DynamicResource FlatButtonTemplate}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Margin" Value="4,2" />
-            <Setter Property="MinHeight" Value="16" />
-            <Setter Property="MinWidth" Value="20" />
-            <Setter Property="Foreground" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
-            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}"/>
-        </Style.Setters>
-        <Style.Triggers>
-            <MultiDataTrigger>
-                <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
-                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
-                </MultiDataTrigger.Conditions>
-                <MultiDataTrigger.Setters>
-                    <Setter Property="Background" Value="{DynamicResource ThemeWhiteMediumColorBrush}" />
-                    <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
-                    <Setter Property="Cursor" Value="Hand" />
-                </MultiDataTrigger.Setters>
-            </MultiDataTrigger>
-            <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="True">
-                <DataTrigger.Setters>
-                    <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1MediumColorBrush}" />
-                </DataTrigger.Setters>
-            </DataTrigger>
-            <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="False">
-                <DataTrigger.Setters>
-                    <Setter Property="Background" Value="{DynamicResource ThemeWhiteMediumColorBrush}" />
-                    <Setter Property="Foreground" Value="{DynamicResource ThemeTextInactiveColorBrush}" />
-                </DataTrigger.Setters>
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
 
     <Style x:Key="ActionButtonStyle" TargetType="Button">
         <Style.Resources>
@@ -413,6 +358,7 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+    
     <Style x:Key="FormFieldReadOnlyTextBoxStyle" TargetType="TextBox">
         <Style.Setters>
             <Setter Property="Padding" Value="4,0" />
@@ -451,6 +397,7 @@
             <Setter Property="FontWeight" Value="Regular" />
         </Style.Setters>
     </Style>
+    
     <Style x:Key="SectionTitleLabelStyle" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
         <Style.Setters>
             <Setter Property="FontSize" Value="14" />

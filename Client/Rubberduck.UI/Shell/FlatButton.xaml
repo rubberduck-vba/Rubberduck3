@@ -6,15 +6,74 @@
         xmlns:local="clr-namespace:Rubberduck.UI.Shell"
         mc:Ignorable="d" 
         x:Name="FlatButtonRoot"
-        Style="{DynamicResource FlatButtonStyle}"
-        Template="{DynamicResource FlatButtonTemplate}"
-        MinHeight="16" MinWidth="20"
+        MinHeight="16" MinWidth="24"
         d:DesignHeight="20" d:DesignWidth="24">
     <Button.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <ControlTemplate x:Key="FlatButtonTemplate" TargetType="Button">
+                <Canvas>
+                    <Image Source="{TemplateBinding local:FlatButton.Icon}"
+                           Height="{TemplateBinding local:FlatButton.Height}" 
+                           Width="{TemplateBinding local:FlatButton.Width}" 
+                           Stretch="Uniform" 
+                           Canvas.Left="0"
+                           Canvas.Top="0"
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Center" />
+                    <Rectangle Fill="{TemplateBinding local:FlatButton.Foreground}"
+                               Height="{TemplateBinding local:FlatButton.Height}" 
+                               Width="{TemplateBinding local:FlatButton.Width}" 
+                               Canvas.Left="{TemplateBinding local:FlatButton.OffsetX}"
+                               Canvas.Top="{TemplateBinding local:FlatButton.OffsetY}"
+                               Stretch="Uniform"
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center">
+                        <Rectangle.OpacityMask>
+                            <ImageBrush Stretch="Uniform" ImageSource="{TemplateBinding local:FlatButton.Icon}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Canvas>
+            </ControlTemplate>
         </ResourceDictionary>
     </Button.Resources>
+    <Button.Style>
+        <Style TargetType="Button">
+            <Style.Setters>
+                <Setter Property="Template" Value="{DynamicResource FlatButtonTemplate}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Margin" Value="4,2" />
+                <Setter Property="MinHeight" Value="16" />
+                <Setter Property="MinWidth" Value="24" />
+                <Setter Property="Foreground" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
+                <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}"/>
+            </Style.Setters>
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                        <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                        <Setter Property="Background" Value="{DynamicResource ThemeWhiteMediumColorBrush}" />
+                        <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+                        <Setter Property="Cursor" Value="Hand" />
+                    </MultiDataTrigger.Setters>
+                </MultiDataTrigger>
+                <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                    <DataTrigger.Setters>
+                        <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1MediumColorBrush}" />
+                    </DataTrigger.Setters>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="False">
+                    <DataTrigger.Setters>
+                        <Setter Property="Background" Value="{DynamicResource ThemeWhiteMediumColorBrush}" />
+                        <Setter Property="Foreground" Value="{DynamicResource ThemeTextInactiveColorBrush}" />
+                    </DataTrigger.Setters>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Button.Style>
 </Button>

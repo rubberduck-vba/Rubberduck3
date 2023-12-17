@@ -9,9 +9,9 @@
              xmlns:local="clr-namespace:Rubberduck.UI.LanguageServerTrace"
              mc:Ignorable="d" 
              x:Name="LanguageServerTraceRoot"
-             MinHeight="255"
+             MinHeight="125"
              d:DataContext="{d:DesignInstance Type=local:IServerTraceViewModel, IsDesignTimeCreatable=False}"
-             d:DesignHeight="250" d:DesignWidth="600">
+             d:DesignHeight="150" d:DesignWidth="600">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -40,7 +40,7 @@
                 <shell:FlatButton Height="16" Icon="{DynamicResource HeartMonitorIcon}" Command="{Binding OpenLogFileCommand}" />
             </StackPanel>
 
-            <shell:BindableTextEditor Grid.Row="1" IsReadOnly="True"
+            <shell:BindableTextEditor Grid.Row="1" IsReadOnly="True" IsEnabled="False"
                                       Text="{Binding ConsoleContent}" WordWrap="False"
                                       ShowLineNumbers="True"
                                       HorizontalScrollBarVisibility="Auto"

@@ -21,7 +21,8 @@ namespace Rubberduck.Editor.Shell
         private readonly UIServiceHelper _service;
 
         public ShellWindowViewModel(UIServiceHelper service, 
-            IInterTabClient interTabClient, 
+            InterTabClient interTabClient, 
+            InterToolTabClient interToolTabClient,
             IShellStatusBarViewModel statusBar,
             IWindowChromeViewModel chrome,
             FileCommandHandlers fileCommandHandlers,
@@ -30,6 +31,7 @@ namespace Rubberduck.Editor.Shell
         {
             _service = service;
             InterTabClient = interTabClient;
+            InterToolTabClient = interToolTabClient;
 
             StatusBar = statusBar;
             Chrome = chrome;
@@ -70,6 +72,7 @@ namespace Rubberduck.Editor.Shell
         public IWindowChromeViewModel Chrome { get; }
 
         public IInterTabClient InterTabClient { get; init; }
+        public IInterTabClient InterToolTabClient { get; init; }
 
         public ItemActionCallback ClosingTabItemHandler => OnTabClosed;
 

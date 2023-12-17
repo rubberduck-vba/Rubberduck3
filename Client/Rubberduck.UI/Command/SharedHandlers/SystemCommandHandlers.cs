@@ -2,6 +2,7 @@
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Windows;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,20 @@ using System.Windows.Input;
 
 namespace Rubberduck.UI.Command.SharedHandlers
 {
+    public class OpenLogFileCommand : CommandBase
+    {
+        public OpenLogFileCommand(UIServiceHelper service)
+            : base(service)
+        {
+
+        }
+
+        protected async override Task OnExecuteAsync(object? parameter)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class SystemCommandHandlers : CommandHandlers
     {
         private readonly Window _window;

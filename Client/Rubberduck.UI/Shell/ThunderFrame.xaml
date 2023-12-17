@@ -38,6 +38,7 @@
                                 <local:DuckyBackgroundControl Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
 
                                 <DockPanel Grid.Row="0" VerticalAlignment="Top" Margin="5,5,0,0">
+                                    
                                     <local:FlatButton DockPanel.Dock="Right" VerticalAlignment="Center"
                                                       Height="16" Width="16"
                                                       ToolTip="Close"
@@ -72,10 +73,11 @@
                                 <Border Grid.Row="1" BorderThickness="0" CornerRadius="8" Margin="4"
                                         Background="{DynamicResource ThemeWhiteLightColorBrush50}"/>
 
-                                <ContentPresenter Grid.Row="1" Margin="8,4" Height="Auto"
+                                <ContentPresenter Grid.Row="1" Margin="8" Height="Auto"
                                                   Content="{Binding Content, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"/>
 
                                 <DockPanel Grid.Row="2" HorizontalAlignment="Right" 
+                                           Visibility="{Binding ShowAcceptButton, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}"
                                            Margin="16,8,8,8" 
                                            FlowDirection="RightToLeft">
 

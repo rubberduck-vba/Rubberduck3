@@ -15,7 +15,7 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
         private readonly IWorkspaceService _service;
 
         public WorkspaceExplorerViewModel(IWorkspaceService service, ShowRubberduckSettingsCommand showSettingsCommand, CloseToolWindowCommand closeToolwindowCommand)
-            : base(DockingLocation.DockBottom, showSettingsCommand, closeToolwindowCommand)
+            : base(DockingLocation.DockLeft, showSettingsCommand, closeToolwindowCommand)
         {
             _service = service;
             Workspaces = new(service.ProjectFiles.Select(workspace => WorkspaceViewModel.FromModel(workspace, _service)));

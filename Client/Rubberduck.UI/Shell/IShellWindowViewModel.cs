@@ -26,6 +26,7 @@ namespace Rubberduck.UI.Shell
 
         IWindowChromeViewModel Chrome { get; }
 
+        IInterTabClient InterToolTabClient { get; }
         IInterTabClient InterTabClient { get; }
     }
 

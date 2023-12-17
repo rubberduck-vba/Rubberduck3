@@ -8,6 +8,18 @@ using System.Windows;
 
 namespace Rubberduck.Editor.Shell
 {
+    public class InterToolTabClient : IInterTabClient
+    {
+        public INewTabHost<Window> GetNewHost(IInterTabClient interTabClient, object partition, TabablzControl source)
+        {
+            var vm = new ChildWindowViewModel(interTabClient, Partitions.Toolwindows);
+            var view = new ShellChildToolWindow(vm);
+            return new NewTabHost<Window>(view, view.Tabs);
+        }
+
+        public TabEmptiedResponse TabEmptiedHandler(TabablzControl tabControl, Window window) => TabEmptiedResponse.CloseWindowOrLayoutBranch;
+    }
+
     public class InterTabClient : IInterTabClient
     {
         public INewTabHost<Window> GetNewHost(IInterTabClient interTabClient, object partition, TabablzControl source)

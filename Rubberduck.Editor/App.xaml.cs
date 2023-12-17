@@ -223,7 +223,8 @@ namespace Rubberduck.Editor
             services.AddSingleton<IShellStatusBarViewModel, ShellStatusBarViewModel>();
             services.AddSingleton<IWindowChromeViewModel, WindowChromeViewModel>();
 
-            services.AddSingleton<IInterTabClient, InterTabClient>();
+            services.AddSingleton<InterTabClient>();
+            services.AddSingleton<InterToolTabClient>();
 
             services.AddSingleton<ISettingsChangedHandler<RubberduckSettings>>(provider => provider.GetRequiredService<RubberduckSettingsProvider>());
             services.AddSingleton<DidChangeConfigurationHandler>();
@@ -267,6 +268,7 @@ namespace Rubberduck.Editor
 
             services.AddSingleton<ToolsCommandHandlers>();
             services.AddSingleton<CloseToolWindowCommand>();
+            services.AddSingleton<OpenLogFileCommand>();
             services.AddSingleton<ShowRubberduckSettingsCommand>();
         }
 

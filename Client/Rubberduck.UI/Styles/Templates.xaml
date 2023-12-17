@@ -394,6 +394,10 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+            <Border Grid.Row="0" x:Name="contentPanel" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}"
+                    Grid.Column="1" KeyboardNavigation.DirectionalNavigation="Contained" KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Local" Margin="-1 0 0 0">
+                <Grid x:Name="PART_ItemsHolder" />
+            </Border>
             <Grid Grid.Row="1" Grid.Column="1" x:Name="HeaderContainerGrid" Visibility="{TemplateBinding IsHeaderPanelVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -439,10 +443,6 @@
                                                     ContentTemplateSelector="{TemplateBinding HeaderSuffixContentTemplateSelector}"
                                                     VerticalAlignment="Top" />
             </Grid>
-            <Border Grid.Row="0" x:Name="contentPanel" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}"
-                    Grid.Column="1" KeyboardNavigation.DirectionalNavigation="Contained" KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Local" Margin="-1 0 0 0">
-                <Grid x:Name="PART_ItemsHolder" />
-            </Border>
         </Grid>
     </ControlTemplate>
 

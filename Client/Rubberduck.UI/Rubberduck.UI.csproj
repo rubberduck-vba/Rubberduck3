@@ -484,6 +484,9 @@
     <Compile Update="NewProject\NewProjectWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Shell\ShellChildToolWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Shell\ShellChildWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

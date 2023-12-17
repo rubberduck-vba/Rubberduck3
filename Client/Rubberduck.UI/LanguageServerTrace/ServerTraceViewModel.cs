@@ -12,23 +12,27 @@ namespace Rubberduck.UI.LanguageServerTrace
     {
         public LanguageServerTraceViewModel(UIServiceHelper service, 
             ShowRubberduckSettingsCommand showSettingsCommand, 
-            CloseToolWindowCommand closeToolWindowCommand) 
-            : base(service, showSettingsCommand, closeToolWindowCommand)
+            CloseToolWindowCommand closeToolWindowCommand,
+            OpenLogFileCommand openLogFileCommand) 
+            : base(service, showSettingsCommand, closeToolWindowCommand, openLogFileCommand)
         {
         }
 
         public override string Title { get; } = "Language Server Trace";
+        public override string SettingKey { get; } //= nameof(LanguageServerTraceToolSettings);
     }
 
     public class ServerTraceViewModel : ToolWindowViewModelBase, IServerTraceViewModel
     {
         public ServerTraceViewModel(UIServiceHelper service, 
             ShowRubberduckSettingsCommand showSettingsCommand, 
-            CloseToolWindowCommand closeToolWindowCommand)
+            CloseToolWindowCommand closeToolWindowCommand,
+            OpenLogFileCommand openLogFileCommand)
             : base(DockingLocation.DockBottom, showSettingsCommand, closeToolWindowCommand)
         {
             CopyContentCommand = new DelegateCommand(service, param => Clipboard.SetText(_consoleContent), param => ConsoleContent.Length > 0);
             ClearContentCommand = new DelegateCommand(service, param => ConsoleContent = string.Empty, param => ConsoleContent.Length > 0);
+            OpenLogFileCommand = openLogFileCommand;
         }
 
         public override string Title { get; } = "Server Trace";
