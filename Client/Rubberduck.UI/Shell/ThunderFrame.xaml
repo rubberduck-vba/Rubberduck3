@@ -37,14 +37,13 @@
                                 <Border Grid.RowSpan="3" Background="{DynamicResource ThemeBackgroundMediumColorBrush}" />
                                 <local:DuckyBackgroundControl Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
 
-                                <DockPanel Grid.Row="0" VerticalAlignment="Top" Margin="5,5,0,0">
+                                <DockPanel Grid.Row="0" VerticalAlignment="Top" Margin="2,2,0,0">
                                     
                                     <local:FlatButton DockPanel.Dock="Right" VerticalAlignment="Center"
                                                       Height="16" Width="16"
                                                       ToolTip="Close"
                                                       Visibility="{Binding ShowCloseButton, Converter={StaticResource BoolToVisibilityConverter}}"
-                                                      Command="{Binding CloseToolWindowCommand}"
-                                                      CommandParameter="{Binding}"
+                                                      Command="{Binding CloseToolWindowCommand}" CommandParameter="{Binding}"
                                                       Icon="{DynamicResource XMarkIcon}" />
 
                                     <local:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Center"
@@ -66,7 +65,7 @@
                                     <Label DockPanel.Dock="Top" HorizontalAlignment="Left" VerticalAlignment="Center"
                                        Content="{Binding Title, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
                                        Foreground="{DynamicResource ThemeTextColorBrush}"
-                                       FontWeight="SemiBold" FontSize="16"
+                                       FontWeight="SemiBold" FontSize="13"
                                        Visibility="{Binding ShowTitle, Converter={StaticResource BoolToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}"/>
                                 </DockPanel>
 

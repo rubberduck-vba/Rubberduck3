@@ -97,12 +97,19 @@
                         ShowTitle="True" Title="{Binding Title}">
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="5" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <TreeView Margin="5,5,5,0" BorderThickness="0" Background="Transparent" AllowDrop="True" 
+            <WrapPanel Grid.Row="0" Orientation="Horizontal">
+                <shell:FlatButton Height="16" Icon="{DynamicResource AddFolderIcon}" />
+                <shell:FlatButton Height="16" Icon="{DynamicResource FolderOpenIcon}" />
+            </WrapPanel>
+
+            <TreeView Grid.Row="1" 
+                      Margin="5,5,5,0" BorderThickness="0" Background="Transparent" AllowDrop="True" 
                       ItemsSource="{Binding Workspaces}"
                       ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
 
@@ -142,7 +149,7 @@
                 </TreeView.ItemTemplate>
             </TreeView>
 
-            <Expander Grid.Row="2" ExpandDirection="Up"
+            <Expander Grid.Row="3" ExpandDirection="Up"
                       Background="{DynamicResource BackgroundDarkBrush}" 
                       Visibility="{Binding HasSelectionInfo, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Expander.Header>

@@ -31,14 +31,14 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Horizontal" Margin="0,5">
+            <WrapPanel Orientation="Horizontal" Margin="0,5">
                 <shell:FlatToggleButton Height="16" Width="20" OffsetX="2" 
                                         Icon="{DynamicResource PauseIcon}" d:IconSource="{DynamicResource PauseIcon}" 
                                         IsChecked="{Binding IsPaused}"/>
-                <shell:FlatButton Height="16" Icon="{DynamicResource EraserIcon}" Command="{Binding ClearContentCommand}" />
-                <shell:FlatButton Height="16" Icon="{DynamicResource CopyIcon}" Command="{Binding CopyContentCommand}" />
-                <shell:FlatButton Height="16" Icon="{DynamicResource HeartMonitorIcon}" Command="{Binding OpenLogFileCommand}" />
-            </StackPanel>
+                <shell:FlatButton Height="16" Icon="{DynamicResource EraserIcon}" />
+                <shell:FlatButton Height="16" Icon="{DynamicResource CopyIcon}" />
+                <shell:FlatButton Height="16" Icon="{DynamicResource HeartMonitorIcon}" />
+            </WrapPanel>
 
             <shell:BindableTextEditor Grid.Row="1" IsReadOnly="True" IsEnabled="False"
                                       Text="{Binding ConsoleContent}" WordWrap="False"
