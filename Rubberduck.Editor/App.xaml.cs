@@ -31,6 +31,7 @@ using Rubberduck.SettingsProvider.Model.UpdateServer;
 using Rubberduck.UI.Chrome;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.SharedHandlers;
+using Rubberduck.UI.LanguageServerTrace;
 using Rubberduck.UI.Message;
 using Rubberduck.UI.NewProject;
 using Rubberduck.UI.Services;
@@ -242,6 +243,7 @@ namespace Rubberduck.Editor
             services.AddSingleton<ISettingViewModelFactory, SettingViewModelFactory>();
 
             services.AddSingleton<IWorkspaceService, WorkspaceService>();
+            services.AddSingleton<LanguageServerTraceViewModel>();
             services.AddSingleton<WorkspaceExplorerViewModel>();
             services.AddSingleton<WorkspaceStateManager>();
 
@@ -261,6 +263,7 @@ namespace Rubberduck.Editor
 
             services.AddSingleton<ViewCommandHandlers>();
             services.AddSingleton<ShowWorkspaceExplorerCommand>();
+            services.AddSingleton<ShowLanguageServerTraceCommand>();
 
             services.AddSingleton<ToolsCommandHandlers>();
             services.AddSingleton<CloseToolWindowCommand>();

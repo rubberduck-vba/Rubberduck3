@@ -51,7 +51,8 @@
                                                             ToolTip="Pin/unpin this tab"
                                                             Visibility="{Binding ShowPinButton, Converter={StaticResource BoolToVisibilityConverter}}"
                                                             IsChecked="{Binding IsPinned, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                            Icon="{DynamicResource PinIcon}" />
+                                                            Icon="{DynamicResource PinIcon}"
+                                                            d:IconSource="{DynamicResource PinIcon}"/>
 
                                     <local:FlatButton DockPanel.Dock="Right" VerticalAlignment="Center"
                                                       Height="16" Width="16"

@@ -71,7 +71,7 @@
             </Style>
 
             <DataTemplate x:Key="ToolTabHeaderTemplate" DataType="windows:ITabViewModel">
-                <Label Content="Workspace Explorer" Margin="-5"
+                <Label Content="{Binding}" Margin="-5"
                        Background="{DynamicResource ThemeBackgroundColorBrush}" 
                        Foreground="{DynamicResource ThemeTextBackgroundColorBrush}" />
             </DataTemplate>
@@ -224,7 +224,6 @@
             </Expander.Resources>
             <dockablz:Layout Grid.Row="1" Name="RightPane" Partition="toolwindows" BranchTemplate="{DynamicResource RightPanelBranchTemplate}">
                 <dragablz:TabablzControl x:Name="RightPaneToolTabs" 
-                                         Style="{DynamicResource ToolTabControlStyle}"
                                          ItemsSource="{Binding View, Source={StaticResource RightPanelToolsSource}}"
                                          FixedHeaderCount="{Binding FixedRightToolTabs}" />
             </dockablz:Layout>
@@ -253,7 +252,6 @@
             </Expander.ContentTemplate>
             <dockablz:Layout Grid.Row="1" Name="BottomPane" Partition="toolwindows" BranchTemplate="{DynamicResource BottomPanelBranchTemplate}">
                 <dragablz:TabablzControl x:Name="BottomPaneToolTabs" 
-                                         Style="{DynamicResource ToolTabControlStyle}"
                                          ItemsSource="{Binding View, Source={StaticResource BottomPanelToolsSource}}"
                                          FixedHeaderCount="{Binding FixedBottomToolTabs}" />
             </dockablz:Layout>

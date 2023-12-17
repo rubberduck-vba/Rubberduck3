@@ -23,7 +23,7 @@
             <ControlTemplate x:Key="FlatToggleButtonTemplate" TargetType="ToggleButton">
                 <Canvas Style="{DynamicResource FlatButtonCanvasStyle}">
                     <Image x:Name="CanvasIcon"
-                           Style="{DynamicResource FlatToggleButtonImageStyle}"
+                           Source="{Binding IconSource, ElementName=FlatToggleButtonRoot}"
                            Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Stretch="Uniform"
                            HorizontalAlignment="Center" VerticalAlignment="Center">
                     </Image>
@@ -69,12 +69,12 @@
                                     </MultiDataTrigger>
                                     <DataTrigger Binding="{Binding IsPressed, ElementName=FlatToggleButtonRoot}" Value="True">
                                         <DataTrigger.Setters>
-                                            <Setter Property="Fill" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+                                            <Setter Property="Fill" Value="{DynamicResource ThemeAccent1MediumColorBrush}" />
                                         </DataTrigger.Setters>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsChecked, ElementName=FlatToggleButtonRoot}" Value="True">
                                         <DataTrigger.Setters>
-                                            <Setter Property="Fill" Value="{DynamicResource ThemeAccent1MediumColorBrush}" />
+                                            <Setter Property="Fill" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
                                         </DataTrigger.Setters>
                                     </DataTrigger>
                                 </Style.Triggers>

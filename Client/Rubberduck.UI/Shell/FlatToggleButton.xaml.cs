@@ -45,6 +45,7 @@ namespace Rubberduck.UI.Shell
             set
             {
                 SetProperty(IconProperty, value);
+                SetProperty(IconSourceProperty, value);
             }
         }
         public static readonly DependencyProperty IconProperty =

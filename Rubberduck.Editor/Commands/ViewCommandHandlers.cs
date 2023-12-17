@@ -7,9 +7,12 @@ namespace Rubberduck.Editor.Commands
 {
     public class ViewCommandHandlers : CommandHandlers
     {
-        public ViewCommandHandlers(ShowWorkspaceExplorerCommand showWorkspaceExplorerCommand)
+        public ViewCommandHandlers(
+            ShowWorkspaceExplorerCommand showWorkspaceExplorerCommand,
+            ShowLanguageServerTraceCommand showLanguageServerTraceCommand)
         {
             ShowWorkspaceExplorerCommand = showWorkspaceExplorerCommand;
+            ShowLanguageServerTraceCommand = showLanguageServerTraceCommand;
         }
 
         public ICommand ViewCodeCommand { get; init; }
@@ -30,7 +33,8 @@ namespace Rubberduck.Editor.Commands
 
         public override IEnumerable<CommandBinding> CreateCommandBindings() => 
             Bind(
-                (ViewCommands.ShowWorkspaceExplorerCommand, ShowWorkspaceExplorerCommand)
+                (ViewCommands.ShowWorkspaceExplorerCommand, ShowWorkspaceExplorerCommand),
+                (ViewCommands.ShowLanguageServerTraceCommand, ShowLanguageServerTraceCommand)
             );
     }
 }

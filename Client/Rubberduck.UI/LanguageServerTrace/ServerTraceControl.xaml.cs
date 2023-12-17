@@ -20,9 +20,9 @@ namespace Rubberduck.UI.LanguageServerTrace
     /// <summary>
     /// Interaction logic for LanguageServerTraceControl.xaml
     /// </summary>
-    public partial class LanguageServerTraceControl : UserControl
+    public partial class ServerTraceControl : UserControl
     {
-        public LanguageServerTraceControl()
+        public ServerTraceControl()
         {
             InitializeComponent();
         }

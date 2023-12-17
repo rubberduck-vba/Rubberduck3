@@ -29,7 +29,7 @@ namespace Rubberduck.UI.Shell
             Options.ConvertTabsToSpaces = true;
             Options.HighlightCurrentLine = true;
             Options.HideCursorWhileTyping = true;
-            Options.ShowColumnRuler = true;
+            Options.ShowColumnRuler = false;
         }
 
         public new string Text

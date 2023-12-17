@@ -6,24 +6,18 @@ using Rubberduck.UI.WorkspaceExplorer;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input;
 
 namespace Rubberduck.UI.Services.WorkspaceExplorer
 {
-    public class WorkspaceExplorerViewModel : ViewModelBase, IWorkspaceExplorerViewModel
+
+    public class WorkspaceExplorerViewModel : ToolWindowViewModelBase, IWorkspaceExplorerViewModel
     {
         private readonly IWorkspaceService _service;
 
-        public WorkspaceExplorerViewModel()
-        {
-            /* DESIGNER */
-        }
-
         public WorkspaceExplorerViewModel(IWorkspaceService service, ShowRubberduckSettingsCommand showSettingsCommand, CloseToolWindowCommand closeToolwindowCommand)
+            : base(DockingLocation.DockBottom, showSettingsCommand, closeToolwindowCommand)
         {
             _service = service;
-            ShowSettingsCommand = showSettingsCommand;
-            CloseToolWindowCommand = closeToolwindowCommand;
             Workspaces = new(service.ProjectFiles.Select(workspace => WorkspaceViewModel.FromModel(workspace, _service)));
 
             service.WorkspaceOpened += OnWorkspaceOpened;
@@ -48,17 +42,8 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
             }
         }
 
-        public string Title { get; set; } = "Workspace Explorer"; // TODO localize
-        public string AcceptButtonText { get; set; }
-        public string CancelButtonText { get; set; }
-        public ICommand ShowSettingsCommand { get; }
-        public ICommand CloseToolWindowCommand { get; }
-        public string ShowSettingsCommandParameter => SettingKey;
-        public bool ShowPinButton { get; } = true;
-        public bool ShowGearButton { get; } = true;
-        public bool ShowCloseButton { get; } = true;
-
-        public string SettingKey { get; } = nameof(WorkspaceExplorerSettings);
+        public override string Title { get; } = "Workspace Explorer"; // TODO localize
+        public override string SettingKey { get; } = nameof(WorkspaceExplorerSettings);
 
         private WorkspaceTreeNodeViewModel? _selection;
         public WorkspaceTreeNodeViewModel? Selection
@@ -94,62 +79,6 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
         public bool HasSelectionInfo => _selectionInfo != null;
 
         public ObservableCollection<WorkspaceViewModel> Workspaces { get; } = new();
-
-        public DockingLocation DockingLocation { get; set; } = DockingLocation.DockBottom;
-        public object Header
-        {
-            get => Title;
-            set
-            {
-                if (Title != value?.ToString())
-                {
-                    Title = value?.ToString() ?? string.Empty;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private object _control;
-        public object Content
-        {
-            get => _control;
-            set
-            {
-                if (_control != value) 
-                {
-                    _control = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private bool _isSelected = true;
-        public bool IsSelected 
-        {
-            get => _isSelected;
-            set
-            {
-                if (_isSelected != value)
-                {
-                    _isSelected = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private bool _isPinned;
-        public bool IsPinned
-        {
-            get => _isPinned;
-            set
-            {
-                if (_isPinned != value)
-                {
-                    _isPinned = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
 
         public void Load(ProjectFile workspace)
         {
