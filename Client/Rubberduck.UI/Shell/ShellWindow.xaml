@@ -72,27 +72,28 @@
                 <Setter Property="BorderBrush" Value="{DynamicResource ThemeBackgroundLightColorBrush}" />
             </Style>
 
-            <DataTemplate x:Key="ToolTabHeaderTemplate" DataType="windows:ITabViewModel">
-                <Label Content="{Binding Title}"
-                       Background="{DynamicResource ThemeBackgroundColorBrush}" 
-                       Foreground="{DynamicResource ThemeTextBackgroundColorBrush}" />
+            <DataTemplate x:Key="ToolTabHeaderItemTemplate" DataType="windows:ITabViewModel">
+                <Label Style="{DynamicResource FormLabelStyleSmall}"
+                       Margin="-6,-2" BorderThickness="0"
+                       Background="{DynamicResource ThemeBackgroundColorBrush}">
+                    <TextBlock Text="{Binding DataContext.Title}" />
+                </Label>
             </DataTemplate>
+
             <DataTemplate x:Key="ToolTabItemTemplate" DataType="windows:ITabViewModel">
-                <ContentControl Content="{Binding}" DataContext="{Binding Content.DataContext}" />
+                <ContentControl Content="{Binding Content}" DataContext="{Binding}" />
             </DataTemplate>
 
             <Style x:Key="ToolTabControlStyle" TargetType="dragablz:TabablzControl">
                 <Style.Setters>
+                    <Setter Property="Template" Value="{DynamicResource ToolTabTemplate}" />
                     <Setter Property="InterTabController" Value="{StaticResource InterToolTabController}" />
                     <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
                     <Setter Property="ItemTemplate" Value="{DynamicResource ToolTabItemTemplate}" />
-                    <Setter Property="Template" Value="{DynamicResource ToolTabTemplate}" />
-                    <Setter Property="IsHeaderPanelVisible" Value="False" />
+                    <Setter Property="HeaderItemTemplate" Value="{DynamicResource ToolTabHeaderItemTemplate}" />
                     <Setter Property="EmptyHeaderSizingHint" Value="Collapse" />
                     <Setter Property="ShowDefaultAddButton" Value="False" />
                     <Setter Property="ShowDefaultCloseButton" Value="False" />
-                    <Setter Property="TabStripPlacement" Value="Bottom" />
-                    <Setter Property="ShowDefaultCloseButton" Value="True" />
                 </Style.Setters>
             </Style>
             <Style x:Key="BaseLayoutStyle" TargetType="dockablz:Layout">
@@ -237,6 +238,7 @@
                           Background="{DynamicResource ThemeBackgroundDarkColorBrush}"
                           Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}"
                           SelectedItem="{Binding SelectedItem, ElementName=BottomPaneToolTabs}"
+                          Visibility="{Binding IsExpanded, ElementName=BottomPaneExpander, Converter={StaticResource BoolToHiddenVisibility}}"
                           BorderThickness="0">
                     <ListView.Resources>
                         <Style TargetType="ListViewItem">
@@ -276,7 +278,7 @@
                 </DataTemplate>
             </Expander.Resources>
             <dockablz:Layout Grid.Row="1" Name="BottomPane" Partition="toolwindows" BranchTemplate="{DynamicResource BottomPanelBranchTemplate}">
-                <dragablz:TabablzControl x:Name="BottomPaneToolTabs" 
+                <dragablz:TabablzControl x:Name="BottomPaneToolTabs"
                                          Style="{DynamicResource ToolTabControlStyle}"
                                          ItemsSource="{Binding View, Source={StaticResource BottomPanelToolsSource}}"
                                          FixedHeaderCount="{Binding FixedBottomToolTabs}" />
