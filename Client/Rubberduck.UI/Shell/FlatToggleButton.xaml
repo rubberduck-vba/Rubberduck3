@@ -23,21 +23,21 @@
             <ControlTemplate x:Key="FlatToggleButtonTemplate" TargetType="ToggleButton">
                 <Canvas Style="{DynamicResource FlatButtonCanvasStyle}">
                     <Image x:Name="CanvasIcon"
-                           Source="{Binding IconSource, RelativeSource={RelativeSource AncestorType=local:FlatToggleButton, Mode=FindAncestor}}"
+                           Source="{TemplateBinding local:FlatToggleButton.IconSource}"
                            Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Stretch="Uniform"
                            HorizontalAlignment="Center" VerticalAlignment="Center" />
 
                     <Rectangle Fill="{TemplateBinding Foreground}"
                                Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Stretch="Uniform"
-                               Canvas.Left="{Binding OffsetX, RelativeSource={RelativeSource AncestorType=local:FlatToggleButton, Mode=FindAncestor}}"
-                               Canvas.Top="{Binding OffsetY, RelativeSource={RelativeSource AncestorType=local:FlatToggleButton, Mode=FindAncestor}}"
+                               Canvas.Left="{TemplateBinding local:FlatToggleButton.OffsetX}"
+                               Canvas.Top="{TemplateBinding local:FlatToggleButton.OffsetY}"
                                HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Rectangle.Resources>
                             <Style TargetType="Rectangle">
                                 <Style.Triggers>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=local:FlatToggleButton, Mode=FindAncestor}}" Value="True" />
+                                            <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}" Value="True" />
                                             <!--<Condition Binding="{Binding IsEnabled, ElementName=FlatToggleButtonRoot}" Value="True" />-->
                                         </MultiDataTrigger.Conditions>
                                         <MultiDataTrigger.Setters>
@@ -49,7 +49,7 @@
                                 <Style.Setters>
                                     <Setter Property="OpacityMask">
                                         <Setter.Value>
-                                            <ImageBrush ImageSource="{Binding IconSource, RelativeSource={RelativeSource AncestorType=local:FlatToggleButton, Mode=FindAncestor}}" Stretch="Uniform" />
+                                            <ImageBrush ImageSource="{TemplateBinding local:FlatToggleButton.IconSource}" Stretch="Uniform" />
                                         </Setter.Value>
                                     </Setter>
                                 </Style.Setters>
@@ -60,18 +60,18 @@
                                 <Style.Triggers>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}" Value="True" />
+                                            <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=local:FlatToggleButton, Mode=FindAncestor}}" Value="True" />
                                         </MultiDataTrigger.Conditions>
                                         <MultiDataTrigger.Setters>
                                             <Setter Property="Fill" Value="{DynamicResource ThemeAccent1LightColorBrush}" />
                                         </MultiDataTrigger.Setters>
                                     </MultiDataTrigger>
-                                    <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}" Value="True">
+                                    <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType=local:FlatToggleButton, Mode=FindAncestor}}" Value="True">
                                         <DataTrigger.Setters>
                                             <Setter Property="Fill" Value="{DynamicResource ThemeAccent1MediumColorBrush}" />
                                         </DataTrigger.Setters>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}" Value="True">
+                                    <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=local:FlatToggleButton, Mode=FindAncestor}}" Value="True">
                                         <DataTrigger.Setters>
                                             <Setter Property="Fill" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
                                         </DataTrigger.Setters>

@@ -15,24 +15,25 @@
             </ResourceDictionary.MergedDictionaries>
             <ControlTemplate x:Key="FlatButtonTemplate" TargetType="Button">
                 <Canvas>
-                    <Image Source="{TemplateBinding local:FlatButton.Icon}"
-                           Height="{TemplateBinding local:FlatButton.Height}" 
-                           Width="{TemplateBinding local:FlatButton.Width}" 
+                    <Image x:Name="CanvasIcon" 
+                           Source="{TemplateBinding local:FlatButton.Icon}"
+                           Height="{TemplateBinding Height}" 
+                           Width="{TemplateBinding Width}" 
                            Stretch="Uniform" 
                            Canvas.Left="0"
                            Canvas.Top="0"
                            HorizontalAlignment="Center" 
                            VerticalAlignment="Center" />
-                    <Rectangle Fill="{TemplateBinding local:FlatButton.Foreground}"
-                               Height="{TemplateBinding local:FlatButton.Height}" 
-                               Width="{TemplateBinding local:FlatButton.Width}" 
+                    <Rectangle Fill="{TemplateBinding Foreground}"
+                               Height="{TemplateBinding Height}" 
+                               Width="{TemplateBinding Width}" 
                                Canvas.Left="{TemplateBinding local:FlatButton.OffsetX}"
                                Canvas.Top="{TemplateBinding local:FlatButton.OffsetY}"
                                Stretch="Uniform"
                                HorizontalAlignment="Center" 
                                VerticalAlignment="Center">
                         <Rectangle.OpacityMask>
-                            <ImageBrush Stretch="Uniform" ImageSource="{TemplateBinding local:FlatButton.Icon}" />
+                            <ImageBrush Stretch="Uniform" ImageSource="{Binding Source, ElementName=CanvasIcon}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </Canvas>

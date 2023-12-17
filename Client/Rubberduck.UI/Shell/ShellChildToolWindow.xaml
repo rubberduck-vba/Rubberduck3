@@ -10,7 +10,7 @@
         d:DataContext="{d:DesignInstance Type=vm:IDragablzWindowViewModel}"
         Style="{DynamicResource ThemedWindowStyle}"
         Title="Rubberduck Editor"
-        ShowInTaskbar="False"
+        ShowInTaskbar="True"
         Height="300" Width="300">
     <Window.Resources>
         <ResourceDictionary>

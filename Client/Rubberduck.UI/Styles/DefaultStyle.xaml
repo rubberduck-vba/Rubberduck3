@@ -163,7 +163,7 @@
                     <shell:FlatButton x:Name="ControlBoxCloseButton" 
                                       WindowChrome.IsHitTestVisibleInChrome="True"
                                       Height="16" Width="24"
-                                      Margin="4"
+                                      Margin="4" OffsetX="4"
                                       Icon="{DynamicResource XMarkIcon}"
                                       Command="{x:Static SystemCommands.CloseWindowCommand}" 
                                       ToolTip="Close" />
@@ -201,14 +201,14 @@
                                   ToolTip="Minimize" />
 
                 <!-- button bound to SystemCommands.RestoreWindowCommand to show Win11 snap tool on hover despite restore command being disabled (WPF bug) -->
-                <shell:FlatButton x:Name="ControlBoxWindowsButton" 
+                <!--<shell:FlatButton x:Name="ControlBoxWindowsButton" 
                                   WindowChrome.IsHitTestVisibleInChrome="True"
                                   VerticalContentAlignment="Center"
                                   Height="16"
                                   DockPanel.Dock="Right"
-                                  Margin="5,0" OffsetX="2"
+                                  Margin="5,0"
                                   Icon="{DynamicResource WindowsIcon}"
-                                  Command="{x:Static SystemCommands.RestoreWindowCommand}" />
+                                  Command="{x:Static SystemCommands.RestoreWindowCommand}" />-->
 
             </DockPanel>
 
