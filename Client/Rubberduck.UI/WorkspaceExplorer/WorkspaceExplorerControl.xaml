@@ -21,41 +21,49 @@
             <FrameworkElement x:Key="BindingAnchor" DataContext="{Binding DataContext, RelativeSource={RelativeSource Mode=Self}}" />
             <CollectionViewSource x:Key="ChildItemsView" Source="{Binding Workspaces, NotifyOnTargetUpdated=True}" />
 
-            <HierarchicalDataTemplate x:Key="WorkspaceFolderTemplate" DataType="local:WorkspaceTreeNodeViewModel" ItemsSource="{Binding View, Source={StaticResource ChildItemsView}}">
+            <Style x:Key="NodeLabelStyle" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
+                <Setter Property="FontWeight" Value="Normal" />
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="Padding" Value="0" />
+            </Style>
+
+            <Style x:Key="NodeIconStyle" TargetType="Image" BasedOn="{StaticResource IconStyle16}">
+                <Setter Property="Margin" Value="0,0,5,0" />
+            </Style>
+
+            <HierarchicalDataTemplate x:Key="WorkspaceFolderTemplate" DataType="local:WorkspaceTreeNodeViewModel" ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{DynamicResource SharpFolderClosedIcon}">
                         <Image.Style>
-                            <Style TargetType="Image" BasedOn="{StaticResource IconStyle16}">
+                            <Style TargetType="Image" BasedOn="{StaticResource NodeIconStyle}">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsExpanded, RelativeSource={RelativeSource AncestorType=TreeViewItem, Mode=FindAncestor}}" Value="True">
+                                    <DataTrigger Binding="{Binding IsExpanded}" Value="True">
                                         <Setter Property="Source" Value="{DynamicResource SharpFolderOpenIcon}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Image.Style>
                     </Image>
-                    <Label Content="{Binding Name}" Style="{DynamicResource FormFieldNameLabelStyle}" Margin="0"/>
+                    <Label Content="{Binding Name}" Style="{DynamicResource NodeLabelStyle}" Margin="0"/>
                 </StackPanel>
             </HierarchicalDataTemplate>
             
             <DataTemplate x:Key="SourceFileTemplate" DataType="local:WorkspaceSourceFileViewModel">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="{DynamicResource SourceDocumentIcon16}" Style="{DynamicResource IconStyle16}" />
-                    <Label Content="{Binding Name}" Style="{DynamicResource FormFieldNameLabelStyle}" Margin="0"/>
-                    <Label Content="Source file" Style="{DynamicResource FormFieldValueLabelStyle}" Margin="0"/>
+                    <Image Source="{DynamicResource SourceDocumentIcon16}" Style="{DynamicResource NodeIconStyle}" />
+                    <Label Content="{Binding Name}" Style="{DynamicResource NodeLabelStyle}" Margin="0"/>
                 </StackPanel>
             </DataTemplate>
             <DataTemplate x:Key="OtherFileTemplate" DataType="local:WorkspaceFileViewModel">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="{DynamicResource DocumentIcon16}" Style="{DynamicResource IconStyle16}" />
-                    <Label Content="{Binding Name}" Style="{DynamicResource FormFieldNameLabelStyle}" Margin="0" />
-                    <Label Content="Workspace file" Style="{DynamicResource FormFieldValueLabelStyle}" Margin="0"/>
+                    <Image Source="{DynamicResource DocumentIcon16}" Style="{DynamicResource NodeIconStyle}" />
+                    <Label Content="{Binding Name}" Style="{DynamicResource NodeLabelStyle}" Margin="0" />
                 </StackPanel>
             </DataTemplate>
 
             <DataTemplate x:Key="SourceFileInfoTemplate" DataType="local:WorkspaceSourceFileViewModel">
                 <DockPanel>
-                    <Image DockPanel.Dock="Left" Source="{DynamicResource SourceDocumentIcon16}" Style="{DynamicResource IconStyle16}" />
+                    <Image DockPanel.Dock="Left" Source="{DynamicResource SourceDocumentIcon16}" Style="{DynamicResource NodeIconStyle}" />
                     <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldNameLabelStyle}" Content="{Binding FileName}" />
                     <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldNameLabelStyle}">
                         <TextBlock TextWrapping="Wrap" Text="{Binding Uri.LocalPath}" />
@@ -64,13 +72,13 @@
             </DataTemplate>
             <DataTemplate x:Key="FolderInfoTemplate" DataType="local:WorkspaceTreeNodeViewModel">
                 <DockPanel>
-                    <Image DockPanel.Dock="Left" Source="{DynamicResource SharpFolderClosedIcon}" Style="{DynamicResource IconStyle16}" />
+                    <Image DockPanel.Dock="Left" Source="{DynamicResource SharpFolderClosedIcon}" Style="{DynamicResource NodeIconStyle}" />
                     <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldNameLabelStyle}" Content="{Binding FileName}" />
                 </DockPanel>
             </DataTemplate>
             <DataTemplate x:Key="WorkspaceFileInfoTemplate" DataType="local:WorkspaceFileViewModel">
                 <DockPanel>
-                    <Image DockPanel.Dock="Left" Source="{DynamicResource DocumentIcon16}" Style="{DynamicResource IconStyle16}" VerticalAlignment="Top" />
+                    <Image DockPanel.Dock="Left" Source="{DynamicResource DocumentIcon16}" Style="{DynamicResource NodeIconStyle}" VerticalAlignment="Top" />
                     <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldNameLabelStyle}">
                         <TextBlock Text="{Binding FileName}" />
                     </Label>
@@ -115,7 +123,7 @@
 
             <TreeView Grid.Row="1" 
                       BorderThickness="1" Background="{DynamicResource ThemeBackgroundDarkColorBrush75}" AllowDrop="True" 
-                      ItemsSource="{Binding View, Source={StaticResource ChildItemsView}}"
+                      ItemsSource="{Binding Workspaces}"
                       ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
 
                 <xb:Interaction.Behaviors>
@@ -149,6 +157,7 @@
                                 </Style.Triggers>
                             </Style>
                         </HierarchicalDataTemplate.Resources>
+                        <Label Content="{Binding Name}" Style="{DynamicResource NodeLabelStyle}" FontWeight="SemiBold" />
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>

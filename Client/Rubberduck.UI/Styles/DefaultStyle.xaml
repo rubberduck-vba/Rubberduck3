@@ -15,7 +15,6 @@
             <Setter Property="b:ScrollViewerCorrector.FixScrolling" Value="True" />
         </Style.Setters>
     </Style>-->
-    
     <Color x:Key="ThemeWhiteDarkColor">#FFA9A9A9</Color>
     <Color x:Key="ThemeWhiteMediumColor">#FFD3D3D3</Color>
     <Color x:Key="ThemeWhiteLightColor">#FFFFFFFF</Color>
