@@ -45,7 +45,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.TelemetryServer"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AddIn", "AddIn", "{EA789E19-501A-413E-A17A-2EF481EFB605}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Editor", "Rubberduck.Editor\Rubberduck.Editor.csproj", "{0ED24079-1626-472E-95A8-FB5641C60761}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Editor", "Client\Rubberduck.Editor\Rubberduck.Editor.csproj", "{0ED24079-1626-472E-95A8-FB5641C60761}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Parsing", "Server\Rubberduck.Parsing\Rubberduck.Parsing.csproj", "{D1972815-52A8-472A-AF10-CDF8FC9AE15E}"
 EndProject
