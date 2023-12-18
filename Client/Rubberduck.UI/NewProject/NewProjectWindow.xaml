@@ -17,7 +17,7 @@
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ResourceDictionary>
-            <KeyBinding x:Key="CloseOnEscape" Key="Esc" Command="{Binding Actions[1]}" />
+            <KeyBinding x:Key="CloseOnEscape" Key="Esc" Command="{Binding CloseWindowCommand}" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
@@ -28,6 +28,7 @@
         <shell:ThunderFrame Title="{Binding Title}" ShowTitle="True"
                             ShowSettingsCommand="{Binding ShowSettingsCommand}"
                             ShowSettingsCommandParameter="{Binding ShowSettingsCommandParameter}"
+                            ShowPinButton="False"
                             AcceptCommand="{Binding Actions[0]}" ShowAcceptButton="True"
                             CancelCommand="{Binding Actions[1]}" ShowCancelButton="True">
             <StackPanel Margin="5,0">

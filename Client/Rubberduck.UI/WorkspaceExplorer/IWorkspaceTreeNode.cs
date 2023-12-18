@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Rubberduck.UI.WorkspaceExplorer
 {
@@ -8,7 +9,7 @@ namespace Rubberduck.UI.WorkspaceExplorer
         Uri Uri { get; }
         string FileName { get; }
         string Name { get; }
-        IEnumerable<IWorkspaceTreeNode> Children { get; }
+        ObservableCollection<IWorkspaceTreeNode> Children { get; }
         void AddChildNode(IWorkspaceTreeNode childNode);
 
         bool IsSelected { get; set; }

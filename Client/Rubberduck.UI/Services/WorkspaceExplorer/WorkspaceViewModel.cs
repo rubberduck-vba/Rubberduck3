@@ -59,11 +59,12 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
             foreach (var key in projectFilesByFolder.Keys)
             {
                 var folder = CreateWorkspaceFolderNode(service, projectFilesByFolder[key], key);
-                vm.ChildNodes.Add(folder);
+                vm.Children.Add(folder);
             }
 
             return vm;
         }
+
 
         private static void AddFolderFileNodes(IWorkspaceService service, IWorkspaceTreeNode folder, IEnumerable<IWorkspaceTreeNode> projectFiles, HashSet<string> projectFilePaths)
         {
@@ -115,13 +116,12 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
         }
 
         private readonly ObservableCollection<IWorkspaceTreeNode> _children = new();
-        public ObservableCollection<IWorkspaceTreeNode> ChildNodes => _children;
+        public ObservableCollection<IWorkspaceTreeNode> Children => _children;
 
         public string Name { get; set; }
         public Uri Uri { get; set; }
         public string FileName => Uri.GetComponents(UriComponents.Path, UriFormat.SafeUnescaped).Split('/').Last();
 
-        public IEnumerable<IWorkspaceTreeNode> Children => _children;
         public void AddChildNode(IWorkspaceTreeNode childNode)
         {
             _children.Add(childNode);

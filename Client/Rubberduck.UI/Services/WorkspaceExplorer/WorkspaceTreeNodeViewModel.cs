@@ -79,8 +79,8 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
             }
         }
 
-        private readonly ObservableCollection<IWorkspaceTreeNode> _childNodes = new();
-        public ObservableCollection<IWorkspaceTreeNode> ChildNodes => _childNodes;
+        private readonly ObservableCollection<IWorkspaceTreeNode> _children = new();
+        public ObservableCollection<IWorkspaceTreeNode> Children => _children;
 
 
         private int _version;
@@ -125,7 +125,6 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
             }
         }
 
-        public IEnumerable<IWorkspaceTreeNode> Children => _childNodes;
 
         private bool _isSelected;
         public bool IsSelected
@@ -143,7 +142,7 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
 
         public void AddChildNode(IWorkspaceTreeNode childNode)
         {
-            _childNodes.Add(childNode);
+            _children.Add(childNode);
         }
 
         private bool _isFiltered;

@@ -4,9 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.UI.Shell"
-             xmlns:drgz="clr-namespace:Dragablz;assembly=Dragablz" 
              xmlns:windows="clr-namespace:Rubberduck.UI.Windows" 
-             xmlns:commands="clr-namespace:Rubberduck.UI.Command" 
              d:DataContext="{d:DesignInstance Type=windows:WindowViewModel}"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -49,7 +47,7 @@
                                     <local:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Center"
                                                             Height="16" Width="16"
                                                             ToolTip="Pin/unpin this tab"
-                                                            Visibility="{Binding ShowPinButton, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                            Visibility="{TemplateBinding local:ThunderFrame.ShowPinButton, Converter={StaticResource BoolToVisibilityConverter}}"
                                                             IsChecked="{Binding IsPinned, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                             Icon="{DynamicResource PinIcon}"
                                                             d:IconSource="{DynamicResource PinIcon}"/>

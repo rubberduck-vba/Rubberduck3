@@ -15,6 +15,13 @@
 
     <!-- Menu -->
 
+    <Style TargetType="ContextMenu">
+        <Style.Setters>
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundDarkColorBrush}" />
+        </Style.Setters>
+    </Style>
+    
     <Style TargetType="Menu">
         <Style.Setters>
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
@@ -28,6 +35,11 @@
     <SolidColorBrush x:Key="Menu.Static.Foreground" Color="{DynamicResource ThemeTextBackgroundMediumColor}"/>
     <SolidColorBrush x:Key="Menu.Static.Separator" Color="{DynamicResource ThemeBackgroundLightColor}"/>
     <SolidColorBrush x:Key="Menu.Disabled.Foreground" Color="{DynamicResource ThemeTextInactiveColor}"/>
+    <SolidColorBrush x:Key="ContextMenu.Static.Background" Color="{DynamicResource ThemeBackgroundMediumColor}"/>
+    <SolidColorBrush x:Key="ContextMenu.Static.Border" Color="{DynamicResource ThemeBackgroundLightColor}"/>
+    <SolidColorBrush x:Key="ContextMenu.Static.Foreground" Color="{DynamicResource ThemeTextBackgroundMediumColor}"/>
+    <SolidColorBrush x:Key="ContextMenu.Static.Separator" Color="{DynamicResource ThemeBackgroundLightColor}"/>
+    <SolidColorBrush x:Key="ContextMenu.Disabled.Foreground" Color="{DynamicResource ThemeTextInactiveColor}"/>
     <SolidColorBrush x:Key="MenuItem.Selected.Background" Color="{DynamicResource ThemeAccent1HighlightColor}"/>
     <SolidColorBrush x:Key="MenuItem.Selected.Border" Color="{DynamicResource ThemeBackgroundLightColor}"/>
     <SolidColorBrush x:Key="MenuItem.Highlight.Background" Color="{DynamicResource ThemeAccent1HighlightColor}"/>
@@ -171,7 +183,8 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <ContentPresenter x:Name="Icon" ContentSource="Icon" HorizontalAlignment="Center" Height="16" Margin="3" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" Width="16"/>
-                <Path x:Name="GlyphPanel" Data="{StaticResource Checkmark}" FlowDirection="LeftToRight" Fill="{TemplateBinding Foreground}" Margin="3" VerticalAlignment="Center" Visibility="Collapsed"/>
+                <Path x:Name="GlyphPanel" Data="{StaticResource Checkmark}" FlowDirection="LeftToRight" 
+                      Fill="{TemplateBinding Foreground}" Margin="3" VerticalAlignment="Center" Visibility="Collapsed"/>
                 <ContentPresenter ContentSource="Header" Grid.Column="1" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                 <Popup x:Name="PART_Popup" AllowsTransparency="true" Focusable="false" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource Mode=TemplatedParent}}" Placement="Bottom" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" PlacementTarget="{Binding ElementName=templateRoot}">
                     <Border x:Name="SubMenuBorder" Background="{StaticResource Menu.Static.Background}" BorderBrush="{StaticResource Menu.Static.Border}" BorderThickness="1" Padding="2">

@@ -16,6 +16,7 @@ namespace Rubberduck.UI.Shell
             InitializeComponent();
             Title = RubberduckUI.Rubberduck;
             ShowAcceptButton = true;
+            ShowPinButton = false;
             AcceptButtonText = RubberduckUI.OK;
             CancelButtonText = RubberduckUI.CancelButtonText;
 

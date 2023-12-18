@@ -6,11 +6,11 @@
         xmlns:b="clr-namespace:Rubberduck.UI.Behaviors"
         xmlns:xb="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
-        xmlns:local="clr-namespace:Rubberduck.UI.WorkspaceExplorer" xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-             d:DataContext="{d:DesignInstance Type=local:IWorkspaceExplorerViewModel, IsDesignTimeCreatable=False}"
+        xmlns:cmd="clr-namespace:Rubberduck.UI.Command" 
+        xmlns:local="clr-namespace:Rubberduck.UI.WorkspaceExplorer"              
+        d:DataContext="{d:DesignInstance Type=local:IWorkspaceExplorerViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d" 
         x:Name="WorkspaceExplorerRoot"
-        MinWidth="255"
         d:DesignHeight="450" d:DesignWidth="400">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -19,8 +19,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <FrameworkElement x:Key="BindingAnchor" DataContext="{Binding DataContext, RelativeSource={RelativeSource Mode=Self}}" />
-            <CollectionViewSource x:Key="ChildItemsView" Source="{Binding Workspaces}" />
-
+            <CollectionViewSource x:Key="ChildItemsView" Source="{Binding Workspaces, NotifyOnTargetUpdated=True}" />
 
             <HierarchicalDataTemplate x:Key="WorkspaceFolderTemplate" DataType="local:WorkspaceTreeNodeViewModel" ItemsSource="{Binding View, Source={StaticResource ChildItemsView}}">
                 <StackPanel Orientation="Horizontal">
@@ -38,6 +37,7 @@
                     <Label Content="{Binding Name}" Style="{DynamicResource FormFieldNameLabelStyle}" Margin="0"/>
                 </StackPanel>
             </HierarchicalDataTemplate>
+            
             <DataTemplate x:Key="SourceFileTemplate" DataType="local:WorkspaceSourceFileViewModel">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{DynamicResource SourceDocumentIcon16}" Style="{DynamicResource IconStyle16}" />
@@ -99,35 +99,39 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="5" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <WrapPanel Grid.Row="0" Orientation="Horizontal">
-                <shell:FlatButton Height="16" Icon="{DynamicResource AddFolderIcon}" />
-                <shell:FlatButton Height="16" Icon="{DynamicResource FolderOpenIcon}" />
+            <WrapPanel Grid.Row="0" Orientation="Horizontal" Margin="0,5">
+                <shell:FlatButton Icon="{DynamicResource AddFolderIcon}" 
+                                  Command="{x:Static cmd:FileCommands.NewProjectCommand}"
+                                  ToolTip="Create a new project"/>
+                <shell:FlatButton Icon="{DynamicResource FolderOpenIcon}" 
+                                  Command="{x:Static cmd:FileCommands.OpenProjectCommand}"
+                                  ToolTip="Open an existing project"/>
+                <shell:FlatButton Icon="{DynamicResource SynchronizeIcon}" 
+                                  Command="{x:Static cmd:FileCommands.SynchronizeWorkspaceCommand}"
+                                  ToolTip="Synchronize to VBE"/>
             </WrapPanel>
 
             <TreeView Grid.Row="1" 
-                      Margin="5,5,5,0" BorderThickness="0" Background="Transparent" AllowDrop="True" 
-                      ItemsSource="{Binding Workspaces}"
+                      BorderThickness="1" Background="{DynamicResource ThemeBackgroundDarkColorBrush75}" AllowDrop="True" 
+                      ItemsSource="{Binding View, Source={StaticResource ChildItemsView}}"
                       ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
 
                 <xb:Interaction.Behaviors>
                     <b:BindableSelectedItemBehavior SelectedItem="{Binding Selection, Mode=TwoWay}" />
                 </xb:Interaction.Behaviors>
 
-                <TreeView.ContextMenu>
+                <!--<TreeView.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Open" FontWeight="Bold" Command="{x:Static local:WorkspaceExplorerCommands.OpenFileCommand}" CommandParameter="{Binding Selection.Uri}" />
                         <Separator />
                         <MenuItem Header="Rename" Command="{x:Static local:WorkspaceExplorerCommands.RenameUriCommand}" CommandParameter="{Binding Selection.Uri}" />
                         <MenuItem Header="Delete" Command="{x:Static local:WorkspaceExplorerCommands.DeleteUriCommand}"  CommandParameter="{Binding Selection.Uri}" />
                         <Separator />
-                        <MenuItem Header="Add Folder" Command="{x:Static local:WorkspaceExplorerCommands.CreateFileCommand}"  CommandParameter="{Binding Selection.Uri}" />
-                        <MenuItem Header="Add File" Command="{x:Static local:WorkspaceExplorerCommands.CreateFileCommand}"  CommandParameter="{Binding Selection.Uri}" />
+                        <MenuItem Header="Synchronize" Command="{x:Static cmd:FileCommands.SynchronizeWorkspaceCommand}" />
                     </ContextMenu>
-                </TreeView.ContextMenu>
+                </TreeView.ContextMenu>-->
                 
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate DataType="local:IWorkspaceTreeNode" 
@@ -148,21 +152,6 @@
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
-
-            <Expander Grid.Row="3" ExpandDirection="Up"
-                      Background="{DynamicResource BackgroundDarkBrush}" 
-                      Visibility="{Binding HasSelectionInfo, Converter={StaticResource BoolToVisibilityConverter}}">
-                <Expander.Header>
-                    <DockPanel>
-                        <Label DockPanel.Dock="Left" Style="{DynamicResource FormFieldNameLabelStyle}" Content="{Binding Selection.Name}" Margin="5,0" />
-                    </DockPanel>
-                </Expander.Header>
-                <DockPanel>
-                    <ScrollViewer DataContext="{Binding SelectionInfo}" VerticalScrollBarVisibility="Auto" MaxHeight="100"
-                                  ContentTemplateSelector="{DynamicResource DetailsTemplateSelector}">
-                    </ScrollViewer>
-                </DockPanel>
-            </Expander>
         </Grid>
     </shell:ThunderFrame>
 </UserControl>

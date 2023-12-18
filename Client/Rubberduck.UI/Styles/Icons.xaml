@@ -19,6 +19,8 @@
     <BitmapImage x:Key="LockedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/lock-solid.png" />
     <BitmapImage x:Key="UnlockedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/lock-open-solid.png" />
 
+    <BitmapImage x:Key="SynchronizeIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/arrows-spin-solid.png"/>
+
     <BitmapImage x:Key="ClearFolderClosedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/folder-closed-regular.png" />
     <BitmapImage x:Key="ClearFolderOpenIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/folder-open-regular.png" />
     <BitmapImage x:Key="FolderClosedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/folder-solid.png" />

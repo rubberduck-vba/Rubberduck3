@@ -6,6 +6,7 @@ using Rubberduck.UI.WorkspaceExplorer;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Threading;
 
 namespace Rubberduck.UI.Services.WorkspaceExplorer
 {
@@ -20,25 +21,30 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
             _service = service;
             Workspaces = new(service.ProjectFiles.Select(workspace => WorkspaceViewModel.FromModel(workspace, _service)));
 
+            _dispatcher = Dispatcher.CurrentDispatcher;
+
             service.WorkspaceOpened += OnWorkspaceOpened;
             service.WorkspaceClosed += OnWorkspaceClosed;
         }
+
+        private Dispatcher _dispatcher;
 
         private void OnWorkspaceClosed(object? sender, WorkspaceServiceEventArgs e)
         {
             var item = Workspaces.SingleOrDefault(workspace => workspace.Uri == e.Uri);
             if (item != null)
             {
-                Workspaces.Remove(item);
+                _dispatcher.Invoke(() => Workspaces.Remove(item));
             }
         }
 
         private void OnWorkspaceOpened(object? sender, WorkspaceServiceEventArgs e)
         {
-            var project = _service.ProjectFiles.SingleOrDefault(file => file.Uri == new Uri(e.Uri, ProjectFile.FileName));
+            var path = _service.FileSystem.Path.Combine(e.Uri.LocalPath, ProjectFile.FileName);
+            var project = _service.ProjectFiles.SingleOrDefault(file => file.Uri.LocalPath == path);
             if (project != null)
             {
-                Workspaces.Add(WorkspaceViewModel.FromModel(project, _service));
+                _dispatcher.Invoke(() => Workspaces.Add(WorkspaceViewModel.FromModel(project, _service)));
             }
         }
 

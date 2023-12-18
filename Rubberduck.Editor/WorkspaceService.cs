@@ -80,8 +80,6 @@ namespace Rubberduck.Editor
                     EnableFileSystemWatcher(uri);
                     _projectFiles.Add(projectFile);
 
-                    OnWorkspaceOpened(uri);
-
                 }, out var exception) && exception is not null)
                 {
                     LogException(exception);
@@ -89,6 +87,7 @@ namespace Rubberduck.Editor
                 }
                 else
                 {
+                    OnWorkspaceOpened(uri);
                     return true;
                 }
             });

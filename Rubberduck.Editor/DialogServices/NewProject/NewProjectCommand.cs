@@ -37,8 +37,8 @@ namespace Rubberduck.UI.NewProject
         public SynchronizeWorkspaceCommand(UIServiceHelper service) 
             : base(service)
         {
-            // TODO cannot execute without a connected add-in client
-            //AddToCanExecuteEvaluation()
+            // FIXME needs to know whether there's a connected add-in client.
+            AddToCanExecuteEvaluation(param => false);
         }
 
         protected override Task OnExecuteAsync(object? parameter)

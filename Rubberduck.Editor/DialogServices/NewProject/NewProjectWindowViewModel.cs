@@ -49,6 +49,8 @@ namespace Rubberduck.Editor.DialogServices.NewProject
             SelectedProjectTemplate = HasVBProjects ? null : projectTemplates.FirstOrDefault();
             HasProjectTemplates = projectTemplates.Any();
 
+            CloseWindowCommand = Actions[1];
+
             ResetToDefaults();
             CommandBindings = new CommandBinding[]
             {
@@ -57,6 +59,7 @@ namespace Rubberduck.Editor.DialogServices.NewProject
         }
 
         public override IEnumerable<CommandBinding> CommandBindings { get; }
+        public ICommand CloseWindowCommand { get; }
 
         protected override void ResetToDefaults()
         {

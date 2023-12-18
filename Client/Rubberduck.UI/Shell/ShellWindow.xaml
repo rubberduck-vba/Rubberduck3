@@ -64,12 +64,22 @@
                 <Setter Property="Width" Value="4" />
                 <Setter Property="BorderThickness" Value="2" />
                 <Setter Property="BorderBrush" Value="{DynamicResource ThemeBackgroundLightColorBrush}" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsDragging, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+                    </DataTrigger>
+                </Style.Triggers>
             </Style>
 
             <Style x:Key="ToolPanelHExpanderThumbStyle" TargetType="Thumb">
                 <Setter Property="Height" Value="4" />
                 <Setter Property="BorderThickness" Value="2" />
                 <Setter Property="BorderBrush" Value="{DynamicResource ThemeBackgroundLightColorBrush}" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsDragging, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+                    </DataTrigger>
+                </Style.Triggers>
             </Style>
 
             <DataTemplate x:Key="ToolTabHeaderItemTemplate" DataType="windows:ITabViewModel">
@@ -301,7 +311,7 @@
                                      Background="{DynamicResource ThemeBackgroundColorBrush}" />
         </dockablz:Layout>
         
-        <statusbar:StatusBarControl x:Name="StatusBar" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" />
+        <!--<statusbar:StatusBarControl x:Name="StatusBar" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" />-->
 
         <Thumb Grid.Row="3" Grid.Column="3" HorizontalAlignment="Right" IsEnabled="True" IsHitTestVisible="True" WindowChrome.IsHitTestVisibleInChrome="True"
                DragDelta="OnResizeGripDragDelta" Cursor="SizeNWSE">

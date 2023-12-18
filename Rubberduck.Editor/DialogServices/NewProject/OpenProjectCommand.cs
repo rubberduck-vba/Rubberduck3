@@ -37,7 +37,7 @@ namespace Rubberduck.Editor.DialogServices.NewProject
                 };
                 if (!DialogCommands.BrowseFileOpen(prompt))
                 {
-                    throw new OperationCanceledException();
+                    return;
                 }
                 uri = _fileSystem.Path.GetDirectoryName(prompt.Selection);
             }

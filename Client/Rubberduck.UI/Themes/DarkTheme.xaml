@@ -92,7 +92,7 @@
     <!-- Theme Foreground/Background -->
 
     <Color x:Key="ThemeTextColor">#FFFFFFFF</Color>
-    <Color x:Key="ThemeTextInactiveColor">#FFAAAAAA</Color>
+    <Color x:Key="ThemeTextInactiveColor">#FF777777</Color>
     <SolidColorBrush x:Key="ThemeTextColorBrush" Color="{DynamicResource ThemeTextColor}" />
     <SolidColorBrush x:Key="ThemeTextInactiveColorBrush" Color="{DynamicResource ThemeTextInactiveColor}" />
     
