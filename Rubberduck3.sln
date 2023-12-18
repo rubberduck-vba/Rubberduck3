@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		LICENSE.txt = LICENSE.txt
 		README.md = README.md
 		Register.bat = Register.bat
+		Templates\Welcome.md = Templates\Welcome.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Tests", "Tests\Rubberduck.Tests\Rubberduck.Tests.csproj", "{561B2738-7BFE-4974-B1CE-E5D910C770B3}"
@@ -49,7 +50,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Editor", "Client
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Parsing", "Server\Rubberduck.Parsing\Rubberduck.Parsing.csproj", "{D1972815-52A8-472A-AF10-CDF8FC9AE15E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Extensibility", "Client\Rubberduck.Extensibility\Rubberduck.Extensibility.csproj", "{859DE906-EC25-44DD-9900-5B465502FB1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Extensibility", "Client\Rubberduck.Extensibility\Rubberduck.Extensibility.csproj", "{859DE906-EC25-44DD-9900-5B465502FB1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
