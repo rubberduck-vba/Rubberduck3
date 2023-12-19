@@ -1,5 +1,4 @@
-﻿using Rubberduck.Editor.DialogServices.NewProject;
-using Rubberduck.InternalApi.Model.Workspace;
+﻿using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Command.SharedHandlers;
@@ -12,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Rubberduck.UI.NewProject
+namespace Rubberduck.Editor.DialogServices.NewProject
 {
     public class ExitCommand : CommandBase
     {
@@ -34,7 +33,7 @@ namespace Rubberduck.UI.NewProject
 
     public class SynchronizeWorkspaceCommand : CommandBase
     {
-        public SynchronizeWorkspaceCommand(UIServiceHelper service) 
+        public SynchronizeWorkspaceCommand(UIServiceHelper service)
             : base(service)
         {
             // FIXME needs to know whether there's a connected add-in client.
@@ -189,11 +188,11 @@ namespace Rubberduck.UI.NewProject
         private readonly IProjectFileService _projectFileService;
         private readonly ITemplatesService _templatesService;
 
-        public NewProjectCommand(UIServiceHelper service, NewProjectWindowFactory factory, 
+        public NewProjectCommand(UIServiceHelper service, NewProjectWindowFactory factory,
             IWorkspaceFolderService workspaceFolderService, IWorkspaceService workspace,
             IFileSystem fileSystem, IProjectFileService projectFileService,
             IMessageService messages, ITemplatesService templatesService,
-            MessageActionsProvider actions, ShowRubberduckSettingsCommand showSettingsCommand) 
+            MessageActionsProvider actions, ShowRubberduckSettingsCommand showSettingsCommand)
             : base(service)
         {
             _fileSystem = fileSystem;

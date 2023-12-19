@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace Rubberduck.UI.WorkspaceExplorer
 {
-    public interface IWorkspaceTreeNode
+    public interface IWorkspaceTreeNode : INotifyPropertyChanged
     {
         Uri Uri { get; }
         string FileName { get; }

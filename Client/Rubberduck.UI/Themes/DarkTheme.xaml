@@ -100,7 +100,7 @@
     <Color x:Key="ThemeBackgroundDarkColor50">#C01E1E1E</Color>
     <Color x:Key="ThemeBackgroundDarkColor75">#F01E1E1E</Color>
     <Color x:Key="ThemeBackgroundMediumColor">#FF2E2E2E</Color>
-    <Color x:Key="ThemeBackgroundLightColor">#FF333333</Color>
+    <Color x:Key="ThemeBackgroundLightColor">#FF656565</Color>
     <Color x:Key="ThemeBackgroundColor">#FF1E1E1E</Color>
 
     <Color x:Key="ThemeTextBackgroundDarkColor">#FFFFFFFF</Color>

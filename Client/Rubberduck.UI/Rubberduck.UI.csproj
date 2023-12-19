@@ -492,9 +492,6 @@
     <Compile Update="Shell\ShellChildWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Shell\Document\DocumentHostControl.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Shell\DuckyBackgroundControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -510,5 +507,9 @@
     <Compile Update="Splash\SplashWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Shell\Tools\" />
   </ItemGroup>
 </Project>

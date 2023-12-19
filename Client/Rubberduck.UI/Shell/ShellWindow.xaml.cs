@@ -1,17 +1,14 @@
-﻿using Dragablz;
-using Rubberduck.SettingsProvider.Model.Editor.Tools;
+﻿using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI.Command.SharedHandlers;
+using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Windows;
 using System;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace Rubberduck.UI.Shell
 {
@@ -20,9 +17,6 @@ namespace Rubberduck.UI.Shell
     /// </summary>
     public partial class ShellWindow : Window
     {
-        public Expander LeftToolPanel => LeftPaneExpander;
-        public Expander RightToolPanel => RightPaneExpander;
-
         public ShellWindow()
         {
             InitializeComponent();
@@ -39,6 +33,8 @@ namespace Rubberduck.UI.Shell
             RightPaneExpander.MouseLeave += ToolPaneExpanderMouseLeave;
             BottomPaneExpander.MouseLeave += ToolPaneExpanderMouseLeave;
         }
+
+        public void AddDocument(IDocumentTabViewModel tab) => DocumentPaneTabs.AddToSource(tab);
 
         private IToolPanelViewModel GetToolPanelModel(Expander expander)
         {

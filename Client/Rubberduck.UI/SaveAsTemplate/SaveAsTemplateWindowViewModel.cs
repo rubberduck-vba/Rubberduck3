@@ -2,6 +2,7 @@
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Windows;
+using Rubberduck.UI.WorkspaceExplorer;
 using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
@@ -12,15 +13,6 @@ using System.Windows.Input;
 
 namespace Rubberduck.UI.SaveAsTemplate
 {
-    public interface IWorkspaceFileViewModel
-    {
-        public string Uri { get; }
-        public string Name { get; }
-        public bool IsSourceFile { get; }
-
-        public bool IsSelected { get; set; }
-    }
-
     public class SaveAsTemplateWindowViewModel : DialogWindowViewModel
     {
         private readonly UIServiceHelper _service;
@@ -34,6 +26,8 @@ namespace Rubberduck.UI.SaveAsTemplate
             _service = service;
             _fileSystem = fileSystem;
             TemplateFiles = files;
+
+            _name = string.Empty;
         }
 
         private string _name;

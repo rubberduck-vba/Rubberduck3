@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Threading;
 
-namespace Rubberduck.UI.Services.WorkspaceExplorer
+namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
 {
 
     public class WorkspaceExplorerViewModel : ToolWindowViewModelBase, IWorkspaceExplorerViewModel
@@ -51,8 +51,8 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
         public override string Title { get; } = "Workspace Explorer"; // TODO localize
         public override string SettingKey { get; } = nameof(WorkspaceExplorerSettings);
 
-        private WorkspaceTreeNodeViewModel? _selection;
-        public WorkspaceTreeNodeViewModel? Selection
+        private IWorkspaceTreeNode? _selection;
+        public IWorkspaceTreeNode? Selection
         {
             get => _selection;
             set
@@ -61,30 +61,11 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
                 {
                     _selection = value;
                     OnPropertyChanged();
-                    SelectionInfo = _selection;
                 }
             }
         }
 
-        private IWorkspaceUriInfo? _selectionInfo;
-
-        public IWorkspaceUriInfo? SelectionInfo
-        {
-            get => _selectionInfo;
-            private set
-            {
-                if (_selectionInfo != value)
-                {
-                    _selectionInfo = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(HasSelectionInfo));
-                }
-            }
-        }
-
-        public bool HasSelectionInfo => _selectionInfo != null;
-
-        public ObservableCollection<WorkspaceViewModel> Workspaces { get; } = new();
+        public ObservableCollection<IWorkspaceViewModel> Workspaces { get; } = new();
 
         public void Load(ProjectFile workspace)
         {

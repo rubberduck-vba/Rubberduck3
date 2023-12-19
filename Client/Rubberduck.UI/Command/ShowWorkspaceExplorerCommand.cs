@@ -1,15 +1,11 @@
-﻿using Rubberduck.UI.Command.SharedHandlers;
-using Rubberduck.UI.Services;
-using Rubberduck.UI.Services.Abstract;
-using Rubberduck.UI.Services.WorkspaceExplorer;
+﻿using Rubberduck.UI.Services;
 using Rubberduck.UI.WorkspaceExplorer;
-using System;
 
 namespace Rubberduck.UI.Command
 {
-    public class ShowWorkspaceExplorerCommand : ShowToolWindowCommand<WorkspaceExplorerControl, WorkspaceExplorerViewModel>
+    public class ShowWorkspaceExplorerCommand : ShowToolWindowCommand<WorkspaceExplorerControl, IWorkspaceExplorerViewModel>
     {
-        public ShowWorkspaceExplorerCommand(UIServiceHelper service, ShellProvider shell, WorkspaceExplorerViewModel vm)
+        public ShowWorkspaceExplorerCommand(UIServiceHelper service, ShellProvider shell, IWorkspaceExplorerViewModel vm)
             : base(service, shell, vm) 
         {
         }

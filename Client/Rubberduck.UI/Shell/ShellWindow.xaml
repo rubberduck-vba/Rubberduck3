@@ -90,8 +90,20 @@
                 </Label>
             </DataTemplate>
 
+            <DataTemplate x:Key="TabHeaderItemTemplate" DataType="windows:ITabViewModel">
+                <Label Style="{DynamicResource FormLabelStyleSmall}"
+                       Margin="-5,-1,-5,-1" BorderThickness="0"
+                       Background="{DynamicResource ThemeBackgroundColorBrush}">
+                    <TextBlock Text="{Binding Title}" />
+                </Label>
+            </DataTemplate>
+
             <DataTemplate x:Key="ToolTabItemTemplate" DataType="windows:ITabViewModel">
                 <ContentControl Content="{Binding Content}" DataContext="{Binding}" />
+            </DataTemplate>
+            
+            <DataTemplate x:Key="DocumentTabItemTemplate" DataType="windows:ITabViewModel">
+                <ContentControl Content="{Binding Content}" />
             </DataTemplate>
 
             <Style x:Key="ToolTabControlStyle" TargetType="dragablz:TabablzControl">
@@ -112,6 +124,19 @@
                 </Style.Setters>
             </Style>
 
+            <Style x:Key="DocumentTabControlStyle" TargetType="dragablz:TabablzControl">
+                <Style.Setters>
+                    <Setter Property="Template" Value="{DynamicResource DocumentTabTemplate}" />
+                    <Setter Property="InterTabController" Value="{StaticResource InterTabController}" />
+                    <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}" />
+                    <Setter Property="ItemTemplate" Value="{DynamicResource DocumentTabItemTemplate}" />
+                    <Setter Property="HeaderItemTemplate" Value="{DynamicResource TabHeaderItemTemplate}" />
+                    <Setter Property="ShowDefaultAddButton" Value="False" />
+                    <Setter Property="ShowDefaultCloseButton" Value="True" />
+                </Style.Setters>
+            </Style>
+            
         </ResourceDictionary>
     </Window.Resources>
     <Grid Background="{DynamicResource ThemeBackgroundColorBrush}" ClipToBounds="True">
@@ -235,6 +260,7 @@
             </Expander.Resources>
             <dockablz:Layout Grid.Row="1" Name="RightPane" Partition="toolwindows" BranchTemplate="{DynamicResource RightPanelBranchTemplate}">
                 <dragablz:TabablzControl x:Name="RightPaneToolTabs" 
+                                         Style="{DynamicResource ToolTabControlStyle}" 
                                          ItemsSource="{Binding View, Source={StaticResource RightPanelToolsSource}}"
                                          FixedHeaderCount="{Binding FixedRightToolTabs}" />
             </dockablz:Layout>
@@ -298,17 +324,15 @@
         <dockablz:Layout Name="DocumentPane" Partition="documents" Grid.Row="1" Grid.Column="1">
             <dockablz:Layout.BranchTemplate>
                 <DataTemplate>
-                    <dragablz:TabablzControl InterTabController="{DynamicResource InterTabController}" 
+                    <dragablz:TabablzControl Style="{DynamicResource DocumentTabControlStyle}"
                                              ItemsSource="{Binding View, Source={StaticResource DocumentsSource}}"
-                                             FixedHeaderCount="{Binding FixedDocumentTabs}"
-                                             TabStripPlacement="Top" Background="{DynamicResource ThemeBackgroundColorBrush}" />
+                                             FixedHeaderCount="{Binding FixedDocumentTabs}" />
                 </DataTemplate>
             </dockablz:Layout.BranchTemplate>
-            <dragablz:TabablzControl x:Name="DocumentPaneTabs" TabStripPlacement="Top"
+            <dragablz:TabablzControl x:Name="DocumentPaneTabs" 
+                                     Style="{DynamicResource DocumentTabControlStyle}"
                                      ItemsSource="{Binding View, Source={StaticResource DocumentsSource}}"
-                                     FixedHeaderCount="{Binding FixedDocumentTabs}"
-                                     InterTabController="{DynamicResource InterTabController}"
-                                     Background="{DynamicResource ThemeBackgroundColorBrush}" />
+                                     FixedHeaderCount="{Binding FixedDocumentTabs}" />
         </dockablz:Layout>
         
         <!--<statusbar:StatusBarControl x:Name="StatusBar" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" />-->

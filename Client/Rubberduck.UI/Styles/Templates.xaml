@@ -42,7 +42,7 @@
     <SolidColorBrush x:Key="ContextMenu.Disabled.Foreground" Color="{DynamicResource ThemeTextInactiveColor}"/>
     <SolidColorBrush x:Key="MenuItem.Selected.Background" Color="{DynamicResource ThemeAccent1HighlightColor}"/>
     <SolidColorBrush x:Key="MenuItem.Selected.Border" Color="{DynamicResource ThemeBackgroundLightColor}"/>
-    <SolidColorBrush x:Key="MenuItem.Highlight.Background" Color="{DynamicResource ThemeAccent1HighlightColor}"/>
+    <SolidColorBrush x:Key="MenuItem.Highlight.Background" Color="{DynamicResource ThemeBackgroundLightColor}"/>
     <SolidColorBrush x:Key="MenuItem.Highlight.Border" Color="{DynamicResource ThemeBackgroundLightColor}"/>
     <SolidColorBrush x:Key="MenuItem.Highlight.Disabled.Background" Color="#0A000000"/>
     <SolidColorBrush x:Key="MenuItem.Highlight.Disabled.Border" Color="#21000000"/>

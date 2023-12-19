@@ -7,8 +7,8 @@
         xmlns:xb="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
         xmlns:cmd="clr-namespace:Rubberduck.UI.Command" 
-        xmlns:local="clr-namespace:Rubberduck.UI.WorkspaceExplorer"              
-        d:DataContext="{d:DesignInstance Type=local:IWorkspaceExplorerViewModel, IsDesignTimeCreatable=False}"
+        xmlns:local="clr-namespace:Rubberduck.UI.WorkspaceExplorer"
+             d:DataContext="{d:DesignInstance Type=local:IWorkspaceExplorerViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d" 
         x:Name="WorkspaceExplorerRoot"
         d:DesignHeight="450" d:DesignWidth="400">
@@ -18,8 +18,6 @@
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <FrameworkElement x:Key="BindingAnchor" DataContext="{Binding DataContext, RelativeSource={RelativeSource Mode=Self}}" />
-            <CollectionViewSource x:Key="ChildItemsView" Source="{Binding Workspaces, NotifyOnTargetUpdated=True}" />
 
             <Style x:Key="NodeLabelStyle" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
                 <Setter Property="FontWeight" Value="Normal" />
@@ -31,7 +29,9 @@
                 <Setter Property="Margin" Value="0,0,5,0" />
             </Style>
 
-            <HierarchicalDataTemplate x:Key="WorkspaceFolderTemplate" DataType="local:WorkspaceTreeNodeViewModel" ItemsSource="{Binding Children}">
+            <HierarchicalDataTemplate x:Key="WorkspaceFolderTemplate" 
+                                      DataType="local:IWorkspaceTreeNode" 
+                                      ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{DynamicResource SharpFolderClosedIcon}">
                         <Image.Style>
@@ -47,7 +47,7 @@
                     <Label Content="{Binding Name}" Style="{DynamicResource NodeLabelStyle}" Margin="0"/>
                 </StackPanel>
             </HierarchicalDataTemplate>
-            
+
             <DataTemplate x:Key="SourceFileTemplate" DataType="local:WorkspaceSourceFileViewModel">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{DynamicResource SourceDocumentIcon16}" Style="{DynamicResource NodeIconStyle}" />
@@ -61,42 +61,11 @@
                 </StackPanel>
             </DataTemplate>
 
-            <DataTemplate x:Key="SourceFileInfoTemplate" DataType="local:WorkspaceSourceFileViewModel">
-                <DockPanel>
-                    <Image DockPanel.Dock="Left" Source="{DynamicResource SourceDocumentIcon16}" Style="{DynamicResource NodeIconStyle}" />
-                    <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldNameLabelStyle}" Content="{Binding FileName}" />
-                    <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldNameLabelStyle}">
-                        <TextBlock TextWrapping="Wrap" Text="{Binding Uri.LocalPath}" />
-                    </Label>
-                </DockPanel>
-            </DataTemplate>
-            <DataTemplate x:Key="FolderInfoTemplate" DataType="local:WorkspaceTreeNodeViewModel">
-                <DockPanel>
-                    <Image DockPanel.Dock="Left" Source="{DynamicResource SharpFolderClosedIcon}" Style="{DynamicResource NodeIconStyle}" />
-                    <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldNameLabelStyle}" Content="{Binding FileName}" />
-                </DockPanel>
-            </DataTemplate>
-            <DataTemplate x:Key="WorkspaceFileInfoTemplate" DataType="local:WorkspaceFileViewModel">
-                <DockPanel>
-                    <Image DockPanel.Dock="Left" Source="{DynamicResource DocumentIcon16}" Style="{DynamicResource NodeIconStyle}" VerticalAlignment="Top" />
-                    <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldNameLabelStyle}">
-                        <TextBlock Text="{Binding FileName}" />
-                    </Label>
-                    <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldNameLabelStyle}" Content="{Binding FileName}" />
-                    <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldNameLabelStyle}">
-                        <TextBlock TextWrapping="Wrap" Text="{Binding Uri.LocalPath}" />
-                    </Label>
-                </DockPanel>
-            </DataTemplate>
             <local:WorkspaceNodeTemplateSelector x:Key="NodeTemplateSelector" 
                                                  FolderTemplate="{StaticResource WorkspaceFolderTemplate}"
                                                  SourceFileTemplate="{StaticResource SourceFileTemplate}"
                                                  WorkspaceFileTemplate="{StaticResource OtherFileTemplate}"/>
 
-            <local:WorkspaceNodeTemplateSelector x:Key="DetailsTemplateSelector" 
-                                                 FolderTemplate="{StaticResource FolderInfoTemplate}"
-                                                 SourceFileTemplate="{StaticResource SourceFileInfoTemplate}"
-                                                 WorkspaceFileTemplate="{StaticResource WorkspaceFileInfoTemplate}"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <shell:ThunderFrame ShowAcceptButton="False" ShowCancelButton="False" 
@@ -122,7 +91,7 @@
             </WrapPanel>
 
             <TreeView Grid.Row="1" 
-                      BorderThickness="1" Background="{DynamicResource ThemeBackgroundDarkColorBrush75}" AllowDrop="True" 
+                      BorderThickness="1" Background="{DynamicResource ThemeBackgroundDarkColorBrush75}"
                       ItemsSource="{Binding Workspaces}"
                       ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
 
@@ -140,23 +109,12 @@
                         <MenuItem Header="Synchronize" Command="{x:Static cmd:FileCommands.SynchronizeWorkspaceCommand}" />
                     </ContextMenu>
                 </TreeView.ContextMenu>-->
-                
+
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate DataType="local:IWorkspaceTreeNode" 
                             ItemsSource="{Binding Children}"
                             ItemContainerStyle="{StaticResource TreeViewContainerStyle}"
                             ItemTemplateSelector="{StaticResource NodeTemplateSelector}">
-                        <HierarchicalDataTemplate.Resources>
-                            <Style x:Key="WorkspaceTreeLabelStyle" TargetType="{x:Type TextBlock}">
-                                <Setter Property="Text" Value="{Binding Name}" />
-                                <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                        <Setter Property="Foreground" Value="{DynamicResource ThemeBlackDarkColorBrush}" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </HierarchicalDataTemplate.Resources>
                         <Label Content="{Binding Name}" Style="{DynamicResource NodeLabelStyle}" FontWeight="SemiBold" />
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>

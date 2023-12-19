@@ -1,11 +1,11 @@
-﻿using Rubberduck.UI.Command;
+﻿using Rubberduck.InternalApi.Model.Workspace;
+using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
-using Rubberduck.UI.Services.WorkspaceExplorer;
-using Rubberduck.UI.WorkspaceExplorer;
 using System;
 using System.IO.Abstractions;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Rubberduck.Editor.DialogServices.NewProject
@@ -48,8 +48,11 @@ namespace Rubberduck.Editor.DialogServices.NewProject
 
             if (uri != null)
             {
-                Service.LogInformation("Opening project workspace...", $"Workspace root: {uri}");
-                await _workspaceService.OpenProjectWorkspaceAsync(new Uri(uri));
+                if (!_workspaceService.ProjectFiles.Any(project => project.Uri.LocalPath[..^(ProjectFile.FileName.Length + 1)] == uri))
+                {
+                    Service.LogInformation("Opening project workspace...", $"Workspace root: {uri}");
+                    await _workspaceService.OpenProjectWorkspaceAsync(new Uri(uri));
+                }
             }
         }
     }

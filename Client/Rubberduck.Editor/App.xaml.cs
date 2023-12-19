@@ -14,7 +14,9 @@ using Rubberduck.Editor.RPC.EditorServer.Handlers.Workspace;
 using Rubberduck.Editor.RPC.LanguageServerClient.Handlers;
 using Rubberduck.Editor.Shell;
 using Rubberduck.Editor.Shell.Chrome;
+using Rubberduck.Editor.Shell.Document.Tabs;
 using Rubberduck.Editor.Shell.StatusBar;
+using Rubberduck.Editor.Shell.Tools.WorkspaceExplorer;
 using Rubberduck.Editor.Splash;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
@@ -33,11 +35,9 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.LanguageServerTrace;
 using Rubberduck.UI.Message;
-using Rubberduck.UI.NewProject;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Services.Settings;
-using Rubberduck.UI.Services.WorkspaceExplorer;
 using Rubberduck.UI.Settings;
 using Rubberduck.UI.Shell;
 using Rubberduck.UI.Shell.StatusBar;
@@ -132,9 +132,17 @@ namespace Rubberduck.Editor
         {
             var model = _serviceProvider.GetRequiredService<IShellWindowViewModel>();
 
+            // TODO "show welcome tab" setting
+            var fileSystem = _serviceProvider.GetRequiredService<IFileSystem>();
+            var path = fileSystem.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Rubberduck", "Templates", "Welcome.md");
+            var content = fileSystem.File.ReadAllText(path);
+            var welcome = new MarkdownDocumentTabViewModel(new Uri(path), "Welcome!", content);
+            model.Documents.Add(welcome);
+
             // prompt for new workspace here if there's no addin host?
 
             var view = _shell ??= new ShellWindow() { DataContext = model };
+            view.AddDocument(welcome);
             view.Show();
         }
         
@@ -245,7 +253,7 @@ namespace Rubberduck.Editor
 
             services.AddSingleton<IWorkspaceService, WorkspaceService>();
             services.AddSingleton<LanguageServerTraceViewModel>();
-            services.AddSingleton<WorkspaceExplorerViewModel>();
+            services.AddSingleton<IWorkspaceExplorerViewModel, WorkspaceExplorerViewModel>();
             services.AddSingleton<WorkspaceStateManager>();
 
             services.AddSingleton<FileCommandHandlers>();

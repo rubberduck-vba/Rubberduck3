@@ -5,6 +5,7 @@ Version 3.0 reinvents Rubberduck by separating not only the VBIDE add-in from th
 - Website: [rubberduckvba.com](https://rubberduckvba.com)
 - Repository: [Rubberduck3](https://github.com/rubberduck-vba/Rubberduck3)
 
+
 ## Thank You!
  
  The initial release of Rubberduck 3.0 could not have happened without our users and supporters, who consistently show up in greater numbers whenever a new Rubberduck version is issued. **Thank you** for your continued support!  Rubberduck 3.x is unlocking every single IDE feature we ever dreamed to implement, and radically enhances the experience of _programming in VBA_ in this century, which was the entire idea all along.  

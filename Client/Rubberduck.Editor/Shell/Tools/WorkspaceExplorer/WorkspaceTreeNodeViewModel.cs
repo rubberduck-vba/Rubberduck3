@@ -1,20 +1,20 @@
 ﻿using Rubberduck.InternalApi.Model.Workspace;
+using Rubberduck.UI;
 using Rubberduck.UI.WorkspaceExplorer;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Rubberduck.UI.Services.WorkspaceExplorer
+namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
 {
-    public class WorkspaceTreeNodeViewModel : ViewModelBase, IWorkspaceUriInfo, IWorkspaceTreeNode
+    public class WorkspaceTreeNodeViewModel : ViewModelBase, IWorkspaceTreeNode
     {
         public static WorkspaceTreeNodeViewModel FromModel(Folder model, Uri srcRoot)
         {
             return new WorkspaceTreeNodeViewModel
             {
-                Uri = new Uri(srcRoot, model.Uri),
-                RelativeUri = model.Name == ProjectFile.SourceRoot ? null : new Uri(model.Name, UriKind.Relative),
+                Uri = new Uri(srcRoot, ProjectFile.SourceRoot + '/' + model.Uri), // this overload eats the ".src" segment of Uri:srcRoot, so we concatenate it in
                 Name = model.Name,
                 IsInProject = true,
             };
@@ -44,23 +44,23 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
                 {
                     _uri = value;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(FileName));
                 }
             }
         }
 
-        public string FileName => Uri.GetComponents(UriComponents.Path, UriFormat.SafeUnescaped).Split('/').Last();
-
-        private Uri? _relativeUri = null!;
-        public Uri? RelativeUri
+        private string _fileName = null!;
+        public string FileName
         {
-            get => _relativeUri;
+            get => _uri.Segments.Last();
             set
             {
-                if (_relativeUri != value)
+                if (_fileName != value)
                 {
-                    _relativeUri = value;
+                    var oldValue = _fileName;
+                    _fileName = value;
                     OnPropertyChanged();
+
+                    Uri = new Uri(System.IO.Path.Combine(_uri.LocalPath[..^(oldValue?.Length ?? 0)], value));
                 }
             }
         }
@@ -79,7 +79,7 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
             }
         }
 
-        private readonly ObservableCollection<IWorkspaceTreeNode> _children = new();
+        private readonly ObservableCollection<IWorkspaceTreeNode> _children = [];
         public ObservableCollection<IWorkspaceTreeNode> Children => _children;
 
 
@@ -168,6 +168,20 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
                 if (_isExpanded != value)
                 {
                     _isExpanded = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _isEditingName;
+        public bool IsEditingName
+        {
+            get => _isEditingName;
+            set
+            {
+                if (_isEditingName != value)
+                {
+                    _isEditingName = value;
                     OnPropertyChanged();
                 }
             }

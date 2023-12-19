@@ -73,8 +73,8 @@ namespace Rubberduck.Editor
                         throw new DirectoryNotFoundException("Project source root folder ('.src') was not found under the secified workspace URI.");
                     }
 
-                    _state.WorkspaceRoot = uri;
-                    _state.ProjectName = _fileSystem.Path.GetFileName(root);
+                    var state = _state.AddWorkspace(uri);
+                    state.ProjectName = _fileSystem.Path.GetFileName(root);
 
                     LoadWorkspaceFiles(sourceRoot, projectFile);
                     EnableFileSystemWatcher(uri);
@@ -136,11 +136,10 @@ namespace Rubberduck.Editor
 
         public async Task<bool> SaveWorkspaceFileAsync(Uri uri)
         {
-            if (_state.WorkspaceRoot != null && _state.TryGetWorkspaceFile(uri, out var file) && file != null)
+            if (_state.ActiveWorkspace?.WorkspaceRoot != null && _state.ActiveWorkspace.TryGetWorkspaceFile(uri, out var file) && file != null)
             {
-                var path = _fileSystem.Path.Combine(_state.WorkspaceRoot.LocalPath, ProjectFile.SourceRoot, file.Uri.LocalPath);
+                var path = _fileSystem.Path.Combine(_state.ActiveWorkspace.WorkspaceRoot.LocalPath, ProjectFile.SourceRoot, file.Uri.LocalPath);
                 await _fileSystem.File.WriteAllTextAsync(path, file.Content);
-                _state.ClearPreviousVersions(uri);
                 return true;
             }
 
@@ -149,7 +148,7 @@ namespace Rubberduck.Editor
 
         public async Task<bool> SaveWorkspaceFileAsAsync(Uri uri, string path)
         {
-            if (_state.WorkspaceRoot != null && _state.TryGetWorkspaceFile(uri, out var file) && file != null)
+            if (_state.ActiveWorkspace?.WorkspaceRoot != null && _state.ActiveWorkspace.TryGetWorkspaceFile(uri, out var file) && file != null)
             {
                 // note: saves a copy but only keeps the original URI in the workspace
                 await _fileSystem.File.WriteAllTextAsync(path, file.Content);
@@ -162,14 +161,15 @@ namespace Rubberduck.Editor
         public async Task<bool> SaveAllAsync()
         {
             var tasks = new List<Task>();
-            if (_state.WorkspaceRoot != null)
+            if (_state.ActiveWorkspace?.WorkspaceRoot != null)
             {
-                var srcRoot = _fileSystem.Path.Combine(_state.WorkspaceRoot.LocalPath, ProjectFile.SourceRoot);
-                foreach (var file in _state.WorkspaceFiles.Where(e => e.IsOpened))
+                var srcRoot = _fileSystem.Path.Combine(_state.ActiveWorkspace.WorkspaceRoot.LocalPath, ProjectFile.SourceRoot);
+                foreach (var file in _state.ActiveWorkspace.WorkspaceFiles.Where(e => e.IsModified))
                 {
                     var path = _fileSystem.Path.Combine(srcRoot, file.Uri.ToString());
                     tasks.Add(_fileSystem.File.WriteAllTextAsync(path, file.Content));
-                    _state.ClearPreviousVersions(file.Uri);
+
+                    file.ResetModifiedState();
                 }
             }
 
@@ -200,9 +200,10 @@ namespace Rubberduck.Editor
                 var newRelativePath = _fileSystem.Path.GetRelativePath(sourceRoot, e.FullPath);
                 var newUri = new Uri(newRelativePath);
 
-                if (_state.TryGetWorkspaceFile(oldUri, out var workspaceFile) && workspaceFile is not null)
+                var state = _state.ActiveWorkspace;
+                if (state != null && state.TryGetWorkspaceFile(oldUri, out var workspaceFile) && workspaceFile is not null)
                 {
-                    if (!_state.RenameWorkspaceFile(oldUri, newUri))
+                    if (!state.RenameWorkspaceFile(oldUri, newUri))
                     {
                         // houston, we have a problem. name collision? validate and notify, unload conflicted file?
                         LogWarning("Rename failed.", $"OldUri: {oldUri}; NewUri: {newUri}");
@@ -237,21 +238,25 @@ namespace Rubberduck.Editor
             var relativePath = _fileSystem.Path.GetRelativePath(sourceRoot, e.FullPath);
             var uri = new Uri(relativePath);
 
-            _state.UnloadWorkspaceFile(uri);
-
-            var request = new DidChangeWatchedFilesParams
+            var state = _state.ActiveWorkspace;
+            if (state != null)
             {
-                Changes = new Container<FileEvent>(
-                    new FileEvent
-                    {
-                        Uri = uri,
-                        Type = FileChangeType.Deleted
-                    })
-            };
+                state.UnloadWorkspaceFile(uri);
 
-            // NOTE: this is different than the DidDeleteFiles mechanism.
-            LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Deleted: {uri}");
-            _lsp().Workspace.DidChangeWatchedFiles(request);
+                var request = new DidChangeWatchedFilesParams
+                {
+                    Changes = new Container<FileEvent>(
+                        new FileEvent
+                        {
+                            Uri = uri,
+                            Type = FileChangeType.Deleted
+                        })
+                };
+
+                // NOTE: this is different than the DidDeleteFiles mechanism.
+                LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Deleted: {uri}");
+                _lsp().Workspace.DidChangeWatchedFiles(request);
+            }
         }
 
         private void OnWatcherChanged(object sender, FileSystemEventArgs e)
@@ -261,21 +266,25 @@ namespace Rubberduck.Editor
             var relativePath = _fileSystem.Path.GetRelativePath(sourceRoot, e.FullPath);
             var uri = new Uri(relativePath, UriKind.Relative);
 
-            _state.UnloadWorkspaceFile(uri);
-
-            var request = new DidChangeWatchedFilesParams
+            var state = _state.ActiveWorkspace;
+            if (state != null)
             {
-                Changes = new Container<FileEvent>(
-                    new FileEvent
-                    {
-                        Uri = uri,
-                        Type = FileChangeType.Changed
-                    })
-            };
+                state.UnloadWorkspaceFile(uri);
 
-            // NOTE: this is different than the document-level syncing mechanism.
-            LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Changed: {uri}");
-            _lsp().Workspace.DidChangeWatchedFiles(request);
+                var request = new DidChangeWatchedFilesParams
+                {
+                    Changes = new Container<FileEvent>(
+                        new FileEvent
+                        {
+                            Uri = uri,
+                            Type = FileChangeType.Changed
+                        })
+                };
+
+                // NOTE: this is different than the document-level syncing mechanism.
+                LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Changed: {uri}");
+                _lsp().Workspace.DidChangeWatchedFiles(request);
+            }
         }
 
         private void OnWatcherCreated(object sender, FileSystemEventArgs e)
@@ -322,6 +331,7 @@ namespace Rubberduck.Editor
 
         private void LoadWorkspaceFile(string uri, string sourceRoot, bool isSourceFile, bool open = false)
         {
+            var state = _state.ActiveWorkspace!;
             TryRunAction(() =>
             {
                 var filePath = _fileSystem.Path.Combine(sourceRoot, uri);
@@ -353,14 +363,13 @@ namespace Rubberduck.Editor
                 {
                     Uri = new Uri(uri, UriKind.Relative),
                     Content = content,
-                    Version = fileVersion,
                     IsSourceFile = isSourceFile,
                     IsOpened = open && !isMissing,
                     IsMissing = isMissing,
                     IsLoadError = isLoadError
                 };
 
-                if (_state.LoadWorkspaceFile(info))
+                if (state.LoadWorkspaceFile(info))
                 {
                     if (!isMissing)
                     {
@@ -380,23 +389,29 @@ namespace Rubberduck.Editor
 
         public void CloseFile(Uri uri)
         {
-            _state.CloseWorkspaceFile(uri, out _);
+            if (_state.ActiveWorkspace != null)
+            {
+                _state.ActiveWorkspace.CloseWorkspaceFile(uri, out _);
+            }
         }
 
         public void CloseAllFiles()
         {
-            foreach(var file in _state.WorkspaceFiles)
+            if (_state.ActiveWorkspace != null)
             {
-                _state.CloseWorkspaceFile(file.Uri, out _);
+                foreach (var file in _state.ActiveWorkspace.WorkspaceFiles)
+                {
+                    _state.ActiveWorkspace.CloseWorkspaceFile(file.Uri, out _);
+                }
             }
         }
 
         public void CloseWorkspace()
         {
-            var uri = _state.WorkspaceRoot ?? throw new InvalidOperationException("WorkspaceStateManager.WorkspaceRoot is unexpectedly null.");
+            var uri = _state.ActiveWorkspace?.WorkspaceRoot ?? throw new InvalidOperationException("WorkspaceStateManager.WorkspaceRoot is unexpectedly null.");
  
             CloseAllFiles();
-            _state.UnloadWorkspace();
+            _state.Unload(uri);
 
             OnWorkspaceClosed(uri);
         }

@@ -18,8 +18,8 @@ namespace Rubberduck.SettingsProvider
 
     public abstract class ServiceBase
     {
-        private readonly ILogger _logger;
-        private readonly PerformanceRecordAggregator _performance;
+        protected readonly ILogger _logger;
+        protected readonly PerformanceRecordAggregator _performance;
 
         protected RubberduckSettingsProvider SettingsProvider { get; init; }
 

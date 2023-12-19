@@ -8,14 +8,12 @@ using System.Text.Json;
 
 namespace Rubberduck.UI.Services.Abstract
 {
-    /// <summary>
-    /// Manages the state and content of each file in a workspace.
-    /// </summary>
-    public interface IWorkspaceStateManager
+    public interface IWorkspaceState
     {
         Uri? WorkspaceRoot { get; set; }
+        string ProjectName { get; set; }
         IEnumerable<WorkspaceFileInfo> WorkspaceFiles { get; }
-        void ClearPreviousVersions(Uri uri);
+
         /// <summary>
         /// Attempts to retrieve the specified file.
         /// </summary>
@@ -23,14 +21,6 @@ namespace Rubberduck.UI.Services.Abstract
         /// <param name="fileInfo">The retrieved <c>WorkspaceFileInfo</c>, if found.</param>
         /// <returns><c>true</c> if the specified version was found.</returns>
         bool TryGetWorkspaceFile(Uri uri, out WorkspaceFileInfo? fileInfo);
-        /// <summary>
-        /// Attempts to retrieve the specified version of the specified file.
-        /// </summary>
-        /// <param name="uri">The URI referring to the file to retrieve.</param>
-        /// <param name="version">The specific version number to retrieve.</param>
-        /// <param name="fileInfo">The retrieved <c>WorkspaceFileInfo</c>, if found.</param>
-        /// <returns><c>true</c> if the specified version was found.</returns>
-        bool TryGetWorkspaceFile(Uri uri, int version, out WorkspaceFileInfo? fileInfo);
         /// <summary>
         /// Marks the file at the specified URI as closed in the editor.
         /// </summary>
@@ -42,10 +32,9 @@ namespace Rubberduck.UI.Services.Abstract
         /// Loads the specified file into the workspace.
         /// </summary>
         /// <param name="file">The file (including its content) to be added.</param>
-        /// <param name="cacheCapacity">The number of versions held in cache.</param>
         /// <returns><c>true</c> if the file was successfully added to the workspace.</returns>
-        /// <remarks>This method will overwrite a cached URI for a newer version if the content is different.</remarks>
-        bool LoadWorkspaceFile(WorkspaceFileInfo file, int cacheCapacity = 3);
+        /// <remarks>This method will overwrite a cached URI if URI matches an existing file.</remarks>
+        bool LoadWorkspaceFile(WorkspaceFileInfo file);
         /// <summary>
         /// Renames the specified workspace URI.
         /// </summary>
@@ -59,10 +48,18 @@ namespace Rubberduck.UI.Services.Abstract
         /// <param name="uri">The file URI to unload.</param>
         /// <returns><c>true</c> if the file was successfully unloaded.</returns>
         bool UnloadWorkspaceFile(Uri uri);
+        void UnloadAllFiles();
+    }
+
+    public interface IWorkspaceStateManager
+    {
+        IEnumerable<IWorkspaceState> Workspaces { get; }
         /// <summary>
-        /// Unloads the entire workspace.
+        /// Gets the currently selected/active workspace/project.
         /// </summary>
-        void UnloadWorkspace();
+        IWorkspaceState? ActiveWorkspace { get; }
+        IWorkspaceState AddWorkspace(Uri workspaceRoot);
+        void Unload(Uri workspaceRoot);
     }
 
     public interface IProjectFileService

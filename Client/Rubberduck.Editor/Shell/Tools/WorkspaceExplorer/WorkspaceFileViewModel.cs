@@ -1,9 +1,10 @@
 ﻿using Rubberduck.InternalApi.Model.Workspace;
+using Rubberduck.UI.WorkspaceExplorer;
 using System;
 
-namespace Rubberduck.UI.Services.WorkspaceExplorer
+namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
 {
-    public class WorkspaceFileViewModel : WorkspaceTreeNodeViewModel
+    public class WorkspaceFileViewModel : WorkspaceTreeNodeViewModel, IWorkspaceFileViewModel
     {
         public static WorkspaceFileViewModel FromModel(File model, Uri srcRoot)
         {
@@ -30,20 +31,18 @@ namespace Rubberduck.UI.Services.WorkspaceExplorer
             }
         }
 
-        private bool _isOpen;
-        public bool IsOpen
+        private bool _isReadOnly;
+        public bool IsReadOnly
         {
-            get => _isOpen;
+            get => _isReadOnly;
             set
             {
-                if (_isOpen != value)
+                if (_isReadOnly != value)
                 {
-                    _isOpen = value;
+                    _isReadOnly = value;
                     OnPropertyChanged();
                 }
             }
         }
-
-
     }
 }

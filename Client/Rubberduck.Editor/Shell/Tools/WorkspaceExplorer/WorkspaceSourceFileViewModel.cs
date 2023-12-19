@@ -1,9 +1,11 @@
 ﻿using Rubberduck.InternalApi.Model.Workspace;
+using Rubberduck.UI.WorkspaceExplorer;
 using System;
 
-namespace Rubberduck.UI.Services.WorkspaceExplorer
+namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
 {
-    public class WorkspaceSourceFileViewModel : WorkspaceFileViewModel
+
+    public class WorkspaceSourceFileViewModel : WorkspaceFileViewModel, IWorkspaceSourceFileViewModel
     {
         public static WorkspaceSourceFileViewModel FromModel(Module model, Uri srcRoot)
         {
