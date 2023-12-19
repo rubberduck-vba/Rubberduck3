@@ -254,7 +254,8 @@ namespace Rubberduck.Editor
             services.AddSingleton<IWorkspaceService, WorkspaceService>();
             services.AddSingleton<LanguageServerTraceViewModel>();
             services.AddSingleton<IWorkspaceExplorerViewModel, WorkspaceExplorerViewModel>();
-            services.AddSingleton<WorkspaceStateManager>();
+            services.AddSingleton<IWorkspaceStateManager, WorkspaceStateManager>();
+            services.AddSingleton<OpenDocumentCommand>();
 
             services.AddSingleton<FileCommandHandlers>();
             services.AddSingleton<NewProjectCommand>();

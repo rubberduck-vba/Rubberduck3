@@ -102,10 +102,6 @@
                 <ContentControl Content="{Binding Content}" DataContext="{Binding}" />
             </DataTemplate>
             
-            <DataTemplate x:Key="DocumentTabItemTemplate" DataType="windows:ITabViewModel">
-                <ContentControl Content="{Binding Content}" />
-            </DataTemplate>
-
             <Style x:Key="ToolTabControlStyle" TargetType="dragablz:TabablzControl">
                 <Style.Setters>
                     <Setter Property="Template" Value="{DynamicResource ToolTabTemplate}" />
@@ -123,6 +119,10 @@
                     <Setter Property="IsFloatDropZoneEnabled" Value="False" />
                 </Style.Setters>
             </Style>
+
+            <DataTemplate x:Key="DocumentTabItemTemplate" DataType="windows:ITabViewModel">
+                <ContentControl Content="{Binding Content}" />
+            </DataTemplate>
 
             <Style x:Key="DocumentTabControlStyle" TargetType="dragablz:TabablzControl">
                 <Style.Setters>

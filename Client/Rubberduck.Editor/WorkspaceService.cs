@@ -16,7 +16,7 @@ namespace Rubberduck.Editor
 {
     public class WorkspaceService : ServiceBase, IWorkspaceService, IDisposable
     {
-        private readonly WorkspaceStateManager _state;
+        private readonly IWorkspaceStateManager _state;
         private readonly HashSet<ProjectFile> _projectFiles = new();
 
         private readonly IFileSystem _fileSystem;
@@ -30,7 +30,7 @@ namespace Rubberduck.Editor
         public event EventHandler<WorkspaceServiceEventArgs> WorkspaceClosed = delegate { };
 
         public WorkspaceService(ILogger<WorkspaceService> logger, RubberduckSettingsProvider settingsProvider,
-            WorkspaceStateManager state, IFileSystem fileSystem, PerformanceRecordAggregator performance,
+            IWorkspaceStateManager state, IFileSystem fileSystem, PerformanceRecordAggregator performance,
             IProjectFileService projectFile, Func<ILanguageClient> lsp)
             : base(logger, settingsProvider, performance)
         {

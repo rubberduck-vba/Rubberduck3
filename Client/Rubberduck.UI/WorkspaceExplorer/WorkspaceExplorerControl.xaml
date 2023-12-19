@@ -99,16 +99,13 @@
                     <b:BindableSelectedItemBehavior SelectedItem="{Binding Selection, Mode=TwoWay}" />
                 </xb:Interaction.Behaviors>
 
-                <!--<TreeView.ContextMenu>
+                <TreeView.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Open" FontWeight="Bold" Command="{x:Static local:WorkspaceExplorerCommands.OpenFileCommand}" CommandParameter="{Binding Selection.Uri}" />
-                        <Separator />
-                        <MenuItem Header="Rename" Command="{x:Static local:WorkspaceExplorerCommands.RenameUriCommand}" CommandParameter="{Binding Selection.Uri}" />
-                        <MenuItem Header="Delete" Command="{x:Static local:WorkspaceExplorerCommands.DeleteUriCommand}"  CommandParameter="{Binding Selection.Uri}" />
-                        <Separator />
-                        <MenuItem Header="Synchronize" Command="{x:Static cmd:FileCommands.SynchronizeWorkspaceCommand}" />
+                        <MenuItem Header="Open" FontWeight="Bold" Command="{Binding OpenDocumentCommand}" CommandParameter="{Binding Selection.Uri}" />
+                        <MenuItem Header="Rename" CommandParameter="{Binding Selection.Uri}" />
+                        <MenuItem Header="Delete" CommandParameter="{Binding Selection.Uri}" />
                     </ContextMenu>
-                </TreeView.ContextMenu>-->
+                </TreeView.ContextMenu>
 
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate DataType="local:IWorkspaceTreeNode" 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Rubberduck.InternalApi.Model.Workspace
 {
@@ -20,6 +21,7 @@ namespace Rubberduck.InternalApi.Model.Workspace
             };
 
         public Uri Uri { get; init; } = default!;
+        public string Name => System.IO.Path.GetFileNameWithoutExtension(Uri.ToString());
         public string Content { get; set; } = string.Empty;
 
         private string _originalContent = string.Empty;

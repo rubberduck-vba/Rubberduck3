@@ -157,15 +157,18 @@
     <Color x:Key="GlyphPanelTemplateColor">#FF9A9A9A</Color>
     <Color x:Key="GlyphPanelBorderColor">#80DADADA</Color>
     <Color x:Key="DropShadowColor">#71000000</Color>
+    
     <Color x:Key="GreenButtonColor">#FF40C954</Color>
     <Color x:Key="GreenButtonBorderColor">#FF008000</Color>
     <Color x:Key="GreenButtonMouseOverColor">#FF61D156</Color>
+    
     <Color x:Key="HighlightBorderColor">#80DADADA</Color>
     <Color x:Key="HighlightBorderActiveColor">#FFADC6E5</Color>
     <Color x:Key="HighlightBackgroundColor">#210080FF</Color>
     <Color x:Key="HighlightInactiveBorderColor">#FFD3D3D3</Color>
     <Color x:Key="GlyphPanelHighlightBorderColor">#90006CD9</Color>
     <Color x:Key="GlyphPanelHighlightBackgroundColor">#90006CD9</Color>
+    
     <Color x:Key="MouseOverBackgroundColor">#1F26A0DA</Color>
     <Color x:Key="MouseOverBorderColor">#A826A0DA</Color>
     <Color x:Key="ExpanderBorderColor">#FF595959</Color>

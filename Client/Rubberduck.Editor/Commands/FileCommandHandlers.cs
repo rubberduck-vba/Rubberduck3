@@ -6,6 +6,7 @@ using System.Windows.Input;
 
 namespace Rubberduck.Editor.Commands
 {
+
     public class FileCommandHandlers : CommandHandlers
     {
         public FileCommandHandlers(NewProjectCommand newProjectCommand,
