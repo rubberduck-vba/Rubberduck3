@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Editor.Shell.Document.Tabs;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI.Command;
@@ -11,6 +12,7 @@ using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.WorkspaceExplorer;
 using System;
 using System.Collections.ObjectModel;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -33,14 +35,19 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
         {
             if (parameter is Uri uri)
             {
-                if ((_workspaces.ActiveWorkspace?.TryGetWorkspaceFile(new Uri(uri.Segments.Last(), UriKind.Relative), out var file) ?? false) 
+                var root = _workspaces.ActiveWorkspace?.WorkspaceRoot?.LocalPath ?? throw new InvalidOperationException();
+                var srcRoot = System.IO.Path.Combine(root, ProjectFile.SourceRoot);
+                var relativeUri = uri.OriginalString[1..][srcRoot.Length..];
+
+                if ((_workspaces.ActiveWorkspace?.TryGetWorkspaceFile(new Uri(relativeUri, UriKind.Relative), out var file) ?? false) 
                     && file != null && !file.IsMissing && !file.IsLoadError)
                 {
-                    var view = new BindableTextEditor();
+                    object view;
                     IDocumentTabViewModel document;
                     if (file.IsSourceFile)
                     {
                         document = new VBACodeDocumentTabViewModel(uri, file.Name, file.Content);
+                        view = new SourceCodeEditorControl() { DataContext = document };
                     }
                     else
                     {
@@ -48,17 +55,18 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
                         {
                             case "md":
                                 document = new MarkdownDocumentTabViewModel(uri, file.Name, file.Content);
+                                view = new MarkdownEditorControl() { DataContext = document };
                                 break;
                             case "rdproj":
                                 document = new RubberduckProjectDocumentTabViewModel(uri, ProjectFile.FileName /* TODO put the project name here */, file.Content);
+                                view = new SourceCodeEditorControl() { DataContext = document }; // TODO understand json as a different "language"
                                 break;
                             default:
                                 document = new TextDocumentTabViewModel(uri, file.Name, file.Content);
+                                view = new TextEditorControl() { DataContext = document };
                                 break;
                         }
                     }
-
-                    view.DataContext = document;
 
                     _shell.ViewModel.Documents.Add(document);
                     _shell.View.AddDocument(view);

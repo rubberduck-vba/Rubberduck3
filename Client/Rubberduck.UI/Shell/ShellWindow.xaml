@@ -107,31 +107,19 @@
             </Style>
 
             <DataTemplate x:Key="TextDocumentTabItemTemplate" DataType="document:ITabViewModel">
-                <local:BindableTextEditor Text="{Binding Content}"
-                                          ShowLineNumbers="True"
-                                          Language="none"
-                                          IsReadOnly="{Binding IsReadOnly}" />
+                <document:TextEditorControl />
             </DataTemplate>
 
             <DataTemplate x:Key="MarkdownDocumentTabItemTemplate" DataType="document:ITabViewModel">
-                <local:BindableTextEditor Text="{Binding Content}"
-                                          ShowLineNumbers="True"
-                                          Language="none"
-                                          IsReadOnly="{Binding IsReadOnly}" />
+                <document:MarkdownEditorControl />
             </DataTemplate>
 
             <DataTemplate x:Key="JsonDocumentTabItemTemplate" DataType="document:ITabViewModel">
-                <local:BindableTextEditor Text="{Binding Content}"
-                                          ShowLineNumbers="True"
-                                          Language="json"
-                                          IsReadOnly="{Binding IsReadOnly}" />
+                <document:TextEditorControl />
             </DataTemplate>
 
             <DataTemplate x:Key="SourceFileDocumentTabItemTemplate" DataType="document:ITabViewModel">
-                <local:BindableTextEditor Text="{Binding Content}"
-                                          ShowLineNumbers="True"
-                                          Language="vb" 
-                                          IsReadOnly="{Binding IsReadOnly}" />
+                <document:SourceCodeEditorControl />
             </DataTemplate>
 
             <document:DocumentTabTemplateSelector x:Key="DocumentTabTemplateSelector"
@@ -150,7 +138,7 @@
                     <Setter Property="InterTabController" Value="{StaticResource InterTabController}" />
                     <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
                     <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}" />
-                    <Setter Property="ItemTemplateSelector" Value="{DynamicResource DocumentTabTemplateSelector}" />
+                    <Setter Property="ItemTemplateSelector" Value="{StaticResource DocumentTabTemplateSelector}" />
                     <Setter Property="ItemContainerStyle" Value="{StaticResource TrapezoidDragableTabItemStyle}" />
                     <Setter Property="ShowDefaultAddButton" Value="False" />
                     <Setter Property="ShowDefaultCloseButton" Value="True" />
