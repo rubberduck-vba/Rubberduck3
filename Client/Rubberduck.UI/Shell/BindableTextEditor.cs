@@ -15,7 +15,6 @@ namespace Rubberduck.UI.Shell
         public BindableTextEditor()
         {
             WordWrap = false;
-
             var highlighter = LoadHighlighter("Rubberduck.Editor.vba-default.xshd");
             SyntaxHighlighting = highlighter;
 

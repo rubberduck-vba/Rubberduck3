@@ -163,6 +163,8 @@
     <None Remove="Resources\FontAwesome\copy-solid.png" />
     <None Remove="Resources\FontAwesome\cubes-solid.png" />
     <None Remove="Resources\FontAwesome\eraser-solid.png" />
+    <None Remove="Resources\FontAwesome\eye-slash-solid.png" />
+    <None Remove="Resources\FontAwesome\eye-solid.png" />
     <None Remove="Resources\FontAwesome\file-circle-check-solid.png" />
     <None Remove="Resources\FontAwesome\file-circle-exclamation-solid.png" />
     <None Remove="Resources\FontAwesome\file-circle-xmark-solid.png" />
@@ -403,6 +405,8 @@
     <Resource Include="Resources\FontAwesome\copy-solid.png" />
     <Resource Include="Resources\FontAwesome\cubes-solid.png" />
     <Resource Include="Resources\FontAwesome\eraser-solid.png" />
+    <Resource Include="Resources\FontAwesome\eye-slash-solid.png" />
+    <Resource Include="Resources\FontAwesome\eye-solid.png" />
     <Resource Include="Resources\FontAwesome\file-circle-check-solid.png" />
     <Resource Include="Resources\FontAwesome\file-circle-exclamation-solid.png" />
     <Resource Include="Resources\FontAwesome\file-circle-xmark-solid.png" />

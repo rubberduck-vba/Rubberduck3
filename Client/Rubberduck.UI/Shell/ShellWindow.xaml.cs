@@ -34,7 +34,7 @@ namespace Rubberduck.UI.Shell
             BottomPaneExpander.MouseLeave += ToolPaneExpanderMouseLeave;
         }
 
-        public void AddDocument(IDocumentTabViewModel tab) => DocumentPaneTabs.AddToSource(tab);
+        public void AddDocument(object tab) => DocumentPaneTabs.AddToSource(tab);
 
         private IToolPanelViewModel GetToolPanelModel(Expander expander)
         {

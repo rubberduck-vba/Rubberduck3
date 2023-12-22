@@ -19,7 +19,7 @@ namespace Rubberduck.Editor.Shell
             Partition = partition;
         }
 
-        public string Title { get; } = "Rubberduck";
+        public string Title { get; } = "Rubberduck Editor";
 
         public IInterTabClient InterTabClient { get; }
         public string Partition { get; }

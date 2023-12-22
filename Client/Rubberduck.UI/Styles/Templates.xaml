@@ -15,14 +15,14 @@
 
     <!-- Menu -->
 
-    <Style TargetType="ContextMenu">
+    <Style TargetType="{x:Type ContextMenu}">
         <Style.Setters>
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundDarkColorBrush}" />
         </Style.Setters>
     </Style>
     
-    <Style TargetType="Menu">
+    <Style TargetType="{x:Type Menu}">
         <Style.Setters>
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundDarkColorBrush}" />
@@ -396,6 +396,54 @@
         TimeSpanSettingTemplate="{StaticResource TimeSpanSettingTemplate}"
         UriSettingTemplate="{StaticResource UriSettingTemplate}" />
 
+    <ControlTemplate x:Key="TrapezoidDragablzItem" TargetType="{x:Type dragablz:DragablzItem}">
+        <Grid x:Name="templateRoot" SnapsToDevicePixels="true" Margin="0 1 0 -1">
+            <dragablz:Trapezoid x:Name="Trapezoid" 
+                                         BorderBrush="{TemplateBinding BorderBrush}" 
+                                         Background="{TemplateBinding Background}"                                          
+                                         PenThickness="2"
+                                         Margin="0 0 0 0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ContentPresenter Content="{TemplateBinding ContentControl.Content}" 
+                                      ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}" 
+                                      ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}" 
+                                      HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" 
+                                      VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" 
+                                      SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"
+                                      Margin="{TemplateBinding Control.Padding}"
+                                      x:Name="contentPresenter" />
+                    <Thumb Grid.Column="0" HorizontalAlignment="Stretch" VerticalContentAlignment="Stretch" x:Name="PART_Thumb" Style="{StaticResource InvisibleThumbStyle}" />
+
+                    <Button Grid.Column="2"
+                                        Style="{StaticResource CloseItemCommandButtonStyle}"                                        
+                                        Command="{x:Static dragablz:TabablzControl.CloseItemCommand}"
+                                        CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+                        <Button.Visibility>
+                            <MultiBinding Converter="{StaticResource ShowDefaultCloseButtonConverter}">
+                                <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type dragablz:TabablzControl}}" Path="ShowDefaultCloseButton" />
+                                <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type dragablz:TabablzControl}}" Path="FixedHeaderCount" />
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="LogicalIndex" />
+                            </MultiBinding>
+                        </Button.Visibility>
+                    </Button>
+                </Grid>
+            </dragablz:Trapezoid>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="dragablz:TabablzControl.IsWrappingTabItem" Value="True">
+                <Setter TargetName="contentPresenter" Property="Content" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DataContext.Header}" />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource TabItem.Selected.Background}" TargetName="Trapezoid"/>
+                <Setter Property="LongBasePenBrush" Value="{StaticResource TabItem.Selected.Background}" TargetName="Trapezoid"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
 
     <ControlTemplate x:Key="ToolTabTemplate" TargetType="{x:Type dragablz:TabablzControl}">
         <Grid x:Name="templateRoot" ClipToBounds="true" SnapsToDevicePixels="true" KeyboardNavigation.TabNavigation="Local">

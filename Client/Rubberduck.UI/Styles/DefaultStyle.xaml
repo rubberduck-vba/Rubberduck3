@@ -479,4 +479,32 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="ToolPanelVExpanderThumbStyle" TargetType="Thumb">
+        <Setter Property="Width" Value="4" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <Setter Property="BorderBrush" Value="{DynamicResource ThemeBackgroundLightColorBrush}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsDragging, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ToolPanelHExpanderThumbStyle" TargetType="Thumb">
+        <Setter Property="Height" Value="4" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <Setter Property="BorderBrush" Value="{DynamicResource ThemeBackgroundLightColorBrush}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsDragging, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>

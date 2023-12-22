@@ -17,26 +17,32 @@ namespace Rubberduck.Editor.Shell
             return new NewTabHost<Window>(view, view.Tabs);
         }
 
-        public TabEmptiedResponse TabEmptiedHandler(TabablzControl tabControl, Window window) => TabEmptiedResponse.DoNothing;
+        public TabEmptiedResponse TabEmptiedHandler(TabablzControl tabControl, Window window)
+        {
+            if (window is ShellWindow)
+            {
+                return TabEmptiedResponse.DoNothing; // do not close the shell window from an intertab client!
+            }
+            return TabEmptiedResponse.CloseWindowOrLayoutBranch;
+        }
     }
 
     public class InterTabClient : IInterTabClient
     {
         public INewTabHost<Window> GetNewHost(IInterTabClient interTabClient, object partition, TabablzControl source)
         {
-            var vm = new ChildWindowViewModel(interTabClient, partition?.ToString() ?? "root");
+            var vm = new ChildWindowViewModel(interTabClient, Partitions.Documents);
             var view = new ShellChildWindow(vm);
             return new NewTabHost<Window>(view, view.Tabs);
         }
 
         public virtual TabEmptiedResponse TabEmptiedHandler(TabablzControl tabControl, Window window)
         {
-            //if (window is ShellWindow shell)
-            //{
-            //    //shell.LeftToolPanel.Width = double.NaN;
-            //    return TabEmptiedResponse.DoNothing; // do not close the shell window from an intertab client!
-            //}
-            return TabEmptiedResponse.DoNothing;
+            if (window is ShellWindow)
+            {
+                return TabEmptiedResponse.DoNothing; // do not close the shell window from an intertab client!
+            }
+            return TabEmptiedResponse.CloseWindowOrLayoutBranch;
         }
     }
 }

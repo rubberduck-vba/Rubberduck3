@@ -40,6 +40,7 @@ using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Services.Settings;
 using Rubberduck.UI.Settings;
 using Rubberduck.UI.Shell;
+using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
 using Rubberduck.UI.Splash;
 using Rubberduck.UI.Windows;
@@ -136,13 +137,14 @@ namespace Rubberduck.Editor
             var fileSystem = _serviceProvider.GetRequiredService<IFileSystem>();
             var path = fileSystem.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Rubberduck", "Templates", "Welcome.md");
             var content = fileSystem.File.ReadAllText(path);
-            var welcome = new MarkdownDocumentTabViewModel(new Uri(path), "Welcome!", content);
+            var welcome = new MarkdownDocumentTabViewModel(new Uri(path), "Welcome", content);
             model.Documents.Add(welcome);
 
             // prompt for new workspace here if there's no addin host?
 
             var view = _shell ??= new ShellWindow() { DataContext = model };
-            view.AddDocument(welcome);
+            var welcomeTabContent = new MarkdownEditorControl() { DataContext = welcome };
+            view.AddDocument(welcomeTabContent);
             view.Show();
         }
         

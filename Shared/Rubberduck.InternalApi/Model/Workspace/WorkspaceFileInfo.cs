@@ -21,6 +21,7 @@ namespace Rubberduck.InternalApi.Model.Workspace
             };
 
         public Uri Uri { get; init; } = default!;
+        public string FileExtension => System.IO.Path.GetExtension(Uri.ToString());
         public string Name => System.IO.Path.GetFileNameWithoutExtension(Uri.ToString());
         public string Content { get; set; } = string.Empty;
 

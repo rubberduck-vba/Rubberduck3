@@ -88,6 +88,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
     <Style x:Key="ArrowlessExpanderTemplate"
        TargetType="{x:Type Expander}">
         <Setter Property="Foreground"

@@ -6,6 +6,7 @@ using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
+using Rubberduck.UI.Shell;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.WorkspaceExplorer;
 using System;
@@ -35,6 +36,7 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
                 if ((_workspaces.ActiveWorkspace?.TryGetWorkspaceFile(new Uri(uri.Segments.Last(), UriKind.Relative), out var file) ?? false) 
                     && file != null && !file.IsMissing && !file.IsLoadError)
                 {
+                    var view = new BindableTextEditor();
                     IDocumentTabViewModel document;
                     if (file.IsSourceFile)
                     {
@@ -42,11 +44,24 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
                     }
                     else
                     {
-                        document = new MarkdownDocumentTabViewModel(uri, file.Name, file.Content);
+                        switch (file.FileExtension)
+                        {
+                            case "md":
+                                document = new MarkdownDocumentTabViewModel(uri, file.Name, file.Content);
+                                break;
+                            case "rdproj":
+                                document = new RubberduckProjectDocumentTabViewModel(uri, ProjectFile.FileName /* TODO put the project name here */, file.Content);
+                                break;
+                            default:
+                                document = new TextDocumentTabViewModel(uri, file.Name, file.Content);
+                                break;
+                        }
                     }
 
+                    view.DataContext = document;
+
                     _shell.ViewModel.Documents.Add(document);
-                    _shell.View.AddDocument(document);
+                    _shell.View.AddDocument(view);
                     file.IsOpened = true;
                 }
             }

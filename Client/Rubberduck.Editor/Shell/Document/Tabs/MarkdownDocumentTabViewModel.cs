@@ -14,5 +14,19 @@ namespace Rubberduck.Editor.Shell.Document.Tabs
         }
 
         public override SupportedDocumentType DocumentType => SupportedDocumentType.MarkdownDocument;
+
+        private bool _showPreview = true;
+        public bool ShowPreview
+        {
+            get => _showPreview;
+            set
+            {
+                if (_showPreview != value)
+                {
+                    _showPreview = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
     }
 }
