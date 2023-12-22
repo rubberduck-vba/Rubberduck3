@@ -159,6 +159,7 @@
     <None Remove="Resources\Custom\vector-ducky-color.png" />
     <None Remove="Resources\Custom\vector-ducky-shadow-1480.png" />
     <None Remove="Resources\FontAwesome\arrows-spin-solid.png" />
+    <None Remove="Resources\FontAwesome\circle-check-solid.png" />
     <None Remove="Resources\FontAwesome\circle-exclamation-solid.png" />
     <None Remove="Resources\FontAwesome\copy-solid.png" />
     <None Remove="Resources\FontAwesome\cubes-solid.png" />
@@ -401,6 +402,7 @@
     <Resource Include="Resources\Custom\vector-ducky-color.png" />
     <Resource Include="Resources\Custom\vector-ducky-shadow-1480.png" />
     <Resource Include="Resources\FontAwesome\arrows-spin-solid.png" />
+    <Resource Include="Resources\FontAwesome\circle-check-solid.png" />
     <Resource Include="Resources\FontAwesome\circle-exclamation-solid.png" />
     <Resource Include="Resources\FontAwesome\copy-solid.png" />
     <Resource Include="Resources\FontAwesome\cubes-solid.png" />

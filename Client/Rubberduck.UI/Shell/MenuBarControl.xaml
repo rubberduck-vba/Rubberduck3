@@ -16,7 +16,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Menu Margin="0,4">
+    <Menu Margin="0,4" Background="{DynamicResource ThemeBackgroundMediumColorBrush}">
         <MenuItem Header="_File">
             <MenuItem Header="_New Project..." Command="{x:Static cmd:FileCommands.NewProjectCommand}" />
             <MenuItem Header="_Open..." Command="{x:Static cmd:FileCommands.OpenProjectCommand}" />

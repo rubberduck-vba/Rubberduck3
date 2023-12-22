@@ -18,14 +18,15 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Margin="1">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <shell:ThunderFrame ShowTitle="False" ShowAcceptButton="False" ShowCancelButton="False">
+        <Grid Margin="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal">
-            <shell:FlatToggleButton VerticalAlignment="Center"
+            <StackPanel Orientation="Horizontal">
+                <shell:FlatToggleButton VerticalAlignment="Center"
                                     Height="16" Width="16"
                                     ToolTip="Show/hide preview"
                                     Visibility="{Binding IsReadOnly, Converter={StaticResource BoolToHiddenVisibility}}"
@@ -33,34 +34,36 @@
                                     Icon="{DynamicResource HideIcon}" 
                                     CheckedIcon="{DynamicResource ShowIcon}" 
                                     d:IconSource="{DynamicResource HideIcon}"/>
-        </StackPanel>
+            </StackPanel>
 
-        <DockPanel Grid.Row="1">
-            <Expander DockPanel.Dock="Right"
-                      Style="{DynamicResource ArrowlessExpanderTemplate}" IsExpanded="{Binding ShowPreview}"
-                      ExpandDirection="Left">
-                <Expander.ContentTemplate>
-                    <DataTemplate>
-                        <Border BorderThickness="1,0" BorderBrush="{DynamicResource ThemeBackgroundLightColorBrush}">
-                            <DockPanel>
-                                <Thumb DockPanel.Dock="Left" DragDelta="OnResizePreviewPanelDragDelta" Cursor="SizeWE" 
+            <DockPanel Grid.Row="1">
+                <Expander DockPanel.Dock="Right"
+                      Style="{DynamicResource ArrowlessExpanderTemplate}" 
+                      IsExpanded="{Binding ShowPreview}" ExpandDirection="Left">
+                    <Expander.ContentTemplate>
+                        <DataTemplate>
+                            <Border BorderThickness="1,0" BorderBrush="{DynamicResource ThemeBackgroundLightColorBrush}">
+                                <DockPanel>
+                                    <Thumb DockPanel.Dock="Left" DragDelta="OnResizePreviewPanelDragDelta" Cursor="SizeWE" 
                                        Visibility="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=Expander, Mode=FindAncestor}, Converter={StaticResource BoolToHiddenVisibility}}"
                                        Style="{DynamicResource ToolPanelVExpanderThumbStyle}" />
-                                <ContentControl DockPanel.Dock="Right" Content="{Binding}" />
-                            </DockPanel>
-                        </Border>
-                    </DataTemplate>
-                </Expander.ContentTemplate>
-                <mdxaml:MarkdownScrollViewer Markdown="{Binding Content}" MinWidth="200" 
+                                    <ContentControl DockPanel.Dock="Right" Content="{Binding}" />
+                                </DockPanel>
+                            </Border>
+                        </DataTemplate>
+                    </Expander.ContentTemplate>
+                    <mdxaml:MarkdownScrollViewer Markdown="{Binding Content, Mode=OneWay}"
+                                             MinWidth="200" 
                                              Foreground="{DynamicResource ThemeTextBackgroundColorBrush}" />
-            </Expander>
-            
-            <shell:BindableTextEditor DockPanel.Dock="Top" Text="{Binding Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                </Expander>
+
+                <shell:BindableTextEditor DockPanel.Dock="Top" Text="{Binding Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                       Background="{DynamicResource ThemeBackgroundDarkColorBrush}"
                                       Foreground="{DynamicResource ThemeTextBackgroundColorBrush}"
                                       Visibility="{Binding IsReadOnly, Converter={StaticResource BoolToHiddenVisibility}}"
                                       ShowLineNumbers="True" />
-        </DockPanel>
-        
-    </Grid>
+            </DockPanel>
+
+        </Grid>
+    </shell:ThunderFrame>
 </UserControl>

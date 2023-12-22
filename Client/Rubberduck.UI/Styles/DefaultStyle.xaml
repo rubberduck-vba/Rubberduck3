@@ -6,7 +6,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/Generic.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Icons.xaml"/>
-        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/DarkTheme.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Themes/LightTheme.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/SectionExpander.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
@@ -107,7 +107,11 @@
             </Grid.RowDefinitions>
 
             <Border Grid.RowSpan="2" 
-                    Background="{DynamicResource ThemeBackgroundMediumColorBrush}" />
+                    Background="{DynamicResource ThemeBackgroundMediumColorBrush}">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" ShadowDepth="2" Direction="-75" Opacity="0.8" Color="{DynamicResource ThemeTextColor}" />
+                </Border.Effect>
+            </Border>
 
             <!-- Title bar -->
             

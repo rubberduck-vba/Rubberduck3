@@ -359,7 +359,7 @@
                                      FixedHeaderCount="{Binding FixedDocumentTabs}" />
         </dockablz:Layout>
         
-        <!--<statusbar:StatusBarControl x:Name="StatusBar" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" />-->
+        <statusbar:StatusBarControl x:Name="StatusBar" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" DataContext="{Binding StatusBar}" />
 
         <Thumb Grid.Row="3" Grid.Column="3" HorizontalAlignment="Right" IsEnabled="True" IsHitTestVisible="True" WindowChrome.IsHitTestVisibleInChrome="True"
                DragDelta="OnResizeGripDragDelta" Cursor="SizeNWSE">

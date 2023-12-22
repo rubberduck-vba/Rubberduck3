@@ -16,6 +16,9 @@
     <BitmapImage x:Key="GearIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/gear-solid.png"/>
     <BitmapImage x:Key="PinIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/thumbtack-solid.png"/>
 
+    <BitmapImage x:Key="CircleCheckIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/circle-check-solid.png" />
+    <BitmapImage x:Key="CircleWarnIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/circle-exclamation-solid.png" />
+
     <BitmapImage x:Key="LockedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/lock-solid.png" />
     <BitmapImage x:Key="UnlockedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/lock-open-solid.png" />
 
