@@ -1,6 +1,8 @@
 ﻿using Rubberduck.Editor.Shell.Document.Tabs;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
+using Rubberduck.InternalApi.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Abstract;
@@ -82,7 +84,8 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
     {
         private readonly IWorkspaceService _service;
 
-        public WorkspaceExplorerViewModel(IWorkspaceService service, 
+        public WorkspaceExplorerViewModel(RubberduckSettingsProvider settingsProvider,
+            IWorkspaceService service, 
             ShowRubberduckSettingsCommand showSettingsCommand, 
             CloseToolWindowCommand closeToolwindowCommand,
             OpenDocumentCommand openDocumentCommand)
@@ -96,6 +99,8 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
 
             service.WorkspaceOpened += OnWorkspaceOpened;
             service.WorkspaceClosed += OnWorkspaceClosed;
+
+            IsPinned = !settingsProvider.Settings.EditorSettings.ToolsSettings.WorkspaceExplorerSettings.AutoHide;
         }
 
         public ICommand OpenDocumentCommand { get; }

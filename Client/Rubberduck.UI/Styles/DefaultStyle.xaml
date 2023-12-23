@@ -20,7 +20,7 @@
     <Color x:Key="ThemeWhiteLightColor">#FFFFFFFF</Color>
     <Color x:Key="ThemeWhiteDarkColor50">#0FA9A9A9</Color>
     <Color x:Key="ThemeWhiteMediumColor50">#0FD3D3D3</Color>
-    <Color x:Key="ThemeWhiteLightColor75">#C0FFFFFF</Color>
+    <Color x:Key="ThemeWhiteLightColor75">#A0FFFFFF</Color>
     <Color x:Key="ThemeWhiteLightColor50">#0FFFFFFF</Color>
     <Color x:Key="ThemeWhiteDarkColor25">#08A9A9A9</Color>
     <Color x:Key="ThemeWhiteMediumColor25">#08D3D3D3</Color>
@@ -40,7 +40,7 @@
     <Color x:Key="ThemeBlackDarkColor">#FF1E1E1E</Color>
     <Color x:Key="ThemeBlackMediumColor">#FF2E2E2E</Color>
     <Color x:Key="ThemeBlackLightColor">#FF333333</Color>
-    <Color x:Key="ThemeBlackDarkColor75">#F01E1E1E</Color>
+    <Color x:Key="ThemeBlackDarkColor75">#A01E1E1E</Color>
     <Color x:Key="ThemeBlackDarkColor50">#C01E1E1E</Color>
     <Color x:Key="ThemeBlackMediumColor50">#0F2E2E2E</Color>
     <Color x:Key="ThemeBlackLightColor50">#C0333333</Color>

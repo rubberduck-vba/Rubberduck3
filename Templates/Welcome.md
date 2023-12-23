@@ -1,4 +1,4 @@
-# Rubberduck 3.0
+# Rubberduck 3.0  
 
 Version 3.0 reinvents Rubberduck by separating not only the VBIDE add-in from the user interface, but also by moving the "brains" into a separate _language server_ process. The VBE becomes a mere debugger as a result, while the bulk of the code editing moves to the _Rubberduck Editor_.
 
@@ -6,7 +6,7 @@ Version 3.0 reinvents Rubberduck by separating not only the VBIDE add-in from th
 - Repository: [Rubberduck3](https://github.com/rubberduck-vba/Rubberduck3)
 
 
-## Thank You!
+## Thank You!  
  
  The initial release of Rubberduck 3.0 could not have happened without our users and supporters, who consistently show up in greater numbers whenever a new Rubberduck version is issued. **Thank you** for your continued support!  Rubberduck 3.x is unlocking every single IDE feature we ever dreamed to implement, and radically enhances the experience of _programming in VBA_ in this century, which was the entire idea all along.  
 
@@ -46,7 +46,7 @@ The **Rubberduck Editor** is a standalone WPF application that acts as a lightwe
 - [#1234](https://github.com/rubberduck-vba/Rubberduck3/issues/1234) **Title** (author)  
   Changed...
 
-### 🪲 Fixed Bugs
+### 🐛 Bugs Fixed
 - [#1234](https://github.com/rubberduck-vba/Rubberduck3/issues/1234) **Title** (author)  
   Fixed... by changing...
 
@@ -63,7 +63,7 @@ The **Rubberduck Language Server** is a LSP server for VBA that provides all the
 - [#1234](https://github.com/rubberduck-vba/Rubberduck3/issues/1234) **Title** (author)  
   Changed...
 
-### 🪲 Fixed Bugs
+### 🐛 Bugs Fixed
 - [#1234](https://github.com/rubberduck-vba/Rubberduck3/issues/1234) **Title** (author)  
   Fixed... by changing...
 
@@ -79,7 +79,7 @@ Updating Rubberduck could be made to happen without even exiting the VBE by runn
 - [#1234](https://github.com/rubberduck-vba/Rubberduck3/issues/1234) **Title** (author)  
   Changed...
 
-### 🪲 Fixed Bugs
+### 🐛 Bugs Fixed
 - [#1234](https://github.com/rubberduck-vba/Rubberduck3/issues/1234) **Title** (author)  
   Fixed... by changing...
 
@@ -95,7 +95,7 @@ The **Rubberduck** VBIDE add-in is *much* smaller than its 2.x counterpart, and 
 - [#1234](https://github.com/rubberduck-vba/Rubberduck3/issues/1234) **Title** (author)  
   Changed...
 
-### 🪲 Fixed Bugs
+### 🐛 Bugs Fixed
 - [#1234](https://github.com/rubberduck-vba/Rubberduck3/issues/1234) **Title** (author)  
   Fixed... by changing...
 
@@ -111,7 +111,7 @@ Changes to other libraries, for example a COM server / type library, additions t
 - [#1234](https://github.com/rubberduck-vba/Rubberduck3/issues/1234) **Title** (author)  
   Changed...
 
-### 🪲 Fixed Bugs
+### 🐛 Bugs Fixed
 - [#1234](https://github.com/rubberduck-vba/Rubberduck3/issues/1234) **Title** (author)  
   Fixed... by changing...
 

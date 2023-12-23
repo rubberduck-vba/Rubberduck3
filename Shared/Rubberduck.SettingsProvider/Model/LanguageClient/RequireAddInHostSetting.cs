@@ -5,7 +5,7 @@
     /// </summary>
     public record class RequireAddInHostSetting : BooleanRubberduckSetting
     {
-        public static bool DefaultSettingValue { get; } = true;
+        public static bool DefaultSettingValue { get; } = false;
 
         public RequireAddInHostSetting()
         {

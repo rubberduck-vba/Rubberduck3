@@ -52,9 +52,17 @@
                             </Border>
                         </DataTemplate>
                     </Expander.ContentTemplate>
+
                     <mdxaml:MarkdownScrollViewer Markdown="{Binding Content, Mode=OneWay}"
-                                             MinWidth="200" 
-                                             Foreground="{DynamicResource ThemeTextBackgroundColorBrush}" />
+                                                 MinWidth="200">
+                        <mdxaml:MarkdownScrollViewer.MarkdownStyle>
+                            <Style TargetType="FlowDocument">
+                                <Setter Property="Background" Value="{DynamicResource ThemeWhiteLightColorBrush75}" />
+                                <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
+                                <Setter Property="FontFamily" Value="{Binding DocumentFont}" />
+                            </Style>
+                        </mdxaml:MarkdownScrollViewer.MarkdownStyle>
+                    </mdxaml:MarkdownScrollViewer>
                 </Expander>
 
                 <shell:BindableTextEditor DockPanel.Dock="Top" Text="{Binding Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
