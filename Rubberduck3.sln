@@ -50,8 +50,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Editor", "Client
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Parsing", "Server\Rubberduck.Parsing\Rubberduck.Parsing.csproj", "{D1972815-52A8-472A-AF10-CDF8FC9AE15E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Extensibility", "Client\Rubberduck.Extensibility\Rubberduck.Extensibility.csproj", "{859DE906-EC25-44DD-9900-5B465502FB1A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -180,14 +178,6 @@ Global
 		{D1972815-52A8-472A-AF10-CDF8FC9AE15E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D1972815-52A8-472A-AF10-CDF8FC9AE15E}.Release|x64.ActiveCfg = Release|Any CPU
 		{D1972815-52A8-472A-AF10-CDF8FC9AE15E}.Release|x64.Build.0 = Release|Any CPU
-		{859DE906-EC25-44DD-9900-5B465502FB1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{859DE906-EC25-44DD-9900-5B465502FB1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{859DE906-EC25-44DD-9900-5B465502FB1A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{859DE906-EC25-44DD-9900-5B465502FB1A}.Debug|x64.Build.0 = Debug|Any CPU
-		{859DE906-EC25-44DD-9900-5B465502FB1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{859DE906-EC25-44DD-9900-5B465502FB1A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{859DE906-EC25-44DD-9900-5B465502FB1A}.Release|x64.ActiveCfg = Release|Any CPU
-		{859DE906-EC25-44DD-9900-5B465502FB1A}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
