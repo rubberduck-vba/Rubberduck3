@@ -17,7 +17,8 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <shell:ThunderFrame ShowTitle="False" ShowAcceptButton="False" ShowCancelButton="False">
+    <shell:ThunderFrame Margin="2"
+        ShowTitle="False" ShowAcceptButton="False" ShowCancelButton="False">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -31,9 +32,11 @@
             <ComboBox Grid.Row="0" Grid.Column="0" />
             <ComboBox Grid.Row="0" Grid.Column="1" />
             <shell:BindableTextEditor Grid.Row="1" Grid.ColumnSpan="2"
+                                      Background="{DynamicResource ThemeBackgroundColorBrush}"
                                       Text="{Binding Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                       FontFamily="Consolas"
-                                      ShowLineNumbers="True" />
+                                      ShowLineNumbers="True"
+                                       />
         </Grid>
     </shell:ThunderFrame>
 </UserControl>

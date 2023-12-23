@@ -91,7 +91,8 @@
             </WrapPanel>
 
             <TreeView Grid.Row="1" 
-                      BorderThickness="1" Background="{DynamicResource ThemeBackgroundDarkColorBrush75}"
+                      BorderBrush="{DynamicResource ThemeWhiteMediumColorBrush}" BorderThickness="1" 
+                      Background="{DynamicResource ThemeWhiteLightColorBrush75}"
                       ItemsSource="{Binding Workspaces}"
                       ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
 

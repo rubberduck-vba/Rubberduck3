@@ -18,7 +18,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <shell:ThunderFrame ShowTitle="False" ShowAcceptButton="False" ShowCancelButton="False">
+    <shell:ThunderFrame Margin="2" ShowTitle="False" ShowAcceptButton="False" ShowCancelButton="False">
         <Grid Margin="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -54,6 +54,7 @@
                     </Expander.ContentTemplate>
 
                     <mdxaml:MarkdownScrollViewer Markdown="{Binding Content, Mode=OneWay}"
+                                                 BorderBrush="{DynamicResource ThemeWhiteMediumColorBrush}" BorderThickness="1"
                                                  MinWidth="200">
                         <mdxaml:MarkdownScrollViewer.MarkdownStyle>
                             <Style TargetType="FlowDocument">
