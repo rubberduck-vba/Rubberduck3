@@ -4,25 +4,42 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
+        xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
         xmlns:vm="clr-namespace:Rubberduck.UI.Windows" 
+        xmlns:statusbar="clr-namespace:Rubberduck.UI.Shell.StatusBar"
         d:DataContext="{d:DesignInstance Type=vm:IDragablzWindowViewModel}"
         mc:Ignorable="d"
         Title="{Binding Title}"
+        Style="{DynamicResource ThemedWindowStyle}"
+        ShowInTaskbar="True"
+        WindowStyle="None"
         Height="300" Width="300">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Shell/ShellResources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <DataTemplate x:Key="FloatingPanelBranchTemplate">
+                <dragablz:TabablzControl Style="{DynamicResource DocumentTabControlStyle}" />
+            </DataTemplate>
+            <dragablz:InterTabController x:Key="InterTabController" x:Shared="False" InterTabClient="{Binding InterTabClient}" Partition="documents" />
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <dragablz:TabablzControl x:Name="Tabz" TabStripPlacement="Top" 
-                                 ItemsSource="{Binding Tabs}"
-                                 Background="{DynamicResource ThemeBackgroundColorBrush}">
-            <dragablz:TabablzControl.InterTabController>
-                <dragablz:InterTabController InterTabClient="{Binding InterTabClient}" />
-            </dragablz:TabablzControl.InterTabController>
-        </dragablz:TabablzControl>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <dockablz:Layout Grid.Row="0" Partition="documents" 
+                         BranchTemplate="{DynamicResource FloatingPanelBranchTemplate}">
+            <dragablz:TabablzControl x:Name="FloatingPanelDocumentTabs" 
+                                     InterTabController="{StaticResource InterTabController}"
+                                     ItemTemplateSelector="{DynamicResource DocumentTabTemplateSelector}"
+                                     Style="{DynamicResource DocumentTabControlStyle}" />
+        </dockablz:Layout>
+
+        <statusbar:StatusBarControl x:Name="StatusBar" Grid.Row="1" DataContext="{Binding StatusBar}" />
     </Grid>
 </Window>

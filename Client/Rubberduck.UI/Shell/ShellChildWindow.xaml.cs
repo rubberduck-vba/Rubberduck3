@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Shell
             DataContext = vm;
         }
 
-        public TabablzControl Tabs => Tabz;
+        public TabablzControl Tabs => FloatingPanelDocumentTabs;
 
         public ShellChildWindow()
         {

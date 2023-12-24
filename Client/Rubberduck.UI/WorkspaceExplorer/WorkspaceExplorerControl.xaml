@@ -68,7 +68,7 @@
 
         </ResourceDictionary>
     </UserControl.Resources>
-    <shell:ThunderFrame ShowAcceptButton="False" ShowCancelButton="False" 
+    <shell:ThunderFrame Margin="2" ShowAcceptButton="False" ShowCancelButton="False" 
                         ShowPinButton="True" ShowCloseButton="True"
                         ShowSettingsCommand="{Binding ShowSettingsCommand}" ShowSettingsCommandParameter="{Binding SettingKey}"
                         ShowTitle="True" Title="{Binding Title}">

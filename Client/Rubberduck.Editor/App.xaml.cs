@@ -140,6 +140,7 @@ namespace Rubberduck.Editor
             var welcome = new MarkdownDocumentTabViewModel(new Uri(path), "Welcome", content);
 
             var view = _shell ??= new ShellWindow() { DataContext = model };
+            
             var welcomeTabContent = new MarkdownEditorControl() { DataContext = welcome };
 
             model.Documents.Add(welcome);

@@ -45,7 +45,7 @@
                                       ShowLineNumbers="True"
                                       HorizontalScrollBarVisibility="Auto"
                                       VerticalScrollBarVisibility="Visible"
-                                      Background="{DynamicResource ThemeBackgroundDarkColorBrush75}"
+                                      Background="{DynamicResource ThemeWhiteLightColorBrush75}"
                                       Foreground="{DynamicResource ThemeAccent1DarkColorBrush}"
                                       FontFamily="Consolas" FontSize="12">
             </shell:BindableTextEditor>

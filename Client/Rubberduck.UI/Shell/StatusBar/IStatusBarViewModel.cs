@@ -2,6 +2,7 @@
 using Rubberduck.UI.Command;
 using System.Collections;
 using System.Collections.Generic;
+using System.Windows.Input;
 
 namespace Rubberduck.UI.Shell.StatusBar
 {
@@ -29,6 +30,8 @@ namespace Rubberduck.UI.Shell.StatusBar
         /// Gets or sets the progress indicator max value.
         /// </summary>
         int ProgressMaxValue { get; set; }
+
+        string? ProgressMessage { get; set; }
     }
 
     /// <summary>
@@ -40,6 +43,8 @@ namespace Rubberduck.UI.Shell.StatusBar
         /// Gets or sets the server connection state.
         /// </summary>
         bool IsConnected { get; set; }
+
+        ICommand ShowLanguageServerTraceCommand { get; set; }
     }
 
     public interface INotificationViewModel

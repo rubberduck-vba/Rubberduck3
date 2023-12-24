@@ -28,5 +28,19 @@ namespace Rubberduck.Editor.Shell.Document.Tabs
                 }
             }
         }
+
+        private bool _hasLinksEnabled = false;
+        public bool EnableHyperlinks
+        {
+            get => _hasLinksEnabled;
+            set
+            {
+                if (_hasLinksEnabled != value)
+                {
+                    _hasLinksEnabled = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
     }
 }

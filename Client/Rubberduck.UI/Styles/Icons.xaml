@@ -22,8 +22,13 @@
     <BitmapImage x:Key="LockedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/lock-solid.png" />
     <BitmapImage x:Key="UnlockedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/lock-open-solid.png" />
 
+    <BitmapImage x:Key="EnabledLinksIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/link-solid.png" />
+    <BitmapImage x:Key="DisabledLinksIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/link-slash-solid.png" />
+
     <BitmapImage x:Key="ShowIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/eye-solid.png" />
     <BitmapImage x:Key="HideIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/eye-slash-solid.png" />
+
+    <BitmapImage x:Key="CancelIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/ban-solid.png" />
 
     <BitmapImage x:Key="SynchronizeIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/arrows-spin-solid.png"/>
 

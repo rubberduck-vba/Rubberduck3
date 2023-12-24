@@ -46,6 +46,6 @@ namespace Rubberduck.UI.Shell
         /// Whether the tool panel remains expanded on mouse leave.
         /// </summary>
         bool IsPinned { get; set; }
-        bool IsDocked { get; }
+        bool IsDocked => PanelLocation != DockingLocation.None;
     }
 }

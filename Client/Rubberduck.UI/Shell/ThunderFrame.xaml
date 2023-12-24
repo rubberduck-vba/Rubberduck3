@@ -35,7 +35,19 @@
                                 <Border Grid.RowSpan="3" Background="{DynamicResource ThemeBackgroundMediumColorBrush}" />
                                 <local:DuckyBackgroundControl Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
 
-                                <DockPanel Grid.Row="0" VerticalAlignment="Top" Margin="2,2,0,0">
+                                <Border Grid.Row="0" CornerRadius="2">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="-1,0" EndPoint="1,0">
+                                            <GradientStop Offset="0" Color="Transparent" />
+                                            <GradientStop Offset="1" Color="{DynamicResource ThemeBackgroundDarkColor}" />
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+
+                                <DockPanel Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="2,2,0,0">
+                                    
+                                    <Thumb DockPanel.Dock="Top" x:Name="TitleBarThumb" Height="0" 
+                                           Style="{DynamicResource InvisibleThumbStyle}" />
                                     
                                     <local:FlatButton DockPanel.Dock="Right" VerticalAlignment="Center"
                                                       Height="16" Width="16"

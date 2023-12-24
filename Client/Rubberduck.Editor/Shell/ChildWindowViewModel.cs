@@ -1,5 +1,6 @@
 ﻿using Dragablz;
 using Rubberduck.UI;
+using Rubberduck.UI.Chrome;
 using Rubberduck.UI.Shell.StatusBar;
 using Rubberduck.UI.Windows;
 using System;
@@ -17,6 +18,8 @@ namespace Rubberduck.Editor.Shell
         {
             InterTabClient = interTabClient;
             Partition = partition;
+
+            Tabs = [];
         }
 
         public string Title { get; } = "Rubberduck Editor";
@@ -32,11 +35,14 @@ namespace Rubberduck.Editor.Shell
 
     public class DocumentShellWindowViewModel : ChildWindowViewModel
     {
-        public DocumentShellWindowViewModel(IInterTabClient interTabClient, IShellStatusBarViewModel statusBar) 
+        public DocumentShellWindowViewModel(IInterTabClient interTabClient, IShellStatusBarViewModel statusBar, IWindowChromeViewModel chrome) 
             : base(interTabClient, Partitions.Documents)
         {
+            Chrome = chrome;
             StatusBar = statusBar;
         }
+
+        public IWindowChromeViewModel Chrome { get; }
 
         public IShellStatusBarViewModel StatusBar { get; }
     }

@@ -4,9 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.UI.Shell.StatusBar"
-             xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
+             xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
+             d:DataContext="{d:DesignInstance Type=local:ILanguageServerStatusViewModel}"
              mc:Ignorable="d"
-             d:DesignWidth="800" VerticalContentAlignment="Center">
+             d:DesignWidth="800" d:DesignHeight="18"  VerticalContentAlignment="Center">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -28,18 +29,54 @@
         </ResourceDictionary>
         
     </UserControl.Resources>
-        <StatusBar Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
-                   Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}"
-                   BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeTextInactiveColorBrush}">
-            <StatusBarItem>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <shell:FlatButton ToolTip="Show language server trace toolwindow" VerticalAlignment="Center"
-                                      Icon="{DynamicResource CircleCheckIcon}" Height="16" Width="16"
-                                      Background="{DynamicResource ThemeBackgroundMediumColorBrush}"
-                                      Command="{Binding ShowLanguageServerTraceCommand}" />
-                    <Label Content="{Binding StatusText}" 
-                           Foreground="{DynamicResource ThemeTextColorBrush}" />
+    <StatusBar Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
+                Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}"
+                MinHeight="18"
+                BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeTextInactiveColorBrush}">
+        
+        <!-- LanguageServer status -->
+        
+        <StatusBarItem Padding="0">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <shell:FlatButton ToolTip="Show language server trace toolwindow" VerticalAlignment="Center"
+                                    Icon="{DynamicResource CircleCheckIcon}" Height="12" Width="12"
+                                    Background="{DynamicResource ThemeBackgroundMediumColorBrush}"
+                                    Command="{Binding ShowLanguageServerTraceCommand}" />
+                <Label Content="{Binding StatusText}" 
+                        Foreground="{DynamicResource ThemeTextColorBrush}" />
+            </StackPanel>
+        </StatusBarItem>
+
+        <Separator Margin="5" Foreground="{DynamicResource ThemeTextInactiveColorBrush}" />
+
+        <!-- WorkDoneProgress reporting -->
+        
+        <StatusBarItem Padding="0" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Vertical">
+                    <Label Content="{Binding ProgressMessage}"
+                           Margin="5,0" Padding="0" FontSize="8" Height="12"
+                           Foreground="{DynamicResource ThemeTextInactiveColorBrush}" />
+                    <ProgressBar x:Name="WorkDoneProgressIndicator"
+                                 Foreground="{DynamicResource ThemeAccent2DarkColorBrush}"
+                                 HorizontalAlignment="Left"
+                                 Orientation="Horizontal"
+                                 Margin="5,0,0,0"
+                                 Minimum="0" Maximum="{Binding ProgressMaxValue}"
+                                 Value="{Binding ProgressValue}"
+                                 Height="2" Width="100" />
                 </StackPanel>
-            </StatusBarItem>
-        </StatusBar>
+                <shell:FlatButton Grid.Column="1" Command="{Binding CancelWorkDoneProgressCommand}"
+                                  Visibility="{Binding CanCancelWorkDoneProgress, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                  ToolTip="Cancel this operation"
+                                  Icon="{DynamicResource CancelIcon}" Margin="6,2" Height="10" Width="10" />
+
+            </Grid>
+        </StatusBarItem>
+
+    </StatusBar>
 </UserControl>

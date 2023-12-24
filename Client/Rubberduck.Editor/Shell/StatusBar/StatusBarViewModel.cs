@@ -1,12 +1,19 @@
 ﻿using Rubberduck.UI;
+using Rubberduck.UI.Command;
 using Rubberduck.UI.Shell.StatusBar;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace Rubberduck.Editor.Shell.StatusBar
 {
     public class ShellStatusBarViewModel : ViewModelBase, IShellStatusBarViewModel
     {
+        public ShellStatusBarViewModel(ShowLanguageServerTraceCommand showLanguageServerTraceCommand)
+        {
+            ShowLanguageServerTraceCommand = showLanguageServerTraceCommand;
+        }
+
         private string _statusText = "Ready";
         public string StatusText
         {
@@ -21,6 +28,19 @@ namespace Rubberduck.Editor.Shell.StatusBar
             }
         }
 
+        private string? _progressMessage;
+        public string? ProgressMessage
+        {
+            get => _progressMessage;
+            set
+            {
+                if (_progressMessage != value)
+                {
+                    _progressMessage = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         private int _progressValue;
         public int ProgressValue
         {
@@ -63,12 +83,19 @@ namespace Rubberduck.Editor.Shell.StatusBar
             }
         }
 
+        public ICommand ShowLanguageServerTraceCommand { get; set; }
+
         private readonly ObservableCollection<INotificationViewModel> _notifications = new();
         public ICollection<INotificationViewModel> Notifications => _notifications;
     }
 
     public class StatusBarViewModel : ViewModelBase
     {
+        public StatusBarViewModel(ShowLanguageServerTraceCommand showLanguageServerTraceCommand)
+        {
+            ShowLanguageServerTraceCommand = showLanguageServerTraceCommand;
+        }
+
         private ServerConnectionState _serverConnectionState = ServerConnectionState.Disconnected;
         public ServerConnectionState ServerConnectionState
         {
@@ -82,6 +109,8 @@ namespace Rubberduck.Editor.Shell.StatusBar
                 }
             }
         }
+
+        public ICommand ShowLanguageServerTraceCommand { get; set; }
 
         public bool ShowDocumentStatusItems { get; set; } = false;
 
