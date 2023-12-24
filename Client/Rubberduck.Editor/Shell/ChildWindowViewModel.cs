@@ -14,16 +14,18 @@ namespace Rubberduck.Editor.Shell
     /// </summary>
     public class ChildWindowViewModel : ViewModelBase, IDragablzWindowViewModel
     {
-        public ChildWindowViewModel(IInterTabClient interTabClient, string partition)
+        public ChildWindowViewModel(IInterTabClient interTabClient, string partition, IWindowChromeViewModel chrome)
         {
             InterTabClient = interTabClient;
             Partition = partition;
+            Chrome = chrome;
 
             Tabs = [];
         }
 
         public string Title { get; } = "Rubberduck Editor";
 
+        public IWindowChromeViewModel Chrome { get; }
         public IInterTabClient InterTabClient { get; }
         public string Partition { get; }
 
@@ -36,21 +38,19 @@ namespace Rubberduck.Editor.Shell
     public class DocumentShellWindowViewModel : ChildWindowViewModel
     {
         public DocumentShellWindowViewModel(IInterTabClient interTabClient, IShellStatusBarViewModel statusBar, IWindowChromeViewModel chrome) 
-            : base(interTabClient, Partitions.Documents)
+            : base(interTabClient, Partitions.Documents, chrome)
         {
-            Chrome = chrome;
             StatusBar = statusBar;
         }
 
-        public IWindowChromeViewModel Chrome { get; }
 
         public IShellStatusBarViewModel StatusBar { get; }
     }
 
     public class ToolWindowShellWindowViewModel : ChildWindowViewModel
     {
-        public ToolWindowShellWindowViewModel(IInterTabClient interTabClient) 
-            : base(interTabClient, Partitions.Toolwindows)
+        public ToolWindowShellWindowViewModel(IInterTabClient interTabClient, IWindowChromeViewModel chrome) 
+            : base(interTabClient, Partitions.Toolwindows, chrome)
         {
         }
     }

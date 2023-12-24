@@ -30,9 +30,8 @@
     <Grid>
         <dockablz:Layout Grid.Row="1" Partition="toolwindows" 
                          BranchTemplate="{DynamicResource FloatingPanelBranchTemplate}">
-            <dragablz:TabablzControl x:Name="FloatingPanelToolTabs" 
-                                     InterTabController="{StaticResource InterTabController}"
-                                     Style="{DynamicResource ToolTabControlStyle}" />
+            <dragablz:TabablzControl x:Name="FloatingPanelToolTabs" InterTabController="{StaticResource InterTabController}" />
         </dockablz:Layout>
+
     </Grid>
 </Window>

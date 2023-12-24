@@ -1,6 +1,8 @@
 ﻿using Dragablz;
 using Rubberduck.UI.Windows;
+using System;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 
 namespace Rubberduck.UI.Shell
 {
@@ -11,11 +13,22 @@ namespace Rubberduck.UI.Shell
             DataContext = vm;
         }
 
-        public TabablzControl Tabs => FloatingPanelDocumentTabs;
+        public TabablzControl Tabs => DocumentPaneTabs;
 
         public ShellChildWindow()
         {
             InitializeComponent();
+        }
+
+        private void OnResizeGripDragDelta(object sender, DragDeltaEventArgs e)
+        {
+            var newHeight = Height + e.VerticalChange;
+            var newWidth = Width + e.HorizontalChange;
+
+            Height = Math.Max(MinHeight, newHeight);
+            Width = Math.Max(MinWidth, newWidth);
+
+            e.Handled = true;
         }
     }
 }

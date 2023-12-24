@@ -12,9 +12,16 @@ namespace Rubberduck.Editor.Shell
 {
     public class InterToolTabClient : IInterTabClient
     {
+        private readonly IWindowChromeViewModel _chrome;
+
+        public InterToolTabClient(IWindowChromeViewModel chrome) 
+        {
+            _chrome = chrome;
+        }
+
         public INewTabHost<Window> GetNewHost(IInterTabClient interTabClient, object partition, TabablzControl source)
         {
-            var vm = new ToolWindowShellWindowViewModel(interTabClient);
+            var vm = new ToolWindowShellWindowViewModel(interTabClient, _chrome);
             var view = new ShellChildToolWindow(vm);
             return new NewTabHost<Window>(view, view.Tabs);
         }

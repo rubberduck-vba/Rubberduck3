@@ -16,7 +16,13 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Menu Margin="0,0,0,4" Background="{DynamicResource ThemeBackgroundMediumColorBrush}">
+    <Menu Margin="0,0,0,4"
+          Background="{DynamicResource ThemeBackgroundMediumColorBrush}">
+        <Menu.ItemsPanel>
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal" />
+            </ItemsPanelTemplate>
+        </Menu.ItemsPanel>
         <MenuItem Header="_File">
             <MenuItem Header="_New Project..." Command="{x:Static cmd:FileCommands.NewProjectCommand}" />
             <MenuItem Header="_Open..." Command="{x:Static cmd:FileCommands.OpenProjectCommand}" />
@@ -119,9 +125,9 @@
             <MenuItem Header="_Properties" Command="{x:Static cmd:ViewCommands.ShowPropertiesCommand}"/>
             <Separator />
             <MenuItem Header="_Diagnostics" Command="{x:Static cmd:ViewCommands.ShowDiagnosticsCommand}"/>
-             Inspection Results? 
+            Inspection Results?
             <MenuItem Header="_Tasks" Command="{x:Static cmd:ViewCommands.ShowTasksCommand}"/>
-             TODO Items? 
+            TODO Items?
             <MenuItem Header="_Search Results" Command="{x:Static cmd:ViewCommands.ShowSearchResultsCommand}"/>
             <Separator />
             <MenuItem Header="_Editor Trace" Command="{x:Static cmd:ViewCommands.ShowEditorTraceCommand}"/>
