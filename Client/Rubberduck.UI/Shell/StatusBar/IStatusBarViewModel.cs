@@ -32,6 +32,9 @@ namespace Rubberduck.UI.Shell.StatusBar
         int ProgressMaxValue { get; set; }
 
         string? ProgressMessage { get; set; }
+
+        bool CanCancelWorkDoneProgress { get; set; }
+        ICommand CancelWorkDoneProgressCommand { get; set; }
     }
 
     /// <summary>

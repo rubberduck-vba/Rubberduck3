@@ -47,11 +47,13 @@
             </StackPanel>
         </StatusBarItem>
 
-        <Separator Margin="5" Foreground="{DynamicResource ThemeTextInactiveColorBrush}" />
+        <Separator Margin="5" Foreground="{DynamicResource ThemeTextInactiveColorBrush}"
+                   Visibility="{Binding ProgressMaxValue, Converter={StaticResource HasItemsVisibilityConverter}}"/>
 
         <!-- WorkDoneProgress reporting -->
-        
-        <StatusBarItem Padding="0" >
+
+        <StatusBarItem Padding="0" 
+                       Visibility="{Binding ProgressMaxValue, Converter={StaticResource HasItemsVisibilityConverter}}" >
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
