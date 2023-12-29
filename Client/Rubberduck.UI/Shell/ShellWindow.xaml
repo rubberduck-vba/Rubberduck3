@@ -26,17 +26,37 @@
 
             <dragablz:InterTabController x:Key="InterTabController" x:Shared="False" 
                                          MoveWindowWithSolitaryTabs="False"
-                                         InterTabClient="{Binding InterTabClient}" 
+                                         InterTabClient="{Binding InterTabClient, Mode=OneWay}" 
                                          Partition="documents" />
 
             <dragablz:InterTabController x:Key="InterToolTabController" x:Shared="False" 
                                          MoveWindowWithSolitaryTabs="False"
-                                         InterTabClient="{Binding InterToolTabClient}" 
+                                         InterTabClient="{Binding InterToolTabClient, Mode=OneWay}" 
                                          Partition="toolwindows" />
 
+            <DataTemplate x:Key="ToolTabHeaderItemTemplate" DataType="windows:ITabViewModel">
+                <Border BorderThickness="1" BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}" CornerRadius="0,0,8,8" Margin="-4,0,-6,2">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Style="{DynamicResource TabTitleLabelStyle}" Margin="0">
+                            <TextBlock Text="{Binding Title}" />
+                        </Label>
+                        <local:FlatButton Icon="{DynamicResource WindowCloseIcon}" Command="{Binding CloseToolWindowCommand}" CommandParameter="{Binding}" />
+                    </StackPanel>
+                </Border>
+            </DataTemplate>
+            <Style x:Key="ToolTabControlStyle" TargetType="dragablz:TabablzControl">
+                <Style.Setters>
+                    <!-- fixes showing the tabs at the bottom -->
+                    <Setter Property="Template" Value="{DynamicResource ToolTabTemplate}" />
+                    <Setter Property="TabStripPlacement" Value="Bottom" />
+                    <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
+                    <Setter Property="HeaderItemTemplate" Value="{StaticResource ToolTabHeaderItemTemplate}" />
+                    <Setter Property="EmptyHeaderSizingHint" Value="Collapse" />
+                </Style.Setters>
+            </Style>
             <Style x:Key="BottomToolTabControlStyle" TargetType="dragablz:TabablzControl" BasedOn="{StaticResource ToolTabControlStyle}">
             </Style>
-            
+
         </ResourceDictionary>
     </Window.Resources>
     <Grid Background="{DynamicResource ThemeBackgroundColorBrush}" ClipToBounds="True">
@@ -102,16 +122,18 @@
             <Expander.Resources>
                 <DataTemplate x:Key="LeftPanelBranchTemplate" DataType="local:IShellWindowViewModel">
                     <dragablz:TabablzControl Style="{DynamicResource ToolTabControlStyle}"
-                                         ItemContainerStyle="{DynamicResource StandardDragablzTabItemStyle}"
-                                             ItemsSource="{Binding LeftPanelToolWindows}"/>
+                                         ItemContainerStyle="{DynamicResource ToolTabItemStyle}"
+                                          InterTabController="{StaticResource InterToolTabController}"
+                                            ItemsSource="{Binding LeftPanelToolWindows}"/>
                 </DataTemplate>
             </Expander.Resources>
             <dockablz:Layout Grid.Row="1" Name="LeftPane" Partition="toolwindows" BranchTemplate="{DynamicResource LeftPanelBranchTemplate}">
 
                 <dragablz:TabablzControl x:Name="LeftPaneToolTabs" 
                                          Style="{DynamicResource ToolTabControlStyle}"
-                                         ItemContainerStyle="{DynamicResource StandardDragablzTabItemStyle}"
-                                         ItemsSource="{Binding LeftPanelToolWindows}">
+                                         ItemContainerStyle="{DynamicResource ToolTabItemStyle}"
+                                          InterTabController="{StaticResource InterToolTabController}"
+                                        ItemsSource="{Binding LeftPanelToolWindows}">
                     <dragablz:TabablzControl.ContentTemplate>
                         <DataTemplate>
                             <ContentControl Content="{Binding ContentControl}" />
@@ -168,14 +190,16 @@
             <Expander.Resources>
                 <DataTemplate x:Key="RightPanelBranchTemplate" DataType="local:IShellWindowViewModel">
                     <dragablz:TabablzControl Style="{DynamicResource ToolTabControlStyle}" 
-                                         ItemContainerStyle="{DynamicResource StandardDragablzTabItemStyle}"
+                                         ItemContainerStyle="{DynamicResource ToolTabItemStyle}"
+                                         InterTabController="{StaticResource InterToolTabController}"
                                              ItemsSource="{Binding RightPanelToolWindows}" />
                 </DataTemplate>
             </Expander.Resources>
             <dockablz:Layout Grid.Row="1" Name="RightPane" Partition="toolwindows" BranchTemplate="{DynamicResource RightPanelBranchTemplate}">
                 <dragablz:TabablzControl x:Name="RightPaneToolTabs" 
                                          Style="{DynamicResource ToolTabControlStyle}"
-                                         ItemContainerStyle="{DynamicResource StandardDragablzTabItemStyle}"
+                                         InterTabController="{StaticResource InterToolTabController}"
+                                         ItemContainerStyle="{DynamicResource ToolTabItemStyle}"
                                          ItemsSource="{Binding RightPanelToolWindows}"/>
             </dockablz:Layout>
         </Expander>
@@ -228,15 +252,16 @@
             <Expander.Resources>
                 <DataTemplate x:Key="BottomPanelBranchTemplate" DataType="local:IShellWindowViewModel">
                     <dragablz:TabablzControl Style="{DynamicResource BottomToolTabControlStyle}" 
-                                             ItemContainerStyle="{DynamicResource StandardDragablzTabItemStyle}"
+                                             ItemContainerStyle="{DynamicResource ToolTabItemStyle}"
+                                         InterTabController="{StaticResource InterToolTabController}"
                                              ItemsSource="{Binding BottomPanelToolWindows}"/>
                 </DataTemplate>
             </Expander.Resources>
             <dockablz:Layout Grid.Row="1" Name="BottomPane" Partition="toolwindows" BranchTemplate="{DynamicResource BottomPanelBranchTemplate}">
                 <dragablz:TabablzControl x:Name="BottomPaneToolTabs" 
                                          Style="{DynamicResource BottomToolTabControlStyle}"
-                                         InterTabController="{DynamicResource InterTabController}"
-                                         ItemContainerStyle="{DynamicResource StandardDragablzTabItemStyle}"
+                                         InterTabController="{StaticResource InterToolTabController}"
+                                         ItemContainerStyle="{DynamicResource ToolTabItemStyle}"
                                          ItemsSource="{Binding BottomPanelToolWindows}"/>
             </dockablz:Layout>
         </Expander>
@@ -245,7 +270,7 @@
             <dockablz:Layout.BranchTemplate>
                 <DataTemplate DataType="local:IShellWindowViewModel">
                     <dragablz:TabablzControl Style="{DynamicResource DocumentTabControlStyle}"
-                                     InterTabController="{DynamicResource InterTabController}"
+                                     InterTabController="{StaticResource InterTabController}"
                                      ItemsSource="{Binding DocumentWindows}"
                                      ItemTemplate="{DynamicResource DocumentTabItemTemplate}"
                                      ItemContainerStyle="{DynamicResource TrapezoidTabItemStyle}"
@@ -254,7 +279,7 @@
                 </DataTemplate>
             </dockablz:Layout.BranchTemplate>
             <dragablz:TabablzControl x:Name="DocumentPaneTabs" 
-                                     InterTabController="{DynamicResource InterTabController}"
+                                     InterTabController="{StaticResource InterTabController}"
                                      ItemsSource="{Binding DocumentWindows}"
                                      ItemContainerStyle="{DynamicResource TrapezoidTabItemStyle}"
                                      SelectedIndex="0"

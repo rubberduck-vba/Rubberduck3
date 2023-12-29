@@ -41,7 +41,7 @@
             </WrapPanel>
 
             <shell:BindableTextEditor Grid.Row="1" IsReadOnly="True" IsEnabled="False"
-                                      Text="{Binding ConsoleContent}" WordWrap="False"
+                                      Text="{Binding TextContent}" WordWrap="False"
                                       ShowLineNumbers="True"
                                       HorizontalScrollBarVisibility="Auto"
                                       VerticalScrollBarVisibility="Visible"

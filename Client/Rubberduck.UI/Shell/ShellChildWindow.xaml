@@ -40,12 +40,29 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <shell:MenuBarControl x:Name="MenuBar" Grid.Row="0" />
-
-        <dockablz:Layout Grid.Row="1" Partition="documents" BranchTemplate="{DynamicResource FloatingPanelBranchTemplate}">
+        <dockablz:Layout Grid.Row="1" Partition="documents" Margin="2">
+            <dockablz:Layout.BranchTemplate>
+                <DataTemplate DataType="local:IShellWindowViewModel">
+                    <dragablz:TabablzControl Style="{DynamicResource DocumentTabControlStyle}"
+                                     InterTabController="{StaticResource InterTabController}"
+                                     ItemTemplate="{DynamicResource DocumentTabItemTemplate}"
+                                     ItemContainerStyle="{DynamicResource TrapezoidTabItemStyle}"
+                                     HeaderMemberPath="Title"
+                                     ShowDefaultCloseButton="True"/>
+                </DataTemplate>
+            </dockablz:Layout.BranchTemplate>
             <dragablz:TabablzControl x:Name="DocumentPaneTabs" 
-                                     ItemTemplate="{DynamicResource DocumentTabTemplate}"
-                                     InterTabController="{StaticResource InterTabController}" />
+                                     InterTabController="{StaticResource InterTabController}"
+                                     ItemContainerStyle="{DynamicResource TrapezoidTabItemStyle}"
+                                     SelectedIndex="0"
+                                     HeaderMemberPath="Title"
+                                     ShowDefaultCloseButton="True">
+                <dragablz:TabablzControl.ContentTemplate>
+                    <DataTemplate>
+                        <ContentControl Content="{Binding ContentControl}" />
+                    </DataTemplate>
+                </dragablz:TabablzControl.ContentTemplate>
+            </dragablz:TabablzControl>
         </dockablz:Layout>
 
         <statusbar:StatusBarControl x:Name="StatusBar" Grid.Row="2" DataContext="{Binding StatusBar}" />

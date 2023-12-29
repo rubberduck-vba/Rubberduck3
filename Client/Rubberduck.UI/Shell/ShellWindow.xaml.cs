@@ -1,4 +1,5 @@
-﻿using Rubberduck.SettingsProvider.Model.Editor.Tools;
+﻿using Dragablz;
+using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Windows;
@@ -87,6 +88,11 @@ namespace Rubberduck.UI.Shell
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            if (e.NewValue is IShellWindowViewModel vm)
+            {
+                ((InterTabController)Resources["InterToolTabController"]).InterTabClient = vm.InterToolTabClient;
+                ((InterTabController)Resources["InterTabController"]).InterTabClient = vm.InterTabClient;
+            }
             if (e.NewValue is ICommandBindingProvider provider)
             {
                 var bindings = SystemCommandHandlers.CreateCommandBindings().Concat(provider.CommandBindings).ToArray();

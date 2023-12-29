@@ -29,7 +29,7 @@ namespace Rubberduck.UI.LanguageServerTrace
             OpenLogFileCommand openLogFileCommand)
             : base(DockingLocation.DockBottom, showSettingsCommand, closeToolWindowCommand)
         {
-            CopyContentCommand = new DelegateCommand(service, param => Clipboard.SetText(_consoleContent), param => TextContent.Length > 0);
+            CopyContentCommand = new DelegateCommand(service, param => Clipboard.SetText(TextContent), param => TextContent.Length > 0);
             ClearContentCommand = new DelegateCommand(service, param => TextContent = string.Empty, param => TextContent.Length > 0);
             OpenLogFileCommand = openLogFileCommand;
         }
@@ -51,7 +51,5 @@ namespace Rubberduck.UI.LanguageServerTrace
                 }
             }
         }
-
-        private string _consoleContent = string.Empty;
     }
 }
