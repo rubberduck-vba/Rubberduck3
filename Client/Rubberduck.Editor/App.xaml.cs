@@ -97,7 +97,7 @@ namespace Rubberduck.Editor
                 _settings = _serviceProvider.GetRequiredService<RubberduckSettingsProvider>();
 
                 var splash = _serviceProvider.GetRequiredService<SplashService>();
-                splash.Show();
+                splash.Show(WindowSize.Splash);
 
                 splash.UpdateStatus("Loading configuration...");
                 _settings.ClearCache();

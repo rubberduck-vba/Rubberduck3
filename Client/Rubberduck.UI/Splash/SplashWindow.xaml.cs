@@ -15,8 +15,8 @@ namespace Rubberduck.UI.Splash
         public SplashWindow()
         {
             InitializeComponent();
-            MaxHeight = 380;
-            MaxWidth = 340;
+            Height = 380;
+            Width = 340;
             InvalidateMeasure();
         }
     }

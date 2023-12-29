@@ -8,6 +8,7 @@ namespace Rubberduck.UI.Services.Abstract
 {
     public enum WindowSize
     {
+        Splash,
         SmallWide,
         SmallTall,
         MediumDialog,
@@ -18,6 +19,7 @@ namespace Rubberduck.UI.Services.Abstract
     {
         public static readonly IDictionary<WindowSize, Size> SizeMap = new Dictionary<WindowSize, Size>
         {
+            [WindowSize.Splash] = new Size(340, 380),
             [WindowSize.SmallWide] = new Size(600, 380),
             [WindowSize.SmallTall] = new Size(480, 600),
             [WindowSize.MediumDialog] = new Size(800, 600),

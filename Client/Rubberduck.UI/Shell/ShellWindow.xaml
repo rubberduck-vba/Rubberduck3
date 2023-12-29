@@ -59,6 +59,7 @@
         <Expander x:Name="LeftPaneExpander" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" ExpandDirection="Right"
                   Style="{DynamicResource ArrowlessExpanderTemplate}"
                   BorderThickness="0"
+                  Visibility="{Binding LeftPanelToolWindows, Converter={StaticResource HasItemsVisibilityConverter}, Mode=OneWay}"
                   IsExpanded="{Binding LeftPanelToolWindows, Converter={StaticResource HasItemsBoolConverter}, Mode=OneWay}">
             <Expander.Header>
                 <ListView ItemsSource="{Binding LeftPanelToolWindows}" 
@@ -122,6 +123,7 @@
 
         <Expander x:Name="RightPaneExpander" Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" ExpandDirection="Left"
                   Style="{DynamicResource ArrowlessExpanderTemplate}"
+                  Visibility="{Binding RightPanelToolWindows, Converter={StaticResource HasItemsVisibilityConverter}, Mode=OneWay}"
                   IsExpanded="{Binding RightPanelToolWindows,Converter={StaticResource HasItemsBoolConverter}, Mode=OneWay}">
             <Expander.Header>
                 <ListView ItemsSource="{Binding RightPanelToolWindows}" 
@@ -177,6 +179,7 @@
 
         <Expander x:Name="BottomPaneExpander" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" ExpandDirection="Up"
                   Style="{DynamicResource ArrowlessExpanderTemplate}"
+                  Visibility="{Binding BottomPanelToolWindows, Converter={StaticResource HasItemsVisibilityConverter}, Mode=OneWay}"
                   IsExpanded="{Binding BottomPanelToolWindows, Converter={StaticResource HasItemsBoolConverter}, Mode=OneWay}">
             <Expander.Header>
                 <ListView ItemsSource="{Binding BottomPanelToolWindows}" 
@@ -228,6 +231,7 @@
             <dockablz:Layout Grid.Row="1" Name="BottomPane" Partition="toolwindows" BranchTemplate="{DynamicResource BottomPanelBranchTemplate}">
                 <dragablz:TabablzControl x:Name="BottomPaneToolTabs" 
                                          Style="{DynamicResource BottomToolTabControlStyle}"
+                                         InterTabController="{DynamicResource InterTabController}"
                                          ItemsSource="{Binding BottomPanelToolWindows}"/>
             </dockablz:Layout>
         </Expander>
