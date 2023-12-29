@@ -8,7 +8,7 @@
         xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
         xmlns:cmd="clr-namespace:Rubberduck.UI.Command" 
         xmlns:local="clr-namespace:Rubberduck.UI.WorkspaceExplorer"
-             d:DataContext="{d:DesignInstance Type=local:IWorkspaceExplorerViewModel, IsDesignTimeCreatable=False}"
+        d:DataContext="{d:DesignInstance Type=local:IWorkspaceExplorerViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d" 
         x:Name="WorkspaceExplorerRoot"
         d:DesignHeight="450" d:DesignWidth="400">
@@ -33,31 +33,55 @@
                                       DataType="local:IWorkspaceTreeNode" 
                                       ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="{DynamicResource SharpFolderClosedIcon}">
+                    <Image Source="{StaticResource SharpFolderClosedIcon}">
                         <Image.Style>
                             <Style TargetType="Image" BasedOn="{StaticResource NodeIconStyle}">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsExpanded}" Value="True">
-                                        <Setter Property="Source" Value="{DynamicResource SharpFolderOpenIcon}" />
+                                        <Setter Property="Source" Value="{StaticResource SharpFolderOpenIcon}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Image.Style>
                     </Image>
-                    <Label Content="{Binding Name}" Style="{DynamicResource NodeLabelStyle}" Margin="0"/>
+                    <Label Content="{Binding Name}" Style="{DynamicResource NodeLabelStyle}" Margin="0" />
+
+                    <StackPanel.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Rename" />
+                            <MenuItem Header="Delete" />
+                        </ContextMenu>
+                    </StackPanel.ContextMenu>
                 </StackPanel>
             </HierarchicalDataTemplate>
 
             <DataTemplate x:Key="SourceFileTemplate" DataType="local:WorkspaceSourceFileViewModel">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{DynamicResource SourceDocumentIcon16}" Style="{DynamicResource NodeIconStyle}" />
-                    <Label Content="{Binding Name}" Style="{DynamicResource NodeLabelStyle}" Margin="0"/>
+                    <Label Content="{Binding Name}" Style="{DynamicResource NodeLabelStyle}" Margin="0" MouseDoubleClick="OnFileDoubleClick" />
+                    <StackPanel.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Open" FontWeight="SemiBold" Command="{x:Static local:WorkspaceExplorerCommands.OpenFileCommand}" CommandParameter="{Binding Uri}" />
+                            <Separator />
+                            <MenuItem Header="Rename" />
+                            <MenuItem Header="Delete" />
+                        </ContextMenu>
+                    </StackPanel.ContextMenu>
                 </StackPanel>
             </DataTemplate>
+            
             <DataTemplate x:Key="OtherFileTemplate" DataType="local:WorkspaceFileViewModel">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{DynamicResource DocumentIcon16}" Style="{DynamicResource NodeIconStyle}" />
-                    <Label Content="{Binding Name}" Style="{DynamicResource NodeLabelStyle}" Margin="0" />
+                    <Label Content="{Binding Name}" Style="{DynamicResource NodeLabelStyle}" Margin="0" MouseDoubleClick="OnFileDoubleClick" />
+                    <StackPanel.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Open" FontWeight="SemiBold" Command="{x:Static local:WorkspaceExplorerCommands.OpenFileCommand}" CommandParameter="{Binding Uri}" />
+                            <Separator />
+                            <MenuItem Header="Rename" />
+                            <MenuItem Header="Delete" />
+                        </ContextMenu>
+                    </StackPanel.ContextMenu>
                 </StackPanel>
             </DataTemplate>
 
@@ -90,7 +114,7 @@
                                   ToolTip="Synchronize to VBE"/>
             </WrapPanel>
 
-            <TreeView Grid.Row="1" 
+            <TreeView Grid.Row="1"
                       BorderBrush="{DynamicResource ThemeWhiteMediumColorBrush}" BorderThickness="1" 
                       Background="{DynamicResource ThemeWhiteLightColorBrush75}"
                       ItemsSource="{Binding Workspaces}"
@@ -102,9 +126,9 @@
 
                 <TreeView.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Open" FontWeight="Bold" Command="{Binding OpenDocumentCommand}" CommandParameter="{Binding Selection.Uri}" />
-                        <MenuItem Header="Rename" CommandParameter="{Binding Selection.Uri}" />
-                        <MenuItem Header="Delete" CommandParameter="{Binding Selection.Uri}" />
+                        <MenuItem Header="New workspace" Command="{x:Static cmd:FileCommands.NewProjectCommand}" />
+                        <MenuItem Header="Open workspace" Command="{x:Static cmd:FileCommands.OpenProjectCommand}" />
+                        <MenuItem Header="Synchronize to VBE" Command="{x:Static cmd:FileCommands.SynchronizeWorkspaceCommand}" />
                     </ContextMenu>
                 </TreeView.ContextMenu>
 

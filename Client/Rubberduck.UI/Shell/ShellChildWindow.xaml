@@ -20,13 +20,17 @@
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Shell/ShellResources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <dragablz:InterTabController x:Key="InterTabController" x:Shared="False" 
+                                         MoveWindowWithSolitaryTabs="False"
+                                         InterTabClient="{Binding InterTabClient}" 
+                                         Partition="documents" />
+
             <DataTemplate x:Key="FloatingPanelBranchTemplate">
                 <dragablz:TabablzControl Style="{DynamicResource DocumentTabControlStyle}"
-                                             ItemTemplateSelector="{DynamicResource DocumentTabTemplateSelector}"
-                                             InterTabController="{StaticResource InterTabController}"
-                                             FixedHeaderCount="{Binding FixedDocumentTabs}" />
+                                         ItemTemplate="{DynamicResource DocumentTabTemplate}"
+                                         InterTabController="{StaticResource InterTabController}"/>
             </DataTemplate>
-            <dragablz:InterTabController x:Key="InterTabController" x:Shared="False" InterTabClient="{Binding InterTabClient}" Partition="documents" />
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
@@ -38,9 +42,9 @@
 
         <shell:MenuBarControl x:Name="MenuBar" Grid.Row="0" />
 
-        <dockablz:Layout Grid.Row="1" Partition="documents" 
-                         BranchTemplate="{DynamicResource FloatingPanelBranchTemplate}">
+        <dockablz:Layout Grid.Row="1" Partition="documents" BranchTemplate="{DynamicResource FloatingPanelBranchTemplate}">
             <dragablz:TabablzControl x:Name="DocumentPaneTabs" 
+                                     ItemTemplate="{DynamicResource DocumentTabTemplate}"
                                      InterTabController="{StaticResource InterTabController}" />
         </dockablz:Layout>
 

@@ -5,16 +5,15 @@ using System.Windows.Input;
 
 namespace Rubberduck.UI.Services.Abstract
 {
-    public abstract class ToolWindowViewModelBase : ViewModelBase, IToolWindowViewModel
+    public abstract class ToolWindowViewModelBase : WindowViewModel, IToolWindowViewModel
     {
-        protected ToolWindowViewModelBase(DockingLocation location,
+        protected ToolWindowViewModelBase(DockingLocation location, 
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindowCommand)
+            : base(showSettingsCommand, closeToolWindowCommand)
         {
             DockingLocation = location;
-            ShowSettingsCommand = showSettingsCommand;
-            CloseToolWindowCommand = closeToolWindowCommand;
-
+            ShowPinButton = location != DockingLocation.None;
             Header = Title;
         }
 
@@ -32,13 +31,8 @@ namespace Rubberduck.UI.Services.Abstract
             }
         }
 
-        public ICommand ShowSettingsCommand { get; }
-        public string ShowSettingsCommandParameter => SettingKey;
+        public ICommand UndockToolTabCommand { get; }
 
-        public ICommand CloseToolWindowCommand { get; }
-
-        public abstract string SettingKey { get; }
-        public abstract string Title { get; }
 
         private object _header;
         public virtual object Header
@@ -54,15 +48,29 @@ namespace Rubberduck.UI.Services.Abstract
             }
         }
 
-        private object _content;
-        public object Content
+        private string _textContent;
+        public string TextContent
         {
-            get => _content;
+            get => _textContent;
             set
             {
-                if (_content != value)
+                if (_textContent != value)
                 {
-                    _content = value;
+                    _textContent = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private object _contentControl;
+        public object ContentControl
+        {
+            get => _contentControl;
+            set
+            {
+                if (_contentControl != value)
+                {
+                    _contentControl = value;
                     OnPropertyChanged();
                 }
             }
@@ -81,26 +89,5 @@ namespace Rubberduck.UI.Services.Abstract
                 }
             }
         }
-
-        private bool _isPinned;
-        public bool IsPinned
-        {
-            get => _isPinned;
-            set
-            {
-                if (_isPinned != value)
-                {
-                    _isPinned = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public virtual bool ShowPinButton { get; } = true;
-        public virtual bool ShowGearButton { get; } = true;
-        public virtual bool ShowCloseButton { get; } = true;
-
-        public string AcceptButtonText { get; set; }
-        public string CancelButtonText { get; set; }
     }
 }

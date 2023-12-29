@@ -137,18 +137,21 @@ namespace Rubberduck.Editor
             var fileSystem = _serviceProvider.GetRequiredService<IFileSystem>();
             var path = fileSystem.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Rubberduck", "Templates", "Welcome.md");
             var content = fileSystem.File.ReadAllText(path);
-            var welcome = new MarkdownDocumentTabViewModel(new Uri(path), "Welcome", content);
+
+            var showSettingsCommand = _serviceProvider.GetRequiredService<ShowRubberduckSettingsCommand>();
+            var closeToolWindowCommand = _serviceProvider.GetRequiredService<CloseToolWindowCommand>();
+            var welcome = new MarkdownDocumentTabViewModel(new Uri(path), "Welcome", content, isReadOnly:true, showSettingsCommand, closeToolWindowCommand);
 
             var view = _shell ??= new ShellWindow() { DataContext = model };
             
             var welcomeTabContent = new MarkdownEditorControl() { DataContext = welcome };
+            welcome.ContentControl = welcomeTabContent;
+            welcome.IsSelected = true;
 
-            model.Documents.Add(welcome);
-            view.AddDocument(welcomeTabContent);
-
-            // prompt for new workspace here if there's no addin host?
+             // prompt for new workspace here if there's no addin host?
 
             view.Show();
+            model.DocumentWindows.Add(welcome);
 
             if (_settings.Settings.EditorSettings.ToolsSettings.WorkspaceExplorerSettings.ShowOnStartup)
             {

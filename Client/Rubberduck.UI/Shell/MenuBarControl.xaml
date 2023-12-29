@@ -174,7 +174,7 @@
             <MenuItem Header="New _Vertical Document Group" Command="{x:Static cmd:WindowsCommands.NewVerticalDocumentGroup}"/>
             <MenuItem Header="_Close All Tabs" Command="{x:Static cmd:WindowsCommands.CloseAllTabsCommand}"/>
             <Separator />
-            <MenuItem Header="Document" ItemsSource="{Binding Documents}">
+            <MenuItem Header="Document" ItemsSource="{Binding DocumentWindows}">
                 <MenuItem.ItemContainerStyle>
                     <Style TargetType="MenuItem">
                         <Setter Property="Command" Value="{x:Static cmd:WindowsCommands.ShowDocumentWindow}" />

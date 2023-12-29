@@ -34,8 +34,6 @@ namespace Rubberduck.UI.Shell
             BottomPaneExpander.MouseLeave += ToolPaneExpanderMouseLeave;
         }
 
-        public void AddDocument(object tab) => DocumentPaneTabs.AddToSource(tab);
-
         private IToolPanelViewModel GetToolPanelModel(Expander expander)
         {
             var vm = (IShellWindowViewModel)DataContext;
@@ -62,7 +60,11 @@ namespace Rubberduck.UI.Shell
             {
                 var vm = (IShellWindowViewModel)DataContext;
                 var toolPanel = GetToolPanelModel(expander);
-                var toolwindows = vm.ToolWindows.Where(e => e.DockingLocation == toolPanel.PanelLocation);
+                var toolwindows = vm.LeftPanelToolWindows 
+                    .Concat(vm.RightPanelToolWindows)
+                    .Concat(vm.BottomPanelToolWindows)
+                    .Where(e => e.DockingLocation == toolPanel.PanelLocation);
+
                 toolPanel.IsPinned = toolwindows.Any(e => e.IsPinned);
                 expander.IsExpanded = toolPanel.IsPinned;
             }
@@ -75,7 +77,9 @@ namespace Rubberduck.UI.Shell
                 var hasTools = false;
                 var vm = GetToolPanelModel(expander);
                 var shell = (IShellWindowViewModel)DataContext;
-                hasTools = shell.ToolWindows.Any(e => e.DockingLocation == vm.PanelLocation);
+                hasTools = shell.LeftPanelToolWindows
+                    .Concat(shell.RightPanelToolWindows)
+                    .Concat(shell.BottomPanelToolWindows).Any(e => e.DockingLocation == vm.PanelLocation);
 
                 expander.IsExpanded = hasTools || e.LeftButton == MouseButtonState.Pressed; // FIXME not just pressed, but dragging something
             }
@@ -110,33 +114,6 @@ namespace Rubberduck.UI.Shell
             Width = Math.Max(MinWidth, newWidth);
 
             e.Handled = true;
-        }
-
-        private void LeftPanelToolsSource_Filter(object sender, FilterEventArgs e)
-        {
-            e.Accepted = false;
-            if (e.Item is IToolWindowViewModel vm)
-            {
-                e.Accepted = vm.DockingLocation == DockingLocation.DockLeft;
-            }
-        }
-
-        private void RightPanelToolsSource_Filter(object sender, FilterEventArgs e)
-        {
-            e.Accepted = false;
-            if (e.Item is IToolWindowViewModel vm)
-            {
-                e.Accepted = vm.DockingLocation == DockingLocation.DockRight;
-            }
-        }
-
-        private void BottomPanelToolsSource_Filter(object sender, FilterEventArgs e)
-        {
-            e.Accepted = false;
-            if (e.Item is IToolWindowViewModel vm)
-            {
-                e.Accepted = vm.DockingLocation == DockingLocation.DockBottom;
-            }
         }
 
         private void OnResizeLeftPanelDragDelta(object sender, DragDeltaEventArgs e)

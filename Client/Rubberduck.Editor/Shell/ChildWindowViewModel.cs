@@ -1,6 +1,8 @@
 ﻿using Dragablz;
+using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI;
 using Rubberduck.UI.Chrome;
+using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
 using Rubberduck.UI.Windows;
 using System;
@@ -24,6 +26,7 @@ namespace Rubberduck.Editor.Shell
         }
 
         public string Title { get; } = "Rubberduck Editor";
+        public ObservableCollection<IDocumentTabViewModel> Documents { get; init; }
 
         public IWindowChromeViewModel Chrome { get; }
         public IInterTabClient InterTabClient { get; }
@@ -53,5 +56,7 @@ namespace Rubberduck.Editor.Shell
             : base(interTabClient, Partitions.Toolwindows, chrome)
         {
         }
+
+        public DockingLocation DockingLocation { get; set; } = DockingLocation.None;
     }
 }

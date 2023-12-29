@@ -12,6 +12,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.ContentTemplate>
@@ -42,10 +44,28 @@
                                             <GradientStop Offset="1" Color="{DynamicResource ThemeBackgroundDarkColor}" />
                                         </LinearGradientBrush>
                                     </Border.Background>
+                                    <Border.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Undock" Command="{Binding UndockToolTabCommand}" CommandParameter="{Binding}" />
+                                            <MenuItem Header="Auto hide" 
+                                                      IsCheckable="True"
+                                                      IsChecked="{Binding IsPinned, Converter={StaticResource InverseBoolConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      Visibility="{TemplateBinding local:ThunderFrame.ShowPinButton, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            <Separator />
+                                            <MenuItem Header="Close tab" 
+                                                      Command="{Binding CloseToolWindowCommand}" CommandParameter="{Binding}" />
+                                            <MenuItem Header="Settings" 
+                                                      Command="{Binding ShowSettingsCommand}" CommandParameter="{Binding ShowSettingsCommandParameter}" 
+                                                      Visibility="{Binding ShowGearButton, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                        </ContextMenu>
+                                    </Border.ContextMenu>
                                 </Border>
 
-                                <DockPanel Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="2,2,0,0">
-                                    
+                                <DockPanel Grid.Row="0"
+                                           VerticalAlignment="Top" 
+                                           HorizontalAlignment="Stretch" 
+                                           Margin="2,2,0,0">
+
                                     <Thumb DockPanel.Dock="Top" x:Name="TitleBarThumb" Height="0" 
                                            Style="{DynamicResource InvisibleThumbStyle}" />
                                     
@@ -75,8 +95,9 @@
                                     <Label DockPanel.Dock="Top" HorizontalAlignment="Left" VerticalAlignment="Center"
                                        Content="{Binding Title, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
                                        Foreground="{DynamicResource ThemeTextColorBrush}"
-                                       FontWeight="SemiBold" FontSize="13"
+                                       FontWeight="SemiBold" FontSize="13" IsHitTestVisible="False"
                                        Visibility="{Binding ShowTitle, Converter={StaticResource BoolToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}"/>
+                                    
                                 </DockPanel>
 
                                 <Border Grid.Row="1" BorderThickness="0" CornerRadius="8" Margin="4"

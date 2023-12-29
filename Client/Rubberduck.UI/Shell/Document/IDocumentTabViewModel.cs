@@ -27,7 +27,6 @@ namespace Rubberduck.UI.Shell.Document
     {
         public Uri DocumentUri { get; set; }
         public string Language { get; set; }
-        public string Title { get; set; }
         public bool IsReadOnly { get; set; }
 
         public SupportedDocumentType DocumentType { get; }

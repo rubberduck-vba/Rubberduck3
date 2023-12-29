@@ -16,10 +16,9 @@ namespace Rubberduck.UI.LanguageServerTrace
             OpenLogFileCommand openLogFileCommand) 
             : base(service, showSettingsCommand, closeToolWindowCommand, openLogFileCommand)
         {
+            Title = "Language Server Trace";
+            //SettingKey = nameof(LanguageServerTraceToolSettings);
         }
-
-        public override string Title { get; } = "Language Server Trace";
-        public override string SettingKey { get; } //= nameof(LanguageServerTraceToolSettings);
     }
 
     public class ServerTraceViewModel : ToolWindowViewModelBase, IServerTraceViewModel
@@ -30,13 +29,10 @@ namespace Rubberduck.UI.LanguageServerTrace
             OpenLogFileCommand openLogFileCommand)
             : base(DockingLocation.DockBottom, showSettingsCommand, closeToolWindowCommand)
         {
-            CopyContentCommand = new DelegateCommand(service, param => Clipboard.SetText(_consoleContent), param => ConsoleContent.Length > 0);
-            ClearContentCommand = new DelegateCommand(service, param => ConsoleContent = string.Empty, param => ConsoleContent.Length > 0);
+            CopyContentCommand = new DelegateCommand(service, param => Clipboard.SetText(_consoleContent), param => TextContent.Length > 0);
+            ClearContentCommand = new DelegateCommand(service, param => TextContent = string.Empty, param => TextContent.Length > 0);
             OpenLogFileCommand = openLogFileCommand;
         }
-
-        public override string Title { get; } = "Server Trace";
-        public override string SettingKey { get; } //= nameof(ServerTraceToolSettings);
 
         public ICommand CopyContentCommand { get; }
         public ICommand ClearContentCommand { get; }
@@ -57,17 +53,5 @@ namespace Rubberduck.UI.LanguageServerTrace
         }
 
         private string _consoleContent = string.Empty;
-        public string ConsoleContent
-        {
-            get => _consoleContent;
-            set
-            {
-                if (_consoleContent != value)
-                {
-                    _consoleContent = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
     }
 }

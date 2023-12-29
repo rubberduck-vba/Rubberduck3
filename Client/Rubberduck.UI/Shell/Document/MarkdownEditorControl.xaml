@@ -63,7 +63,7 @@
                         </DataTemplate>
                     </Expander.ContentTemplate>
 
-                    <mdxaml:MarkdownScrollViewer Markdown="{Binding Content, Mode=OneWay}"
+                    <mdxaml:MarkdownScrollViewer Markdown="{Binding TextContent, Mode=OneWay}"
                                                  IsSelectionEnabled="True"
                                                  IsEnabled="True"
                                                  BorderBrush="{DynamicResource ThemeWhiteMediumColorBrush}" BorderThickness="1"
@@ -83,7 +83,7 @@
                 </Expander>
 
                 <shell:BindableTextEditor DockPanel.Dock="Top" 
-                                          Text="{Binding Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          Text="{Binding TextContent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                           Background="{DynamicResource ThemeBackgroundDarkColorBrush}"
                                           Foreground="{DynamicResource ThemeTextBackgroundColorBrush}"
                                           Visibility="{Binding IsReadOnly, Converter={StaticResource BoolToHiddenVisibility}}"

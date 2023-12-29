@@ -2,13 +2,14 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
                     xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz" 
                     xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
-                    xmlns:document="clr-namespace:Rubberduck.UI.Shell.Document">
+                    xmlns:document="clr-namespace:Rubberduck.UI.Shell.Document"
+                    xmlns:local="clr-namespace:Rubberduck.UI.Shell">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/Generic.xaml"/>
     </ResourceDictionary.MergedDictionaries>
-    
+
     <Style x:Key="ToolPanelExpanderStyle" TargetType="Expander">
         <Setter Property="BorderThickness" Value="0" />
         <Style.Triggers>
@@ -25,12 +26,12 @@
     </Style>
 
     <DataTemplate x:Key="ToolTabHeaderItemTemplate" DataType="windows:ITabViewModel">
-        <!-- FIXME not good enough, DataContext is the UserControl itself -->
-        <Label Style="{DynamicResource FormLabelStyleSmall}"
-                       Margin="0" BorderThickness="1"
-                       Background="{DynamicResource ThemeBackgroundColorBrush}">
-            <TextBlock Text="{Binding DataContext.Title}" />
-        </Label>
+        <StackPanel Orientation="Horizontal">
+            <Label Style="{DynamicResource TabTitleLabelStyle}" Margin="0">
+                <TextBlock Text="{Binding Title}" />
+            </Label>
+            <Button Style="{DynamicResource CloseItemCommandButtonStyle}" />
+        </StackPanel>
     </DataTemplate>
 
     <Style x:Key="TabHeaderItemStyle" TargetType="dragablz:DragablzItem" BasedOn="{StaticResource TrapezoidDragableTabItemStyle}" >
@@ -38,25 +39,27 @@
     </Style>
 
     <DataTemplate x:Key="TabHeaderItemTemplate" DataType="windows:ITabViewModel">
-        <Label Style="{DynamicResource FormLabelStyleSmall}"
-                       Margin="2" BorderThickness="0"
-                       Background="{DynamicResource ThemeBackgroundColorBrush}">
-            <TextBlock Text="" />
-        </Label>
+        <Grid>
+            <Label Style="{DynamicResource FormLabelStyleSmall}"
+                   Margin="2" 
+                   BorderThickness="0"
+                   Background="{DynamicResource ThemeBackgroundColorBrush}">
+                <TextBlock Text="" />
+            </Label>
+        </Grid>
     </DataTemplate>
 
     <DataTemplate x:Key="ToolTabItemTemplate" DataType="windows:ITabViewModel">
-        <ContentControl Content="{Binding Content}" DataContext="{Binding}" />
+        <ContentControl Content="{Binding ContentControl}" />
     </DataTemplate>
 
     <Style x:Key="ToolTabControlStyle" TargetType="dragablz:TabablzControl">
         <Style.Setters>
             <!-- fixes showing the tabs at the bottom -->
             <Setter Property="Template" Value="{DynamicResource ToolTabTemplate}" />
-
-            <Setter Property="InterTabController" Value="{StaticResource InterToolTabController}" />
+            <Setter Property="TabStripPlacement" Value="Bottom" />
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
-            <Setter Property="HeaderMemberPath" Value="DataContext.Header" />
+            <Setter Property="HeaderItemTemplate" Value="{StaticResource ToolTabHeaderItemTemplate}" />
             <Setter Property="EmptyHeaderSizingHint" Value="Collapse" />
         </Style.Setters>
     </Style>
@@ -83,14 +86,13 @@
     </DataTemplate>
 
     <document:DocumentTabTemplateSelector x:Key="DocumentTabTemplateSelector"
-                                                  TextDocumentTemplate="{StaticResource TextDocumentTabItemTemplate}"
-                                                  MarkdownDocumentTemplate="{StaticResource MarkdownDocumentTabItemTemplate}"
-                                                  ProjectFileTemplate="{StaticResource JsonDocumentTabItemTemplate}"
-                                                  SourceFileTemplate="{StaticResource SourceFileDocumentTabItemTemplate}"/>
+                                          TextDocumentTemplate="{StaticResource TextDocumentTabItemTemplate}"
+                                          MarkdownDocumentTemplate="{StaticResource MarkdownDocumentTabItemTemplate}"
+                                          ProjectFileTemplate="{StaticResource JsonDocumentTabItemTemplate}"
+                                          SourceFileTemplate="{StaticResource SourceFileDocumentTabItemTemplate}"/>
 
     <DataTemplate x:Key="DocumentTabItemTemplate" DataType="windows:ITabViewModel">
-        <ContentControl ContentTemplateSelector="{StaticResource DocumentTabTemplateSelector}" 
-                                Content="{Binding Content}" />
+        <ContentControl ContentTemplateSelector="{StaticResource DocumentTabTemplateSelector}" Content="{Binding ContentControl}" />
     </DataTemplate>
 
     <Style x:Key="TrapezoidTabItemStyle" TargetType="{x:Type dragablz:DragablzItem}">
@@ -330,14 +332,13 @@
 
     <Style x:Key="DocumentTabControlStyle" TargetType="dragablz:TabablzControl">
         <Style.Setters>
-            <Setter Property="InterTabController" Value="{StaticResource InterTabController}" />
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}" />
-            <Setter Property="ItemTemplateSelector" Value="{StaticResource DocumentTabTemplateSelector}" />
+            <Setter Property="ItemTemplateSelector" Value="{DynamicResource DocumentTabTemplateSelector}" />
             <Setter Property="ItemContainerStyle" Value="{DynamicResource TrapezoidTabItemStyle}" />
             <Setter Property="ShowDefaultAddButton" Value="False" />
             <Setter Property="ShowDefaultCloseButton" Value="True" />
-            <Setter Property="HeaderMemberPath" Value="DataContext.Title" />
+            <Setter Property="HeaderMemberPath" Value="Title" />
         </Style.Setters>
     </Style>
 
@@ -397,25 +398,38 @@
                 <ColumnDefinition x:Name="ColumnDefinition1" Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <!-- template reverses grid rows to show tabs at the bottom -->
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Border Grid.Row="0" CornerRadius="{TemplateBinding Border.CornerRadius}" x:Name="contentPanel" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}"
-                    Grid.Column="1" KeyboardNavigation.DirectionalNavigation="Contained" KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Local" Margin="0">
+
+            <Border x:Name="contentPanel" Grid.Row="0" Grid.Column="1"
+                    CornerRadius="{TemplateBinding Border.CornerRadius}" 
+                    BorderBrush="{TemplateBinding BorderBrush}" 
+                    BorderThickness="{TemplateBinding BorderThickness}" 
+                    Background="{TemplateBinding Background}"
+                    KeyboardNavigation.DirectionalNavigation="Contained" 
+                    KeyboardNavigation.TabIndex="2" 
+                    KeyboardNavigation.TabNavigation="Local" 
+                    Margin="0">
                 <Grid x:Name="PART_ItemsHolder" />
             </Border>
-            <Grid Grid.Row="1" Grid.Column="1" x:Name="HeaderContainerGrid" Visibility="{TemplateBinding IsHeaderPanelVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+            <Grid x:Name="HeaderContainerGrid" Grid.Row="1" Grid.Column="1" 
+                  Visibility="{TemplateBinding IsHeaderPanelVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
+
                 <ContentControl Grid.Row="0" x:Name="PrefixContentControl" 
                                 Content="{TemplateBinding HeaderPrefixContent}"
                                 ContentStringFormat="{TemplateBinding HeaderPrefixContentStringFormat}"
                                 ContentTemplate="{TemplateBinding HeaderPrefixContentStringFormat}"
                                 ContentTemplateSelector="{TemplateBinding HeaderPrefixContentTemplateSelector}"/>
+                
                 <dragablz:DragablzItemsControl x:Name="PART_HeaderItemsControl"                                              
                                             Grid.Row="1"
                                             ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Items}"                                                                                                            
@@ -424,6 +438,7 @@
                                             KeyboardNavigation.TabIndex="1" Panel.ZIndex="1"
                                             ItemTemplate="{TemplateBinding HeaderItemTemplate}"
                                             Style="{StaticResource TabablzDragablzItemsControlStyle}">
+
                     <dragablz:DragablzItemsControl.MaxHeight>
                         <MultiBinding>
                             <MultiBinding.Converter>
@@ -436,18 +451,20 @@
                             <Binding ElementName="SuffixContentControl" Path="DesiredSize.Height" />
                         </MultiBinding>
                     </dragablz:DragablzItemsControl.MaxHeight>
+
                 </dragablz:DragablzItemsControl>
-                <Button Style="{StaticResource AddItemCommandButtonStyle}"
-                                            x:Name="DefaultAddButton"
-                                            Grid.Row="2"
-                                            Command="{x:Static dragablz:TabablzControl.AddItemCommand}"
-                                            Visibility="{TemplateBinding ShowDefaultAddButton, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <ContentControl Grid.Row="3" x:Name="SuffixContentControl" 
-                                                    Content="{TemplateBinding HeaderSuffixContent}"
-                                                    ContentStringFormat="{TemplateBinding HeaderSuffixContentStringFormat}"
-                                                    ContentTemplate="{TemplateBinding HeaderSuffixContentStringFormat}"
-                                                    ContentTemplateSelector="{TemplateBinding HeaderSuffixContentTemplateSelector}"
-                                                    VerticalAlignment="Top" />
+
+                <Button x:Name="DefaultAddButton" Grid.Row="2"
+                        Style="{StaticResource AddItemCommandButtonStyle}"
+                        Command="{x:Static dragablz:TabablzControl.AddItemCommand}"
+                        Visibility="{TemplateBinding ShowDefaultAddButton, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <ContentControl x:Name="SuffixContentControl" Grid.Row="3" 
+                                Content="{TemplateBinding HeaderSuffixContent}"
+                                ContentStringFormat="{TemplateBinding HeaderSuffixContentStringFormat}"
+                                ContentTemplate="{TemplateBinding HeaderSuffixContentStringFormat}"
+                                ContentTemplateSelector="{TemplateBinding HeaderSuffixContentTemplateSelector}"
+                                VerticalAlignment="Top" />
             </Grid>
         </Grid>
     </ControlTemplate>

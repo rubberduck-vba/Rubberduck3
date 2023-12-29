@@ -68,6 +68,21 @@ namespace Rubberduck.Editor.Shell.StatusBar
                 }
             }
         }
+        
+        private bool _canCancelWorkDoneProgress;
+        public bool CanCancelWorkDoneProgress
+        {
+            get => _canCancelWorkDoneProgress;
+            set
+            {
+                if (_canCancelWorkDoneProgress != value)
+                {
+                    _canCancelWorkDoneProgress = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public ICommand CancelWorkDoneProgressCommand { get; set; }
 
         private bool _isConnected;
         public bool IsConnected

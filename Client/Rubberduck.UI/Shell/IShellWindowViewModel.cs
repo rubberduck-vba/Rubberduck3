@@ -12,8 +12,10 @@ namespace Rubberduck.UI.Shell
     {
         string Title { get; }
         IShellStatusBarViewModel StatusBar { get; }
-        ObservableCollection<IDocumentTabViewModel> Documents { get; }
-        ObservableCollection<IToolWindowViewModel> ToolWindows { get; }
+        ObservableCollection<IDocumentTabViewModel> DocumentWindows { get; }
+        ObservableCollection<IToolWindowViewModel> LeftPanelToolWindows { get; }
+        ObservableCollection<IToolWindowViewModel> RightPanelToolWindows { get; }
+        ObservableCollection<IToolWindowViewModel> BottomPanelToolWindows { get; }
 
         int FixedLeftToolTabs { get; }
         int FixedRightToolTabs { get; }

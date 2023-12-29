@@ -9,7 +9,7 @@
         xmlns:local="clr-namespace:Rubberduck.UI.Shell"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=vm:IDragablzWindowViewModel}"
-        Style="{DynamicResource ThemedWindowStyle}"
+        Style="{DynamicResource ThemedToolWindowStyle}"
         WindowStyle="None"
         Title="Rubberduck Editor"
         ShowInTaskbar="True"
@@ -20,17 +20,28 @@
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Shell/ShellResources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <dragablz:InterTabController x:Key="InterTabController" x:Shared="False" InterTabClient="{Binding InterToolTabClient}" Partition="documents" />
+
+            <dragablz:InterTabController x:Key="InterToolTabController" x:Shared="False" 
+                                         MoveWindowWithSolitaryTabs="True"
+                                         InterTabClient="{Binding InterToolTabClient}" 
+                                         Partition="toolwindows" />
+
             <DataTemplate x:Key="FloatingPanelBranchTemplate">
-                <dragablz:TabablzControl Style="{DynamicResource ToolTabControlStyle}" 
-                                         FixedHeaderCount="{Binding FixedLeftToolTabs}" />
+                <dragablz:TabablzControl Style="{DynamicResource ToolTabControlStyle}"
+                                         InterTabController="{StaticResource InterToolTabController}"
+                                         ItemsSource="{Binding Tabs}"
+                                         TabStripPlacement="Bottom" />
             </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
         <dockablz:Layout Grid.Row="1" Partition="toolwindows" 
                          BranchTemplate="{DynamicResource FloatingPanelBranchTemplate}">
-            <dragablz:TabablzControl x:Name="FloatingPanelToolTabs" InterTabController="{StaticResource InterTabController}" />
+            <dragablz:TabablzControl x:Name="ToolTabs" 
+                                         Style="{DynamicResource ToolTabControlStyle}"
+                                         InterTabController="{StaticResource InterToolTabController}"
+                                         ItemsSource="{Binding Tabs}"
+                                         TabStripPlacement="Bottom" />
         </dockablz:Layout>
 
     </Grid>

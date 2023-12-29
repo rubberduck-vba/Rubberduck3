@@ -9,6 +9,6 @@ namespace Rubberduck.UI.LanguageServerTrace
         ICommand ClearContentCommand { get; }
         ICommand OpenLogFileCommand { get; }
         bool IsPaused { get; set; }
-        string ConsoleContent { get; set; }
+        string TextContent { get; set; }
     }
 }

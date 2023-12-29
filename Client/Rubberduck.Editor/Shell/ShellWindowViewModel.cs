@@ -36,9 +36,6 @@ namespace Rubberduck.Editor.Shell
             StatusBar = statusBar;
             Chrome = chrome;
 
-            Documents = [];
-            ToolWindows = [];
-
             FileCommandHandlers = fileCommandHandlers;
             ViewCommandHandlers = viewCommandHandlers;
             ToolsCommandHandlers = toolsCommandHandlers;
@@ -55,13 +52,15 @@ namespace Rubberduck.Editor.Shell
         public override IEnumerable<CommandBinding> CommandBindings { get; }
         public string Title => "Rubberduck Editor";
 
-        public ObservableCollection<IDocumentTabViewModel> Documents { get; init; }
-        public ObservableCollection<IToolWindowViewModel> ToolWindows { get; init; }
+        public ObservableCollection<IDocumentTabViewModel> DocumentWindows { get; init; } = [];
+        public ObservableCollection<IToolWindowViewModel> LeftPanelToolWindows { get; init; } = [];
+        public ObservableCollection<IToolWindowViewModel> RightPanelToolWindows { get; init; } = [];
+        public ObservableCollection<IToolWindowViewModel> BottomPanelToolWindows { get; init; } = [];
 
-        public int FixedDocumentTabs => Documents.Count(e => e.IsPinned);
-        public int FixedLeftToolTabs => ToolWindows.Count(e => e.IsPinned && e.DockingLocation == DockingLocation.DockLeft);
-        public int FixedRightToolTabs => ToolWindows.Count(e => e.IsPinned && e.DockingLocation == DockingLocation.DockRight);
-        public int FixedBottomToolTabs => ToolWindows.Count(e => e.IsPinned && e.DockingLocation == DockingLocation.DockBottom);
+        public int FixedDocumentTabs => DocumentWindows.Count(e => e.IsPinned);
+        public int FixedLeftToolTabs => LeftPanelToolWindows.Count(e => e.IsPinned);
+        public int FixedRightToolTabs => RightPanelToolWindows.Count(e => e.IsPinned);
+        public int FixedBottomToolTabs => BottomPanelToolWindows.Count(e => e.IsPinned);
 
         public IShellStatusBarViewModel StatusBar { get; init; }
 
@@ -90,6 +89,9 @@ namespace Rubberduck.Editor.Shell
         }
     }
 
+    /// <summary>
+    /// The view model for the toolpanel expander sections.
+    /// </summary>
     public class ToolPanelViewModel : ViewModelBase, IToolPanelViewModel
     {
         public ToolPanelViewModel(DockingLocation location)

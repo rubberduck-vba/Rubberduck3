@@ -1,4 +1,5 @@
-﻿using Rubberduck.UI.Shell.Document;
+﻿using Rubberduck.UI.Command.SharedHandlers;
+using Rubberduck.UI.Shell.Document;
 using System;
 
 namespace Rubberduck.Editor.Shell.Document.Tabs
@@ -8,8 +9,10 @@ namespace Rubberduck.Editor.Shell.Document.Tabs
     /// </summary>
     public abstract class CodeDocumentTabViewModel : DocumentTabViewModel
     {
-        public CodeDocumentTabViewModel(Uri documentUri, string language, string title, string content, bool isReadOnly)
-            : base(documentUri, language, title, content, isReadOnly)
+        public CodeDocumentTabViewModel(Uri documentUri, string language, string title, string content, bool isReadOnly,
+            ShowRubberduckSettingsCommand showSettingsCommand,
+            CloseToolWindowCommand closeToolWindowCommand)
+            : base(documentUri, language, title, content, isReadOnly, showSettingsCommand, closeToolWindowCommand)
         {
         }
 

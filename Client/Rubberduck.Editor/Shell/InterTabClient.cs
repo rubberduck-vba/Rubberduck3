@@ -23,6 +23,7 @@ namespace Rubberduck.Editor.Shell
         {
             var vm = new ToolWindowShellWindowViewModel(interTabClient, _chrome);
             var view = new ShellChildToolWindow(vm);
+            
             return new NewTabHost<Window>(view, view.Tabs);
         }
 
@@ -30,9 +31,13 @@ namespace Rubberduck.Editor.Shell
         {
             if (window is ShellWindow)
             {
-                return TabEmptiedResponse.DoNothing; // do not close the shell window from an intertab client!
+                if (tabControl.DataContext is IToolWindowViewModel tab)
+                {
+                    tab.DockingLocation = DockingLocation.None;
+                }
+
             }
-            return TabEmptiedResponse.CloseWindowOrLayoutBranch;
+            return TabEmptiedResponse.DoNothing; // do not close the shell window from an intertab client!
         }
     }
 
@@ -56,11 +61,7 @@ namespace Rubberduck.Editor.Shell
 
         public virtual TabEmptiedResponse TabEmptiedHandler(TabablzControl tabControl, Window window)
         {
-            if (window is ShellWindow)
-            {
-                return TabEmptiedResponse.DoNothing; // do not close the shell window from an intertab client!
-            }
-            return TabEmptiedResponse.CloseWindowOrLayoutBranch;
+            return TabEmptiedResponse.DoNothing; // do not close the shell window from an intertab client!
         }
     }
 }
