@@ -26,12 +26,14 @@
     </Style>
 
     <DataTemplate x:Key="ToolTabHeaderItemTemplate" DataType="windows:ITabViewModel">
-        <StackPanel Orientation="Horizontal">
-            <Label Style="{DynamicResource TabTitleLabelStyle}" Margin="0">
-                <TextBlock Text="{Binding Title}" />
-            </Label>
-            <Button Style="{DynamicResource CloseItemCommandButtonStyle}" />
-        </StackPanel>
+        <Border BorderThickness="1" BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}" CornerRadius="0,0,8,8" Margin="-4,0,-6,2">
+            <StackPanel Orientation="Horizontal">
+                <Label Style="{DynamicResource TabTitleLabelStyle}" Margin="0">
+                    <TextBlock Text="{Binding Title}" />
+                </Label>
+                <local:FlatButton Icon="{DynamicResource WindowCloseIcon}" Command="{Binding CloseToolWindowCommand}" />
+            </StackPanel>
+        </Border>
     </DataTemplate>
 
     <Style x:Key="TabHeaderItemStyle" TargetType="dragablz:DragablzItem" BasedOn="{StaticResource TrapezoidDragableTabItemStyle}" >
@@ -431,7 +433,7 @@
                                 ContentTemplateSelector="{TemplateBinding HeaderPrefixContentTemplateSelector}"/>
                 
                 <dragablz:DragablzItemsControl x:Name="PART_HeaderItemsControl"                                              
-                                            Grid.Row="1"
+                                            Grid.Row="1" 
                                             ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Items}"                                                                                                            
                                             ItemContainerStyle="{TemplateBinding ItemContainerStyle}"
                                             ItemsOrganiser="{TemplateBinding HeaderItemsOrganiser}"
