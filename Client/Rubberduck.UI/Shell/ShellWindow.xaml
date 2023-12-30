@@ -78,8 +78,8 @@
 
         <Expander x:Name="LeftPaneExpander" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" ExpandDirection="Right"
                   Style="{DynamicResource ArrowlessExpanderTemplate}"
-                  BorderThickness="0" 
-                  IsExpanded="{Binding LeftPanelToolWindows, Converter={StaticResource HasItemsBoolConverter}, Mode=OneWay}">
+                  BorderThickness="0" AllowDrop="True"
+                  IsExpanded="{Binding LeftToolPanel.IsExpanded}">
             <Expander.Header>
                 <ListView ItemsSource="{Binding LeftPanelToolWindows}" 
                           Background="{DynamicResource ThemeBackgroundDarkColorBrush}"
@@ -132,8 +132,8 @@
                 <dragablz:TabablzControl x:Name="LeftPaneToolTabs" 
                                          Style="{DynamicResource ToolTabControlStyle}"
                                          ItemContainerStyle="{DynamicResource ToolTabItemStyle}"
-                                          InterTabController="{StaticResource InterToolTabController}"
-                                        ItemsSource="{Binding LeftPanelToolWindows}">
+                                         InterTabController="{StaticResource InterToolTabController}"
+                                         ItemsSource="{Binding LeftPanelToolWindows}">
                     <dragablz:TabablzControl.ContentTemplate>
                         <DataTemplate>
                             <ContentControl Content="{Binding ContentControl}" />
@@ -145,7 +145,7 @@
         </Expander>
 
         <Expander x:Name="RightPaneExpander" Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" ExpandDirection="Left"
-                  Style="{DynamicResource ArrowlessExpanderTemplate}"
+                  Style="{DynamicResource ArrowlessExpanderTemplate}" AllowDrop="True" Drop="OnToolPanelExpanderDrop" PreviewDrop="OnToolPanelExpanderPreviewDrop"
                   Visibility="{Binding RightPanelToolWindows, Converter={StaticResource HasItemsVisibilityConverter}, Mode=OneWay}"
                   IsExpanded="{Binding RightPanelToolWindows,Converter={StaticResource HasItemsBoolConverter}, Mode=OneWay}">
             <Expander.Header>
@@ -205,7 +205,7 @@
         </Expander>
 
         <Expander x:Name="BottomPaneExpander" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" ExpandDirection="Up"
-                  Style="{DynamicResource ArrowlessExpanderTemplate}"
+                  Style="{DynamicResource ArrowlessExpanderTemplate}" AllowDrop="True"
                   Visibility="{Binding BottomPanelToolWindows, Converter={StaticResource HasItemsVisibilityConverter}, Mode=OneWay}"
                   IsExpanded="{Binding BottomPanelToolWindows, Converter={StaticResource HasItemsBoolConverter}, Mode=OneWay}">
             <Expander.Header>
@@ -270,17 +270,19 @@
             <dockablz:Layout.BranchTemplate>
                 <DataTemplate DataType="local:IShellWindowViewModel">
                     <dragablz:TabablzControl Style="{DynamicResource DocumentTabControlStyle}"
-                                     InterTabController="{StaticResource InterTabController}"
-                                     ItemsSource="{Binding DocumentWindows}"
-                                     ItemTemplate="{DynamicResource DocumentTabItemTemplate}"
-                                     ItemContainerStyle="{DynamicResource TrapezoidTabItemStyle}"
-                                     HeaderMemberPath="Title"
-                                     ShowDefaultCloseButton="True"/>
+                                             InterTabController="{StaticResource InterTabController}"
+                                             ItemsSource="{Binding DocumentWindows}"
+                                             SelectedItem="{Binding ActiveDocumentTab}"
+                                             ItemTemplate="{DynamicResource DocumentTabItemTemplate}"
+                                             ItemContainerStyle="{DynamicResource TrapezoidTabItemStyle}"
+                                             HeaderMemberPath="Title"
+                                             ShowDefaultCloseButton="True"/>
                 </DataTemplate>
             </dockablz:Layout.BranchTemplate>
-            <dragablz:TabablzControl x:Name="DocumentPaneTabs" 
+            <dragablz:TabablzControl x:Name="DocumentPaneTabs"
                                      InterTabController="{StaticResource InterTabController}"
                                      ItemsSource="{Binding DocumentWindows}"
+                                     SelectedItem="{Binding ActiveDocumentTab}"
                                      ItemContainerStyle="{DynamicResource TrapezoidTabItemStyle}"
                                      SelectedIndex="0"
                                      HeaderMemberPath="Title"
@@ -293,7 +295,7 @@
             </dragablz:TabablzControl>
         </dockablz:Layout>
         
-        <statusbar:StatusBarControl x:Name="StatusBar" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" DataContext="{Binding StatusBar}" />
+        <statusbar:StatusBarControl x:Name="StatusBar" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" />
 
         <Thumb Grid.Row="3" Grid.Column="3" HorizontalAlignment="Right" IsEnabled="True" IsHitTestVisible="True" WindowChrome.IsHitTestVisibleInChrome="True"
                DragDelta="OnResizeGripDragDelta" Cursor="SizeNWSE">

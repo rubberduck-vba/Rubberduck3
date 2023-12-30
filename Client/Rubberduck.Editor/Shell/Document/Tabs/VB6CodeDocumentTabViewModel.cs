@@ -1,5 +1,6 @@
 ﻿using Rubberduck.LanguageServer.Model;
 using Rubberduck.UI.Command.SharedHandlers;
+using Rubberduck.UI.Shell.StatusBar;
 using System;
 
 namespace Rubberduck.Editor.Shell.Document.Tabs
@@ -11,8 +12,9 @@ namespace Rubberduck.Editor.Shell.Document.Tabs
     {
         public VB6CodeDocumentTabViewModel(Uri documentUri, string title, string content, bool isReadOnly,
             ShowRubberduckSettingsCommand showSettingsCommand,
-            CloseToolWindowCommand closeToolWindowCommand)
-            : base(documentUri, VisualBasicLanguage.LanguageId, title, content, isReadOnly, showSettingsCommand, closeToolWindowCommand)
+            CloseToolWindowCommand closeToolWindowCommand,
+            IDocumentStatusViewModel activeDocumentStatus)
+            : base(documentUri, VisualBasicLanguage.LanguageId, title, content, isReadOnly, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus)
         {
         }
     }

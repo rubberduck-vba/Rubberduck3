@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.UI.Shell.StatusBar"
              xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
-             d:DataContext="{d:DesignInstance Type=local:ILanguageServerStatusViewModel}"
+             d:DataContext="{d:DesignInstance Type=shell:IShellWindowViewModel}"
              mc:Ignorable="d"
              d:DesignWidth="800" d:DesignHeight="18"  VerticalContentAlignment="Center">
     <UserControl.Resources>
@@ -17,50 +17,83 @@
             
             <Style x:Key="ServerStateImageStyle" TargetType="Image" BasedOn="{StaticResource IconStyle}">
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding ServerConnectionState}" Value="Connected">
+                    <DataTrigger Binding="{Binding StatusBar.ServerConnectionState}" Value="Connected">
                         <Setter Property="Source" Value="{StaticResource ConnectedIcon16}" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding ServerConnectionState}" Value="Disconnected">
+                    <DataTrigger Binding="{Binding StatusBar.ServerConnectionState}" Value="Disconnected">
                         <Setter Property="Source" Value="{StaticResource ConnectErrorIcon16}" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
 
+            <DataTemplate x:Key="SourceFileStatusTemplate" DataType="local:ISourceFileStatusViewModel">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{DynamicResource ClearCodeFileIcon}" Height="12" Margin="2" />
+                    <Label FontSize="10" Foreground="{DynamicResource ThemeTextColorBrush}" Content="{Binding DocumentName}" Padding="0,1,0,0"  />
+                </StackPanel>
+            </DataTemplate>
+            <DataTemplate x:Key="TextFileStatusTemplate" DataType="local:IDocumentStatusViewModel">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{DynamicResource ClearTextFileIcon}" Height="12" Margin="2">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding StatusBar.ActiveDocumentStatus.IsReadOnly}" Value="True">
+                                        <Setter Property="Source" Value="{DynamicResource ShieldFileIcon}" />
+                                        <Setter Property="ToolTip" Value="Document is read-only" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                    <Label FontSize="10" Foreground="{DynamicResource ThemeTextColorBrush}" Content="{Binding DocumentName, Mode=OneWay}" Padding="0,1,0,0"  />
+                </StackPanel>
+            </DataTemplate>
+            <DataTemplate x:Key="DefaultFileStatusTemplate" DataType="local:IDocumentStatusViewModel">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{StaticResource ClearFileIcon}" Height="12" Margin="2" />
+                </StackPanel>
+            </DataTemplate>
+
+            <local:DocumentStatusTemplateSelector x:Key="DocumentStatusTemplateSelector" 
+                                                  DefaultDocumentTemplate="{StaticResource DefaultFileStatusTemplate}"
+                                                  TextFileTemplate="{StaticResource TextFileStatusTemplate}"
+                                                  SourceFileTemplate="{StaticResource SourceFileStatusTemplate}" />
+
         </ResourceDictionary>
         
     </UserControl.Resources>
     <StatusBar Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
-                Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}"
-                MinHeight="18"
-                BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeTextInactiveColorBrush}">
+               Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}"
+               MinHeight="18"
+               BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeTextInactiveColorBrush}">
         
         <!-- LanguageServer status -->
         
         <StatusBarItem Padding="0">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <shell:FlatButton ToolTip="Show language server trace toolwindow" VerticalAlignment="Center"
-                                    Icon="{DynamicResource CircleCheckIcon}" Height="12" Width="12"
-                                    Background="{DynamicResource ThemeBackgroundMediumColorBrush}"
-                                    Command="{Binding ShowLanguageServerTraceCommand}" />
-                <Label Content="{Binding StatusText}" 
-                        Foreground="{DynamicResource ThemeTextColorBrush}" />
+                                  Icon="{DynamicResource CircleCheckIcon}" Height="12" Width="12"
+                                  Background="{DynamicResource ThemeBackgroundMediumColorBrush}"
+                                  Command="{Binding StatusBar.ShowLanguageServerTraceCommand}" />
+                <Label Content="{Binding StatusBar.StatusText}" 
+                       Foreground="{DynamicResource ThemeTextColorBrush}" />
             </StackPanel>
         </StatusBarItem>
 
-        <Separator Margin="5" Foreground="{DynamicResource ThemeTextInactiveColorBrush}"
-                   Visibility="{Binding ProgressMaxValue, Converter={StaticResource HasItemsVisibilityConverter}}"/>
+        <Separator Margin="8" Foreground="{DynamicResource ThemeTextInactiveColorBrush}" 
+                   Visibility="{Binding StatusBar.ProgressMaxValue, Converter={StaticResource HasItemsVisibilityConverter}}"/>
 
         <!-- WorkDoneProgress reporting -->
 
-        <StatusBarItem Padding="0" 
-                       Visibility="{Binding ProgressMaxValue, Converter={StaticResource HasItemsVisibilityConverter}}" >
+        <StatusBarItem Padding="0" Visibility="{Binding StatusBar.ProgressMaxValue, Converter={StaticResource HasItemsVisibilityConverter}}" >
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Orientation="Vertical">
-                    <Label Content="{Binding ProgressMessage}"
+                    <Label Content="{Binding StatusBar.ProgressMessage}"
                            Margin="5,0" Padding="0" FontSize="8" Height="12"
                            Foreground="{DynamicResource ThemeTextInactiveColorBrush}" />
                     <ProgressBar x:Name="WorkDoneProgressIndicator"
@@ -68,16 +101,96 @@
                                  HorizontalAlignment="Left"
                                  Orientation="Horizontal"
                                  Margin="5,0,0,0"
-                                 Minimum="0" Maximum="{Binding ProgressMaxValue}"
-                                 Value="{Binding ProgressValue}"
+                                 Minimum="0" Maximum="{Binding StatusBar.ProgressMaxValue}"
+                                 Value="{Binding StatusBar.ProgressValue}"
                                  Height="2" Width="100" />
                 </StackPanel>
-                <shell:FlatButton Grid.Column="1" Command="{Binding CancelWorkDoneProgressCommand}"
-                                  Visibility="{Binding CanCancelWorkDoneProgress, Converter={StaticResource BooleanToVisibilityConverter}}"
+                <shell:FlatButton Grid.Column="1" Command="{Binding StatusBar.CancelWorkDoneProgressCommand}"
+                                  Visibility="{Binding StatusBar.CanCancelWorkDoneProgress, Converter={StaticResource BooleanToVisibilityConverter}}"
                                   ToolTip="Cancel this operation"
                                   Icon="{DynamicResource CancelIcon}" Margin="6,2" Height="10" Width="10" />
 
             </Grid>
+        </StatusBarItem>
+
+
+        <Separator Margin="8" Foreground="{DynamicResource ThemeTextInactiveColorBrush}" />
+
+        <!-- active document icon/name -->
+        <StatusBarItem Margin="5,0" Padding="0">
+            <StackPanel Orientation="Horizontal">
+                <Image Height="14" Margin="4,2">
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding StatusBar.ActiveDocumentStatus.IsReadOnly, Mode=OneWay}" Value="False"/>
+                                        <Condition Binding="{Binding StatusBar.ActiveDocumentStatus.DocumentType, Mode=OneWay}" Value="TextDocument"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="{DynamicResource ClearTextFileIcon}" />
+                                        <Setter Property="ToolTip" Value="Text document" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding StatusBar.ActiveDocumentStatus.IsReadOnly, Mode=OneWay}" Value="False"/>
+                                        <Condition Binding="{Binding StatusBar.ActiveDocumentStatus.DocumentType, Mode=OneWay}" Value="MarkdownFile"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="{DynamicResource ClearTextFileIcon}" />
+                                        <Setter Property="ToolTip" Value="Markdown document" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding StatusBar.ActiveDocumentStatus.IsReadOnly, Mode=OneWay}" Value="False"/>
+                                        <Condition Binding="{Binding StatusBar.ActiveDocumentStatus.DocumentType, Mode=OneWay}" Value="SourceFile"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="{DynamicResource ClearCodeFileIcon}" />
+                                        <Setter Property="ToolTip" Value="Source file" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding StatusBar.ActiveDocumentStatus.IsReadOnly, Mode=OneWay}" Value="False"/>
+                                        <Condition Binding="{Binding StatusBar.ActiveDocumentStatus.DocumentType, Mode=OneWay}" Value="ProjectFile"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="{DynamicResource ClearCodeFileIcon}" />
+                                        <Setter Property="ToolTip" Value="Project file (.rdproj)" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <DataTrigger Binding="{Binding StatusBar.ActiveDocumentStatus.IsReadOnly, Mode=OneWay}" Value="True">
+                                    <Setter Property="Source" Value="{DynamicResource ShieldFileIcon}" />
+                                    <Setter Property="ToolTip" Value="Document is read-only" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <Label FontSize="10" Foreground="{DynamicResource ThemeTextColorBrush}" 
+                       Content="{Binding StatusBar.ActiveDocumentStatus.DocumentName}" 
+                       Padding="0" VerticalContentAlignment="Center" />
+            </StackPanel>
+        </StatusBarItem>
+
+        <!-- selection info -->
+        <StatusBarItem Visibility="{Binding StatusBar.ActiveDocumentStatus.IsReadOnly, Converter={StaticResource BoolToHiddenVisibility}}">
+            <StackPanel Orientation="Horizontal">
+                <Label FontSize="10" Foreground="{DynamicResource ThemeTextColorBrush}">
+                <TextBlock>
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}L{0}C{1}">
+                            <Binding Path="StatusBar.ActiveDocumentStatus.CaretLine" />
+                            <Binding Path="StatusBar.ActiveDocumentStatus.CaretColumn" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                </Label>
+            </StackPanel>
         </StatusBarItem>
 
     </StatusBar>

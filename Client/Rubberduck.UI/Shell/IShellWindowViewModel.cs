@@ -13,6 +13,7 @@ namespace Rubberduck.UI.Shell
         string Title { get; }
         IShellStatusBarViewModel StatusBar { get; }
         ObservableCollection<IDocumentTabViewModel> DocumentWindows { get; }
+        ObservableCollection<IToolWindowViewModel> FloatingToolwindows { get; }
         ObservableCollection<IToolWindowViewModel> LeftPanelToolWindows { get; }
         ObservableCollection<IToolWindowViewModel> RightPanelToolWindows { get; }
         ObservableCollection<IToolWindowViewModel> BottomPanelToolWindows { get; }
@@ -30,6 +31,9 @@ namespace Rubberduck.UI.Shell
 
         IInterTabClient InterToolTabClient { get; }
         IInterTabClient InterTabClient { get; }
+        ItemActionCallback ClosingTabItemHandler { get; }
+
+        IDocumentTabViewModel ActiveDocumentTab { get; set; }
     }
 
     public interface IToolPanelViewModel

@@ -8,11 +8,11 @@
         xmlns:vm="clr-namespace:Rubberduck.UI.Windows" 
         xmlns:statusbar="clr-namespace:Rubberduck.UI.Shell.StatusBar" xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
         d:DataContext="{d:DesignInstance Type=vm:IDragablzWindowViewModel}"
+        ContentRendered="OnContentRendered" 
         mc:Ignorable="d"
         Title="{Binding Title}"
         Style="{DynamicResource ThemedWindowStyle}"
         ShowInTaskbar="True"
-        WindowStyle="None"
         Height="300" Width="480">
     <Window.Resources>
         <ResourceDictionary>

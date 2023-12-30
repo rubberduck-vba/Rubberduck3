@@ -69,6 +69,7 @@
     <converters:HasItemsVisibilityConverter x:Key="HasItemsVisibilityConverter" />
     <converters:WindowStateToVisibilityConverter x:Key="WindowStateToRestoreVisibility" VisibleState="Maximized" HiddenState="Normal" />
     <converters:WindowStateToVisibilityConverter x:Key="WindowStateToMaximizeVisibility" VisibleState="Normal" HiddenState="Maximized" />
+    <converters:SupportedDocumentTypeToIconConverter x:Key="DocumentTypeToIconConverter" />
 
     <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="{DynamicResource ThemeAccent1MediumColor}"/>
     <SolidColorBrush x:Key="TextBox.Focus.Border" Color="{DynamicResource ThemeAccent1DarkColor}"/>
@@ -296,7 +297,7 @@
             <Setter Property="Icon" Value="{StaticResource DuckyIcon}" />
             <Setter Property="Title" Value="Rubberduck" />
             <Setter Property="MinHeight" Value="200" />
-            <Setter Property="MinWidth" Value="400" />
+            <Setter Property="MinWidth" Value="300" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="FontFamily" Value="Segoe UI" />
             <Setter Property="FontSize" Value="12" />
@@ -498,11 +499,17 @@
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
     </Style>
 
+    <Style x:Key="ListViewContainerStyle" TargetType="{x:Type ListViewItem}">
+        <Setter Property="BorderThickness" Value="1.5"/>
+        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWay}" />
+        <Setter Property="Visibility" Value="{Binding Filtered, Mode=OneWay, Converter={StaticResource BoolToHiddenVisibility}}" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
 
     <Style x:Key="TreeViewContainerStyle" TargetType="{x:Type TreeViewItem}">
         <Setter Property="BorderThickness" Value="1.5"/>
-        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWay}" />
+        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <Setter Property="Visibility" Value="{Binding Filtered, Mode=OneWay, Converter={StaticResource BoolToHiddenVisibility}}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <!--<EventSetter Event="MouseDoubleClick" Handler="TreeView_OnMouseDoubleClick" />

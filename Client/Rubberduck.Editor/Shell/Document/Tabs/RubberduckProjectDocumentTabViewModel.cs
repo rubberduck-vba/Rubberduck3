@@ -1,5 +1,6 @@
 ﻿using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shell.Document;
+using Rubberduck.UI.Shell.StatusBar;
 using System;
 
 namespace Rubberduck.Editor.Shell.Document.Tabs
@@ -11,9 +12,10 @@ namespace Rubberduck.Editor.Shell.Document.Tabs
     {
         public RubberduckProjectDocumentTabViewModel(Uri documentUri, string title, string content, bool isReadOnly, 
             ShowRubberduckSettingsCommand showSettingsCommand,
-            CloseToolWindowCommand closeToolWindowCommand)
+            CloseToolWindowCommand closeToolWindowCommand,
+            IDocumentStatusViewModel activeDocumentStatus)
             : base(documentUri, "json", title, content, isReadOnly,
-                  showSettingsCommand, closeToolWindowCommand)
+                  showSettingsCommand, closeToolWindowCommand, activeDocumentStatus)
         {
         }
 

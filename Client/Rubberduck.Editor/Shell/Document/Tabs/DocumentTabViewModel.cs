@@ -1,5 +1,7 @@
-﻿using Rubberduck.UI.Command.SharedHandlers;
+﻿using Rubberduck.Editor.Shell.StatusBar;
+using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shell.Document;
+using Rubberduck.UI.Shell.StatusBar;
 using Rubberduck.UI.Windows;
 using System;
 
@@ -12,7 +14,8 @@ namespace Rubberduck.Editor.Shell.Document.Tabs
     {
         public DocumentTabViewModel(Uri documentUri, string language, string title, string content, bool isReadOnly,
             ShowRubberduckSettingsCommand showSettingsCommand,
-            CloseToolWindowCommand closeToolWindowCommand)
+            CloseToolWindowCommand closeToolWindowCommand,
+            IDocumentStatusViewModel activeDocumentStatus)
             : base(showSettingsCommand, closeToolWindowCommand)
         {
             _uri = documentUri;
@@ -22,9 +25,13 @@ namespace Rubberduck.Editor.Shell.Document.Tabs
 
             Title = title;
             TextContent = content;
+
+            Status = activeDocumentStatus;
         }
 
         public abstract SupportedDocumentType DocumentType { get; }
+
+        public IDocumentStatusViewModel Status { get; }
 
         private Uri _uri;
         public Uri DocumentUri

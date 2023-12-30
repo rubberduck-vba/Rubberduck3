@@ -1,5 +1,6 @@
 ﻿using Dragablz;
 using Rubberduck.Editor.Commands;
+using Rubberduck.Editor.Shell.StatusBar;
 using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI;
 using Rubberduck.UI.Chrome;
@@ -11,6 +12,7 @@ using Rubberduck.UI.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Input;
 
@@ -47,16 +49,89 @@ namespace Rubberduck.Editor.Shell
             CommandBindings = fileCommandHandlers.CreateCommandBindings()
                 .Concat(viewCommandHandlers.CreateCommandBindings())
                 .Concat(toolsCommandHandlers.CreateCommandBindings());
+
+            DocumentWindows.CollectionChanged += OnWindowCollectionChanged;
+            LeftPanelToolWindows.CollectionChanged += OnWindowCollectionChanged;
+            RightPanelToolWindows.CollectionChanged += OnWindowCollectionChanged;
+            BottomPanelToolWindows.CollectionChanged += OnWindowCollectionChanged;
+        }
+
+        private void OnWindowCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                if (e.NewItems?[0] is IToolWindowViewModel newItem)
+                {
+                    if (sender == DocumentWindows)
+                    {
+                        newItem.DockingLocation = DockingLocation.DocumentPane;
+                    }
+                    else if (sender == LeftPanelToolWindows)
+                    {
+                        newItem.DockingLocation = DockingLocation.DockLeft;
+                    }
+                    else if (sender == RightPanelToolWindows)
+                    {
+                        newItem.DockingLocation = DockingLocation.DockRight;
+                    }
+                    else if (sender == BottomPanelToolWindows)
+                    {
+                        newItem.DockingLocation = DockingLocation.DockBottom;
+                    }
+                    else
+                    {
+                        newItem.DockingLocation = DockingLocation.None;
+                    }
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                if (e.OldItems?[0] is IToolWindowViewModel deletedItem)
+                {
+                    switch (deletedItem.DockingLocation)
+                    {
+                        case DockingLocation.None:
+                            break;
+                        case DockingLocation.DocumentPane:
+                            break;
+                        case DockingLocation.DockLeft:
+                            break;
+                        case DockingLocation.DockRight:
+                            break;
+                        case DockingLocation.DockBottom:
+                            break;
+                    }
+                }
+            }
         }
 
         public override IEnumerable<CommandBinding> CommandBindings { get; }
         public string Title => "Rubberduck Editor";
 
         public ObservableCollection<IDocumentTabViewModel> DocumentWindows { get; init; } = [];
+        public ObservableCollection<IToolWindowViewModel> FloatingToolwindows { get; init; } = [];
         public ObservableCollection<IToolWindowViewModel> LeftPanelToolWindows { get; init; } = [];
         public ObservableCollection<IToolWindowViewModel> RightPanelToolWindows { get; init; } = [];
         public ObservableCollection<IToolWindowViewModel> BottomPanelToolWindows { get; init; } = [];
 
+        private IDocumentTabViewModel _activeDocumentTab;
+        public IDocumentTabViewModel ActiveDocumentTab 
+        {
+            get => _activeDocumentTab;
+            set
+            {
+                if (_activeDocumentTab != value)
+                {
+                    _activeDocumentTab = value;
+                    OnPropertyChanged();
+
+                    _activeDocumentTab.IsSelected = true;
+                    StatusBar.ActiveDocumentStatus.DocumentType = _activeDocumentTab.DocumentType;
+                    StatusBar.ActiveDocumentStatus.DocumentName = _activeDocumentTab.Title;
+                    StatusBar.ActiveDocumentStatus.IsReadOnly = _activeDocumentTab.IsReadOnly;
+                }
+            }
+        }
         public int FixedDocumentTabs => DocumentWindows.Count(e => e.IsPinned);
         public int FixedLeftToolTabs => LeftPanelToolWindows.Count(e => e.IsPinned);
         public int FixedRightToolTabs => RightPanelToolWindows.Count(e => e.IsPinned);
@@ -84,7 +159,7 @@ namespace Rubberduck.Editor.Shell
         private void OnTabClosed(ItemActionCallbackArgs<TabablzControl> args)
         {
             /* TODO prompt to save changes, offer to cancel, etc.*/
-            //var vm = args.DragablzItem.DataContext as ITabViewModel;
+            var vm = args.DragablzItem.DataContext as ITabViewModel;
             //args.Cancel();
         }
     }

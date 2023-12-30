@@ -178,8 +178,11 @@
     <None Remove="Resources\FontAwesome\file-code-solid.png" />
     <None Remove="Resources\FontAwesome\file-excel-regular.png" />
     <None Remove="Resources\FontAwesome\file-excel-solid.png" />
+    <None Remove="Resources\FontAwesome\file-lines-regular.png" />
+    <None Remove="Resources\FontAwesome\file-lines-solid.png" />
     <None Remove="Resources\FontAwesome\file-pen-solid.png" />
     <None Remove="Resources\FontAwesome\file-regular.png" />
+    <None Remove="Resources\FontAwesome\file-shield-solid.png" />
     <None Remove="Resources\FontAwesome\file-solid.png" />
     <None Remove="Resources\FontAwesome\file-waveform-solid.png" />
     <None Remove="Resources\FontAwesome\folder-closed-regular.png" />
@@ -424,8 +427,11 @@
     <Resource Include="Resources\FontAwesome\file-code-solid.png" />
     <Resource Include="Resources\FontAwesome\file-excel-regular.png" />
     <Resource Include="Resources\FontAwesome\file-excel-solid.png" />
+    <Resource Include="Resources\FontAwesome\file-lines-regular.png" />
+    <Resource Include="Resources\FontAwesome\file-lines-solid.png" />
     <Resource Include="Resources\FontAwesome\file-pen-solid.png" />
     <Resource Include="Resources\FontAwesome\file-regular.png" />
+    <Resource Include="Resources\FontAwesome\file-shield-solid.png" />
     <Resource Include="Resources\FontAwesome\file-solid.png" />
     <Resource Include="Resources\FontAwesome\file-waveform-solid.png" />
     <Resource Include="Resources\FontAwesome\folder-closed-regular.png" />

@@ -15,6 +15,11 @@ namespace Rubberduck.UI.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value is null)
+            {
+                return FalseVisibility;
+            }
+
             var count = 0;
 
             if (value is IEnumerable<IToolWindowViewModel> toolTabs)

@@ -305,6 +305,11 @@
     <PackageReference Include="System.Resources.Extensions" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Icons\RubberduckIcons.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RubberduckIcons.resx</DependentUpon>
+    </Compile>
     <Compile Update="Messages\RubberduckMessages.Designer.cs">
       <DependentUpon>RubberduckMessages.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -317,6 +322,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Update="Icons\RubberduckIcons.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckIcons.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Messages\RubberduckMessages.resx">
       <LastGenOutput>RubberduckMessages.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>

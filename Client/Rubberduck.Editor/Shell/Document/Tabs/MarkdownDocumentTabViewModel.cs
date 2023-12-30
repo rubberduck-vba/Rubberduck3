@@ -1,6 +1,7 @@
 ﻿using Rubberduck.SettingsProvider.Model.Editor;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shell.Document;
+using Rubberduck.UI.Shell.StatusBar;
 using System;
 
 namespace Rubberduck.Editor.Shell.Document.Tabs
@@ -12,8 +13,9 @@ namespace Rubberduck.Editor.Shell.Document.Tabs
     {
         public MarkdownDocumentTabViewModel(Uri documentUri, string title, string content, bool isReadOnly, 
             ShowRubberduckSettingsCommand showSettingsCommand,
-            CloseToolWindowCommand closeToolWindowCommand)
-            : base(documentUri, "md/html", title, content, isReadOnly, showSettingsCommand, closeToolWindowCommand)
+            CloseToolWindowCommand closeToolWindowCommand,
+            IDocumentStatusViewModel activeDocumentStatus)
+            : base(documentUri, "md/html", title, content, isReadOnly, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus)
         {
             SettingKey = nameof(EditorSettings);
         }

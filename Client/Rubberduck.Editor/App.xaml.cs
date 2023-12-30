@@ -140,7 +140,8 @@ namespace Rubberduck.Editor
 
             var showSettingsCommand = _serviceProvider.GetRequiredService<ShowRubberduckSettingsCommand>();
             var closeToolWindowCommand = _serviceProvider.GetRequiredService<CloseToolWindowCommand>();
-            var welcome = new MarkdownDocumentTabViewModel(new Uri(path), "Welcome", content, isReadOnly:true, showSettingsCommand, closeToolWindowCommand);
+            var activeDocumentStatus = _serviceProvider.GetRequiredService<IDocumentStatusViewModel>();
+            var welcome = new MarkdownDocumentTabViewModel(new Uri(path), "Welcome", content, isReadOnly:true, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus);
 
             var view = _shell ??= new ShellWindow() { DataContext = model };
             
@@ -152,6 +153,7 @@ namespace Rubberduck.Editor
 
             view.Show();
             model.DocumentWindows.Add(welcome);
+            model.ActiveDocumentTab = welcome;
 
             if (_settings.Settings.EditorSettings.ToolsSettings.WorkspaceExplorerSettings.ShowOnStartup)
             {
@@ -292,6 +294,8 @@ namespace Rubberduck.Editor
             services.AddSingleton<CloseToolWindowCommand>();
             services.AddSingleton<OpenLogFileCommand>();
             services.AddSingleton<ShowRubberduckSettingsCommand>();
+
+            services.AddSingleton<IDocumentStatusViewModel, ActiveDocumentStatusViewModel>();
         }
 
         public void Dispose()

@@ -55,6 +55,11 @@
     <BitmapImage x:Key="PauseIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/pause-solid.png" />
     <BitmapImage x:Key="CopyIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/copy-solid.png" />
 
+    <BitmapImage x:Key="ClearFileIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/file-regular.png" />
+    <BitmapImage x:Key="ClearTextFileIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/file-lines-regular.png" />
+    <BitmapImage x:Key="ClearCodeFileIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/file-code-regular.png" />
+    <BitmapImage x:Key="ShieldFileIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/file-shield-solid.png" />
+
     <!-- RD2.* 16x16 Fugue icons -->
     <BitmapImage x:Key="ErrorIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/cross-circle.png" />
     <BitmapImage x:Key="WarnIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/exclamation-diamond.png" />

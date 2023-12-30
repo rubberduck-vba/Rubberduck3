@@ -90,6 +90,52 @@
                                                  SourceFileTemplate="{StaticResource SourceFileTemplate}"
                                                  WorkspaceFileTemplate="{StaticResource OtherFileTemplate}"/>
 
+            <ControlTemplate x:Key="ContentAsTreeView">
+                <TreeView BorderBrush="{DynamicResource ThemeWhiteMediumColorBrush}" BorderThickness="1" 
+                      Background="{DynamicResource ThemeWhiteLightColorBrush75}"
+                      ItemsSource="{Binding Workspaces}"
+                      ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
+
+                    <xb:Interaction.Behaviors>
+                        <b:BindableSelectedItemBehavior SelectedItem="{Binding Selection, Mode=TwoWay}" />
+                    </xb:Interaction.Behaviors>
+
+                    <TreeView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="New workspace" Command="{x:Static cmd:FileCommands.NewProjectCommand}" />
+                            <MenuItem Header="Open workspace" Command="{x:Static cmd:FileCommands.OpenProjectCommand}" />
+                            <MenuItem Header="Synchronize to VBE" Command="{x:Static cmd:FileCommands.SynchronizeWorkspaceCommand}" />
+                        </ContextMenu>
+                    </TreeView.ContextMenu>
+
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate DataType="local:IWorkspaceTreeNode" 
+                            ItemsSource="{Binding Children}"
+                            ItemContainerStyle="{StaticResource TreeViewContainerStyle}"
+                            ItemTemplateSelector="{StaticResource NodeTemplateSelector}">
+                            <Label Content="{Binding Name}" Style="{DynamicResource NodeLabelStyle}" FontWeight="SemiBold" />
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </ControlTemplate>
+
+            <!-- TODO horizontal-friendly layout with a ListView
+            <ControlTemplate x:Key="ContentAsListView">
+                
+                <ListView BorderBrush="{DynamicResource ThemeWhiteMediumColorBrush}" BorderThickness="1"
+                          Background="{DynamicResource ThemeWhiteLightColorBrush75}"
+                          ItemsSource="{Binding Workspaces}">
+                    <ListView.ItemTemplate>
+                        <HierarchicalDataTemplate DataType="local:IWorkspaceTreeNode"
+                            ItemsSource="{Binding Children}"
+                            ItemContainerStyle="{StaticResource ListViewContainerStyle}"
+                            ItemTemplateSelector="{StaticResource NodeTemplateSelector}">
+                            
+                        </HierarchicalDataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ControlTemplate>-->
+            
         </ResourceDictionary>
     </UserControl.Resources>
     <shell:ThunderFrame Margin="2" ShowAcceptButton="False" ShowCancelButton="False" 
@@ -114,33 +160,7 @@
                                   ToolTip="Synchronize to VBE"/>
             </WrapPanel>
 
-            <TreeView Grid.Row="1"
-                      BorderBrush="{DynamicResource ThemeWhiteMediumColorBrush}" BorderThickness="1" 
-                      Background="{DynamicResource ThemeWhiteLightColorBrush75}"
-                      ItemsSource="{Binding Workspaces}"
-                      ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
-
-                <xb:Interaction.Behaviors>
-                    <b:BindableSelectedItemBehavior SelectedItem="{Binding Selection, Mode=TwoWay}" />
-                </xb:Interaction.Behaviors>
-
-                <TreeView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="New workspace" Command="{x:Static cmd:FileCommands.NewProjectCommand}" />
-                        <MenuItem Header="Open workspace" Command="{x:Static cmd:FileCommands.OpenProjectCommand}" />
-                        <MenuItem Header="Synchronize to VBE" Command="{x:Static cmd:FileCommands.SynchronizeWorkspaceCommand}" />
-                    </ContextMenu>
-                </TreeView.ContextMenu>
-
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate DataType="local:IWorkspaceTreeNode" 
-                            ItemsSource="{Binding Children}"
-                            ItemContainerStyle="{StaticResource TreeViewContainerStyle}"
-                            ItemTemplateSelector="{StaticResource NodeTemplateSelector}">
-                        <Label Content="{Binding Name}" Style="{DynamicResource NodeLabelStyle}" FontWeight="SemiBold" />
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>
-            </TreeView>
+            <ContentControl Grid.Row="1" Template="{StaticResource ContentAsTreeView}" />
         </Grid>
     </shell:ThunderFrame>
 </UserControl>

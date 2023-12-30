@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
@@ -12,9 +13,49 @@ namespace Rubberduck.UI.Shell.Document
         public MarkdownEditorControl()
         {
             InitializeComponent();
+            DataContextChanged += OnDataContextChanged;
+
+            Editor = (ThunderFrame.Content as DependencyObject)?.GetChildOfType<BindableTextEditor>() ?? throw new InvalidOperationException();
+            Editor.TextArea.SelectionChanged += OnSelectionChanged;
+            Editor.TextArea.Caret.PositionChanged += OnCaretPositionChanged;
+            Editor.TextChanged += OnTextChanged;
         }
 
-        private void OnResizePreviewPanelDragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            ViewModel = (IDocumentTabViewModel)e.NewValue;
+            UpdateStatusInfo();
+        }
+
+        private BindableTextEditor Editor { get; }
+        private IDocumentTabViewModel ViewModel { get; set; }
+
+        private void UpdateStatusInfo()
+        {
+            ViewModel.Status.CaretOffset = Editor.TextArea.Caret.Offset;
+            ViewModel.Status.CaretLine = Editor.TextArea.Caret.Position.Line;
+            ViewModel.Status.CaretColumn = Editor.TextArea.Caret.Position.Column;
+
+            ViewModel.Status.DocumentLength = Editor.TextArea.Document.TextLength;
+            ViewModel.Status.DocumentLines = Editor.TextArea.Document.LineCount;
+        }
+
+        private void OnCaretPositionChanged(object? sender, EventArgs e)
+        {
+            UpdateStatusInfo();
+        }
+
+        private void OnTextChanged(object? sender, EventArgs e)
+        {
+            UpdateStatusInfo();
+        }
+
+        private void OnSelectionChanged(object? sender, EventArgs e)
+        {
+            UpdateStatusInfo();
+        }
+
+        private void OnResizePreviewPanelDragDelta(object sender, DragDeltaEventArgs e)
         {
             var thumb = (Thumb)sender;
             var panel = (DockPanel)thumb.Parent;

@@ -154,5 +154,15 @@ namespace Rubberduck.UI.Shell
 
             e.Handled = true;
         }
+
+        private void OnToolPanelExpanderDrop(object sender, DragEventArgs e)
+        {
+            var data = e.Data.GetData(typeof(object));
+        }
+
+        private void OnToolPanelExpanderPreviewDrop(object sender, DragEventArgs e)
+        {
+            var data = e.Data.GetData(typeof(object));
+        }
     }
 }

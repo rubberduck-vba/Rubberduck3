@@ -20,7 +20,7 @@
             <converters:BooleanToClickActionConverter x:Key="BoolToClickActionConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <shell:ThunderFrame Margin="2" ShowTitle="False" ShowAcceptButton="False" ShowCancelButton="False">
+    <shell:ThunderFrame x:Name="ThunderFrame" ShowTitle="False" ShowAcceptButton="False" ShowCancelButton="False">
         <Grid Margin="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

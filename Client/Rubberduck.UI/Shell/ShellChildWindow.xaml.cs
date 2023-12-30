@@ -30,5 +30,10 @@ namespace Rubberduck.UI.Shell
 
             e.Handled = true;
         }
+
+        private void OnContentRendered(object sender, EventArgs e)
+        {
+            InvalidateVisual();
+        }
     }
 }
