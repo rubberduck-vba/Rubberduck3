@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using Nerdbank.Streams;
 using NLog;
 using NLog.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
+using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
@@ -26,8 +28,10 @@ using System.Globalization;
 using System.IO.Abstractions;
 using System.IO.Pipelines;
 using System.IO.Pipes;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls.Primitives;
 using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.LanguageServer;
 
 namespace Rubberduck.LanguageServer
@@ -233,6 +237,7 @@ namespace Rubberduck.LanguageServer
             //        Environment.Exit(1);
             //    }
             //})
+                .OnDidOpenTextDocument(HandleDidOpenTextDocument, GetTextDocumentOpenRegistrationOptions)
 
             /*/ Workspace
                 .WithHandler<DidChangeConfigurationHandler>()
@@ -279,6 +284,29 @@ namespace Rubberduck.LanguageServer
                 .WithHandler<TypeHierarchyHandler>()
             */
             ;
+        }
+
+        private TextDocumentSelector GetSelector(SupportedLanguage language)
+        {
+            var filter = new TextDocumentFilter
+            {
+                Language = language.Id,
+                Pattern = string.Join(";", language.FileTypes.Select(fileType => $"**/{fileType}").ToArray())
+            };
+            return new TextDocumentSelector(filter);
+        }
+
+        private void HandleDidOpenTextDocument(DidOpenTextDocumentParams request, TextSynchronizationCapability capability, CancellationToken token)
+        {
+            _logger?.LogDebug("Received DidOpenTextDocument notification.");
+        }
+
+        private TextDocumentOpenRegistrationOptions GetTextDocumentOpenRegistrationOptions(TextSynchronizationCapability capability, ClientCapabilities clientCapabilities)
+        {
+            return new TextDocumentOpenRegistrationOptions
+            {
+                DocumentSelector = GetSelector(new VisualBasicForApplicationsLanguage())
+            };
         }
 
         private void ConfigureTransport(LanguageServerOptions options)
