@@ -127,6 +127,10 @@ namespace Rubberduck.Editor.Shell
 
                     if (value != null)
                     {
+                        foreach (var tab in DocumentWindows)
+                        {
+                            tab.IsSelected = false;
+                        }
                         _activeDocumentTab.IsSelected = true;
                         StatusBar.ActiveDocumentStatus.DocumentType = _activeDocumentTab.DocumentType;
                         StatusBar.ActiveDocumentStatus.DocumentName = _activeDocumentTab.Title;

@@ -85,6 +85,7 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
                     NotifyLanguageServer(file);
                     document.ContentControl = view;
                     _shell.ViewModel.DocumentWindows.Add(document);
+                    _shell.ViewModel.ActiveDocumentTab = document;
                 }
             }
 

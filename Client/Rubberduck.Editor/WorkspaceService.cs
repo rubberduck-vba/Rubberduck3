@@ -100,7 +100,7 @@ namespace Rubberduck.Editor
             {
                 root = new Uri(localPath[..^(ProjectFile.FileName.Length + 1)]);
             }
-            return _watchers[root].EnableRaisingEvents;
+            return _watchers.TryGetValue(root, out var value) && value.EnableRaisingEvents;
         }
 
         public void EnableFileSystemWatcher(Uri root)

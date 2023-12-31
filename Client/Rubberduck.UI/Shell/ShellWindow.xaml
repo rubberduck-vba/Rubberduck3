@@ -284,7 +284,6 @@
                                      ItemsSource="{Binding DocumentWindows}"
                                      SelectedItem="{Binding ActiveDocumentTab}"
                                      ItemContainerStyle="{DynamicResource TrapezoidTabItemStyle}"
-                                     SelectedIndex="0"
                                      HeaderMemberPath="Title"
                                      ShowDefaultCloseButton="True">
                 <dragablz:TabablzControl.ContentTemplate>
