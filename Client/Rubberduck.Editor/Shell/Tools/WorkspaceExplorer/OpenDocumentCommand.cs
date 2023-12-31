@@ -25,14 +25,14 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
         private readonly CloseToolWindowCommand _closeToolWindowCommand;
         private readonly IDocumentStatusViewModel _activeDocumentStatus;
 
-        private readonly Func<ILanguageClient> _lsp;
+        private readonly Func<ILanguageClient?> _lsp;
 
         public OpenDocumentCommand(UIServiceHelper service, 
             IWorkspaceStateManager workspaces, 
             ShellProvider shell,
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindow,
-            IDocumentStatusViewModel activeDocumentStatus, Func<ILanguageClient> lsp) 
+            IDocumentStatusViewModel activeDocumentStatus, Func<ILanguageClient?> lsp) 
             : base(service)
         {
             _workspaces = workspaces;
@@ -94,6 +94,13 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
 
         private void NotifyLanguageServer(WorkspaceFileInfo file)
         {
+            var lsp = _lsp();
+            if (lsp is null)
+            {
+                Service.LogWarning("LanguageServerClient is null; LSP server will not be notified.");
+                return;
+            }
+
             var workspaceRoot = _workspaces?.ActiveWorkspace?.WorkspaceRoot?.LocalPath 
                 ?? throw new InvalidOperationException();
 
@@ -111,7 +118,7 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
                 LanguageId = languageId,
                 Text = file.OriginalContent
             };
-            _lsp().TextDocument.DidOpenTextDocument(new() { TextDocument = textDocumentItem });
+            lsp.TextDocument.DidOpenTextDocument(new() { TextDocument = textDocumentItem });
             file.IsOpened = true;
         }
     }

@@ -48,10 +48,15 @@ namespace Rubberduck.Editor
             _tokenSource = tokenSource;
         }
 
-        public OmniSharpLanguageClient LanguageClient => _languageClient;
+        public OmniSharpLanguageClient? LanguageClient => _languageClient;
 
-        public async Task StartupAsync()
+        public async Task StartupAsync(Uri? workspaceRoot = null)
         {
+            if (workspaceRoot != null)
+            {
+                _options.WorkspaceRoot = workspaceRoot.LocalPath;
+            }
+
             StartLanguageServerProcess();
 
             _logger.LogInformation("Creating language client...");

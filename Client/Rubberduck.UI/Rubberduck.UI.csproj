@@ -194,6 +194,7 @@
     <None Remove="Resources\FontAwesome\folder-tree-solid.png" />
     <None Remove="Resources\FontAwesome\gear-solid.png" />
     <None Remove="Resources\FontAwesome\gear-solid_circle-chevron-left.png" />
+    <None Remove="Resources\FontAwesome\hourglass-half-solid.png" />
     <None Remove="Resources\FontAwesome\link-slash-solid.png" />
     <None Remove="Resources\FontAwesome\link-solid.png" />
     <None Remove="Resources\FontAwesome\lock-open-solid.png" />
@@ -443,6 +444,7 @@
     <Resource Include="Resources\FontAwesome\folder-tree-solid.png" />
     <Resource Include="Resources\FontAwesome\gear-solid.png" />
     <Resource Include="Resources\FontAwesome\gear-solid_circle-chevron-left.png" />
+    <Resource Include="Resources\FontAwesome\hourglass-half-solid.png" />
     <Resource Include="Resources\FontAwesome\link-slash-solid.png" />
     <Resource Include="Resources\FontAwesome\link-solid.png" />
     <Resource Include="Resources\FontAwesome\lock-open-solid.png" />

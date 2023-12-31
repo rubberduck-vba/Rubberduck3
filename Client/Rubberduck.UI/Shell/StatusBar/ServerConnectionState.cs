@@ -3,6 +3,7 @@
     public enum ServerConnectionState
     {
         Disconnected,
+        Connecting,
         Connected
     }
 }

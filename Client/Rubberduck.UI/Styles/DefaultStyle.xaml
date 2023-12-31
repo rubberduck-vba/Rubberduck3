@@ -70,6 +70,7 @@
     <converters:WindowStateToVisibilityConverter x:Key="WindowStateToRestoreVisibility" VisibleState="Maximized" HiddenState="Normal" />
     <converters:WindowStateToVisibilityConverter x:Key="WindowStateToMaximizeVisibility" VisibleState="Normal" HiddenState="Maximized" />
     <converters:SupportedDocumentTypeToIconConverter x:Key="DocumentTypeToIconConverter" />
+    <converters:ServerConnectionStateToIconConverter x:Key="ServerConnectionStateToIconConverter" />
 
     <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="{DynamicResource ThemeAccent1MediumColor}"/>
     <SolidColorBrush x:Key="TextBox.Focus.Border" Color="{DynamicResource ThemeAccent1DarkColor}"/>

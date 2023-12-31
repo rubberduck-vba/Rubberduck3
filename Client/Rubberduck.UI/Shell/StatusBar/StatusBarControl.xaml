@@ -14,55 +14,10 @@
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Icons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            
-            <Style x:Key="ServerStateImageStyle" TargetType="Image" BasedOn="{StaticResource IconStyle}">
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding StatusBar.ServerConnectionState}" Value="Connected">
-                        <Setter Property="Source" Value="{StaticResource ConnectedIcon16}" />
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding StatusBar.ServerConnectionState}" Value="Disconnected">
-                        <Setter Property="Source" Value="{StaticResource ConnectErrorIcon16}" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-
-            <DataTemplate x:Key="SourceFileStatusTemplate" DataType="local:ISourceFileStatusViewModel">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="{DynamicResource ClearCodeFileIcon}" Height="12" Margin="2" />
-                    <Label FontSize="10" Foreground="{DynamicResource ThemeTextColorBrush}" Content="{Binding DocumentName}" Padding="0,1,0,0"  />
-                </StackPanel>
-            </DataTemplate>
-            <DataTemplate x:Key="TextFileStatusTemplate" DataType="local:IDocumentStatusViewModel">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="{DynamicResource ClearTextFileIcon}" Height="12" Margin="2">
-                        <Image.Style>
-                            <Style TargetType="Image">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding StatusBar.ActiveDocumentStatus.IsReadOnly}" Value="True">
-                                        <Setter Property="Source" Value="{DynamicResource ShieldFileIcon}" />
-                                        <Setter Property="ToolTip" Value="Document is read-only" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Image.Style>
-                    </Image>
-                    <Label FontSize="10" Foreground="{DynamicResource ThemeTextColorBrush}" Content="{Binding DocumentName, Mode=OneWay}" Padding="0,1,0,0"  />
-                </StackPanel>
-            </DataTemplate>
-            <DataTemplate x:Key="DefaultFileStatusTemplate" DataType="local:IDocumentStatusViewModel">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="{StaticResource ClearFileIcon}" Height="12" Margin="2" />
-                </StackPanel>
-            </DataTemplate>
-
-            <local:DocumentStatusTemplateSelector x:Key="DocumentStatusTemplateSelector" 
-                                                  DefaultDocumentTemplate="{StaticResource DefaultFileStatusTemplate}"
-                                                  TextFileTemplate="{StaticResource TextFileStatusTemplate}"
-                                                  SourceFileTemplate="{StaticResource SourceFileStatusTemplate}" />
-
         </ResourceDictionary>
         
     </UserControl.Resources>
+    
     <StatusBar Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
                Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}"
                MinHeight="18"
@@ -73,11 +28,22 @@
         <StatusBarItem Padding="0">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <shell:FlatButton ToolTip="Show language server trace toolwindow" VerticalAlignment="Center"
-                                  Icon="{DynamicResource CircleCheckIcon}" Height="12" Width="12"
+                                  Height="12" Width="12"
                                   Background="{DynamicResource ThemeBackgroundMediumColorBrush}"
-                                  Command="{Binding StatusBar.ShowLanguageServerTraceCommand}" />
-                <Label Content="{Binding StatusBar.StatusText}" 
-                       Foreground="{DynamicResource ThemeTextColorBrush}" />
+                                  Command="{Binding StatusBar.ShowLanguageServerTraceCommand}">
+                    <shell:FlatButton.Style>
+                        <Style TargetType="shell:FlatButton">
+                            <Setter Property="Icon">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource ServerConnectionStateToIconConverter}">
+                                        <Binding Path="StatusBar.ServerConnectionState" />
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </shell:FlatButton.Style>
+                </shell:FlatButton>
+                <Label Content="{Binding StatusBar.StatusText}" Foreground="{DynamicResource ThemeTextColorBrush}" />
             </StackPanel>
         </StatusBarItem>
 

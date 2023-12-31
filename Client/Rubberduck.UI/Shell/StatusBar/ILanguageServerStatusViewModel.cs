@@ -11,7 +11,10 @@ namespace Rubberduck.UI.Shell.StatusBar
         /// Gets or sets the server connection state.
         /// </summary>
         bool IsConnected { get; set; }
-
-        ICommand ShowLanguageServerTraceCommand { get; set; }
+        ServerConnectionState ServerConnectionState { get; set; }
+        /// <summary>
+        /// Gets a command that displays the language server trace toolwindow.
+        /// </summary>
+        ICommand ShowLanguageServerTraceCommand { get; }
     }
 }

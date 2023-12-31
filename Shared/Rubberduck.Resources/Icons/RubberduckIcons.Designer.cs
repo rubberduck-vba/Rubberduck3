@@ -63,6 +63,26 @@ namespace Rubberduck.Resources.Icons {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap circle_check_solid {
+            get {
+                object obj = ResourceManager.GetObject("circle_check_solid", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap circle_exclamation_solid {
+            get {
+                object obj = ResourceManager.GetObject("circle_exclamation_solid", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap file_code_regular {
             get {
                 object obj = ResourceManager.GetObject("file_code_regular", resourceCulture);
@@ -96,6 +116,16 @@ namespace Rubberduck.Resources.Icons {
         public static System.Drawing.Bitmap folder_closed_regular {
             get {
                 object obj = ResourceManager.GetObject("folder_closed_regular", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap hourglass_half_solid {
+            get {
+                object obj = ResourceManager.GetObject("hourglass_half_solid", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
