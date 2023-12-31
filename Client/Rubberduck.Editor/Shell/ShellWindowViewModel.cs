@@ -125,10 +125,13 @@ namespace Rubberduck.Editor.Shell
                     _activeDocumentTab = value;
                     OnPropertyChanged();
 
-                    _activeDocumentTab.IsSelected = true;
-                    StatusBar.ActiveDocumentStatus.DocumentType = _activeDocumentTab.DocumentType;
-                    StatusBar.ActiveDocumentStatus.DocumentName = _activeDocumentTab.Title;
-                    StatusBar.ActiveDocumentStatus.IsReadOnly = _activeDocumentTab.IsReadOnly;
+                    if (value != null)
+                    {
+                        _activeDocumentTab.IsSelected = true;
+                        StatusBar.ActiveDocumentStatus.DocumentType = _activeDocumentTab.DocumentType;
+                        StatusBar.ActiveDocumentStatus.DocumentName = _activeDocumentTab.Title;
+                        StatusBar.ActiveDocumentStatus.IsReadOnly = _activeDocumentTab.IsReadOnly;
+                    }
                 }
             }
         }

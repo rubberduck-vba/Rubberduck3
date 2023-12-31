@@ -65,7 +65,7 @@
             </dragablz:TabablzControl>
         </dockablz:Layout>
 
-        <statusbar:StatusBarControl x:Name="StatusBar" Grid.Row="2" DataContext="{Binding StatusBar}" />
+        <statusbar:StatusBarControl x:Name="StatusBar" Grid.Row="2" />
 
         <Thumb Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right" IsEnabled="True" IsHitTestVisible="True" WindowChrome.IsHitTestVisibleInChrome="True"
                DragDelta="OnResizeGripDragDelta" Cursor="SizeNWSE">

@@ -1,4 +1,7 @@
-﻿using Rubberduck.Editor.Shell.Document.Tabs;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Client;
+using OmniSharp.Extensions.LanguageServer.Protocol.Document;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.Editor.Shell.Document.Tabs;
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Abstract;
@@ -22,12 +25,14 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
         private readonly CloseToolWindowCommand _closeToolWindowCommand;
         private readonly IDocumentStatusViewModel _activeDocumentStatus;
 
+        private readonly Func<ILanguageClient> _lsp;
+
         public OpenDocumentCommand(UIServiceHelper service, 
             IWorkspaceStateManager workspaces, 
             ShellProvider shell,
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindow,
-            IDocumentStatusViewModel activeDocumentStatus) 
+            IDocumentStatusViewModel activeDocumentStatus, Func<ILanguageClient> lsp) 
             : base(service)
         {
             _workspaces = workspaces;
@@ -36,6 +41,8 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
             _showSettingsCommand = showSettingsCommand;
             _activeDocumentStatus = activeDocumentStatus;
             AddToCanExecuteEvaluation(e => true);
+
+            _lsp = lsp;
         }
 
         protected async override Task OnExecuteAsync(object? parameter)
@@ -75,15 +82,36 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
                         }
                     }
 
+                    NotifyLanguageServer(file);
                     document.ContentControl = view;
-
                     _shell.ViewModel.DocumentWindows.Add(document);
-                    //_shell.View.AddDocument(view);
-                    file.IsOpened = true;
                 }
             }
 
             await Task.CompletedTask;
+        }
+
+        private void NotifyLanguageServer(WorkspaceFileInfo file)
+        {
+            var workspaceRoot = _workspaces?.ActiveWorkspace?.WorkspaceRoot?.LocalPath 
+                ?? throw new InvalidOperationException();
+
+            var filePath = System.IO.Path.Combine(workspaceRoot, ProjectFile.SourceRoot, file.Uri.ToString());
+            var absoluteUri = new Uri(filePath);
+
+            var languageId = file.IsSourceFile
+                ? "vba"
+                : "none";
+
+            var textDocumentItem = new TextDocumentItem
+            {
+                Uri = absoluteUri,
+                Version = 1,
+                LanguageId = languageId,
+                Text = file.OriginalContent
+            };
+            _lsp().TextDocument.DidOpenTextDocument(new() { TextDocument = textDocumentItem });
+            file.IsOpened = true;
         }
     }
 }
