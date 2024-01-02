@@ -15,27 +15,48 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
 using OmniSharp.Extensions.JsonRpc;
 using Rubberduck.SettingsProvider.Model;
-using Rubberduck.Editor.RPC.LanguageServerClient.Handlers;
+using OmniSharp.Extensions.LanguageServer.Protocol.Window;
+using Rubberduck.ServerPlatform;
+using Newtonsoft.Json;
 
 namespace Rubberduck.Editor.RPC.LanguageServerClient
 {
-    public class LanguageClientService
+    public interface ILanguageClientService : ILanguageServerConnectionStatusProvider
     {
+        LanguageClientOptions ConfigureLanguageClient(LanguageClientOptions options, Assembly clientAssembly, long clientProcessId, RubberduckSettings settings, string workspaceRoot);
+    }
+
+    public class LanguageClientService : ILanguageClientService
+    {
+        public event EventHandler Connecting = delegate { };
+        public event EventHandler Connected = delegate { };
+        public event EventHandler Disconnected = delegate { };
+
+        private readonly ILogger _logger;
+        private readonly ServerPlatformServiceHelper _service;
+
+        public LanguageClientService(ILogger<LanguageClientService> logger, ServerPlatformServiceHelper serverPlatformServiceHelper)
+        {
+            _logger = logger;
+            _service = serverPlatformServiceHelper;
+        }
+
         private static void ConfigureClientLogging(ILoggingBuilder builder)
         {
             builder.AddNLog("NLog-client.config");
         }
 
-        public static LanguageClientOptions ConfigureLanguageClient(LanguageClientOptions options, Assembly clientAssembly, long clientProcessId, RubberduckSettings settings, string workspaceRoot)
+        public LanguageClientOptions ConfigureLanguageClient(LanguageClientOptions options, Assembly clientAssembly, long clientProcessId, RubberduckSettings settings, string workspaceRoot)
         {
             var info = clientAssembly.ToClientInfo();
+            var initializationProgressToken = new ProgressToken(Guid.NewGuid().ToString());
 
             var workspace = new DirectoryInfo(workspaceRoot).ToWorkspaceFolder();
             var clientCapabilities = GetClientCapabilities();
             
-            options.EnableDynamicRegistration();
-            options.EnableProgressTokens();
-            options.EnableWorkspaceFolders();
+            //options.EnableDynamicRegistration();
+            options.EnableProgressTokens(); // to support WorkDoneProgress requests/notifications
+            options.EnableWorkspaceFolders(); // to support multipole workspaces/projects
 
             options.WithSerializer(new OmniSharp.Extensions.LanguageServer.Protocol.Serialization.LspSerializer(ClientVersion.Lsp3));
             options.ConfigureLogging(ConfigureClientLogging);
@@ -45,22 +66,21 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
                 Timestamp = DateTime.Now,
                 Locale = settings.GeneralSettings.Locale,
             };
-
+            
             options
                 .WithClientInfo(info)
                 .WithClientCapabilities(clientCapabilities)
                 .WithTrace(settings.LanguageServerSettings.TraceLevel.ToInitializeTrace())
-                .WithInitializationOptions(JsonSerializer.Serialize(initializationOptions))
+                .WithInitializationOptions(System.Text.Json.JsonSerializer.Serialize(initializationOptions))
                 .WithWorkspaceFolder(workspace)
                 .WithRootUri(workspaceRoot)
                 .WithContentModifiedSupport(true)
 
                 .OnInitialize((client, request, cancellationToken) =>
                 {
-                    using var scope = client.CreateScope();
-                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<LanguageClientService>>();
-                    logger.LogDebug("OnInitialize: sending InitializeParams...");
+                    _logger.LogDebug("OnInitialize: sending InitializeParams...");
 
+                    Connecting.Invoke(this, EventArgs.Empty);
                     request.ConfigureInitialization(clientProcessId, settings.GeneralSettings.Locale);
 
                     return Task.CompletedTask;
@@ -68,12 +88,34 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
 
                 .OnInitialized((client, request, response, cancellationToken) =>
                 {
-                    using var scope = client.CreateScope();
-                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<LanguageClientService>>();
-                    logger.LogDebug("OnInitialized: received Initialized notification.");
+                    _logger.LogDebug("OnInitialized: received Initialized notification.");
 
+                    Connected.Invoke(this, EventArgs.Empty);
                     return Task.CompletedTask;
                 })
+
+                .OnWorkDoneProgressCreate((request) =>
+                {
+                    _logger.LogDebug("OnWorkDoneProgressCreate: received WorkDoneProgressCreate notification.");
+                    var token = request.Token;
+                    if (token != null)
+                    {
+                        _service.OnProgress(token);
+                    }
+                })
+
+                .OnProgress((request) =>
+                {
+                    _logger.LogDebug("OnProgress: received WorkDoneProgress notification.");
+                    var token = request.Token;
+                    if (token != null)
+                    {
+                        var progress = JsonConvert.DeserializeObject<WorkDoneProgressReport>(request.Value.ToString(Formatting.None));
+                        _service.OnProgress(token, progress);
+                    }
+                })
+
+                /*
 
                 .WithHandler<WorkspaceFoldersHandler>()
                 .WithHandler<WorkDoneProgressCreateHandler>()
@@ -90,6 +132,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
                 .WithHandler<SemanticTokensRefreshHandler>()
 
                 .WithHandler<TelemetryEventHandler>()
+                */
             ;
 
             return options;

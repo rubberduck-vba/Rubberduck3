@@ -48,6 +48,11 @@
 
                     <StackPanel.ContextMenu>
                         <ContextMenu>
+                            <MenuItem Header="Add">
+                                <MenuItem Header="Folder" Command="{x:Static local:WorkspaceExplorerCommands.CreateFolderCommand}" CommandParameter="{Binding Uri}" />
+                                <MenuItem Header="File..." Command="{x:Static local:WorkspaceExplorerCommands.CreateFileCommand}" CommandParameter="{Binding Uri}" />
+                            </MenuItem>
+                            <Separator />
                             <MenuItem Header="Rename" />
                             <MenuItem Header="Delete" />
                         </ContextMenu>
@@ -113,7 +118,23 @@
                             ItemsSource="{Binding Children}"
                             ItemContainerStyle="{StaticResource TreeViewContainerStyle}"
                             ItemTemplateSelector="{StaticResource NodeTemplateSelector}">
-                            <Label Content="{Binding Name}" Style="{DynamicResource NodeLabelStyle}" FontWeight="SemiBold" />
+                            <Label Content="{Binding Name}" Style="{DynamicResource NodeLabelStyle}" FontWeight="SemiBold">
+                                <Label.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Add">
+                                            <MenuItem Header="Folder" Command="{x:Static local:WorkspaceExplorerCommands.CreateFolderCommand}" CommandParameter="{Binding Uri}" />
+                                            <MenuItem Header="File..." Command="{x:Static local:WorkspaceExplorerCommands.CreateFileCommand}" CommandParameter="{Binding Uri}" />
+                                        </MenuItem>
+                                        <Separator />
+                                        <MenuItem Header="Synchronize to VBE" Command="{x:Static cmd:FileCommands.SynchronizeWorkspaceCommand}" CommandParameter="{Binding Uri}" />
+                                        <MenuItem Header="Open Folder in File Explorer" Command="{x:Static cmd:FileCommands.OpenFolderInWindowsExplorerCommand}" CommandParameter="{Binding Uri}" />
+                                        <Separator />
+                                        <MenuItem Header="Rename" Command="{x:Static cmd:FileCommands.RenameWorkspaceCommand}" CommandParameter="{Binding Uri}" />
+                                        <Separator />
+                                        <MenuItem Header="Close" Command="{x:Static cmd:FileCommands.CloseWorkspaceCommand}" CommandParameter="{Binding Uri}" />
+                                    </ContextMenu>
+                                </Label.ContextMenu>
+                            </Label>
                         </HierarchicalDataTemplate>
                     </TreeView.ItemTemplate>
                 </TreeView>

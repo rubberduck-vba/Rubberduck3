@@ -91,14 +91,18 @@ namespace Rubberduck.Editor
                 }
                 else
                 {
-                    OnWorkspaceOpened(uri);
                     return true;
                 }
             });
 
-            if (result && _lspClientApp.LanguageClient is null)
+            if (result)
             {
-                await _lspClientApp.StartupAsync(uri);
+                if (_lspClientApp.LanguageClient is null)
+                {
+                    await _lspClientApp.StartupAsync(uri);
+                }
+
+                OnWorkspaceOpened(uri);
             }
 
             return result;

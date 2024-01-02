@@ -15,6 +15,9 @@ namespace Rubberduck.UI.Command
             = new RoutedCommand(nameof(AddTestModuleCommand), typeof(Window));
         public static RoutedCommand AddExistingFileCommand { get; }
             = new RoutedCommand(nameof(AddExistingFileCommand), typeof(Window));
+        public static RoutedCommand AddNewFileCommand { get; }
+            = new RoutedCommand(nameof(AddNewFileCommand), typeof(Window));
+
         public static RoutedCommand AddFolderCommand { get; }
             = new RoutedCommand(nameof(AddFolderCommand), typeof(Window));
 

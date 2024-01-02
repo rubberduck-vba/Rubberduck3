@@ -11,6 +11,7 @@ using Rubberduck.Editor.DialogServices.NewProject;
 using Rubberduck.Editor.RPC.EditorServer;
 using Rubberduck.Editor.RPC.EditorServer.Handlers.Lifecycle;
 using Rubberduck.Editor.RPC.EditorServer.Handlers.Workspace;
+using Rubberduck.Editor.RPC.LanguageServerClient;
 using Rubberduck.Editor.RPC.LanguageServerClient.Handlers;
 using Rubberduck.Editor.Shell;
 using Rubberduck.Editor.Shell.Chrome;
@@ -208,7 +209,9 @@ namespace Rubberduck.Editor
         {
             services.AddSingleton<Func<ILanguageServer>>(provider => () => _editorServer.EditorServer);
             services.AddSingleton<Func<ILanguageClient?>>(provider => () => _languageClient.LanguageClient);
+            services.AddSingleton<ILanguageClientService, LanguageClientService>();
             services.AddSingleton<LanguageClientApp>(provider => _languageClient);
+            services.AddSingleton<ILanguageServerConnectionStatusProvider, LanguageClientService>(provider => (LanguageClientService)provider.GetRequiredService<ILanguageClientService>());
 
             services.AddSingleton<ServerStartupOptions>(provider => _options);
             services.AddSingleton<Process>(provider => Process.GetProcessById((int)_options.ClientProcessId));
