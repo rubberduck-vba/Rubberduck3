@@ -9,11 +9,13 @@ using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server.WorkDone;
+using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using OmniSharp.Extensions.LanguageServer.Server;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
+using Rubberduck.LanguageServer.Handlers;
 using Rubberduck.LanguageServer.Handlers.Lifecycle;
 using Rubberduck.LanguageServer.Handlers.Workspace;
 using Rubberduck.LanguageServer.Model;
@@ -32,7 +34,6 @@ using System.IO.Pipes;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Controls.Primitives;
 using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.LanguageServer;
 
 namespace Rubberduck.LanguageServer
@@ -42,6 +43,7 @@ namespace Rubberduck.LanguageServer
         private readonly ServerStartupOptions _options;
         private readonly CancellationTokenSource _tokenSource;
 
+        private IDisposable _pipeWaitForClientConnectionTask;
         private NamedPipeServerStream? _pipe;
 
         private ILogger<ServerApp>? _logger;
@@ -159,10 +161,20 @@ namespace Rubberduck.LanguageServer
             loggerProvider.LogFactory.Setup().LoadConfigurationFromFile("NLog-server.config");
             options.LoggerFactory = new NLogLoggerFactory(loggerProvider);
 
+            options.WithUnhandledExceptionHandler(exception =>
+            {
+                _logger?.LogError("{0}", exception.ToString());
+            });
+
             _ = options
                 .WithServerInfo(info)
-                .OnInitialize((ILanguageServer server, InitializeParams request, CancellationToken token) =>
+
+                .OnInitialize(async (ILanguageServer server, InitializeParams request, CancellationToken token) =>
                 {
+                    // OnLanguageServerInitializeDelegate
+                    // Gives your class or handler an opportunity to interact with the InitializeParams
+                    // before it is processed by the server.
+
                     _logger?.LogDebug("Received Initialize request.");
                     token.ThrowIfCancellationRequested();
                     if (TimedAction.TryRun(() =>
@@ -176,21 +188,23 @@ namespace Rubberduck.LanguageServer
                     {
                         _logger?.LogError(TraceLevel.Verbose, exception);
                     }
-                    _logger?.LogDebug("Completed Initialize request.");
-                    return Task.CompletedTask;
                 })
 
-                .OnInitialized((ILanguageServer server, InitializeParams request, InitializeResult response, CancellationToken token) =>
+                .OnInitialized(async (ILanguageServer server, InitializeParams request, InitializeResult response, CancellationToken cancellationToken) =>
                 {
-                    _logger?.LogDebug("Received Initialized notification.");
-                    token.ThrowIfCancellationRequested();
+                    // OnLanguageServerInitializedDelegate
+                    // Gives your class or handler an opportunity to interact with the InitializeParams and InitializeResult
+                    // after it is processed by the server but before it is sent to the client.
 
-                    _logger?.LogDebug("Handled Initialized notification.");
-                    return Task.CompletedTask;
+                    _logger?.LogTrace("Sending Initialized notification...");
                 })
 
                 .OnStarted(async (ILanguageServer server, CancellationToken token) =>
                 {
+                    // OnLanguageServerStartedDelegate
+                    // Gives your class or handler an opportunity to interact with the ILanguageServer
+                    // after the connection has been established.
+
                     _logger?.LogDebug("Language server started.");
                     token.ThrowIfCancellationRequested();
 
@@ -201,7 +215,9 @@ namespace Rubberduck.LanguageServer
 
                         if (server.WorkDoneManager.IsSupported)
                         {
-                            _logger?.LogTrace("Requesting progress token...");
+                            _logger?.LogTrace("Sending progress token...");
+                            server.Window.SendWorkDoneProgressCreate(new() { Token = handlerProgressToken });
+
                             progress = await server.WorkDoneManager.Create(
                                 new WorkDoneProgressBegin
                                 {
@@ -247,6 +263,8 @@ namespace Rubberduck.LanguageServer
                 })
 
                  /* handlers */
+
+                //.WithHandler<InitializedHandler>()
                  //.WithHandler<SetTraceHandler>()
 
                  /* registrations */
@@ -358,12 +376,12 @@ namespace Rubberduck.LanguageServer
             var ioOptions = (PipeServerStartupOptions)_options;
             _logger?.LogInformation("Configuring language server transport to use a named pipe stream (name: {name})...", ioOptions.PipeName);
 
-            _pipe = new NamedPipeServerStream(ioOptions.PipeName, PipeDirection.InOut, 1);
+            _pipe = new NamedPipeServerStream(ioOptions.PipeName, PipeDirection.InOut, 10);
             options.WithInput(PipeReader.Create(_pipe));
             options.WithOutput(PipeWriter.Create(_pipe));
 
             _logger?.LogTrace("Asynchronously awaiting client connection...");
-            _ = _pipe.WaitForConnectionAsync();
+            _pipeWaitForClientConnectionTask = _pipe.WaitForConnectionAsync();
         }
 
         public void Dispose()
@@ -371,6 +389,7 @@ namespace Rubberduck.LanguageServer
             if (_pipe is not null)
             {
                 _logger?.LogDebug("Disposing NamedPipeServerStream...");
+                _pipeWaitForClientConnectionTask.Dispose();
                 _pipe.Dispose();
                 _pipe = null;
             }

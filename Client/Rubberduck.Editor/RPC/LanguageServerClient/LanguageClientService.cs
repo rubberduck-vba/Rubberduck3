@@ -18,6 +18,10 @@ using Rubberduck.SettingsProvider.Model;
 using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using Rubberduck.ServerPlatform;
 using Newtonsoft.Json;
+using OmniSharp.Extensions.LanguageServer.Protocol.General;
+using OmniSharp.Extensions.LanguageServer.Protocol.Client;
+using System.Threading;
+using Rubberduck.Editor.RPC.EditorServer.Handlers.Lifecycle;
 
 namespace Rubberduck.Editor.RPC.LanguageServerClient
 {
@@ -54,7 +58,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
             var workspace = new DirectoryInfo(workspaceRoot).ToWorkspaceFolder();
             var clientCapabilities = GetClientCapabilities();
             
-            //options.EnableDynamicRegistration();
+            options.EnableDynamicRegistration();
             options.EnableProgressTokens(); // to support WorkDoneProgress requests/notifications
             options.EnableWorkspaceFolders(); // to support multipole workspaces/projects
 
@@ -76,22 +80,31 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
                 .WithRootUri(workspaceRoot)
                 .WithContentModifiedSupport(true)
 
-                .OnInitialize((client, request, cancellationToken) =>
+                .OnInitialize(async (client, request, cancellationToken) =>
                 {
+                    // OnLanguageClientInitializeDelegate
+                    // Gives your class or handler an opportunity to interact with the InitializeParams
+                    // before it is sent to the server.
+
                     _logger.LogDebug("OnInitialize: sending InitializeParams...");
 
                     Connecting.Invoke(this, EventArgs.Empty);
-                    request.ConfigureInitialization(clientProcessId, settings.GeneralSettings.Locale);
+                    request.ConfigureInitialization(clientProcessId, settings.GeneralSettings.Locale, initializationProgressToken);
 
-                    return Task.CompletedTask;
+                    _logger.LogDebug("OnInitialize completed (InitializeParams will be sent to LSP server)");
                 })
 
-                .OnInitialized((client, request, response, cancellationToken) =>
+                .OnInitialized(async (client, request, response, cancellationToken) =>
                 {
+                    // OnLanguageClientInitializedDelegate
+                    // Gives your class or handler an opportunity to interact with the InitializeParams and InitializeResult
+                    // before it is processed by the client.
+
                     _logger.LogDebug("OnInitialized: received Initialized notification.");
 
                     Connected.Invoke(this, EventArgs.Empty);
-                    return Task.CompletedTask;
+
+                    _logger.LogDebug("OnInitialized completed (further processing deferred to LSP client)");
                 })
 
                 .OnWorkDoneProgressCreate((request) =>

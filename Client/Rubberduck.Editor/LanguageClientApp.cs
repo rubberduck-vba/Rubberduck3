@@ -62,9 +62,9 @@ namespace Rubberduck.Editor
 
             _logger.LogInformation("Initializing LSP...");
 
-            Task task;
-            _languageClientInitializeTask = task = _languageClient.Initialize(_tokenSource.Token);
-            await task;
+            Task lspClientInitializeTask = _languageClient.Initialize(_tokenSource.Token);
+            _languageClientInitializeTask = lspClientInitializeTask;
+            await lspClientInitializeTask;
         }
 
         public async Task ExitAsync()
