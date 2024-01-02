@@ -1,4 +1,5 @@
-﻿using Rubberduck.UI.Windows;
+﻿using Rubberduck.UI.Shell.StatusBar;
+using Rubberduck.UI.Windows;
 using System;
 
 namespace Rubberduck.UI.Shell.Document
@@ -25,11 +26,11 @@ namespace Rubberduck.UI.Shell.Document
 
     public interface IDocumentTabViewModel : ITabViewModel
     {
-        public Uri DocumentUri { get; set; }
-        public string Language { get; set; }
-        public string Title { get; set; }
-        public bool IsReadOnly { get; set; }
+        Uri DocumentUri { get; set; }
+        string Language { get; set; }
+        bool IsReadOnly { get; set; }
 
-        public SupportedDocumentType DocumentType { get; }
+        SupportedDocumentType DocumentType { get; }
+        IDocumentStatusViewModel Status { get; }
     }
 }

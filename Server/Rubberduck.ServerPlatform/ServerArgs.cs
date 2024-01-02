@@ -43,16 +43,16 @@ namespace Rubberduck.ServerPlatform
         public PipeServerStartupOptions() : base(TransportType.Pipe) { }
 
 
-        [Option('n', "Name", Default = null, HelpText = "The name of the transport pipe.")]
-        public string? Name { get; set; }
+        [Option('n', "Name", Default = "Rubberduck.LanguageServer.Pipe", HelpText = "The name of the transport pipe.")]
+        public string Name { get; set; } = "Rubberduck.LanguageServer.Pipe";
 
-        [Option('m', "Mode", Default = PipeTransmissionMode.Byte, HelpText = "The pipe's transmission mode. Use 'Message' for RPC-level trace debugging.")]
-        public PipeTransmissionMode Mode { get; set; } = PipeTransmissionMode.Byte;
+        [Option('m', "Mode", Default = PipeTransmissionMode.Message, HelpText = "The pipe's transmission mode. Use 'Message' for RPC-level trace debugging.")]
+        public PipeTransmissionMode Mode { get; set; } = PipeTransmissionMode.Message;
 
         /// <summary>
         /// The actual name of the pipe stream concatenates the <c>Name</c> with the <c>ClientProcessId</c> to ensure different hosts/instances use dedicated channels.
         /// </summary>
-        public string PipeName => GetPipeName(Name, ClientProcessId);
+        public string PipeName => GetPipeName(Name, ClientProcessId  == default ? Environment.ProcessId : ClientProcessId);
 
         public static string GetPipeName(string name, int processId) => name.EndsWith(processId.ToString()) ? name : $"{name}__{processId}";
     }
@@ -65,7 +65,7 @@ namespace Rubberduck.ServerPlatform
 
     public class ServerArgs
     {
-        public static ServerStartupOptions Default { get; } = new StandardInOutServerStartupOptions();
+        public static ServerStartupOptions Default { get; } = new PipeServerStartupOptions();
 
         public static async Task<ServerStartupOptions> ParseAsync(string[] args)
         {

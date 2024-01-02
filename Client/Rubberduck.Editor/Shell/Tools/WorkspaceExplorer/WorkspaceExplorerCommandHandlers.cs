@@ -1,10 +1,9 @@
-﻿using Rubberduck.Editor.Shell.Tools.WorkspaceExplorer;
-using Rubberduck.UI.Command.Abstract;
+﻿using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.WorkspaceExplorer;
 using System.Collections.Generic;
 using System.Windows.Input;
 
-namespace Rubberduck.Editor.Commands
+namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
 {
     public class WorkspaceExplorerCommandHandlers : CommandHandlers
     {
@@ -13,7 +12,7 @@ namespace Rubberduck.Editor.Commands
             OpenDocumentCommand = openDocumentCommand;
         }
 
-        public override IEnumerable<CommandBinding> CreateCommandBindings() => 
+        public override IEnumerable<CommandBinding> CreateCommandBindings() =>
             Bind(
                 (WorkspaceExplorerCommands.OpenFileCommand, OpenDocumentCommand)
             );

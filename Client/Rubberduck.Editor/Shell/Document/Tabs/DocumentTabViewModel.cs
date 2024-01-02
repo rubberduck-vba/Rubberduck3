@@ -1,5 +1,8 @@
-﻿using Rubberduck.UI;
+﻿using Rubberduck.Editor.Shell.StatusBar;
+using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shell.Document;
+using Rubberduck.UI.Shell.StatusBar;
+using Rubberduck.UI.Windows;
 using System;
 
 namespace Rubberduck.Editor.Shell.Document.Tabs
@@ -7,19 +10,28 @@ namespace Rubberduck.Editor.Shell.Document.Tabs
     /// <summary>
     /// The base implementation of a view model for a document tab that may contain anything.
     /// </summary>
-    public abstract class DocumentTabViewModel : ViewModelBase, IDocumentTabViewModel
+    public abstract class DocumentTabViewModel : WindowViewModel, IDocumentTabViewModel
     {
-        public DocumentTabViewModel(Uri documentUri, string language, string title, object content, bool isReadOnly)
+        public DocumentTabViewModel(Uri documentUri, string language, string title, string content, bool isReadOnly,
+            ShowRubberduckSettingsCommand showSettingsCommand,
+            CloseToolWindowCommand closeToolWindowCommand,
+            IDocumentStatusViewModel activeDocumentStatus)
+            : base(showSettingsCommand, closeToolWindowCommand)
         {
             _uri = documentUri;
             _language = language;
-            _title = title;
             _header = title;
-            _content = content;
             _isReadOnly = isReadOnly;
+
+            Title = title;
+            TextContent = content;
+
+            Status = activeDocumentStatus;
         }
 
         public abstract SupportedDocumentType DocumentType { get; }
+
+        public IDocumentStatusViewModel Status { get; }
 
         private Uri _uri;
         public Uri DocumentUri
@@ -49,29 +61,15 @@ namespace Rubberduck.Editor.Shell.Document.Tabs
             }
         }
 
-        private string _title;
-        public string Title
+        private string _textContent;
+        public string TextContent
         {
-            get => _title;
+            get => _textContent;
             set
             {
-                if (_title != value)
+                if (_textContent != value)
                 {
-                    _title = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private object _content;
-        public object Content
-        {
-            get => _content;
-            set
-            {
-                if (_content != value)
-                {
-                    _content = value;
+                    _textContent = value;
                     OnPropertyChanged();
                 }
             }
@@ -120,15 +118,29 @@ namespace Rubberduck.Editor.Shell.Document.Tabs
             }
         }
 
-        private bool _isPinned;
-        public bool IsPinned
+        private string _documentFont = "Calibri";
+        public string DocumentFont
         {
-            get => _isPinned;
+            get => _documentFont;
             set
             {
-                if (_isPinned != value)
+                if (_documentFont != value)
                 {
-                    _isPinned = value;
+                    _documentFont = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private object _content;
+        public object ContentControl 
+        { 
+            get => _content; 
+            set
+            {
+                if (_content != value)
+                {
+                    _content = value;
                     OnPropertyChanged();
                 }
             }

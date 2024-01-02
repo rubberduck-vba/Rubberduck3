@@ -1,5 +1,6 @@
 ﻿using Rubberduck.InternalApi.Settings;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model.Editor.Tools
 {
@@ -7,9 +8,9 @@ namespace Rubberduck.SettingsProvider.Model.Editor.Tools
     {
         private static new readonly RubberduckSetting[] DefaultSettings =
             [
-                new ShowToolWindowOnStartupSetting(),
+                new ShowToolWindowOnStartupSetting { DefaultValue = true },
                 new AutoHideToolWindowSetting(),
-                new DefaultToolWindowLocationSetting(),
+                new DefaultToolWindowLocationSetting { DefaultValue = DockingLocation.DockLeft },
             ];
 
         public WorkspaceExplorerSettings()

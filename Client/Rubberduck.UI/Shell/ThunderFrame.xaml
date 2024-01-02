@@ -12,6 +12,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.ContentTemplate>
@@ -35,7 +37,37 @@
                                 <Border Grid.RowSpan="3" Background="{DynamicResource ThemeBackgroundMediumColorBrush}" />
                                 <local:DuckyBackgroundControl Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
 
-                                <DockPanel Grid.Row="0" VerticalAlignment="Top" Margin="2,2,0,0">
+                                <Border Grid.Row="0" CornerRadius="2">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="-1,0" EndPoint="1,0">
+                                            <GradientStop Offset="0" Color="Transparent" />
+                                            <GradientStop Offset="1" Color="{DynamicResource ThemeBackgroundDarkColor}" />
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Border.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Undock" Command="{Binding UndockToolTabCommand}" CommandParameter="{Binding}" />
+                                            <MenuItem Header="Auto hide" 
+                                                      IsCheckable="True"
+                                                      IsChecked="{Binding IsPinned, Converter={StaticResource InverseBoolConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      Visibility="{TemplateBinding local:ThunderFrame.ShowPinButton, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            <Separator />
+                                            <MenuItem Header="Close tab" 
+                                                      Command="{Binding CloseToolWindowCommand}" CommandParameter="{Binding}" />
+                                            <MenuItem Header="Settings" 
+                                                      Command="{Binding ShowSettingsCommand}" CommandParameter="{Binding ShowSettingsCommandParameter}" 
+                                                      Visibility="{Binding ShowGearButton, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                        </ContextMenu>
+                                    </Border.ContextMenu>
+                                </Border>
+
+                                <DockPanel Grid.Row="0"
+                                           VerticalAlignment="Top" 
+                                           HorizontalAlignment="Stretch" 
+                                           Margin="2,2,0,0">
+
+                                    <Thumb DockPanel.Dock="Top" x:Name="TitleBarThumb" Height="0" 
+                                           Style="{DynamicResource InvisibleThumbStyle}" />
                                     
                                     <local:FlatButton DockPanel.Dock="Right" VerticalAlignment="Center"
                                                       Height="16" Width="16"
@@ -63,8 +95,9 @@
                                     <Label DockPanel.Dock="Top" HorizontalAlignment="Left" VerticalAlignment="Center"
                                        Content="{Binding Title, RelativeSource={RelativeSource AncestorType=local:ThunderFrame, Mode=FindAncestor}}"
                                        Foreground="{DynamicResource ThemeTextColorBrush}"
-                                       FontWeight="SemiBold" FontSize="13"
+                                       FontWeight="SemiBold" FontSize="13" IsHitTestVisible="False"
                                        Visibility="{Binding ShowTitle, Converter={StaticResource BoolToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}"/>
+                                    
                                 </DockPanel>
 
                                 <Border Grid.Row="1" BorderThickness="0" CornerRadius="8" Margin="4"

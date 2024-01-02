@@ -25,7 +25,7 @@
     <SolidColorBrush x:Key="ScrollBar.Pressed.Border" Color="{DynamicResource ThemeAccent1DarkColor}"/>
     <SolidColorBrush x:Key="ScrollBar.Pressed.Thumb" Color="{DynamicResource ThemeAccent1DarkColor}"/>
     <SolidColorBrush x:Key="ScrollBar.Pressed.Glyph" Color="{DynamicResource ThemeAccent1TextColor}"/>
-    <SolidColorBrush x:Key="ScrollBar.Disabled.Background" Color="{DynamicResource ThemeBlackMediumColor}"/>
+    <SolidColorBrush x:Key="ScrollBar.Disabled.Background" Color="{DynamicResource ThemeBackgroundDarkColor}"/>
     <SolidColorBrush x:Key="ScrollBar.Disabled.Border" Color="{DynamicResource ThemeBackgroundDarkColor}"/>
     <SolidColorBrush x:Key="ScrollBar.Disabled.Glyph" Color="{DynamicResource ThemeTextInactiveColor}"/>
     

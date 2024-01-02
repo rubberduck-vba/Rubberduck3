@@ -28,44 +28,25 @@ namespace Rubberduck.UI.Command
             var shell = _shell.ViewModel;
             _vm.IsSelected = true;
 
-            if (!shell.ToolWindows.Any(e => e.Title == _vm.Title) || _view is null)
-            {
-                if (_view is null)
-                {
-                    _view = new TView { DataContext = _vm };
-                    _vm.Content = _view; // <~ FIXME WTF
-
-                    // TODO get from workspace if available, otherwise get from settings/defaults:
-                    switch (_vm.DockingLocation)
-                    {
-                        case DockingLocation.DockLeft:
-                            _shell.View.LeftPaneToolTabs.AddToSource(_view);
-                            break;
-                        case DockingLocation.DockRight:
-                            _shell.View.RightPaneToolTabs.AddToSource(_view);
-                            break;
-                        case DockingLocation.DockBottom:
-                            _shell.View.BottomPaneToolTabs.AddToSource(_view);
-                            break;
-                    }
-                }
-
-                shell.ToolWindows.Add(_vm);
-            }
+            _vm.ContentControl = _view ??= new TView() { DataContext = _vm };
 
             switch (_vm.DockingLocation)
             {
                 case DockingLocation.DockLeft:
+                    shell.LeftPanelToolWindows.Add(_vm);
                     _shell.View.LeftPaneExpander.IsExpanded = true;
                     break;
                 case DockingLocation.DockRight:
+                    shell.RightPanelToolWindows.Add(_vm);
                     _shell.View.RightPaneExpander.IsExpanded = true;
                     break;
                 case DockingLocation.DockBottom:
+                    shell.BottomPanelToolWindows.Add(_vm);
                     _shell.View.BottomPaneExpander.IsExpanded = true;
                     break;
             }
 
+            _shell.View.InvalidateVisual();
             await Task.CompletedTask;
         }
     }

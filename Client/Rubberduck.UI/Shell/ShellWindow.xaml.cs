@@ -1,4 +1,5 @@
-﻿using Rubberduck.SettingsProvider.Model.Editor.Tools;
+﻿using Dragablz;
+using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Windows;
@@ -34,8 +35,6 @@ namespace Rubberduck.UI.Shell
             BottomPaneExpander.MouseLeave += ToolPaneExpanderMouseLeave;
         }
 
-        public void AddDocument(object tab) => DocumentPaneTabs.AddToSource(tab);
-
         private IToolPanelViewModel GetToolPanelModel(Expander expander)
         {
             var vm = (IShellWindowViewModel)DataContext;
@@ -62,7 +61,11 @@ namespace Rubberduck.UI.Shell
             {
                 var vm = (IShellWindowViewModel)DataContext;
                 var toolPanel = GetToolPanelModel(expander);
-                var toolwindows = vm.ToolWindows.Where(e => e.DockingLocation == toolPanel.PanelLocation);
+                var toolwindows = vm.LeftPanelToolWindows 
+                    .Concat(vm.RightPanelToolWindows)
+                    .Concat(vm.BottomPanelToolWindows)
+                    .Where(e => e.DockingLocation == toolPanel.PanelLocation);
+
                 toolPanel.IsPinned = toolwindows.Any(e => e.IsPinned);
                 expander.IsExpanded = toolPanel.IsPinned;
             }
@@ -75,7 +78,9 @@ namespace Rubberduck.UI.Shell
                 var hasTools = false;
                 var vm = GetToolPanelModel(expander);
                 var shell = (IShellWindowViewModel)DataContext;
-                hasTools = shell.ToolWindows.Any(e => e.DockingLocation == vm.PanelLocation);
+                hasTools = shell.LeftPanelToolWindows
+                    .Concat(shell.RightPanelToolWindows)
+                    .Concat(shell.BottomPanelToolWindows).Any(e => e.DockingLocation == vm.PanelLocation);
 
                 expander.IsExpanded = hasTools || e.LeftButton == MouseButtonState.Pressed; // FIXME not just pressed, but dragging something
             }
@@ -83,6 +88,11 @@ namespace Rubberduck.UI.Shell
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            if (e.NewValue is IShellWindowViewModel vm)
+            {
+                ((InterTabController)Resources["InterToolTabController"]).InterTabClient = vm.InterToolTabClient;
+                ((InterTabController)Resources["InterTabController"]).InterTabClient = vm.InterTabClient;
+            }
             if (e.NewValue is ICommandBindingProvider provider)
             {
                 var bindings = SystemCommandHandlers.CreateCommandBindings().Concat(provider.CommandBindings).ToArray();
@@ -110,33 +120,6 @@ namespace Rubberduck.UI.Shell
             Width = Math.Max(MinWidth, newWidth);
 
             e.Handled = true;
-        }
-
-        private void LeftPanelToolsSource_Filter(object sender, FilterEventArgs e)
-        {
-            e.Accepted = false;
-            if (e.Item is IToolWindowViewModel vm)
-            {
-                e.Accepted = vm.DockingLocation == DockingLocation.DockLeft;
-            }
-        }
-
-        private void RightPanelToolsSource_Filter(object sender, FilterEventArgs e)
-        {
-            e.Accepted = false;
-            if (e.Item is IToolWindowViewModel vm)
-            {
-                e.Accepted = vm.DockingLocation == DockingLocation.DockRight;
-            }
-        }
-
-        private void BottomPanelToolsSource_Filter(object sender, FilterEventArgs e)
-        {
-            e.Accepted = false;
-            if (e.Item is IToolWindowViewModel vm)
-            {
-                e.Accepted = vm.DockingLocation == DockingLocation.DockBottom;
-            }
         }
 
         private void OnResizeLeftPanelDragDelta(object sender, DragDeltaEventArgs e)
@@ -170,6 +153,16 @@ namespace Rubberduck.UI.Shell
             panel.Height = Math.Min(ActualHeight - 32, newHeight);
 
             e.Handled = true;
+        }
+
+        private void OnToolPanelExpanderDrop(object sender, DragEventArgs e)
+        {
+            var data = e.Data.GetData(typeof(object));
+        }
+
+        private void OnToolPanelExpanderPreviewDrop(object sender, DragEventArgs e)
+        {
+            var data = e.Data.GetData(typeof(object));
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Rubberduck.SettingsProvider.Model.Editor.Tools
         }
 
         [JsonIgnore]
-        WorkspaceExplorerSettings WorkspaceExplorerSettings => GetSetting<WorkspaceExplorerSettings>() ?? WorkspaceExplorerSettings.Default;
+        public WorkspaceExplorerSettings WorkspaceExplorerSettings => GetSetting<WorkspaceExplorerSettings>() ?? WorkspaceExplorerSettings.Default;
 
         public static ToolsSettings Default { get; } = new ToolsSettings() { Value = DefaultSettings, DefaultValue = DefaultSettings };
         ToolsSettings IDefaultSettingsProvider<ToolsSettings>.Default => Default;

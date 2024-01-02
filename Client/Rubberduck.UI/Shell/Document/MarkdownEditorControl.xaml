@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Rubberduck.UI.Shell.Document" 
              xmlns:mdxaml="clr-namespace:MdXaml;assembly=MdXaml" 
              xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
+             xmlns:converters="clr-namespace:Rubberduck.UI.Converters" 
              xmlns:vm="clr-namespace:Rubberduck.UI.Windows" 
              d:DataContext="{d:DesignInstance Type=vm:ITabViewModel, IsDesignTimeCreatable=False}"
              mc:Ignorable="d" 
@@ -16,16 +17,17 @@
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <converters:BooleanToClickActionConverter x:Key="BoolToClickActionConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <shell:ThunderFrame ShowTitle="False" ShowAcceptButton="False" ShowCancelButton="False">
+    <shell:ThunderFrame x:Name="ThunderFrame" ShowTitle="False" ShowAcceptButton="False" ShowCancelButton="False">
         <Grid Margin="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Margin="2">
                 <shell:FlatToggleButton VerticalAlignment="Center"
                                     Height="16" Width="16"
                                     ToolTip="Show/hide preview"
@@ -34,6 +36,14 @@
                                     Icon="{DynamicResource HideIcon}" 
                                     CheckedIcon="{DynamicResource ShowIcon}" 
                                     d:IconSource="{DynamicResource HideIcon}"/>
+                
+                <shell:FlatToggleButton VerticalAlignment="Center"
+                                    Height="16" Width="16"
+                                    ToolTip="Enable/disable links"
+                                    IsChecked="{Binding EnableHyperlinks}"
+                                    Icon="{DynamicResource DisabledLinksIcon}" 
+                                    CheckedIcon="{DynamicResource EnabledLinksIcon}" 
+                                    d:IconSource="{DynamicResource DisabledLinksIcon}"/>
             </StackPanel>
 
             <DockPanel Grid.Row="1">
@@ -52,16 +62,33 @@
                             </Border>
                         </DataTemplate>
                     </Expander.ContentTemplate>
-                    <mdxaml:MarkdownScrollViewer Markdown="{Binding Content, Mode=OneWay}"
-                                             MinWidth="200" 
-                                             Foreground="{DynamicResource ThemeTextBackgroundColorBrush}" />
+
+                    <mdxaml:MarkdownScrollViewer Markdown="{Binding TextContent, Mode=OneWay}"
+                                                 IsSelectionEnabled="True"
+                                                 IsEnabled="True"
+                                                 BorderBrush="{DynamicResource ThemeWhiteMediumColorBrush}" BorderThickness="1"
+                                                 MinWidth="200">
+                        <mdxaml:MarkdownScrollViewer.Style>
+                            <Style TargetType="mdxaml:MarkdownScrollViewer">
+                            </Style>
+                        </mdxaml:MarkdownScrollViewer.Style>
+                        <mdxaml:MarkdownScrollViewer.MarkdownStyle>
+                            <Style TargetType="FlowDocument">
+                                <Setter Property="Background" Value="{DynamicResource ThemeWhiteLightColorBrush75}" />
+                                <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
+                                <Setter Property="FontFamily" Value="{Binding DocumentFont}" />
+                            </Style>
+                        </mdxaml:MarkdownScrollViewer.MarkdownStyle>
+                    </mdxaml:MarkdownScrollViewer>
                 </Expander>
 
-                <shell:BindableTextEditor DockPanel.Dock="Top" Text="{Binding Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                      Background="{DynamicResource ThemeBackgroundDarkColorBrush}"
-                                      Foreground="{DynamicResource ThemeTextBackgroundColorBrush}"
-                                      Visibility="{Binding IsReadOnly, Converter={StaticResource BoolToHiddenVisibility}}"
-                                      ShowLineNumbers="True" />
+                <shell:BindableTextEditor DockPanel.Dock="Top" 
+                                          Text="{Binding TextContent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          Background="{DynamicResource ThemeBackgroundDarkColorBrush}"
+                                          Foreground="{DynamicResource ThemeTextBackgroundColorBrush}"
+                                          Visibility="{Binding IsReadOnly, Converter={StaticResource BoolToHiddenVisibility}}"
+                                          ShowLineNumbers="True"
+                                          EnableHyperlinks="{Binding EnableHyperlinks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </DockPanel>
 
         </Grid>

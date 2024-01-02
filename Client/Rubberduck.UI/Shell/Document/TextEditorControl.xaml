@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Rubberduck.UI.Shell.Document"
              xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
              xmlns:vm="clr-namespace:Rubberduck.UI.Windows" 
-             d:DataContext="{d:DesignInstance Type=vm:ITabViewModel, IsDesignTimeCreatable=False}"
+             d:DataContext="{d:DesignInstance Type=local:IDocumentTabViewModel, IsDesignTimeCreatable=False}"
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="600">
     <UserControl.Resources>
@@ -17,15 +17,17 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <shell:ThunderFrame ShowTitle="False" ShowAcceptButton="False" ShowCancelButton="False">
+    <shell:ThunderFrame x:Name="ThunderFrame" ShowTitle="False" ShowAcceptButton="False" ShowCancelButton="False">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <shell:BindableTextEditor Grid.Row="1" Text="{Binding Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            <shell:BindableTextEditor Grid.Row="1" Text="{Binding TextContent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      TextChanged="OnTextChanged"
                                       ShowLineNumbers="True" />
+
         </Grid>
     </shell:ThunderFrame>
 </UserControl>

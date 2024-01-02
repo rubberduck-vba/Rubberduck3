@@ -18,9 +18,11 @@ namespace Rubberduck.UI.Windows
 
     public interface ITabViewModel : INotifyPropertyChanged
     {
+        object ContentControl { get; set; }
+
         string Title { get; }
         object Header { get; set; }
-        object Content { get; set; }
+        string TextContent { get; set; }
         bool IsSelected { get; set; }
         bool IsPinned { get; set; }
     }

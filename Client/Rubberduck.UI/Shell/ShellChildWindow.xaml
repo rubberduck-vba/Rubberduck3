@@ -4,25 +4,76 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
+        xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
         xmlns:vm="clr-namespace:Rubberduck.UI.Windows" 
+        xmlns:statusbar="clr-namespace:Rubberduck.UI.Shell.StatusBar" xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
         d:DataContext="{d:DesignInstance Type=vm:IDragablzWindowViewModel}"
+        ContentRendered="OnContentRendered" 
         mc:Ignorable="d"
         Title="{Binding Title}"
-        Height="300" Width="300">
+        Style="{DynamicResource ThemedWindowStyle}"
+        ShowInTaskbar="True"
+        Height="300" Width="480">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Shell/ShellResources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <dragablz:InterTabController x:Key="InterTabController" x:Shared="False" 
+                                         MoveWindowWithSolitaryTabs="False"
+                                         InterTabClient="{Binding InterTabClient}" 
+                                         Partition="documents" />
+
+            <DataTemplate x:Key="FloatingPanelBranchTemplate">
+                <dragablz:TabablzControl Style="{DynamicResource DocumentTabControlStyle}"
+                                         ItemTemplate="{DynamicResource DocumentTabTemplate}"
+                                         InterTabController="{StaticResource InterTabController}"/>
+            </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <dragablz:TabablzControl x:Name="Tabz" TabStripPlacement="Top" 
-                                 ItemsSource="{Binding Tabs}"
-                                 Background="{DynamicResource ThemeBackgroundColorBrush}">
-            <dragablz:TabablzControl.InterTabController>
-                <dragablz:InterTabController InterTabClient="{Binding InterTabClient}" />
-            </dragablz:TabablzControl.InterTabController>
-        </dragablz:TabablzControl>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <dockablz:Layout Grid.Row="1" Partition="documents" Margin="2">
+            <dockablz:Layout.BranchTemplate>
+                <DataTemplate DataType="local:IShellWindowViewModel">
+                    <dragablz:TabablzControl Style="{DynamicResource DocumentTabControlStyle}"
+                                     InterTabController="{StaticResource InterTabController}"
+                                     ItemTemplate="{DynamicResource DocumentTabItemTemplate}"
+                                     ItemContainerStyle="{DynamicResource TrapezoidTabItemStyle}"
+                                     HeaderMemberPath="Title"
+                                     ShowDefaultCloseButton="True"/>
+                </DataTemplate>
+            </dockablz:Layout.BranchTemplate>
+            <dragablz:TabablzControl x:Name="DocumentPaneTabs" 
+                                     InterTabController="{StaticResource InterTabController}"
+                                     ItemContainerStyle="{DynamicResource TrapezoidTabItemStyle}"
+                                     SelectedIndex="0"
+                                     HeaderMemberPath="Title"
+                                     ShowDefaultCloseButton="True">
+                <dragablz:TabablzControl.ContentTemplate>
+                    <DataTemplate>
+                        <ContentControl Content="{Binding ContentControl}" />
+                    </DataTemplate>
+                </dragablz:TabablzControl.ContentTemplate>
+            </dragablz:TabablzControl>
+        </dockablz:Layout>
+
+        <statusbar:StatusBarControl x:Name="StatusBar" Grid.Row="2" />
+
+        <Thumb Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right" IsEnabled="True" IsHitTestVisible="True" WindowChrome.IsHitTestVisibleInChrome="True"
+               DragDelta="OnResizeGripDragDelta" Cursor="SizeNWSE">
+            <Thumb.Template>
+                <ControlTemplate>
+                    <ResizeGrip Margin="0" />
+                </ControlTemplate>
+            </Thumb.Template>
+        </Thumb>
     </Grid>
 </Window>

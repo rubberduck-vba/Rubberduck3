@@ -13,13 +13,17 @@ namespace Rubberduck.UI.Message
         /// Parameterless constructor for designer view.
         /// </summary>
         public MessageWindowViewModel()
+            : base(null!, null!)
         {
             _actions = new[] { new AcceptMessageActionCommand(null!, MessageAction.CloseAction) };
         }
 
-        public MessageWindowViewModel(MessageModel model, MessageActionCommand[] actions)
+        public MessageWindowViewModel(MessageModel model, MessageActionCommand[] actions, 
+            ShowRubberduckSettingsCommand showSettingsCommand,
+            CloseToolWindowCommand closeToolWindowCommand)
+            : base(showSettingsCommand, closeToolWindowCommand)
         {
-            Key = model.Key;
+            SettingKey = model.Key;
             Message = model.Message;
             Verbose = model.Verbose;
             Title = model.Title;
@@ -28,7 +32,6 @@ namespace Rubberduck.UI.Message
             _actions = actions;
         }
 
-        public string Key { get; init; } = "DT-Message";
         public string Message { get; init; } = "Message goes here";
         public string? Verbose { get; init; } = null;
         public LogLevel Level { get; init; } = LogLevel.Information;

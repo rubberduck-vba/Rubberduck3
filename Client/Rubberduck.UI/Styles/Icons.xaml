@@ -22,8 +22,13 @@
     <BitmapImage x:Key="LockedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/lock-solid.png" />
     <BitmapImage x:Key="UnlockedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/lock-open-solid.png" />
 
+    <BitmapImage x:Key="EnabledLinksIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/link-solid.png" />
+    <BitmapImage x:Key="DisabledLinksIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/link-slash-solid.png" />
+
     <BitmapImage x:Key="ShowIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/eye-solid.png" />
     <BitmapImage x:Key="HideIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/eye-slash-solid.png" />
+
+    <BitmapImage x:Key="CancelIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/ban-solid.png" />
 
     <BitmapImage x:Key="SynchronizeIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/arrows-spin-solid.png"/>
 
@@ -49,6 +54,11 @@
     <BitmapImage x:Key="EraserIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/eraser-solid.png" />
     <BitmapImage x:Key="PauseIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/pause-solid.png" />
     <BitmapImage x:Key="CopyIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/copy-solid.png" />
+
+    <BitmapImage x:Key="ClearFileIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/file-regular.png" />
+    <BitmapImage x:Key="ClearTextFileIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/file-lines-regular.png" />
+    <BitmapImage x:Key="ClearCodeFileIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/file-code-regular.png" />
+    <BitmapImage x:Key="ShieldFileIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/file-shield-solid.png" />
 
     <!-- RD2.* 16x16 Fugue icons -->
     <BitmapImage x:Key="ErrorIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/cross-circle.png" />

@@ -1,26 +1,74 @@
-﻿using Rubberduck.UI;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.ServerPlatform;
+using Rubberduck.UI;
+using Rubberduck.UI.Command;
+using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Shell.StatusBar;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace Rubberduck.Editor.Shell.StatusBar
 {
-    public class ShellStatusBarViewModel : ViewModelBase, IShellStatusBarViewModel
+    public class ShellStatusBarViewModel : StatusBarViewModel, IShellStatusBarViewModel
     {
-        private string _statusText = "Ready";
-        public string StatusText
+        private readonly IWorkDoneProgressStateService _serverProgressService;
+
+        public ShellStatusBarViewModel(ILanguageServerConnectionStatusProvider lspConnectionStatusProvider,
+            IWorkDoneProgressStateService serverProgressService,
+            ShowLanguageServerTraceCommand showLanguageServerTraceCommand, 
+            IDocumentStatusViewModel activeDocumentStatus)
+            : base(lspConnectionStatusProvider, showLanguageServerTraceCommand)
         {
-            get => _statusText;
-            set
+            _serverProgressService = serverProgressService;
+            _activeDocumentStatus = activeDocumentStatus;
+
+            _serverProgressService.Progress += OnServerProgress;
+        }
+
+        private string? _currentProgressToken;
+
+        private void OnServerProgress(object? sender, ProgressEventArgs e)
+        {
+            if (e.Value is null) // progress token was just created
             {
-                if (_statusText != value)
+                _currentProgressToken = e.Token.ToString();
+                ProgressMaxValue = 100;
+                return;
+            }
+
+            if (e.Token.ToString() == _currentProgressToken)
+            {
+                CanCancelWorkDoneProgress = e.Value.Cancellable;
+                ProgressMessage = e.Value.Message;
+                if (e.Value.Percentage.HasValue)
                 {
-                    _statusText = value;
-                    OnPropertyChanged();
+                    ProgressValue = e.Value.Percentage.Value;
+                }
+
+                if (e.Value.Kind == WorkDoneProgressKind.End)
+                {
+                    ProgressMaxValue = 0;
+                    ProgressValue = 0;
+                    _currentProgressToken = null;
                 }
             }
         }
 
+        private string? _progressMessage;
+        public string? ProgressMessage
+        {
+            get => _progressMessage;
+            set
+            {
+                if (_progressMessage != value)
+                {
+                    _progressMessage = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         private int _progressValue;
         public int ProgressValue
         {
@@ -48,6 +96,66 @@ namespace Rubberduck.Editor.Shell.StatusBar
                 }
             }
         }
+        
+        private bool _canCancelWorkDoneProgress;
+        public bool CanCancelWorkDoneProgress
+        {
+            get => _canCancelWorkDoneProgress;
+            set
+            {
+                if (_canCancelWorkDoneProgress != value)
+                {
+                    _canCancelWorkDoneProgress = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public ICommand CancelWorkDoneProgressCommand { get; set; }
+
+        private readonly ObservableCollection<INotificationViewModel> _notifications = [];
+        public ICollection<INotificationViewModel> Notifications => _notifications;
+
+        private readonly IDocumentStatusViewModel _activeDocumentStatus;
+        public IDocumentStatusViewModel ActiveDocumentStatus => _activeDocumentStatus;
+    }
+
+    public class StatusBarViewModel : ViewModelBase, ILanguageServerStatusViewModel
+    {
+        private readonly ILanguageServerConnectionStatusProvider _lspConnectionStatusProvider;
+
+        public StatusBarViewModel(ILanguageServerConnectionStatusProvider lspConnectionStatusProvider,
+            ShowLanguageServerTraceCommand showLanguageServerTraceCommand)
+        {
+            ShowLanguageServerTraceCommand = showLanguageServerTraceCommand;
+            _statusText = _serverConnectionState.ToString();
+            _lspConnectionStatusProvider = lspConnectionStatusProvider;
+
+            _lspConnectionStatusProvider.Connecting += OnLanguageServerConnecting;
+            _lspConnectionStatusProvider.Connected += OnLanguageServerConnected;
+            _lspConnectionStatusProvider.Disconnected += OnLanguageServerDisconnected;
+        }
+
+        private void OnLanguageServerDisconnected(object? sender, EventArgs e) => ServerConnectionState = ServerConnectionState.Disconnected;
+        private void OnLanguageServerConnected(object? sender, EventArgs e) => ServerConnectionState = ServerConnectionState.Connected;
+        private void OnLanguageServerConnecting(object? sender, EventArgs e) => ServerConnectionState = ServerConnectionState.Connecting;
+        
+
+        private ServerConnectionState _serverConnectionState = ServerConnectionState.Disconnected;
+        public ServerConnectionState ServerConnectionState
+        {
+            get => _serverConnectionState;
+            set
+            {
+                if (_serverConnectionState != value)
+                {
+                    _serverConnectionState = value;
+                    OnPropertyChanged();
+
+                    IsConnected = _serverConnectionState == ServerConnectionState.Connected;
+                    StatusText = _serverConnectionState.ToString();
+                }
+            }
+        }
 
         private bool _isConnected;
         public bool IsConnected
@@ -63,49 +171,20 @@ namespace Rubberduck.Editor.Shell.StatusBar
             }
         }
 
-        private readonly ObservableCollection<INotificationViewModel> _notifications = new();
-        public ICollection<INotificationViewModel> Notifications => _notifications;
-    }
+        public ICommand ShowLanguageServerTraceCommand { get; }
 
-    public class StatusBarViewModel : ViewModelBase
-    {
-        private ServerConnectionState _serverConnectionState = ServerConnectionState.Disconnected;
-        public ServerConnectionState ServerConnectionState
-        {
-            get => _serverConnectionState;
-            set
-            {
-                if (_serverConnectionState != value)
-                {
-                    _serverConnectionState = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public bool ShowDocumentStatusItems { get; set; } = false;
-
-        private string _serverStateText = ServerConnectionState.Disconnected.ToString(); // TODO localize
+        private string _statusText;
         public string StatusText
         {
-            get => _serverStateText;
+            get => _statusText;
             set
             {
-                if (value != _serverStateText)
+                if (_statusText != value)
                 {
-                    _serverStateText = value;
+                    _statusText = value;
                     OnPropertyChanged();
                 }
             }
         }
-
-        public int DocumentLines { get; set; }
-        public int DocumentLength { get; set; }
-        public int CaretOffset { get; set; }
-        public int CaretLine { get; set; }
-        public int CaretColumn { get; set; }
-        public int IssuesCount { get; set; }
-        public int ProgressValue { get; set; }
-        public int ProgressMaxValue { get; set; }
     }
 }

@@ -11,6 +11,7 @@ using Rubberduck.Editor.DialogServices.NewProject;
 using Rubberduck.Editor.RPC.EditorServer;
 using Rubberduck.Editor.RPC.EditorServer.Handlers.Lifecycle;
 using Rubberduck.Editor.RPC.EditorServer.Handlers.Workspace;
+using Rubberduck.Editor.RPC.LanguageServerClient;
 using Rubberduck.Editor.RPC.LanguageServerClient.Handlers;
 using Rubberduck.Editor.Shell;
 using Rubberduck.Editor.Shell.Chrome;
@@ -52,7 +53,6 @@ using System.IO.Abstractions;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Rubberduck.Editor
 {
@@ -97,7 +97,7 @@ namespace Rubberduck.Editor
                 _settings = _serviceProvider.GetRequiredService<RubberduckSettingsProvider>();
 
                 var splash = _serviceProvider.GetRequiredService<SplashService>();
-                splash.Show();
+                splash.Show(WindowSize.Splash);
 
                 splash.UpdateStatus("Loading configuration...");
                 _settings.ClearCache();
@@ -114,10 +114,14 @@ namespace Rubberduck.Editor
                     throw new InvalidOperationException("Editor is not configured for standalone execution.");
                 }
 
-                splash.UpdateStatus("Initializing language server protocol (editor/server)...");
-                await _languageClient.StartupAsync();
+                if (!string.IsNullOrWhiteSpace(_options.WorkspaceRoot))
+                {
+                    splash.UpdateStatus("Initializing language server protocol (editor/server)...");
+                    await _languageClient.StartupAsync(new Uri(_options.WorkspaceRoot));
+                }
 
                 splash.UpdateStatus("Quack!");
+
                 ShowEditor();
                 splash.Close();
             }
@@ -137,17 +141,30 @@ namespace Rubberduck.Editor
             var fileSystem = _serviceProvider.GetRequiredService<IFileSystem>();
             var path = fileSystem.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Rubberduck", "Templates", "Welcome.md");
             var content = fileSystem.File.ReadAllText(path);
-            var welcome = new MarkdownDocumentTabViewModel(new Uri(path), "Welcome", content);
-            model.Documents.Add(welcome);
 
-            // prompt for new workspace here if there's no addin host?
+            var showSettingsCommand = _serviceProvider.GetRequiredService<ShowRubberduckSettingsCommand>();
+            var closeToolWindowCommand = _serviceProvider.GetRequiredService<CloseToolWindowCommand>();
+            var activeDocumentStatus = _serviceProvider.GetRequiredService<IDocumentStatusViewModel>();
+            var welcome = new MarkdownDocumentTabViewModel(new Uri(path), "Welcome", content, isReadOnly:true, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus);
 
             var view = _shell ??= new ShellWindow() { DataContext = model };
+            
             var welcomeTabContent = new MarkdownEditorControl() { DataContext = welcome };
-            view.AddDocument(welcomeTabContent);
+            welcome.ContentControl = welcomeTabContent;
+            welcome.IsSelected = true;
+
+             // prompt for new workspace here if there's no addin host?
+
             view.Show();
+            model.DocumentWindows.Add(welcome);
+            model.ActiveDocumentTab = welcome;
+
+            if (_settings.Settings.EditorSettings.ToolsSettings.WorkspaceExplorerSettings.ShowOnStartup)
+            {
+                _serviceProvider.GetRequiredService<ShowWorkspaceExplorerCommand>().Execute(null);
+            }
         }
-        
+
         protected override void OnExit(ExitEventArgs e)
         {
             var level = _settings.Settings.LoggerSettings.TraceLevel.ToTraceLevel();
@@ -191,7 +208,11 @@ namespace Rubberduck.Editor
         private void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<Func<ILanguageServer>>(provider => () => _editorServer.EditorServer);
-            services.AddSingleton<Func<ILanguageClient>>(provider => () => _languageClient.LanguageClient);
+            services.AddSingleton<Func<ILanguageClient?>>(provider => () => _languageClient.LanguageClient);
+            services.AddSingleton<ILanguageClientService, LanguageClientService>();
+            services.AddSingleton<LanguageClientApp>(provider => _languageClient);
+            services.AddSingleton<ILanguageServerConnectionStatusProvider, LanguageClientService>(provider => (LanguageClientService)provider.GetRequiredService<ILanguageClientService>());
+
             services.AddSingleton<ServerStartupOptions>(provider => _options);
             services.AddSingleton<Process>(provider => Process.GetProcessById((int)_options.ClientProcessId));
 
@@ -281,6 +302,8 @@ namespace Rubberduck.Editor
             services.AddSingleton<CloseToolWindowCommand>();
             services.AddSingleton<OpenLogFileCommand>();
             services.AddSingleton<ShowRubberduckSettingsCommand>();
+
+            services.AddSingleton<IDocumentStatusViewModel, ActiveDocumentStatusViewModel>();
         }
 
         public void Dispose()
@@ -288,64 +311,6 @@ namespace Rubberduck.Editor
             _editorServer?.Dispose();
             _languageClient?.Dispose();
             _tokenSource.Dispose();
-        }
-    }
-
-    public class WorkspaceRootResolver
-    {
-        private readonly ILogger _logger;
-        private readonly ISettingsProvider<RubberduckSettings> _settings;
-
-        public WorkspaceRootResolver(ILogger logger, ISettingsProvider<RubberduckSettings> settings)
-        {
-            _logger = logger;
-            _settings = settings;
-        }
-
-        protected TraceLevel TraceLevel => _settings.Settings.LoggerSettings.TraceLevel.ToTraceLevel();
-
-        public Uri GetWorkspaceRootUri(ServerStartupOptions options)
-        {
-            var settings = _settings.Settings.LanguageClientSettings;
-            var setting = settings.WorkspaceSettings.GetSetting<DefaultWorkspaceRootSetting>();
-            var uri = setting.DefaultValue;
-
-            var argsRoot = options.WorkspaceRoot;
-
-            if (argsRoot is null && options.ClientProcessId == default && settings.RequireAddInHost)
-            {
-                _logger.LogDebug("An add-in host is required and should have provided a workspace root command-line argument. The current configuration does not support standalone execution.");
-                throw new NotSupportedException("An add-in host is required and should have provided a workspace root command-line argument. The current configuration does not support standalone execution.");
-            }
-            else if (argsRoot is null)
-            {
-                // editor is running standalone without an addin client connection.
-                _logger.LogDebug("No workspace root commad-line argument was specified, but configuration supports standalone execution. Using default workspace root; there is no project file or workspace folder yet.");
-                return setting.DefaultValue;
-            }
-
-            if (Uri.TryCreate(argsRoot, UriKind.Absolute, out var argsRootUri))
-            {
-                uri = argsRootUri;
-            }
-            else
-            {
-                _logger.LogWarning("Could not parse value '{argsRoot}' into a valid URI. Falling back to default workspace root.", argsRoot);
-            }
-
-            if (settings.WorkspaceSettings.RequireDefaultWorkspaceRootHost && !uri.LocalPath.StartsWith(setting.DefaultValue.LocalPath))
-            {
-                _logger.LogWarning(TraceLevel, $"Configuration requires a workspace root under the default folder, but a folder under a different root was supplied.", uri.LocalPath);
-                throw new NotSupportedException($"Configuration requires a workspace root under the default folder, but a folder under a different root was supplied.");
-            }
-
-            if (!settings.WorkspaceSettings.EnableUncWorkspaces && uri.IsUnc)
-            {
-                _logger.LogWarning(TraceLevel, $"UNC URI is not allowed: {nameof(settings.WorkspaceSettings.EnableUncWorkspaces)} setting is disabled. Default setting value will be used instead.", uri.ToString());
-                uri = setting.DefaultValue;
-            }
-
-            return uri;
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Rubberduck.UI.Shell
             ////Style hyperlinks so they look like comments. Note - this needs to move if used for user code.
             //TextArea.TextView.LinkTextUnderline = false;
             //TextArea.TextView.LinkTextForegroundBrush = new SolidColorBrush(Colors.Green);
-            Options.RequireControlModifierForHyperlinkClick = true;
+            Options.RequireControlModifierForHyperlinkClick = false;
             Options.EnableHyperlinks = true;
             Options.EnableEmailHyperlinks = false;
             Options.AllowScrollBelowDocument = true; // should be false if folding is disabled
@@ -29,7 +29,25 @@ namespace Rubberduck.UI.Shell
             Options.HighlightCurrentLine = true;
             Options.HideCursorWhileTyping = true;
             Options.ShowColumnRuler = false;
+
+            EnableHyperlinks = true;
         }
+
+        public bool EnableHyperlinks
+        {
+            get => Options.EnableHyperlinks;
+            set
+            {
+                if (Options.EnableHyperlinks != value)
+                {
+                    Options.EnableHyperlinks = value;
+                    OnOptionChanged(new(nameof(EnableHyperlinks)));
+                }
+            }
+        }
+
+        public static readonly DependencyProperty EnableHyperlinksProperty =
+            DependencyProperty.Register(nameof(EnableHyperlinks), typeof(bool), typeof(BindableTextEditor), new PropertyMetadata(false));
 
         public new string Text
         {

@@ -22,6 +22,6 @@ namespace Rubberduck.Editor.Splash
 
         protected override bool PreconditionCheck() => Settings.GeneralSettings.ShowSplash;
 
-        protected override SplashWindow CreateWindow(ISplashViewModel model) => new(model) { Height = 380, Width = 340 };
+        protected override SplashWindow CreateWindow(ISplashViewModel model) => new(model);
     }
 }

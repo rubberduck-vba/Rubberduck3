@@ -29,12 +29,12 @@ namespace Rubberduck.ServerPlatform
     public interface IWorkDoneProgressStateService
     {
         event EventHandler<ProgressEventArgs> Progress;
-        void OnProgress(ProgressToken token, WorkDoneProgressReport value);
+        void OnProgress(ProgressToken token, WorkDoneProgressReport? value = null);
     }
 
     public class WorkDoneProgressStateService : ServiceBase, IWorkDoneProgressStateService
     {
-        private readonly ConcurrentDictionary<ProgressToken, WorkDoneProgressReport> _progressTokens = new();
+        private readonly ConcurrentDictionary<ProgressToken, WorkDoneProgressReport?> _progressTokens = new();
         public event EventHandler<ProgressEventArgs> Progress = delegate { };
 
         public WorkDoneProgressStateService(ILogger<WorkDoneProgressStateService> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
@@ -42,10 +42,10 @@ namespace Rubberduck.ServerPlatform
         {
         }
 
-        public override void OnProgress(ProgressToken token, WorkDoneProgressReport value)
+        public override void OnProgress(ProgressToken token, WorkDoneProgressReport? value = null)
         {
             var tokens = _progressTokens;
-            if (tokens.TryGetValue(token, out var current))
+            if (tokens.TryGetValue(token, out var current) && value != null && current != null)
             {
                 if (value.Kind == WorkDoneProgressKind.Begin)
                 {
@@ -65,10 +65,17 @@ namespace Rubberduck.ServerPlatform
                     return;
                 }
             }
+            else if (value != null && current == null)
+            {
+                LogDebug("Received a new progress token.", $"ProgressToken: {token}");
+            }
 
             _progressTokens[token] = value;
-            LogInformation("Updated WorkDoneProgress token value.", $"Token: {token} | Value: {value.Percentage}%");
-            Progress?.Invoke(this, new(token, value));
+            if (value != null)
+            {
+                LogDebug("Updated WorkDoneProgress token value.", $"Token: {token} | Value: {value.Percentage}%");
+                Progress.Invoke(this, new(token, value));
+            }
         }
     }
 

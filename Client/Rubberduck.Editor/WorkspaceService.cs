@@ -24,23 +24,27 @@ namespace Rubberduck.Editor
         private readonly List<Reference> _references = [];
 
         private readonly Dictionary<Uri, IFileSystemWatcher> _watchers = [];
-        private readonly Func<ILanguageClient> _lsp;
+        private readonly LanguageClientApp _lspClientApp;
 
         public event EventHandler<WorkspaceServiceEventArgs> WorkspaceOpened = delegate { };
         public event EventHandler<WorkspaceServiceEventArgs> WorkspaceClosed = delegate { };
 
         public WorkspaceService(ILogger<WorkspaceService> logger, RubberduckSettingsProvider settingsProvider,
             IWorkspaceStateManager state, IFileSystem fileSystem, PerformanceRecordAggregator performance,
-            IProjectFileService projectFile, Func<ILanguageClient> lsp)
+            IProjectFileService projectFile, LanguageClientApp lspClientApp)
             : base(logger, settingsProvider, performance)
         {
             _state = state;
             _fileSystem = fileSystem;
             _projectFile = projectFile;
-            _lsp = lsp;
+            _lspClientApp = lspClientApp;
         }
 
-        public void OnWorkspaceOpened(Uri uri) => WorkspaceOpened(this, new(uri));
+        public void OnWorkspaceOpened(Uri uri)
+        {
+            WorkspaceOpened(this, new(uri));
+        }
+
         public void OnWorkspaceClosed(Uri uri) => WorkspaceClosed(this, new(uri));
 
         public IFileSystem FileSystem => _fileSystem;
@@ -49,7 +53,7 @@ namespace Rubberduck.Editor
 
         public async Task<bool> OpenProjectWorkspaceAsync(Uri uri)
         {
-            return await Task.Run(() =>
+            var result = await Task.Run(() =>
             {
                 if (!TryRunAction(() =>
                 {
@@ -87,10 +91,21 @@ namespace Rubberduck.Editor
                 }
                 else
                 {
-                    OnWorkspaceOpened(uri);
                     return true;
                 }
             });
+
+            if (result)
+            {
+                if (_lspClientApp.LanguageClient is null)
+                {
+                    await _lspClientApp.StartupAsync(uri);
+                }
+
+                OnWorkspaceOpened(uri);
+            }
+
+            return result;
         }
 
         public bool IsFileSystemWatcherEnabled(Uri root)
@@ -100,7 +115,7 @@ namespace Rubberduck.Editor
             {
                 root = new Uri(localPath[..^(ProjectFile.FileName.Length + 1)]);
             }
-            return _watchers[root].EnableRaisingEvents;
+            return _watchers.TryGetValue(root, out var value) && value.EnableRaisingEvents;
         }
 
         public void EnableFileSystemWatcher(Uri root)
@@ -227,7 +242,7 @@ namespace Rubberduck.Editor
 
                 // NOTE: this is different than the DidRenameFiles mechanism.
                 LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Renamed: {oldUri} -> {newUri}");
-                _lsp().Workspace.DidChangeWatchedFiles(request);
+                _lspClientApp.LanguageClient?.Workspace.DidChangeWatchedFiles(request);
             });
         }
 
@@ -255,7 +270,7 @@ namespace Rubberduck.Editor
 
                 // NOTE: this is different than the DidDeleteFiles mechanism.
                 LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Deleted: {uri}");
-                _lsp().Workspace.DidChangeWatchedFiles(request);
+                _lspClientApp.LanguageClient?.Workspace.DidChangeWatchedFiles(request);
             }
         }
 
@@ -283,7 +298,7 @@ namespace Rubberduck.Editor
 
                 // NOTE: this is different than the document-level syncing mechanism.
                 LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Changed: {uri}");
-                _lsp().Workspace.DidChangeWatchedFiles(request);
+                _lspClientApp.LanguageClient?.Workspace.DidChangeWatchedFiles(request);
             }
         }
 
@@ -306,7 +321,7 @@ namespace Rubberduck.Editor
 
             // NOTE: this is different than the document-level syncing mechanism.
             LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Created: {uri}");
-            _lsp().Workspace.DidChangeWatchedFiles(request);
+            _lspClientApp.LanguageClient?.Workspace.DidChangeWatchedFiles(request);
         }
 
         private void OnWatcherError(object sender, ErrorEventArgs e)

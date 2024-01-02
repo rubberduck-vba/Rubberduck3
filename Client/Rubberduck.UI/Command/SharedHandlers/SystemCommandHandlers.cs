@@ -1,13 +1,14 @@
 ﻿using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
+using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Windows;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Forms;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Rubberduck.UI.Command.SharedHandlers
@@ -59,10 +60,12 @@ namespace Rubberduck.UI.Command.SharedHandlers
 
         protected async override Task OnExecuteAsync(object? parameter)
         {
+            /* no good */
+
             if (parameter is IToolWindowViewModel toolwindow)
             {
-                _shell.ViewModel.ToolWindows.Remove(toolwindow);
-                var keepExpanded = _shell.View.LeftPaneExpander.IsExpanded = _shell.ViewModel.ToolWindows.Any(e => e.IsPinned && e.DockingLocation == toolwindow.DockingLocation);
+                _shell.ViewModel.BottomPanelToolWindows.Remove(toolwindow);
+                var keepExpanded = _shell.View.LeftPaneExpander.IsExpanded = _shell.ViewModel.BottomPanelToolWindows.Any(e => e.IsPinned && e.DockingLocation == toolwindow.DockingLocation);
                 switch (toolwindow.DockingLocation)
                 {
                     case DockingLocation.DockLeft:
@@ -78,6 +81,11 @@ namespace Rubberduck.UI.Command.SharedHandlers
                         _shell.View.BottomPaneExpander.IsExpanded = keepExpanded;
                         break;
                 }
+            }
+            else if (parameter is IDocumentTabViewModel tab)
+            {
+                _shell.ViewModel.DocumentWindows.Remove(tab);
+                _shell.View.DocumentPaneTabs.RemoveFromSource(tab);
             }
 
             await Task.CompletedTask;

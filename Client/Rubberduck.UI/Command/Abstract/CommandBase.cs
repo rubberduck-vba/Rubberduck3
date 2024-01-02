@@ -86,7 +86,7 @@ namespace Rubberduck.UI.Command.Abstract
         }
 
         public CanExecuteRoutedEventHandler CanExecuteRouted() =>
-            (sender, e) => CanExecute(e.Parameter);
+            (sender, e) => e.CanExecute = CanExecute(e.Parameter);
 
         public ExecutedRoutedEventHandler ExecutedRouted() =>
             (sender, e) => Execute(e.Parameter);

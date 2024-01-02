@@ -4,28 +4,71 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
+        xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
         xmlns:vm="clr-namespace:Rubberduck.UI.Windows" 
         xmlns:local="clr-namespace:Rubberduck.UI.Shell"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=vm:IDragablzWindowViewModel}"
-        Style="{DynamicResource ThemedWindowStyle}"
+        Style="{DynamicResource ThemedToolWindowStyle}"
+        WindowStyle="None"
         Title="Rubberduck Editor"
         ShowInTaskbar="True"
-        Height="300" Width="300">
+        Height="400" Width="300">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Shell/ShellResources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate x:Key="ToolTabHeaderItemTemplate" DataType="windows:ITabViewModel">
+                <Border BorderThickness="1" BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}" CornerRadius="0,0,8,8" Margin="-4,0,-6,2">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Style="{DynamicResource TabTitleLabelStyle}" Margin="0">
+                            <TextBlock Text="{Binding Title}" />
+                        </Label>
+                        <local:FlatButton Icon="{DynamicResource WindowCloseIcon}" Command="{Binding CloseToolWindowCommand}" CommandParameter="{Binding}" />
+                    </StackPanel>
+                </Border>
+            </DataTemplate>
+            
+            <Style x:Key="ToolTabControlStyle" TargetType="dragablz:TabablzControl">
+                <Style.Setters>
+                    <!-- fixes showing the tabs at the bottom -->
+                    <Setter Property="Template" Value="{DynamicResource ToolTabTemplate}" />
+                    <Setter Property="TabStripPlacement" Value="Bottom" />
+                    <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
+                    <Setter Property="HeaderItemTemplate" Value="{StaticResource ToolTabHeaderItemTemplate}" />
+                    <Setter Property="EmptyHeaderSizingHint" Value="Collapse" />
+                </Style.Setters>
+            </Style>
+
+            <dragablz:InterTabController x:Key="InterToolTabController" x:Shared="False" 
+                                         MoveWindowWithSolitaryTabs="True"
+                                         InterTabClient="{Binding InterTabClient}" 
+                                         Partition="toolwindows" />
+
+            <DataTemplate x:Key="FloatingPanelBranchTemplate">
+                <dragablz:TabablzControl Style="{DynamicResource ToolTabControlStyle}"
+                                         InterTabController="{StaticResource InterToolTabController}"
+                                         ItemsSource="{Binding Tabs}"
+                                         TabStripPlacement="Bottom" />
+            </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <dragablz:TabablzControl x:Name="Tabz" TabStripPlacement="Bottom" 
-                                 ItemsSource="{Binding Tabs}"
-                                 Background="{DynamicResource ThemeBackgroundColorBrush}">
-            <dragablz:TabablzControl.InterTabController>
-                <dragablz:InterTabController InterTabClient="{Binding InterTabClient}" />
-            </dragablz:TabablzControl.InterTabController>
-        </dragablz:TabablzControl>
+        <dockablz:Layout Partition="toolwindows" BranchTemplate="{DynamicResource FloatingPanelBranchTemplate}">
+            <dragablz:TabablzControl x:Name="ToolTabs" Style="{DynamicResource ToolTabControlStyle}"
+                                     ItemContainerStyle="{DynamicResource ToolTabItemStyle}"
+                                     InterTabController="{StaticResource InterToolTabController}"
+                                     TabStripPlacement="Bottom"
+                                     ItemsSource="{Binding Tabs}">
+                <dragablz:TabablzControl.ContentTemplate>
+                    <DataTemplate>
+                        <ContentControl Content="{Binding ContentControl}" />
+                    </DataTemplate>
+                </dragablz:TabablzControl.ContentTemplate>
+            </dragablz:TabablzControl>
+        </dockablz:Layout>
     </Grid>
 </Window>

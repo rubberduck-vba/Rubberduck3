@@ -21,131 +21,42 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
-                <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/Generic.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Shell/ShellResources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <dragablz:InterTabController x:Key="InterToolTabController" x:Shared="False" InterTabClient="{Binding InterToolTabClient}" Partition="toolwindows" />
-            <dragablz:InterTabController x:Key="InterTabController" x:Shared="False" InterTabClient="{Binding InterTabClient}" Partition="documents" />
+            <dragablz:InterTabController x:Key="InterTabController" x:Shared="False" 
+                                         MoveWindowWithSolitaryTabs="False"
+                                         InterTabClient="{Binding InterTabClient, Mode=OneWay}" 
+                                         Partition="documents" />
 
-            <CollectionViewSource x:Key="DocumentsSource" Source="{Binding Documents}">
-                <CollectionViewSource.SortDescriptions>
-                    <componentmodel:SortDescription PropertyName="IsPinned" />
-                </CollectionViewSource.SortDescriptions>
-            </CollectionViewSource>
-            <CollectionViewSource x:Key="LeftPanelToolsSource" Source="{Binding ToolWindows}" Filter="LeftPanelToolsSource_Filter">
-                <CollectionViewSource.SortDescriptions>
-                    <componentmodel:SortDescription PropertyName="IsPinned" />
-                </CollectionViewSource.SortDescriptions>
-            </CollectionViewSource>
-            <CollectionViewSource x:Key="RightPanelToolsSource" Source="{Binding ToolWindows}" Filter="RightPanelToolsSource_Filter">
-                <CollectionViewSource.SortDescriptions>
-                    <componentmodel:SortDescription PropertyName="IsPinned" />
-                </CollectionViewSource.SortDescriptions>
-            </CollectionViewSource>
-            <CollectionViewSource x:Key="BottomPanelToolsSource" Source="{Binding ToolWindows}" Filter="BottomPanelToolsSource_Filter">
-                <CollectionViewSource.SortDescriptions>
-                    <componentmodel:SortDescription PropertyName="IsPinned" />
-                </CollectionViewSource.SortDescriptions>
-            </CollectionViewSource>
-
-            <Style x:Key="ToolPanelExpanderStyle" TargetType="Expander">
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding ExpandDirection, Source={RelativeSource Mode=Self}}" Value="Right">
-                        <Setter Property="Width" Value="{Binding PanelWidth}" />
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding ExpandDirection, Source={RelativeSource Mode=Self}}" Value="Left">
-                        <Setter Property="Width" Value="{Binding PanelWidth}" />
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding ExpandDirection, Source={RelativeSource Mode=Self}}" Value="Up">
-                        <Setter Property="Height" Value="{Binding PanelHeight}" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
+            <dragablz:InterTabController x:Key="InterToolTabController" x:Shared="False" 
+                                         MoveWindowWithSolitaryTabs="False"
+                                         InterTabClient="{Binding InterToolTabClient, Mode=OneWay}" 
+                                         Partition="toolwindows" />
 
             <DataTemplate x:Key="ToolTabHeaderItemTemplate" DataType="windows:ITabViewModel">
-                <!-- FIXME not good enough, DataContext is the UserControl itself -->
-                <Label Style="{DynamicResource FormLabelStyleSmall}"
-                       Margin="-6,-2" BorderThickness="1,0,1,1"
-                       Background="{DynamicResource ThemeBackgroundColorBrush}">
-                    <TextBlock Text="{Binding DataContext.Title}" />
-                </Label>
+                <Border BorderThickness="1" BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}" CornerRadius="0,0,8,8" Margin="-4,0,-6,2">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Style="{DynamicResource TabTitleLabelStyle}" Margin="0">
+                            <TextBlock Text="{Binding Title}" />
+                        </Label>
+                        <local:FlatButton Icon="{DynamicResource WindowCloseIcon}" Command="{Binding CloseToolWindowCommand}" CommandParameter="{Binding}" />
+                    </StackPanel>
+                </Border>
             </DataTemplate>
-
-            <Style x:Key="TabHeaderItemStyle" TargetType="dragablz:DragablzItem" BasedOn="{StaticResource TrapezoidDragableTabItemStyle}" >
-                <Setter Property="Content" Value="{Binding Title}" />
-            </Style>
-            
-            <DataTemplate x:Key="TabHeaderItemTemplate" DataType="windows:ITabViewModel">
-                <Label Style="{DynamicResource FormLabelStyleSmall}"
-                       Margin="-5,-1,-5,-1" BorderThickness="0"
-                       Background="{DynamicResource ThemeBackgroundColorBrush}">
-                    <TextBlock Text="{Binding Title}" />
-                </Label>
-            </DataTemplate>
-
-            <DataTemplate x:Key="ToolTabItemTemplate" DataType="windows:ITabViewModel">
-                <ContentControl Content="{Binding Content}" DataContext="{Binding}" />
-            </DataTemplate>
-
             <Style x:Key="ToolTabControlStyle" TargetType="dragablz:TabablzControl">
                 <Style.Setters>
                     <!-- fixes showing the tabs at the bottom -->
                     <Setter Property="Template" Value="{DynamicResource ToolTabTemplate}" />
-
-                    <Setter Property="InterTabController" Value="{StaticResource InterToolTabController}" />
+                    <Setter Property="TabStripPlacement" Value="Bottom" />
                     <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
-                    <Setter Property="ItemTemplate" Value="{DynamicResource ToolTabItemTemplate}" />
-                    <Setter Property="ItemContainerStyle" Value="{StaticResource StandardDragablzTabItemStyle}" />
-                    <Setter Property="HeaderMemberPath" Value="DataContext.Header" />
+                    <Setter Property="HeaderItemTemplate" Value="{StaticResource ToolTabHeaderItemTemplate}" />
                     <Setter Property="EmptyHeaderSizingHint" Value="Collapse" />
                 </Style.Setters>
             </Style>
-            <Style x:Key="BaseLayoutStyle" TargetType="dockablz:Layout">
-                <Style.Setters>
-                    <Setter Property="IsFloatDropZoneEnabled" Value="False" />
-                </Style.Setters>
+            <Style x:Key="BottomToolTabControlStyle" TargetType="dragablz:TabablzControl" BasedOn="{StaticResource ToolTabControlStyle}">
             </Style>
 
-            <DataTemplate x:Key="TextDocumentTabItemTemplate" DataType="document:ITabViewModel">
-                <document:TextEditorControl />
-            </DataTemplate>
-
-            <DataTemplate x:Key="MarkdownDocumentTabItemTemplate" DataType="document:ITabViewModel">
-                <document:MarkdownEditorControl />
-            </DataTemplate>
-
-            <DataTemplate x:Key="JsonDocumentTabItemTemplate" DataType="document:ITabViewModel">
-                <document:TextEditorControl />
-            </DataTemplate>
-
-            <DataTemplate x:Key="SourceFileDocumentTabItemTemplate" DataType="document:ITabViewModel">
-                <document:SourceCodeEditorControl />
-            </DataTemplate>
-
-            <document:DocumentTabTemplateSelector x:Key="DocumentTabTemplateSelector"
-                                                  TextDocumentTemplate="{StaticResource TextDocumentTabItemTemplate}"
-                                                  MarkdownDocumentTemplate="{StaticResource MarkdownDocumentTabItemTemplate}"
-                                                  ProjectFileTemplate="{StaticResource JsonDocumentTabItemTemplate}"
-                                                  SourceFileTemplate="{StaticResource SourceFileDocumentTabItemTemplate}"/>
-
-            <DataTemplate x:Key="DocumentTabItemTemplate" DataType="windows:ITabViewModel">
-                <ContentControl ContentTemplateSelector="{StaticResource DocumentTabTemplateSelector}" 
-                                Content="{Binding Content}" />
-            </DataTemplate>
-
-            <Style x:Key="DocumentTabControlStyle" TargetType="dragablz:TabablzControl">
-                <Style.Setters>
-                    <Setter Property="InterTabController" Value="{StaticResource InterTabController}" />
-                    <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
-                    <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}" />
-                    <Setter Property="ItemTemplateSelector" Value="{StaticResource DocumentTabTemplateSelector}" />
-                    <Setter Property="ItemContainerStyle" Value="{StaticResource TrapezoidDragableTabItemStyle}" />
-                    <Setter Property="ShowDefaultAddButton" Value="False" />
-                    <Setter Property="ShowDefaultCloseButton" Value="True" />
-                    <Setter Property="HeaderMemberPath" Value="DataContext.Title" />
-                </Style.Setters>
-            </Style>
-            
         </ResourceDictionary>
     </Window.Resources>
     <Grid Background="{DynamicResource ThemeBackgroundColorBrush}" ClipToBounds="True">
@@ -163,24 +74,22 @@
             <ColumnDefinition Width="Auto" /> <!-- [2]: right tooltabs -->
         </Grid.ColumnDefinitions>
 
-        <local:DuckyBackgroundControl Grid.RowSpan="4" Grid.ColumnSpan="3"/>
-
         <local:MenuBarControl x:Name="MenuBar" Grid.Row="0" Grid.ColumnSpan="3" />
 
         <Expander x:Name="LeftPaneExpander" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" ExpandDirection="Right"
                   Style="{DynamicResource ArrowlessExpanderTemplate}"
-                  BorderThickness="0"
-                  IsExpanded="{Binding View, Source={StaticResource LeftPanelToolsSource}, Converter={StaticResource HasItemsBoolConverter}}">
+                  BorderThickness="0" AllowDrop="True"
+                  IsExpanded="{Binding LeftToolPanel.IsExpanded}">
             <Expander.Header>
-                <ListView ItemsSource="{Binding Source={StaticResource LeftPanelToolsSource}}" 
+                <ListView ItemsSource="{Binding LeftPanelToolWindows}" 
                           Background="{DynamicResource ThemeBackgroundDarkColorBrush}"
                           Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}"
-                          BorderThickness="0">
+                          BorderThickness="1">
                     <ListView.Resources>
                         <Style TargetType="ListViewItem">
                             <Setter Property="BorderThickness" Value="0" />
                             <Setter Property="Focusable" Value="False" />
-                            <Setter Property="IsSelected" Value="False" />
+                            <Setter Property="IsSelected" Value="{Binding IsSelected}" />
                             <Setter Property="LayoutTransform">
                                 <Setter.Value>
                                     <RotateTransform Angle="90" />
@@ -190,9 +99,12 @@
                     </ListView.Resources>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Label Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}">
-                                <TextBlock Text="{Binding Title}"/>
-                            </Label>
+                            <ToggleButton Background="{DynamicResource ThemeBackgroundMediumColorBrush}" IsChecked="{Binding IsPinned}" 
+                                          BorderThickness="0" Margin="-5,-1">
+                                <Label Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}" FontWeight="Regular" Margin="0" Padding="10,2">
+                                    <TextBlock Text="{Binding Title}"/>
+                                </Label>
+                            </ToggleButton>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
@@ -202,34 +114,45 @@
                     <Border BorderThickness="1,0,0,0" BorderBrush="{DynamicResource ThemeBackgroundLightColorBrush}">
                         <DockPanel>
                             <Thumb DockPanel.Dock="Right" DragDelta="OnResizeLeftPanelDragDelta" Cursor="SizeWE" Style="{DynamicResource ToolPanelVExpanderThumbStyle}" />
-                            <ContentControl DockPanel.Dock="Left" Content="{Binding}"  />
+                            <ContentControl DockPanel.Dock="Left" Content="{Binding}" />
                         </DockPanel>
                     </Border>
                 </DataTemplate>
             </Expander.ContentTemplate>
             <Expander.Resources>
-                <DataTemplate x:Key="LeftPanelBranchTemplate">
-                    <dragablz:TabablzControl Style="{DynamicResource ToolTabControlStyle}" 
-                                             ItemsSource="{Binding View, Source={StaticResource LeftPanelToolsSource}}"
-                                             FixedHeaderCount="{Binding FixedLeftToolTabs}" />
+                <DataTemplate x:Key="LeftPanelBranchTemplate" DataType="local:IShellWindowViewModel">
+                    <dragablz:TabablzControl Style="{DynamicResource ToolTabControlStyle}"
+                                         ItemContainerStyle="{DynamicResource ToolTabItemStyle}"
+                                          InterTabController="{StaticResource InterToolTabController}"
+                                            ItemsSource="{Binding LeftPanelToolWindows}"/>
                 </DataTemplate>
             </Expander.Resources>
             <dockablz:Layout Grid.Row="1" Name="LeftPane" Partition="toolwindows" BranchTemplate="{DynamicResource LeftPanelBranchTemplate}">
+
                 <dragablz:TabablzControl x:Name="LeftPaneToolTabs" 
                                          Style="{DynamicResource ToolTabControlStyle}"
-                                         ItemsSource="{Binding View, Source={StaticResource LeftPanelToolsSource}}"
-                                         FixedHeaderCount="{Binding FixedLeftToolTabs}" />
+                                         ItemContainerStyle="{DynamicResource ToolTabItemStyle}"
+                                         InterTabController="{StaticResource InterToolTabController}"
+                                         ItemsSource="{Binding LeftPanelToolWindows}">
+                    <dragablz:TabablzControl.ContentTemplate>
+                        <DataTemplate>
+                            <ContentControl Content="{Binding ContentControl}" />
+                        </DataTemplate>
+                    </dragablz:TabablzControl.ContentTemplate>
+                </dragablz:TabablzControl>
             </dockablz:Layout>
+            
         </Expander>
 
         <Expander x:Name="RightPaneExpander" Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" ExpandDirection="Left"
-                  Style="{DynamicResource ArrowlessExpanderTemplate}"
-                  IsExpanded="{Binding View, Source={StaticResource RightPanelToolsSource}, Converter={StaticResource HasItemsBoolConverter}}">
+                  Style="{DynamicResource ArrowlessExpanderTemplate}" AllowDrop="True" Drop="OnToolPanelExpanderDrop" PreviewDrop="OnToolPanelExpanderPreviewDrop"
+                  Visibility="{Binding RightPanelToolWindows, Converter={StaticResource HasItemsVisibilityConverter}, Mode=OneWay}"
+                  IsExpanded="{Binding RightPanelToolWindows,Converter={StaticResource HasItemsBoolConverter}, Mode=OneWay}">
             <Expander.Header>
-                <ListView ItemsSource="{Binding Source={StaticResource RightPanelToolsSource}}" 
+                <ListView ItemsSource="{Binding RightPanelToolWindows}" 
                           Background="{DynamicResource ThemeBackgroundDarkColorBrush}"
                           Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}"
-                          BorderThickness="0">
+                          BorderThickness="1">
                     <ListView.Resources>
                         <Style TargetType="ListViewItem">
                             <Setter Property="BorderThickness" Value="0" />
@@ -244,9 +167,12 @@
                     </ListView.Resources>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Label Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}">
-                                <TextBlock Text="{Binding Title}"/>
-                            </Label>
+                            <ToggleButton Background="{DynamicResource ThemeBackgroundMediumColorBrush}" IsChecked="{Binding IsPinned}" 
+                                          BorderThickness="0" Margin="-5,-1">
+                                <Label Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}" FontWeight="Regular" Margin="0" Padding="10,2">
+                                    <TextBlock Text="{Binding Title}"/>
+                                </Label>
+                            </ToggleButton>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
@@ -262,30 +188,33 @@
                 </DataTemplate>
             </Expander.ContentTemplate>
             <Expander.Resources>
-                <DataTemplate x:Key="LeftPanelBranchTemplate">
+                <DataTemplate x:Key="RightPanelBranchTemplate" DataType="local:IShellWindowViewModel">
                     <dragablz:TabablzControl Style="{DynamicResource ToolTabControlStyle}" 
-                                             ItemsSource="{Binding View, Source={StaticResource LeftPanelToolsSource}}"
-                                             FixedHeaderCount="{Binding FixedLeftToolTabs}" />
+                                         ItemContainerStyle="{DynamicResource ToolTabItemStyle}"
+                                         InterTabController="{StaticResource InterToolTabController}"
+                                             ItemsSource="{Binding RightPanelToolWindows}" />
                 </DataTemplate>
             </Expander.Resources>
             <dockablz:Layout Grid.Row="1" Name="RightPane" Partition="toolwindows" BranchTemplate="{DynamicResource RightPanelBranchTemplate}">
                 <dragablz:TabablzControl x:Name="RightPaneToolTabs" 
-                                         Style="{DynamicResource ToolTabControlStyle}" 
-                                         ItemsSource="{Binding View, Source={StaticResource RightPanelToolsSource}}"
-                                         FixedHeaderCount="{Binding FixedRightToolTabs}" />
+                                         Style="{DynamicResource ToolTabControlStyle}"
+                                         InterTabController="{StaticResource InterToolTabController}"
+                                         ItemContainerStyle="{DynamicResource ToolTabItemStyle}"
+                                         ItemsSource="{Binding RightPanelToolWindows}"/>
             </dockablz:Layout>
         </Expander>
 
         <Expander x:Name="BottomPaneExpander" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" ExpandDirection="Up"
-                  Style="{DynamicResource ArrowlessExpanderTemplate}"
-                  IsExpanded="{Binding View, Source={StaticResource BottomPanelToolsSource}, Converter={StaticResource HasItemsBoolConverter}}">
+                  Style="{DynamicResource ArrowlessExpanderTemplate}" AllowDrop="True"
+                  Visibility="{Binding BottomPanelToolWindows, Converter={StaticResource HasItemsVisibilityConverter}, Mode=OneWay}"
+                  IsExpanded="{Binding BottomPanelToolWindows, Converter={StaticResource HasItemsBoolConverter}, Mode=OneWay}">
             <Expander.Header>
-                <ListView ItemsSource="{Binding Source={StaticResource BottomPanelToolsSource}}" 
+                <ListView ItemsSource="{Binding BottomPanelToolWindows}" 
                           Background="{DynamicResource ThemeBackgroundDarkColorBrush}"
                           Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}"
                           SelectedItem="{Binding SelectedItem, ElementName=BottomPaneToolTabs}"
                           Visibility="{Binding IsExpanded, ElementName=BottomPaneExpander, Converter={StaticResource BoolToHiddenVisibility}}"
-                          BorderThickness="0">
+                          BorderThickness="1">
                     <ListView.Resources>
                         <Style TargetType="ListViewItem">
                             <Setter Property="BorderThickness" Value="0" />
@@ -299,55 +228,73 @@
                     </ListView.ItemsPanel>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Label Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}">
-                                <TextBlock Text="{Binding Title}"/>
-                            </Label>
+                            <ToggleButton Background="{DynamicResource ThemeBackgroundMediumColorBrush}" IsChecked="{Binding IsPinned}" 
+                                          BorderThickness="0" Margin="-5,-5">
+                                <Label Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}" FontWeight="Regular" Margin="0" Padding="10,2">
+                                    <TextBlock Text="{Binding Title}"/>
+                                </Label>
+                            </ToggleButton>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
             </Expander.Header>
             <Expander.ContentTemplate>
                 <DataTemplate>
-                    <Border BorderThickness="0" BorderBrush="{DynamicResource ThemeBackgroundLightColorBrush}">
+                    <Border BorderThickness="0,1" BorderBrush="{DynamicResource ThemeBackgroundLightColorBrush}">
                         <DockPanel>
-                            <Thumb DockPanel.Dock="Top" DragDelta="OnResizeBottomPanelDragDelta" Cursor="SizeNS" Style="{DynamicResource ToolPanelHExpanderThumbStyle}" />
+                            <Thumb DockPanel.Dock="Top" DragDelta="OnResizeBottomPanelDragDelta" Cursor="SizeNS" 
+                                   Style="{DynamicResource ToolPanelHExpanderThumbStyle}" />
                             <ContentControl DockPanel.Dock="Bottom" Content="{Binding}" />
                         </DockPanel>
                     </Border>
                 </DataTemplate>
             </Expander.ContentTemplate>
             <Expander.Resources>
-                <DataTemplate x:Key="BottomPanelBranchTemplate">
-                    <dragablz:TabablzControl Style="{DynamicResource ToolTabControlStyle}" 
-                                             ItemsSource="{Binding View, Source={StaticResource BottomPanelToolsSource}}"
-                                             FixedHeaderCount="{Binding FixedBottomToolTabs}" />
+                <DataTemplate x:Key="BottomPanelBranchTemplate" DataType="local:IShellWindowViewModel">
+                    <dragablz:TabablzControl Style="{DynamicResource BottomToolTabControlStyle}" 
+                                             ItemContainerStyle="{DynamicResource ToolTabItemStyle}"
+                                         InterTabController="{StaticResource InterToolTabController}"
+                                             ItemsSource="{Binding BottomPanelToolWindows}"/>
                 </DataTemplate>
             </Expander.Resources>
             <dockablz:Layout Grid.Row="1" Name="BottomPane" Partition="toolwindows" BranchTemplate="{DynamicResource BottomPanelBranchTemplate}">
-                <dragablz:TabablzControl x:Name="BottomPaneToolTabs"
-                                         Style="{DynamicResource ToolTabControlStyle}"
-                                         ItemsSource="{Binding View, Source={StaticResource BottomPanelToolsSource}}"
-                                         FixedHeaderCount="{Binding FixedBottomToolTabs}" />
+                <dragablz:TabablzControl x:Name="BottomPaneToolTabs" 
+                                         Style="{DynamicResource BottomToolTabControlStyle}"
+                                         InterTabController="{StaticResource InterToolTabController}"
+                                         ItemContainerStyle="{DynamicResource ToolTabItemStyle}"
+                                         ItemsSource="{Binding BottomPanelToolWindows}"/>
             </dockablz:Layout>
         </Expander>
 
-        <dockablz:Layout Name="DocumentPane" Partition="documents" Grid.Row="1" Grid.Column="1">
+        <dockablz:Layout Name="DocumentPane" Partition="documents" Grid.Row="1" Grid.Column="1" Margin="2">
             <dockablz:Layout.BranchTemplate>
-                <DataTemplate>
+                <DataTemplate DataType="local:IShellWindowViewModel">
                     <dragablz:TabablzControl Style="{DynamicResource DocumentTabControlStyle}"
-                                     ItemTemplate="{DynamicResource MarkdownDocumentTabItemTemplate}"
-                                             ItemsSource="{Binding View, Source={StaticResource DocumentsSource}}"
-                                             FixedHeaderCount="{Binding FixedDocumentTabs}" />
+                                             InterTabController="{StaticResource InterTabController}"
+                                             ItemsSource="{Binding DocumentWindows}"
+                                             SelectedItem="{Binding ActiveDocumentTab}"
+                                             ItemTemplate="{DynamicResource DocumentTabItemTemplate}"
+                                             ItemContainerStyle="{DynamicResource TrapezoidTabItemStyle}"
+                                             HeaderMemberPath="Title"
+                                             ShowDefaultCloseButton="True"/>
                 </DataTemplate>
             </dockablz:Layout.BranchTemplate>
-            <dragablz:TabablzControl x:Name="DocumentPaneTabs" 
-                                     Style="{DynamicResource DocumentTabControlStyle}"
-                                     ItemTemplate="{DynamicResource MarkdownDocumentTabItemTemplate}"
-                                     ItemsSource="{Binding View, Source={StaticResource DocumentsSource}}"
-                                     FixedHeaderCount="{Binding FixedDocumentTabs}" />
+            <dragablz:TabablzControl x:Name="DocumentPaneTabs"
+                                     InterTabController="{StaticResource InterTabController}"
+                                     ItemsSource="{Binding DocumentWindows}"
+                                     SelectedItem="{Binding ActiveDocumentTab}"
+                                     ItemContainerStyle="{DynamicResource TrapezoidTabItemStyle}"
+                                     HeaderMemberPath="Title"
+                                     ShowDefaultCloseButton="True">
+                <dragablz:TabablzControl.ContentTemplate>
+                    <DataTemplate>
+                        <ContentControl Content="{Binding ContentControl}" />
+                    </DataTemplate>
+                </dragablz:TabablzControl.ContentTemplate>
+            </dragablz:TabablzControl>
         </dockablz:Layout>
         
-        <statusbar:StatusBarControl x:Name="StatusBar" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" DataContext="{Binding StatusBar}" />
+        <statusbar:StatusBarControl x:Name="StatusBar" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" />
 
         <Thumb Grid.Row="3" Grid.Column="3" HorizontalAlignment="Right" IsEnabled="True" IsHitTestVisible="True" WindowChrome.IsHitTestVisibleInChrome="True"
                DragDelta="OnResizeGripDragDelta" Cursor="SizeNWSE">

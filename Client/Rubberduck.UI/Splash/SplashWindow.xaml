@@ -3,10 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Rubberduck.UI.Splash"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        d:DesignHeight="380" d:DesignWidth="340"
         Height="380" Width="340"
-        MinHeight="380" MinWidth="340"
-        MaxHeight="380" MaxWidth="340"
         ResizeMode="NoResize"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
@@ -24,8 +21,6 @@
                     <Setter Property="ResizeMode" Value="NoResize" />
                     <Setter Property="WindowStyle" Value="None" />
                     <Setter Property="WindowState" Value="Normal" />
-                    <Setter Property="Height" Value="380" />
-                    <Setter Property="Width" Value="340" />
                 </Style.Setters>
             </Style>
             <Style x:Key="SplashWindowGridStyle" TargetType="Grid">

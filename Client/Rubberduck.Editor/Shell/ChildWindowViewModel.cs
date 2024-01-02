@@ -1,5 +1,8 @@
 ﻿using Dragablz;
+using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI;
+using Rubberduck.UI.Chrome;
+using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
 using Rubberduck.UI.Windows;
 using System;
@@ -13,14 +16,19 @@ namespace Rubberduck.Editor.Shell
     /// </summary>
     public class ChildWindowViewModel : ViewModelBase, IDragablzWindowViewModel
     {
-        public ChildWindowViewModel(IInterTabClient interTabClient, string partition)
+        public ChildWindowViewModel(IInterTabClient interTabClient, string partition, IWindowChromeViewModel chrome)
         {
             InterTabClient = interTabClient;
             Partition = partition;
+            Chrome = chrome;
+
+            Tabs = [];
         }
 
         public string Title { get; } = "Rubberduck Editor";
+        public ObservableCollection<IDocumentTabViewModel> Documents { get; init; }
 
+        public IWindowChromeViewModel Chrome { get; }
         public IInterTabClient InterTabClient { get; }
         public string Partition { get; }
 
@@ -32,20 +40,23 @@ namespace Rubberduck.Editor.Shell
 
     public class DocumentShellWindowViewModel : ChildWindowViewModel
     {
-        public DocumentShellWindowViewModel(IInterTabClient interTabClient, IShellStatusBarViewModel statusBar) 
-            : base(interTabClient, Partitions.Documents)
+        public DocumentShellWindowViewModel(IInterTabClient interTabClient, IShellStatusBarViewModel statusBar, IWindowChromeViewModel chrome) 
+            : base(interTabClient, Partitions.Documents, chrome)
         {
             StatusBar = statusBar;
         }
+
 
         public IShellStatusBarViewModel StatusBar { get; }
     }
 
     public class ToolWindowShellWindowViewModel : ChildWindowViewModel
     {
-        public ToolWindowShellWindowViewModel(IInterTabClient interTabClient) 
-            : base(interTabClient, Partitions.Toolwindows)
+        public ToolWindowShellWindowViewModel(IInterTabClient interTabClient, IWindowChromeViewModel chrome) 
+            : base(interTabClient, Partitions.Toolwindows, chrome)
         {
         }
+
+        public DockingLocation DockingLocation { get; set; } = DockingLocation.None;
     }
 }

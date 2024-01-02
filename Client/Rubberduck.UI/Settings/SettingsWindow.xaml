@@ -24,7 +24,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <shell:ThunderFrame Grid.RowSpan="2" Title="{Binding Title}"
+        <shell:ThunderFrame Grid.RowSpan="2" Title="{Binding Title}" ShowTitle="True"
                             ShowAcceptButton="True"
                             AcceptCommand="{Binding Actions[0]}">
             <Grid ClipToBounds="True">

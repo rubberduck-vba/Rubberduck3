@@ -41,11 +41,11 @@
             </WrapPanel>
 
             <shell:BindableTextEditor Grid.Row="1" IsReadOnly="True" IsEnabled="False"
-                                      Text="{Binding ConsoleContent}" WordWrap="False"
+                                      Text="{Binding TextContent}" WordWrap="False"
                                       ShowLineNumbers="True"
                                       HorizontalScrollBarVisibility="Auto"
                                       VerticalScrollBarVisibility="Visible"
-                                      Background="{DynamicResource ThemeBackgroundDarkColorBrush75}"
+                                      Background="{DynamicResource ThemeWhiteLightColorBrush75}"
                                       Foreground="{DynamicResource ThemeAccent1DarkColorBrush}"
                                       FontFamily="Consolas" FontSize="12">
             </shell:BindableTextEditor>

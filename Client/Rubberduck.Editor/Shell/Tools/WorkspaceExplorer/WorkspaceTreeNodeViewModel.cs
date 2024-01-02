@@ -14,7 +14,7 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
         {
             return new WorkspaceTreeNodeViewModel
             {
-                Uri = new Uri(srcRoot, ProjectFile.SourceRoot + '/' + model.Uri), // this overload eats the ".src" segment of Uri:srcRoot, so we concatenate it in
+                Uri = new Uri(srcRoot, model.Uri),
                 Name = model.Name,
                 IsInProject = true,
             };

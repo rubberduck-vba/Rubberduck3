@@ -189,6 +189,6 @@ namespace Rubberduck.ServerPlatform
             LogPerformance(elapsed, name:name);
         }
 
-        public virtual void OnProgress(ProgressToken token, WorkDoneProgressReport value) => _workdone?.OnProgress(token, value);
+        public virtual void OnProgress(ProgressToken token, WorkDoneProgressReport? value = null) => _workdone?.OnProgress(token, value);
     }
 }

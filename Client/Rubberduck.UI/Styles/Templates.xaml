@@ -1,11 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-                    xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Luna" 
-                    xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
                     xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
                     xmlns:templates="clr-namespace:Rubberduck.UI.Settings.Templates"
-                    xmlns:viewmodels="clr-namespace:Rubberduck.UI.Settings.ViewModels"
-    xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
+                    xmlns:viewmodels="clr-namespace:Rubberduck.UI.Settings.ViewModels">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/ComboBoxTemplate.xaml"/>
@@ -395,116 +392,5 @@
         StringSettingTemplate="{StaticResource StringSettingTemplate}"
         TimeSpanSettingTemplate="{StaticResource TimeSpanSettingTemplate}"
         UriSettingTemplate="{StaticResource UriSettingTemplate}" />
-
-    <ControlTemplate x:Key="TrapezoidDragablzItem" TargetType="{x:Type dragablz:DragablzItem}">
-        <Grid x:Name="templateRoot" SnapsToDevicePixels="true" Margin="0 1 0 -1">
-            <dragablz:Trapezoid x:Name="Trapezoid" 
-                                         BorderBrush="{TemplateBinding BorderBrush}" 
-                                         Background="{TemplateBinding Background}"                                          
-                                         PenThickness="2"
-                                         Margin="0 0 0 0">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <ContentPresenter Content="{TemplateBinding ContentControl.Content}" 
-                                      ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}" 
-                                      ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}" 
-                                      HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" 
-                                      VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" 
-                                      SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"
-                                      Margin="{TemplateBinding Control.Padding}"
-                                      x:Name="contentPresenter" />
-                    <Thumb Grid.Column="0" HorizontalAlignment="Stretch" VerticalContentAlignment="Stretch" x:Name="PART_Thumb" Style="{StaticResource InvisibleThumbStyle}" />
-
-                    <Button Grid.Column="2"
-                                        Style="{StaticResource CloseItemCommandButtonStyle}"                                        
-                                        Command="{x:Static dragablz:TabablzControl.CloseItemCommand}"
-                                        CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}">
-                        <Button.Visibility>
-                            <MultiBinding Converter="{StaticResource ShowDefaultCloseButtonConverter}">
-                                <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type dragablz:TabablzControl}}" Path="ShowDefaultCloseButton" />
-                                <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type dragablz:TabablzControl}}" Path="FixedHeaderCount" />
-                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="LogicalIndex" />
-                            </MultiBinding>
-                        </Button.Visibility>
-                    </Button>
-                </Grid>
-            </dragablz:Trapezoid>
-        </Grid>
-        <ControlTemplate.Triggers>
-            <Trigger Property="dragablz:TabablzControl.IsWrappingTabItem" Value="True">
-                <Setter TargetName="contentPresenter" Property="Content" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DataContext.Header}" />
-            </Trigger>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="{StaticResource TabItem.Selected.Background}" TargetName="Trapezoid"/>
-                <Setter Property="LongBasePenBrush" Value="{StaticResource TabItem.Selected.Background}" TargetName="Trapezoid"/>
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
-
-    <ControlTemplate x:Key="ToolTabTemplate" TargetType="{x:Type dragablz:TabablzControl}">
-        <Grid x:Name="templateRoot" ClipToBounds="true" SnapsToDevicePixels="true" KeyboardNavigation.TabNavigation="Local">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition x:Name="ColumnDefinition0" Width="Auto"/>
-                <ColumnDefinition x:Name="ColumnDefinition1" Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Border Grid.Row="0" x:Name="contentPanel" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}"
-                    Grid.Column="1" KeyboardNavigation.DirectionalNavigation="Contained" KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Local" Margin="-1 0 0 0">
-                <Grid x:Name="PART_ItemsHolder" />
-            </Border>
-            <Grid Grid.Row="1" Grid.Column="1" x:Name="HeaderContainerGrid" Visibility="{TemplateBinding IsHeaderPanelVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <ContentControl Grid.Row="0" x:Name="PrefixContentControl" 
-                                Content="{TemplateBinding HeaderPrefixContent}"
-                                ContentStringFormat="{TemplateBinding HeaderPrefixContentStringFormat}"
-                                ContentTemplate="{TemplateBinding HeaderPrefixContentStringFormat}"
-                                ContentTemplateSelector="{TemplateBinding HeaderPrefixContentTemplateSelector}"/>
-                <dragablz:DragablzItemsControl x:Name="PART_HeaderItemsControl"                                              
-                                            Grid.Row="1"
-                                            ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Items}"                                                                                                            
-                                            ItemContainerStyle="{TemplateBinding ItemContainerStyle}"
-                                            ItemsOrganiser="{TemplateBinding HeaderItemsOrganiser}"
-                                            KeyboardNavigation.TabIndex="1" Panel.ZIndex="1"
-                                            ItemTemplate="{TemplateBinding HeaderItemTemplate}"
-                                            Style="{StaticResource TabablzDragablzItemsControlStyle}">
-                    <dragablz:DragablzItemsControl.MaxHeight>
-                        <MultiBinding>
-                            <MultiBinding.Converter>
-                                <dragablz:TabablzHeaderSizeConverter Orientation="Vertical"/>
-                            </MultiBinding.Converter>
-                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="ActualHeight" />
-                            <Binding RelativeSource="{RelativeSource Self}" Path="ItemsPresenterHeight" />
-                            <Binding ElementName="PrefixContentControl" Path="ActualHeight" />
-                            <Binding ElementName="DefaultAddButton" Path="DesiredSize.Height" />
-                            <Binding ElementName="SuffixContentControl" Path="DesiredSize.Height" />
-                        </MultiBinding>
-                    </dragablz:DragablzItemsControl.MaxHeight>
-                </dragablz:DragablzItemsControl>
-                <Button Style="{StaticResource AddItemCommandButtonStyle}"
-                                            x:Name="DefaultAddButton"
-                                            Grid.Row="2"
-                                            Command="{x:Static dragablz:TabablzControl.AddItemCommand}"
-                                            Visibility="{TemplateBinding ShowDefaultAddButton, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <ContentControl Grid.Row="3" x:Name="SuffixContentControl" 
-                                                    Content="{TemplateBinding HeaderSuffixContent}"
-                                                    ContentStringFormat="{TemplateBinding HeaderSuffixContentStringFormat}"
-                                                    ContentTemplate="{TemplateBinding HeaderSuffixContentStringFormat}"
-                                                    ContentTemplateSelector="{TemplateBinding HeaderSuffixContentTemplateSelector}"
-                                                    VerticalAlignment="Top" />
-            </Grid>
-        </Grid>
-    </ControlTemplate>
 
 </ResourceDictionary>

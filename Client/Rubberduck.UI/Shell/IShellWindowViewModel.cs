@@ -12,8 +12,11 @@ namespace Rubberduck.UI.Shell
     {
         string Title { get; }
         IShellStatusBarViewModel StatusBar { get; }
-        ObservableCollection<IDocumentTabViewModel> Documents { get; }
-        ObservableCollection<IToolWindowViewModel> ToolWindows { get; }
+        ObservableCollection<IDocumentTabViewModel> DocumentWindows { get; }
+        ObservableCollection<IToolWindowViewModel> FloatingToolwindows { get; }
+        ObservableCollection<IToolWindowViewModel> LeftPanelToolWindows { get; }
+        ObservableCollection<IToolWindowViewModel> RightPanelToolWindows { get; }
+        ObservableCollection<IToolWindowViewModel> BottomPanelToolWindows { get; }
 
         int FixedLeftToolTabs { get; }
         int FixedRightToolTabs { get; }
@@ -28,6 +31,9 @@ namespace Rubberduck.UI.Shell
 
         IInterTabClient InterToolTabClient { get; }
         IInterTabClient InterTabClient { get; }
+        ItemActionCallback ClosingTabItemHandler { get; }
+
+        IDocumentTabViewModel ActiveDocumentTab { get; set; }
     }
 
     public interface IToolPanelViewModel
@@ -46,6 +52,6 @@ namespace Rubberduck.UI.Shell
         /// Whether the tool panel remains expanded on mouse leave.
         /// </summary>
         bool IsPinned { get; set; }
-        bool IsDocked { get; }
+        bool IsDocked => PanelLocation != DockingLocation.None;
     }
 }

@@ -25,10 +25,17 @@ namespace Rubberduck.UI.Command
             = new RoutedCommand(nameof(CloseAllDocumentsCommand), typeof(Window));
         public static RoutedCommand CloseWorkspaceCommand { get; }
             = new RoutedCommand(nameof(CloseWorkspaceCommand), typeof(Window));
+        public static RoutedCommand RenameWorkspaceCommand { get; }
+            = new RoutedCommand(nameof(RenameWorkspaceCommand), typeof(Window));
+
 
         public static RoutedCommand SynchronizeWorkspaceCommand { get; }
             = new RoutedCommand(nameof(SynchronizeWorkspaceCommand), typeof(Window));
         public static RoutedCommand ExitCommand { get; }
             = new RoutedCommand(nameof(ExitCommand), typeof(Window));
+
+        
+        public static RoutedCommand OpenFolderInWindowsExplorerCommand { get; }
+            = new RoutedCommand(nameof(OpenFolderInWindowsExplorerCommand), typeof(Window));
     }
 }

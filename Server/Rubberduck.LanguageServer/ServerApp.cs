@@ -3,14 +3,19 @@ using Microsoft.Extensions.Logging;
 using Nerdbank.Streams;
 using NLog;
 using NLog.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
+using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server.WorkDone;
+using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using OmniSharp.Extensions.LanguageServer.Server;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
+using Rubberduck.LanguageServer.Handlers;
 using Rubberduck.LanguageServer.Handlers.Lifecycle;
 using Rubberduck.LanguageServer.Handlers.Workspace;
 using Rubberduck.LanguageServer.Model;
@@ -26,6 +31,8 @@ using System.Globalization;
 using System.IO.Abstractions;
 using System.IO.Pipelines;
 using System.IO.Pipes;
+using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.LanguageServer;
@@ -37,6 +44,7 @@ namespace Rubberduck.LanguageServer
         private readonly ServerStartupOptions _options;
         private readonly CancellationTokenSource _tokenSource;
 
+        private IDisposable _pipeWaitForClientConnectionTask;
         private NamedPipeServerStream? _pipe;
 
         private ILogger<ServerApp>? _logger;
@@ -77,6 +85,7 @@ namespace Rubberduck.LanguageServer
             catch (Exception exception)
             {
                 _logger?.LogError(exception, "An exception was thrown; server process will exit with an error code.");
+                _logger?.LogCritical(exception.ToString());
                 throw;
             }
         }
@@ -153,10 +162,20 @@ namespace Rubberduck.LanguageServer
             loggerProvider.LogFactory.Setup().LoadConfigurationFromFile("NLog-server.config");
             options.LoggerFactory = new NLogLoggerFactory(loggerProvider);
 
-            options
+            options.WithUnhandledExceptionHandler(exception =>
+            {
+                _logger?.LogError("{0}", exception.ToString());
+            });
+
+            _ = options
                 .WithServerInfo(info)
-                .OnInitialize((ILanguageServer server, InitializeParams request, CancellationToken token) =>
+
+                .OnInitialize(async (ILanguageServer server, InitializeParams request, CancellationToken token) =>
                 {
+                    // OnLanguageServerInitializeDelegate
+                    // Gives your class or handler an opportunity to interact with the InitializeParams
+                    // before it is processed by the server.
+
                     _logger?.LogDebug("Received Initialize request.");
                     token.ThrowIfCancellationRequested();
                     if (TimedAction.TryRun(() =>
@@ -170,69 +189,92 @@ namespace Rubberduck.LanguageServer
                     {
                         _logger?.LogError(TraceLevel.Verbose, exception);
                     }
-                    _logger?.LogDebug("Completed Initialize request.");
-                    return Task.CompletedTask;
                 })
 
-                .OnInitialized((ILanguageServer server, InitializeParams request, InitializeResult response, CancellationToken token) =>
+                .OnInitialized(async (ILanguageServer server, InitializeParams request, InitializeResult response, CancellationToken cancellationToken) =>
                 {
-                    _logger?.LogDebug("Received Initialized notification.");
-                    token.ThrowIfCancellationRequested();
+                    // OnLanguageServerInitializedDelegate
+                    // Gives your class or handler an opportunity to interact with the InitializeParams and InitializeResult
+                    // after it is processed by the server but before it is sent to the client.
 
-                    _logger?.LogDebug("Handled Initialized notification.");
-                    return Task.CompletedTask;
+                    _logger?.LogTrace("Sending Initialized notification. InitializeResult: {0}", JsonSerializer.Serialize(response));
                 })
 
-                .OnStarted((ILanguageServer server, CancellationToken token) =>
+                .OnStarted(async (ILanguageServer server, CancellationToken token) =>
                 {
+                    // OnLanguageServerStartedDelegate
+                    // Gives your class or handler an opportunity to interact with the ILanguageServer
+                    // after the connection has been established.
+
                     _logger?.LogDebug("Language server started.");
                     token.ThrowIfCancellationRequested();
 
-                    // todo: read workspace folder from _serverState.RootUri
-                    // todo: parse all .vba/.vb6 files in folder
-                    // todo: this needs to return immediately so the server can start without killing things
-                    //       it also needs to capture the `server` param (or otherwise retain access to the server object)
-                    //       to send notifications to the client (e.g. parsing, parse ended, resolving, inspecting, etc.)
+                    try
+                    {
+                        var handlerProgressToken = new ProgressToken(Guid.NewGuid().ToString());
+                        IWorkDoneObserver? progress = null;
 
-                    _logger?.LogDebug("Handled Started notification.");
-                    return Task.CompletedTask;
+                        if (server.WorkDoneManager.IsSupported)
+                        {
+                            _logger?.LogTrace("Sending progress token...");
+                            server.Window.SendWorkDoneProgressCreate(new() { Token = handlerProgressToken });
+
+                            progress = await server.WorkDoneManager.Create(
+                                new WorkDoneProgressBegin
+                                {
+                                    Title = "Processing workspace",
+                                    Message = "Processing workspace...",
+                                    Cancellable = true,
+                                    // LSP: if not provided, infinite progress is assumed
+                                    // and clients are allowed to ignore the 'percentage' value in subsequent report notifications
+                                    Percentage = 0,
+                                },
+                                onError: (exception) => new WorkDoneProgressEnd { Message = exception.Message },
+                                onComplete: () => new WorkDoneProgressEnd { Message = "Completed." }, token);
+                        }
+                        else
+                        {
+                            _logger?.LogTrace("WorkDoneManager.IsSupported returned false; client will not be sent progress notifications.");
+                        }
+
+                        _logger?.LogTrace("Reporting progress: {0}%", 10);
+                        progress?.OnNext(message: "Loading source files...", percentage: 10, cancellable: false);
+                        // todo: read workspace folder from _serverState.RootUri
+                        
+                        _logger?.LogTrace("Reporting progress: {0}%", 25);
+                        progress?.OnNext(message: "Parsing...", percentage: 25, cancellable: false);
+                        // todo: parse all source files in workspace, make code foldings immediately available for open documents
+
+                        _logger?.LogTrace("Reporting progress: {0}%", 50);
+                        progress?.OnNext(message: "Resolving...", percentage: 50, cancellable: false);
+                        // todo: make semantic highlighting immediately available for open documents
+
+                        _logger?.LogTrace("Reporting progress: {0}%", 75);
+                        progress?.OnNext(message: "Analyzing...", percentage: 75, cancellable: false);
+                        // todo: make diagnostics immediately available for open documents
+
+                        progress?.OnCompleted();
+                        _logger?.LogTrace("WorkDoneToken '{0}' has been completed.", progress?.WorkDoneToken);
+                        _logger?.LogDebug("Handled Started notification.");
+                    }
+                    catch (Exception exception)
+                    {
+                        _logger?.LogError(exception, "{0}", exception.ToString());
+                    }
                 })
 
                  /* handlers */
+
+                //.WithHandler<InitializedHandler>()
                  //.WithHandler<SetTraceHandler>()
 
                  /* registrations */
 
-                 // TODO figure out why these aren't working as regular handlers
                  .WithHandler<ShutdownHandler>()
                  .WithHandler<ExitHandler>()
             // .WithHandler<InitializedHandler>()
 
-            //.OnShutdown((ShutdownParams request, CancellationToken token) =>
-            //{
-            //    _logger?.LogDebug("Received Shutdown notification.");
-            //    token.ThrowIfCancellationRequested();
-
-            //    _serverState.Shutdown(request);
-            //    _logger?.LogDebug("Handled Shutdown notification; awaiting Exit notification...");
-            //    return Task.CompletedTask;
-            //})
-            //.OnExit(async (ExitParams request, CancellationToken token) =>
-            //{
-            //    _logger?.LogDebug("Received Exit notification. Process will now be terminated.");
-            //    await Task.Delay(TimeSpan.FromMilliseconds(100));
-
-            //    // FIXME figure out a way to unwind the stack all the way up?
-            //    if (_serverState.IsCleanExit)
-            //    {
-            //        Environment.Exit(0);
-            //    }
-            //    else
-            //    {
-            //        _languageServer.ForcefulShutdown();
-            //        Environment.Exit(1);
-            //    }
-            //})
+                .OnDidOpenTextDocument(HandleDidOpenTextDocument, GetTextDocumentOpenRegistrationOptions)
 
             /*/ Workspace
                 .WithHandler<DidChangeConfigurationHandler>()
@@ -281,6 +323,29 @@ namespace Rubberduck.LanguageServer
             ;
         }
 
+        private TextDocumentSelector GetSelector(SupportedLanguage language)
+        {
+            var filter = new TextDocumentFilter
+            {
+                Language = language.Id,
+                Pattern = string.Join(";", language.FileTypes.Select(fileType => $"**/{fileType}").ToArray())
+            };
+            return new TextDocumentSelector(filter);
+        }
+
+        private void HandleDidOpenTextDocument(DidOpenTextDocumentParams request, TextSynchronizationCapability capability, CancellationToken token)
+        {
+            _logger?.LogDebug("Received DidOpenTextDocument notification.");
+        }
+
+        private TextDocumentOpenRegistrationOptions GetTextDocumentOpenRegistrationOptions(TextSynchronizationCapability capability, ClientCapabilities clientCapabilities)
+        {
+            return new TextDocumentOpenRegistrationOptions
+            {
+                DocumentSelector = GetSelector(new VisualBasicForApplicationsLanguage())
+            };
+        }
+
         private void ConfigureTransport(LanguageServerOptions options)
         {
             switch (_options.TransportType)
@@ -312,10 +377,12 @@ namespace Rubberduck.LanguageServer
             var ioOptions = (PipeServerStartupOptions)_options;
             _logger?.LogInformation("Configuring language server transport to use a named pipe stream (name: {name})...", ioOptions.PipeName);
 
-            _pipe = new NamedPipeServerStream(ioOptions.PipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message, System.IO.Pipes.PipeOptions.Asynchronous | System.IO.Pipes.PipeOptions.CurrentUserOnly);
-            
+            _pipe = new NamedPipeServerStream(ioOptions.PipeName, PipeDirection.InOut, 10, PipeTransmissionMode.Message, System.IO.Pipes.PipeOptions.CurrentUserOnly | System.IO.Pipes.PipeOptions.Asynchronous | System.IO.Pipes.PipeOptions.FirstPipeInstance);
             options.WithInput(PipeReader.Create(_pipe));
             options.WithOutput(PipeWriter.Create(_pipe));
+
+            _logger?.LogTrace("Asynchronously awaiting client connection...");
+            _pipeWaitForClientConnectionTask = _pipe.WaitForConnectionAsync();
         }
 
         public void Dispose()
@@ -323,6 +390,7 @@ namespace Rubberduck.LanguageServer
             if (_pipe is not null)
             {
                 _logger?.LogDebug("Disposing NamedPipeServerStream...");
+                _pipeWaitForClientConnectionTask.Dispose();
                 _pipe.Dispose();
                 _pipe = null;
             }
