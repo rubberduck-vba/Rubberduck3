@@ -4,6 +4,7 @@ using OmniSharp.Extensions.LanguageServer.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using Rubberduck.Editor.RPC;
 using Rubberduck.Editor.RPC.LanguageServerClient;
+using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.ServerPlatform;
@@ -31,12 +32,9 @@ namespace Rubberduck.Editor
         private readonly ServerStartupOptions _options;
         private readonly CancellationTokenSource _tokenSource;
 
-
         private Process? _languageServerProcess = default;
         private NamedPipeClientStream? _languageClientPipe = default;
         private OmniSharpLanguageClient? _languageClient = default;
-        private IDisposable? _languageClientInitializeTask = default;
-        private IDisposable? _pipeConnectTask = default;
 
         public LanguageClientApp(ILogger<LanguageClientApp> logger, ServerStartupOptions options, CancellationTokenSource tokenSource, IServiceProvider services)
         {
@@ -59,12 +57,6 @@ namespace Rubberduck.Editor
 
             _logger.LogInformation("Creating language client...");
             _languageClient = await OmniSharpLanguageClient.From(ConfigureClient, _services, _tokenSource.Token);
-
-            _logger.LogInformation("Initializing LSP...");
-
-            Task lspClientInitializeTask = _languageClient.Initialize(_tokenSource.Token);
-            _languageClientInitializeTask = lspClientInitializeTask;
-            await lspClientInitializeTask;
         }
 
         public async Task ExitAsync()
@@ -166,8 +158,11 @@ namespace Rubberduck.Editor
             options.WithInput(PipeReader.Create(_languageClientPipe));
             options.WithOutput(PipeWriter.Create(_languageClientPipe));
 
-            _logger.LogInformation("Connecting named pipe client stream...");
-            _languageClientPipe.Connect(TimeSpan.FromSeconds(5));
+            var elapsedForConnect = TimedAction.Run(() =>
+            {
+                _languageClientPipe.Connect(TimeSpan.FromSeconds(5));
+            });
+            _logger.LogTrace("Pipe client connected. Elapsed: {elapsedForConnect} (timeout 5 seconds)", elapsedForConnect);
 
             _logger.LogInformation("Configuring language client options...");
             var service = _services.GetRequiredService<ILanguageClientService>();
@@ -179,14 +174,10 @@ namespace Rubberduck.Editor
             _languageServerProcess?.Dispose();
             _languageClientPipe?.Dispose();
             _languageClient?.Dispose();
-            _languageClientInitializeTask?.Dispose();
-            _pipeConnectTask?.Dispose();
 
             _languageServerProcess = null;
             _languageClientPipe = null;
             _languageClient = null;
-            _languageClientInitializeTask = null;
-            _pipeConnectTask = null;
         }
     }
 }

@@ -32,6 +32,7 @@ using System.IO.Abstractions;
 using System.IO.Pipelines;
 using System.IO.Pipes;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.LanguageServer;
@@ -196,7 +197,7 @@ namespace Rubberduck.LanguageServer
                     // Gives your class or handler an opportunity to interact with the InitializeParams and InitializeResult
                     // after it is processed by the server but before it is sent to the client.
 
-                    _logger?.LogTrace("Sending Initialized notification...");
+                    _logger?.LogTrace("Sending Initialized notification. InitializeResult: {0}", JsonSerializer.Serialize(response));
                 })
 
                 .OnStarted(async (ILanguageServer server, CancellationToken token) =>
@@ -376,7 +377,7 @@ namespace Rubberduck.LanguageServer
             var ioOptions = (PipeServerStartupOptions)_options;
             _logger?.LogInformation("Configuring language server transport to use a named pipe stream (name: {name})...", ioOptions.PipeName);
 
-            _pipe = new NamedPipeServerStream(ioOptions.PipeName, PipeDirection.InOut, 10);
+            _pipe = new NamedPipeServerStream(ioOptions.PipeName, PipeDirection.InOut, 10, PipeTransmissionMode.Message, System.IO.Pipes.PipeOptions.CurrentUserOnly | System.IO.Pipes.PipeOptions.Asynchronous | System.IO.Pipes.PipeOptions.FirstPipeInstance);
             options.WithInput(PipeReader.Create(_pipe));
             options.WithOutput(PipeWriter.Create(_pipe));
 

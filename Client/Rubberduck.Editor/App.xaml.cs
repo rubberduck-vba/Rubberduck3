@@ -108,16 +108,16 @@ namespace Rubberduck.Editor
 
                     splash.UpdateStatus("Initializing language server protocol (addin/editor)...");
                     await _editorServer.StartupAsync();
-
-                    if (!string.IsNullOrWhiteSpace(_options.WorkspaceRoot))
-                    {
-                        splash.UpdateStatus("Initializing language server protocol (editor/server)...");
-                        await _languageClient.StartupAsync();
-                    }
                 }
                 else if (_settings.Settings.LanguageClientSettings.RequireAddInHost)
                 {
                     throw new InvalidOperationException("Editor is not configured for standalone execution.");
+                }
+
+                if (!string.IsNullOrWhiteSpace(_options.WorkspaceRoot))
+                {
+                    splash.UpdateStatus("Initializing language server protocol (editor/server)...");
+                    await _languageClient.StartupAsync(new Uri(_options.WorkspaceRoot));
                 }
 
                 splash.UpdateStatus("Quack!");
