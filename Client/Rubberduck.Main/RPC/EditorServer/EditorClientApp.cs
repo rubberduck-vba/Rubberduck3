@@ -20,7 +20,6 @@ using OmniSharpLanguageClient = OmniSharp.Extensions.LanguageServer.Client.Langu
 
 namespace Rubberduck.Main.RPC.EditorServer
 {
-
     public sealed class EditorClientApp : IDisposable
     {
         private readonly ILogger _logger;

@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.InternalApi.ServerPlatform
+﻿using Rubberduck.SettingsProvider.Model.ServerStartup;
+
+namespace Rubberduck.SettingsProvider
 {
     public static class ServerPlatformSettings
     {

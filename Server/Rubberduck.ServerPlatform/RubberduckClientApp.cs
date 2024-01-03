@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client;
+using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.SettingsProvider;
@@ -67,6 +68,21 @@ namespace Rubberduck.ServerPlatform
 
             _serverProcess = GetServerProcess().Start(clientProcessId, settings, HandleServerExit);
             _logger.LogInformation("Server process has started.");
+        }
+
+        public async Task ExitAsync()
+        {
+            _client?.SendShutdown(new());
+            await SendExitServerNotificationAsync();
+        }
+
+        private async Task SendExitServerNotificationAsync()
+        {
+            var delay = _services.GetRequiredService<RubberduckSettingsProvider>().Settings.LanguageClientSettings.ExitNotificationDelay;
+
+            await Task.Delay(delay)
+                .ContinueWith(o => _client?.SendExit(new()), _tokenSource.Token, TaskContinuationOptions.None, TaskScheduler.Default)
+                .ConfigureAwait(false);
         }
 
         private void HandleServerExit(object? sender, EventArgs e)

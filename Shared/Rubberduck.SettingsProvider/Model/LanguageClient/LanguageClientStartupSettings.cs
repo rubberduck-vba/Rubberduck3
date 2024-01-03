@@ -1,5 +1,4 @@
-﻿using Rubberduck.InternalApi.ServerPlatform;
-using Rubberduck.SettingsProvider.Model.ServerStartup;
+﻿using Rubberduck.SettingsProvider.Model.ServerStartup;
 using System;
 
 namespace Rubberduck.SettingsProvider.Model.LanguageClient

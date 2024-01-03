@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO.Abstractions;
 using System.Management;
 
-namespace Rubberduck.Editor.Common
+namespace Rubberduck.InternalApi.Common
 {
     public sealed class WindowsOperatingSystem : IOperatingSystem
     {
