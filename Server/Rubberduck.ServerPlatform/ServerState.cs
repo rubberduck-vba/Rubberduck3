@@ -143,15 +143,6 @@ namespace Rubberduck.ServerPlatform
 
         public void Initialize(InitializeParams param)
         {
-            //InvalidInitializeParamsException.ThrowIfNull(param,
-            //    e => (nameof(e.ClientInfo), param.ClientInfo),
-            //    e => (nameof(e.InitializationOptions), param.InitializationOptions),
-            //    e => (nameof(e.Capabilities), param.Capabilities),
-            //    e => (nameof(e.ProcessId), param.ProcessId),
-            //    e => (nameof(e.Trace), param.Trace),
-            //    e => (nameof(e.WorkspaceFolders), param.WorkspaceFolders)
-            //);
-
             var options = param.InitializationOptions!.ToString()!;
             _options = JsonSerializer.Deserialize<InitializationOptions>(options);
 
@@ -190,8 +181,8 @@ namespace Rubberduck.ServerPlatform
             }
             else if (exception != null)
             {
-                _logger.LogError(TraceLevel.ToTraceLevel(), exception, "Healthcheck service could not be started. This exception will be thrown from this location.");
-                throw exception;
+                _logger.LogError(TraceLevel.ToTraceLevel(), exception, "Healthcheck service could not be started.");
+                throw new InvalidOperationException("Healthcheck service could not be started.", exception);
             }
         }
 

@@ -39,6 +39,11 @@ using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.Langu
 
 namespace Rubberduck.LanguageServer
 {
+    public partial class WorkDoneProgressParams : IWorkDoneProgressParams
+    {
+
+    }
+
     public sealed class ServerApp : IDisposable
     {
         private readonly ServerStartupOptions _options;
@@ -179,8 +184,54 @@ namespace Rubberduck.LanguageServer
                     _logger?.LogDebug("Received Initialize request.");
                     token.ThrowIfCancellationRequested();
                     if (TimedAction.TryRun(() =>
-                    {
-                        _serverState.Initialize(request);
+                    {                        
+                        // we cannot request a progress token during initialization
+                        // we can only report progress if a token was provided here.
+                        var initProgressToken = request.WorkDoneToken;
+                        
+                        var progress = initProgressToken is null ? null
+                            : server.WorkDoneManager.For(new WorkDoneProgressParams { WorkDoneToken = initProgressToken },
+                                new WorkDoneProgressBegin 
+                                {
+                                    Title = "Initializing",
+                                    Message = "Initialization started.",
+                                    Cancellable = false
+                                },
+                                onError:(exception) => new WorkDoneProgressEnd
+                                {
+                                    Message = request.Trace == InitializeTrace.Verbose ? exception.ToString() : exception.Message
+                                },
+                                onComplete:() => new WorkDoneProgressEnd
+                                {
+                                    Message = "Completed."
+                                });
+                        try
+                        {
+                            progress?.OnNext("Processing initialization parameters...", null, null);
+
+                            if (request.ProcessId != _options.ClientProcessId)
+                            {
+                                throw new InvalidOperationException($"Request ProcessId={request.ProcessId} mismatched expected ClientProcessId={_options.ClientProcessId}.");
+                            }
+                            _serverState.Initialize(request);
+                            
+                            progress?.OnNext("Validating workspace root...", null, null);
+                            var workspaceRoot = new System.IO.DirectoryInfo(request.RootUri?.GetFileSystemPath() ?? request.RootPath ?? throw new InvalidOperationException("Workspace root URI was not supplied."));
+                            if (!workspaceRoot.Exists)
+                            {
+                                throw new InvalidOperationException("Specified workspace does not exist.");
+                            }
+
+                            _logger?.LogTrace(TraceLevel.Verbose, "Validated workspace root.", _serverState.RootUri.GetFileSystemPath());
+                            progress?.OnCompleted();
+                        }
+                        catch (Exception exception)
+                        {
+                            _logger?.LogError(exception, exception.ToString());
+                            progress?.OnError(exception);
+                            throw;
+                        }
+
                     }, out var elapsed, out var exception))
                     {
                         _logger?.LogPerformance(TraceLevel.Verbose, "Handling initialize...", elapsed);
@@ -188,6 +239,7 @@ namespace Rubberduck.LanguageServer
                     else if (exception != null)
                     {
                         _logger?.LogError(TraceLevel.Verbose, exception);
+                        throw exception; // TODO throw new LspInitFailedException(message, exception)
                     }
                 })
 
