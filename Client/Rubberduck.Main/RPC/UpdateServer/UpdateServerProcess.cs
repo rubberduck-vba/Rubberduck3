@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.ServerPlatform;
 
 namespace Rubberduck.Main.RPC
 {

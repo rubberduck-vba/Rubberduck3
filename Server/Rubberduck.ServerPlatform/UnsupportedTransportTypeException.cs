@@ -1,4 +1,4 @@
-﻿using Rubberduck.InternalApi.ServerPlatform;
+﻿using Rubberduck.SettingsProvider.Model.ServerStartup;
 using System;
 
 namespace Rubberduck.ServerPlatform

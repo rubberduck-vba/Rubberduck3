@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.InternalApi.ServerPlatform
+﻿namespace Rubberduck.SettingsProvider.Model.ServerStartup
 {
     public enum TransportType
     {

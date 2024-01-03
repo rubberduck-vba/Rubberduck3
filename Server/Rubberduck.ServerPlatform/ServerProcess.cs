@@ -4,9 +4,8 @@ using Rubberduck.InternalApi.Settings;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 
-namespace Rubberduck.InternalApi.ServerPlatform
+namespace Rubberduck.ServerPlatform
 {
     public interface IServerProcess
     {
@@ -31,10 +30,10 @@ namespace Rubberduck.InternalApi.ServerPlatform
 
             if (!File.Exists(fullPath))
             {
-                Logger.LogWarning(TraceLevel.Verbose, 
-                    $"{settings.GetType().Name}.ServerExecutablePath configuration is invalid.", 
+                Logger.LogWarning(TraceLevel.Verbose,
+                    $"{settings.GetType().Name}.ServerExecutablePath configuration is invalid.",
                     $"Configured value '{path}' should be a folder that contains the '{ExecutableFileName}' executable.");
-                
+
                 throw new FileNotFoundException($"ServerExecutablePath configuration is invalid.");
             }
 

@@ -1,5 +1,4 @@
-﻿using Rubberduck.InternalApi.ServerPlatform;
-using Rubberduck.InternalApi.Settings;
+﻿using Rubberduck.InternalApi.Settings;
 using System;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -15,15 +14,15 @@ namespace Rubberduck.SettingsProvider.Model.ServerStartup
     {
         protected static RubberduckSetting[] GetDefaultSettings(string pipe, string path)
         {
-            return new RubberduckSetting[]
-            {
+            return
+            [
                 new ServerExecutablePathSetting { Value = new Uri(path) },
                 new ServerTransportTypeSetting { Value = TransportType.StdIO },
                 new ServerPipeNameSetting { Value = pipe },
                 new ServerMessageModeSetting { Value = MessageMode.Message },
                 new TraceLevelSetting { Value = MessageTraceLevel.Verbose },
                 new ClientHealthCheckIntervalSetting { Value = TimeSpan.FromSeconds(10) },
-            };
+            ];
         }
 
         protected ServerStartupSettings()
