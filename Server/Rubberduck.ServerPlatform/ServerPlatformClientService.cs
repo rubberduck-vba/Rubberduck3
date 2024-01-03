@@ -10,6 +10,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.General;
 using System;
 using System.IO;
 using System.Reflection;
@@ -64,7 +65,7 @@ namespace Rubberduck.ServerPlatform
             var initializationOptions = GetInitializationOptions(settings);
             if (initializationOptions != null)
             {
-                options.WithInitializationOptions(initializationOptions);
+                options.WithInitializationOptions(System.Text.Json.JsonSerializer.Serialize(initializationOptions));
             }
 
             options
@@ -134,7 +135,7 @@ namespace Rubberduck.ServerPlatform
             new InitializationOptions
             {
                 Timestamp = DateTime.Now,
-                Locale = settings.GeneralSettings.Locale,
+                Locale = settings.GeneralSettings.Locale ?? LocaleSetting.DefaultSettingValue,
             };
 
         protected virtual void ConfigureClientLogging(ILoggingBuilder builder)
