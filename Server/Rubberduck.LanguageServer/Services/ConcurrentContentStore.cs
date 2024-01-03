@@ -1,21 +1,27 @@
-﻿using System;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Rubberduck.LanguageServer.Services
 {
-    public class DocumentContent
+    public class DocumentState
     {
-        public DocumentContent(string text)
+        public DocumentState(string text, int version = 0)
         {
             Text = text;
+            Version = version;
         }
 
         public string Text { get; }
-        //public IEnumerable<Diagnostic> Diagnostics { get; }
-        //...
+        public int Version { get; }
+        public bool IsOpened { get; set; }
+
+        public IEnumerable<FoldingRange> Foldings { get; set; } = [];
+        public IEnumerable<Diagnostic> Diagnostics { get; set; } = [];
     }
 
-    public class DocumentContentStore : ConcurrentContentStore<DocumentContent> { }
+    public class DocumentContentStore : ConcurrentContentStore<DocumentState> { }
 
     /// <summary>
     /// A service that is responsible for knowing everything about the current/latest version of all documents.

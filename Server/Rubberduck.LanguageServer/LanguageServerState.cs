@@ -30,7 +30,7 @@ namespace Rubberduck.LanguageServer
         private Container<WorkspaceFolder>? _workspaceFolders;
         public IEnumerable<WorkspaceFolder> Workspacefolders => _workspaceFolders ?? throw new ServerStateNotInitializedException();
 
-        public DocumentUri RootUri { get; set; }
+        public DocumentUri? RootUri { get; set; }
 
         public void AddWorkspaceFolders(IEnumerable<WorkspaceFolder> workspaceFolders)
         {
@@ -40,7 +40,7 @@ namespace Rubberduck.LanguageServer
         protected override void OnInitialize(InitializeParams param)
         {
             _workspaceFolders = param.WorkspaceFolders!;
-            RootUri = param.RootUri!;
+            RootUri = param.RootUri ?? param.RootPath ?? throw new InvalidInitializeParamsException(nameof(param.RootUri));
         }
 
         protected override void OnClientProcessExited()

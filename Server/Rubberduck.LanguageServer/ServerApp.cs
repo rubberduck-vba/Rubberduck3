@@ -13,6 +13,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using OmniSharp.Extensions.LanguageServer.Server;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.LanguageServer.Handlers;
@@ -216,13 +217,13 @@ namespace Rubberduck.LanguageServer
                             _serverState.Initialize(request);
                             
                             progress?.OnNext("Validating workspace root...", null, null);
-                            var workspaceRoot = new System.IO.DirectoryInfo(request.RootUri?.GetFileSystemPath() ?? request.RootPath ?? throw new InvalidOperationException("Workspace root URI was not supplied."));
+                            var workspaceRoot = new System.IO.DirectoryInfo(_serverState.RootUri?.GetFileSystemPath() ?? request.RootPath ?? throw new InvalidOperationException("Workspace root URI was not supplied."));
                             if (!workspaceRoot.Exists)
                             {
                                 throw new InvalidOperationException("Specified workspace does not exist.");
                             }
 
-                            _logger?.LogTrace(TraceLevel.Verbose, "Validated workspace root.", _serverState.RootUri.GetFileSystemPath());
+                            _logger?.LogTrace(TraceLevel.Verbose, "Validated workspace root.", workspaceRoot.FullName);
                             progress?.OnCompleted();
                         }
                         catch (Exception exception)
@@ -289,19 +290,40 @@ namespace Rubberduck.LanguageServer
                             _logger?.LogTrace("WorkDoneManager.IsSupported returned false; client will not be sent progress notifications.");
                         }
 
-                        _logger?.LogTrace("Reporting progress: {0}%", 10);
                         progress?.OnNext(message: "Loading source files...", percentage: 10, cancellable: false);
-                        // todo: read workspace folder from _serverState.RootUri
-                        
-                        _logger?.LogTrace("Reporting progress: {0}%", 25);
+
+                        var rootUri = _serverState.RootUri!.GetFileSystemPath();
+                        var store = server.Services.GetRequiredService<DocumentContentStore>();
+
+                        var projectFilePath = System.IO.Path.Combine(rootUri, ProjectFile.FileName);
+                        var projectFileContent = System.IO.File.ReadAllText(projectFilePath);
+                        var projectFile = JsonSerializer.Deserialize<ProjectFile>(projectFileContent) ?? throw new InvalidOperationException("Project file could not be deserialized.");
+
+                        var srcRootPath = System.IO.Path.Combine(rootUri, ProjectFile.SourceRoot);
+                        foreach (var item in projectFile.VBProject.Modules)
+                        {
+                            progress?.OnNext($"Loading file: {item.Name}", 10, false);
+
+                            var path = System.IO.Path.Combine(srcRootPath, item.Uri);
+                            var state = new DocumentState(System.IO.File.ReadAllText(path));
+                            state.IsOpened = item.IsAutoOpen;
+                            store.AddOrUpdate(new Uri(path), state);
+                            _logger?.LogTrace("Loaded source file: {path}", path);
+                        }
+
+                        progress?.OnNext($"Loading project references...", percentage: 20, cancellable: false);
+                        foreach (var item in projectFile.VBProject.References)
+                        {
+                            progress?.OnNext($"Loading library: {item.Name}", 20, false);
+                            _logger?.LogTrace("todo: load definitions from {uri} ({typeLibInfoUri})", item.Uri, item.TypeLibInfoUri);
+                        }
+
                         progress?.OnNext(message: "Parsing...", percentage: 25, cancellable: false);
                         // todo: parse all source files in workspace, make code foldings immediately available for open documents
 
-                        _logger?.LogTrace("Reporting progress: {0}%", 50);
                         progress?.OnNext(message: "Resolving...", percentage: 50, cancellable: false);
                         // todo: make semantic highlighting immediately available for open documents
 
-                        _logger?.LogTrace("Reporting progress: {0}%", 75);
                         progress?.OnNext(message: "Analyzing...", percentage: 75, cancellable: false);
                         // todo: make diagnostics immediately available for open documents
 
