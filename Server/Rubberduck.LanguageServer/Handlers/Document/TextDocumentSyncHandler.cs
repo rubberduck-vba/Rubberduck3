@@ -46,7 +46,7 @@ namespace Rubberduck.LanguageServer.Handlers.Document
         {
             var uri = request.TextDocument.Uri.ToUri();
             var text = request.TextDocument.Text;
-            var content = new DocumentContent(text);
+            var content = new DocumentState(text);
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -60,7 +60,7 @@ namespace Rubberduck.LanguageServer.Handlers.Document
         {
             var uri = request.TextDocument.Uri.ToUri();
             var text = request.ContentChanges.LastOrDefault()?.Text ?? string.Empty;
-            var content = new DocumentContent(text);
+            var content = new DocumentState(text);
 
             cancellationToken.ThrowIfCancellationRequested();
 

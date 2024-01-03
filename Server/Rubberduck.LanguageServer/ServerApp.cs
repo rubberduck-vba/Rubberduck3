@@ -13,6 +13,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using OmniSharp.Extensions.LanguageServer.Server;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.LanguageServer.Handlers;
@@ -39,6 +40,11 @@ using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.Langu
 
 namespace Rubberduck.LanguageServer
 {
+    public partial class WorkDoneProgressParams : IWorkDoneProgressParams
+    {
+
+    }
+
     public sealed class ServerApp : IDisposable
     {
         private readonly ServerStartupOptions _options;
@@ -179,8 +185,54 @@ namespace Rubberduck.LanguageServer
                     _logger?.LogDebug("Received Initialize request.");
                     token.ThrowIfCancellationRequested();
                     if (TimedAction.TryRun(() =>
-                    {
-                        _serverState.Initialize(request);
+                    {                        
+                        // we cannot request a progress token during initialization
+                        // we can only report progress if a token was provided here.
+                        var initProgressToken = request.WorkDoneToken;
+                        
+                        var progress = initProgressToken is null ? null
+                            : server.WorkDoneManager.For(new WorkDoneProgressParams { WorkDoneToken = initProgressToken },
+                                new WorkDoneProgressBegin 
+                                {
+                                    Title = "Initializing",
+                                    Message = "Initialization started.",
+                                    Cancellable = false
+                                },
+                                onError:(exception) => new WorkDoneProgressEnd
+                                {
+                                    Message = request.Trace == InitializeTrace.Verbose ? exception.ToString() : exception.Message
+                                },
+                                onComplete:() => new WorkDoneProgressEnd
+                                {
+                                    Message = "Completed."
+                                });
+                        try
+                        {
+                            progress?.OnNext("Processing initialization parameters...", null, null);
+
+                            if (request.ProcessId != _options.ClientProcessId)
+                            {
+                                throw new InvalidOperationException($"Request ProcessId={request.ProcessId} mismatched expected ClientProcessId={_options.ClientProcessId}.");
+                            }
+                            _serverState.Initialize(request);
+                            
+                            progress?.OnNext("Validating workspace root...", null, null);
+                            var workspaceRoot = new System.IO.DirectoryInfo(_serverState.RootUri?.GetFileSystemPath() ?? request.RootPath ?? throw new InvalidOperationException("Workspace root URI was not supplied."));
+                            if (!workspaceRoot.Exists)
+                            {
+                                throw new InvalidOperationException("Specified workspace does not exist.");
+                            }
+
+                            _logger?.LogTrace(TraceLevel.Verbose, "Validated workspace root.", workspaceRoot.FullName);
+                            progress?.OnCompleted();
+                        }
+                        catch (Exception exception)
+                        {
+                            _logger?.LogError(exception, exception.ToString());
+                            progress?.OnError(exception);
+                            throw;
+                        }
+
                     }, out var elapsed, out var exception))
                     {
                         _logger?.LogPerformance(TraceLevel.Verbose, "Handling initialize...", elapsed);
@@ -188,6 +240,7 @@ namespace Rubberduck.LanguageServer
                     else if (exception != null)
                     {
                         _logger?.LogError(TraceLevel.Verbose, exception);
+                        throw exception; // TODO throw new LspInitFailedException(message, exception)
                     }
                 })
 
@@ -237,19 +290,40 @@ namespace Rubberduck.LanguageServer
                             _logger?.LogTrace("WorkDoneManager.IsSupported returned false; client will not be sent progress notifications.");
                         }
 
-                        _logger?.LogTrace("Reporting progress: {0}%", 10);
                         progress?.OnNext(message: "Loading source files...", percentage: 10, cancellable: false);
-                        // todo: read workspace folder from _serverState.RootUri
-                        
-                        _logger?.LogTrace("Reporting progress: {0}%", 25);
+
+                        var rootUri = _serverState.RootUri!.GetFileSystemPath();
+                        var store = server.Services.GetRequiredService<DocumentContentStore>();
+
+                        var projectFilePath = System.IO.Path.Combine(rootUri, ProjectFile.FileName);
+                        var projectFileContent = System.IO.File.ReadAllText(projectFilePath);
+                        var projectFile = JsonSerializer.Deserialize<ProjectFile>(projectFileContent) ?? throw new InvalidOperationException("Project file could not be deserialized.");
+
+                        var srcRootPath = System.IO.Path.Combine(rootUri, ProjectFile.SourceRoot);
+                        foreach (var item in projectFile.VBProject.Modules)
+                        {
+                            progress?.OnNext($"Loading file: {item.Name}", 10, false);
+
+                            var path = System.IO.Path.Combine(srcRootPath, item.Uri);
+                            var state = new DocumentState(System.IO.File.ReadAllText(path));
+                            state.IsOpened = item.IsAutoOpen;
+                            store.AddOrUpdate(new Uri(path), state);
+                            _logger?.LogTrace("Loaded source file: {path}", path);
+                        }
+
+                        progress?.OnNext($"Loading project references...", percentage: 20, cancellable: false);
+                        foreach (var item in projectFile.VBProject.References)
+                        {
+                            progress?.OnNext($"Loading library: {item.Name}", 20, false);
+                            _logger?.LogTrace("todo: load definitions from {uri} ({typeLibInfoUri})", item.Uri, item.TypeLibInfoUri);
+                        }
+
                         progress?.OnNext(message: "Parsing...", percentage: 25, cancellable: false);
                         // todo: parse all source files in workspace, make code foldings immediately available for open documents
 
-                        _logger?.LogTrace("Reporting progress: {0}%", 50);
                         progress?.OnNext(message: "Resolving...", percentage: 50, cancellable: false);
                         // todo: make semantic highlighting immediately available for open documents
 
-                        _logger?.LogTrace("Reporting progress: {0}%", 75);
                         progress?.OnNext(message: "Analyzing...", percentage: 75, cancellable: false);
                         // todo: make diagnostics immediately available for open documents
 
@@ -265,7 +339,6 @@ namespace Rubberduck.LanguageServer
 
                  /* handlers */
 
-                //.WithHandler<InitializedHandler>()
                  //.WithHandler<SetTraceHandler>()
 
                  /* registrations */

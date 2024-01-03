@@ -17,7 +17,7 @@ namespace Rubberduck.ServerPlatform
             }
         }
 
-        private InvalidInitializeParamsException(string property)
+        public InvalidInitializeParamsException(string property)
             : base($"Property '{property}' cannot be null") { }
     }
 }

@@ -113,6 +113,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
                     var token = request.Token;
                     if (token != null)
                     {
+                        _logger.LogTrace("ProgressToken: {0}", token.String);
                         _service.OnProgress(token);
                     }
                 })
@@ -123,7 +124,10 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
                     var token = request.Token;
                     if (token != null)
                     {
-                        var progress = JsonConvert.DeserializeObject<WorkDoneProgressReport>(request.Value.ToString(Formatting.None));
+                        var stringReport = request.Value.ToString(Formatting.None);
+                        _logger.LogTrace(stringReport);
+
+                        var progress = JsonConvert.DeserializeObject<WorkDoneProgressReport>(stringReport);
                         _service.OnProgress(token, progress);
                     }
                 })

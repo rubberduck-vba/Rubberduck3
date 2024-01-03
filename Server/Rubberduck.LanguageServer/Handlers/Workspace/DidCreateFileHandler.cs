@@ -50,7 +50,7 @@ namespace Rubberduck.LanguageServer.Handlers.Workspace
                     Task.Run(() =>
                     {
                         var content = _fileSystem.File.ReadAllText(file.Uri.ToString());
-                        _contentStore.AddOrUpdate(file.Uri, new DocumentContent(content));
+                        _contentStore.AddOrUpdate(file.Uri, new DocumentState(content));
                         _server.Window.LogInfo($"File '{file.Uri}' was added to content store.");
                     })
                 )).Wait()
