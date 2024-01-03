@@ -339,7 +339,6 @@ namespace Rubberduck.LanguageServer
 
                  /* handlers */
 
-                //.WithHandler<InitializedHandler>()
                  //.WithHandler<SetTraceHandler>()
 
                  /* registrations */
