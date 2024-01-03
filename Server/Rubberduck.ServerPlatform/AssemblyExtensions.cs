@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 
-namespace Rubberduck.Editor.RPC
+namespace Rubberduck.ServerPlatform
 {
     public static class AssemblyExtensions
     {

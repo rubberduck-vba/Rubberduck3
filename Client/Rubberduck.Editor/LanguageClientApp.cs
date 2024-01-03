@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using Rubberduck.Editor.RPC;
-using Rubberduck.Editor.RPC.LanguageServerClient;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform;

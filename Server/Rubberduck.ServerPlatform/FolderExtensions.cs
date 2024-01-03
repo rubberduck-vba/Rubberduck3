@@ -1,7 +1,7 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Model.Workspace;
 
-namespace Rubberduck.Editor.RPC
+namespace Rubberduck.ServerPlatform
 {
     public static class FolderExtensions
     {

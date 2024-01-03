@@ -8,7 +8,7 @@ using System;
 using System.Diagnostics;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
-namespace Rubberduck.Editor
+namespace Rubberduck.ServerPlatform
 {
     public class WorkspaceRootResolver
     {

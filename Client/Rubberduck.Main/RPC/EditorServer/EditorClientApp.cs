@@ -1,22 +1,21 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Nerdbank.Streams;
 using OmniSharp.Extensions.LanguageServer.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
-using Rubberduck.Editor;
-using Rubberduck.Editor.RPC;
-using Rubberduck.Editor.RPC.LanguageServerClient;
+using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using System;
 using System.Diagnostics;
+using System.IO.Pipelines;
 using System.IO.Pipes;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Env = System.Environment;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 using OmniSharpLanguageClient = OmniSharp.Extensions.LanguageServer.Client.LanguageClient;
 
 namespace Rubberduck.Main.RPC.EditorServer
@@ -31,24 +30,21 @@ namespace Rubberduck.Main.RPC.EditorServer
         private Process? _editorServerProcess = default;
         private NamedPipeClientStream? _editorClientPipe = default;
         private OmniSharpLanguageClient? _editorClient = default;
-        private IDisposable? _editorClientInitializeTask = default;
 
         public EditorClientApp(ILogger<EditorClientApp> logger, ServerStartupOptions options, CancellationTokenSource tokenSource, IServiceProvider services)
         {
             _logger = logger;
             _options = options;
-            _tokenSource = tokenSource;
             _services = services;
+            _tokenSource = tokenSource;
         }
 
-        public async Task StartupAsync()
+        public OmniSharpLanguageClient? EditorClient => _editorClient;
+
+        public async Task StartupAsync(Uri? workspaceRoot = null)
         {
             StartEditorServerProcess();
-
             _editorClient = await OmniSharpLanguageClient.From(ConfigureClient, _services, _tokenSource.Token);
-
-            _logger.LogTrace("EditorClient configured. Initializing...");
-            _editorClientInitializeTask = _editorClient.Initialize(_tokenSource.Token);
         }
 
         public async Task ExitAsync()
@@ -60,7 +56,10 @@ namespace Rubberduck.Main.RPC.EditorServer
         private async Task SendExitServerNotificationAsync()
         {
             var delay = _services.GetRequiredService<RubberduckSettingsProvider>().Settings.LanguageClientSettings.ExitNotificationDelay;
-            await Task.Delay(delay).ContinueWith(o => _editorClient?.SendExit(new()), _tokenSource.Token, TaskContinuationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
+
+            await Task.Delay(delay)
+                .ContinueWith(o => _editorClient?.SendExit(new()), _tokenSource.Token, TaskContinuationOptions.None, TaskScheduler.Default)
+                .ConfigureAwait(false);
         }
 
         private void StartEditorServerProcess()
@@ -70,7 +69,8 @@ namespace Rubberduck.Main.RPC.EditorServer
                 .LanguageServerSettings.StartupSettings;
             var clientProcessId = Env.ProcessId;
 
-            _editorServerProcess = new LanguageServerProcess(_logger).Start(clientProcessId, settings, HandleServerExit);
+            _editorServerProcess = new EditorServerProcess(_logger)
+                .Start(clientProcessId, settings, HandleServerExit);
         }
 
         private void HandleServerExit(object? sender, EventArgs e)
@@ -91,7 +91,13 @@ namespace Rubberduck.Main.RPC.EditorServer
 
         private void ConfigureClient(LanguageClientOptions options, RubberduckSettings settings, Uri workspaceRoot)
         {
-            switch (_options.TransportType)
+            var type = _options.TransportType;
+            if (_options.ClientProcessId == default)
+            {
+                type = settings.LanguageServerSettings.StartupSettings.ServerTransportType;
+            }
+
+            switch (type)
             {
                 case TransportType.StdIO:
                     ConfigureStdIO(options, settings, workspaceRoot);
@@ -105,6 +111,8 @@ namespace Rubberduck.Main.RPC.EditorServer
                     _logger?.LogWarning("An unsupported transport type was specified.");
                     throw new UnsupportedTransportTypeException(_options.TransportType);
             }
+
+            _logger.LogInformation($"Editor client configuration completed.");
         }
 
         private void ConfigureStdIO(LanguageClientOptions options, RubberduckSettings settings, Uri workspaceRoot)
@@ -115,22 +123,36 @@ namespace Rubberduck.Main.RPC.EditorServer
             options.WithInput(serverProcess.StandardOutput.BaseStream);
             options.WithOutput(serverProcess.StandardInput.BaseStream);
 
-            EditorClientService.ConfigureEditorClient(Assembly.GetExecutingAssembly(), serverProcess, Env.ProcessId, settings, workspaceRoot.LocalPath);
+            var service = _services.GetRequiredService<ILanguageClientService>();
+            service.ConfigureLanguageClient(options, Assembly.GetExecutingAssembly(), Env.ProcessId, settings, workspaceRoot.LocalPath);
         }
 
         private void ConfigurePipeIO(LanguageClientOptions options, RubberduckSettings settings, Uri workspaceRoot)
         {
             var processId = Env.ProcessId;
-            var ioOptions = (PipeServerStartupOptions)_options;
+            var pipeName = settings.LanguageClientSettings.StartupSettings.ServerPipeName;
+            if (_options is PipeServerStartupOptions ioOptions)
+            {
+                pipeName = PipeServerStartupOptions.GetPipeName(ioOptions.PipeName, Env.ProcessId);
+            }
+            else
+            {
+                pipeName = PipeServerStartupOptions.GetPipeName(pipeName, Env.ProcessId);
+            }
+            _logger.LogInformation("Configuring editor client transport to use a named pipe stream (name: {pipeName})...", pipeName);
 
-            var pipeName = ioOptions.PipeName ?? PipeServerStartupOptions.GetPipeName(settings.LanguageClientSettings.StartupSettings.ServerPipeName, processId);
-            _logger.LogInformation("Configuring editor client transport to use a named pipe stream (name: {pipeName} mode: {mode})...", pipeName, ioOptions.Mode);
+            _editorClientPipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut, System.IO.Pipes.PipeOptions.CurrentUserOnly | System.IO.Pipes.PipeOptions.Asynchronous);
+            options.WithInput(PipeReader.Create(_editorClientPipe));
+            options.WithOutput(PipeWriter.Create(_editorClientPipe));
 
-            var pipe = _editorClientPipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut);
-            options.WithInput(pipe.UsePipeReader());
-            options.WithOutput(pipe.UsePipeWriter());
+            var elapsedForConnect = TimedAction.Run(() =>
+            {
+                _editorClientPipe.Connect(TimeSpan.FromSeconds(5));
+            });
+            _logger.LogTrace("Pipe client connected. Elapsed: {elapsedForConnect} (timeout 5 seconds)", elapsedForConnect);
 
-            EditorClientService.ConfigureEditorClient(Assembly.GetExecutingAssembly(), pipe, processId, settings, workspaceRoot.LocalPath);
+            var service = _services.GetRequiredService<ILanguageClientService>();
+            service.ConfigureLanguageClient(options, Assembly.GetExecutingAssembly(), Env.ProcessId, settings, workspaceRoot.LocalPath);
         }
 
         public void Dispose()
@@ -138,12 +160,10 @@ namespace Rubberduck.Main.RPC.EditorServer
             _editorServerProcess?.Dispose();
             _editorClientPipe?.Dispose();
             _editorClient?.Dispose();
-            _editorClientInitializeTask?.Dispose();
 
             _editorServerProcess = null;
             _editorClientPipe = null;
             _editorClient = null;
-            _editorClientInitializeTask = null;
         }
     }
 }

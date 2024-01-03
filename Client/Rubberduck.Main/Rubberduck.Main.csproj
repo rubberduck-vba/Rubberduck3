@@ -45,7 +45,6 @@
       <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
       <Name>Rubberduck.Resources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Editor\Rubberduck.Editor.csproj" />
     <ProjectReference Include="..\Rubberduck.UI\Rubberduck.UI.csproj" />
     <ProjectReference Include="..\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj">
       <Project>{4ccd023c-a503-4bc7-9e9a-a509b4a16d41}</Project>

@@ -21,6 +21,7 @@ using Rubberduck.Editor.Shell.Tools.WorkspaceExplorer;
 using Rubberduck.Editor.Splash;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.LanguageServer.Model;
 using Rubberduck.ServerPlatform;

@@ -7,29 +7,18 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using Rubberduck.InternalApi.ServerPlatform;
-using Microsoft.Extensions.DependencyInjection;
-using System.Text.Json;
 using OmniSharp.Extensions.JsonRpc;
 using Rubberduck.SettingsProvider.Model;
 using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using Rubberduck.ServerPlatform;
 using Newtonsoft.Json;
-using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client;
-using System.Threading;
-using Rubberduck.Editor.RPC.EditorServer.Handlers.Lifecycle;
 
 namespace Rubberduck.Editor.RPC.LanguageServerClient
 {
-    public interface ILanguageClientService : ILanguageServerConnectionStatusProvider
-    {
-        LanguageClientOptions ConfigureLanguageClient(LanguageClientOptions options, Assembly clientAssembly, long clientProcessId, RubberduckSettings settings, string workspaceRoot);
-    }
-
     public class LanguageClientService : ILanguageClientService
     {
         public event EventHandler Connecting = delegate { };
@@ -69,6 +58,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
             {
                 Timestamp = DateTime.Now,
                 Locale = settings.GeneralSettings.Locale,
+                //TODO carry InitializationOptions.HostApplication from add-in server state.
             };
             
             options

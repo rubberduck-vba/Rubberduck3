@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rubberduck.Editor
+namespace Rubberduck.InternalApi.ServerPlatform
 {
     public interface ILanguageServerConnectionStatusProvider
     {
