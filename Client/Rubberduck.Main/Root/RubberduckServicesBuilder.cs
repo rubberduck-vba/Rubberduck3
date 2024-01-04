@@ -20,6 +20,7 @@ using Rubberduck.SettingsProvider.Model.TelemetryServer;
 using Rubberduck.SettingsProvider.Model.UpdateServer;
 using Rubberduck.UI.About;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Message;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Settings;
@@ -75,6 +76,7 @@ namespace Rubberduck.Main.Root
             builder.AddNLog("NLog-client.config");
 
             _services.AddSingleton<ILogLevelService, LogLevelService>();
+            _services.AddSingleton<PerformanceRecordAggregator>();
         }
 
         private RubberduckServicesBuilder WithAssemblyInfo()
@@ -186,6 +188,8 @@ namespace Rubberduck.Main.Root
             _services.AddSingleton<IMessageService, MessageService>();
             _services.AddSingleton<IMessageWindowFactory, MessageWindowFactory>();
             _services.AddSingleton<MessageActionsProvider>();
+            _services.AddSingleton<CloseToolWindowCommand>();
+            _services.AddSingleton<ShellProvider>(provider => null!); // we do NOT want to inject the RD3 shell into the add-in process.
 
             _services.AddSingleton<ISettingsDialogService, SettingsDialogService>();
             _services.AddSingleton<IWindowFactory<SettingsWindow, SettingsWindowViewModel>, SettingsWindowFactory>();
@@ -198,6 +202,7 @@ namespace Rubberduck.Main.Root
 
         private RubberduckServicesBuilder WithRubberduckEditorServer()
         {
+            _services.AddSingleton<ILanguageClientService, EditorClientService>();
             _services.AddSingleton<EditorClientApp>(provider =>
             {
                 var logger = provider.GetRequiredService<ILogger<EditorClientApp>>();

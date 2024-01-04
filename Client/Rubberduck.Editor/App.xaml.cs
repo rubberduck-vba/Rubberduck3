@@ -74,6 +74,7 @@ namespace Rubberduck.Editor
         private LanguageClientApp _languageClient;
 
         private RubberduckSettingsProvider _settings;
+        private IDisposable _serverTask;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "We want to crash the process in case of an exception anyway.")]
         protected override async void OnStartup(StartupEventArgs e)
@@ -105,10 +106,10 @@ namespace Rubberduck.Editor
 
                 if (_options.ClientProcessId > 0)
                 {
-                    _editorServer = new(_serviceProvider.GetRequiredService<ILogger<EditorServerApp>>(), _options, _tokenSource, _serviceProvider);
+                    _editorServer = new(_options, _tokenSource);
 
                     splash.UpdateStatus("Initializing language server protocol (addin/editor)...");
-                    await _editorServer.StartupAsync();
+                    _serverTask = _editorServer.RunAsync();
                 }
                 else if (_settings.Settings.LanguageClientSettings.RequireAddInHost)
                 {
@@ -208,7 +209,7 @@ namespace Rubberduck.Editor
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<Func<ILanguageServer>>(provider => () => _editorServer.EditorServer);
+            services.AddSingleton<Func<ILanguageServer>>(provider => () => _editorServer.Server);
             services.AddSingleton<Func<ILanguageClient?>>(provider => () => _languageClient.LanguageClient);
             services.AddSingleton<ILanguageClientService, LanguageClientService>();
             services.AddSingleton<LanguageClientApp>(provider => _languageClient);
@@ -223,7 +224,7 @@ namespace Rubberduck.Editor
             services.AddSingleton<UIServiceHelper>();
             services.AddSingleton<ServerPlatformServiceHelper>();
             services.AddSingleton<EditorServerState>();
-            services.AddSingleton<Func<EditorServerState>>(provider => () => _editorServer.ServerState);
+            services.AddSingleton<Func<EditorServerState>>(provider => () => (EditorServerState)_editorServer.ServerState);
             services.AddSingleton<IServerStateWriter>(provider => provider.GetRequiredService<EditorServerState>());
 
             services.AddSingleton<IDefaultSettingsProvider<RubberduckSettings>>(provider => RubberduckSettings.Default);

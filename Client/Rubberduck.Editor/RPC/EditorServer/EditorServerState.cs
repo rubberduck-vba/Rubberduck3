@@ -3,7 +3,6 @@ using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.ServerPlatform;
-using Rubberduck.SettingsProvider.Model.Editor;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,7 @@ namespace Rubberduck.Editor.RPC.EditorServer
         void AddWorkspaceFolders(IEnumerable<WorkspaceFolder> workspaceFolders);
     }
 
-    public class EditorServerState : ServerState<EditorSettings, LanguageClientStartupSettings>, ILanguageServerState
+    public class EditorServerState : ServerState<LanguageClientSettings, LanguageClientStartupSettings>, ILanguageServerState
     {
         private readonly IExitHandler _exitHandler;
 

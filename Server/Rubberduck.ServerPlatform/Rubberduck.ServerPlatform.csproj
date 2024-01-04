@@ -22,6 +22,7 @@
     <PackageReference Include="OmniSharp.Extensions.JsonRpc" Version="0.19.9" />
     <PackageReference Include="OmniSharp.Extensions.LanguageClient" Version="0.19.9" />
     <PackageReference Include="OmniSharp.Extensions.LanguageProtocol" Version="0.19.9" />
+    <PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.19.9" />
   </ItemGroup>
 
   <ItemGroup>

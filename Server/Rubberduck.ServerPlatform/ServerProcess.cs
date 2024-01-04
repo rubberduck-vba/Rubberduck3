@@ -25,7 +25,7 @@ namespace Rubberduck.ServerPlatform
 
         public virtual Process Start(long clientProcessId, IProcessStartInfoArgumentProvider settings, EventHandler onExit)
         {
-            var path = settings.ServerExecutablePath;
+            var path = settings.ServerExecutablePath.Replace('/', '\\');
             var fullPath = Path.Combine(path, ExecutableFileName);
 
             if (!File.Exists(fullPath))

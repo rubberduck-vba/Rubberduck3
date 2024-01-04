@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Rubberduck.Editor\Rubberduck.Editor.csproj" />
+    <ProjectReference Include="..\..\Server\Rubberduck.ServerPlatform\Rubberduck.ServerPlatform.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
       <Project>{e794cfc3-3d9f-400f-88d9-69e929d8e8af}</Project>
       <Name>Rubberduck.SettingsProvider</Name>

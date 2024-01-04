@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
+using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.SettingsProvider;
@@ -19,9 +20,6 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Rubberduck.ServerPlatform
 {
-    /// <summary>
-    ///  ILanguageClientService
-    /// </summary>
     public abstract class RubberduckClientApp : IDisposable
     {
         private readonly ILogger _logger;

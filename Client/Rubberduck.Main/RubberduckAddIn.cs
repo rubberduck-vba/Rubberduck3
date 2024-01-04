@@ -54,16 +54,6 @@ namespace Rubberduck.Main
         private EditorClientApp? _editorClient;
         private IDisposable? _editorClientInitializeTask;
 
-        //private Process? _telemetryServerProcess;
-        //private NamedPipeClientStream? _telemetryServerPipeStream;
-        //private LanguageClient? _telemetryClient;
-        //private IDisposable? _telemetryClientInitializeTask;
-
-        //private Process? _updateServerProcess;
-        //private NamedPipeClientStream? _updateServerPipeStream;
-        //private LanguageClient? _updateClient;
-        //private IDisposable? _updateClientInitializeTask;
-
         internal RubberduckAddIn(IDTExtensibility2 extAddin, IVBE vbeWrapper, IAddIn addinWrapper)
         {
             _vbe = vbeWrapper;
@@ -161,7 +151,7 @@ namespace Rubberduck.Main
 
         private RubberduckSettings GetInitialSettings(IServiceScope scope)
         {
-            var configProvider = scope.ServiceProvider.GetRequiredService<ISettingsService<RubberduckSettings>>();
+            var configProvider = scope.ServiceProvider.GetRequiredService<RubberduckSettingsProvider>();
             var currentSettings = configProvider.Read();
 
             var initialSettings = currentSettings;

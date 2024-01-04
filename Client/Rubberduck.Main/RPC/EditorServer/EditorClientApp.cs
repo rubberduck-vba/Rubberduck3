@@ -66,7 +66,7 @@ namespace Rubberduck.Main.RPC.EditorServer
         {
             var settings = _services
                 .GetRequiredService<RubberduckSettingsProvider>().Settings
-                .LanguageServerSettings.StartupSettings;
+                .LanguageClientSettings.StartupSettings;
             var clientProcessId = Env.ProcessId;
 
             _editorServerProcess = new EditorServerProcess(_logger)
