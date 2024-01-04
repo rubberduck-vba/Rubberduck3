@@ -4,7 +4,7 @@ using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Main.RPC.EditorServer
 {
-    public class EditorServerProcess : ServerProcess
+    public class EditorServerProcess : RubberduckServerProcess
     {
         public EditorServerProcess(ILogger logger)
             : base(logger) { }

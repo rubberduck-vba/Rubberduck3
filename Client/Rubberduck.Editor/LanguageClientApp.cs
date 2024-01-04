@@ -18,6 +18,6 @@ namespace Rubberduck.Editor
             _logger = logger;
         }
 
-        protected override ServerProcess GetServerProcess() => new LanguageServerProcess(_logger);
+        protected override RubberduckServerProcess GetServerProcess() => new LanguageServerProcess(_logger);
     }
 }

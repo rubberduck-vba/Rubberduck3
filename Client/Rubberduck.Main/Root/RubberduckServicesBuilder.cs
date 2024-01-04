@@ -228,7 +228,7 @@ namespace Rubberduck.Main.Root
                         Silent = startup.ServerTraceLevel == MessageTraceLevel.Off,
                         Verbose = startup.ServerTraceLevel == MessageTraceLevel.Verbose,
                     };
-                return new EditorClientApp(logger, options, _tokenSource, provider);
+                return new EditorClientApp(logger, provider, options, _tokenSource);
             });
             _services.AddSingleton<IWorkDoneProgressStateService, WorkDoneProgressStateService>();
             return this;

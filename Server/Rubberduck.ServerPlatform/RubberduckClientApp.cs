@@ -88,7 +88,7 @@ namespace Rubberduck.ServerPlatform
             _logger.LogInformation("Server process has exited.");
         }
 
-        protected abstract ServerProcess GetServerProcess();
+        protected abstract RubberduckServerProcess GetServerProcess();
 
         private void ConfigureClient(LanguageClientOptions options)
         {

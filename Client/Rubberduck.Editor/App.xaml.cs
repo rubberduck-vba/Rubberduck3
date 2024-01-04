@@ -27,6 +27,8 @@ using Rubberduck.LanguageServer.Model;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.Editor;
+using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.SettingsProvider.Model.General;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
@@ -48,12 +50,15 @@ using Rubberduck.UI.Splash;
 using Rubberduck.UI.Windows;
 using Rubberduck.UI.WorkspaceExplorer;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO.Abstractions;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Rubberduck.Editor
 {
@@ -124,7 +129,7 @@ namespace Rubberduck.Editor
 
                 splash.UpdateStatus("Quack!");
 
-                ShowEditor();
+                await ShowEditorAsync();
                 splash.Close();
             }
             catch (Exception exception)
@@ -135,36 +140,63 @@ namespace Rubberduck.Editor
             }
         }
 
-        private void ShowEditor()
+        private async Task ShowEditorAsync()
         {
+            var settings = _settings.Settings.EditorSettings;
             var model = _serviceProvider.GetRequiredService<IShellWindowViewModel>();
 
-            // TODO "show welcome tab" setting
+            var view = _shell ??= new ShellWindow() { DataContext = model };
+            view.Show();
+
+            ShowStartupToolwindows(settings);
+            if (settings.ShowWelcomeTab)
+            {
+                await LoadWelcomeTabAsync(model);
+            }
+        }
+
+        private readonly static Dictionary<Type, Type> ShowToolWindowCommandMappings = new()
+        {
+            [typeof(WorkspaceExplorerSettings)] = typeof(ShowWorkspaceExplorerCommand),
+        };
+
+        private void ShowStartupToolwindows(EditorSettings settings)
+        {
+            foreach (var toolwindow in settings.ToolsSettings.StartupToolWindows)
+            {
+                if (toolwindow.ShowOnStartup)
+                {
+                    var toolwindowSettingType = toolwindow.GetType();
+                    if (ShowToolWindowCommandMappings.TryGetValue(toolwindowSettingType, out var commandType))
+                    {
+                        var command = (ICommand)_serviceProvider.GetRequiredService(commandType);
+                        command.Execute(null);
+                    }
+                    else
+                    {
+                        _logger.LogDebug(_settings.TraceLevel, $"Could not find a command to open toolwindow from setting type '{toolwindowSettingType.Name}'.");
+                    }
+                }
+            }
+        }
+
+        private async Task LoadWelcomeTabAsync(IShellWindowViewModel model)
+        {
             var fileSystem = _serviceProvider.GetRequiredService<IFileSystem>();
             var path = fileSystem.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Rubberduck", "Templates", "Welcome.md");
-            var content = fileSystem.File.ReadAllText(path);
+            var content = await fileSystem.File.ReadAllTextAsync(path);
 
             var showSettingsCommand = _serviceProvider.GetRequiredService<ShowRubberduckSettingsCommand>();
             var closeToolWindowCommand = _serviceProvider.GetRequiredService<CloseToolWindowCommand>();
             var activeDocumentStatus = _serviceProvider.GetRequiredService<IDocumentStatusViewModel>();
-            var welcome = new MarkdownDocumentTabViewModel(new Uri(path), "Welcome", content, isReadOnly:true, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus);
+            var welcome = new MarkdownDocumentTabViewModel(new Uri(path), "Welcome", content, isReadOnly: true, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus);
 
-            var view = _shell ??= new ShellWindow() { DataContext = model };
-            
             var welcomeTabContent = new MarkdownEditorControl() { DataContext = welcome };
             welcome.ContentControl = welcomeTabContent;
             welcome.IsSelected = true;
 
-             // prompt for new workspace here if there's no addin host?
-
-            view.Show();
             model.DocumentWindows.Add(welcome);
             model.ActiveDocumentTab = welcome;
-
-            if (_settings.Settings.EditorSettings.ToolsSettings.WorkspaceExplorerSettings.ShowOnStartup)
-            {
-                _serviceProvider.GetRequiredService<ShowWorkspaceExplorerCommand>().Execute(null);
-            }
         }
 
         protected override void OnExit(ExitEventArgs e)

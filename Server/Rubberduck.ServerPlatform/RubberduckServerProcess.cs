@@ -12,11 +12,11 @@ namespace Rubberduck.ServerPlatform
         Process Start(long clientProcessId, IProcessStartInfoArgumentProvider settings, EventHandler onExit);
     }
 
-    public abstract class ServerProcess : IServerProcess
+    public abstract class RubberduckServerProcess : IServerProcess
     {
         protected ILogger Logger { get; init; }
 
-        protected ServerProcess(ILogger logger)
+        protected RubberduckServerProcess(ILogger logger)
         {
             Logger = logger;
         }
