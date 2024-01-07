@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
-using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Message;
 using Rubberduck.UI.Services;

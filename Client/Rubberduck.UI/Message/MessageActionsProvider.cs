@@ -6,7 +6,7 @@ using Rubberduck.UI.Services;
 using System;
 using System.Linq;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Message
 {
     public class MessageActionsProvider
     {
@@ -18,7 +18,7 @@ namespace Rubberduck.UI.Command
         }
 
         public MessageActionCommand FromMessageAction(MessageAction action, Func<object?, bool>? validations = null) =>
-            action.IsDefaultAction 
+            action.IsDefaultAction
             ? new AcceptMessageActionCommand(_service, action, validations)
             : new CancelMessageActionCommand(_service, action);
 

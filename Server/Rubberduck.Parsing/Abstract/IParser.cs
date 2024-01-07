@@ -6,7 +6,7 @@ namespace Rubberduck.Parsing.Abstract;
 
 public interface IParser<TContent>
 {
-    (IParseTree tree, ITokenStream tokenStream, LogicalLineStore logicalLines) Parse(string moduleName, string projectId, TContent content, CancellationToken token, CodeKind codeKind = CodeKind.RubberduckEditorModule, ParserMode parserMode = ParserMode.FallBackSllToLl);
+    (IParseTree tree, ITokenStream tokenStream, LogicalLineStore? logicalLines) Parse(string moduleName, string projectId, TContent content, CancellationToken token, CodeKind codeKind = CodeKind.RubberduckEditorModule, ParserMode parserMode = ParserMode.FallBackSllToLl, IEnumerable<IParseTreeListener>? parseListeners = null);
 }
 
 public interface IStringParser : IParser<string> { }

@@ -29,5 +29,6 @@ namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
         int ContentHash();
 
         IQualifiedModuleName QualifiedModuleName { get; }
+        string SafeName { get; }
     }
 }

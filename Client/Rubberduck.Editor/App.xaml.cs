@@ -39,8 +39,10 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.LanguageServerTrace;
 using Rubberduck.UI.Message;
+using Rubberduck.UI.NewProject;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
+using Rubberduck.UI.Services.NewProject;
 using Rubberduck.UI.Services.Settings;
 using Rubberduck.UI.Settings;
 using Rubberduck.UI.Shell;
@@ -124,7 +126,7 @@ namespace Rubberduck.Editor
                 if (!string.IsNullOrWhiteSpace(_options.WorkspaceRoot))
                 {
                     splash.UpdateStatus("Initializing language server protocol (editor/server)...");
-                    await _languageClient.StartupAsync(new Uri(_options.WorkspaceRoot));
+                    await _languageClient.StartupAsync(_settings.Settings.LanguageServerSettings.StartupSettings, new Uri(_options.WorkspaceRoot));
                 }
 
                 splash.UpdateStatus("Quack!");
@@ -149,6 +151,7 @@ namespace Rubberduck.Editor
             view.Show();
 
             ShowStartupToolwindows(settings);
+
             if (settings.ShowWelcomeTab)
             {
                 await LoadWelcomeTabAsync(model);
@@ -243,8 +246,8 @@ namespace Rubberduck.Editor
         {
             services.AddSingleton<Func<ILanguageServer>>(provider => () => _editorServer.Server);
             services.AddSingleton<Func<ILanguageClient?>>(provider => () => _languageClient.LanguageClient);
-            services.AddSingleton<ILanguageClientService, LanguageClientService>();
             services.AddSingleton<LanguageClientApp>(provider => _languageClient);
+            services.AddSingleton<ILanguageClientService, LanguageClientService>();
             services.AddSingleton<ILanguageServerConnectionStatusProvider, LanguageClientService>(provider => (LanguageClientService)provider.GetRequiredService<ILanguageClientService>());
 
             services.AddSingleton<ServerStartupOptions>(provider => _options);
@@ -316,7 +319,10 @@ namespace Rubberduck.Editor
 
             services.AddSingleton<FileCommandHandlers>();
             services.AddSingleton<NewProjectCommand>();
-            services.AddSingleton<NewProjectWindowFactory>();
+            services.AddSingleton<IDialogService<NewProjectWindowViewModel>, NewProjectDialogService>();
+            services.AddSingleton<IWindowFactory<NewProjectWindow, NewProjectWindowViewModel>, NewProjectWindowFactory>();
+            services.AddSingleton<IVBProjectInfoProvider>(provider => null!);
+            services.AddSingleton<IWorkspaceModulesService>(provider => null!);
             services.AddSingleton<OpenProjectCommand>();
             services.AddSingleton<SaveDocumentCommand>();
             services.AddSingleton<SaveDocumentAsCommand>();
@@ -345,6 +351,7 @@ namespace Rubberduck.Editor
             _editorServer?.Dispose();
             _languageClient?.Dispose();
             _tokenSource.Dispose();
+            _serverTask.Dispose();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Rubberduck.UI.Windows;
 
-namespace Rubberduck.Editor.DialogServices.NewProject
+namespace Rubberduck.UI.Services.NewProject
 {
     public interface INewProjectDialogService : IDialogService<NewProjectWindowViewModel>
     {

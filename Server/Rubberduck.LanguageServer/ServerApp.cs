@@ -17,6 +17,7 @@ using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
 using System;
+using System.Diagnostics;
 using System.IO.Abstractions;
 using System.Text.Json;
 using System.Threading;
@@ -56,13 +57,13 @@ namespace Rubberduck.LanguageServer
         //}
 
         protected override ServerState<LanguageServerSettings, LanguageServerStartupSettings> GetServerState(IServiceProvider provider) 
-            => (ServerState<LanguageServerSettings, LanguageServerStartupSettings>)provider.GetRequiredService<ILanguageServerState>();
+            => provider.GetRequiredService<LanguageServerState>();
 
         protected override void ConfigureServices(ServerStartupOptions options, IServiceCollection services)
         {
             //services.AddSingleton<ILanguageServerFacade>(provider => _languageServer);
             services.AddSingleton<ServerStartupOptions>(provider => options);
-            //services.AddSingleton<Process>(provider => Process.GetProcessById(options.ClientProcessId));
+            services.AddSingleton<Process>(provider => Process.GetProcessById(options.ClientProcessId));
 
             services.AddSingleton<IFileSystem, FileSystem>();
             services.AddSingleton<PerformanceRecordAggregator>();

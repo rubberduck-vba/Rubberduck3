@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using OmniSharp.Extensions.LanguageServer.Protocol.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
 using Rubberduck.InternalApi.Model.Workspace;
@@ -99,7 +98,7 @@ namespace Rubberduck.Editor
             {
                 if (_lspClientApp.LanguageClient is null)
                 {
-                    await _lspClientApp.StartupAsync(uri);
+                    await _lspClientApp.StartupAsync(Settings.LanguageServerSettings.StartupSettings, uri);
                 }
 
                 OnWorkspaceOpened(uri);

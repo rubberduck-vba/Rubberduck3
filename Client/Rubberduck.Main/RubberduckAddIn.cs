@@ -15,6 +15,7 @@ using Rubberduck.UI.Message;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.TypeLibs.Public;
+using Rubberduck.Unmanaged.UIContext;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 using System;
 using System.ComponentModel;
@@ -59,6 +60,8 @@ namespace Rubberduck.Main
             _vbe = vbeWrapper;
             _addin = addinWrapper;
             _addin.Object = extAddin;
+
+            _ = UiContextProvider.Instance(); // we MUST do this while we KNOW we're on the main thread.
 
             SetAddInApiObject();
         }

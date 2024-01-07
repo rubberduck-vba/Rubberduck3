@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
 
-namespace Rubberduck.Editor.DialogServices.NewProject
+namespace Rubberduck.UI.Services.NewProject
 {
     public class ProjectFileBuilder
     {
@@ -25,7 +25,7 @@ namespace Rubberduck.Editor.DialogServices.NewProject
         {
             _settings = settings;
             _fileSystem = fileSystem;
-            _references.Add(Reference.VisualBasicForApplications);
+            //_references.Add(Reference.VisualBasicForApplications);
         }
 
         private Uri DefaultUri => new(_fileSystem.Path.Combine(
@@ -94,6 +94,17 @@ namespace Rubberduck.Editor.DialogServices.NewProject
                 Super = supertype
             });
 
+            return this;
+        }
+        public ProjectFileBuilder WithModule(Module module)
+        {
+            _modules.TryAdd(module.Name, module);
+            return this;
+        }
+
+        public ProjectFileBuilder WithReference(Reference reference)
+        {
+            _references.Add(reference);
             return this;
         }
 

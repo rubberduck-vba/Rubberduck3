@@ -1,7 +1,7 @@
 ﻿using Rubberduck.InternalApi.Model.Workspace;
 using System.Collections.Generic;
 
-namespace Rubberduck.Editor.DialogServices.NewProject
+namespace Rubberduck.UI.Services.NewProject
 {
     public interface IVBProjectInfoProvider
     {

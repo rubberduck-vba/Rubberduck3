@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
-using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services;
+using Rubberduck.Unmanaged.UIContext;
 using System;
 using System.Linq;
 
@@ -41,13 +41,16 @@ namespace Rubberduck.UI.Message
 
     public class MessageService : UIServiceHelper, IMessageService
     {
+        private readonly IUiDispatcher _ui;
         private readonly IMessageWindowFactory _viewFactory;
 
         public MessageService(RubberduckSettingsProvider settings, ILogger<MessageService> logger,
+            IUiDispatcher ui,
             IMessageWindowFactory viewFactory,
             PerformanceRecordAggregator performance)
             : base(logger, settings, performance)
         {
+            _ui = ui;
             _viewFactory = viewFactory;
         }
 
@@ -61,11 +64,19 @@ namespace Rubberduck.UI.Message
             if (CanShowMessageKey(model.Key))
             {
                 static MessageActionCommand[] defaultActions(MessageActionsProvider provider) => provider.OkCancel();
+                MessageAction? selection = null;
+                IMessageWindowViewModel? viewModel = null;
 
-                var (view, viewModel) = _viewFactory.Create(model, actions ?? defaultActions);
-                view.ShowDialog();
+                _ui.Invoke(() =>
+                {
+                    var (view, viewModel) = _viewFactory.Create(model, actions ?? defaultActions);
+                    view.ShowDialog();
 
-                var selection = viewModel.SelectedAction;
+                    selection = viewModel.SelectedAction;
+                });
+
+                viewModel = viewModel ?? throw new InvalidOperationException();
+
                 if (selection is not null)
                 {
                     LogTrace("User has closed the message window.", $"Selected action: {selection.ResourceKey}");
@@ -87,10 +98,19 @@ namespace Rubberduck.UI.Message
         {
             if (CanShowMessageKey(model.Key))
             {
-                var (view, viewModel) = _viewFactory.Create(model, actions);
-                view.ShowDialog();
+                MessageAction? selection = null;
+                IMessageWindowViewModel? viewModel = null;
 
-                var selection = viewModel.SelectedAction;
+                _ui.Invoke(() =>
+                {
+                    var (view, viewModel) = _viewFactory.Create(model, actions);
+                    view.ShowDialog();
+
+                    selection = viewModel.SelectedAction;
+                });
+
+                viewModel = viewModel ?? throw new InvalidOperationException();
+
                 if (selection is not null)
                 {
                     LogTrace("User has closed the message window.", $"Selected action: {selection.ResourceKey}");

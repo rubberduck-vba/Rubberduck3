@@ -78,7 +78,7 @@ namespace Rubberduck.Editor
 
         protected async override Task OnServerStartedAsync(ILanguageServer server, CancellationToken token, IWorkDoneObserver? progress, ILogger logger)
         {
-            // TODO
+            logger?.LogTrace("Server app started.");
 
             progress?.OnCompleted();
             if (progress != null)

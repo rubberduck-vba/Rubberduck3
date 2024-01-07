@@ -1,5 +1,4 @@
-﻿using Rubberduck.UI.Command;
-using Rubberduck.UI.Command.SharedHandlers;
+﻿using Rubberduck.UI.Command.SharedHandlers;
 using System;
 
 namespace Rubberduck.UI.Message
@@ -24,7 +23,7 @@ namespace Rubberduck.UI.Message
         {
             var buttons = actions?.Invoke(_provider) ?? _provider.OkOnly();
 
-            var viewModel = new MessageWindowViewModel(model, buttons, null, _closeToolWindowCommand);
+            var viewModel = new MessageWindowViewModel(model, buttons, showSettingsCommand: null!, _closeToolWindowCommand);
             var view = new MessageWindow(viewModel)
             {
                 WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen,

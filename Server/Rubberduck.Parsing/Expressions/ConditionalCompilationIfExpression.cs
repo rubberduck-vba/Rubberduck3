@@ -41,7 +41,7 @@ public sealed class ConditionalCompilationIfExpression : Expression
                 _ifCondTokens)
                 .Evaluate().AsTokens);
 
-        var ifIsAlive = _ifCond.EvaluateCondition();
+        var ifIsAlive = _ifCond?.EvaluateCondition() ?? false;
         conditions.Add(ifIsAlive);
         tokens.AddRange(
             new LivelinessExpression(

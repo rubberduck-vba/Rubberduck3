@@ -14,6 +14,8 @@ namespace Rubberduck.InternalApi.Model.Workspace
         /// <remarks>This property is not serialized.</remarks>
         [JsonIgnore]
         public Uri Uri { get; set; }
+        [JsonIgnore]
+        public string? ProjectId { get; set; }
 
         /// <summary>
         /// The Rubberduck version that created the file.

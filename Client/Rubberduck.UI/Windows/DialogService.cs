@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
-using Rubberduck.UI.Command;
+using Rubberduck.UI.Message;
 using System;
 
 namespace Rubberduck.UI.Windows

@@ -4,6 +4,7 @@ using Rubberduck.SettingsProvider;
 using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
+using System.Linq;
 using System.Text.Json;
 
 namespace Rubberduck.UI.Services.Abstract
@@ -87,8 +88,9 @@ namespace Rubberduck.UI.Services.Abstract
 
         public void CreateFile(ProjectFile model)
         {
-            var path = _fileSystem.Path.Combine(model.Uri.LocalPath, model.VBProject.Name, ProjectFile.FileName);
+            var path = _fileSystem.Path.Combine(model.Uri.LocalPath, ProjectFile.FileName);
             var content = JsonSerializer.Serialize(model);
+
             _fileSystem.File.WriteAllText(path, content);
         }
 
@@ -133,9 +135,20 @@ namespace Rubberduck.UI.Services.Abstract
             var sourceRoot = _fileSystem.Path.Combine(workspaceRoot, ProjectFile.SourceRoot);
             _fileSystem.Directory.CreateDirectory(sourceRoot);
 
+            var folders = projectFile.VBProject.Modules.Select(e => _fileSystem.Path.Combine(workspaceRoot, e.Uri[..^(_fileSystem.Path.GetFileName(e.Uri).Length + 1)])).ToHashSet();
+
+            projectFile.VBProject.Folders = folders
+                .Select(folder => new Folder 
+                    { 
+                        Name = folder.TrimStart(_fileSystem.Path.DirectorySeparatorChar).Replace(_fileSystem.Path.DirectorySeparatorChar, '.'), 
+                        Uri = folder 
+                    })
+                .ToArray();
+
             foreach (var folder in projectFile.VBProject.Folders)
             {
-                _fileSystem.Directory.CreateDirectory(folder.Uri);
+                var path = _fileSystem.Path.Combine(workspaceRoot, ProjectFile.SourceRoot + _fileSystem.Path.DirectorySeparatorChar + folder.Uri.TrimStart(_fileSystem.Path.DirectorySeparatorChar));
+                _fileSystem.Directory.CreateDirectory(path);
             }
         }
     }

@@ -2,8 +2,6 @@
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
-using Rubberduck.UI;
-using Rubberduck.UI.Command;
 using Rubberduck.UI.Message;
 using Rubberduck.UI.Services.Abstract;
 using System;
@@ -11,17 +9,16 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace Rubberduck.Editor
+namespace Rubberduck.UI.Services.NewProject
 {
     public class TemplatesService : ServiceBase, ITemplatesService
     {
         private readonly IFileSystem _fileSystem;
         private readonly IMessageService _messages;
-        
+
         public TemplatesService(ILogger<TemplatesService> logger, RubberduckSettingsProvider settingsProvider,
-            IFileSystem fileSystem, IMessageService messages, PerformanceRecordAggregator performance) 
+            IFileSystem fileSystem, IMessageService messages, PerformanceRecordAggregator performance)
             : base(logger, settingsProvider, performance)
         {
             _fileSystem = fileSystem;
@@ -197,7 +194,7 @@ namespace Rubberduck.Editor
         {
             yield return ProjectTemplate.Default;
 
-            foreach(var templateFolder in _fileSystem.Directory.GetDirectories(Settings.GeneralSettings.TemplatesLocation.LocalPath))
+            foreach (var templateFolder in _fileSystem.Directory.GetDirectories(Settings.GeneralSettings.TemplatesLocation.LocalPath))
             {
                 var name = _fileSystem.Path.GetFileName(templateFolder)!;
                 var templateSourceFolder = _fileSystem.Path.Combine(templateFolder, ProjectTemplate.TemplateSourceFolderName);

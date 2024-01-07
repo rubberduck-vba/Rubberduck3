@@ -1,6 +1,6 @@
 ﻿using Rubberduck.Resources.Messages;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Message
 {
     public class MessageAction
     {
@@ -10,6 +10,7 @@ namespace Rubberduck.UI.Command
         public static MessageAction AcceptConfirmAction { get; } = new MessageAction(nameof(RubberduckMessages.MessageActionButton_Confirm), isDefaultAction: true);
         public static MessageAction AcceptYesAction { get; } = new MessageAction(nameof(RubberduckMessages.MessageActionButton_Yes), isDefaultAction: true);
         public static MessageAction DeclineNoAction { get; } = new MessageAction(nameof(RubberduckMessages.MessageActionButton_No));
+        public static MessageAction DefaultCancelAction { get; } = new MessageAction(nameof(RubberduckMessages.MessageActionButton_Cancel), nameof(RubberduckMessages.MessageActionButton_Cancel), isDefaultAction: true);
         public static MessageAction CancelAction { get; } = new MessageAction(nameof(RubberduckMessages.MessageActionButton_Cancel), nameof(RubberduckMessages.MessageActionButton_Cancel));
         public static MessageAction CloseAction { get; } = new MessageAction(nameof(RubberduckMessages.MessageActionButton_Close), nameof(RubberduckMessages.MessageActionButton_Close), isDefaultAction: true);
 

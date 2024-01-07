@@ -1,7 +1,7 @@
 ﻿using Rubberduck.UI.NewProject;
 using Rubberduck.UI.Windows;
 
-namespace Rubberduck.Editor.DialogServices.NewProject
+namespace Rubberduck.UI.Services.NewProject
 {
     public class NewProjectWindowFactory : IWindowFactory<NewProjectWindow, NewProjectWindowViewModel>
     {

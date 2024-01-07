@@ -44,26 +44,22 @@ namespace Rubberduck.ServerPlatform
 
         public LanguageClient? LanguageClient => _client;
 
-        public async Task StartupAsync(Uri? workspaceRoot = null)
+        public async Task StartupAsync(ServerStartupSettings settings, Uri? workspaceRoot = null)
         {
             if (workspaceRoot != null)
             {
                 _options.WorkspaceRoot = workspaceRoot.LocalPath;
             }
 
-            StartServerProcess();
+            StartServerProcess(settings);
 
             _logger.LogInformation("Creating client...");
             _client = await LanguageClient.From(ConfigureClient, _services, _tokenSource.Token);
         }
 
-        private void StartServerProcess()
+        private void StartServerProcess(ServerStartupSettings settings)
         {
-            var settings = _services
-                .GetRequiredService<RubberduckSettingsProvider>().Settings
-                .LanguageServerSettings.StartupSettings;
             var clientProcessId = Environment.ProcessId;
-
             _serverProcess = GetServerProcess().Start(clientProcessId, settings, HandleServerExit);
             _logger.LogInformation("Server process has started.");
         }

@@ -3,22 +3,20 @@ using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.SharedHandlers;
+using Rubberduck.UI.Message;
 using Rubberduck.UI.NewProject;
-using Rubberduck.UI.Services;
 using Rubberduck.UI.Windows;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Windows;
 using System.Windows.Input;
 
-namespace Rubberduck.Editor.DialogServices.NewProject
+namespace Rubberduck.UI.Services.NewProject
 {
     public class NewProjectWindowViewModel : DialogWindowViewModel, INewProjectWindowViewModel
     {
-        public static readonly string SourceFolderName = "src";
         private readonly RubberduckSettings _settings;
 
         private static bool Validate(object? param)
@@ -34,8 +32,11 @@ namespace Rubberduck.Editor.DialogServices.NewProject
             return !vm.HasErrors;
         }
 
-        public NewProjectWindowViewModel(UIServiceHelper service, IEnumerable<VBProjectInfo?> projects, IEnumerable<ProjectTemplate> projectTemplates, 
-            MessageActionsProvider actions, ICommand showSettingsCommand)
+        public NewProjectWindowViewModel(UIServiceHelper service,
+            IEnumerable<VBProjectInfo?> projects,
+            IEnumerable<ProjectTemplate> projectTemplates,
+            MessageActionsProvider actions,
+            ICommand showSettingsCommand)
             : base(service, "New Project", actions.OkCancel(Validate), showSettingsCommand, typeof(LanguageClientSettings).Name)
         {
             _settings = service.Settings;
@@ -65,9 +66,12 @@ namespace Rubberduck.Editor.DialogServices.NewProject
         {
             var vbProject = VBProjects.FirstOrDefault() ?? new VBProjectInfo { Name = "VBAProject", ProjectId = Guid.NewGuid().ToString() };
             _projectName = vbProject.Name;
-            _workspaceLocation = string.IsNullOrWhiteSpace(vbProject.Location)
-                ? _settings.LanguageClientSettings.WorkspaceSettings.DefaultWorkspaceRoot.LocalPath
-                : vbProject.Location;
+            _workspaceLocation = _settings.LanguageClientSettings.WorkspaceSettings.DefaultWorkspaceRoot.LocalPath;
+            if (!_settings.LanguageClientSettings.WorkspaceSettings.RequireDefaultWorkspaceRootHost
+                && !string.IsNullOrWhiteSpace(vbProject.Location))
+            {
+                _workspaceLocation = vbProject.Location;
+            }
         }
 
         private string _projectName = string.Empty;
@@ -102,8 +106,22 @@ namespace Rubberduck.Editor.DialogServices.NewProject
             }
         }
 
+        private bool _scanFolderAnnotations = true;
+        public bool ScanFolderAnnotations
+        {
+            get => _scanFolderAnnotations;
+            set
+            {
+                if (_scanFolderAnnotations != value)
+                {
+                    _scanFolderAnnotations = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private void OnSourcePathChanged() => OnPropertyChanged(nameof(SourcePath));
-        public string SourcePath => Path.Combine(WorkspaceLocation, ProjectName, SourceFolderName);
+        public string SourcePath => Path.Combine(WorkspaceLocation, ProjectName, ProjectFile.SourceRoot);
 
         public bool HasVBProjects { get; init; }
 
