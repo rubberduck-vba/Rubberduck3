@@ -2,6 +2,7 @@
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.Editor.Shell.Document.Tabs;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Abstract;
@@ -47,13 +48,14 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
 
         protected async override Task OnExecuteAsync(object? parameter)
         {
-            if (parameter is Uri uri)
+            if (parameter is WorkspaceFileUri uri)
             {
-                var root = _workspaces.ActiveWorkspace?.WorkspaceRoot?.LocalPath ?? throw new InvalidOperationException();
-                var srcRoot = System.IO.Path.Combine(root, ProjectFile.SourceRoot);
-                var relativeUri = uri.OriginalString[1..][srcRoot.Length..];
+                var rootUri = _workspaces.ActiveWorkspace?.WorkspaceRoot;
+                //var root = _workspaces.ActiveWorkspace?.WorkspaceRoot?.LocalPath ?? throw new InvalidOperationException();
+                //var srcRoot = System.IO.Path.Combine(root, ProjectFile.SourceRoot);
+                //var relativeUri = uri.OriginalString[1..][srcRoot.Length..];
 
-                if ((_workspaces.ActiveWorkspace?.TryGetWorkspaceFile(new Uri(relativeUri, UriKind.Relative), out var file) ?? false) 
+                if (rootUri != null && (_workspaces.ActiveWorkspace?.TryGetWorkspaceFile(uri, out var file) ?? false) 
                     && file != null && !file.IsMissing && !file.IsLoadError)
                 {
                     UserControl view;

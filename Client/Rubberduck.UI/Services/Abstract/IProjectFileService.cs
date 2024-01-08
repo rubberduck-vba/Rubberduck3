@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.SettingsProvider;
 using System;
@@ -21,14 +22,14 @@ namespace Rubberduck.UI.Services.Abstract
         /// <param name="uri">The URI referring to the file to retrieve.</param>
         /// <param name="fileInfo">The retrieved <c>WorkspaceFileInfo</c>, if found.</param>
         /// <returns><c>true</c> if the specified version was found.</returns>
-        bool TryGetWorkspaceFile(Uri uri, out WorkspaceFileInfo? fileInfo);
+        bool TryGetWorkspaceFile(WorkspaceFileUri uri, out WorkspaceFileInfo? fileInfo);
         /// <summary>
         /// Marks the file at the specified URI as closed in the editor.
         /// </summary>
         /// <param name="uri">The URI referring to the file to mark as closed.</param>
         /// <param name="fileInfo">Holds a non-null reference if the file was found.</param>
         /// <returns><c>true</c> if the workspace file was correctly found and marked as closed.</returns>
-        bool CloseWorkspaceFile(Uri uri, out WorkspaceFileInfo? fileInfo);
+        bool CloseWorkspaceFile(WorkspaceFileUri uri, out WorkspaceFileInfo? fileInfo);
         /// <summary>
         /// Loads the specified file into the workspace.
         /// </summary>
@@ -42,13 +43,13 @@ namespace Rubberduck.UI.Services.Abstract
         /// <param name="oldUri">The old URI.</param>
         /// <param name="newUri">The new URI.</param>
         /// <returns><c>true</c> if the rename was successful.</returns>
-        bool RenameWorkspaceFile(Uri oldUri, Uri newUri);
+        bool RenameWorkspaceFile(WorkspaceFileUri oldUri, WorkspaceFileUri newUri);
         /// <summary>
         /// Unloads the specified workspace URI.
         /// </summary>
         /// <param name="uri">The file URI to unload.</param>
         /// <returns><c>true</c> if the file was successfully unloaded.</returns>
-        bool UnloadWorkspaceFile(Uri uri);
+        bool UnloadWorkspaceFile(WorkspaceFileUri uri);
         void UnloadAllFiles();
     }
 
@@ -71,8 +72,8 @@ namespace Rubberduck.UI.Services.Abstract
 
     public interface IWorkspaceFolderService
     {
-        void CreateWorkspaceFolders(ProjectFile projectFile, string workspaceRoot);
-        void CopyTemplateFiles(ProjectFile projectFile, string workspaceSourceRoot, string templateSourceRoot);
+        void CreateWorkspaceFolders(ProjectFile projectFile);
+        void CopyTemplateFiles(ProjectFile projectFile, string templateSourceRoot);
     }
 
     public class ProjectFileService : ServiceBase, IProjectFileService
@@ -99,7 +100,8 @@ namespace Rubberduck.UI.Services.Abstract
             var path = _fileSystem.Path.Combine(root.LocalPath, ProjectFile.FileName);
             var content = _fileSystem.File.ReadAllText(path);
             var projectFile = JsonSerializer.Deserialize<ProjectFile>(content) ?? throw new InvalidOperationException();
-            projectFile.Uri = new Uri(path);
+
+            projectFile.Uri = root;
             return projectFile;
         }
     }
@@ -115,39 +117,36 @@ namespace Rubberduck.UI.Services.Abstract
             _fileSystem = fileSystem;
         }
 
-        public void CopyTemplateFiles(ProjectFile projectFile, string workspaceSourceRoot, string templateSourceRoot)
+        public void CopyTemplateFiles(ProjectFile projectFile, string templateSourceRoot)
         {
             foreach (var file in projectFile.VBProject.AllFiles)
             {
                 var sourcePath = _fileSystem.Path.Combine(templateSourceRoot, file.Uri);
-                var destinationPath = _fileSystem.Path.Combine(workspaceSourceRoot, file.Uri);
+                var destinationUri = new WorkspaceFileUri(file.Uri, projectFile.Uri);
 
-                var folder = _fileSystem.Path.GetDirectoryName(destinationPath)!;
-                _fileSystem.Directory.CreateDirectory(folder);
-                _fileSystem.File.Copy(sourcePath, destinationPath, overwrite: true);
+                _fileSystem.Directory.CreateDirectory(destinationUri.AbsoluteFolderLocation.LocalPath);
+                _fileSystem.File.Copy(sourcePath, destinationUri.AbsoluteLocation.LocalPath, overwrite: true);
             }
         }
 
-        public void CreateWorkspaceFolders(ProjectFile projectFile, string workspaceRoot)
+        public void CreateWorkspaceFolders(ProjectFile projectFile)
         {
-            _fileSystem.Directory.CreateDirectory(workspaceRoot);
+            var workspaceRoot = projectFile.Uri;
+            _fileSystem.Directory.CreateDirectory(workspaceRoot.LocalPath);
 
-            var sourceRoot = _fileSystem.Path.Combine(workspaceRoot, ProjectFile.SourceRoot);
+            var sourceRoot = _fileSystem.Path.Combine(workspaceRoot.LocalPath, ProjectFile.SourceRoot);
             _fileSystem.Directory.CreateDirectory(sourceRoot);
 
-            var folders = projectFile.VBProject.Modules.Select(e => _fileSystem.Path.Combine(workspaceRoot, e.Uri[..^(_fileSystem.Path.GetFileName(e.Uri).Length + 1)])).ToHashSet();
+            var folders = projectFile.VBProject.Modules
+                .Select(e => new WorkspaceFileUri(e.Uri, workspaceRoot).WorkspaceFolder)
+                .ToHashSet()
+                .Select(Folder.FromWorkspaceUri);
 
-            projectFile.VBProject.Folders = folders
-                .Select(folder => new Folder 
-                    { 
-                        Name = folder.TrimStart(_fileSystem.Path.DirectorySeparatorChar).Replace(_fileSystem.Path.DirectorySeparatorChar, '.'), 
-                        Uri = folder 
-                    })
-                .ToArray();
+            projectFile.VBProject.Folders = folders.ToArray();
 
             foreach (var folder in projectFile.VBProject.Folders)
             {
-                var path = _fileSystem.Path.Combine(workspaceRoot, ProjectFile.SourceRoot + _fileSystem.Path.DirectorySeparatorChar + folder.Uri.TrimStart(_fileSystem.Path.DirectorySeparatorChar));
+                var path = folder.GetWorkspaceUri(workspaceRoot).AbsoluteLocation.LocalPath;
                 _fileSystem.Directory.CreateDirectory(path);
             }
         }

@@ -51,6 +51,7 @@ using Rubberduck.UI.Shell.StatusBar;
 using Rubberduck.UI.Splash;
 using Rubberduck.UI.Windows;
 using Rubberduck.UI.WorkspaceExplorer;
+using Rubberduck.Unmanaged.UIContext;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -83,9 +84,13 @@ namespace Rubberduck.Editor
         private RubberduckSettingsProvider _settings;
         private IDisposable _serverTask;
 
+        private IUiContextProvider UIContextProvider { get; }
+
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "We want to crash the process in case of an exception anyway.")]
         protected override async void OnStartup(StartupEventArgs e)
         {
+            _ = UiContextProvider.Instance(); // we MUST do this while we KNOW we're on the main thread.
             try
             {
                 ShutdownMode = ShutdownMode.OnLastWindowClose;
@@ -98,6 +103,9 @@ namespace Rubberduck.Editor
                 services.AddLogging(ConfigureLogging);
 
                 ConfigureServices(services);
+
+                services.AddSingleton<IUiDispatcher, UiDispatcher>();
+                services.AddSingleton<IUiContextProvider>(provider => UIContextProvider);
 
                 _serviceProvider = services.BuildServiceProvider();
                 _logger = _serviceProvider.GetRequiredService<ILogger<App>>();

@@ -1,4 +1,5 @@
-﻿using Rubberduck.UI.Command.Abstract;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
 using System;
@@ -19,7 +20,7 @@ namespace Rubberduck.Editor.DialogServices.NewProject
 
         protected async override Task OnExecuteAsync(object? parameter)
         {
-            if (parameter is Uri uri)
+            if (parameter is WorkspaceFileUri uri)
             {
                 _workspace.CloseFile(uri);
                 return;

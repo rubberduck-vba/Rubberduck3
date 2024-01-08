@@ -16,6 +16,7 @@ using Rubberduck.Unmanaged.UIContext;
 using System.Linq;
 using System.IO.Abstractions;
 using Reference = Rubberduck.InternalApi.Model.Workspace.Reference;
+using Rubberduck.InternalApi.Extensions;
 
 namespace Rubberduck.Main.Commands.NewWorkspace
 {
@@ -39,22 +40,16 @@ namespace Rubberduck.Main.Commands.NewWorkspace
 
     class WorkspaceModulesService : IWorkspaceModulesService
     {
-        private readonly IFileSystem _fileSystem;
         private readonly IProjectsProvider _projects;
-        private readonly IVBETypeLibsAPI _api;
         private readonly WorkspaceFolderMigrationService _folderMigration;
-        private readonly IUiDispatcher _ui;
 
-        public WorkspaceModulesService(IFileSystem fileSystem, IProjectsProvider projects, IVBETypeLibsAPI api, WorkspaceFolderMigrationService folderMigration, IUiDispatcher ui)
+        public WorkspaceModulesService(IProjectsProvider projects, WorkspaceFolderMigrationService folderMigration)
         {
-            _fileSystem = fileSystem;
             _projects = projects;
-            _api = api;
             _folderMigration = folderMigration;
-            _ui = ui;
         }
 
-        public void ExportWorkspaceModules(string projectId, string srcRoot, IEnumerable<Module> modules)
+        public void ExportWorkspaceModules(string projectId, Uri workspaceRoot, IEnumerable<Module> modules)
         {
             var workspaceModules = modules.ToDictionary(e => e.Name);
             foreach (var qualifiedComponent in _projects.Components(projectId))
@@ -62,14 +57,13 @@ namespace Rubberduck.Main.Commands.NewWorkspace
                 var component = qualifiedComponent.Component;
                 if (workspaceModules.TryGetValue(component.Name, out var module))
                 {
-                    var filename = module.Uri.Split(_fileSystem.Path.DirectorySeparatorChar).Last();
-                    var path = srcRoot + module.Uri[..^(filename.Length + 1)];
-                    component.ExportAsSourceFile(path);
+                    var uri = new WorkspaceFileUri(module.Uri, workspaceRoot);
+                    component.ExportAsSourceFile(uri.AbsoluteFolderLocation.LocalPath);
                 }
             }
         }
 
-        public void ImportWorkspaceModules(string projectId, string srcRoot, IEnumerable<Module> modules)
+        public void ImportWorkspaceModules(string projectId, Uri workspaceRoot, IEnumerable<Module> modules)
         {
             var workspaceModules = modules.ToDictionary(e => e.Name);
             foreach (var qualifiedComponent in _projects.Components(projectId))
@@ -79,14 +73,14 @@ namespace Rubberduck.Main.Commands.NewWorkspace
 
                 if (workspaceModules.TryGetValue(component.Name, out var module))
                 {
-                    var path = _fileSystem.Path.Combine(srcRoot, module.Uri);
+                    var uri = new WorkspaceFileUri(module.Uri, workspaceRoot);
                     collection.RemoveSafely(component);
-                    collection.ImportSourceFile(path);
+                    collection.ImportSourceFile(uri.AbsoluteLocation.LocalPath);
                 }
             }
         }
 
-        public IEnumerable<Module> GetWorkspaceModules(string projectId, string srcRoot, bool scanFolderAnnotations)
+        public IEnumerable<Module> GetWorkspaceModules(string projectId, Uri workspaceRoot, bool scanFolderAnnotations)
         {
             foreach (var qualifiedComponent in _projects.Components(projectId))
             {
@@ -94,12 +88,12 @@ namespace Rubberduck.Main.Commands.NewWorkspace
                 var module = component.CodeModule;
                 var declarations = module.GetLines(1, Math.Max(1, module.CountOfDeclarationLines));
 
-                var uri = new Uri(component.Name + component.Type.FileExtension(), UriKind.Relative);
+                var uri = new WorkspaceFileUri(component.Name + component.Type.FileExtension(), workspaceRoot);
                 if (scanFolderAnnotations)
                 {
                     try
                     {
-                        uri = _folderMigration.ParseModuleUri(projectId, (component.SafeName ?? component.Name) + component.Type.FileExtension(), declarations);
+                        uri = _folderMigration.ParseModuleUri(workspaceRoot, projectId, uri.FileName, declarations);
                     }
                     catch(Exception exception)
                     {
@@ -129,7 +123,7 @@ namespace Rubberduck.Main.Commands.NewWorkspace
                 {
                     Name = module.Name,
                     IsAutoOpen = false,
-                    Uri = uri.OriginalString,
+                    Uri = uri.ToString(),
                     Super = docClassType
                 };
             }
@@ -154,7 +148,7 @@ namespace Rubberduck.Main.Commands.NewWorkspace
             }
         }
 
-        public void SetProjectReferences(string projectId, IEnumerable<Reference> references)
+        public void SetProjectReferences(string projectId, Reference[] references)
         {
             var project = _projects.Project(projectId);
             var collection = project.References;

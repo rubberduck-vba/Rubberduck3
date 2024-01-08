@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.Model.Workspace;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Workspace;
 using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
@@ -33,11 +34,11 @@ namespace Rubberduck.UI.Services.Abstract
         void EnableFileSystemWatcher(Uri root);
         void DisableFileSystemWatcher(Uri root);
 
-        Task<bool> SaveWorkspaceFileAsync(Uri uri);
-        Task<bool> SaveWorkspaceFileAsAsync(Uri uri, string path);
+        Task<bool> SaveWorkspaceFileAsync(WorkspaceFileUri uri);
+        Task<bool> SaveWorkspaceFileAsAsync(WorkspaceFileUri uri, string path);
         Task<bool> SaveAllAsync();
 
-        void CloseFile(Uri uri);
+        void CloseFile(WorkspaceFileUri uri);
         void CloseAllFiles();
         void CloseWorkspace();
     }

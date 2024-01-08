@@ -32,7 +32,7 @@ namespace Rubberduck.Parsing._v3
         /// <param name="fileName">The file name of the module, including its extension.</param>
         /// <param name="declarations">The string content of the <em>declaration lines</em> header section of the module (nothing more is needed).</param>
         /// <returns>A URI under the workspace source root for the specified module, respective of any <c>@Folder</c> annotation found in its <em>declarations</em> header section.</returns>
-        public Uri ParseModuleUri(string projectId, string fileName, string declarations)
+        public WorkspaceFileUri ParseModuleUri(Uri workspaceRoot, string projectId, string fileName, string declarations)
         {
             var uri = fileName;
             var name = _fileSystem.Path.GetFileNameWithoutExtension(fileName);
@@ -46,7 +46,7 @@ namespace Rubberduck.Parsing._v3
                 uri = _fileSystem.Path.Combine(_fileSystem.Path.DirectorySeparatorChar + folder, fileName);
             }
 
-            return new Uri(uri, UriKind.Relative);
+            return new WorkspaceFileUri(uri, workspaceRoot);
         }
 
         private class FolderAnnotationsListener : VBAParserBaseListener

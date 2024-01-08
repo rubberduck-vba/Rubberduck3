@@ -136,9 +136,11 @@ namespace Rubberduck.ServerPlatform
             service.ConfigureLanguageClient(options, Assembly.GetExecutingAssembly(), Environment.ProcessId, settings, workspaceRoot.LocalPath);
         }
 
+        protected abstract ServerStartupSettings GetStartupOptions(RubberduckSettings settings);
+
         private void ConfigurePipeIO(LanguageClientOptions options, RubberduckSettings settings, Uri workspaceRoot)
         {
-            var pipeName = settings.LanguageServerSettings.StartupSettings.ServerPipeName;
+            var pipeName = GetStartupOptions(settings).ServerPipeName;
             if (_options is PipeServerStartupOptions ioOptions)
             {
                 pipeName = PipeServerStartupOptions.GetPipeName(ioOptions.PipeName, Environment.ProcessId);

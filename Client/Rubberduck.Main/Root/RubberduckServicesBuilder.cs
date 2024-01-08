@@ -56,7 +56,6 @@ using System.Globalization;
 using System.IO.Abstractions;
 using System.Reflection;
 using System.Threading;
-using System.Windows.Forms;
 using Env = System.Environment;
 
 namespace Rubberduck.Main.Root

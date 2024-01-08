@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.Model.Workspace;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.NewProject;
 using System;
@@ -15,17 +16,17 @@ namespace Rubberduck.UI.Services.NewProject
 
         private Uri? _uri = default;
         private string _name = "Project1";
+        private string? _projectId = null;
 
-        private readonly HashSet<File> _files = new();
-        private readonly Dictionary<string, Module> _modules = new();
-        private readonly HashSet<Reference> _references = new();
-        private readonly HashSet<Folder> _folders = new();
+        private readonly HashSet<File> _files = [];
+        private readonly Dictionary<string, Module> _modules = [];
+        private readonly HashSet<Reference> _references = [];
+        private readonly HashSet<Folder> _folders = [];
 
         public ProjectFileBuilder(IFileSystem fileSystem, RubberduckSettingsProvider settings)
         {
             _settings = settings;
             _fileSystem = fileSystem;
-            //_references.Add(Reference.VisualBasicForApplications);
         }
 
         private Uri DefaultUri => new(_fileSystem.Path.Combine(
@@ -43,12 +44,16 @@ namespace Rubberduck.UI.Services.NewProject
                 References = _references.ToArray(),
                 Folders = _folders.ToArray(),
             },
+            
+            ProjectId = _projectId
         };
 
         public ProjectFileBuilder WithModel(INewProjectWindowViewModel viewModel)
         {
-            _uri = new Uri(viewModel.WorkspaceLocation);
+            _uri = new Uri(_fileSystem.Path.Combine(viewModel.WorkspaceLocation, viewModel.ProjectName));
             _name = viewModel.ProjectName;
+            _projectId = viewModel.SelectedVBProject?.ProjectId;
+
             if (viewModel.SelectedProjectTemplate != null)
             {
                 return WithTemplate(viewModel.SelectedProjectTemplate)
@@ -84,6 +89,12 @@ namespace Rubberduck.UI.Services.NewProject
             return this;
         }
 
+        public ProjectFileBuilder WithProjectId(string id)
+        {
+            _projectId = id;
+            return this;
+        }
+
         public ProjectFileBuilder WithModule(string uri, DocClassType? supertype = null)
         {
             var name = _fileSystem.Path.GetFileNameWithoutExtension(uri);
@@ -108,33 +119,22 @@ namespace Rubberduck.UI.Services.NewProject
             return this;
         }
 
-        public ProjectFileBuilder WithFile(string uri, bool isAutoOpen = false)
+        public ProjectFileBuilder WithFile(WorkspaceFileUri uri, bool isAutoOpen = false)
         {
-            var file = new File
-            {
-                Uri = uri,
-                Name = _fileSystem.Path.GetFileName(uri),
-                IsAutoOpen = isAutoOpen,
-            };
+            var file = File.FromWorkspaceUri(uri);
+            file.IsAutoOpen = isAutoOpen;
+
             _files.Add(file);
 
-            var folder = _fileSystem.Path.GetDirectoryName(uri);
-            if (!string.IsNullOrEmpty(folder))
-            {
-                var folderPath = _fileSystem.Path.Combine(_uri?.LocalPath ?? DefaultUri.LocalPath, folder);
-                return WithFolder(folderPath);
-            }
-            return this;
+            var relativeFileUri = uri.MakeRelativeUri(uri.SourceRoot);
+            var relativeFolderUri = string.Join('/', relativeFileUri.Segments[..^1]);
+
+            return WithFolder(new WorkspaceFolderUri(relativeFolderUri, uri.WorkspaceRoot));
         }
 
-        public ProjectFileBuilder WithFolder(string uri)
+        public ProjectFileBuilder WithFolder(WorkspaceFolderUri uri)
         {
-            var folder = new Folder
-            {
-                Uri = uri,
-                Name = _fileSystem.Path.GetDirectoryName(uri) ?? ProjectFile.SourceRoot
-            };
-            _folders.Add(folder);
+            _folders.Add(Folder.FromWorkspaceUri(uri));
             return this;
         }
 

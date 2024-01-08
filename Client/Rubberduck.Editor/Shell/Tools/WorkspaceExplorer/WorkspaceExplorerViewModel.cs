@@ -65,8 +65,7 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
 
         private void OnWorkspaceOpened(object? sender, WorkspaceServiceEventArgs e)
         {
-            var path = _service.FileSystem.Path.Combine(e.Uri.LocalPath, ProjectFile.FileName);
-            var project = _service.ProjectFiles.SingleOrDefault(file => file.Uri.LocalPath == path);
+            var project = _service.ProjectFiles.SingleOrDefault(file => file.Uri.LocalPath == e.Uri.LocalPath);
             if (project != null)
             {
                 _dispatcher.Invoke(() => Workspaces.Add(WorkspaceViewModel.FromModel(project, _service)));

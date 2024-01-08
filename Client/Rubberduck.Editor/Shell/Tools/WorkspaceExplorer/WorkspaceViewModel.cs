@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.Model.Workspace;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.UI;
 using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.WorkspaceExplorer;
@@ -13,36 +14,30 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
     {
         public static WorkspaceViewModel FromModel(ProjectFile model, IWorkspaceService service)
         {
-            var root = model.Uri.LocalPath[..^(ProjectFile.FileName.Length + 1)];
-            var rootUri = new Uri(root);
-
-            var srcRoot = service.FileSystem.Path.Combine(root, ProjectFile.SourceRoot);
-
             var vm = new WorkspaceViewModel
             {
                 Name = model.VBProject.Name,
-                Uri = new Uri(service.FileSystem.Path.Combine(root, ProjectFile.SourceRoot + "\\")),
-                IsFileSystemWatcherEnabled = service.IsFileSystemWatcherEnabled(rootUri),
+                Uri = new Uri(service.FileSystem.Path.Combine(model.Uri.LocalPath, ProjectFile.SourceRoot + "\\")),
+                IsFileSystemWatcherEnabled = service.IsFileSystemWatcherEnabled(model.Uri),
                 IsExpanded = true
             };
 
-            var sourceFiles = model.VBProject.Modules.Select(e => WorkspaceSourceFileViewModel.FromModel(e, vm.Uri) as WorkspaceTreeNodeViewModel);
-            var otherFiles = model.VBProject.OtherFiles.Select(e => WorkspaceFileViewModel.FromModel(e, vm.Uri) as WorkspaceTreeNodeViewModel);
-            var projectFolders = model.VBProject.Folders.Select(e => WorkspaceTreeNodeViewModel.FromModel(e, vm.Uri));
+            var sourceFiles = model.VBProject.Modules.Select(e => WorkspaceSourceFileViewModel.FromModel(e, model.Uri) as WorkspaceTreeNodeViewModel);
+            var otherFiles = model.VBProject.OtherFiles.Select(e => WorkspaceFileViewModel.FromModel(e, model.Uri) as WorkspaceTreeNodeViewModel);
+            var projectFolders = model.VBProject.Folders.Select(e => WorkspaceFolderViewModel.FromModel(e, model.Uri));
 
             var projectFilesByFolder = sourceFiles.Concat(otherFiles)
-                .GroupBy(e => e.Uri.LocalPath[..^(service.FileSystem.Path.GetFileName(e.Uri.LocalPath).Length + 1)])
-                .ToDictionary(e => e.Key, e => e.AsEnumerable());
-
+                .GroupBy(e => ((WorkspaceFileUri)e.Uri).WorkspaceFolder)
+                .ToDictionary(e => e.Key.AbsoluteLocation.LocalPath, e => e.AsEnumerable());
 
             foreach (var folder in projectFolders.OrderBy(e => e.Name))
             {
-                if (projectFilesByFolder.TryGetValue(folder.Uri.LocalPath, out var projectFiles) && projectFiles is not null)
+                if (projectFilesByFolder.TryGetValue(((WorkspaceFolderUri)folder.Uri).AbsoluteLocation.LocalPath, out var projectFiles) && projectFiles is not null)
                 {
-                    var projectFilePaths = projectFiles.Select(file => file.Uri.LocalPath).ToHashSet();
+                    var projectFilePaths = projectFiles.Select(file => ((WorkspaceFileUri)file.Uri).AbsoluteLocation.LocalPath).ToHashSet();
                     AddFolderFileNodes(service, folder, projectFiles, projectFilePaths);
 
-                    projectFilesByFolder.Remove(folder.Uri.LocalPath);
+                    projectFilesByFolder.Remove(((WorkspaceFolderUri)folder.Uri).AbsoluteLocation.LocalPath);
                 }
                 else
                 {
@@ -51,17 +46,18 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
                 vm.AddChildNode(folder);
             }
 
-            if (projectFilesByFolder.TryGetValue(srcRoot, out var rootFolderFiles))
+            var srcRoot = new WorkspaceFolderUri(ProjectFile.SourceRoot, model.Uri);
+            if (projectFilesByFolder.TryGetValue(srcRoot.AbsoluteLocation.LocalPath, out var rootFolderFiles))
             {
                 var rootFilePaths = rootFolderFiles.OrderBy(e => e.Name).Select(e => e.Uri.LocalPath).ToHashSet();
                 AddFolderFileNodes(service, vm, rootFolderFiles, rootFilePaths);
 
-                projectFilesByFolder.Remove(srcRoot);
+                projectFilesByFolder.Remove(srcRoot.AbsoluteLocation.LocalPath);
             }
 
             foreach (var key in projectFilesByFolder.Keys)
             {
-                var folder = CreateWorkspaceFolderNode(service, projectFilesByFolder[key], key);
+                var folder = CreateWorkspaceFolderNode(service, projectFilesByFolder[key], new WorkspaceFolderUri(key, model.Uri));
                 vm.Children.Add(folder);
             }
 
@@ -75,25 +71,26 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
                 folder.AddChildNode(file);
             }
         }
-        private static WorkspaceTreeNodeViewModel CreateWorkspaceFolderNode(IWorkspaceService service, IEnumerable<IWorkspaceTreeNode> projectFiles, string key)
+        private static WorkspaceFolderViewModel CreateWorkspaceFolderNode(IWorkspaceService service, IEnumerable<IWorkspaceTreeNode> projectFiles, WorkspaceFolderUri uri)
         {
-            var folder = new WorkspaceTreeNodeViewModel
+            var folder = new WorkspaceFolderViewModel
             {
                 IsInProject = true,
-                Uri = new Uri(key),
-                Name = service.FileSystem.DirectoryInfo.New(key).Name
+                Uri = uri,
+                Name = uri.AbsoluteLocation.AbsolutePath.Split('/')[^1]
             };
 
-            var projectFilePaths = projectFiles.Select(file => service.FileSystem.Path.Combine(key, file.Uri.ToString())).ToHashSet();
+            var projectFilePaths = projectFiles.Select(file => service.FileSystem.Path.Combine(uri.AbsoluteLocation.LocalPath, file.Uri.ToString())).ToHashSet();
             AddFolderFileNodes(service, folder, projectFiles, projectFilePaths);
             return folder;
         }
         private static IEnumerable<WorkspaceFileViewModel> GetWorkspaceFilesNotInProject(IWorkspaceService service, IWorkspaceTreeNode folder, HashSet<string> projectFilePaths)
         {
-            var results = service.FileSystem.Directory.GetFiles(folder.Uri.LocalPath).Except(projectFilePaths)
+            var workspaceRoot = ((WorkspaceFolderUri)folder.Uri).WorkspaceRoot;
+            var results = service.FileSystem.Directory.GetFiles(((WorkspaceFolderUri)folder.Uri).AbsoluteLocation.LocalPath).Except(projectFilePaths)
                         .Select(file => new WorkspaceFileViewModel
                         {
-                            Uri = new Uri(folder.Uri, file),
+                            Uri = new WorkspaceFileUri(file[workspaceRoot.LocalPath.Length..], workspaceRoot),
                             Name = service.FileSystem.Path.GetFileNameWithoutExtension(file),
                             IsInProject = false // file exists in a project folder but is not included in the project
                         });

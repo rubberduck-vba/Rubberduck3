@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.Editor.RPC;
 using Rubberduck.ServerPlatform;
+using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.ServerStartup;
 using System;
 using System.Threading;
 
@@ -18,6 +20,7 @@ namespace Rubberduck.Editor
             _logger = logger;
         }
 
+        protected override ServerStartupSettings GetStartupOptions(RubberduckSettings settings) => settings.LanguageServerSettings.StartupSettings;
         protected override RubberduckServerProcess GetServerProcess() => new LanguageServerProcess(_logger);
     }
 }
