@@ -124,7 +124,7 @@ namespace Rubberduck.UI.Services.Abstract
                 var sourcePath = _fileSystem.Path.Combine(templateSourceRoot, file.Uri);
                 var destinationUri = new WorkspaceFileUri(file.Uri, projectFile.Uri);
 
-                _fileSystem.Directory.CreateDirectory(destinationUri.AbsoluteFolderLocation.LocalPath);
+                _fileSystem.Directory.CreateDirectory(destinationUri.WorkspaceFolder.AbsoluteLocation.LocalPath);
                 _fileSystem.File.Copy(sourcePath, destinationUri.AbsoluteLocation.LocalPath, overwrite: true);
             }
         }

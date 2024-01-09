@@ -24,25 +24,16 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
 
             var sourceFiles = model.VBProject.Modules.Select(e => WorkspaceSourceFileViewModel.FromModel(e, model.Uri) as WorkspaceTreeNodeViewModel);
             var otherFiles = model.VBProject.OtherFiles.Select(e => WorkspaceFileViewModel.FromModel(e, model.Uri) as WorkspaceTreeNodeViewModel);
-            var projectFolders = model.VBProject.Folders.Select(e => WorkspaceFolderViewModel.FromModel(e, model.Uri));
+            var projectFolders = model.VBProject.Folders.Select(e => WorkspaceFolderViewModel.FromModel(e, model.Uri)).OrderBy(e => e.Name).ToList();
+            var rootFolders = projectFolders.Where(e => ((WorkspaceFolderUri)e.Uri).RelativeUriString!.Count(c => c == System.IO.Path.DirectorySeparatorChar) == 1);
 
             var projectFilesByFolder = sourceFiles.Concat(otherFiles)
-                .GroupBy(e => ((WorkspaceFileUri)e.Uri).WorkspaceFolder)
-                .ToDictionary(e => e.Key.AbsoluteLocation.LocalPath, e => e.AsEnumerable());
+                .GroupBy(e => ((WorkspaceFileUri)e.Uri).WorkspaceFolder.RelativeUriString ?? ProjectFile.SourceRoot)
+                .ToDictionary(e => System.IO.Path.TrimEndingDirectorySeparator(e.Key), e => e.AsEnumerable());
 
-            foreach (var folder in projectFolders.OrderBy(e => e.Name))
+            foreach (var folder in rootFolders)
             {
-                if (projectFilesByFolder.TryGetValue(((WorkspaceFolderUri)folder.Uri).AbsoluteLocation.LocalPath, out var projectFiles) && projectFiles is not null)
-                {
-                    var projectFilePaths = projectFiles.Select(file => ((WorkspaceFileUri)file.Uri).AbsoluteLocation.LocalPath).ToHashSet();
-                    AddFolderFileNodes(service, folder, projectFiles, projectFilePaths);
-
-                    projectFilesByFolder.Remove(((WorkspaceFolderUri)folder.Uri).AbsoluteLocation.LocalPath);
-                }
-                else
-                {
-                    // folder is empty
-                }
+                AddFolderContent(service, folder, projectFilesByFolder, projectFolders);
                 vm.AddChildNode(folder);
             }
 
@@ -58,11 +49,37 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
             foreach (var key in projectFilesByFolder.Keys)
             {
                 var folder = CreateWorkspaceFolderNode(service, projectFilesByFolder[key], new WorkspaceFolderUri(key, model.Uri));
-                vm.Children.Add(folder);
+                vm.AddChildNode(folder);
             }
 
             return vm;
         }
+
+        private static void AddFolderContent(IWorkspaceService service, WorkspaceFolderViewModel folder, IDictionary<string, IEnumerable<WorkspaceTreeNodeViewModel>> projectFilesByFolder, IEnumerable<WorkspaceFolderViewModel> projectFolders)
+        {
+            var workspaceFolderUri = (WorkspaceFolderUri)folder.Uri;
+            var key = System.IO.Path.TrimEndingDirectorySeparator(workspaceFolderUri.RelativeUriString ?? ProjectFile.SourceRoot);
+
+            var localPath = ((WorkspaceFolderUri)folder.Uri).AbsoluteLocation.LocalPath;
+            foreach (var subFolder in projectFolders.Where(e => localPath == new System.IO.DirectoryInfo(new WorkspaceFolderUri(e.Uri.OriginalString, workspaceFolderUri.WorkspaceRoot).AbsoluteLocation.LocalPath).Parent!.FullName))
+            {
+                AddFolderContent(service, subFolder, projectFilesByFolder, projectFolders);
+                folder.AddChildNode(subFolder);
+            }
+
+            if (projectFilesByFolder.TryGetValue(key, out var projectFiles) && projectFiles is not null)
+            {
+                var projectFilePaths = projectFiles.Select(file => ((WorkspaceFileUri)file.Uri).AbsoluteLocation.LocalPath).ToHashSet();                
+                AddFolderFileNodes(service, folder, projectFiles, projectFilePaths);
+
+                projectFilesByFolder.Remove(key);
+            }
+            else
+            {
+                // folder is empty?
+            }
+        }
+
         private static void AddFolderFileNodes(IWorkspaceService service, IWorkspaceTreeNode folder, IEnumerable<IWorkspaceTreeNode> projectFiles, HashSet<string> projectFilePaths)
         {
             var workspaceFiles = GetWorkspaceFilesNotInProject(service, folder, projectFilePaths);
@@ -77,7 +94,7 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
             {
                 IsInProject = true,
                 Uri = uri,
-                Name = uri.AbsoluteLocation.AbsolutePath.Split('/')[^1]
+                Name = uri.FolderName
             };
 
             var projectFilePaths = projectFiles.Select(file => service.FileSystem.Path.Combine(uri.AbsoluteLocation.LocalPath, file.Uri.ToString())).ToHashSet();

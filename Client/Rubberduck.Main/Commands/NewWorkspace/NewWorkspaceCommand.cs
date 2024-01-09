@@ -58,7 +58,7 @@ namespace Rubberduck.Main.Commands.NewWorkspace
                 if (workspaceModules.TryGetValue(component.Name, out var module))
                 {
                     var uri = new WorkspaceFileUri(module.Uri, workspaceRoot);
-                    component.ExportAsSourceFile(uri.AbsoluteFolderLocation.LocalPath);
+                    component.ExportAsSourceFile(uri.WorkspaceFolder.AbsoluteLocation.LocalPath);
                 }
             }
         }

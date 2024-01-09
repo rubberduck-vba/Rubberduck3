@@ -103,11 +103,7 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
                 return;
             }
 
-            var workspaceRoot = _workspaces?.ActiveWorkspace?.WorkspaceRoot?.LocalPath 
-                ?? throw new InvalidOperationException();
-
-            var filePath = System.IO.Path.Combine(workspaceRoot, ProjectFile.SourceRoot, file.Uri.ToString());
-            var absoluteUri = new Uri(filePath);
+            var absoluteUri = file.Uri.AbsoluteLocation;
 
             var languageId = file.IsSourceFile
                 ? "vba"
