@@ -29,8 +29,7 @@
                 <Setter Property="Margin" Value="0,0,5,0" />
             </Style>
 
-            <HierarchicalDataTemplate x:Key="WorkspaceFolderTemplate" 
-                                      DataType="local:IWorkspaceTreeNode" 
+            <HierarchicalDataTemplate x:Key="WorkspaceFolderTemplate" DataType="local:IWorkspaceFolderViewModel" 
                                       ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{StaticResource SharpFolderClosedIcon}">
@@ -60,7 +59,7 @@
                 </StackPanel>
             </HierarchicalDataTemplate>
 
-            <DataTemplate x:Key="SourceFileTemplate" DataType="local:WorkspaceSourceFileViewModel">
+            <DataTemplate x:Key="SourceFileTemplate" DataType="local:IWorkspaceSourceFileViewModel">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{DynamicResource SourceDocumentIcon16}" Style="{DynamicResource NodeIconStyle}" />
                     <Label Content="{Binding Name}" Style="{DynamicResource NodeLabelStyle}" Margin="0" MouseDoubleClick="OnFileDoubleClick" />
@@ -75,7 +74,7 @@
                 </StackPanel>
             </DataTemplate>
             
-            <DataTemplate x:Key="OtherFileTemplate" DataType="local:WorkspaceFileViewModel">
+            <DataTemplate x:Key="OtherFileTemplate" DataType="local:IWorkspaceFileViewModel">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{DynamicResource DocumentIcon16}" Style="{DynamicResource NodeIconStyle}" />
                     <Label Content="{Binding Name}" Style="{DynamicResource NodeLabelStyle}" Margin="0" MouseDoubleClick="OnFileDoubleClick" />

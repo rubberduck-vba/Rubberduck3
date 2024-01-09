@@ -1,18 +1,19 @@
-﻿using System;
+﻿using Rubberduck.InternalApi.Extensions;
+using System;
 using System.Linq;
 
 namespace Rubberduck.InternalApi.Model.Workspace
 {
     public record class WorkspaceFileInfo
     {
-        public static WorkspaceFileInfo MissingFile(Uri uri)
+        public static WorkspaceFileInfo MissingFile(WorkspaceFileUri uri)
             => new()
             {
                 Uri = uri,
                 Content = string.Empty,
                 IsMissing = true,
             };
-        public static WorkspaceFileInfo LoadError(Uri uri)
+        public static WorkspaceFileInfo LoadError(WorkspaceFileUri uri)
             => new()
             {
                 Uri = uri,
@@ -20,9 +21,9 @@ namespace Rubberduck.InternalApi.Model.Workspace
                 IsLoadError = true,
             };
 
-        public Uri Uri { get; init; } = default!;
-        public string FileExtension => System.IO.Path.GetExtension(Uri.ToString());
-        public string Name => System.IO.Path.GetFileNameWithoutExtension(Uri.ToString());
+        public WorkspaceFileUri Uri { get; init; } = default!;
+        public string FileExtension => System.IO.Path.GetExtension(Uri.FileName);
+        public string Name => Uri.FileNameWithoutExtension;
         public string Content { get; set; } = string.Empty;
 
         private string _originalContent = string.Empty;

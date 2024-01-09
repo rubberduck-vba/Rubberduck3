@@ -1,5 +1,4 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using Rubberduck.UI.Command;
 using Rubberduck.UI.Message;
 using System;
 using System.Linq;

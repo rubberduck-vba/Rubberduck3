@@ -1,5 +1,5 @@
-﻿using Rubberduck.UI.Command;
-using Rubberduck.UI.Command.SharedHandlers;
+﻿using Rubberduck.UI.Command.SharedHandlers;
+using Rubberduck.UI.Message;
 
 namespace Rubberduck.UI.Windows
 {

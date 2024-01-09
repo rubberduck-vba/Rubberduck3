@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows;
 using Rubberduck.UI.Command.Abstract;
+using Rubberduck.UI.Message;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Windows;
 

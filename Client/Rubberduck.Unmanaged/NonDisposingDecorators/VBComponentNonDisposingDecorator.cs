@@ -81,5 +81,6 @@ namespace Rubberduck.Unmanaged.NonDisposingDecorators
         }
 
         public IQualifiedModuleName QualifiedModuleName => WrappedItem.QualifiedModuleName;
+        public string SafeName { get; }
     }
 }

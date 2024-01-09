@@ -31,6 +31,8 @@
 /// </example>
 public sealed class FolderAnnotation : AnnotationBase
 {
+    public static char SeparatorChar { get; } = '.';
+
     public FolderAnnotation()
         : base("Folder", AnnotationTarget.Module, 1, 1, new[] { AnnotationArgumentType.Text})
     {}

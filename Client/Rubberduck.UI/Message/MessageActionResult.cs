@@ -1,6 +1,4 @@
-﻿using Rubberduck.UI.Command;
-
-namespace Rubberduck.UI.Message
+﻿namespace Rubberduck.UI.Message
 {
     public record class MessageActionResult
     {

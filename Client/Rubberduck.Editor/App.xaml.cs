@@ -21,11 +21,14 @@ using Rubberduck.Editor.Shell.Tools.WorkspaceExplorer;
 using Rubberduck.Editor.Splash;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.LanguageServer.Model;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.Editor;
+using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.SettingsProvider.Model.General;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
@@ -36,8 +39,10 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.LanguageServerTrace;
 using Rubberduck.UI.Message;
+using Rubberduck.UI.NewProject;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
+using Rubberduck.UI.Services.NewProject;
 using Rubberduck.UI.Services.Settings;
 using Rubberduck.UI.Settings;
 using Rubberduck.UI.Shell;
@@ -46,13 +51,17 @@ using Rubberduck.UI.Shell.StatusBar;
 using Rubberduck.UI.Splash;
 using Rubberduck.UI.Windows;
 using Rubberduck.UI.WorkspaceExplorer;
+using Rubberduck.Unmanaged.UIContext;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO.Abstractions;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Rubberduck.Editor
 {
@@ -73,10 +82,15 @@ namespace Rubberduck.Editor
         private LanguageClientApp _languageClient;
 
         private RubberduckSettingsProvider _settings;
+        private IDisposable _serverTask;
+
+        private IUiContextProvider UIContextProvider { get; }
+
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "We want to crash the process in case of an exception anyway.")]
         protected override async void OnStartup(StartupEventArgs e)
         {
+            _ = UiContextProvider.Instance(); // we MUST do this while we KNOW we're on the main thread.
             try
             {
                 ShutdownMode = ShutdownMode.OnLastWindowClose;
@@ -89,6 +103,9 @@ namespace Rubberduck.Editor
                 services.AddLogging(ConfigureLogging);
 
                 ConfigureServices(services);
+
+                services.AddSingleton<IUiDispatcher, UiDispatcher>();
+                services.AddSingleton<IUiContextProvider>(provider => UIContextProvider);
 
                 _serviceProvider = services.BuildServiceProvider();
                 _logger = _serviceProvider.GetRequiredService<ILogger<App>>();
@@ -104,10 +121,10 @@ namespace Rubberduck.Editor
 
                 if (_options.ClientProcessId > 0)
                 {
-                    _editorServer = new(_serviceProvider.GetRequiredService<ILogger<EditorServerApp>>(), _options, _tokenSource, _serviceProvider);
+                    _editorServer = new(_options, _tokenSource);
 
                     splash.UpdateStatus("Initializing language server protocol (addin/editor)...");
-                    await _editorServer.StartupAsync();
+                    _serverTask = _editorServer.RunAsync();
                 }
                 else if (_settings.Settings.LanguageClientSettings.RequireAddInHost)
                 {
@@ -117,12 +134,12 @@ namespace Rubberduck.Editor
                 if (!string.IsNullOrWhiteSpace(_options.WorkspaceRoot))
                 {
                     splash.UpdateStatus("Initializing language server protocol (editor/server)...");
-                    await _languageClient.StartupAsync(new Uri(_options.WorkspaceRoot));
+                    await _languageClient.StartupAsync(_settings.Settings.LanguageServerSettings.StartupSettings, new Uri(_options.WorkspaceRoot));
                 }
 
                 splash.UpdateStatus("Quack!");
 
-                ShowEditor();
+                await ShowEditorAsync();
                 splash.Close();
             }
             catch (Exception exception)
@@ -133,36 +150,64 @@ namespace Rubberduck.Editor
             }
         }
 
-        private void ShowEditor()
+        private async Task ShowEditorAsync()
         {
+            var settings = _settings.Settings.EditorSettings;
             var model = _serviceProvider.GetRequiredService<IShellWindowViewModel>();
 
-            // TODO "show welcome tab" setting
+            var view = _shell ??= new ShellWindow() { DataContext = model };
+            view.Show();
+
+            ShowStartupToolwindows(settings);
+
+            if (settings.ShowWelcomeTab)
+            {
+                await LoadWelcomeTabAsync(model);
+            }
+        }
+
+        private readonly static Dictionary<Type, Type> ShowToolWindowCommandMappings = new()
+        {
+            [typeof(WorkspaceExplorerSettings)] = typeof(ShowWorkspaceExplorerCommand),
+        };
+
+        private void ShowStartupToolwindows(EditorSettings settings)
+        {
+            foreach (var toolwindow in settings.ToolsSettings.StartupToolWindows)
+            {
+                if (toolwindow.ShowOnStartup)
+                {
+                    var toolwindowSettingType = toolwindow.GetType();
+                    if (ShowToolWindowCommandMappings.TryGetValue(toolwindowSettingType, out var commandType))
+                    {
+                        var command = (ICommand)_serviceProvider.GetRequiredService(commandType);
+                        command.Execute(null);
+                    }
+                    else
+                    {
+                        _logger.LogDebug(_settings.TraceLevel, $"Could not find a command to open toolwindow from setting type '{toolwindowSettingType.Name}'.");
+                    }
+                }
+            }
+        }
+
+        private async Task LoadWelcomeTabAsync(IShellWindowViewModel model)
+        {
             var fileSystem = _serviceProvider.GetRequiredService<IFileSystem>();
             var path = fileSystem.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Rubberduck", "Templates", "Welcome.md");
-            var content = fileSystem.File.ReadAllText(path);
+            var content = await fileSystem.File.ReadAllTextAsync(path);
 
             var showSettingsCommand = _serviceProvider.GetRequiredService<ShowRubberduckSettingsCommand>();
             var closeToolWindowCommand = _serviceProvider.GetRequiredService<CloseToolWindowCommand>();
             var activeDocumentStatus = _serviceProvider.GetRequiredService<IDocumentStatusViewModel>();
-            var welcome = new MarkdownDocumentTabViewModel(new Uri(path), "Welcome", content, isReadOnly:true, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus);
+            var welcome = new MarkdownDocumentTabViewModel(new Uri(path), "Welcome", content, isReadOnly: true, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus);
 
-            var view = _shell ??= new ShellWindow() { DataContext = model };
-            
             var welcomeTabContent = new MarkdownEditorControl() { DataContext = welcome };
             welcome.ContentControl = welcomeTabContent;
             welcome.IsSelected = true;
 
-             // prompt for new workspace here if there's no addin host?
-
-            view.Show();
             model.DocumentWindows.Add(welcome);
             model.ActiveDocumentTab = welcome;
-
-            if (_settings.Settings.EditorSettings.ToolsSettings.WorkspaceExplorerSettings.ShowOnStartup)
-            {
-                _serviceProvider.GetRequiredService<ShowWorkspaceExplorerCommand>().Execute(null);
-            }
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -207,10 +252,10 @@ namespace Rubberduck.Editor
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<Func<ILanguageServer>>(provider => () => _editorServer.EditorServer);
+            services.AddSingleton<Func<ILanguageServer>>(provider => () => _editorServer.Server);
             services.AddSingleton<Func<ILanguageClient?>>(provider => () => _languageClient.LanguageClient);
-            services.AddSingleton<ILanguageClientService, LanguageClientService>();
             services.AddSingleton<LanguageClientApp>(provider => _languageClient);
+            services.AddSingleton<ILanguageClientService, LanguageClientService>();
             services.AddSingleton<ILanguageServerConnectionStatusProvider, LanguageClientService>(provider => (LanguageClientService)provider.GetRequiredService<ILanguageClientService>());
 
             services.AddSingleton<ServerStartupOptions>(provider => _options);
@@ -222,7 +267,7 @@ namespace Rubberduck.Editor
             services.AddSingleton<UIServiceHelper>();
             services.AddSingleton<ServerPlatformServiceHelper>();
             services.AddSingleton<EditorServerState>();
-            services.AddSingleton<Func<EditorServerState>>(provider => () => _editorServer.ServerState);
+            services.AddSingleton<Func<EditorServerState>>(provider => () => (EditorServerState)_editorServer.ServerState);
             services.AddSingleton<IServerStateWriter>(provider => provider.GetRequiredService<EditorServerState>());
 
             services.AddSingleton<IDefaultSettingsProvider<RubberduckSettings>>(provider => RubberduckSettings.Default);
@@ -282,7 +327,10 @@ namespace Rubberduck.Editor
 
             services.AddSingleton<FileCommandHandlers>();
             services.AddSingleton<NewProjectCommand>();
-            services.AddSingleton<NewProjectWindowFactory>();
+            services.AddSingleton<IDialogService<NewProjectWindowViewModel>, NewProjectDialogService>();
+            services.AddSingleton<IWindowFactory<NewProjectWindow, NewProjectWindowViewModel>, NewProjectWindowFactory>();
+            services.AddSingleton<IVBProjectInfoProvider>(provider => null!);
+            services.AddSingleton<IWorkspaceModulesService>(provider => null!);
             services.AddSingleton<OpenProjectCommand>();
             services.AddSingleton<SaveDocumentCommand>();
             services.AddSingleton<SaveDocumentAsCommand>();
@@ -311,6 +359,7 @@ namespace Rubberduck.Editor
             _editorServer?.Dispose();
             _languageClient?.Dispose();
             _tokenSource.Dispose();
+            _serverTask.Dispose();
         }
     }
 }

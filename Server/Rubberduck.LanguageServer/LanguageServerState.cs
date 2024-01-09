@@ -12,6 +12,7 @@ namespace Rubberduck.LanguageServer
 {
     public interface ILanguageServerState : IServerStateWriter
     {
+        DocumentUri? RootUri { get; set; }
         void AddWorkspaceFolders(IEnumerable<WorkspaceFolder> workspaceFolders);
     }
 

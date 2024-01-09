@@ -1,53 +1,14 @@
-﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using System.Threading.Tasks;
-using System.Threading;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
-using OmniSharp.Extensions.LanguageServer.Protocol;
-using System.Collections.Generic;
-using System;
+using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.ServerPlatform;
-using System.Linq;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Rubberduck.Main.RPC.EditorServer.Handlers
 {
-    public class InvalidRequestParamsException : ArgumentException
-    {
-        public InvalidRequestParamsException(string name, object request) 
-            : base($"{request.GetType().Name} is missing a required member.", name)
-        {
-            Data.Add("request", request);
-        }
-    }
-
-    public class WorkspaceFoldersHandler : WorkspaceFoldersHandlerBase
-    {
-        /**
-         * EditorServer sends this request once started to load additional workspaces,
-         * for example if multiple unlocked projects are loaded in the VBE.
-        **/
-
-        private readonly ServerPlatformServiceHelper _service;
-
-        public WorkspaceFoldersHandler(ServerPlatformServiceHelper service)
-        {
-            _service = service;
-        }
-
-        public async override Task<Container<WorkspaceFolder>?> Handle(WorkspaceFolderParams request, CancellationToken cancellationToken)
-        {
-            var folders = Enumerable.Empty<WorkspaceFolder>();
-
-            _service.TryRunAction(() =>
-            {
-                throw new NotImplementedException();
-                // TODO
-            });
-
-
-            return await Task.FromResult(new Container<WorkspaceFolder>(folders));
-        }
-    }
-
     /// <summary>
     /// The VBE handles workspace edits sent from the RDE by synchronizing the specified documents from the workspace into the VBE.
     /// </summary>
@@ -62,7 +23,7 @@ namespace Rubberduck.Main.RPC.EditorServer.Handlers
 
         public async override Task<ApplyWorkspaceEditResponse> Handle(ApplyWorkspaceEditParams request, CancellationToken cancellationToken)
         {
-            /**
+            /** LSP 3.17:
              * Depending on the client capability
              * `workspace.workspaceEdit.resourceOperations` document changes are either
              * an array of `TextDocumentEdit`s to express changes to n different text
@@ -78,6 +39,10 @@ namespace Rubberduck.Main.RPC.EditorServer.Handlers
              * using the `changes` property are supported.
              * https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspaceEdit
             **/
+
+            /** implementation notes and considerations:
+             * 
+            */
 
             cancellationToken.ThrowIfCancellationRequested();
             var synchronized = new HashSet<DocumentUri>();

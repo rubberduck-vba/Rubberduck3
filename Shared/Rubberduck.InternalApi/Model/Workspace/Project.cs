@@ -9,7 +9,7 @@ namespace Rubberduck.InternalApi.Model.Workspace
         /// <summary>
         /// The name of the project.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = "Project1";
         /// <summary>
         /// Project references.
         /// </summary>
@@ -30,6 +30,9 @@ namespace Rubberduck.InternalApi.Model.Workspace
         /// </summary>
         public Folder[] Folders { get; set; } = Array.Empty<Folder>();
 
+        /// <summary>
+        /// Gets all files in the project, regardless of whether they're source files or not.
+        /// </summary>
         [JsonIgnore]
         public File[] AllFiles => Modules.Concat(OtherFiles).ToArray();
     }

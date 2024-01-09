@@ -5,6 +5,11 @@ using System.ComponentModel;
 
 namespace Rubberduck.UI.WorkspaceExplorer
 {
+    public interface IWorkspaceFolderViewModel : IWorkspaceTreeNode
+    {
+
+    }
+
     public interface IWorkspaceTreeNode : INotifyPropertyChanged
     {
         Uri Uri { get; }

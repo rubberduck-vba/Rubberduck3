@@ -16,5 +16,7 @@ namespace Rubberduck.UI.NewProject
 
         string ProjectName { get; set; }
         string WorkspaceLocation { get; set; }
+
+        bool ScanFolderAnnotations { get; set; }
     }
 }

@@ -16,14 +16,14 @@ public class TokenStreamParserStringParserAdapter : IStringParser
         _tokenStreamParser = tokenStreamParser;
     }
 
-    public (IParseTree tree, ITokenStream tokenStream, LogicalLineStore logicalLines) Parse(string moduleName, string projectId, string content, CancellationToken token, CodeKind codeKind, ParserMode parserMode)
+    public (IParseTree tree, ITokenStream tokenStream, LogicalLineStore? logicalLines) Parse(string moduleName, string projectId, string content, CancellationToken token, CodeKind codeKind, ParserMode parserMode, IEnumerable<IParseTreeListener>? parseListeners = null)
     {
         token.ThrowIfCancellationRequested();
         var tokenStream = _tokenStreamProvider.Tokens(content);
 
         token.ThrowIfCancellationRequested();
 
-        var tree = _tokenStreamParser.Parse(moduleName, projectId, tokenStream, token, codeKind, parserMode);
+        var tree = _tokenStreamParser.Parse(moduleName, projectId, tokenStream, token, codeKind, parserMode, parseListeners);
         return (tree, tokenStream, null);
     }
 }

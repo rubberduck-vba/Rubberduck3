@@ -60,6 +60,11 @@ namespace Rubberduck.UI.Command.SharedHandlers
 
         protected async override Task OnExecuteAsync(object? parameter)
         {
+            if (parameter is Window window)
+            {
+                window.Close();
+            }
+
             /* no good */
 
             if (parameter is IToolWindowViewModel toolwindow)

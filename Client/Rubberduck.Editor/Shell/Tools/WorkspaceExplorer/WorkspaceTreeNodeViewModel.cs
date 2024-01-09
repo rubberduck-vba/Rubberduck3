@@ -1,8 +1,6 @@
-﻿using Rubberduck.InternalApi.Model.Workspace;
-using Rubberduck.UI;
+﻿using Rubberduck.UI;
 using Rubberduck.UI.WorkspaceExplorer;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -10,16 +8,6 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
 {
     public class WorkspaceTreeNodeViewModel : ViewModelBase, IWorkspaceTreeNode
     {
-        public static WorkspaceTreeNodeViewModel FromModel(Folder model, Uri srcRoot)
-        {
-            return new WorkspaceTreeNodeViewModel
-            {
-                Uri = new Uri(srcRoot, model.Uri),
-                Name = model.Name,
-                IsInProject = true,
-            };
-        }
-
         private string _name = null!;
         public string Name
         {

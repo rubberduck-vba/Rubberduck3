@@ -4,7 +4,7 @@
     <AssemblyName>Rubberduck</AssemblyName>
     <TargetFramework>net8.0</TargetFramework>
     <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
-    <LangVersion>10.0</LangVersion>
+    <LangVersion>12.0</LangVersion>
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU</Platforms>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,7 +32,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Rubberduck.Editor\Rubberduck.Editor.csproj" />
+    <ProjectReference Include="..\..\Server\Rubberduck.Parsing\Rubberduck.Parsing.csproj" />
+    <ProjectReference Include="..\..\Server\Rubberduck.ServerPlatform\Rubberduck.ServerPlatform.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
       <Project>{e794cfc3-3d9f-400f-88d9-69e929d8e8af}</Project>
       <Name>Rubberduck.SettingsProvider</Name>
@@ -45,7 +46,6 @@
       <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
       <Name>Rubberduck.Resources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Editor\Rubberduck.Editor.csproj" />
     <ProjectReference Include="..\Rubberduck.UI\Rubberduck.UI.csproj" />
     <ProjectReference Include="..\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj">
       <Project>{4ccd023c-a503-4bc7-9e9a-a509b4a16d41}</Project>
