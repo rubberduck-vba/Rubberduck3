@@ -261,7 +261,8 @@ namespace Rubberduck.ServerPlatform
                     _logger?.LogTrace("WorkDoneManager.IsSupported returned false; client will not be sent progress notifications from this server.");
                 }
 
-                await OnServerStartedAsync(server, token, progress, _logger);
+                var service = server.Services.GetRequiredService<ServerPlatformServiceHelper>();
+                await OnServerStartedAsync(server, token, progress, service);
             }
             catch (Exception exception)
             {
@@ -273,8 +274,7 @@ namespace Rubberduck.ServerPlatform
             }
         }
 
-        protected abstract Task OnServerStartedAsync(ILanguageServer server, CancellationToken token, IWorkDoneObserver? progress, ILogger logger);
-
+        protected abstract Task OnServerStartedAsync(ILanguageServer server, CancellationToken token, IWorkDoneObserver? progress, ServerPlatformServiceHelper service);
 
         private void ConfigureTransport(LanguageServerOptions options)
         {
