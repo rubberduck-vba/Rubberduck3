@@ -76,14 +76,16 @@ namespace Rubberduck.Editor
             ;
         }
 
-        protected async override Task OnServerStartedAsync(ILanguageServer server, CancellationToken token, IWorkDoneObserver? progress, ILogger logger)
+        protected async override Task OnServerStartedAsync(ILanguageServer server, CancellationToken token, IWorkDoneObserver? progress, ServerPlatformServiceHelper service)
         {
-            logger?.LogTrace("Server app started.");
+            service.LogTrace("Server app started.");
 
+            // TODO
+            
             progress?.OnCompleted();
             if (progress != null)
             {
-                logger?.LogTrace("WorkDoneToken '{0}' has been completed.", progress?.WorkDoneToken);
+                service.LogTrace($"Progress token '{progress.WorkDoneToken}' has been completed.");
             }
         }
     }

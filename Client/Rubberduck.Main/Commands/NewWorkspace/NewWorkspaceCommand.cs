@@ -5,16 +5,13 @@ using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.NewProject;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract;
-using Rubberduck.Unmanaged.TypeLibs.Abstract;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 using Rubberduck.VBEditor.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Rubberduck.Unmanaged.UIContext;
 using System.Linq;
-using System.IO.Abstractions;
 using Reference = Rubberduck.InternalApi.Model.Workspace.Reference;
 using Rubberduck.InternalApi.Extensions;
 

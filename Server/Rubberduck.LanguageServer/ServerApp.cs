@@ -4,6 +4,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server.WorkDone;
 using OmniSharp.Extensions.LanguageServer.Server;
+using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.Settings;
@@ -145,34 +146,47 @@ namespace Rubberduck.LanguageServer
             ;
         }
 
-        protected async override Task OnServerStartedAsync(ILanguageServer server, CancellationToken token, IWorkDoneObserver? progress, ILogger logger)
+        protected async override Task OnServerStartedAsync(ILanguageServer server, CancellationToken token, IWorkDoneObserver? progress, ServerPlatformServiceHelper service)
         {
-            progress?.OnNext(message: "Loading source files...", percentage: 10, cancellable: false);
-
-            var rootUri = ((ILanguageServerState)ServerState).RootUri!.GetFileSystemPath();
             var store = server.Services.GetRequiredService<DocumentContentStore>();
 
-            var projectFilePath = System.IO.Path.Combine(rootUri, ProjectFile.FileName);
+            var rootUriString = ((ILanguageServerState)ServerState).RootUri!.GetFileSystemPath();
+            service.LogTrace($"ServerState RootUri: {rootUriString}");
+            var rootUri = new Uri(rootUriString);
+
+            var projectFilePath = System.IO.Path.Combine(rootUriString, ProjectFile.FileName);
             var projectFileContent = System.IO.File.ReadAllText(projectFilePath);
             var projectFile = JsonSerializer.Deserialize<ProjectFile>(projectFileContent) ?? throw new InvalidOperationException("Project file could not be deserialized.");
 
-            var srcRootPath = System.IO.Path.Combine(rootUri, ProjectFile.SourceRoot);
+            var srcRootPath = System.IO.Path.Combine(rootUriString, ProjectFile.SourceRoot);
+            service.LogTrace($"Workspace source root: {srcRootPath}");
+
+            progress?.OnNext(message: "Loading source files...", percentage: 10, cancellable: false);
             foreach (var item in projectFile.VBProject.Modules)
             {
-                progress?.OnNext($"Loading file: {item.Name}", 10, false);
+                service.TryRunAction(() =>
+                {
+                    progress?.OnNext($"Loading file: {item.Name}", 10, false);
 
-                var path = System.IO.Path.Combine(srcRootPath, item.Uri);
-                var state = new DocumentState(await System.IO.File.ReadAllTextAsync(path));
-                state.IsOpened = item.IsAutoOpen;
-                store.AddOrUpdate(new Uri(path), state);
-                logger?.LogTrace("Loaded source file: {path}", path);
+                    var path = System.IO.Path.Combine(srcRootPath, item.Uri);
+                    var document = new DocumentState(System.IO.File.ReadAllText(path));
+                    document.IsOpened = item.IsAutoOpen;
+
+                    var uri = new WorkspaceFileUri(item.Uri, rootUri);
+                    if (service.TraceLevel == TraceLevel.Verbose)
+                    {
+                        service.LogTrace($"Loaded: {uri}");
+                    }
+
+                    store.AddOrUpdate(uri, document);
+                }, "LoadWorkspaceFile");
             }
 
             progress?.OnNext($"Loading project references...", percentage: 20, cancellable: false);
             foreach (var item in projectFile.VBProject.References)
             {
                 progress?.OnNext($"Loading library: {item.Name}", 20, false);
-                logger?.LogTrace("todo: load definitions from {uri} ({typeLibInfoUri})", item.Uri, item.TypeLibInfoUri);
+                service.LogTrace($"TODO: load definitions from '{item.Uri}'.");
             }
 
             progress?.OnNext(message: "Parsing...", percentage: 25, cancellable: false);
@@ -187,7 +201,7 @@ namespace Rubberduck.LanguageServer
             progress?.OnCompleted();
             if (progress != null)
             {
-                logger?.LogTrace("WorkDoneToken '{0}' has been completed.", progress?.WorkDoneToken);
+                service.LogTrace($"Progress token '{progress.WorkDoneToken}' has been completed.");
             }
         }
     }
