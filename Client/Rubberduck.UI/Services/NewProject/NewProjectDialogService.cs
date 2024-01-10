@@ -40,5 +40,13 @@ namespace Rubberduck.UI.Services.NewProject
             var templates = _templatesService.GetProjectTemplates();
             return new NewProjectWindowViewModel(_service, projects, templates, actions, _showSettingsCommand);
         }
+
+        protected override void OnDialogAccept(NewProjectWindowViewModel model)
+        {
+            if (model.SelectedProjectTemplate != null)
+            {
+                model.SelectedProjectTemplate = _templatesService.Resolve(model.SelectedProjectTemplate);
+            }
+        }
     }
 }

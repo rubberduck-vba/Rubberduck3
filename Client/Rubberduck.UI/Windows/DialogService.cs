@@ -39,11 +39,31 @@ namespace Rubberduck.UI.Windows
                     ?? throw new ArgumentNullException(nameof(view), $"ViewFactory.Create returned null.");
             }))
             {
-                TryRunAction(() => view.ShowDialog());
+                TryRunAction(() =>
+                {
+                    if (view.ShowDialog() == true)
+                    {
+                        OnDialogAccept(viewModel);
+                    }
+                    else
+                    {
+                        OnDialogCancel();
+                    }
+                });
                 return viewModel;
             }
 
             throw new InvalidOperationException();
+        }
+
+        protected virtual void OnDialogAccept(TViewModel model)
+        {
+
+        }
+
+        protected virtual void OnDialogCancel()
+        {
+
         }
     }
 }

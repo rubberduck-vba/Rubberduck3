@@ -3,6 +3,6 @@
     public interface IDialogService<TViewModel>
         where TViewModel : IDialogWindowViewModel
     {
-        TViewModel ShowDialog();
+        bool ShowDialog(out TViewModel model);
     }
 }

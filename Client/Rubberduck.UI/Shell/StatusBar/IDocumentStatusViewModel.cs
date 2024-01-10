@@ -1,4 +1,5 @@
 ﻿using Rubberduck.UI.Shell.Document;
+using System;
 
 namespace Rubberduck.UI.Shell.StatusBar
 {

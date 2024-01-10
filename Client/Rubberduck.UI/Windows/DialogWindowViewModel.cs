@@ -36,9 +36,10 @@ namespace Rubberduck.UI.Windows
         public string AcceptButtonText => Actions.Single(action => action.MessageAction == MessageAction.AcceptAction || action.MessageAction == MessageAction.CloseAction).MessageAction.Text;
 
         public bool ShowCancelButton => Actions.Any(action => action.MessageAction == MessageAction.CancelAction);
-        public string CancelButtonText => Actions.SingleOrDefault(action => action.MessageAction == MessageAction.CancelAction)?.MessageAction.Text;
+        public string CancelButtonText => Actions.SingleOrDefault(action => action.MessageAction == MessageAction.CancelAction)?.MessageAction.Text ?? MessageAction.CancelAction.Text;
 
         public MessageAction? SelectedAction { get; set; }
+        public bool IsCancelled => SelectedAction is null || !SelectedAction.IsDefaultAction;
 
         private bool _isEnabled = true;
         public bool IsEnabled

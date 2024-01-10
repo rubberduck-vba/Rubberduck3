@@ -24,8 +24,10 @@ namespace Rubberduck.Main.Settings
 
         protected async override Task OnExecuteAsync(object? parameter)
         {
-            _service.ShowDialog();
-            //_lsp.Workspace.DidChangeConfiguration(new() { Settings = Newtonsoft.Json.Linq.JToken.FromObject(e.NewValue) });
+            if (_service.ShowDialog(out var model))
+            {
+                //_lsp.Workspace.DidChangeConfiguration(new() { Settings = Newtonsoft.Json.Linq.JToken.FromObject(e.NewValue) });
+            }
             await Task.CompletedTask;
         }
     }

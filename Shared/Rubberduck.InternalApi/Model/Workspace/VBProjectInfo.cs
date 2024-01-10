@@ -7,5 +7,6 @@
         public string? Location { get; set; }
         public bool IsLocked { get; set; }
         public bool HasWorkspace { get; set; }
+        public bool HasSourceCode { get; set; }
     }
 }
