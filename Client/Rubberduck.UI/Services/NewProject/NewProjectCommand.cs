@@ -1,68 +1,34 @@
 ﻿using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.UI.Command.Abstract;
-using Rubberduck.UI.Message;
 using Rubberduck.UI.Services.Abstract;
-using Rubberduck.UI.Windows;
 using System;
-using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Threading.Tasks;
 
 namespace Rubberduck.UI.Services.NewProject
 {
-    public interface IWorkspaceModulesService // TODO rename
-    {
-        /// <summary>
-        /// Gets all workspace modules from the specified project loaded in the VBIDE.
-        /// </summary>
-        /// <param name="scanFolderAnnotations">If <c>true</c>, Rubberduck 2.x <c>@Folder</c> annotations become RD3 workspace folders.</param>
-        IEnumerable<Module> GetWorkspaceModules(string projectId, Uri workspaceRoot, bool scanFolderAnnotations);
-        /// <summary>
-        /// Exports the specified workspace source files from the VBIDE to the project's workspace folder.
-        /// </summary>
-        void ExportWorkspaceModules(string projectId, Uri workspaceRoot, IEnumerable<Module> modules);
-        /// <summary>
-        /// Imports the specified workspace source files into the VBIDE from the project's workspace folder.
-        /// </summary>
-        void ImportWorkspaceModules(string projectId, Uri workspaceRoot, IEnumerable<Module> modules);
-
-        /// <summary>
-        /// Gets the references of the specified project from the VBIDE.
-        /// </summary>
-        IEnumerable<Reference> GetWorkspaceReferences(string projectId);
-        /// <summary>
-        /// Sets the specified project references as specified.
-        /// </summary>
-        /// <remarks>
-        /// Order of items determines their priority in the references list.
-        /// </remarks>
-        void SetProjectReferences(string projectId, Reference[] references);
-    }
-
     public class NewProjectCommand : CommandBase
     {
         private readonly IFileSystem _fileSystem;
-        private readonly IDialogService<NewProjectWindowViewModel> _dialog;
+        private readonly INewProjectDialogService _dialog;
+
         private readonly IProjectFileService _projectFileService;
-        private readonly ITemplatesService _templatesService;
-        private readonly IWorkspaceService? _workspace;
+        private readonly IWorkspaceService? _workspace; // null if invoked from add-in
         private readonly IWorkspaceFolderService _workspaceFolderService;
-        private readonly IWorkspaceModulesService? _workspaceModulesService;
+        private readonly IWorkspaceSyncService? _workspaceModulesService; // null if invoked from add-in
 
         public NewProjectCommand(UIServiceHelper service,
-            IDialogService<NewProjectWindowViewModel> dialog,
+            INewProjectDialogService dialogService,
             IWorkspaceService? workspace,
-            ITemplatesService templatesService,
             IFileSystem fileSystem,
             IWorkspaceFolderService workspaceFolderService,
             IProjectFileService projectFileService,
-            IWorkspaceModulesService? workspaceModulesService)
+            IWorkspaceSyncService? workspaceModulesService)
             : base(service)
         {
-            _dialog = dialog;
+            _dialog = dialogService;
 
             _fileSystem = fileSystem;
-            _templatesService = templatesService;
             _workspaceFolderService = workspaceFolderService;
             _workspace = workspace;
             _projectFileService = projectFileService;
@@ -75,9 +41,9 @@ namespace Rubberduck.UI.Services.NewProject
 
             if (Service.TryRunAction(() =>
             {
-                var model = _dialog.ShowDialog();
-                if (model.SelectedAction == MessageAction.AcceptAction)
+                if (_dialog.ShowDialog(out var model))
                 {
+                    // TODO actually validate the model, it's too late here.
                     if (Service.Settings.LanguageClientSettings.WorkspaceSettings.RequireDefaultWorkspaceRootHost)
                     {
                         if (model.WorkspaceLocation != Service.Settings.LanguageClientSettings.WorkspaceSettings.DefaultWorkspaceRoot.LocalPath)
@@ -88,11 +54,12 @@ namespace Rubberduck.UI.Services.NewProject
                     }
 
                     workspaceRootUri = new Uri(_fileSystem.Path.Combine(model.WorkspaceLocation, model.ProjectName));
-                    var workspaceSrcRoot = _fileSystem.Path.Combine(workspaceRootUri.LocalPath, ProjectFile.SourceRoot);
-
                     var projectFile = CreateProjectFileModel(model);
 
+                    var workspaceSrcRoot = _fileSystem.Path.Combine(workspaceRootUri.LocalPath, ProjectFile.SourceRoot);
                     _workspaceFolderService.CreateWorkspaceFolders(projectFile);
+                    _projectFileService.CreateFile(projectFile);
+
                     if (_workspaceModulesService is not null && projectFile.ProjectId is not null)
                     {
                         // command is executed from the VBE add-in;
@@ -105,26 +72,19 @@ namespace Rubberduck.UI.Services.NewProject
                         // no need to write the workspace files changes need to be saved.
                     }
 
-                    _projectFileService.CreateFile(projectFile);
-
                     if (model.SelectedProjectTemplate is not null)
                     {
-                        var template = _templatesService.Resolve(model.SelectedProjectTemplate);
-                        var templateName = template.Name;
                         var templatesRoot = _fileSystem.DirectoryInfo.New(Service.Settings.GeneralSettings.TemplatesLocation.LocalPath).FullName;
-                        var templateSrcRoot = _fileSystem.Path.Combine(templatesRoot, templateName, ProjectTemplate.TemplateSourceFolderName);
+                        var templateSrcRoot = _fileSystem.Path.Combine(templatesRoot, model.SelectedProjectTemplate.Name, ProjectTemplate.TemplateSourceFolderName);
 
-                        _workspaceFolderService.CopyTemplateFiles(template.ProjectFile, templateSrcRoot);
+                        _workspaceFolderService.CopyTemplateFiles(model.SelectedProjectTemplate.ProjectFile, templateSrcRoot);
                     }
 
                     Service.LogInformation("Workspace was successfully created.", $"Workspace root: {workspaceRootUri}");
                 }
-            }, nameof(NewProjectCommand)) && workspaceRootUri != null)
+            }, nameof(NewProjectCommand)) && _workspace != null && workspaceRootUri != null)
             {
-                if (_workspace != null) // service will be null if invoked from add-in
-                {
-                    await _workspace.OpenProjectWorkspaceAsync(workspaceRootUri);
-                }
+                await _workspace.OpenProjectWorkspaceAsync(workspaceRootUri);
             }
         }
 
@@ -134,7 +94,6 @@ namespace Rubberduck.UI.Services.NewProject
 
             if (model.SelectedProjectTemplate is not null)
             {
-                model.SelectedProjectTemplate = _templatesService.Resolve(model.SelectedProjectTemplate);
                 builder = builder.WithModel(model);
             }
             else if (model.SelectedVBProject is not null)

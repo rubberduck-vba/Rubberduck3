@@ -22,13 +22,15 @@ namespace Rubberduck.UI.Windows
 
         protected abstract TViewModel CreateViewModel(RubberduckSettings settings, MessageActionsProvider actions);
 
-        public virtual TViewModel ShowDialog()
+        public virtual bool ShowDialog(out TViewModel model)
         {
-            TViewModel viewModel = default!;
+            TViewModel viewModel = model = default!;
             TView view = default!;
 
             var actions = _actionsProvider;
             var verbosity = TraceLevel;
+
+            var result = false;
 
             if (TryRunAction(() =>
             {
@@ -44,16 +46,16 @@ namespace Rubberduck.UI.Windows
                     if (view.ShowDialog() == true)
                     {
                         OnDialogAccept(viewModel);
+                        result = true;
                     }
                     else
                     {
                         OnDialogCancel();
                     }
                 });
-                return viewModel;
             }
 
-            throw new InvalidOperationException();
+            return result;
         }
 
         protected virtual void OnDialogAccept(TViewModel model)

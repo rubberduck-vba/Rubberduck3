@@ -237,7 +237,7 @@ namespace Rubberduck.Main.Root
             _services.AddSingleton<UIServiceHelper>();
 
             // limited in-process parsing activities
-            _services.AddSingleton<IWorkspaceModulesService, WorkspaceModulesService>();
+            _services.AddSingleton<IWorkspaceSyncService, WorkspaceSyncService>();
             _services.AddSingleton<WorkspaceFolderMigrationService>();
             _services.AddSingleton<IParser<string>, TokenStreamParserAdapterWithPreprocessing<string>>();
             _services.AddSingleton<ICommonTokenStreamProvider<string>, StringTokenStreamProvider>();

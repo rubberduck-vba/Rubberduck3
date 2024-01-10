@@ -327,10 +327,10 @@ namespace Rubberduck.Editor
 
             services.AddSingleton<FileCommandHandlers>();
             services.AddSingleton<NewProjectCommand>();
-            services.AddSingleton<IDialogService<NewProjectWindowViewModel>, NewProjectDialogService>();
+            services.AddSingleton<INewProjectDialogService, NewProjectDialogService>();
             services.AddSingleton<IWindowFactory<NewProjectWindow, NewProjectWindowViewModel>, NewProjectWindowFactory>();
             services.AddSingleton<IVBProjectInfoProvider>(provider => null!);
-            services.AddSingleton<IWorkspaceModulesService>(provider => null!);
+            services.AddSingleton<IWorkspaceSyncService>(provider => null!);
             services.AddSingleton<OpenProjectCommand>();
             services.AddSingleton<SaveDocumentCommand>();
             services.AddSingleton<SaveDocumentAsCommand>();
