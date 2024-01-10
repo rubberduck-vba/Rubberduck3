@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Windows;
 using System;

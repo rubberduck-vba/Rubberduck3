@@ -1,5 +1,5 @@
-﻿using Rubberduck.InternalApi.ServerPlatform;
-using Rubberduck.SettingsProvider.Model;
+﻿using Rubberduck.SettingsProvider.Model;
+using Rubberduck.SettingsProvider.Model.ServerStartup;
 using Rubberduck.UI.Settings.ViewModels.Abstract;
 
 namespace Rubberduck.UI.Settings.ViewModels

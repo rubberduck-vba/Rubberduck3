@@ -277,4 +277,10 @@
   <data name="RubberduckMenu_ShowEditor" xml:space="preserve">
     <value>Show &amp;Editor</value>
   </data>
+  <data name="RubberduckMenu_NewWorkspace" xml:space="preserve">
+    <value>New &amp;Workspace...</value>
+  </data>
+  <data name="RubberduckMenu_ApplicationTips" xml:space="preserve">
+    <value>Show &amp;Tips</value>
+  </data>
 </root>

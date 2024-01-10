@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.Model.Workspace;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.UI.WorkspaceExplorer;
 using System;
 
@@ -6,11 +7,11 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
 {
     public class WorkspaceFileViewModel : WorkspaceTreeNodeViewModel, IWorkspaceFileViewModel
     {
-        public static WorkspaceFileViewModel FromModel(File model, Uri srcRoot)
+        public static WorkspaceFileViewModel FromModel(File model, Uri workspaceRoot)
         {
             return new WorkspaceFileViewModel
             {
-                Uri = new Uri(srcRoot, model.Uri),
+                Uri = new WorkspaceFileUri(model.Uri, workspaceRoot),
                 Name = model.Name,
                 IsAutoOpen = model.IsAutoOpen,
                 IsInProject = true

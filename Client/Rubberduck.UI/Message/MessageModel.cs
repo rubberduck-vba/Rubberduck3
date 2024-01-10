@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.Resources;
-using Rubberduck.UI.Command;
 using System;
 using System.Security.Cryptography;
 using System.Text;

@@ -1,12 +1,12 @@
 ﻿using Rubberduck.Editor.DialogServices.NewProject;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Abstract;
+using Rubberduck.UI.Services.NewProject;
 using System.Collections.Generic;
 using System.Windows.Input;
 
 namespace Rubberduck.Editor.Commands
 {
-
     public class FileCommandHandlers : CommandHandlers
     {
         public FileCommandHandlers(NewProjectCommand newProjectCommand,

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
-using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Message;

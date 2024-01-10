@@ -15,6 +15,7 @@ using Rubberduck.UI.Message;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.TypeLibs.Public;
+using Rubberduck.Unmanaged.UIContext;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 using System;
 using System.ComponentModel;
@@ -54,21 +55,13 @@ namespace Rubberduck.Main
         private EditorClientApp? _editorClient;
         private IDisposable? _editorClientInitializeTask;
 
-        //private Process? _telemetryServerProcess;
-        //private NamedPipeClientStream? _telemetryServerPipeStream;
-        //private LanguageClient? _telemetryClient;
-        //private IDisposable? _telemetryClientInitializeTask;
-
-        //private Process? _updateServerProcess;
-        //private NamedPipeClientStream? _updateServerPipeStream;
-        //private LanguageClient? _updateClient;
-        //private IDisposable? _updateClientInitializeTask;
-
         internal RubberduckAddIn(IDTExtensibility2 extAddin, IVBE vbeWrapper, IAddIn addinWrapper)
         {
             _vbe = vbeWrapper;
             _addin = addinWrapper;
             _addin.Object = extAddin;
+
+            _ = UiContextProvider.Instance(); // we MUST do this while we KNOW we're on the main thread.
 
             SetAddInApiObject();
         }
@@ -161,7 +154,7 @@ namespace Rubberduck.Main
 
         private RubberduckSettings GetInitialSettings(IServiceScope scope)
         {
-            var configProvider = scope.ServiceProvider.GetRequiredService<ISettingsService<RubberduckSettings>>();
+            var configProvider = scope.ServiceProvider.GetRequiredService<RubberduckSettingsProvider>();
             var currentSettings = configProvider.Read();
 
             var initialSettings = currentSettings;

@@ -51,7 +51,7 @@ namespace Rubberduck.Editor.DialogServices.NewProject
                 if (!_workspaceService.ProjectFiles.Any(project => project.Uri.LocalPath[..^(ProjectFile.FileName.Length + 1)] == uri))
                 {
                     Service.LogInformation("Opening project workspace...", $"Workspace root: {uri}");
-                    await _workspaceService.OpenProjectWorkspaceAsync(new Uri(uri));
+                    _workspaceService.OpenProjectWorkspaceAsync(new Uri(uri));
                 }
             }
         }

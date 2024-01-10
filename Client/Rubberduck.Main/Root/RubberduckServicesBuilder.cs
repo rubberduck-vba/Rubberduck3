@@ -2,26 +2,39 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
-using Rubberduck.Editor.Common;
 using Rubberduck.Environment;
+using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Main.About;
+using Rubberduck.Main.Commands.ApplicationTips;
+using Rubberduck.Main.Commands.NewWorkspace;
 using Rubberduck.Main.Commands.ShowRubberduckEditor;
 using Rubberduck.Main.RPC.EditorServer;
 using Rubberduck.Main.Settings;
+using Rubberduck.Parsing._v3;
+using Rubberduck.Parsing.Abstract;
+using Rubberduck.Parsing.Exceptions;
+using Rubberduck.Parsing.Parsers;
+using Rubberduck.Parsing.PreProcessing;
+using Rubberduck.Parsing.TokenStreamProviders;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider.Model.General;
 using Rubberduck.SettingsProvider.Model.LanguageServer;
+using Rubberduck.SettingsProvider.Model.ServerStartup;
 using Rubberduck.SettingsProvider.Model.TelemetryServer;
 using Rubberduck.SettingsProvider.Model.UpdateServer;
 using Rubberduck.UI.About;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Message;
+using Rubberduck.UI.NewProject;
 using Rubberduck.UI.Services;
+using Rubberduck.UI.Services.Abstract;
+using Rubberduck.UI.Services.NewProject;
 using Rubberduck.UI.Services.Settings;
 using Rubberduck.UI.Settings;
 using Rubberduck.UI.Windows;
@@ -35,9 +48,11 @@ using Rubberduck.Unmanaged.TypeLibs.Abstract;
 using Rubberduck.Unmanaged.TypeLibs.Public;
 using Rubberduck.Unmanaged.UIContext;
 using Rubberduck.Unmanaged.VBERuntime;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 using System;
+using System.Globalization;
 using System.IO.Abstractions;
 using System.Reflection;
 using System.Threading;
@@ -50,10 +65,16 @@ namespace Rubberduck.Main.Root
         private readonly IServiceCollection _services = new ServiceCollection();
         private readonly CancellationTokenSource _tokenSource;
 
+        private string? _workspaceRoot = null;
+
+        private IUiContextProvider UIContextProvider { get; }
+
         public RubberduckServicesBuilder(IVBE vbe, IAddIn addin, CancellationTokenSource tokenSource)
         {
             Configure(vbe, addin);
             _tokenSource = tokenSource;
+
+            UIContextProvider = UiContextProvider.Instance();
         }
 
         public IServiceProvider Build() => _services.BuildServiceProvider();
@@ -75,6 +96,7 @@ namespace Rubberduck.Main.Root
             builder.AddNLog("NLog-client.config");
 
             _services.AddSingleton<ILogLevelService, LogLevelService>();
+            _services.AddSingleton<PerformanceRecordAggregator>();
         }
 
         private RubberduckServicesBuilder WithAssemblyInfo()
@@ -98,11 +120,12 @@ namespace Rubberduck.Main.Root
             _services.AddSingleton<IVbeNativeApi>(provider => nativeApi);
             _services.AddSingleton<IVbeEvents>(provider => VbeEvents.Initialize(vbe));
             _services.AddSingleton<IVBETypeLibsAPI, VBETypeLibsAPI>();
+            _services.AddSingleton<ICompilationArgumentsProvider, CompilationArgumentsProvider>();
+            _services.AddSingleton<ITypeLibWrapperProvider, TypeLibWrapperProvider>();
+            _services.AddSingleton<VBAPredefinedCompilationConstants>(provider => new VBAPredefinedCompilationConstants(double.Parse(vbe.Version, CultureInfo.InvariantCulture)));
 
-            #region still needed?
             _services.AddSingleton<IUiDispatcher, UiDispatcher>();
-            _services.AddSingleton<IUiContextProvider>(provider => UiContextProvider.Instance());
-            #endregion
+            _services.AddSingleton<IUiContextProvider>(provider => UIContextProvider);
 
             return this;
         }
@@ -145,6 +168,21 @@ namespace Rubberduck.Main.Root
             _services.AddSingleton<ShowRubberduckEditorCommandMenuItem>();
             _services.AddSingleton<IEditorServerProcessService, EditorServerProcessService>();
 
+            _services.AddSingleton<IShowApplicationTipsCommand, ShowApplicationTipsCommand>();
+            _services.AddSingleton<ShowAplicationTipsCommandMenuItem>();
+            
+            _services.AddSingleton<INewWorkspaceCommand, NewWorkspaceCommand>();
+            _services.AddSingleton<ITemplatesService, TemplatesService>();
+            _services.AddSingleton<IWorkspaceFolderService, WorkspaceFolderService>();
+            _services.AddSingleton<IProjectFileService, ProjectFileService>();
+            _services.AddSingleton<NewProjectCommand>();
+            _services.AddSingleton<NewWorkspaceCommandMenuItem>();
+            _services.AddSingleton<IDialogService<NewProjectWindowViewModel>, NewProjectDialogService>();
+            _services.AddSingleton<IWindowFactory<NewProjectWindow, NewProjectWindowViewModel>, NewProjectWindowFactory>();
+            _services.AddSingleton<IVBProjectInfoProvider, ProjectInfoProvider>();
+            _services.AddSingleton<IWorkspaceService>(provider => null!); // add-in doesn't open workspaces
+
+            _services.AddSingleton<ShowRubberduckSettingsCommand>();
             _services.AddSingleton<ISettingsCommand, SettingsCommand>();
             _services.AddSingleton<SettingsCommandMenuItem>();
             
@@ -159,9 +197,12 @@ namespace Rubberduck.Main.Root
 
             var location = addin.CommandBarLocations[CommandBarSite.MenuBar];
             var builder = new CommandBarMenuBuilder<RubberduckParentMenu>(location, services, MainCommandBarControls(vbe, location.ParentId))
+                .WithCommandMenuItem<NewWorkspaceCommandMenuItem>()
                 .WithCommandMenuItem<ShowRubberduckEditorCommandMenuItem>()
                 .WithSeparator()
                 .WithCommandMenuItem<SettingsCommandMenuItem>()
+                .WithSeparator()
+                //.WithCommandMenuItem<ShowAplicationTipsCommandMenuItem>()
                 .WithCommandMenuItem<AboutCommandMenuItem>();
 
             return builder.Build();
@@ -186,31 +227,43 @@ namespace Rubberduck.Main.Root
             _services.AddSingleton<IMessageService, MessageService>();
             _services.AddSingleton<IMessageWindowFactory, MessageWindowFactory>();
             _services.AddSingleton<MessageActionsProvider>();
+            _services.AddSingleton<CloseToolWindowCommand>();
+            _services.AddSingleton<ShellProvider>(provider => null!); // we do NOT want to inject the RD3 shell into the add-in process.
 
             _services.AddSingleton<ISettingsDialogService, SettingsDialogService>();
             _services.AddSingleton<IWindowFactory<SettingsWindow, SettingsWindowViewModel>, SettingsWindowFactory>();
             _services.AddSingleton<ISettingViewModelFactory, SettingViewModelFactory>();
 
-            _services.AddSingleton<IEditorServerProcessService, EditorServerProcessService>();
             _services.AddSingleton<UIServiceHelper>();
+
+            // limited in-process parsing activities
+            _services.AddSingleton<IWorkspaceModulesService, WorkspaceModulesService>();
+            _services.AddSingleton<WorkspaceFolderMigrationService>();
+            _services.AddSingleton<IParser<string>, TokenStreamParserAdapterWithPreprocessing<string>>();
+            _services.AddSingleton<ICommonTokenStreamProvider<string>, StringTokenStreamProvider>();
+            _services.AddSingleton<ITokenStreamParser, VBATokenStreamParser>();
+            _services.AddSingleton<VBAPreprocessorParser>();
+            _services.AddSingleton<ITokenStreamPreprocessor, VBAPreprocessor>();
+            _services.AddSingleton<IParsePassErrorListenerFactory, PreprocessingParseErrorListenerFactory>();
             return this;
         }
 
         private RubberduckServicesBuilder WithRubberduckEditorServer()
         {
+            _services.AddSingleton<ILanguageClientService, EditorClientService>();
             _services.AddSingleton<EditorClientApp>(provider =>
             {
                 var logger = provider.GetRequiredService<ILogger<EditorClientApp>>();
                 var settings = provider.GetRequiredService<RubberduckSettingsProvider>().Settings.LanguageClientSettings;
                 
                 var startup = settings.StartupSettings;
-                
+
                 ServerStartupOptions options = 
                 startup.ServerTransportType == TransportType.Pipe
                     ? new PipeServerStartupOptions
                     {
                         ClientProcessId = Env.ProcessId,
-                        WorkspaceRoot = settings.WorkspaceSettings.DefaultWorkspaceRoot.LocalPath,
+                        WorkspaceRoot = _workspaceRoot,
                         Name = startup.ServerPipeName,
                         Mode = System.IO.Pipes.PipeTransmissionMode.Message,
                         Silent = startup.ServerTraceLevel == MessageTraceLevel.Off,
@@ -219,14 +272,95 @@ namespace Rubberduck.Main.Root
                     : new StandardInOutServerStartupOptions
                     {
                         ClientProcessId = Env.ProcessId,
-                        WorkspaceRoot = settings.WorkspaceSettings.DefaultWorkspaceRoot.LocalPath,
+                        WorkspaceRoot = _workspaceRoot,
                         Silent = startup.ServerTraceLevel == MessageTraceLevel.Off,
                         Verbose = startup.ServerTraceLevel == MessageTraceLevel.Verbose,
                     };
-                return new EditorClientApp(logger, options, _tokenSource, provider);
+                return new EditorClientApp(logger, provider, options, _tokenSource);
             });
             _services.AddSingleton<IWorkDoneProgressStateService, WorkDoneProgressStateService>();
             return this;
+        }
+
+        private bool ConfirmCreateDefaultWorkspaceRoot(IMessageService messages, string defaultWorkspaceRoot, string hostDocumentFullFileName)
+        {
+            var acceptAction = new MessageAction
+            {
+                IsDefaultAction = true,
+                ResourceKey = "AcceptAction_ConfirmCreateDefaultWorkspaceRoot",
+                ToolTipKey = "ToolTip_ConfirmCreateDefaultWorkspaceRoot",
+            };
+
+            var hostFile = System.IO.Path.GetFileName(hostDocumentFullFileName);
+            var workspaceName = System.IO.Path.GetFileNameWithoutExtension(hostFile);
+
+            var model = new MessageRequestModel
+            {
+                Key = "Workspace_DefaultWorkspaceRootRequired",
+                Title = "Default Workspace Root Required",
+                Message = "The current configuration requires that the host document for the workspace/project be saved under the *default workspace root* folder. **Create a new workspace folder for this project?**",
+                Verbose = $"The host document will be saved under `{defaultWorkspaceRoot}\\{workspaceName}\\{hostFile}`.", // oh yeah, how?
+                MessageActions = [acceptAction, MessageAction.CancelAction],
+                Level = LogLevel.Warning
+            };
+
+            return messages.ShowMessageRequest(model)?.MessageAction == acceptAction;
+        }
+
+        private bool ConfirmCreateWorkspaceFolder(IMessageService messages, string path)
+        {
+            var acceptAction = new MessageAction
+            {
+                IsDefaultAction = true,
+                ResourceKey = "AcceptAction_ConfirmCreateWorkspace",
+                ToolTipKey = "ToolTip_ConfirmCreateWorkspace",
+            };
+
+            var model = new MessageRequestModel
+            {
+                Key = "Workspace_ConfirmCreateWorkspace",
+                Title = "Create Workspace",
+                Message = $"This will create a new Rubberduck workspace under folder `{path}`.",
+                Verbose = $"The folder will contain a `{ProjectFile.FileName}` Rubberduck project file and a `{ProjectFile.SourceRoot}` folder where the source files will be exported. Consider using the same local root folder for all Rubberduck projects/workspaces.",
+                Level = LogLevel.Information,
+                MessageActions = [acceptAction, MessageAction.CancelAction],
+            };
+
+            return messages.ShowMessageRequest(model)?.MessageAction == acceptAction;
+        }
+
+        private void MessageSavedHostIsRequired(IMessageService messages)
+        {
+            var model = new MessageModel
+            {
+                Key = "Workspace_SavedHostDocumentRequired",
+                Title = "Unsaved Host Document",
+                Message = "The current configuration requires that the host document for the workspace/project be saved to disk first.",
+                Level = LogLevel.Warning
+            };
+
+            messages.ShowMessage(model, provider => provider.OkOnly());
+        }
+
+        private bool ConfirmStartWithoutWorkspace(IMessageService messages)
+        {
+            var acceptAction = new MessageAction
+            {
+                IsDefaultAction = true,
+                ResourceKey = "AcceptAction_ConfirmStartWithoutWorkspace",
+                ToolTipKey = "ToolTip_ConfirmStartWithoutWorkspace",
+            };
+
+            var model = new MessageRequestModel
+            {
+                Key = "Workspace_NoWorkspaceForUnsavedHost",
+                Title = "No Workspace?",
+                Message = "The host document is not saved. Start the editor without a workspace?",
+                MessageActions = [acceptAction, MessageAction.CancelAction],
+                Level = LogLevel.Information
+            };
+
+            return messages.ShowMessageRequest(model)?.MessageAction == acceptAction;
         }
     }
 }

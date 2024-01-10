@@ -45,6 +45,25 @@ namespace Rubberduck.SettingsProvider
             return bag.Count;
         }
 
+        public bool Dump(string name)
+        {
+            if (_items.TryGetValue(name, out var bag))
+            {
+                return Dump(name, bag);
+            }
+            return false;
+        }
+
+        private bool Dump(string name, ConcurrentBag<TimeSpan> bag)
+        {
+            var count = bag.Count;
+            var elapsed = TimedAction.Run(() => { bag.Clear(); });
+            var verbosity = _settings.TraceLevel;
+
+            _logger.LogTrace(verbosity, $"Performance data cleared for [{name}] ({count} items). Elapsed: {elapsed}");
+            return true;
+        }
+
         private void OnRecordAdded(string name, ConcurrentBag<TimeSpan> bag)
         {
             var count = bag.Count;
@@ -59,9 +78,7 @@ namespace Rubberduck.SettingsProvider
 
             if (count >= MaxSampleSize)
             {
-                var elapsed = TimedAction.Run(() => { bag.Clear(); });
-                var verbosity = _settings.TraceLevel;
-                _logger.LogTrace(verbosity, $"Performance data cleared for [{name}] ({count} items). Elapsed: {elapsed}");
+                Dump(name);
             }
         }
 

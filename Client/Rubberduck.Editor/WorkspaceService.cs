@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using OmniSharp.Extensions.LanguageServer.Protocol.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Services.Abstract;
@@ -80,7 +80,7 @@ namespace Rubberduck.Editor
                     var state = _state.AddWorkspace(uri);
                     state.ProjectName = _fileSystem.Path.GetFileName(root);
 
-                    LoadWorkspaceFiles(sourceRoot, projectFile);
+                    LoadWorkspaceFiles(uri, projectFile);
                     EnableFileSystemWatcher(uri);
                     _projectFiles.Add(projectFile);
 
@@ -99,7 +99,7 @@ namespace Rubberduck.Editor
             {
                 if (_lspClientApp.LanguageClient is null)
                 {
-                    await _lspClientApp.StartupAsync(uri);
+                    await _lspClientApp.StartupAsync(Settings.LanguageServerSettings.StartupSettings, uri);
                 }
 
                 OnWorkspaceOpened(uri);
@@ -149,7 +149,7 @@ namespace Rubberduck.Editor
             }
         }
 
-        public async Task<bool> SaveWorkspaceFileAsync(Uri uri)
+        public async Task<bool> SaveWorkspaceFileAsync(WorkspaceFileUri uri)
         {
             if (_state.ActiveWorkspace?.WorkspaceRoot != null && _state.ActiveWorkspace.TryGetWorkspaceFile(uri, out var file) && file != null)
             {
@@ -161,7 +161,7 @@ namespace Rubberduck.Editor
             return false;
         }
 
-        public async Task<bool> SaveWorkspaceFileAsAsync(Uri uri, string path)
+        public async Task<bool> SaveWorkspaceFileAsAsync(WorkspaceFileUri uri, string path)
         {
             if (_state.ActiveWorkspace?.WorkspaceRoot != null && _state.ActiveWorkspace.TryGetWorkspaceFile(uri, out var file) && file != null)
             {
@@ -205,57 +205,51 @@ namespace Rubberduck.Editor
 
         private void OnWatcherRenamed(object sender, RenamedEventArgs e)
         {
-            TryRunAction(() =>
+            var state = _state.ActiveWorkspace;
+            if (state != null && state.WorkspaceRoot != null)
             {
-                var sourceRoot = e.OldFullPath[..(e.OldFullPath.IndexOf(ProjectFile.SourceRoot) + ProjectFile.SourceRoot.Length)];
-
-                var oldRelativePath = _fileSystem.Path.GetRelativePath(sourceRoot, e.OldFullPath);
-                var oldUri = new Uri(oldRelativePath);
-
-                var newRelativePath = _fileSystem.Path.GetRelativePath(sourceRoot, e.FullPath);
-                var newUri = new Uri(newRelativePath);
-
-                var state = _state.ActiveWorkspace;
-                if (state != null && state.TryGetWorkspaceFile(oldUri, out var workspaceFile) && workspaceFile is not null)
+                TryRunAction(() =>
                 {
-                    if (!state.RenameWorkspaceFile(oldUri, newUri))
+                    var oldUri = new WorkspaceFileUri(e.OldFullPath[(state.WorkspaceRoot.LocalPath + $"\\{ProjectFile.SourceRoot}").Length..], state.WorkspaceRoot);
+                    var newUri = new WorkspaceFileUri(e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{ProjectFile.SourceRoot}").Length..], state.WorkspaceRoot);
+
+                    if (state != null && state.TryGetWorkspaceFile(oldUri, out var workspaceFile) && workspaceFile is not null)
                     {
-                        // houston, we have a problem. name collision? validate and notify, unload conflicted file?
-                        LogWarning("Rename failed.", $"OldUri: {oldUri}; NewUri: {newUri}");
+                        if (!state.RenameWorkspaceFile(oldUri, newUri))
+                        {
+                            // houston, we have a problem. name collision? validate and notify, unload conflicted file?
+                            LogWarning("Rename failed.", $"OldUri: {oldUri.AbsoluteLocation}; NewUri: {newUri.AbsoluteLocation}");
+                        }
                     }
-                }
 
-                var request = new DidChangeWatchedFilesParams
-                {
-                    Changes = new Container<FileEvent>(
-                        new FileEvent
-                        {
-                            Uri = oldUri,
-                            Type = FileChangeType.Deleted
-                        },
-                        new FileEvent
-                        {
-                            Uri = newUri,
-                            Type = FileChangeType.Created
-                        })
-                };
+                    var request = new DidChangeWatchedFilesParams
+                    {
+                        Changes = new Container<FileEvent>(
+                            new FileEvent
+                            {
+                                Uri = oldUri,
+                                Type = FileChangeType.Deleted
+                            },
+                            new FileEvent
+                            {
+                                Uri = newUri,
+                                Type = FileChangeType.Created
+                            })
+                    };
 
-                // NOTE: this is different than the DidRenameFiles mechanism.
-                LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Renamed: {oldUri} -> {newUri}");
-                _lspClientApp.LanguageClient?.Workspace.DidChangeWatchedFiles(request);
-            });
+                    // NOTE: this is different than the DidRenameFiles mechanism.
+                    LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Renamed: {oldUri.AbsoluteLocation} -> {newUri.AbsoluteLocation}");
+                    _lspClientApp.LanguageClient?.Workspace.DidChangeWatchedFiles(request);
+                });
+            }
         }
 
         private void OnWatcherDeleted(object sender, FileSystemEventArgs e)
         {
-            var sourceRoot = e.FullPath[..(e.FullPath.IndexOf(ProjectFile.SourceRoot) + ProjectFile.SourceRoot.Length)];
-
-            var relativePath = _fileSystem.Path.GetRelativePath(sourceRoot, e.FullPath);
-            var uri = new Uri(relativePath);
-
             var state = _state.ActiveWorkspace;
-            if (state != null)
+            if (state != null && state.WorkspaceRoot != null)
             {
+                var uri = new WorkspaceFileUri(e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{ProjectFile.SourceRoot}").Length..], state.WorkspaceRoot);
                 state.UnloadWorkspaceFile(uri);
 
                 var request = new DidChangeWatchedFilesParams
@@ -269,21 +263,17 @@ namespace Rubberduck.Editor
                 };
 
                 // NOTE: this is different than the DidDeleteFiles mechanism.
-                LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Deleted: {uri}");
+                LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Deleted: {uri.AbsoluteLocation}");
                 _lspClientApp.LanguageClient?.Workspace.DidChangeWatchedFiles(request);
             }
         }
 
         private void OnWatcherChanged(object sender, FileSystemEventArgs e)
         {
-            var sourceRoot = e.FullPath[..(e.FullPath.IndexOf(ProjectFile.SourceRoot) + ProjectFile.SourceRoot.Length)];
-
-            var relativePath = _fileSystem.Path.GetRelativePath(sourceRoot, e.FullPath);
-            var uri = new Uri(relativePath, UriKind.Relative);
-
             var state = _state.ActiveWorkspace;
-            if (state != null)
+            if (state != null && state.WorkspaceRoot != null)
             {
+                var uri = new WorkspaceFileUri(e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{ProjectFile.SourceRoot}").Length..], state.WorkspaceRoot);
                 state.UnloadWorkspaceFile(uri);
 
                 var request = new DidChangeWatchedFilesParams
@@ -304,24 +294,26 @@ namespace Rubberduck.Editor
 
         private void OnWatcherCreated(object sender, FileSystemEventArgs e)
         {
-            var sourceRoot = e.FullPath[..(e.FullPath.IndexOf(ProjectFile.SourceRoot) + ProjectFile.SourceRoot.Length)];
-
-            var relativePath = _fileSystem.Path.GetRelativePath(sourceRoot, e.FullPath);
-            var uri = new Uri(relativePath);
-
-            var request = new DidChangeWatchedFilesParams
+            var state = _state.ActiveWorkspace;
+            if (state != null && state.WorkspaceRoot != null)
             {
-                Changes = new Container<FileEvent>(
-                    new FileEvent
-                    {
-                        Uri = uri,
-                        Type = FileChangeType.Created
-                    })
-            };
+                var relativePath = e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{ProjectFile.SourceRoot}").Length..];
+                var uri = new Uri(relativePath);
 
-            // NOTE: this is different than the document-level syncing mechanism.
-            LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Created: {uri}");
-            _lspClientApp.LanguageClient?.Workspace.DidChangeWatchedFiles(request);
+                var request = new DidChangeWatchedFilesParams
+                {
+                    Changes = new Container<FileEvent>(
+                        new FileEvent
+                        {
+                            Uri = uri,
+                            Type = FileChangeType.Created
+                        })
+                };
+
+                // NOTE: this is different than the document-level syncing mechanism.
+                LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Created: {uri}");
+                _lspClientApp.LanguageClient?.Workspace.DidChangeWatchedFiles(request);
+            }
         }
 
         private void OnWatcherError(object sender, ErrorEventArgs e)
@@ -336,73 +328,75 @@ namespace Rubberduck.Editor
         }
 
 
-        private void LoadWorkspaceFiles(string sourceRoot, ProjectFile projectFile)
+        private void LoadWorkspaceFiles(Uri workspaceRoot, ProjectFile projectFile)
         {
             foreach (var file in projectFile.VBProject.Modules.Concat(projectFile.VBProject.OtherFiles))
             {
-                LoadWorkspaceFile(file.Uri, sourceRoot, isSourceFile: file is Module, file.IsAutoOpen);
+                var uri = new WorkspaceFileUri(file.Uri, workspaceRoot);
+                LoadWorkspaceFile(uri, isSourceFile: file is Module, file.IsAutoOpen);
             }
         }
 
-        private void LoadWorkspaceFile(string uri, string sourceRoot, bool isSourceFile, bool open = false)
+        private void LoadWorkspaceFile(WorkspaceFileUri uri, bool isSourceFile, bool open = false)
         {
             var state = _state.ActiveWorkspace!;
-            TryRunAction(() =>
+            if (state != null && state.WorkspaceRoot != null)
             {
-                var filePath = _fileSystem.Path.Combine(sourceRoot, uri);
-
-                var isLoadError = false;
-                var isMissing = !_fileSystem.File.Exists(filePath);
-                var fileVersion = isMissing ? -1 : 1;
-                var content = string.Empty;
-
-                if (isMissing)
+                TryRunAction(() =>
                 {
-                    LogWarning($"Missing {(isSourceFile ? "source" : string.Empty)} file: {uri}");
-                }
-                else
-                {
-                    try
+                    var isLoadError = false;
+                    var isMissing = !_fileSystem.File.Exists(uri.AbsoluteLocation.LocalPath);
+                    var fileVersion = isMissing ? -1 : 1;
+                    var content = string.Empty;
+
+                    if (isMissing)
                     {
-                        content = _fileSystem.File.ReadAllText(filePath);
-                    }
-                    catch (Exception exception)
-                    {
-                        LogWarning("Could not load file content.", $"File: {uri}");
-                        LogException(exception);
-                        isLoadError = true;
-                    }
-                }
-
-                var info = new WorkspaceFileInfo
-                {
-                    Uri = new Uri(uri, UriKind.Relative),
-                    Content = content,
-                    IsSourceFile = isSourceFile,
-                    IsOpened = open && !isMissing,
-                    IsMissing = isMissing,
-                    IsLoadError = isLoadError
-                };
-
-                if (state.LoadWorkspaceFile(info))
-                {
-                    if (!isMissing)
-                    {
-                        LogInformation($"Successfully loaded {(isSourceFile ? "source" : string.Empty)} file at {uri}.", $"IsOpened: {info.IsOpened}");
+                        LogWarning($"Missing {(isSourceFile ? "source" : string.Empty)} file: {uri}");
                     }
                     else
                     {
-                        LogInformation($"Loaded {(isSourceFile ? "source" : string.Empty)} file at {uri}.", $"IsMissing: {isMissing}; IsLoadError: {isLoadError}");
+                        try
+                        {
+                            content = _fileSystem.File.ReadAllText(uri.AbsoluteLocation.LocalPath);
+                        }
+                        catch (Exception exception)
+                        {
+                            LogWarning("Could not load file content.", $"File: {uri}");
+                            LogException(exception);
+                            isLoadError = true;
+                        }
                     }
-                }
-                else
-                {
-                    LogWarning($"{(isSourceFile ? "Source file" : "File")} version {fileVersion} at {uri} was not loaded; a newer version is already cached.'.");
-                }
-            });
+
+                    var info = new WorkspaceFileInfo
+                    {
+                        Uri = uri,
+                        Content = content,
+                        IsSourceFile = isSourceFile,
+                        IsOpened = open && !isMissing,
+                        IsMissing = isMissing,
+                        IsLoadError = isLoadError
+                    };
+
+                    if (state.LoadWorkspaceFile(info))
+                    {
+                        if (!isMissing)
+                        {
+                            LogInformation($"Successfully loaded {(isSourceFile ? "source" : string.Empty)} file at {uri}.", $"IsOpened: {info.IsOpened}");
+                        }
+                        else
+                        {
+                            LogInformation($"Loaded {(isSourceFile ? "source" : string.Empty)} file at {uri}.", $"IsMissing: {isMissing}; IsLoadError: {isLoadError}");
+                        }
+                    }
+                    else
+                    {
+                        LogWarning($"{(isSourceFile ? "Source file" : "File")} version {fileVersion} at {uri} was not loaded; a newer version is already cached.'.");
+                    }
+                });
+            }
         }
 
-        public void CloseFile(Uri uri)
+        public void CloseFile(WorkspaceFileUri uri)
         {
             if (_state.ActiveWorkspace != null)
             {

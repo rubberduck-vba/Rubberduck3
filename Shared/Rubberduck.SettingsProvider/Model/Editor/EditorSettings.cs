@@ -1,8 +1,6 @@
 ﻿using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model.Editor.Tools;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Rubberduck.SettingsProvider.Model.Editor
 {
@@ -15,6 +13,7 @@ namespace Rubberduck.SettingsProvider.Model.Editor
         private static readonly RubberduckSetting[] DefaultSettings =
             [
                 new ExtendWindowChromeSetting(),
+                new ShowWelcomeTabSetting(),
                 ToolsSettings.Default,
                 /*TODO
                  * These settings should be specific to the editor, e.g. theming, fonts/font sizes, etc.
@@ -32,7 +31,11 @@ namespace Rubberduck.SettingsProvider.Model.Editor
             Value = DefaultValue = DefaultSettings;
         }
 
+        [JsonIgnore]
         public bool ExtendWindowChrome => GetSetting<ExtendWindowChromeSetting>()?.TypedValue ?? ExtendWindowChromeSetting.DefaultSettingValue;
+        [JsonIgnore]
+        public bool ShowWelcomeTab => GetSetting<ShowWelcomeTabSetting>()?.TypedValue ?? ShowWelcomeTabSetting.DefaultSettingValue;
+        [JsonIgnore]
         public ToolsSettings ToolsSettings => GetSetting<ToolsSettings>() ?? ToolsSettings.Default;
 
         public static EditorSettings Default { get; } = new() { Value = DefaultSettings, DefaultValue = DefaultSettings };

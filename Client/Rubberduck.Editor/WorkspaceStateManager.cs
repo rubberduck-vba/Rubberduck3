@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Services.Abstract;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Rubberduck.Editor
@@ -25,8 +25,6 @@ namespace Rubberduck.Editor
 
             public Uri? WorkspaceRoot { get; set; }
             public string ProjectName { get; set; } = "Project1";
-
-            public bool TryGetWorkspaceFile(Uri uri, out WorkspaceFileInfo? fileInfo) => _workspaceFiles.TryGetValue(uri, out fileInfo);
 
             public IEnumerable<Folder> Folders => _folders;
             public void AddFolder(Folder folder) => _folders.Add(folder);
@@ -76,7 +74,29 @@ namespace Rubberduck.Editor
                 }
             }
 
-            public bool CloseWorkspaceFile(Uri uri, out WorkspaceFileInfo? fileInfo)
+            public bool LoadWorkspaceFile(WorkspaceFileInfo file)
+            {
+                if (!_workspaceFiles.TryGetValue(file.Uri, out var existingCache) || file.Content != existingCache.Content)
+                {
+                    _workspaceFiles[file.Uri] = file;
+                    return true;
+                }
+
+                return false;
+            }
+
+            public void UnloadAllFiles()
+            {
+                foreach (var file in _workspaceFiles.Values)
+                {
+                    file.IsOpened = false;
+                }
+                _workspaceFiles.Clear();
+            }
+
+            public bool TryGetWorkspaceFile(WorkspaceFileUri uri, out WorkspaceFileInfo? fileInfo) => _workspaceFiles.TryGetValue(uri, out fileInfo);
+
+            public bool CloseWorkspaceFile(WorkspaceFileUri uri, out WorkspaceFileInfo? fileInfo)
             {
                 if (_workspaceFiles.TryGetValue(uri, out fileInfo))
                 {
@@ -91,18 +111,7 @@ namespace Rubberduck.Editor
                 return false;
             }
 
-            public bool LoadWorkspaceFile(WorkspaceFileInfo file)
-            {
-                if (!_workspaceFiles.TryGetValue(file.Uri, out var existingCache) || file.Content != existingCache.Content)
-                {
-                    _workspaceFiles[file.Uri] = file;
-                    return true;
-                }
-
-                return false;
-            }
-
-            public bool RenameWorkspaceFile(Uri oldUri, Uri newUri)
+            public bool RenameWorkspaceFile(WorkspaceFileUri oldUri, WorkspaceFileUri newUri)
             {
                 if (_workspaceFiles.TryGetValue(newUri, out _))
                 {
@@ -118,7 +127,7 @@ namespace Rubberduck.Editor
                 return false;
             }
 
-            public bool UnloadWorkspaceFile(Uri uri)
+            public bool UnloadWorkspaceFile(WorkspaceFileUri uri)
             {
                 if (_workspaceFiles.TryGetValue(uri, out var cache))
                 {
@@ -128,17 +137,7 @@ namespace Rubberduck.Editor
 
                 return false;
             }
-
-            public void UnloadAllFiles()
-            {
-                foreach (var file in _workspaceFiles.Values)
-                {
-                    file.IsOpened = false;
-                }
-                _workspaceFiles.Clear();
-            }
         }
-
 
         public WorkspaceStateManager(ILogger<WorkspaceStateManager> logger, 
             RubberduckSettingsProvider settings, PerformanceRecordAggregator performance)

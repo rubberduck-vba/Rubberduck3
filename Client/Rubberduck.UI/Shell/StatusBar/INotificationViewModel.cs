@@ -1,4 +1,4 @@
-﻿using Rubberduck.UI.Command;
+﻿using Rubberduck.UI.Message;
 
 namespace Rubberduck.UI.Shell.StatusBar
 {

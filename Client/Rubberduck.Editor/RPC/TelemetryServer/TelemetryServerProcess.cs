@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.ServerPlatform;
+using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Editor.RPC.TelemetryServer
 {
-    public class TelemetryServerProcess : ServerProcess
+    public class TelemetryServerProcess : RubberduckServerProcess
     {
         public TelemetryServerProcess(ILogger logger)
             : base(logger)
