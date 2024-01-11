@@ -1,6 +1,6 @@
 ﻿using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
-using Rubberduck.UI.WorkspaceExplorer;
+using Rubberduck.UI.Shell.Tools.WorkspaceExplorer;
 using System;
 
 namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer

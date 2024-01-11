@@ -1,4 +1,4 @@
-﻿using Rubberduck.UI.NewProject;
+﻿using Rubberduck.UI.Shared.NewProject;
 using Rubberduck.UI.Windows;
 
 namespace Rubberduck.UI.Services.NewProject

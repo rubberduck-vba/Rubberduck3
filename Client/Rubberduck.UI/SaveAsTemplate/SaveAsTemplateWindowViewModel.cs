@@ -1,8 +1,8 @@
 ﻿using Rubberduck.Resources.Menus;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services;
+using Rubberduck.UI.Shell.Tools.WorkspaceExplorer;
 using Rubberduck.UI.Windows;
-using Rubberduck.UI.WorkspaceExplorer;
 using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
@@ -56,7 +56,7 @@ namespace Rubberduck.UI.SaveAsTemplate
             }
 
             var illegalChars = _fileSystem.Path.GetInvalidPathChars();
-            if (illegalChars.Any(invalid => Name.Contains(invalid)))
+            if (illegalChars.Any(Name.Contains))
             {
                 AddError(nameof(Name), $"Template names cannot contain any of the following characters: [{string.Join(',', illegalChars.Select(e => $"'{e}'"))}].");
                 return;

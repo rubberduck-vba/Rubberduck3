@@ -1,7 +1,7 @@
 ﻿using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.SettingsProvider;
-using Rubberduck.UI.NewProject;
+using Rubberduck.UI.Shared.NewProject;
 using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;

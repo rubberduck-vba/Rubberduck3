@@ -18,14 +18,17 @@ namespace Rubberduck.UI.Command.SharedHandlers
 
         protected async override Task OnExecuteAsync(object? parameter)
         {
-            SettingsWindowViewModel vm;
+            SettingsWindowViewModel? vm;
             if (parameter is string key)
             {
                 vm = _settingsDialog.ShowDialog(key);
             }
             else
             {
-                vm = _settingsDialog.ShowDialog();
+                if (!_settingsDialog.ShowDialog(out vm))
+                {
+                    return;
+                }
             }
             var model = (RubberduckSettings)vm.Settings.ToSetting();
             Service.SettingsProvider.Write(model);

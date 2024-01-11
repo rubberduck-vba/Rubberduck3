@@ -1,4 +1,4 @@
-﻿using Rubberduck.UI.Settings;
+﻿using Rubberduck.UI.Shared.Settings;
 using Rubberduck.UI.Windows;
 
 namespace Rubberduck.UI.Services.Settings

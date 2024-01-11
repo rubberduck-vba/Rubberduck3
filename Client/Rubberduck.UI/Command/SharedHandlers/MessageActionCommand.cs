@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using System.Windows;
 using Rubberduck.UI.Command.Abstract;
-using Rubberduck.UI.Message;
 using Rubberduck.UI.Services;
+using Rubberduck.UI.Shared.Message;
 using Rubberduck.UI.Windows;
 
 namespace Rubberduck.UI.Command.SharedHandlers

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
-using Rubberduck.UI.Message;
+using Rubberduck.UI.Shared.Message;
 using System;
 
 namespace Rubberduck.UI.Windows
@@ -22,13 +22,15 @@ namespace Rubberduck.UI.Windows
 
         protected abstract TViewModel CreateViewModel(RubberduckSettings settings, MessageActionsProvider actions);
 
-        public virtual TViewModel ShowDialog()
+        public virtual bool ShowDialog(out TViewModel model)
         {
-            TViewModel viewModel = default!;
+            TViewModel viewModel = model = default!;
             TView view = default!;
 
             var actions = _actionsProvider;
             var verbosity = TraceLevel;
+
+            var result = false;
 
             if (TryRunAction(() =>
             {
@@ -39,11 +41,31 @@ namespace Rubberduck.UI.Windows
                     ?? throw new ArgumentNullException(nameof(view), $"ViewFactory.Create returned null.");
             }))
             {
-                TryRunAction(() => view.ShowDialog());
-                return viewModel;
+                TryRunAction(() =>
+                {
+                    if (view.ShowDialog() == true)
+                    {
+                        OnDialogAccept(viewModel);
+                        result = true;
+                    }
+                    else
+                    {
+                        OnDialogCancel();
+                    }
+                });
             }
 
-            throw new InvalidOperationException();
+            return result;
+        }
+
+        protected virtual void OnDialogAccept(TViewModel model)
+        {
+
+        }
+
+        protected virtual void OnDialogCancel()
+        {
+
         }
     }
 }

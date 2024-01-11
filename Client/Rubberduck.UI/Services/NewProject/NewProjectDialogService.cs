@@ -2,9 +2,9 @@
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command.SharedHandlers;
-using Rubberduck.UI.Message;
-using Rubberduck.UI.NewProject;
 using Rubberduck.UI.Services.Abstract;
+using Rubberduck.UI.Shared.Message;
+using Rubberduck.UI.Shared.NewProject;
 using Rubberduck.UI.Windows;
 using System.Windows.Input;
 
@@ -39,6 +39,14 @@ namespace Rubberduck.UI.Services.NewProject
             var projects = _projectsProvider?.GetProjectInfo() ?? [];
             var templates = _templatesService.GetProjectTemplates();
             return new NewProjectWindowViewModel(_service, projects, templates, actions, _showSettingsCommand);
+        }
+
+        protected override void OnDialogAccept(NewProjectWindowViewModel model)
+        {
+            if (model.SelectedProjectTemplate != null)
+            {
+                model.SelectedProjectTemplate = _templatesService.Resolve(model.SelectedProjectTemplate);
+            }
         }
     }
 }

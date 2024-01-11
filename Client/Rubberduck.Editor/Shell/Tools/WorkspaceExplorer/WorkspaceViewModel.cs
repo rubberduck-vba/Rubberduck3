@@ -2,7 +2,7 @@
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.UI;
 using Rubberduck.UI.Services.Abstract;
-using Rubberduck.UI.WorkspaceExplorer;
+using Rubberduck.UI.Shell.Tools.WorkspaceExplorer;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.Extensions;
+﻿using Rubberduck.Editor.Commands;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider;
@@ -7,7 +8,7 @@ using Rubberduck.UI;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Shell;
-using Rubberduck.UI.WorkspaceExplorer;
+using Rubberduck.UI.Shell.Tools.WorkspaceExplorer;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO.Abstractions;
