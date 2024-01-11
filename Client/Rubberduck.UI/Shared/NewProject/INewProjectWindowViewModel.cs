@@ -3,7 +3,7 @@ using Rubberduck.UI.Command;
 using System.Collections.Generic;
 using System.Windows.Input;
 
-namespace Rubberduck.UI.NewProject
+namespace Rubberduck.UI.Shared.NewProject
 {
     public interface INewProjectWindowViewModel : IBrowseFolderModel, ICommandBindingProvider
     {

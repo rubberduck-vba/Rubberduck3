@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows;
 
-namespace Rubberduck.UI.NewProject
+namespace Rubberduck.UI.Shared.NewProject
 {
     /// <summary>
     /// Interaction logic for NewProjectWindow.xaml

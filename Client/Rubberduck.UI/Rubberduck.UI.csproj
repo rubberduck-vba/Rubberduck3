@@ -503,7 +503,7 @@
     <Compile Update="Shared\Message\MessageWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="NewProject\NewProjectWindow.xaml.cs">
+    <Compile Update="Shared\NewProject\NewProjectWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Shell\ShellChildToolWindow.xaml.cs">
