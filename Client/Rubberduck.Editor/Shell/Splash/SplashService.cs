@@ -4,7 +4,7 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Shell.Splash;
 
-namespace Rubberduck.Editor.Splash
+namespace Rubberduck.Editor.Shell.Splash
 {
     public class SplashService : WindowService<SplashWindow, ISplashViewModel>, IStatusUpdate
     {
