@@ -13,7 +13,6 @@ using Rubberduck.Editor.RPC.EditorServer.Handlers.Workspace;
 using Rubberduck.Editor.RPC.LanguageServerClient;
 using Rubberduck.Editor.RPC.LanguageServerClient.Handlers;
 using Rubberduck.Editor.Shell;
-using Rubberduck.Editor.Shell.Chrome;
 using Rubberduck.Editor.Shell.Document.Tabs;
 using Rubberduck.Editor.Shell.StatusBar;
 using Rubberduck.Editor.Shell.Tools.ServerTrace;

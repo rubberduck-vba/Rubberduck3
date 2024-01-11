@@ -4,11 +4,11 @@ using Rubberduck.UI;
 using Rubberduck.UI.Chrome;
 using Rubberduck.UI.Services;
 
-namespace Rubberduck.Editor.Shell.Chrome
+namespace Rubberduck.Editor.Shell
 {
     public class WindowChromeViewModel : ViewModelBase, IWindowChromeViewModel
     {
-        public WindowChromeViewModel(UIServiceHelper service) 
+        public WindowChromeViewModel(UIServiceHelper service)
         {
             _extendWindowChrome = service.Settings.EditorSettings.ExtendWindowChrome;
             service.SettingsProvider.SettingsChanged += OnSettingsChanged;
