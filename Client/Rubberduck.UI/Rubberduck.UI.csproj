@@ -497,7 +497,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Compile Update="About\AboutWindow.xaml.cs">
+    <Compile Update="Shell\About\AboutWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Message\MessageWindow.xaml.cs">

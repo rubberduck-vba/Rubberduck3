@@ -1,6 +1,6 @@
-﻿using Rubberduck.UI.About;
-using Rubberduck.UI.Command;
+﻿using Rubberduck.UI.Command;
 using Rubberduck.UI.Services;
+using Rubberduck.UI.Shell.About;
 using Rubberduck.Unmanaged.Abstract;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 using System.Threading.Tasks;

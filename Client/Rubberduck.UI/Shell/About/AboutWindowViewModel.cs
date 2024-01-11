@@ -8,7 +8,7 @@ using System.Windows.Input;
 using Application = System.Windows.Forms.Application;
 using Path = System.IO.Path;
 
-namespace Rubberduck.UI.About
+namespace Rubberduck.UI.Shell.About
 {
     public class AboutWindowViewModel : ViewModelBase, IAboutWindowViewModel
     {

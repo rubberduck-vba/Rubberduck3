@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows.Input;
 
-namespace Rubberduck.UI.About
+namespace Rubberduck.UI.Shell.About
 {
     public interface IAboutWindowViewModel : INotifyPropertyChanged
     {

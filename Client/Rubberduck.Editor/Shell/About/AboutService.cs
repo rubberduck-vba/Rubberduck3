@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Services.Abstract;
+using Rubberduck.UI.Shell.About;
 
-namespace Rubberduck.UI.About
+namespace Rubberduck.Editor.Shell.About
 {
     public class AboutService : WindowService<AboutWindow, IAboutWindowViewModel>
     {
