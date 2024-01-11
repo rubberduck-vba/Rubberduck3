@@ -8,7 +8,7 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Rubberduck.Editor.DialogServices.NewProject
+namespace Rubberduck.Editor.Commands
 {
     public class OpenProjectCommand : CommandBase
     {

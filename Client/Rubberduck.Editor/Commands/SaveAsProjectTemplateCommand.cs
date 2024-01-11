@@ -4,7 +4,7 @@ using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
 using System.Threading.Tasks;
 
-namespace Rubberduck.Editor.DialogServices.NewProject
+namespace Rubberduck.Editor.Commands
 {
     public class SaveAsProjectTemplateCommand : CommandBase
     {

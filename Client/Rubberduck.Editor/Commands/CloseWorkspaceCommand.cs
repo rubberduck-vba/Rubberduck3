@@ -3,13 +3,13 @@ using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
 using System.Threading.Tasks;
 
-namespace Rubberduck.Editor.DialogServices.NewProject
+namespace Rubberduck.Editor.Commands
 {
-    public class SaveAllDocumentsCommand : CommandBase
+    public class CloseWorkspaceCommand : CommandBase
     {
         private readonly IWorkspaceService _workspace;
 
-        public SaveAllDocumentsCommand(UIServiceHelper service,
+        public CloseWorkspaceCommand(UIServiceHelper service,
             IWorkspaceService workspace)
             : base(service)
         {
@@ -18,7 +18,7 @@ namespace Rubberduck.Editor.DialogServices.NewProject
 
         protected async override Task OnExecuteAsync(object? parameter)
         {
-            await _workspace.SaveAllAsync();
+            _workspace.CloseWorkspace();
         }
     }
 }
