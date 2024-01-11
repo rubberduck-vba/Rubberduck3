@@ -1,10 +1,10 @@
 ﻿using Rubberduck.SettingsProvider.Model;
-using Rubberduck.UI.Settings.ViewModels.Abstract;
+using Rubberduck.UI.Shared.Settings.Abstract;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Rubberduck.UI.Settings.ViewModels
+namespace Rubberduck.UI.Shared.Settings
 {
     public class SettingGroupViewModel : ViewModelBase, ISettingGroupViewModel
     {

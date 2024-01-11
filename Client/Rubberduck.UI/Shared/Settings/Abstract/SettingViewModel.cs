@@ -1,7 +1,7 @@
 ﻿using Rubberduck.SettingsProvider.Model;
 using System;
 
-namespace Rubberduck.UI.Settings.ViewModels.Abstract
+namespace Rubberduck.UI.Shared.Settings.Abstract
 {
     public abstract class SettingViewModel<TValue> : ViewModelBase, ISettingViewModel<TValue>
     {

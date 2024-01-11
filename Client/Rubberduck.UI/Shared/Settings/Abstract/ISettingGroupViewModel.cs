@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Rubberduck.UI.Settings.ViewModels.Abstract
+namespace Rubberduck.UI.Shared.Settings.Abstract
 {
     public interface ISettingGroupViewModel : ISettingViewModel
     {

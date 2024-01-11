@@ -1,13 +1,13 @@
 ﻿using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
-using Rubberduck.UI.Settings.ViewModels.Abstract;
+using Rubberduck.UI.Shared.Settings.Abstract;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace Rubberduck.UI.Settings.ViewModels
+namespace Rubberduck.UI.Shared.Settings
 {
     public class ListSettingViewModel : SettingViewModel<string[]>
     {

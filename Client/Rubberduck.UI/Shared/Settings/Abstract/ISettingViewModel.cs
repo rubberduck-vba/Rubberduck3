@@ -1,7 +1,7 @@
 ﻿using Rubberduck.SettingsProvider.Model;
 using System.ComponentModel;
 
-namespace Rubberduck.UI.Settings.ViewModels.Abstract
+namespace Rubberduck.UI.Shared.Settings.Abstract
 {
     public interface ISettingViewModel : INotifyPropertyChanged
     {

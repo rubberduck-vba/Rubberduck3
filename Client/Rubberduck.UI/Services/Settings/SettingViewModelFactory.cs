@@ -2,8 +2,8 @@
 using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.SettingsProvider.Model.Logging;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
-using Rubberduck.UI.Settings.ViewModels;
-using Rubberduck.UI.Settings.ViewModels.Abstract;
+using Rubberduck.UI.Shared.Settings;
+using Rubberduck.UI.Shared.Settings.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

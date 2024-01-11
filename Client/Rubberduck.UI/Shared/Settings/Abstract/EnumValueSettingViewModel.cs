@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Rubberduck.UI.Settings.ViewModels.Abstract
+namespace Rubberduck.UI.Shared.Settings.Abstract
 {
     public abstract class EnumValueSettingViewModel : ViewModelBase, ISettingViewModel
     {

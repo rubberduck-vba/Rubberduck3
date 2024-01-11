@@ -2,7 +2,7 @@
 using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.SettingsProvider.Model.Logging;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
-using Rubberduck.UI.Settings.ViewModels.Abstract;
+using Rubberduck.UI.Shared.Settings.Abstract;
 using System;
 
 namespace Rubberduck.UI.Services.Settings

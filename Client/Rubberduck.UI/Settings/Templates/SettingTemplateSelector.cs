@@ -1,5 +1,5 @@
 ﻿using Rubberduck.SettingsProvider.Model;
-using Rubberduck.UI.Settings.ViewModels.Abstract;
+using Rubberduck.UI.Shared.Settings.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;

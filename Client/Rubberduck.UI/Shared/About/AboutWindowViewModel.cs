@@ -2,13 +2,14 @@
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
+using Rubberduck.UI.Shell.About;
 using System;
 using System.Windows;
 using System.Windows.Input;
 using Application = System.Windows.Forms.Application;
 using Path = System.IO.Path;
 
-namespace Rubberduck.UI.Shell.About
+namespace Rubberduck.UI.Shared.About
 {
     public class AboutWindowViewModel : ViewModelBase, IAboutWindowViewModel
     {

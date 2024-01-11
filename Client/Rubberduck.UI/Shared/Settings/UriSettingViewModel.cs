@@ -1,9 +1,9 @@
 ﻿using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Settings.ViewModels.Abstract;
+using Rubberduck.UI.Shared.Settings.Abstract;
 using System;
 
-namespace Rubberduck.UI.Settings.ViewModels
+namespace Rubberduck.UI.Shared.Settings
 {
     public class UriSettingViewModel : SettingViewModel<Uri>, IBrowseFolderModel
     {

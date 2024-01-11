@@ -1,8 +1,8 @@
 ﻿using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider.Model;
-using Rubberduck.UI.Settings.ViewModels.Abstract;
+using Rubberduck.UI.Shared.Settings.Abstract;
 
-namespace Rubberduck.UI.Settings.ViewModels
+namespace Rubberduck.UI.Shared.Settings
 {
     public class MessageTraceLevelSettingViewModel : EnumValueSettingViewModel<MessageTraceLevel>
     {

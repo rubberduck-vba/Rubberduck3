@@ -36,6 +36,7 @@ using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Services.NewProject;
 using Rubberduck.UI.Services.Settings;
 using Rubberduck.UI.Settings;
+using Rubberduck.UI.Shared.About;
 using Rubberduck.UI.Shell.About;
 using Rubberduck.UI.Windows;
 using Rubberduck.Unmanaged;

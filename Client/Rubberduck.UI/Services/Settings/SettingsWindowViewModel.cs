@@ -4,7 +4,7 @@ using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Message;
-using Rubberduck.UI.Settings.ViewModels.Abstract;
+using Rubberduck.UI.Shared.Settings.Abstract;
 using Rubberduck.UI.Windows;
 using System.Collections.Generic;
 using System.Windows;

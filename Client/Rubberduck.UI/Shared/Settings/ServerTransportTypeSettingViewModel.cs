@@ -1,8 +1,8 @@
 ﻿using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
-using Rubberduck.UI.Settings.ViewModels.Abstract;
+using Rubberduck.UI.Shared.Settings.Abstract;
 
-namespace Rubberduck.UI.Settings.ViewModels
+namespace Rubberduck.UI.Shared.Settings
 {
     public class ServerTransportTypeSettingViewModel : EnumValueSettingViewModel<TransportType>
     {
