@@ -1,7 +1,7 @@
 ﻿using Rubberduck.UI.Windows;
 using System.Windows.Input;
 
-namespace Rubberduck.UI.LanguageServerTrace
+namespace Rubberduck.UI.Shell.Tools.ServerTrace
 {
     public interface IServerTraceViewModel : IToolWindowViewModel
     {
@@ -9,6 +9,5 @@ namespace Rubberduck.UI.LanguageServerTrace
         ICommand ClearContentCommand { get; }
         ICommand OpenLogFileCommand { get; }
         bool IsPaused { get; set; }
-        string TextContent { get; set; }
     }
 }

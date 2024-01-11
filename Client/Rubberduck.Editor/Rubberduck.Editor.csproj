@@ -56,8 +56,5 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Shell\Tools\LanguageServerTrace\" />
-  </ItemGroup>
 
 </Project>
