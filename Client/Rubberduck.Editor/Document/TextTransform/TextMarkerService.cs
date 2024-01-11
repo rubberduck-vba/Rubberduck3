@@ -25,7 +25,7 @@ using System.Linq;
 using System.Windows;
 using System.Diagnostics;
 
-namespace Rubberduck.Editor.Shell.Document.TextTransform
+namespace Rubberduck.Editor.Document.TextTransform
 {
     public class TextMarkerService : DocumentColorizingTransformer, IBackgroundRenderer, ITextMarkerService, ITextViewConnect
     {

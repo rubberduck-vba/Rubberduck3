@@ -20,7 +20,7 @@ using System;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Rubberduck.Editor.Shell.Document.TextTransform
+namespace Rubberduck.Editor.Document.TextTransform
 {
     /// <summary>
     /// Represents a text marker.

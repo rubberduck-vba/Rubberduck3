@@ -4,14 +4,14 @@ using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
 using System;
 
-namespace Rubberduck.Editor.Shell.Document.Tabs
+namespace Rubberduck.Editor.Shell.Document
 {
     /// <summary>
     /// A view model for a type of document tab that contains a markdown document.
     /// </summary>
     public class MarkdownDocumentTabViewModel : DocumentTabViewModel
     {
-        public MarkdownDocumentTabViewModel(Uri documentUri, string title, string content, bool isReadOnly, 
+        public MarkdownDocumentTabViewModel(Uri documentUri, string title, string content, bool isReadOnly,
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindowCommand,
             IDocumentStatusViewModel activeDocumentStatus)

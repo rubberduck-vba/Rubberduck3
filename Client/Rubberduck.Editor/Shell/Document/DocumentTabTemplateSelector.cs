@@ -3,7 +3,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Rubberduck.Editor.Shell.Document.Tabs
+namespace Rubberduck.Editor.Shell.Document
 {
     public class DocumentTabTemplateSelector : DataTemplateSelector
     {

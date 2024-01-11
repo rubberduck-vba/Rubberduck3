@@ -14,46 +14,38 @@
 // PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
 // FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-// DEALINGS IN THE SOFTWARE.using System;
+// DEALINGS IN THE SOFTWARE.
+using System.Collections.Generic;
 using System;
 
-namespace Rubberduck.Editor.Shell.Document.TextTransform
+namespace Rubberduck.Editor.Document.TextTransform
 {
-    [Flags]
-    public enum TextMarkerTypes
+    public interface ITextMarkerService
     {
         /// <summary>
-        /// Use no marker
+        /// Creates a new text marker. The text marker will be invisible at first,
+        /// you need to set one of the Color properties to make it visible.
         /// </summary>
-        None = 0x0000,
-        /// <summary>
-        /// Use squiggly underline marker
-        /// </summary>
-        SquigglyUnderline = 0x001,
-        /// <summary>
-        /// Normal underline.
-        /// </summary>
-        NormalUnderline = 0x002,
-        /// <summary>
-        /// Dotted underline.
-        /// </summary>
-        DottedUnderline = 0x004,
+        ITextMarker Create(int startOffset, int length);
 
         /// <summary>
-        /// Horizontal line in the scroll bar.
+        /// Gets the list of text markers.
         /// </summary>
-        LineInScrollBar = 0x0100,
+        IEnumerable<ITextMarker> TextMarkers { get; }
+
         /// <summary>
-        /// Small triangle in the scroll bar, pointing to the right.
+        /// Removes the specified text marker.
         /// </summary>
-        ScrollBarRightTriangle = 0x0400,
+        void Remove(ITextMarker marker);
+
         /// <summary>
-        /// Small triangle in the scroll bar, pointing to the left.
+        /// Removes all text markers that match the condition.
         /// </summary>
-        ScrollBarLeftTriangle = 0x0800,
+        void RemoveAll(Predicate<ITextMarker> predicate);
+
         /// <summary>
-        /// Small circle in the scroll bar.
+        /// Finds all text markers at the specified offset.
         /// </summary>
-        CircleInScrollBar = 0x1000
+        IEnumerable<ITextMarker> GetMarkersAtOffset(int offset);
     }
 }

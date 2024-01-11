@@ -5,7 +5,7 @@ using Rubberduck.UI.Shell.StatusBar;
 using Rubberduck.UI.Windows;
 using System;
 
-namespace Rubberduck.Editor.Shell.Document.Tabs
+namespace Rubberduck.Editor.Shell.Document
 {
     /// <summary>
     /// The base implementation of a view model for a document tab that may contain anything.
@@ -133,9 +133,9 @@ namespace Rubberduck.Editor.Shell.Document.Tabs
         }
 
         private object _content;
-        public object ContentControl 
-        { 
-            get => _content; 
+        public object ContentControl
+        {
+            get => _content;
             set
             {
                 if (_content != value)

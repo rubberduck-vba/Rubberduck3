@@ -3,7 +3,7 @@ using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shell.StatusBar;
 using System;
 
-namespace Rubberduck.Editor.Shell.Document.Tabs
+namespace Rubberduck.Editor.Shell.Document
 {
     /// <summary>
     /// A view model for a type of document tab that contains code for a Visual Basic for Applications 7.0 module/component.

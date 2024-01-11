@@ -20,7 +20,7 @@ using System.Windows;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Document;
 
-namespace Rubberduck.Editor.Shell.Document.TextTransform
+namespace Rubberduck.Editor.Document.TextTransform
 {
     public sealed class TextMarker : TextSegment, ITextMarker
     {

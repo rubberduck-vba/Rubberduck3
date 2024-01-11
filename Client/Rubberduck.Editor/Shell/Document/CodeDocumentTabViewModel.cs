@@ -3,7 +3,7 @@ using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
 using System;
 
-namespace Rubberduck.Editor.Shell.Document.Tabs
+namespace Rubberduck.Editor.Shell.Document
 {
     /// <summary>
     /// The base view model for a type of document tab that contains code managed by a language server.
