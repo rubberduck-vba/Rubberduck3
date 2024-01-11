@@ -9,7 +9,7 @@ using Env = System.Environment;
 
 namespace Rubberduck.Main.RPC.EditorServer
 {
-    class EditorServerProcessService : ServerPlatform.ServiceBase, IDisposable
+    class EditorServerProcessService : ServerPlatform.ServiceBase, IServerProcessService
     {
         private readonly ILogger _logger;
         private Process? _process;
@@ -20,7 +20,7 @@ namespace Rubberduck.Main.RPC.EditorServer
             _logger = logger;
         }
 
-        public bool StartEditorProcess()
+        public bool StartServerProcess()
         {
             if (_process is null)
             {
@@ -33,17 +33,17 @@ namespace Rubberduck.Main.RPC.EditorServer
             return false;
         }
 
-        public Process Process => _process ?? throw new NullReferenceException("Process is not initialized.");
+        public Process Process => _process ?? throw new InvalidOperationException("Process is not initialized.");
 
         private void StartEditor()
         {
             var helper = new EditorServerProcess(_logger);
             var startupOptions = Settings.LanguageClientSettings.StartupSettings;
             var currentProcessId = Env.ProcessId;
-            _process = helper.Start(currentProcessId, startupOptions, HandleServerExit);
+            _process = helper.Start(currentProcessId, startupOptions, HandleServerProcessExit);
         }
 
-        private void HandleServerExit(object? sender, EventArgs e)
+        private void HandleServerProcessExit(object? sender, EventArgs e)
         {
             LogWarning($"EditorServer process has exited.", $"ExitCode: {(sender as Process)?.ExitCode}");
         }
