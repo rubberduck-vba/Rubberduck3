@@ -11,7 +11,7 @@ using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
-using Rubberduck.UI.Message;
+using Rubberduck.UI.Shared.Message;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.TypeLibs.Public;

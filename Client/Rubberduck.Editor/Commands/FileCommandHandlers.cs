@@ -1,6 +1,5 @@
 ﻿using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Abstract;
-using Rubberduck.UI.Services.NewProject;
 using System.Collections.Generic;
 using System.Windows.Input;
 

@@ -2,8 +2,8 @@
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.Main.RPC.EditorServer;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Message;
 using Rubberduck.UI.Services;
+using Rubberduck.UI.Shared.Message;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
