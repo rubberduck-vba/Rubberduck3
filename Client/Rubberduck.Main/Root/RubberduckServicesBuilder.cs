@@ -48,7 +48,6 @@ using Rubberduck.Unmanaged.TypeLibs.Abstract;
 using Rubberduck.Unmanaged.TypeLibs.Public;
 using Rubberduck.Unmanaged.UIContext;
 using Rubberduck.Unmanaged.VBERuntime;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 using System;
