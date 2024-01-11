@@ -1,11 +1,11 @@
 ﻿using System.Windows;
 
-namespace Rubberduck.UI.Splash
+namespace Rubberduck.UI.Shell.Splash
 {
     /// <summary>
     /// Interaction logic for Splash.xaml
     /// </summary>
-    public partial class SplashWindow : System.Windows.Window
+    public partial class SplashWindow : Window
     {
         public SplashWindow(ISplashViewModel viewModel) : this()
         {

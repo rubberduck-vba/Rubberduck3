@@ -1,5 +1,5 @@
 ﻿using Rubberduck.UI;
-using Rubberduck.UI.Splash;
+using Rubberduck.UI.Shell.Splash;
 using System;
 
 namespace Rubberduck.Editor.Splash

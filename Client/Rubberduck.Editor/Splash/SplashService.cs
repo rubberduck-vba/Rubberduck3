@@ -2,7 +2,7 @@
 using Rubberduck.InternalApi.Model.Abstract;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Services.Abstract;
-using Rubberduck.UI.Splash;
+using Rubberduck.UI.Shell.Splash;
 
 namespace Rubberduck.Editor.Splash
 {

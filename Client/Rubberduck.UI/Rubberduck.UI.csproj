@@ -524,7 +524,7 @@
     <Compile Update="Shell\ThunderFrame.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Splash\SplashWindow.xaml.cs">
+    <Compile Update="Shell\Splash\SplashWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
