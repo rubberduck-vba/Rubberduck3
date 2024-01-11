@@ -165,7 +165,7 @@ namespace Rubberduck.Main.Root
 
             _services.AddSingleton<IShowRubberduckEditorCommand, ShowRubberduckEditorCommand>();
             _services.AddSingleton<ShowRubberduckEditorCommandMenuItem>();
-            _services.AddSingleton<IEditorServerProcessService, EditorServerProcessService>();
+            _services.AddSingleton<EditorServerProcessService>();
 
             _services.AddSingleton<IShowApplicationTipsCommand, ShowApplicationTipsCommand>();
             _services.AddSingleton<ShowAplicationTipsCommandMenuItem>();

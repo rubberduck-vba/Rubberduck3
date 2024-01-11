@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.Main.Commands.ShowRubberduckEditor;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
@@ -10,7 +9,7 @@ using Env = System.Environment;
 
 namespace Rubberduck.Main.RPC.EditorServer
 {
-    class EditorServerProcessService : ServerPlatform.ServiceBase, IEditorServerProcessService, IDisposable
+    class EditorServerProcessService : ServerPlatform.ServiceBase, IDisposable
     {
         private readonly ILogger _logger;
         private Process? _process;
