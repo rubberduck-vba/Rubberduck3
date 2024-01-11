@@ -1,6 +1,6 @@
 ﻿using Rubberduck.UI.Command.SharedHandlers;
-using Rubberduck.UI.Message;
 using Rubberduck.UI.Services;
+using Rubberduck.UI.Shared.Message;
 using System.Linq;
 using System.Windows.Input;
 

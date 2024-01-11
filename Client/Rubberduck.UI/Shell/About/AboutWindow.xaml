@@ -1,0 +1,28 @@
+﻿<Window x:Class="Rubberduck.UI.Shell.About.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mdxaml="clr-namespace:MdXaml;assembly=MdXaml"
+        xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
+        xmlns:local="clr-namespace:Rubberduck.UI.Shell.About" 
+        Title="About Rubberduck"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        SizeToContent="WidthAndHeight"
+        Style="{DynamicResource ThemedWindowStyle}"
+        Height="450" Width="600">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <shell:ThunderFrame Title="{Binding Title}" AcceptCommand="{Binding Actions[0]}">
+            <!-- TODO -->
+        </shell:ThunderFrame>
+    </Grid>
+</Window>

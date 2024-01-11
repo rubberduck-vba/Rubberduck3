@@ -2,8 +2,8 @@
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model.LanguageClient;
-using Rubberduck.UI.Message;
 using Rubberduck.UI.Services.Abstract;
+using Rubberduck.UI.Shared.Message;
 using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;

@@ -2,9 +2,9 @@
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Command.SharedHandlers;
-using Rubberduck.UI.Message;
-using Rubberduck.UI.NewProject;
 using Rubberduck.UI.Services.Abstract;
+using Rubberduck.UI.Shared.Message;
+using Rubberduck.UI.Shared.NewProject;
 using Rubberduck.UI.Windows;
 using System.Windows.Input;
 

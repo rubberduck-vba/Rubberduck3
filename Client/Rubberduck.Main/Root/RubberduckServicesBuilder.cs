@@ -27,16 +27,17 @@ using Rubberduck.SettingsProvider.Model.LanguageServer;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
 using Rubberduck.SettingsProvider.Model.TelemetryServer;
 using Rubberduck.SettingsProvider.Model.UpdateServer;
-using Rubberduck.UI.About;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.SharedHandlers;
-using Rubberduck.UI.Message;
-using Rubberduck.UI.NewProject;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Services.NewProject;
 using Rubberduck.UI.Services.Settings;
-using Rubberduck.UI.Settings;
+using Rubberduck.UI.Shared.About;
+using Rubberduck.UI.Shared.Message;
+using Rubberduck.UI.Shared.NewProject;
+using Rubberduck.UI.Shared.Settings;
+using Rubberduck.UI.Shell.About;
 using Rubberduck.UI.Windows;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract;
@@ -48,7 +49,6 @@ using Rubberduck.Unmanaged.TypeLibs.Abstract;
 using Rubberduck.Unmanaged.TypeLibs.Public;
 using Rubberduck.Unmanaged.UIContext;
 using Rubberduck.Unmanaged.VBERuntime;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.UI.OfficeMenus;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 using System;
@@ -166,7 +166,7 @@ namespace Rubberduck.Main.Root
 
             _services.AddSingleton<IShowRubberduckEditorCommand, ShowRubberduckEditorCommand>();
             _services.AddSingleton<ShowRubberduckEditorCommandMenuItem>();
-            _services.AddSingleton<IEditorServerProcessService, EditorServerProcessService>();
+            _services.AddSingleton<EditorServerProcessService>();
 
             _services.AddSingleton<IShowApplicationTipsCommand, ShowApplicationTipsCommand>();
             _services.AddSingleton<ShowAplicationTipsCommandMenuItem>();

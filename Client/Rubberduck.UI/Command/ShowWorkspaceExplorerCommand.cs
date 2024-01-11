@@ -1,5 +1,5 @@
 ﻿using Rubberduck.UI.Services;
-using Rubberduck.UI.WorkspaceExplorer;
+using Rubberduck.UI.Shell.Tools.WorkspaceExplorer;
 
 namespace Rubberduck.UI.Command
 {

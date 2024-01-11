@@ -6,7 +6,7 @@ using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider.Model.Logging;
-using Rubberduck.UI.Message;
+using Rubberduck.UI.Shared.Message;
 using Rubberduck.Unmanaged.UIContext;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;
 using System;

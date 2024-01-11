@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="Rubberduck.UI.Shared.Settings.Templates.SettingSubGroupControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Rubberduck.UI.Shared.Settings.Templates"
+             xmlns:viewmodels="clr-namespace:Rubberduck.UI.Shared.Settings" 
+             xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
+             Background="{DynamicResource ThemeBackgroundColorBrush}"
+             Padding="4" MinHeight="96" 
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="255">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border Style="{DynamicResource SectionBorderStyle}">
+        <DockPanel LastChildFill="True">
+            <DockPanel DockPanel.Dock="Top">
+                <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
+                                        Height="16" Width="20" OffsetX="2"
+                                    Icon="{DynamicResource LockedIcon}" 
+                                    CheckedIcon="{DynamicResource UnlockedIcon}"
+                                    IsChecked="{Binding IsEnabled}"
+                                    Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
+                <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0" IsEnabled="{Binding IsEnabled}">
+                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
+                </Label>
+            </DockPanel>
+            <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
+                <Label Style="{DynamicResource FormFieldDescriptionLabelStyle}" Margin="4,0">
+                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+                </Label>
+            </ScrollViewer>
+            <Expander DockPanel.Dock="Top" Margin="4" IsEnabled="{Binding IsEnabled}">
+                <Expander.Header>
+                    <TextBlock Style="{DynamicResource SectionExpanderHeaderStyle}" Text="Settings" IsEnabled="{Binding IsEnabled}" />
+                </Expander.Header>
+                <ListBox Background="{DynamicResource ThemeBackgroundColorBrush}" 
+                          ItemsSource="{Binding Items}" 
+                          BorderThickness="0" BorderBrush="Transparent"
+                          Margin="8"
+                          HorizontalContentAlignment="Stretch"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          ItemTemplateSelector="{DynamicResource SettingTemplateSelector}">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+            </Expander>
+        </DockPanel>
+    </Border>
+</UserControl>

@@ -7,10 +7,11 @@ namespace Rubberduck.UI.Windows
     {
         DockingLocation DockingLocation { get; set; }
 
-        ICommand ShowSettingsCommand { get; }
-        string ShowSettingsCommandParameter { get; }
-        ICommand CloseToolWindowCommand { get; }
+        ICommand? ShowSettingsCommand { get; }
+        string? ShowSettingsCommandParameter { get; }
         string SettingKey { get; }
+
+        ICommand? CloseToolWindowCommand { get; }
 
         bool ShowPinButton { get; }
         bool ShowGearButton { get; }

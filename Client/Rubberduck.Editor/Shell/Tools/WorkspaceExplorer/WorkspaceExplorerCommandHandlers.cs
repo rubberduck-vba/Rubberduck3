@@ -1,5 +1,6 @@
-﻿using Rubberduck.UI.Command.Abstract;
-using Rubberduck.UI.WorkspaceExplorer;
+﻿using Rubberduck.Editor.Commands;
+using Rubberduck.UI.Command.Abstract;
+using Rubberduck.UI.Shell.Tools.WorkspaceExplorer;
 using System.Collections.Generic;
 using System.Windows.Input;
 

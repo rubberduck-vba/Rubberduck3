@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SettingsProvider.Model;
-using Rubberduck.UI.Message;
+using Rubberduck.UI.Shared.Message;
 using System;
 
 namespace Rubberduck.UI.Windows
