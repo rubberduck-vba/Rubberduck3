@@ -15,7 +15,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
+namespace Rubberduck.Editor.Commands
 {
     public class OpenDocumentCommand : CommandBase
     {
@@ -28,12 +28,12 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
 
         private readonly Func<ILanguageClient?> _lsp;
 
-        public OpenDocumentCommand(UIServiceHelper service, 
-            IWorkspaceStateManager workspaces, 
+        public OpenDocumentCommand(UIServiceHelper service,
+            IWorkspaceStateManager workspaces,
             ShellProvider shell,
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindow,
-            IDocumentStatusViewModel activeDocumentStatus, Func<ILanguageClient?> lsp) 
+            IDocumentStatusViewModel activeDocumentStatus, Func<ILanguageClient?> lsp)
             : base(service)
         {
             _workspaces = workspaces;
@@ -55,7 +55,7 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
                 //var srcRoot = System.IO.Path.Combine(root, ProjectFile.SourceRoot);
                 //var relativeUri = uri.OriginalString[1..][srcRoot.Length..];
 
-                if (rootUri != null && (_workspaces.ActiveWorkspace?.TryGetWorkspaceFile(uri, out var file) ?? false) 
+                if (rootUri != null && (_workspaces.ActiveWorkspace?.TryGetWorkspaceFile(uri, out var file) ?? false)
                     && file != null && !file.IsMissing && !file.IsLoadError)
                 {
                     UserControl view;

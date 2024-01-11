@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.Extensions;
+﻿using Rubberduck.Editor.Commands;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.SettingsProvider;
