@@ -8,7 +8,7 @@ using Rubberduck.UI;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Shell;
-using Rubberduck.UI.WorkspaceExplorer;
+using Rubberduck.UI.Shell.Tools.WorkspaceExplorer;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO.Abstractions;

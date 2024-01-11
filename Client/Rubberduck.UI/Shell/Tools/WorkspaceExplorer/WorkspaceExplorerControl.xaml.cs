@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Rubberduck.UI.WorkspaceExplorer
+namespace Rubberduck.UI.Shell.Tools.WorkspaceExplorer
 {
     /// <summary>
     /// Interaction logic for WorkspaceExplorerControl.xaml

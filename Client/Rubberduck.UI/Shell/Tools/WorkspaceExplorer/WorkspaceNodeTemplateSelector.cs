@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Rubberduck.UI.WorkspaceExplorer
+namespace Rubberduck.UI.Shell.Tools.WorkspaceExplorer
 {
     public class WorkspaceNodeTemplateSelector : DataTemplateSelector
     {

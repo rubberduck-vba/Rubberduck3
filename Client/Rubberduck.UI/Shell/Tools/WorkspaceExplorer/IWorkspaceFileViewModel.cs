@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.UI.WorkspaceExplorer
+﻿namespace Rubberduck.UI.Shell.Tools.WorkspaceExplorer
 {
     public interface IWorkspaceFileViewModel : IWorkspaceTreeNode
     {

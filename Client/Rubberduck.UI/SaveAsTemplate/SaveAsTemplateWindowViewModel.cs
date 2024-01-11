@@ -1,8 +1,8 @@
 ﻿using Rubberduck.Resources.Menus;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services;
+using Rubberduck.UI.Shell.Tools.WorkspaceExplorer;
 using Rubberduck.UI.Windows;
-using Rubberduck.UI.WorkspaceExplorer;
 using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;

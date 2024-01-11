@@ -1,5 +1,5 @@
 ﻿using Rubberduck.UI;
-using Rubberduck.UI.WorkspaceExplorer;
+using Rubberduck.UI.Shell.Tools.WorkspaceExplorer;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;

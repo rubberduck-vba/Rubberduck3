@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace Rubberduck.UI.WorkspaceExplorer
+namespace Rubberduck.UI.Shell.Tools.WorkspaceExplorer
 {
     public interface IWorkspaceFolderViewModel : IWorkspaceTreeNode
     {

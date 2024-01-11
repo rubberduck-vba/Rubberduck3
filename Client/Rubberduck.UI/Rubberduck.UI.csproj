@@ -10,13 +10,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="RubberduckEditor\**" />
-    <Compile Remove="Shell\Tools\**" />
     <EmbeddedResource Remove="RubberduckEditor\**" />
-    <EmbeddedResource Remove="Shell\Tools\**" />
     <None Remove="RubberduckEditor\**" />
-    <None Remove="Shell\Tools\**" />
     <Page Remove="RubberduckEditor\**" />
-    <Page Remove="Shell\Tools\**" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Resources\Custom\background-ducky.png" />

@@ -3,7 +3,7 @@ using Rubberduck.UI.Windows;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
-namespace Rubberduck.UI.WorkspaceExplorer
+namespace Rubberduck.UI.Shell.Tools.WorkspaceExplorer
 {
     public interface IWorkspaceExplorerViewModel : IToolWindowViewModel
     {

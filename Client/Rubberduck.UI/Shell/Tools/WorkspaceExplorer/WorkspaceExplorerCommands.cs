@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace Rubberduck.UI.WorkspaceExplorer
+namespace Rubberduck.UI.Shell.Tools.WorkspaceExplorer
 {
     public static class WorkspaceExplorerCommands
     {
