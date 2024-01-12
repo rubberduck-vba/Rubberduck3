@@ -1,6 +1,5 @@
 ﻿using Dragablz;
 using Rubberduck.Editor.Commands;
-using Rubberduck.Editor.Shell.StatusBar;
 using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI;
 using Rubberduck.UI.Chrome;

@@ -69,21 +69,22 @@ namespace Rubberduck.UI.Command.SharedHandlers
 
             if (parameter is IToolWindowViewModel toolwindow)
             {
-                _shell.ViewModel.BottomPanelToolWindows.Remove(toolwindow);
-                var keepExpanded = _shell.View.LeftPaneExpander.IsExpanded = _shell.ViewModel.BottomPanelToolWindows.Any(e => e.IsPinned && e.DockingLocation == toolwindow.DockingLocation);
                 switch (toolwindow.DockingLocation)
                 {
                     case DockingLocation.DockLeft:
+                        _shell.ViewModel.LeftPanelToolWindows.Remove(toolwindow);
                         _shell.View.LeftPaneToolTabs.RemoveFromSource(toolwindow);
-                        _shell.View.LeftPaneExpander.IsExpanded = keepExpanded;
+                        _shell.View.LeftPaneExpander.IsExpanded = _shell.ViewModel.LeftPanelToolWindows.Any(e => e.IsPinned && e.DockingLocation == toolwindow.DockingLocation);
                         break;
                     case DockingLocation.DockRight:
+                        _shell.ViewModel.RightPanelToolWindows.Remove(toolwindow);
                         _shell.View.RightPaneToolTabs.RemoveFromSource(toolwindow);
-                        _shell.View.RightPaneExpander.IsExpanded = keepExpanded;
+                        _shell.View.RightPaneExpander.IsExpanded = _shell.ViewModel.RightPanelToolWindows.Any(e => e.IsPinned && e.DockingLocation == toolwindow.DockingLocation);
                         break;
                     case DockingLocation.DockBottom:
+                        _shell.ViewModel.BottomPanelToolWindows.Remove(toolwindow);
                         _shell.View.BottomPaneToolTabs.RemoveFromSource(toolwindow);
-                        _shell.View.BottomPaneExpander.IsExpanded = keepExpanded;
+                        _shell.View.BottomPaneExpander.IsExpanded = _shell.ViewModel.BottomPanelToolWindows.Any(e => e.IsPinned && e.DockingLocation == toolwindow.DockingLocation);
                         break;
                 }
             }

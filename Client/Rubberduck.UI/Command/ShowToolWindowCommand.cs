@@ -2,7 +2,6 @@
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Windows;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
