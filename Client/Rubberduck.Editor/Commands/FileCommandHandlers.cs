@@ -47,15 +47,15 @@ namespace Rubberduck.Editor.Commands
         public override IEnumerable<CommandBinding> CreateCommandBindings() =>
             Bind(
                 (FileCommands.NewProjectCommand, NewProjectCommand),
-                (FileCommands.OpenProjectCommand, OpenProjectCommand),
-                (FileCommands.SaveDocumentCommand, SaveDocumentCommand),
-                (FileCommands.SaveDocumentAsCommand, SaveDocumentAsCommand),
+                (FileCommands.OpenProjectWorkspaceCommand, OpenProjectCommand),
+                (FileCommands.SaveActiveDocumentCommand, SaveDocumentCommand),
+                (FileCommands.SaveActiveDocumentAsCommand, SaveDocumentAsCommand),
                 (FileCommands.SaveAllDocumentsCommand, SaveAllDocumentsCommand),
                 (FileCommands.SaveProjectAsTemplateCommand, SaveAsProjectTemplateCommand),
-                (FileCommands.CloseDocumentCommand, CloseDocumentCommand),
+                (FileCommands.CloseActiveDocumentCommand, CloseDocumentCommand),
                 (FileCommands.CloseAllDocumentsCommand, CloseAllDocumentsCommand),
-                (FileCommands.CloseWorkspaceCommand, CloseWorkspaceCommand),
-                (FileCommands.SynchronizeWorkspaceCommand, SynchronizeWorkspaceCommand),
+                (FileCommands.CloseProjectWorkspaceCommand, CloseWorkspaceCommand),
+                (FileCommands.SynchronizeProjectWorkspaceCommand, SynchronizeWorkspaceCommand),
                 (FileCommands.ExitCommand, ExitCommand)
             );
     }

@@ -1,23 +1,24 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using Resx = Rubberduck.Resources.v3.RubberduckUICommands;
 
 namespace Rubberduck.UI.Shell.Tools.WorkspaceExplorer
 {
     public static class WorkspaceExplorerCommands
     {
-        public static RoutedCommand OpenFileCommand { get; }
-            = new RoutedCommand(nameof(OpenFileCommand), typeof(WorkspaceExplorerControl));
+        public static RoutedUICommand OpenFileCommand { get; }
+            = new RoutedUICommand(Resx.WorkspaceExplorerCommands_OpenFileCommandText, nameof(OpenFileCommand), typeof(WorkspaceExplorerControl));
 
-        public static RoutedCommand RenameUriCommand { get; }
-            = new RoutedCommand(nameof(RenameUriCommand), typeof(WorkspaceExplorerControl));
+        public static RoutedUICommand RenameUriCommand { get; }
+            = new RoutedUICommand(Resx.WorkspaceExplorerCommands_RenameUriCommandText, nameof(RenameUriCommand), typeof(WorkspaceExplorerControl));
 
-        public static RoutedCommand DeleteUriCommand { get; }
-            = new RoutedCommand(nameof(DeleteUriCommand), typeof(WorkspaceExplorerControl));
+        public static RoutedUICommand DeleteUriCommand { get; }
+            = new RoutedUICommand(Resx.WorkspaceExplorerCommands_DeleteUriCommandText, nameof(DeleteUriCommand), typeof(WorkspaceExplorerControl));
 
-        public static RoutedCommand CreateFileCommand { get; }
-            = new RoutedCommand(nameof(CreateFileCommand), typeof(WorkspaceExplorerControl));
+        public static RoutedUICommand CreateFileCommand { get; }
+            = new RoutedUICommand(Resx.WorkspaceExplorerCommands_CreateFileCommandText, nameof(CreateFileCommand), typeof(WorkspaceExplorerControl));
 
-        public static RoutedCommand CreateFolderCommand { get; }
-            = new RoutedCommand(nameof(CreateFolderCommand), typeof(WorkspaceExplorerControl));
+        public static RoutedUICommand CreateFolderCommand { get; }
+            = new RoutedUICommand(Resx.WorkspaceExplorerCommands_CreateFolderCommandText, nameof(CreateFolderCommand), typeof(WorkspaceExplorerControl));
     }
 }

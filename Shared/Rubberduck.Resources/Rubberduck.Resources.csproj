@@ -9,6 +9,30 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include=".v3\RubberduckMessages.Designer.cs">
+      <DependentUpon>RubberduckMessages.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include=".v3\RubberduckUICommands.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RubberduckUICommands.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include=".v3\RubberduckMessages.resx">
+      <LastGenOutput>RubberduckMessages.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>Rubberduck.Resources.v3</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Include=".v3\RubberduckUICommands.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUICommands.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>Rubberduck.Resources.v3</CustomToolNamespace>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Icons\Custom\attribution.txt" />
     <Resource Include="Icons\Custom\cc_license.txt" />
     <Resource Include="Icons\Custom\Mask\AddPropertyMask.bmp" />
@@ -310,11 +334,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>RubberduckIcons.resx</DependentUpon>
     </Compile>
-    <Compile Update="Messages\RubberduckMessages.Designer.cs">
-      <DependentUpon>RubberduckMessages.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
     <Compile Update="RubberduckUI.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -326,13 +345,12 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckIcons.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Messages\RubberduckMessages.resx">
-      <LastGenOutput>RubberduckMessages.Designer.cs</LastGenOutput>
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
     <EmbeddedResource Update="RubberduckUI.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Messages\" />
   </ItemGroup>
 </Project>
