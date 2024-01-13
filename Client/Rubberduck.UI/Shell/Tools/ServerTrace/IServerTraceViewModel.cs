@@ -9,5 +9,7 @@ namespace Rubberduck.UI.Shell.Tools.ServerTrace
         ICommand ClearContentCommand { get; }
         ICommand OpenLogFileCommand { get; }
         bool IsPaused { get; set; }
+
+        void OnServerTrace(string message, string? verbose);
     }
 }

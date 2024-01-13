@@ -147,7 +147,7 @@
         <Expander x:Name="RightPaneExpander" Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" ExpandDirection="Left"
                   Style="{DynamicResource ArrowlessExpanderTemplate}" AllowDrop="True" Drop="OnToolPanelExpanderDrop" PreviewDrop="OnToolPanelExpanderPreviewDrop"
                   Visibility="{Binding RightPanelToolWindows, Converter={StaticResource HasItemsVisibilityConverter}, Mode=OneWay}"
-                  IsExpanded="{Binding RightPanelToolWindows,Converter={StaticResource HasItemsBoolConverter}, Mode=OneWay}">
+                  IsExpanded="{Binding RightToolPanel.IsExpanded}">
             <Expander.Header>
                 <ListView ItemsSource="{Binding RightPanelToolWindows}" 
                           Background="{DynamicResource ThemeBackgroundDarkColorBrush}"
@@ -200,14 +200,19 @@
                                          Style="{DynamicResource ToolTabControlStyle}"
                                          InterTabController="{StaticResource InterToolTabController}"
                                          ItemContainerStyle="{DynamicResource ToolTabItemStyle}"
-                                         ItemsSource="{Binding RightPanelToolWindows}"/>
+                                         ItemsSource="{Binding RightPanelToolWindows}">
+                    <dragablz:TabablzControl.ContentTemplate>
+                        <DataTemplate>
+                            <ContentControl Content="{Binding ContentControl}" />
+                        </DataTemplate>
+                    </dragablz:TabablzControl.ContentTemplate>
+                </dragablz:TabablzControl>
             </dockablz:Layout>
         </Expander>
 
         <Expander x:Name="BottomPaneExpander" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" ExpandDirection="Up"
                   Style="{DynamicResource ArrowlessExpanderTemplate}" AllowDrop="True"
-                  Visibility="{Binding BottomPanelToolWindows, Converter={StaticResource HasItemsVisibilityConverter}, Mode=OneWay}"
-                  IsExpanded="{Binding BottomPanelToolWindows, Converter={StaticResource HasItemsBoolConverter}, Mode=OneWay}">
+                  IsExpanded="{Binding BottomToolPanel.IsExpanded}">
             <Expander.Header>
                 <ListView ItemsSource="{Binding BottomPanelToolWindows}" 
                           Background="{DynamicResource ThemeBackgroundDarkColorBrush}"
@@ -262,7 +267,13 @@
                                          Style="{DynamicResource BottomToolTabControlStyle}"
                                          InterTabController="{StaticResource InterToolTabController}"
                                          ItemContainerStyle="{DynamicResource ToolTabItemStyle}"
-                                         ItemsSource="{Binding BottomPanelToolWindows}"/>
+                                         ItemsSource="{Binding BottomPanelToolWindows}">
+                    <dragablz:TabablzControl.ContentTemplate>
+                        <DataTemplate>
+                            <ContentControl Content="{Binding ContentControl}" />
+                        </DataTemplate>
+                    </dragablz:TabablzControl.ContentTemplate>
+                </dragablz:TabablzControl>
             </dockablz:Layout>
         </Expander>
 

@@ -3,7 +3,6 @@ using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.ServerPlatform;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Shell.StatusBar;
 using System;
 using System.Collections.Generic;

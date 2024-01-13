@@ -25,19 +25,19 @@
         </Menu.ItemsPanel>
         <MenuItem Header="_File">
             <MenuItem Header="_New Project..." Command="{x:Static cmd:FileCommands.NewProjectCommand}" />
-            <MenuItem Header="_Open..." Command="{x:Static cmd:FileCommands.OpenProjectCommand}" />
+            <MenuItem Header="_Open..." Command="{x:Static cmd:FileCommands.OpenProjectWorkspaceCommand}" />
             <Separator />
-            <MenuItem Header="_Save" Command="{x:Static cmd:FileCommands.SaveDocumentCommand}" />
-            <MenuItem Header="Save _As..." Command="{x:Static cmd:FileCommands.SaveDocumentAsCommand}" />
+            <MenuItem Header="_Save" Command="{x:Static cmd:FileCommands.SaveActiveDocumentCommand}" />
+            <MenuItem Header="Save _As..." Command="{x:Static cmd:FileCommands.SaveActiveDocumentAsCommand}" />
             <MenuItem Header="Save A_ll" Command="{x:Static cmd:FileCommands.SaveAllDocumentsCommand}" />
             <Separator />
             <MenuItem Header="Save As _Template..." Command="{x:Static cmd:FileCommands.SaveProjectAsTemplateCommand}" />
             <Separator />
-            <MenuItem Header="_Close" Command="{x:Static cmd:FileCommands.CloseDocumentCommand}" />
+            <MenuItem Header="_Close" Command="{x:Static cmd:FileCommands.CloseActiveDocumentCommand}" />
             <MenuItem Header="Close _All" Command="{x:Static cmd:FileCommands.CloseAllDocumentsCommand}" />
-            <MenuItem Header="Close Project" Command="{x:Static cmd:FileCommands.CloseWorkspaceCommand}" />
+            <MenuItem Header="Close Project" Command="{x:Static cmd:FileCommands.CloseProjectWorkspaceCommand}" />
             <Separator />
-            <MenuItem Header="S_ynchronize" Command="{x:Static cmd:FileCommands.SynchronizeWorkspaceCommand}"/>
+            <MenuItem Header="S_ynchronize" Command="{x:Static cmd:FileCommands.SynchronizeProjectWorkspaceCommand}"/>
             <MenuItem Header="E_xit" Command="{x:Static cmd:FileCommands.ExitCommand}" />
         </MenuItem>
         <MenuItem Header="_Edit">

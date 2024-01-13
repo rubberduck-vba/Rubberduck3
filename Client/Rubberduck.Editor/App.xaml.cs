@@ -319,7 +319,7 @@ namespace Rubberduck.Editor
             services.AddSingleton<ISettingViewModelFactory, SettingViewModelFactory>();
 
             services.AddSingleton<IWorkspaceService, WorkspaceService>();
-            services.AddSingleton<LanguageServerTraceViewModel>();
+            services.AddSingleton<ILanguageServerTraceViewModel, LanguageServerTraceViewModel>();
             services.AddSingleton<IWorkspaceExplorerViewModel, WorkspaceExplorerViewModel>();
             services.AddSingleton<IWorkspaceStateManager, WorkspaceStateManager>();
             services.AddSingleton<OpenDocumentCommand>();

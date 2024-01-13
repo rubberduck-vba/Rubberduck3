@@ -148,44 +148,22 @@
                                 TargetName="ExpandSite"
                                 Value="Visible" />
                         </Trigger>
-                        <Trigger Property="ExpandDirection"
-                             Value="Right">
-                            <Setter Property="DockPanel.Dock"
-                                TargetName="ExpandSite"
-                                Value="Right" />
-                            <Setter Property="DockPanel.Dock"
-                                TargetName="HeaderSite"
-                                Value="Left" />
-                            <Setter Property="Style"
-                                TargetName="HeaderSite"
-                                Value="{StaticResource ExpanderRightHeaderStyle}" />
+                        <Trigger Property="ExpandDirection" Value="Right">
+                            <Setter Property="DockPanel.Dock" TargetName="ExpandSite" Value="Right" />
+                            <Setter Property="DockPanel.Dock" TargetName="HeaderSite" Value="Left" />
+                            <Setter Property="Style" TargetName="HeaderSite" Value="{StaticResource ExpanderRightHeaderStyle}" />
                         </Trigger>
-                        <Trigger Property="ExpandDirection"
-                             Value="Up">
-                            <Setter Property="DockPanel.Dock"
-                                TargetName="ExpandSite"
-                                Value="Top" />
-                            <Setter Property="DockPanel.Dock"
-                                TargetName="HeaderSite"
-                                Value="Bottom" />
-                            <Setter Property="Style"
-                                TargetName="HeaderSite"
-                                Value="{StaticResource ExpanderUpHeaderStyle}" />
+                        <Trigger Property="ExpandDirection" Value="Up">
+                            <Setter Property="DockPanel.Dock" TargetName="ExpandSite" Value="Top" />
+                            <Setter Property="DockPanel.Dock" TargetName="HeaderSite" Value="Bottom" />
+                            <Setter Property="Style" TargetName="HeaderSite" Value="{StaticResource ExpanderUpHeaderStyle}" />
                         </Trigger>
-                        <Trigger Property="ExpandDirection"
-                             Value="Left">
-                            <Setter Property="DockPanel.Dock"
-                                TargetName="ExpandSite"
-                                Value="Left" />
-                            <Setter Property="DockPanel.Dock"
-                                TargetName="HeaderSite"
-                                Value="Right" />
-                            <Setter Property="Style"
-                                TargetName="HeaderSite"
-                                Value="{StaticResource ExpanderLeftHeaderStyle}" />
+                        <Trigger Property="ExpandDirection" Value="Left">
+                            <Setter Property="DockPanel.Dock" TargetName="ExpandSite" Value="Left" />
+                            <Setter Property="DockPanel.Dock" TargetName="HeaderSite" Value="Right" />
+                            <Setter Property="Style" TargetName="HeaderSite" Value="{StaticResource ExpanderLeftHeaderStyle}" />
                         </Trigger>
-                        <Trigger Property="IsEnabled"
-                             Value="false">
+                        <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Foreground"
                                 Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                         </Trigger>

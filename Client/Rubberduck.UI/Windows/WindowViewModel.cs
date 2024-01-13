@@ -1,6 +1,6 @@
-﻿using Rubberduck.Resources.Messages;
-using Rubberduck.UI.Command.SharedHandlers;
+﻿using Rubberduck.UI.Command.SharedHandlers;
 using System.Windows.Input;
+using Resx = Rubberduck.Resources.v3.RubberduckMessages;
 
 namespace Rubberduck.UI.Windows
 {
@@ -55,7 +55,7 @@ namespace Rubberduck.UI.Windows
         public virtual bool ShowAcceptButton { get; } = true;
         public virtual bool ShowCancelButton { get; } = true;
 
-        public virtual string AcceptButtonText { get; } = RubberduckMessages.MessageActionButton_Accept;
-        public virtual string CancelButtonText { get; } = RubberduckMessages.MessageActionButton_Cancel;
+        public virtual string AcceptButtonText { get; } = Resx.MessageActionButton_Accept;
+        public virtual string CancelButtonText { get; } = Resx.MessageActionButton_Cancel;
     }
 }
