@@ -107,8 +107,8 @@
                     <TreeView.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="New workspace" Command="{x:Static cmd:FileCommands.NewProjectCommand}" />
-                            <MenuItem Header="Open workspace" Command="{x:Static cmd:FileCommands.OpenProjectCommand}" />
-                            <MenuItem Header="Synchronize to VBE" Command="{x:Static cmd:FileCommands.SynchronizeWorkspaceCommand}" />
+                            <MenuItem Header="Open workspace" Command="{x:Static cmd:FileCommands.OpenProjectWorkspaceCommand}" />
+                            <MenuItem Header="Synchronize to VBE" Command="{x:Static cmd:FileCommands.SynchronizeProjectWorkspaceCommand}" />
                         </ContextMenu>
                     </TreeView.ContextMenu>
 
@@ -125,12 +125,12 @@
                                             <MenuItem Header="File..." Command="{x:Static local:WorkspaceExplorerCommands.CreateFileCommand}" CommandParameter="{Binding Uri}" />
                                         </MenuItem>
                                         <Separator />
-                                        <MenuItem Header="Synchronize to VBE" Command="{x:Static cmd:FileCommands.SynchronizeWorkspaceCommand}" CommandParameter="{Binding Uri}" />
+                                        <MenuItem Header="Synchronize to VBE" Command="{x:Static cmd:FileCommands.SynchronizeProjectWorkspaceCommand}" CommandParameter="{Binding Uri}" />
                                         <MenuItem Header="Open Folder in File Explorer" Command="{x:Static cmd:FileCommands.OpenFolderInWindowsExplorerCommand}" CommandParameter="{Binding Uri}" />
                                         <Separator />
-                                        <MenuItem Header="Rename" Command="{x:Static cmd:FileCommands.RenameWorkspaceCommand}" CommandParameter="{Binding Uri}" />
+                                        <MenuItem Header="Rename" Command="{x:Static cmd:FileCommands.RenameProjectWorkspaceCommand}" CommandParameter="{Binding Uri}" />
                                         <Separator />
-                                        <MenuItem Header="Close" Command="{x:Static cmd:FileCommands.CloseWorkspaceCommand}" CommandParameter="{Binding Uri}" />
+                                        <MenuItem Header="Close" Command="{x:Static cmd:FileCommands.CloseProjectWorkspaceCommand}" CommandParameter="{Binding Uri}" />
                                     </ContextMenu>
                                 </Label.ContextMenu>
                             </Label>
@@ -173,10 +173,10 @@
                                   Command="{x:Static cmd:FileCommands.NewProjectCommand}"
                                   ToolTip="Create a new project"/>
                 <shell:FlatButton Icon="{DynamicResource FolderOpenIcon}" 
-                                  Command="{x:Static cmd:FileCommands.OpenProjectCommand}"
+                                  Command="{x:Static cmd:FileCommands.OpenProjectWorkspaceCommand}"
                                   ToolTip="Open an existing project"/>
                 <shell:FlatButton Icon="{DynamicResource SynchronizeIcon}" 
-                                  Command="{x:Static cmd:FileCommands.SynchronizeWorkspaceCommand}"
+                                  Command="{x:Static cmd:FileCommands.SynchronizeProjectWorkspaceCommand}"
                                   ToolTip="Synchronize to VBE"/>
             </WrapPanel>
 

@@ -31,6 +31,7 @@
     <BitmapImage x:Key="CancelIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/ban-solid.png" />
 
     <BitmapImage x:Key="SynchronizeIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/arrows-spin-solid.png"/>
+    <BitmapImage x:Key="RestartServerIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/power-off-solid.png"/>
 
     <BitmapImage x:Key="ClearFolderClosedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/folder-closed-regular.png" />
     <BitmapImage x:Key="ClearFolderOpenIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/folder-open-regular.png" />
@@ -50,7 +51,7 @@
     <BitmapImage x:Key="CircleCheckFileIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/file-circle-check-solid.png" />
     <BitmapImage x:Key="BlocksIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/cubes-solid.png" />
 
-    <BitmapImage x:Key="HeartMonitorIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/file-waveform-solid.png" />
+    <BitmapImage x:Key="LogFileIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/file-waveform-solid.png" />
     <BitmapImage x:Key="EraserIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/eraser-solid.png" />
     <BitmapImage x:Key="PauseIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/pause-solid.png" />
     <BitmapImage x:Key="CopyIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/copy-solid.png" />
