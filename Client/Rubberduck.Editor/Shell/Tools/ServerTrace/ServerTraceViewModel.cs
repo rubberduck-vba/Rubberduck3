@@ -1,4 +1,6 @@
-﻿using Rubberduck.SettingsProvider.Model.Editor.Tools;
+﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services;
@@ -33,7 +35,7 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
         public ICommand ClearContentCommand { get; }
         public ICommand OpenLogFileCommand { get; }
 
-        private bool _isPaused = true;
+        private bool _isPaused = false;
         public bool IsPaused
         {
             get => _isPaused;
@@ -61,19 +63,21 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
             }
         }
 
-        
-        public void OnServerTrace(string message, string? verbose)
+
+        public void OnServerMessage(LogMessagePayload payload)
         {
-            if (_isPaused) 
+            if (_isPaused)
             {
-                return; 
+                return;
             }
 
-            var line = message;
-            verbose = _showVerbose ? verbose : null;
+            // TODO add the payload to a collection of items instead of building a string.
+
+            var line = payload.Message;
+            var verbose = _showVerbose ? payload.Verbose : null;
             if (!string.IsNullOrWhiteSpace(verbose))
             {
-                line = $"{line} | {verbose}";
+                line = $"{payload.Timestamp} {payload.Level.ToString().ToUpperInvariant()} {line} | {verbose}";
             }
 
             _builder.AppendLine(line);

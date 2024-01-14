@@ -8,6 +8,8 @@ namespace Rubberduck.InternalApi.Extensions
 {
     public static class LoggerExtensions
     {
+        public static char VerboseMessageSeparator { get; } = '|';
+
         public class LogPerformanceOptions
         {
             private static readonly SortedDictionary<TimeSpan, LogLevel> _defaultMappings = new()
@@ -135,7 +137,7 @@ namespace Rubberduck.InternalApi.Extensions
             var logMessage = message;
             if (level == TraceLevel.Verbose && !string.IsNullOrWhiteSpace(verbose))
             {
-                logMessage = $"{message} | {verbose}";
+                logMessage = $"{message} {VerboseMessageSeparator} {verbose}";
             }
 
             logger.Log(logLevel, "{logMessage}", logMessage);

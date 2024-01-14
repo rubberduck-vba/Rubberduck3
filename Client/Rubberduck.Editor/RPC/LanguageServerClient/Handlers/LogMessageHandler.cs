@@ -6,16 +6,22 @@ using System.Threading;
 using Rubberduck.ServerPlatform;
 using System;
 using System.Collections.Generic;
+using Rubberduck.UI.Services;
+using Rubberduck.UI.Shell.Tools.ServerTrace;
+using System.Text.Json;
+using Rubberduck.InternalApi.ServerPlatform;
 
 namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
 {
     public class LogMessageHandler : LogMessageHandlerBase
     {
-        private readonly ServerPlatformServiceHelper _service;
+        private readonly UIServiceHelper _service;
+        private readonly ILanguageServerTraceViewModel _traceToolwindow;
 
-        public LogMessageHandler(ServerPlatformServiceHelper service)
+        public LogMessageHandler(UIServiceHelper service, ILanguageServerTraceViewModel traceToolWindow)
         {
             _service = service;
+            _traceToolwindow = traceToolWindow;
         }
 
         private static readonly IDictionary<MessageType, Action<ServerPlatformServiceHelper, string>> MessageTypeMap = 
@@ -30,22 +36,16 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
         public override async Task<Unit> Handle(LogMessageParams request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var service = _service;
-            var message = request.Message;
             var type = request.Type;
 
-            service.RunAction(() =>
-            {
-                if (MessageTypeMap.TryGetValue(type, out var action))
-                {
-                    action.Invoke(service, message);
-                }
-                else
-                {
-                    service.LogDebug(message);
-                }
-            }, nameof(LogMessageHandler));
-            
+            var service = _service;
+            service.LogTrace("Received LogTrace request.");
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var payload = JsonSerializer.Deserialize<LogMessagePayload>(request.Message);
+            _traceToolwindow.OnServerMessage(payload);
+
             return await Task.FromResult(Unit.Value);
         }
     }
