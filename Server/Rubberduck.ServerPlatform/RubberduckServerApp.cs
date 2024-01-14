@@ -2,7 +2,8 @@
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Extensions.Logging;
-using OmniSharp.Extensions.LanguageServer.Client;
+using NLog.Targets;
+//using OmniSharp.Extensions.LanguageServer.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
@@ -12,6 +13,7 @@ using OmniSharp.Extensions.LanguageServer.Server;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
+using Rubberduck.ServerPlatform.Logging;
 using Rubberduck.SettingsProvider.Model;
 using Rubberduck.SettingsProvider.Model.ServerStartup;
 using System;
@@ -27,6 +29,13 @@ using OmniSharpLanguageServer = OmniSharp.Extensions.LanguageServer.Server.Langu
 
 namespace Rubberduck.ServerPlatform
 {
+    public class LanguageServerProvider
+    {
+        internal static OmniSharpLanguageServer? Server { get; set; }
+
+        public ILanguageServer? LanguageServer => Server;
+    }
+
     public abstract class RubberduckServerApp<TSettings, TStartupSettings> : IDisposable
         where TSettings : RubberduckSetting
         where TStartupSettings : RubberduckSetting, IHealthCheckSettingsProvider
@@ -56,6 +65,7 @@ namespace Rubberduck.ServerPlatform
             {
                 var services = new ServiceCollection();
                 services.AddLogging(ConfigureLogging);
+
                 ConfigureServices(_startupOptions, services);
 
                 _serviceProvider = services.BuildServiceProvider();
@@ -63,6 +73,7 @@ namespace Rubberduck.ServerPlatform
                 _serverState = GetServerState(_serviceProvider);
 
                 _server = await OmniSharpLanguageServer.From(ConfigureServer, _serviceProvider, _tokenSource.Token);
+                LanguageServerProvider.Server = _server;
 
                 await _server.WaitForExit;
             }
@@ -91,6 +102,16 @@ namespace Rubberduck.ServerPlatform
 
         protected virtual void ConfigureLogging(ILoggingBuilder builder)
         {
+            LogManager.Setup(setup =>
+            {
+                setup.SetupExtensions(ext =>
+                {
+                    ext.RegisterTarget<LanguageServerClientLoggerTarget>();
+                });
+            });
+
+            builder.Services.AddSingleton<LanguageServerProvider>();
+
             builder.AddNLog(provider =>
             {
                 var factory = new LogFactory

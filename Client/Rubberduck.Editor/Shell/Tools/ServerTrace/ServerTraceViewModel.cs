@@ -33,7 +33,7 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
         public ICommand ClearContentCommand { get; }
         public ICommand OpenLogFileCommand { get; }
 
-        private bool _isPaused = true;
+        private bool _isPaused = false;
         public bool IsPaused
         {
             get => _isPaused;

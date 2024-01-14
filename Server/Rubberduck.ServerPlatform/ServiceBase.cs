@@ -10,12 +10,6 @@ using System.Runtime.CompilerServices;
 
 namespace Rubberduck.ServerPlatform
 {
-    public class ServerPlatformServiceHelper : ServiceBase
-    {
-        public ServerPlatformServiceHelper(ILogger<ServerPlatformServiceHelper> logger, RubberduckSettingsProvider settings, IWorkDoneProgressStateService workdone, PerformanceRecordAggregator performance) 
-            : base(logger, settings, workdone, performance) { }
-    }
-
     public abstract class ServiceBase
     {
         private readonly ILogger _logger;
