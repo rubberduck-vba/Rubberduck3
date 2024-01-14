@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using Rubberduck.ServerPlatform;
 using Rubberduck.SettingsProvider;
+using OmniSharp.Extensions.LanguageServer.Client;
+using Rubberduck.Editor.RPC.LanguageServerClient.Handlers;
 
 namespace Rubberduck.Editor.RPC.LanguageServerClient
 {
@@ -20,6 +22,15 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
         protected override void ConfigureClientLogging(ILoggingBuilder builder)
         {
             builder.AddNLog("NLog-client.config");
+        }
+
+        protected override LanguageClientOptions ConfigureLanguageClient(LanguageClientOptions options)
+        {
+            options
+                .WithHandler<LogTraceHandler>()
+                .WithHandler<LogMessageHandler>();
+
+            return options;
         }
 
         protected override ClientCapabilities GetClientCapabilities()
