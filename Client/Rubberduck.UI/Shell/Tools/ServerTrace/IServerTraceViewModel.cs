@@ -1,4 +1,6 @@
-﻿using Rubberduck.UI.Windows;
+﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.UI.Windows;
 using System.Windows.Input;
 
 namespace Rubberduck.UI.Shell.Tools.ServerTrace
@@ -10,6 +12,6 @@ namespace Rubberduck.UI.Shell.Tools.ServerTrace
         ICommand OpenLogFileCommand { get; }
         bool IsPaused { get; set; }
 
-        void OnServerTrace(string message, string? verbose);
+        void OnServerMessage(LogMessagePayload payload);
     }
 }

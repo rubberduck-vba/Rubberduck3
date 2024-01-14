@@ -5,6 +5,7 @@ using Rubberduck.InternalApi.Extensions;
 using System.Collections.Generic;
 using NLog;
 using NLog.Targets;
+using Rubberduck.InternalApi.ServerPlatform;
 
 namespace Rubberduck.ServerPlatform.Logging
 {
@@ -36,11 +37,13 @@ namespace Rubberduck.ServerPlatform.Logging
                 return;
             }
 
+            var payload = LogMessagePayload.FromLogEventInfo(logEvent).ToString();
+
             if (logEvent.Level == LogLevel.Trace)
             {
                 var request = new LogTraceParams
                 {
-                    Message = logEvent.FormattedMessage,
+                    Message = payload,
                 };
                 lsp.LogTrace(request);
             }
@@ -48,7 +51,7 @@ namespace Rubberduck.ServerPlatform.Logging
             {
                 var request = new LogMessageParams
                 {
-                    Message = logEvent.FormattedMessage,
+                    Message = payload,
                     Type = _map[logEvent.Level]
                 };
                 lsp.LogMessage(request);
