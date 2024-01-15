@@ -41,16 +41,14 @@ namespace Rubberduck.UI.Shared.Message
 
     public class MessageService : UIServiceHelper, IMessageService
     {
-        private readonly IUiDispatcher _ui;
         private readonly IMessageWindowFactory _viewFactory;
 
         public MessageService(RubberduckSettingsProvider settings, ILogger<MessageService> logger,
-            IUiDispatcher ui,
+            IUiContextProvider ui,
             IMessageWindowFactory viewFactory,
             PerformanceRecordAggregator performance)
-            : base(logger, settings, performance)
+            : base(ui, logger, settings, performance)
         {
-            _ui = ui;
             _viewFactory = viewFactory;
         }
 
@@ -67,7 +65,7 @@ namespace Rubberduck.UI.Shared.Message
                 MessageAction? selection = null;
                 IMessageWindowViewModel? viewModel = null;
 
-                _ui.Invoke(() =>
+                RunOnMainThread(() =>
                 {
                     var (view, viewModel) = _viewFactory.Create(model, actions ?? defaultActions);
                     view.ShowDialog();
@@ -101,7 +99,7 @@ namespace Rubberduck.UI.Shared.Message
                 MessageAction? selection = null;
                 IMessageWindowViewModel? viewModel = null;
 
-                _ui.Invoke(() =>
+                RunOnMainThread(() =>
                 {
                     var (view, viewModel) = _viewFactory.Create(model, actions);
                     view.ShowDialog();

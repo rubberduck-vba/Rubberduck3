@@ -315,6 +315,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>RubberduckUI.resx</DependentUpon>
     </Compile>
+    <Compile Update="v3\LogLevelIcons.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LogLevelIcons.resx</DependentUpon>
+    </Compile>
     <Compile Update="v3\RubberduckMessages.Designer.cs">
       <DependentUpon>RubberduckMessages.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -334,6 +339,11 @@
     <EmbeddedResource Update="RubberduckUI.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="v3\LogLevelIcons.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>LogLevelIcons.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>Rubberduck.Resources.v3</CustomToolNamespace>
     </EmbeddedResource>
     <EmbeddedResource Update="v3\RubberduckMessages.resx">
       <LastGenOutput>RubberduckMessages.Designer.cs</LastGenOutput>

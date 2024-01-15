@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.ServerPlatform;
+﻿using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Shell.Tools.ServerTrace;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
@@ -15,6 +15,7 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
     public class ServerTraceViewModel : ToolWindowViewModelBase, IServerTraceViewModel
     {
         private readonly StringBuilder _builder = new();
+        private readonly UIServiceHelper _service;
 
         public ServerTraceViewModel(UIServiceHelper service,
             ShowRubberduckSettingsCommand showSettingsCommand,
@@ -22,6 +23,8 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
             OpenLogFileCommand openLogFileCommand)
             : base(DockingLocation.DockBottom, showSettingsCommand, closeToolWindowCommand)
         {
+            _service = service;
+
             OpenLogFileCommand = openLogFileCommand;
             CopyContentCommand = new DelegateCommand(service, param => Clipboard.SetText(TextContent), param => TextContent.Length > 0);
             ClearContentCommand = new DelegateCommand(service, param =>
@@ -63,6 +66,9 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
             }
         }
 
+        public ObservableCollection<LogMessageViewModel> LogMessages { get; } = new();
+
+        public LogMessageFiltersViewModel Filters { get; } = new();
 
         public void OnServerMessage(LogMessagePayload payload)
         {
@@ -71,17 +77,7 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
                 return;
             }
 
-            // TODO add the payload to a collection of items instead of building a string.
-
-            var line = payload.Message;
-            var verbose = _showVerbose ? payload.Verbose : null;
-            if (!string.IsNullOrWhiteSpace(verbose))
-            {
-                line = $"{payload.Timestamp} {payload.Level.ToString().ToUpperInvariant()} {line} | {verbose}";
-            }
-
-            _builder.AppendLine(line);
-            TextContent = _builder.ToString();
+            Application.Current.Dispatcher.Invoke(() => LogMessages.Add(new(payload)));
         }
     }
 }

@@ -6,7 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
-             xmlns:local="clr-namespace:Rubberduck.UI.Shell.Tools.ServerTrace"
+             xmlns:local="clr-namespace:Rubberduck.UI.Shell.Tools.ServerTrace" xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d" 
              x:Name="LanguageServerTraceRoot"
              MinHeight="125"
@@ -53,9 +53,84 @@
                 <shell:FlatButton Height="16" Width="16"
                                   Command="{x:Static local:ServerTraceCommands.ShutdownServerCommand}"
                                   Icon="{DynamicResource RestartServerIcon}" />
+
+                <Menu>
+                    <MenuItem>
+                        <MenuItem.Header>
+                            <Image Source="{DynamicResource FilterIcon}" Style="{StaticResource IconStyle16}" />
+                        </MenuItem.Header>
+                        <MenuItem>
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{DynamicResource ClearFilterIcon}" Height="16" />
+                                    <TextBlock VerticalAlignment="Center" Margin="5,0" Text="Show all" />
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <Separator/>
+                        <MenuItem IsCheckable="True" IsChecked="{Binding Filters.ShowTraceItems}">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{DynamicResource TraceLogIcon16}" Style="{StaticResource IconStyle16}" />
+                                    <TextBlock VerticalAlignment="Center" Margin="5,0" Text="Trace" />
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem IsCheckable="True" IsChecked="{Binding Filters.ShowDebugItems}">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{DynamicResource DebugLogIcon16}" Style="{StaticResource IconStyle16}" />
+                                    <TextBlock VerticalAlignment="Center" Margin="5,0" Text="Debug" />
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem IsCheckable="True" IsChecked="{Binding Filters.ShowInfoItems}">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{DynamicResource InfoLogIcon16}" Style="{StaticResource IconStyle16}" />
+                                    <TextBlock VerticalAlignment="Center" Margin="5,0" Text="Information" />
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem IsCheckable="True" IsChecked="{Binding Filters.ShowWarningItems}">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{DynamicResource WarnLogIcon16}" Style="{StaticResource IconStyle16}" />
+                                    <TextBlock VerticalAlignment="Center" Margin="5,0" Text="Warning" />
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem IsCheckable="True" IsChecked="{Binding Filters.ShowErrorItems}">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{DynamicResource ErrorLogIcon16}" Style="{StaticResource IconStyle16}" />
+                                    <TextBlock VerticalAlignment="Center" Margin="5,0" Text="Error" />
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </MenuItem>
+                </Menu>
+                
             </WrapPanel>
+
+            <ListView Grid.Row="1" ItemsSource="{Binding LogMessages}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <ListView.ItemTemplate>
+                    <DataTemplate DataType="local:LogMessageViewModel">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="18" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" Source="{Binding Level, Converter={StaticResource LogLevelIconConverter}}" Style="{DynamicResource IconStyle16}" />
+                            <Label Grid.Column="1" Style="{DynamicResource TraceLogRecordLabelStyle}" Content="{Binding Timestamp}" ContentStringFormat="{}{0:yyyy-MM-dd hh:mm:ss.fff}" />
+                            <Label Grid.Column="2" Style="{DynamicResource TraceLogRecordLabelStyle}" Content="{Binding Message}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
             
-            <shell:BindableTextEditor Grid.Row="1" IsReadOnly="True" IsEnabled="True"
+            <!--<shell:BindableTextEditor Grid.Row="1" IsReadOnly="True" IsEnabled="True"
                                       Text="{Binding TextContent}" WordWrap="False"
                                       ShowLineNumbers="True"
                                       HorizontalScrollBarVisibility="Auto"
@@ -63,7 +138,7 @@
                                       Background="{DynamicResource ThemeWhiteLightColorBrush75}"
                                       Foreground="{DynamicResource ThemeAccent1DarkColorBrush}"
                                       FontFamily="Consolas" FontSize="12">
-            </shell:BindableTextEditor>
+            </shell:BindableTextEditor>-->
         </Grid>
     </shell:ThunderFrame>
 </UserControl>
