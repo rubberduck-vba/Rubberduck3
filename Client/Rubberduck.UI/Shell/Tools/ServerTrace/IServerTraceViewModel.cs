@@ -2,6 +2,7 @@
 using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.UI.Windows;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
@@ -31,6 +32,8 @@ namespace Rubberduck.UI.Shell.Tools.ServerTrace
         ICommand CopyContentCommand { get; }
         ICommand ClearContentCommand { get; }
         ICommand OpenLogFileCommand { get; }
+        ICommand PauseResumeTraceCommand { get; }
+        ICommand ShutdownServerCommand { get; }
         bool IsPaused { get; set; }
 
         void OnServerMessage(LogMessagePayload payload);

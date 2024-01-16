@@ -5,7 +5,10 @@ using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Shell.Tools.ServerTrace;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
@@ -14,7 +17,6 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
 {
     public class ServerTraceViewModel : ToolWindowViewModelBase, IServerTraceViewModel
     {
-        private readonly StringBuilder _builder = new();
         private readonly UIServiceHelper _service;
 
         public ServerTraceViewModel(UIServiceHelper service,
@@ -26,17 +28,28 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
             _service = service;
 
             OpenLogFileCommand = openLogFileCommand;
-            CopyContentCommand = new DelegateCommand(service, param => Clipboard.SetText(TextContent), param => TextContent.Length > 0);
+            CopyContentCommand = new DelegateCommand(service, param => Clipboard.SetText(string.Join('\n', LogMessages.Select(e => e.ToString()))), param => LogMessages.Any());
             ClearContentCommand = new DelegateCommand(service, param =>
             {
-                _builder.Clear();
-                TextContent = _builder.ToString();
-            }, param => TextContent.Length > 0);
+                Application.Current.Dispatcher.Invoke(() => LogMessages.Clear());
+            }, param => LogMessages.Any());
+            ShutdownServerCommand = new DelegateCommand(service, param => { /*TODO*/});
+
+            CommandBindings = [
+                new CommandBinding(ServerTraceCommands.ClearContentCommand, ((CommandBase)ClearContentCommand).ExecutedRouted(), ((CommandBase)ClearContentCommand).CanExecuteRouted()),
+                new CommandBinding(ServerTraceCommands.CopyContentCommand, ((CommandBase)CopyContentCommand).ExecutedRouted(), ((CommandBase)CopyContentCommand).CanExecuteRouted()),
+                new CommandBinding(ServerTraceCommands.OpenLogFileCommand, ((CommandBase)OpenLogFileCommand).ExecutedRouted(), ((CommandBase)OpenLogFileCommand).CanExecuteRouted()),
+                new CommandBinding(ServerTraceCommands.ShutdownServerCommand, ((CommandBase)ShutdownServerCommand).ExecutedRouted(), ((CommandBase)ShutdownServerCommand).CanExecuteRouted()),
+            ];
         }
+
+        public override IEnumerable<CommandBinding> CommandBindings { get; }
 
         public ICommand CopyContentCommand { get; }
         public ICommand ClearContentCommand { get; }
         public ICommand OpenLogFileCommand { get; }
+        public ICommand PauseResumeTraceCommand { get; }
+        public ICommand ShutdownServerCommand { get; }
 
         private bool _isPaused = false;
         public bool IsPaused
@@ -66,7 +79,7 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
             }
         }
 
-        public ObservableCollection<LogMessageViewModel> LogMessages { get; } = new();
+        public ObservableCollection<LogMessageViewModel> LogMessages { get; } = [];
 
         public LogMessageFiltersViewModel Filters { get; } = new();
 
@@ -77,7 +90,15 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
                 return;
             }
 
-            Application.Current.Dispatcher.Invoke(() => LogMessages.Add(new(payload)));
+            var max = (int)_service.Settings.EditorSettings.ToolsSettings.ServerTraceSettings.MaximumMessages;
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                while (LogMessages.Count >= max)
+                {
+                    LogMessages.Remove(LogMessages[0]);
+                }
+                LogMessages.Add(new(payload));
+            });
         }
     }
 }

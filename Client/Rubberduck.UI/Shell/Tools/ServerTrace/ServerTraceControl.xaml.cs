@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Shell.Tools.ServerTrace
                 CommandBindings.AddRange(bindings);
                 foreach (var commandBinding in bindings)
                 {
-                    CommandManager.RegisterClassCommandBinding(typeof(WorkspaceExplorerControl), commandBinding);
+                    CommandManager.RegisterClassCommandBinding(typeof(ServerTraceControl), commandBinding);
                 }
             }
 

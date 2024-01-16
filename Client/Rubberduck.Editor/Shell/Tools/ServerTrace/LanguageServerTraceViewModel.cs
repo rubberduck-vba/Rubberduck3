@@ -14,6 +14,7 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
         {
             Title = "Language Server Trace";
             //SettingKey = nameof(LanguageServerTraceToolSettings);
+
         }
     }
 }

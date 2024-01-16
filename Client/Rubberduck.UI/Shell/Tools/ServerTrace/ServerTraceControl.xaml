@@ -46,7 +46,6 @@
                                   Icon="{DynamicResource LogFileIcon}" />
 
                 <shell:FlatToggleButton Height="16" Width="20" OffsetX="2" 
-                                        Command="{x:Static local:ServerTraceCommands.PauseTraceCommand}"
                                         Icon="{DynamicResource PauseIcon}" d:IconSource="{DynamicResource PauseIcon}" 
                                         IsChecked="{Binding IsPaused}"/>
 
@@ -118,13 +117,31 @@
                     <DataTemplate DataType="local:LogMessageViewModel">
                         <Grid>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="18" />
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Image Grid.Column="0" Source="{Binding Level, Converter={StaticResource LogLevelIconConverter}}" Style="{DynamicResource IconStyle16}" />
-                            <Label Grid.Column="1" Style="{DynamicResource TraceLogRecordLabelStyle}" Content="{Binding Timestamp}" ContentStringFormat="{}{0:yyyy-MM-dd hh:mm:ss.fff}" />
-                            <Label Grid.Column="2" Style="{DynamicResource TraceLogRecordLabelStyle}" Content="{Binding Message}" />
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Label Grid.Column="0" Style="{DynamicResource TraceLogRecordLabelStyle}" 
+                                   Content="{Binding MessageId}" 
+                                   Foreground="{DynamicResource ThemeTextInactiveColorBrush}" />
+                            <Image Grid.Column="1" Source="{Binding Level, Converter={StaticResource LogLevelIconConverter}}" 
+                                   Style="{DynamicResource IconStyle16}" />
+                            <Label Grid.Column="2" Style="{DynamicResource TraceLogRecordLabelStyle}" 
+                                   Content="{Binding Timestamp}" 
+                                   ContentStringFormat="{}{0:yyyy-MM-dd hh:mm:ss.fff}" />
+                            <Label Grid.Column="3" 
+                                   Style="{DynamicResource TraceLogRecordLabelStyle}"
+                                   Content="{Binding Message}" />
+                            <Label Grid.Column="3"  Grid.Row="1"
+                                   Style="{DynamicResource TraceLogRecordLabelStyle}"
+                                   Visibility="{Binding Verbose, Converter={StaticResource HasItemsVisibilityConverter}}"
+                                   Content="{Binding Verbose}" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
