@@ -9,9 +9,11 @@ using Rubberduck.UI.Shell.Tools.ServerTrace;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Rubberduck.Editor.Shell.Tools.ServerTrace
@@ -28,14 +30,31 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
             : base(DockingLocation.DockBottom, showSettingsCommand, closeToolWindowCommand)
         {
             _service = service;
+            
+            var itemsView = CollectionViewSource.GetDefaultView(_messages);
+            itemsView.Filter = e => Filters.Filters.Contains(((LogMessageViewModel)e).Level);
+            LogMessages = itemsView;
+
+            Filters.FiltersChanged += OnFiltersChanged;
 
             OpenLogFileCommand = openLogFileCommand;
-            CopyContentCommand = new DelegateCommand(service, param => Clipboard.SetText(string.Join('\n', LogMessages.Select(e => e.ToString()))), param => LogMessages.Any());
+            
+            CopyContentCommand = new DelegateCommand(service, param =>
+            {
+                Application.Current.Dispatcher.Invoke(() => Clipboard.SetText(string.Join('\n', _messages.Select(e => e.AsJsonString()))));
+            }, param => _messages.Any());
+
             ClearContentCommand = new DelegateCommand(service, param =>
             {
-                Application.Current.Dispatcher.Invoke(() => LogMessages.Clear());
-            }, param => LogMessages.Any());
+                Application.Current.Dispatcher.Invoke(() => _messages.Clear());
+            }, param => _messages.Any());
+            
             ShutdownServerCommand = shutdownCommand;
+
+            ClearFiltersCommand = new DelegateCommand(service, param =>
+            {
+                Application.Current.Dispatcher.Invoke(() => Filters.Clear());
+            }, param => Filters.Filters.Length != 5);
 
             CommandBindings = [
                 new CommandBinding(ServerTraceCommands.ClearContentCommand, ((CommandBase)ClearContentCommand).ExecutedRouted(), ((CommandBase)ClearContentCommand).CanExecuteRouted()),
@@ -45,6 +64,13 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
             ];
         }
 
+        private void OnFiltersChanged(object? sender, System.EventArgs e)
+        {
+            LogMessages.Refresh();
+            OnPropertyChanged(nameof(ShownCount));
+            OnPropertyChanged(nameof(Filters));
+        }
+
         public override IEnumerable<CommandBinding> CommandBindings { get; }
 
         public ICommand CopyContentCommand { get; }
@@ -52,6 +78,7 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
         public ICommand OpenLogFileCommand { get; }
         public ICommand PauseResumeTraceCommand { get; }
         public ICommand ShutdownServerCommand { get; }
+        public ICommand ClearFiltersCommand { get; }
 
         private bool _isPaused = false;
         public bool IsPaused
@@ -81,7 +108,11 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
             }
         }
 
-        public ObservableCollection<LogMessageViewModel> LogMessages { get; } = [];
+        public int MessageCount => _messages.Count;
+        public int ShownCount => LogMessages.OfType<LogMessageViewModel>().Count();
+
+        private ObservableCollection<LogMessageViewModel> _messages = [];
+        public ICollectionView LogMessages { get; }
 
         public LogMessageFiltersViewModel Filters { get; } = new();
 
@@ -95,11 +126,14 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
             var max = (int)_service.Settings.EditorSettings.ToolsSettings.ServerTraceSettings.MaximumMessages;
             Application.Current.Dispatcher.Invoke(() =>
             {
-                while (LogMessages.Count >= max)
+                while (_messages.Count >= max)
                 {
-                    LogMessages.Remove(LogMessages[0]);
+                    _messages.Remove(_messages[0]);
                 }
-                LogMessages.Add(new(payload));
+
+                _messages.Add(new(payload));
+                OnPropertyChanged(nameof(MessageCount));
+                OnPropertyChanged(nameof(ShownCount));
             });
         }
     }

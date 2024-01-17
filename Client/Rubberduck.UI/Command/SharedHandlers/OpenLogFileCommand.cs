@@ -39,7 +39,7 @@ namespace Rubberduck.UI.Command.SharedHandlers
                     Key = nameof(OpenLogFileCommand) + "_NoServerPath",
                     Level = LogLevel.Error,
                     Title = "Invalid Configuration",
-                    Message = "**ServerExecutablePath** configuration is unexpectedly `null`; could not locate log directory.",
+                    Message = "**ServerExecutablePath** configuration is unexpectedly null; could not locate log directory.",
                 });
                 return;
             }

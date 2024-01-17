@@ -18,6 +18,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <local:LogLevelFilterConverter x:Key="FilterConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <shell:ThunderFrame ShowAcceptButton="False" ShowCancelButton="False" 
@@ -57,9 +58,17 @@
                 <Menu>
                     <MenuItem>
                         <MenuItem.Header>
-                            <Image Source="{DynamicResource FilterIcon}" Style="{StaticResource IconStyle16}" />
+                            <StackPanel Orientation="Horizontal">
+                                <shell:FlatToggleButton Cursor="Arrow" Height="16" IsHitTestVisible="False"
+                                        Icon="{DynamicResource FilterIcon}" d:IconSource="{DynamicResource FilterIcon}"
+                                        CheckedIcon="{DynamicResource ClearFilterIcon}"
+                                        IsChecked="{Binding Filters.IsFiltered, Mode=OneWay}" />
+                                <TextBlock Margin="2,0" Text="{Binding ShownCount}" />
+                                <TextBlock Margin="2,0" Text="/" />
+                                <TextBlock Margin="2,0" Text="{Binding MessageCount}" />
+                            </StackPanel>
                         </MenuItem.Header>
-                        <MenuItem>
+                        <MenuItem Command="{Binding ClearFiltersCommand}">
                             <MenuItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{DynamicResource ClearFilterIcon}" Height="16" />

@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Rubberduck.UI.Shell.Tools.ServerTrace
@@ -18,6 +20,8 @@ namespace Rubberduck.UI.Shell.Tools.ServerTrace
             Message = payload.Message;
             Verbose = payload.Verbose ?? string.Empty;
             Level = payload.Level;
+
+            _payload = payload.ToString();
         }
 
         public int MessageId { get; }
@@ -25,6 +29,9 @@ namespace Rubberduck.UI.Shell.Tools.ServerTrace
         public string Message { get; }
         public string Verbose { get; }
         public LogLevel Level { get; }
+
+        private readonly string _payload;
+        public string AsJsonString() => _payload;
     }
 
     public interface IServerTraceViewModel : IToolWindowViewModel
@@ -34,83 +41,113 @@ namespace Rubberduck.UI.Shell.Tools.ServerTrace
         ICommand OpenLogFileCommand { get; }
         ICommand PauseResumeTraceCommand { get; }
         ICommand ShutdownServerCommand { get; }
+        ICommand ClearFiltersCommand { get; }
         bool IsPaused { get; set; }
 
         void OnServerMessage(LogMessagePayload payload);
 
-        ObservableCollection<LogMessageViewModel> LogMessages { get; }
+        ICollectionView LogMessages { get; }
 
         LogMessageFiltersViewModel Filters { get; }
     }
 
     public class LogMessageFiltersViewModel : ViewModelBase
     {
-        private bool _trace = true;
+        private readonly Dictionary<LogLevel, bool> _filters = new()
+        {
+            [LogLevel.Trace] = true,
+            [LogLevel.Debug] = true,
+            [LogLevel.Information] = true,
+            [LogLevel.Warning] = true,
+            [LogLevel.Error] = true,
+        };
+
+        public event EventHandler FiltersChanged = delegate { };
+        private void OnFiltersChanged()
+        {
+            FiltersChanged?.Invoke(this, EventArgs.Empty);
+            OnPropertyChanged(nameof(IsFiltered));
+        }
+
+        public void Clear()
+        {
+            ShowTraceItems = true;
+            ShowDebugItems = true;
+            ShowInfoItems = true;
+            ShowWarningItems = true;
+            ShowErrorItems = true;
+        }
+
+        public LogLevel[] Filters => _filters.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToArray();
+
+        public bool IsFiltered => _filters.Any(e => !e.Value);
+
         public bool ShowTraceItems 
         {
-            get => _trace;
+            get => _filters[LogLevel.Trace];
             set
             {
-                if (_trace != value)
+                if (_filters[LogLevel.Trace] != value)
                 {
-                    _trace = value;
+                    _filters[LogLevel.Trace] = value;
                     OnPropertyChanged();
+                    OnFiltersChanged();
                 }
             }
         }
 
-        private bool _debug = true;
         public bool ShowDebugItems 
         {
-            get => _debug;
+            get => _filters[LogLevel.Debug];
             set
             {
-                if (_debug != value)
+                if (_filters[LogLevel.Debug] != value)
                 {
-                    _debug = value;
+                    _filters[LogLevel.Debug] = value;
                     OnPropertyChanged();
+                    OnFiltersChanged();
                 }
             }
         }
 
-        private bool _info = true;
         public bool ShowInfoItems 
         {
-            get => _info;
+            get => _filters[LogLevel.Information];
             set
             {
-                if ( _info != value)
+                if (_filters[LogLevel.Information] != value)
                 {
-                    _info = value;
+                    _filters[LogLevel.Information] = value;
                     OnPropertyChanged();
+                    OnFiltersChanged();
                 }
             }
         }
 
-        private bool _warn = true;
         public bool ShowWarningItems 
         {
-            get => _warn;
+            get => _filters[LogLevel.Warning];
             set
             {
-                if ( _warn != value)
+                if (_filters[LogLevel.Warning] != value)
                 {
-                    _warn = value;
+                    _filters[LogLevel.Warning] = value;
                     OnPropertyChanged();
+                    OnFiltersChanged();
                 }
             }
         }
 
-        private bool _error = true;
         public bool ShowErrorItems 
         {
-            get => _error;
+            get => _filters[LogLevel.Error];
             set
             {
-                if ( _error != value)
+                if (_filters[LogLevel.Error] != value)
                 {
-                    _error = value;
+                    _filters[LogLevel.Error] = value;
                     OnPropertyChanged();
+                    OnFiltersChanged();
                 }
             }
         }
