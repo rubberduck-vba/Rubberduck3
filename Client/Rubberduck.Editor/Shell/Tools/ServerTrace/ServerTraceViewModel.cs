@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.ServerPlatform;
+﻿using Rubberduck.Editor.Commands;
+using Rubberduck.InternalApi.ServerPlatform;
 using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Command.SharedHandlers;
@@ -22,7 +23,8 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
         public ServerTraceViewModel(UIServiceHelper service,
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindowCommand,
-            OpenLogFileCommand openLogFileCommand)
+            OpenLogFileCommand openLogFileCommand,
+            ShutdownServerCommand shutdownCommand)
             : base(DockingLocation.DockBottom, showSettingsCommand, closeToolWindowCommand)
         {
             _service = service;
@@ -33,7 +35,7 @@ namespace Rubberduck.Editor.Shell.Tools.ServerTrace
             {
                 Application.Current.Dispatcher.Invoke(() => LogMessages.Clear());
             }, param => LogMessages.Any());
-            ShutdownServerCommand = new DelegateCommand(service, param => { /*TODO*/});
+            ShutdownServerCommand = shutdownCommand;
 
             CommandBindings = [
                 new CommandBinding(ServerTraceCommands.ClearContentCommand, ((CommandBase)ClearContentCommand).ExecutedRouted(), ((CommandBase)ClearContentCommand).CanExecuteRouted()),

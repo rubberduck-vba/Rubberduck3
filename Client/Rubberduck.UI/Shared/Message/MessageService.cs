@@ -44,10 +44,9 @@ namespace Rubberduck.UI.Shared.Message
         private readonly IMessageWindowFactory _viewFactory;
 
         public MessageService(RubberduckSettingsProvider settings, ILogger<MessageService> logger,
-            IUiContextProvider ui,
             IMessageWindowFactory viewFactory,
             PerformanceRecordAggregator performance)
-            : base(ui, logger, settings, performance)
+            : base(logger, settings, performance)
         {
             _viewFactory = viewFactory;
         }
@@ -97,11 +96,12 @@ namespace Rubberduck.UI.Shared.Message
             if (CanShowMessageKey(model.Key))
             {
                 MessageAction? selection = null;
+                MessageWindow? view = null;
                 IMessageWindowViewModel? viewModel = null;
 
                 RunOnMainThread(() =>
                 {
-                    var (view, viewModel) = _viewFactory.Create(model, actions);
+                    (view, viewModel) = _viewFactory.Create(model, actions);
                     view.ShowDialog();
 
                     selection = viewModel.SelectedAction;

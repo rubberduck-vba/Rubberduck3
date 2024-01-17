@@ -8,7 +8,6 @@
         xmlns:local="clr-namespace:Rubberduck.UI.Shared.Message" 
         mc:Ignorable="d"
         WindowStyle="None"
-        ResizeMode="NoResize"
         Style="{DynamicResource ThemedWindowStyle}"
         Title="Rubberduck"
         Height="200"
@@ -25,7 +24,7 @@
     <shell:ThunderFrame AcceptCommand="{Binding Actions[0]}"
                         CancelCommand="{Binding Actions[1]}"
                         Title="{Binding Title}">
-        <DockPanel Margin="0,0,0,0">
+        <DockPanel Margin="0,0,0,0" Background="{DynamicResource ThemeWhiteLightColorBrush75}">
 
             <Border DockPanel.Dock="Top" Background="{DynamicResource ThemeAccent3LightColorBrush}" BorderBrush="{DynamicResource ThemeAccent3DarkColorBrush}" BorderThickness="0,2">
                 <DockPanel>
@@ -48,6 +47,7 @@
                                          Markdown="{Binding Message}" />
 
             <Expander DockPanel.Dock="Bottom" Header="More information" Margin="5,0"
+                      Visibility="{Binding Verbose, Converter={StaticResource HasItemsVisibilityConverter}}"
                       BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}" BorderThickness="0,1">
                 <Expander.HeaderTemplate>
                     <DataTemplate>
@@ -73,5 +73,5 @@
             </Expander>
         </DockPanel>
     </shell:ThunderFrame>
-    
+
 </Window>

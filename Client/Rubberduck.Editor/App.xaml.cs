@@ -350,6 +350,7 @@ namespace Rubberduck.Editor
             services.AddSingleton<ViewCommandHandlers>();
             services.AddSingleton<ShowWorkspaceExplorerCommand>();
             services.AddSingleton<ShowLanguageServerTraceCommand>();
+            services.AddSingleton<ShutdownServerCommand>();
 
             services.AddSingleton<ToolsCommandHandlers>();
             services.AddSingleton<CloseToolWindowCommand>();
