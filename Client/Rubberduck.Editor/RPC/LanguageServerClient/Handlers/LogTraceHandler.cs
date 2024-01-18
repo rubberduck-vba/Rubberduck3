@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.ServerPlatform;
@@ -31,7 +32,15 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
             cancellationToken.ThrowIfCancellationRequested();
 
             var payload = JsonSerializer.Deserialize<LogMessagePayload>(request.Message)
-                ?? throw new FormatException("Message payload was not in the expected format.");
+                 ?? new LogMessagePayload
+                 {
+                     Level = LogLevel.Error,
+                     Timestamp = DateTime.Now,
+                     MessageId = -1,
+                     Message = "Message payload was not in the expected format.",
+                     Verbose = request.Message
+                 };
+
             _traceToolwindow.OnServerMessage(payload);
 
             service.LogTrace(request.Message, request.Verbose);

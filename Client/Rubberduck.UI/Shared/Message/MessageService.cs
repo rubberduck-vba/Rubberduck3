@@ -3,7 +3,6 @@ using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services;
-using Rubberduck.Unmanaged.UIContext;
 using System;
 using System.Linq;
 

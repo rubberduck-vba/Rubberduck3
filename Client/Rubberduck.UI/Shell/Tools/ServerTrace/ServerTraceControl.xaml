@@ -55,17 +55,22 @@
                                   Command="{x:Static local:ServerTraceCommands.ShutdownServerCommand}"
                                   Icon="{DynamicResource RestartServerIcon}" />
 
-                <Menu>
+                <shell:FlatToggleButton Height="16" IsHitTestVisible="False"
+                                        Icon="{DynamicResource FilterIcon}" d:IconSource="{DynamicResource FilterIcon}"
+                                        CheckedIcon="{DynamicResource ClearFilterIcon}"
+                                        IsChecked="{Binding Filters.IsFiltered}" />
+                <Menu Background="Transparent">
                     <MenuItem>
                         <MenuItem.Header>
                             <StackPanel Orientation="Horizontal">
-                                <shell:FlatToggleButton Cursor="Arrow" Height="16" IsHitTestVisible="False"
-                                        Icon="{DynamicResource FilterIcon}" d:IconSource="{DynamicResource FilterIcon}"
-                                        CheckedIcon="{DynamicResource ClearFilterIcon}"
-                                        IsChecked="{Binding Filters.IsFiltered, Mode=OneWay}" />
-                                <TextBlock Margin="2,0" Text="{Binding ShownCount}" />
-                                <TextBlock Margin="2,0" Text="/" />
-                                <TextBlock Margin="2,0" Text="{Binding MessageCount}" />
+                                <TextBlock Foreground="{DynamicResource ThemeTextInactiveColorBrush}">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0:N0} / {1:N0}">
+                                            <Binding Path="ShownCount" />
+                                            <Binding Path="MessageCount" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
                             </StackPanel>
                         </MenuItem.Header>
                         <MenuItem Command="{Binding ClearFiltersCommand}">
@@ -138,7 +143,7 @@
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <Label Grid.Column="0" Style="{DynamicResource TraceLogRecordLabelStyle}" 
-                                   Content="{Binding MessageId}" 
+                                   Content="{Binding MessageId}"
                                    Foreground="{DynamicResource ThemeTextInactiveColorBrush}" />
                             <Image Grid.Column="1" Source="{Binding Level, Converter={StaticResource LogLevelIconConverter}}" 
                                    Style="{DynamicResource IconStyle16}" />
@@ -150,22 +155,13 @@
                                    Content="{Binding Message}" />
                             <Label Grid.Column="3"  Grid.Row="1"
                                    Style="{DynamicResource TraceLogRecordLabelStyle}"
+                                   Foreground="{DynamicResource ThemeTextInactiveColorBrush}"
                                    Visibility="{Binding Verbose, Converter={StaticResource HasItemsVisibilityConverter}}"
                                    Content="{Binding Verbose}" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            
-            <!--<shell:BindableTextEditor Grid.Row="1" IsReadOnly="True" IsEnabled="True"
-                                      Text="{Binding TextContent}" WordWrap="False"
-                                      ShowLineNumbers="True"
-                                      HorizontalScrollBarVisibility="Auto"
-                                      VerticalScrollBarVisibility="Visible"
-                                      Background="{DynamicResource ThemeWhiteLightColorBrush75}"
-                                      Foreground="{DynamicResource ThemeAccent1DarkColorBrush}"
-                                      FontFamily="Consolas" FontSize="12">
-            </shell:BindableTextEditor>-->
         </Grid>
     </shell:ThunderFrame>
 </UserControl>

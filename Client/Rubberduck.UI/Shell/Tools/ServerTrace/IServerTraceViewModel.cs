@@ -66,7 +66,7 @@ namespace Rubberduck.UI.Shell.Tools.ServerTrace
         private void OnFiltersChanged()
         {
             FiltersChanged?.Invoke(this, EventArgs.Empty);
-            OnPropertyChanged(nameof(IsFiltered));
+            IsFiltered = _filters.Any(e => !e.Value);
         }
 
         public void Clear()
@@ -80,7 +80,19 @@ namespace Rubberduck.UI.Shell.Tools.ServerTrace
 
         public LogLevel[] Filters => _filters.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToArray();
 
-        public bool IsFiltered => _filters.Any(e => !e.Value);
+        private bool _isFiltered;
+        public bool IsFiltered
+        {
+            get => _isFiltered;
+            set
+            {
+                if (_isFiltered != value)
+                {
+                    _isFiltered = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public bool ShowTraceItems 
         {
