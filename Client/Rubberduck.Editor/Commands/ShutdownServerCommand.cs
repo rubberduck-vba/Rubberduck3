@@ -14,6 +14,7 @@ namespace Rubberduck.Editor.Commands
             : base(service)
         {
             _provider = provider;
+            AddToCanExecuteEvaluation(param => _provider.Invoke() != null);
         }
 
         protected async override Task OnExecuteAsync(object? parameter)
