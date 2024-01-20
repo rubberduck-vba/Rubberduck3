@@ -1,5 +1,4 @@
-﻿using Rubberduck.UI.Shell.Tools.WorkspaceExplorer;
-using Rubberduck.UI.Windows;
+﻿using Rubberduck.UI.Windows;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -31,7 +30,7 @@ namespace Rubberduck.UI.Shell.Tools.ServerTrace
                 CommandBindings.AddRange(bindings);
                 foreach (var commandBinding in bindings)
                 {
-                    CommandManager.RegisterClassCommandBinding(typeof(WorkspaceExplorerControl), commandBinding);
+                    CommandManager.RegisterClassCommandBinding(typeof(ServerTraceControl), commandBinding);
                 }
             }
 

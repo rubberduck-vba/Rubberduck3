@@ -182,6 +182,8 @@
     <None Remove="Resources\FontAwesome\file-shield-solid.png" />
     <None Remove="Resources\FontAwesome\file-solid.png" />
     <None Remove="Resources\FontAwesome\file-waveform-solid.png" />
+    <None Remove="Resources\FontAwesome\filter-circle-xmark-solid.png" />
+    <None Remove="Resources\FontAwesome\filter-solid.png" />
     <None Remove="Resources\FontAwesome\folder-closed-regular.png" />
     <None Remove="Resources\FontAwesome\folder-minus-solid.png" />
     <None Remove="Resources\FontAwesome\folder-open-regular.png" />
@@ -238,6 +240,7 @@
     <None Remove="Resources\FugueIcons\folder-search-result.png" />
     <None Remove="Resources\FugueIcons\folder-smiley-sad.png" />
     <None Remove="Resources\FugueIcons\folder-smiley.png" />
+    <None Remove="Resources\FugueIcons\information-white.png" />
     <None Remove="Resources\FugueIcons\information.png" />
     <None Remove="Resources\FugueIcons\magnifier-medium.png" />
     <None Remove="Resources\FugueIcons\selection-input.png" />
@@ -434,6 +437,8 @@
     <Resource Include="Resources\FontAwesome\file-shield-solid.png" />
     <Resource Include="Resources\FontAwesome\file-solid.png" />
     <Resource Include="Resources\FontAwesome\file-waveform-solid.png" />
+    <Resource Include="Resources\FontAwesome\filter-circle-xmark-solid.png" />
+    <Resource Include="Resources\FontAwesome\filter-solid.png" />
     <Resource Include="Resources\FontAwesome\folder-closed-regular.png" />
     <Resource Include="Resources\FontAwesome\folder-minus-solid.png" />
     <Resource Include="Resources\FontAwesome\folder-open-regular.png" />
@@ -490,6 +495,7 @@
     <Resource Include="Resources\FugueIcons\folder-search-result.png" />
     <Resource Include="Resources\FugueIcons\folder-smiley-sad.png" />
     <Resource Include="Resources\FugueIcons\folder-smiley.png" />
+    <Resource Include="Resources\FugueIcons\information-white.png" />
     <Resource Include="Resources\FugueIcons\information.png" />
     <Resource Include="Resources\FugueIcons\magnifier-medium.png" />
     <Resource Include="Resources\FugueIcons\selection-input.png" />

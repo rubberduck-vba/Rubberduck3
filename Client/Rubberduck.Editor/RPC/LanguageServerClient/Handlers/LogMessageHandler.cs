@@ -10,6 +10,7 @@ using Rubberduck.UI.Services;
 using Rubberduck.UI.Shell.Tools.ServerTrace;
 using System.Text.Json;
 using Rubberduck.InternalApi.ServerPlatform;
+using Microsoft.Extensions.Logging;
 
 namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
 {
@@ -36,16 +37,23 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
         public override async Task<Unit> Handle(LogMessageParams request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var type = request.Type;
 
             var service = _service;
-            service.LogTrace("Received LogTrace request.");
+            service.LogTrace("Received LogMessage request.", $"{request.Type}: {request.Message}");
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var payload = JsonSerializer.Deserialize<LogMessagePayload>(request.Message);
-            _traceToolwindow.OnServerMessage(payload);
+            var payload = JsonSerializer.Deserialize<LogMessagePayload>(request.Message)
+                 ?? new LogMessagePayload 
+                 { 
+                     Level = LogLevel.Error, 
+                     Timestamp = DateTime.Now,
+                     MessageId = -1,
+                     Message = "Message payload was not in the expected format.",
+                     Verbose = request.Message
+                 };
 
+            _traceToolwindow.OnServerMessage(payload);
             return await Task.FromResult(Unit.Value);
         }
     }

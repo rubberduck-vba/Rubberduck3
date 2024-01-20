@@ -10,20 +10,11 @@ namespace Rubberduck.UI.Shared.Message
         public MessageWindow(IMessageWindowViewModel viewModel) : this()
         {
             DataContext = viewModel;
-            MouseDown += OnMouseDown;
         }
 
         public MessageWindow()
         {
             InitializeComponent();
-        }
-
-        private void OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                DragMove();
-            }
         }
     }
 }

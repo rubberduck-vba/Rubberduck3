@@ -71,6 +71,7 @@
     <converters:WindowStateToVisibilityConverter x:Key="WindowStateToMaximizeVisibility" VisibleState="Normal" HiddenState="Maximized" />
     <converters:SupportedDocumentTypeToIconConverter x:Key="DocumentTypeToIconConverter" />
     <converters:ServerConnectionStateToIconConverter x:Key="ServerConnectionStateToIconConverter" />
+    <converters:LogLevelToIconConverter x:Key="LogLevelIconConverter" />
 
     <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="{DynamicResource ThemeAccent1MediumColor}"/>
     <SolidColorBrush x:Key="TextBox.Focus.Border" Color="{DynamicResource ThemeAccent1DarkColor}"/>
@@ -401,6 +402,21 @@
             <Setter Property="FontSize" Value="11" />
             <Setter Property="Height" Value="24" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextInactiveColorBrush}" />
+        </Style.Setters>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="TraceLogRecordLabelStyle" TargetType="Label">
+        <Style.Setters>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="Light" />
+            <Setter Property="FontFamily" Value="Cascadia Mono" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
         </Style.Setters>
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
