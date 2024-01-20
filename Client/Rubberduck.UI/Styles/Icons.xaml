@@ -30,8 +30,11 @@
 
     <BitmapImage x:Key="CancelIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/ban-solid.png" />
 
-    <BitmapImage x:Key="SynchronizeIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/arrows-spin-solid.png"/>
-    <BitmapImage x:Key="RestartServerIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/power-off-solid.png"/>
+    <BitmapImage x:Key="SynchronizeIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/arrows-spin-solid.png" />
+    <BitmapImage x:Key="RestartServerIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/power-off-solid.png" />
+
+    <BitmapImage x:Key="FilterIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/filter-solid.png" />
+    <BitmapImage x:Key="ClearFilterIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/filter-circle-xmark-solid.png" />
 
     <BitmapImage x:Key="ClearFolderClosedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/folder-closed-regular.png" />
     <BitmapImage x:Key="ClearFolderOpenIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/folder-open-regular.png" />
@@ -62,9 +65,11 @@
     <BitmapImage x:Key="ShieldFileIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/file-shield-solid.png" />
 
     <!-- RD2.* 16x16 Fugue icons -->
-    <BitmapImage x:Key="ErrorIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/cross-circle.png" />
-    <BitmapImage x:Key="WarnIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/exclamation-diamond.png" />
-    <BitmapImage x:Key="InfoIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/information.png" />
+    <BitmapImage x:Key="ErrorLogIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/cross-circle.png" />
+    <BitmapImage x:Key="WarnLogIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/exclamation-diamond.png" />
+    <BitmapImage x:Key="InfoLogIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/information.png" />
+    <BitmapImage x:Key="DebugLogIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/tick-circle.png" />
+    <BitmapImage x:Key="TraceLogIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/information-white.png" />
 
     <BitmapImage x:Key="ConnectedIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/drive-network.png" />
     <BitmapImage x:Key="ConnectErrorIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/drive--exclamation.png" />

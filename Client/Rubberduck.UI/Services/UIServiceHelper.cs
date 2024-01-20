@@ -1,6 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.SettingsProvider;
+using Rubberduck.Unmanaged.UIContext;
 using System;
+using System.Threading;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace Rubberduck.UI.Services
 {
@@ -20,10 +24,18 @@ namespace Rubberduck.UI.Services
     {
         public event EventHandler<UserFacingExceptionEventArgs> UserFacingException = delegate { };
 
-        public UIServiceHelper(ILogger<UIServiceHelper> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
+        public UIServiceHelper(
+            ILogger<UIServiceHelper> logger, 
+            RubberduckSettingsProvider settingsProvider, 
+            PerformanceRecordAggregator performance) 
             : base(logger, settingsProvider, performance)
         {
             SettingsProvider = settingsProvider;
+        }
+
+        public void RunOnMainThread(Action action)
+        {
+            Application.Current.Dispatcher.Invoke(action);
         }
 
         public new RubberduckSettingsProvider SettingsProvider { get; }

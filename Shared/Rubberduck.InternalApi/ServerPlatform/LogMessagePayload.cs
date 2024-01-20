@@ -33,6 +33,7 @@ namespace Rubberduck.InternalApi.ServerPlatform
 
             return new()
             {
+                MessageId = e.SequenceID,
                 Level = (Microsoft.Extensions.Logging.LogLevel)e.Level.Ordinal,
                 Timestamp = e.TimeStamp,
                 Message = message,
@@ -41,6 +42,8 @@ namespace Rubberduck.InternalApi.ServerPlatform
                 StackTrace = stackTrace,
             };
         }
+
+        public int MessageId { get; init; }
 
         public Microsoft.Extensions.Logging.LogLevel Level { get; init; }
         public DateTime Timestamp { get; init; } = DateTime.Now;

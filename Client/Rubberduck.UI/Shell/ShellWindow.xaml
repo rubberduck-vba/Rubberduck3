@@ -35,14 +35,12 @@
                                          Partition="toolwindows" />
 
             <DataTemplate x:Key="ToolTabHeaderItemTemplate" DataType="windows:ITabViewModel">
-                <Border BorderThickness="1" BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}" CornerRadius="0,0,8,8" Margin="-4,0,-6,2">
-                    <StackPanel Orientation="Horizontal">
-                        <Label Style="{DynamicResource TabTitleLabelStyle}" Margin="0">
-                            <TextBlock Text="{Binding Title}" />
-                        </Label>
-                        <local:FlatButton Icon="{DynamicResource WindowCloseIcon}" Command="{Binding CloseToolWindowCommand}" CommandParameter="{Binding}" />
-                    </StackPanel>
-                </Border>
+                <StackPanel Orientation="Horizontal">
+                    <Label Style="{DynamicResource TabTitleLabelStyle}" Margin="0">
+                        <TextBlock Text="{Binding Title}" />
+                    </Label>
+                    <local:FlatButton Icon="{DynamicResource WindowCloseIcon}" Command="{Binding CloseToolWindowCommand}" CommandParameter="{Binding}" />
+                </StackPanel>
             </DataTemplate>
             <Style x:Key="ToolTabControlStyle" TargetType="dragablz:TabablzControl">
                 <Style.Setters>
@@ -78,7 +76,7 @@
 
         <Expander x:Name="LeftPaneExpander" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" ExpandDirection="Right"
                   Style="{DynamicResource ArrowlessExpanderTemplate}"
-                  BorderThickness="0" AllowDrop="True"
+                  BorderThickness="02" AllowDrop="True"
                   IsExpanded="{Binding LeftToolPanel.IsExpanded}">
             <Expander.Header>
                 <ListView ItemsSource="{Binding LeftPanelToolWindows}" 
@@ -211,7 +209,8 @@
         </Expander>
 
         <Expander x:Name="BottomPaneExpander" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" ExpandDirection="Up"
-                  Style="{DynamicResource ArrowlessExpanderTemplate}" AllowDrop="True"
+                  Style="{DynamicResource ArrowlessExpanderTemplate}" 
+                  BorderThickness="0" AllowDrop="True"
                   IsExpanded="{Binding BottomToolPanel.IsExpanded}">
             <Expander.Header>
                 <ListView ItemsSource="{Binding BottomPanelToolWindows}" 
@@ -235,7 +234,7 @@
                         <DataTemplate>
                             <ToggleButton Background="{DynamicResource ThemeBackgroundMediumColorBrush}" IsChecked="{Binding IsPinned}" 
                                           BorderThickness="0" Margin="-5,-5">
-                                <Label Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}" FontWeight="Regular" Margin="0" Padding="10,2">
+                                <Label Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}" FontWeight="Regular" Margin="0" >
                                     <TextBlock Text="{Binding Title}"/>
                                 </Label>
                             </ToggleButton>
@@ -245,7 +244,7 @@
             </Expander.Header>
             <Expander.ContentTemplate>
                 <DataTemplate>
-                    <Border BorderThickness="0,1" BorderBrush="{DynamicResource ThemeBackgroundLightColorBrush}">
+                    <Border BorderThickness="2,0" BorderBrush="{DynamicResource ThemeBackgroundLightColorBrush}">
                         <DockPanel>
                             <Thumb DockPanel.Dock="Top" DragDelta="OnResizeBottomPanelDragDelta" Cursor="SizeNS" 
                                    Style="{DynamicResource ToolPanelHExpanderThumbStyle}" />

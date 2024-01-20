@@ -85,6 +85,12 @@ namespace Rubberduck.Editor
 
         private IUiContextProvider UIContextProvider { get; }
 
+        public App()
+        {
+            UiContextProvider.Initialize();
+            UIContextProvider = UiContextProvider.Instance();
+        }
+
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "We want to crash the process in case of an exception anyway.")]
         protected override async void OnStartup(StartupEventArgs e)
@@ -344,6 +350,7 @@ namespace Rubberduck.Editor
             services.AddSingleton<ViewCommandHandlers>();
             services.AddSingleton<ShowWorkspaceExplorerCommand>();
             services.AddSingleton<ShowLanguageServerTraceCommand>();
+            services.AddSingleton<ShutdownServerCommand>();
 
             services.AddSingleton<ToolsCommandHandlers>();
             services.AddSingleton<CloseToolWindowCommand>();

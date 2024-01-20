@@ -47,7 +47,8 @@ namespace Rubberduck.SettingsProvider.Model
     [JsonDerivedType(typeof(DefaultToolWindowLocationSetting), nameof(DefaultToolWindowLocationSetting))]
     [JsonDerivedType(typeof(ShowToolWindowOnStartupSetting), nameof(ShowToolWindowOnStartupSetting))]
     [JsonDerivedType(typeof(ToolWindowSettings), nameof(ToolWindowSettings))]
-    [JsonDerivedType(typeof(WorkspaceExplorerSettings), nameof(WorkspaceExplorerSettings))]
+    [JsonDerivedType(typeof(MaximumMessagesSetting), nameof(MaximumMessagesSetting))]
+    [JsonDerivedType(typeof(WorkspaceExplorerSettings), nameof(WorkspaceExplorerSettings))] // ~ workspace explorer
 
     [JsonDerivedType(typeof(LanguageServerSettings), nameof(LanguageServerSettings))] // ~ Language server
 

@@ -10,7 +10,7 @@ namespace Rubberduck.UI.Converters
     public class SpecificValuesToVisibilityConverter : IValueConverter
     {
         public IReadOnlyCollection<object>? SpecialValues { get; set; }
-        public bool CollapseSpecialValues { get; set; }
+        public bool CollapseSpecialValues { get; set; } = true;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

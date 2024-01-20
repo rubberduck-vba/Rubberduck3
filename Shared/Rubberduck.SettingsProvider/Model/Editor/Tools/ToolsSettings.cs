@@ -10,6 +10,7 @@ namespace Rubberduck.SettingsProvider.Model.Editor.Tools
         private static readonly RubberduckSetting[] DefaultSettings =
             [
                 WorkspaceExplorerSettings.Default,
+                ServerTraceSettings.Default,
             ];
 
         public ToolsSettings() 
@@ -25,6 +26,9 @@ namespace Rubberduck.SettingsProvider.Model.Editor.Tools
 
         [JsonIgnore]
         public WorkspaceExplorerSettings WorkspaceExplorerSettings => GetSetting<WorkspaceExplorerSettings>() ?? WorkspaceExplorerSettings.Default;
+        [JsonIgnore]
+        public ServerTraceSettings ServerTraceSettings => GetSetting<ServerTraceSettings>() ?? ServerTraceSettings.Default;
+
         [JsonIgnore]
         public IEnumerable<ToolWindowSettings> StartupToolWindows => TypedValue.OfType<ToolWindowSettings>().Where(e => e.ShowOnStartup);
             
