@@ -1,4 +1,5 @@
-using Rubberduck.Unmanaged.Model;
+using Rubberduck.InternalApi.Model.Declarations;
+using System.Collections.Immutable;
 
 namespace Rubberduck.Parsing.Annotations;
 
@@ -38,9 +39,13 @@ namespace Rubberduck.Parsing.Annotations;
 public sealed class PredeclaredIdAnnotation : FixedAttributeValueAnnotationBase
 {
     public PredeclaredIdAnnotation()
-        : base("PredeclaredId", AnnotationTarget.Module, "VB_PredeclaredId", new[] { "True" })
-    { }
+        : base("PredeclaredId", AnnotationTarget.Module, "VB_PredeclaredId", ["True"])
+    { 
+        IncompatibleComponentKinds = new HashSet<ComponentKind>(base.IncompatibleComponentKinds)
+        {
+            ComponentKind.StandardModule
+        }.ToImmutableList();
+    }
 
-    public override IReadOnlyList<ComponentType> IncompatibleComponentTypes =>
-        base.IncompatibleComponentTypes.Concat(new[] { ComponentType.StandardModule }).Distinct().ToList();
+    public override IReadOnlyList<ComponentKind> IncompatibleComponentKinds { get; }
 }

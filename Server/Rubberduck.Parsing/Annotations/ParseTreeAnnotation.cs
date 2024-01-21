@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Grammar;
+﻿using Rubberduck.InternalApi.Model.Declarations;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Unmanaged.Model;
 
 namespace Rubberduck.Parsing.Annotations;

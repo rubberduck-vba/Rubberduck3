@@ -1,13 +1,15 @@
-﻿namespace Rubberduck.InternalApi.Model
+﻿using System.Collections.Generic;
+
+namespace Rubberduck.InternalApi.Model
 {
     public enum Accessibility
     {
-        Private = 1,
-        Friend = 2,
-        Implicit = 3,
-        Public = 4,
-        Global = 5,
-        Static = 6
+        Implicit,
+        Private,
+        Friend,
+        Public,
+        Global,
+        Static
     }
 
     public static class AccessibilityExtensions
@@ -20,6 +22,17 @@
         {
             return access == Accessibility.Implicit ? string.Empty : access.ToString();
         }
-    }
 
+        private static readonly Dictionary<Accessibility, Accessibility> _map = new()
+        {
+            [Accessibility.Implicit] = Accessibility.Public,
+            [Accessibility.Private] = Accessibility.Private,
+            [Accessibility.Friend] = Accessibility.Friend,
+            [Accessibility.Public] = Accessibility.Public,
+            [Accessibility.Global] = Accessibility.Public,
+            [Accessibility.Static] = Accessibility.Static,
+        };
+
+        public static Accessibility Effective(this Accessibility access) => _map[access];
+    }
 }

@@ -1,13 +1,18 @@
-﻿using Rubberduck.Parsing.Annotations.Concrete;
+﻿using Rubberduck.InternalApi.Model.Declarations;
+using Rubberduck.Parsing.Annotations.Concrete;
 
 namespace Rubberduck.Parsing.Annotations;
 
 public class AttributeAnnotationProvider : IAttributeAnnotationProvider
 {
     // I want to const this, but can't
-    private readonly AnnotationTarget [] distinctTargets = new AnnotationTarget[] { AnnotationTarget.Identifier, AnnotationTarget.Member, AnnotationTarget.Module, AnnotationTarget.Variable };
-    private readonly Dictionary<AnnotationTarget, List<IAttributeAnnotation>> annotationInfoByTarget
-        = new();
+    private readonly AnnotationTarget[] distinctTargets = [
+        AnnotationTarget.Identifier, 
+        AnnotationTarget.Member, 
+        AnnotationTarget.Module, 
+        AnnotationTarget.Variable
+    ];
+    private readonly Dictionary<AnnotationTarget, List<IAttributeAnnotation>> annotationInfoByTarget = [];
 
     private readonly IAttributeAnnotation memberFallback = new MemberAttributeAnnotation();
     private readonly IAttributeAnnotation moduleFallback = new ModuleAttributeAnnotation();
@@ -17,7 +22,7 @@ public class AttributeAnnotationProvider : IAttributeAnnotationProvider
         // set up empty lists to put information into
         foreach (var validTarget in distinctTargets)
         {
-            annotationInfoByTarget[validTarget] = new List<IAttributeAnnotation>();
+            annotationInfoByTarget[validTarget] = [];
         }
 
         foreach (var annotation in attributeAnnotations)

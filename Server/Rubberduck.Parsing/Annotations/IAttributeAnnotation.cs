@@ -1,10 +1,13 @@
-namespace Rubberduck.Parsing.Annotations;
+using Rubberduck.InternalApi.Model.Declarations;
 
-public interface IAttributeAnnotation : IAnnotation
+namespace Rubberduck.Parsing.Annotations
 {
-    bool MatchesAttributeDefinition(string attributeName, IReadOnlyList<string> attributeValues);
-    string Attribute(IReadOnlyList<string> annotationValues);
+    public interface IAttributeAnnotation : IAnnotation
+    {
+        bool MatchesAttributeDefinition(string attributeName, IReadOnlyList<string> attributeValues);
+        string Attribute(IReadOnlyList<string> annotationValues);
 
-    IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues);
-    IReadOnlyList<string> AttributeToAnnotationValues(IReadOnlyList<string> attributeValues);
+        IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues);
+        IReadOnlyList<string> AttributeToAnnotationValues(IReadOnlyList<string> attributeValues);
+    }
 }

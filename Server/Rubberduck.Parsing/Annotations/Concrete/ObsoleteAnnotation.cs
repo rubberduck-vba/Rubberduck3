@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Parsing.Annotations;
+﻿using Rubberduck.InternalApi.Model.Declarations;
+
+namespace Rubberduck.Parsing.Annotations;
 
 /// <summary>
 /// @Obsolete annotation, marks a procedure as "obsolete". Rubberduck inspections can then warn about code that references them.
@@ -25,7 +27,7 @@ public sealed class ObsoleteAnnotation : AnnotationBase
     public string ReplacementDocumentation { get; private set; }
 
     public ObsoleteAnnotation()
-        : base("Obsolete", AnnotationTarget.Member | AnnotationTarget.Variable, allowedArguments: 1, allowedArgumentTypes: new [] {AnnotationArgumentType.Text})
+        : base("Obsolete", AnnotationTarget.Member | AnnotationTarget.Variable, allowedArguments: 1, allowedArgumentTypes: [AnnotationArgumentType.Text])
     {}
 
     public override IReadOnlyList<string> ProcessAnnotationArguments(IEnumerable<string> arguments)

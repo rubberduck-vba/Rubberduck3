@@ -1,4 +1,5 @@
-﻿using Rubberduck.Unmanaged.Model;
+﻿using Rubberduck.InternalApi.Model.Declarations;
+using Rubberduck.Unmanaged.Model;
 
 namespace Rubberduck.Parsing.Annotations;
 
@@ -15,26 +16,15 @@ public abstract class FixedAttributeValueAnnotationBase : AnnotationBase, IAttri
         _attribute = attribute;
     }
 
-    public override IReadOnlyList<ComponentType> IncompatibleComponentTypes { get; } = new[] { ComponentType.Document };
+    public override IReadOnlyList<ComponentKind> IncompatibleComponentKinds { get; } = [ComponentKind.DocumentModule];
 
-    public IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues)
-    {
-        return _attributeValues;
-    }
+    public IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues) => _attributeValues;
 
-    public string Attribute(IReadOnlyList<string> annotationValues)
-    {
-        return _attribute;
-    }
+    public string Attribute(IReadOnlyList<string> annotationValues) => _attribute;
 
-    public IReadOnlyList<string> AttributeToAnnotationValues(IReadOnlyList<string> attributeValues)
-    {
-        // annotation values must not be specified, because attribute values are fixed in the first place
-        return new List<string>();
-    }
+    // annotation values must not be specified, because attribute values are fixed in the first place
+    public IReadOnlyList<string> AttributeToAnnotationValues(IReadOnlyList<string> attributeValues) => [];
 
-    public bool MatchesAttributeDefinition(string attributeName, IReadOnlyList<string> attributeValues)
-    {
-        return _attribute == attributeName && _attributeValues.SequenceEqual(attributeValues);
-    }
+    public bool MatchesAttributeDefinition(string attributeName, IReadOnlyList<string> attributeValues) => 
+        _attribute == attributeName && _attributeValues.SequenceEqual(attributeValues);
 }

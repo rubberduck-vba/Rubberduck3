@@ -1,3 +1,4 @@
+using Rubberduck.InternalApi.Model.Declarations;
 using Rubberduck.Unmanaged.Registration;
 
 namespace Rubberduck.Parsing.Annotations.Concrete;
