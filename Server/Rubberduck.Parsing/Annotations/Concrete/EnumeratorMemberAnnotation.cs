@@ -44,6 +44,6 @@ namespace Rubberduck.Parsing.Annotations.Concrete;
 public sealed class EnumeratorMemberAnnotation : FixedAttributeValueAnnotationBase
 {
     public EnumeratorMemberAnnotation()
-        : base("Enumerator", AnnotationTarget.Member, "VB_UserMemId", new[] { WellKnownDispIds.NewEnum.ToString() })
+        : base("Enumerator", AnnotationTarget.Member, "VB_UserMemId", [WellKnownDispIds.NewEnum.ToString()])
     {}
 }

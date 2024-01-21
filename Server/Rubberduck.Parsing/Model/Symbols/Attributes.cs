@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Annotations;
+﻿using Rubberduck.InternalApi.Model.Declarations;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Unmanaged.Model;
 
@@ -45,14 +46,14 @@ public class AttributeNode : IEquatable<AttributeNode>
         return _values.Any(item => item.Equals(value, StringComparison.OrdinalIgnoreCase));
     }
 
-    public bool Equals(AttributeNode other)
+    public bool Equals(AttributeNode? other)
     {
         return other != null 
                && string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase) 
                && _values.SequenceEqual(other.Values);
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return Equals(obj as AttributeNode);
     }
@@ -112,12 +113,12 @@ public class Attributes : HashSet<AttributeNode>
         return $"{memberName}.{attributeBaseName}";
     }
 
-    public bool HasAttributeFor(IParseTreeAnnotation annotation, string memberName = null)
+    public bool HasAttributeFor(IParseTreeAnnotation annotation, string? memberName = null)
     {
         return AttributeNodesFor(annotation, memberName).Any();
     }
 
-    public IEnumerable<AttributeNode> AttributeNodesFor(IParseTreeAnnotation annotationInstance, string memberName = null)
+    public IEnumerable<AttributeNode> AttributeNodesFor(IParseTreeAnnotation annotationInstance, string? memberName = null)
     {
         if (annotationInstance.Annotation is not IAttributeAnnotation annotation)
         {
@@ -145,13 +146,13 @@ public class Attributes : HashSet<AttributeNode>
     /// <param name="identifierName"></param>
     public void AddDefaultMemberAttribute(string identifierName)
     {
-        Add(new AttributeNode(identifierName + ".VB_UserMemId", new[] {"0"}));
+        Add(new AttributeNode(identifierName + ".VB_UserMemId", ["0"]));
     }
 
     public bool HasDefaultMemberAttribute(string identifierName, out AttributeNode attribute)
     {
         attribute = this.SingleOrDefault(a => a.HasValue("0") 
-            && a.Name.Equals($"{identifierName}.VB_UserMemId", StringComparison.OrdinalIgnoreCase));
+            && a.Name.Equals($"{identifierName}.VB_UserMemId", StringComparison.OrdinalIgnoreCase))!;
         return attribute != null;
     }
 
@@ -163,19 +164,19 @@ public class Attributes : HashSet<AttributeNode>
 
     public void AddHiddenMemberAttribute(string identifierName)
     {
-        Add(new AttributeNode(identifierName + ".VB_MemberFlags", new[] {"40"}));
+        Add(new AttributeNode(identifierName + ".VB_MemberFlags", ["40"]));
     }
 
     public bool HasHiddenMemberAttribute(string identifierName, out AttributeNode attribute)
     {
         attribute = this.SingleOrDefault(a => a.HasValue("40")
-            && a.Name.Equals($"{identifierName}.VB_MemberFlags", StringComparison.OrdinalIgnoreCase));
+            && a.Name.Equals($"{identifierName}.VB_MemberFlags", StringComparison.OrdinalIgnoreCase))!;
         return attribute != null;
     }
 
     public void AddEnumeratorMemberAttribute(string identifierName)
     {
-        Add(new AttributeNode(identifierName + ".VB_UserMemId", new[] {"-4"}));
+        Add(new AttributeNode(identifierName + ".VB_UserMemId", ["-4"]));
     }
 
     /// <summary>
@@ -184,13 +185,13 @@ public class Attributes : HashSet<AttributeNode>
     /// <param name="identifierName"></param>
     public void AddEvaluateMemberAttribute(string identifierName)
     {
-        Add(new AttributeNode(identifierName + ".VB_UserMemId", new[] { "-5" }));
+        Add(new AttributeNode(identifierName + ".VB_UserMemId", ["-5"]));
     }
 
     public bool HasEvaluateMemberAttribute(string identifierName, out AttributeNode attribute)
     {
         attribute = this.SingleOrDefault(a => a.HasValue("-5")
-                                              && a.Name.Equals($"{identifierName}.VB_UserMemId", StringComparison.OrdinalIgnoreCase));
+                                              && a.Name.Equals($"{identifierName}.VB_UserMemId", StringComparison.OrdinalIgnoreCase))!;
         return attribute != null;
     }
 
@@ -201,7 +202,7 @@ public class Attributes : HashSet<AttributeNode>
 
     public bool HasMemberDescriptionAttribute(string identifierName, out AttributeNode attribute)
     {
-        attribute = this.SingleOrDefault(a => a.Name.Equals($"{identifierName}.VB_Description", StringComparison.OrdinalIgnoreCase));
+        attribute = this.SingleOrDefault(a => a.Name.Equals($"{identifierName}.VB_Description", StringComparison.OrdinalIgnoreCase))!;
         return attribute != null;
     }
 
@@ -213,7 +214,7 @@ public class Attributes : HashSet<AttributeNode>
         Add(new AttributeNode("VB_PredeclaredId", new[] {Tokens.True}));
     }
 
-    public AttributeNode PredeclaredIdAttribute
+    public AttributeNode? PredeclaredIdAttribute
     {
         get
         {
@@ -221,7 +222,7 @@ public class Attributes : HashSet<AttributeNode>
         }
     }
 
-    public AttributeNode ExposedAttribute
+    public AttributeNode? ExposedAttribute
     {
         get
         {
@@ -231,7 +232,7 @@ public class Attributes : HashSet<AttributeNode>
 
     public bool HasPredeclaredIdAttribute(out AttributeNode attribute)
     {
-        attribute = this.SingleOrDefault(a => a.Name.Equals("VB_PredeclaredId", StringComparison.OrdinalIgnoreCase) && a.HasValue(Tokens.True));
+        attribute = this.SingleOrDefault(a => a.Name.Equals("VB_PredeclaredId", StringComparison.OrdinalIgnoreCase) && a.HasValue(Tokens.True))!;
         return attribute != null;
     }
 
@@ -245,7 +246,7 @@ public class Attributes : HashSet<AttributeNode>
 
     public bool HasGlobalAttribute(out AttributeNode attribute)
     {
-        attribute = this.SingleOrDefault(a => a.Name.Equals("VB_GlobalNamespace", StringComparison.OrdinalIgnoreCase) && a.HasValue(Tokens.True));
+        attribute = this.SingleOrDefault(a => a.Name.Equals("VB_GlobalNamespace", StringComparison.OrdinalIgnoreCase) && a.HasValue(Tokens.True))!;
         return attribute != null;
     }
 
@@ -256,7 +257,7 @@ public class Attributes : HashSet<AttributeNode>
 
     public bool HasExposedAttribute(out AttributeNode attribute)
     {
-        attribute = this.SingleOrDefault(a => a.Name.Equals("VB_Exposed", StringComparison.OrdinalIgnoreCase) && a.HasValue(Tokens.True));
+        attribute = this.SingleOrDefault(a => a.Name.Equals("VB_Exposed", StringComparison.OrdinalIgnoreCase) && a.HasValue(Tokens.True))!;
         return attribute != null;
     }
 
@@ -270,7 +271,7 @@ public class Attributes : HashSet<AttributeNode>
 
     public bool HasExtensibleAttribute(out AttributeNode attribute)
     {
-        attribute = this.SingleOrDefault(a => a.Name.Equals("VB_Customizable", StringComparison.OrdinalIgnoreCase) && a.HasValue(Tokens.True));
+        attribute = this.SingleOrDefault(a => a.Name.Equals("VB_Customizable", StringComparison.OrdinalIgnoreCase) && a.HasValue(Tokens.True))!;
         return attribute != null;
     }
 

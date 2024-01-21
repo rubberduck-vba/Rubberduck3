@@ -1,6 +1,6 @@
-using Rubberduck.InternalApi.Model.Declarations;
+﻿using System.Collections.Generic;
 
-namespace Rubberduck.Parsing.Annotations
+namespace Rubberduck.InternalApi.Model.Declarations
 {
     public interface IAttributeAnnotation : IAnnotation
     {

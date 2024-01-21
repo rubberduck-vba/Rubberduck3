@@ -37,6 +37,6 @@ namespace Rubberduck.Parsing.Annotations.Concrete;
 public sealed class IgnoreModuleAnnotation : AnnotationBase
 {
     public IgnoreModuleAnnotation()
-        : base("IgnoreModule", AnnotationTarget.Module, allowedArguments: null, allowedArgumentTypes: new[] { AnnotationArgumentType.Inspection }, allowMultiple: true)
+        : base("IgnoreModule", AnnotationTarget.Module, allowedArguments: null, allowedArgumentTypes: [AnnotationArgumentType.Inspection], allowMultiple: true)
     {}
 }

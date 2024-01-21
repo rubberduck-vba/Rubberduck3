@@ -24,7 +24,7 @@ namespace Rubberduck.Parsing.Annotations;
 /// </example>
 public sealed class ObsoleteAnnotation : AnnotationBase
 {
-    public string ReplacementDocumentation { get; private set; }
+    public string ReplacementDocumentation { get; private set; } = string.Empty;
 
     public ObsoleteAnnotation()
         : base("Obsolete", AnnotationTarget.Member | AnnotationTarget.Variable, allowedArguments: 1, allowedArgumentTypes: [AnnotationArgumentType.Text])

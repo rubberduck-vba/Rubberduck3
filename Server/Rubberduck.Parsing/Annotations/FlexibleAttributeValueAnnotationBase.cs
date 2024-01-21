@@ -26,6 +26,5 @@ public abstract class FlexibleAttributeValueAnnotationBase : AnnotationBase, IAt
     public virtual IReadOnlyList<string> AttributeToAnnotationValues(IReadOnlyList<string> attributeValues) => 
         attributeValues.Take(_numberOfValues).Select(v => v.EnQuote()).ToList();
 
-    public string Attribute(IReadOnlyList<string> annotationValues) => 
-        _attribute;
+    public string Attribute(IReadOnlyList<string> annotationValues) => _attribute;
 }

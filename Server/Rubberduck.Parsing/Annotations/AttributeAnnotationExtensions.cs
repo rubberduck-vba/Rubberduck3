@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Parsing.Annotations;
+﻿using Rubberduck.InternalApi.Model.Declarations;
+
+namespace Rubberduck.Parsing.Annotations;
 
 public static class AttributeAnnotationExtensions
 {
