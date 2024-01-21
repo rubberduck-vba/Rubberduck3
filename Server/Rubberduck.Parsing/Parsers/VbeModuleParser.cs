@@ -129,7 +129,7 @@ public class VbeModuleParser : ModuleParser<string>
                 [CodeKind.RubberduckEditorModule] = (attributesParseTree, attributesTokenStream),
             },
             contentHash,
-            null, //comments,
+            //null, //comments,
             null, //annotations,
             logicalLines,
             null, //attributesListener.Attributes,

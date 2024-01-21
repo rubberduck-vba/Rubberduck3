@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Rubberduck.InternalApi.Model;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 

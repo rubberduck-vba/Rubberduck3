@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.Parsing.Model;
+﻿namespace Rubberduck.InternalApi.Model;
 
 public static class Tokens
 {

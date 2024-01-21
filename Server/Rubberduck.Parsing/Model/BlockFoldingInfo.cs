@@ -2,7 +2,7 @@
 
 namespace Rubberduck.Parsing.Model;
 
-public class BlockFoldingInfo : NamedOffsetInfo
+public record class BlockFoldingInfo : NamedDocumentOffset
 {
     public BlockFoldingInfo(string name, DocumentOffset offset, bool isDefinition = false)
         : base(name, offset)

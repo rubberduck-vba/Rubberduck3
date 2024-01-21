@@ -1,66 +1,30 @@
-﻿using Rubberduck.InternalApi.Model.Declarations;
-using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Unmanaged.Model;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace Rubberduck.Parsing.Model.Symbols;
+namespace Rubberduck.InternalApi.Model.Declarations;
 
-//Needed for VB6 support, although 1 and 2 are applicable to VBA.  See 5.2.4.1.1 https://msdn.microsoft.com/en-us/library/ee177292.aspx
-//and 5.2.4.1.2 https://msdn.microsoft.com/en-us/library/ee199159.aspx
-public enum Instancing
+public record class AttributeNode : IEquatable<AttributeNode>
 {
-    Private = 1,                    //Not exposed via COM.
-    PublicNotCreatable = 2,         //TYPEFLAG_FCANCREATE not set.
-    SingleUse = 3,                  //TYPEFLAGS.TYPEFLAG_FAPPOBJECT
-    GlobalSingleUse = 4,            
-    MultiUse = 5,
-    GlobalMultiUse = 6
-}
-
-public class AttributeNode : IEquatable<AttributeNode>
-{
-    private readonly IList<string> _values;
-
-    public AttributeNode(VBAParser.AttributeStmtContext context)
-    {
-        Context = context;
-        Name = context?.attributeName().GetText() ?? string.Empty;
-        _values = context?.attributeValue().Select(a => a.GetText()).ToList() ?? new List<string>();
-    }
-
     public AttributeNode(string attributeName, IEnumerable<string> values)
     {
         Name = attributeName;
-        _values = values.ToList();
+        Values = values.ToList();
     }
-
-    public VBAParser.AttributeStmtContext Context { get; }
 
     public string Name { get; }
 
     //The order of the values matters for some attributes, e.g. VB_Ext_Key.
-    public IReadOnlyList<string> Values => _values.ToList();
+    public IReadOnlyList<string> Values { get; }
 
     public bool HasValue(string value)
     {
-        return _values.Any(item => item.Equals(value, StringComparison.OrdinalIgnoreCase));
-    }
-
-    public bool Equals(AttributeNode? other)
-    {
-        return other != null 
-               && string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase) 
-               && _values.SequenceEqual(other.Values);
-    }
-
-    public override bool Equals(object? obj)
-    {
-        return Equals(obj as AttributeNode);
+        return Values.Any(item => item.Equals(value, StringComparison.OrdinalIgnoreCase));
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(_values.Concat(new []{Name.ToUpperInvariant()}));
+        return HashCode.Combine(Name.ToUpperInvariant());
     }
 }
 
@@ -72,7 +36,7 @@ public class AttributeNode : IEquatable<AttributeNode>
 /// </remarks>
 public class Attributes : HashSet<AttributeNode>
 {
-    public static bool IsDefaultAttribute(ComponentType componentType, string attributeName, IReadOnlyList<string> attributeValues)
+    public static bool IsDefaultAttribute(ComponentKind componentType, string attributeName, IReadOnlyList<string> attributeValues)
     {
         if (!ComponentsWithDefaultAttributes.Contains(componentType))
         {
@@ -82,24 +46,24 @@ public class Attributes : HashSet<AttributeNode>
         return attributeName switch
         {
             "VB_Name" => true,
-            "VB_GlobalNameSpace" => (componentType == ComponentType.ClassModule || componentType == ComponentType.UserForm)
+            "VB_GlobalNameSpace" => (componentType == ComponentKind.ClassModule || componentType == ComponentKind.UserFormModule)
                                    && attributeValues[0].Equals(Tokens.False),
-            "VB_Exposed" => (componentType == ComponentType.ClassModule || componentType == ComponentType.UserForm)
+            "VB_Exposed" => (componentType == ComponentKind.ClassModule || componentType == ComponentKind.UserFormModule)
                                    && attributeValues[0].Equals(Tokens.False),
-            "VB_Creatable" => (componentType == ComponentType.ClassModule || componentType == ComponentType.UserForm)
+            "VB_Creatable" => (componentType == ComponentKind.ClassModule || componentType == ComponentKind.UserFormModule)
                                    && attributeValues[0].Equals(Tokens.False),
-            "VB_PredeclaredId" => (componentType == ComponentType.ClassModule && attributeValues[0].Equals(Tokens.False))
-                                   || (componentType == ComponentType.UserForm && attributeValues[0].Equals(Tokens.True)),
+            "VB_PredeclaredId" => (componentType == ComponentKind.ClassModule && attributeValues[0].Equals(Tokens.False))
+                                   || (componentType == ComponentKind.UserFormModule && attributeValues[0].Equals(Tokens.True)),
             _ => false,
         };
     }
 
-    private static readonly ICollection<ComponentType> ComponentsWithDefaultAttributes = new HashSet<ComponentType>
-    {
-        ComponentType.StandardModule,
-        ComponentType.ClassModule,
-        ComponentType.UserForm
-    };
+    private static readonly HashSet<ComponentKind> ComponentsWithDefaultAttributes =
+    [
+        ComponentKind.StandardModule,
+        ComponentKind.ClassModule,
+        ComponentKind.UserFormModule,
+    ];
 
     public static string AttributeBaseName(string attributeName, string memberName)
     {
@@ -283,10 +247,5 @@ public class Attributes : HashSet<AttributeNode>
     public IEnumerable<AttributeNode> AttributeNodes(string attribute)
     {
         return this.Where(attributeNode => attributeNode.Name.Equals(attribute, StringComparison.OrdinalIgnoreCase));
-    }
-
-    public IEnumerable<VBAParser.AttributeStmtContext> AttributeContexts(string attribute)
-    {
-        return this.Where(attributeNode => attributeNode.Name.Equals(attribute, StringComparison.OrdinalIgnoreCase)).Select(node => node.Context);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using System.Text;
-using Rubberduck.Parsing.Model;
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.Parsing;
 

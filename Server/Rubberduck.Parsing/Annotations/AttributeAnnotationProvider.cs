@@ -6,12 +6,13 @@ namespace Rubberduck.Parsing.Annotations;
 public class AttributeAnnotationProvider : IAttributeAnnotationProvider
 {
     // I want to const this, but can't
-    private readonly AnnotationTarget[] distinctTargets = [
-        AnnotationTarget.Identifier, 
-        AnnotationTarget.Member, 
-        AnnotationTarget.Module, 
-        AnnotationTarget.Variable
-    ];
+    private readonly AnnotationTarget[] distinctTargets = 
+        [
+            AnnotationTarget.Identifier, 
+            AnnotationTarget.Member, 
+            AnnotationTarget.Module, 
+            AnnotationTarget.Variable
+        ];
     private readonly Dictionary<AnnotationTarget, List<IAttributeAnnotation>> annotationInfoByTarget = [];
 
     private readonly IAttributeAnnotation memberFallback = new MemberAttributeAnnotation();

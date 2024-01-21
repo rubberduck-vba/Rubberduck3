@@ -2,9 +2,9 @@
 
 namespace Rubberduck.Parsing.Model;
 
-public abstract class NamedOffsetInfo
+public abstract record class NamedDocumentOffset
 {
-    protected NamedOffsetInfo(string name, DocumentOffset offset) 
+    protected NamedDocumentOffset(string name, DocumentOffset offset) 
     {
         Name = name;
         Offset = offset;
