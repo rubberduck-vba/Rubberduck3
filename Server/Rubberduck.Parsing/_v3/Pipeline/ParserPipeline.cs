@@ -1,30 +1,34 @@
-﻿using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using Microsoft.Extensions.Logging;
-using OmniSharp.Extensions.LanguageServer.Protocol;
+﻿using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations;
-using Rubberduck.InternalApi.Model.Document;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Parsing.Abstract;
 using Rubberduck.Parsing.Listeners;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-using System.Windows.Navigation;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
-internal record class ParserPipelineState
+public interface IParserPipeline
+{
+    /// <summary>
+    /// Starts executing the parser pipeline with the provided state.
+    /// </summary>
+    Task StartAsync(ParserPipelineState state);
+    /// <summary>
+    /// Gets a task that completes when the first pass is completed.
+    /// </summary>
+    /// <remarks>
+    /// Await in LSP handler to ensure availability of resources.
+    /// </remarks>
+    Task FirstPassParserResultTask { get; }
+}
+
+public record class ParserPipelineState
 {
     public ParserPipelineState(WorkspaceUri workspaceRootUri, IOrderedEnumerable<DocumentState> prioritizedState)
     {
@@ -37,14 +41,14 @@ internal record class ParserPipelineState
     public ConcurrentDictionary<WorkspaceFileUri, DocumentState> Documents { get; init; }
 }
 
-internal class FirstPassParserResult
+public class FirstPassParserResult
 {
     public WorkspaceFileUri Uri { get; init; } = null!;
     public ParseResult ParseResult { get; init; } = null!;
     public IEnumerable<FoldingRange> Foldings { get; init; } = [];
 }
 
-internal class ParserPipeline : ServiceBase, IDisposable
+internal class ParserPipeline : ServiceBase, IParserPipeline, IDisposable
 {
     private readonly IWorkspaceStateManager _workspaceManager;
     private readonly DocumentContentStore _contentStore;
@@ -90,7 +94,7 @@ internal class ParserPipeline : ServiceBase, IDisposable
 
     public ParserPipelineState? State { get; private set; }
 
-    public Task Start(ParserPipelineState state)
+    public Task StartAsync(ParserPipelineState state)
     {
         if (State != null)
         {
@@ -111,9 +115,9 @@ internal class ParserPipeline : ServiceBase, IDisposable
     private TransformBlock<WorkspaceFileUri, DocumentState> AcquireDocumentBlock { get; }
     private TransformBlock<DocumentState, FirstPassParserResult> ParseDocumentBlock { get; }
     private BroadcastBlock<FirstPassParserResult> BroadcastFirstPassParseResultBlock { get; }
-    public Task FirstPassParserResultTask => BroadcastFirstPassParseResultBlock.Completion;
-
     private ActionBlock<FirstPassParserResult> UpdateInitialPassDocumentStateBlock { get; }
+    public Task FirstPassParserResultTask => UpdateInitialPassDocumentStateBlock.Completion;
+
     private TransformBlock<FirstPassParserResult, Symbol[]> UpdateWorkspaceTypeSymbolsBlock { get; }
     
 
@@ -218,15 +222,7 @@ internal class ParserPipeline : ServiceBase, IDisposable
         {
             ThrowIfCancellationRequested();
 
-            var state = State.Documents[result.Uri]
-                .WithFoldings(result.Foldings.Select(info =>
-                    new FoldingRange
-                    {
-                        CollapsedText = info.Name,
-                        // FIXME we need L1C1 for LSP, but offsets for editor.
-                        StartLine = 0,
-                        EndLine = 0,
-                    }))
+            var state = State.Documents[result.Uri].WithFoldings(result.Foldings)
                 ?? throw new InvalidOperationException("Document state was unexpectedly null.");
 
             State.Documents.AddOrUpdate(result.Uri, state, (uri, old) => state);
