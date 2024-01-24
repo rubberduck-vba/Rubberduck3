@@ -6,9 +6,13 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using Rubberduck.ServerPlatform;
-using Rubberduck.SettingsProvider;
 using OmniSharp.Extensions.LanguageServer.Client;
 using Rubberduck.Editor.RPC.LanguageServerClient.Handlers;
+using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
+using System;
+using System.Linq;
+using Rubberduck.InternalApi.Settings;
+using Rubberduck.InternalApi.Services;
 
 namespace Rubberduck.Editor.RPC.LanguageServerClient
 {
@@ -88,8 +92,8 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
                             ChangeAnnotationSupport = new() { GroupsOnLabel = supported },
                             DocumentChanges = supported,
                             FailureHandling = FailureHandlingKind.TextOnlyTransactional,
-                            //NormalizesLineEndings = supported,
-                            //ResourceOperations = supported
+                            NormalizesLineEndings = supported, // we must force Windows line endings to sync with VBE
+                            ResourceOperations = new(ResourceOperationKind.Create, ResourceOperationKind.Delete, ResourceOperationKind.Rename)
                         }
                     },
                     SemanticTokens = new()
@@ -101,7 +105,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
                         Value = new()
                         {
                             TagSupport = new() { Value = new() { ValueSet = new Container<SymbolTag>(SymbolTag.Deprecated) } },
-                            SymbolKind = new() { ValueSet = new Container<SymbolKind>(SymbolKind.Array, SymbolKind.Boolean, SymbolKind.Class, SymbolKind.Constant, SymbolKind.Enum, SymbolKind.EnumMember, SymbolKind.Event, SymbolKind.Field, SymbolKind.File, SymbolKind.Function, SymbolKind.Interface, SymbolKind.Method, SymbolKind.Module, SymbolKind.Number, SymbolKind.Null, SymbolKind.Object, SymbolKind.Operator, SymbolKind.Package, SymbolKind.Property, SymbolKind.String, SymbolKind.Struct, SymbolKind.Variable) }
+                            SymbolKind = new() { ValueSet = new Container<SymbolKind>(Enum.GetValues<RubberduckSymbolKind>().Cast<SymbolKind>()) }
                         }
                     },
                     ExtensionData = new Dictionary<string, JToken>()
@@ -219,7 +223,12 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
                     {
                         Value = new() { LinkSupport = supported }
                     },
-                    Definition = null, // declaration vs definition is unclear
+                    Definition = new()
+                    {
+                        // declaration vs definition is unclear (probably useful for overloads?), but "Declaration" will be our primary,
+                        // and with "Definitions" we'll accommodate any alternative declarations we come across, perhaps in precompiler-dead code.
+                        Value = new() { LinkSupport = supported }
+                    }, 
                     DocumentHighlight = new() { Value = new() },
                     DocumentLink = new() { Value = new() { TooltipSupport = supported } },
                     DocumentSymbol = new()
@@ -231,29 +240,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
                             TagSupport = new() { ValueSet = new Container<SymbolTag>(SymbolTag.Deprecated) },
                             SymbolKind = new()
                             {
-                                ValueSet = new Container<SymbolKind>(
-                                SymbolKind.Array,
-                                SymbolKind.Boolean,
-                                SymbolKind.Class,
-                                SymbolKind.Constant,
-                                SymbolKind.Enum,
-                                SymbolKind.EnumMember,
-                                SymbolKind.Event,
-                                SymbolKind.Field,
-                                SymbolKind.File,
-                                SymbolKind.Function,
-                                SymbolKind.Interface,
-                                SymbolKind.Method,
-                                SymbolKind.Module,
-                                SymbolKind.Number,
-                                SymbolKind.Null,
-                                SymbolKind.Object,
-                                SymbolKind.Operator,
-                                SymbolKind.Package,
-                                SymbolKind.Property,
-                                SymbolKind.String,
-                                SymbolKind.Struct,
-                                SymbolKind.Variable)
+                                ValueSet = new Container<SymbolKind>(Enum.GetValues<RubberduckSymbolKind>().Cast<SymbolKind>())
                             }
                         }
                     },
@@ -301,22 +288,26 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
                         {
                             Formats = new Container<SemanticTokenFormat>(SemanticTokenFormat.Defaults),
                             MultilineTokenSupport = supported,
-                            OverlappingTokenSupport = false,
+                            AugmentsSyntaxTokens = false, // client does not know about syntax tokens, initial highlighting is via regex rules
+                            //ServerCancelSupport = supported,
+                            OverlappingTokenSupport = false, // or... maybe?
                             Requests = new()
                             {
+                                // configured like this, we're going to be requesting tokens for full documents, not dealing with deltas.
                                 Full = new() { Value = new() { Delta = false } },
-                                //Range = new() { Value = new() }
+                                //Range = new() { Value = new() } // could enable requesting tokens for a particular range in a document. maybe later.
                             },
-                            //TokenModifiers = new Container<SemanticTokenModifier>(SemanticTokenModifier...) /* TODO FIGURE THIS ONE OUT */
-                            //TokenTypes = new Container<SemanticTokenType>(SemanticTokenType...)
+                            // these two are fully extensible:
+                            TokenTypes = new Container<SemanticTokenType>(RubberduckSemanticTokenType.SemanticTokenTypes),
+                            TokenModifiers = new Container<SemanticTokenModifier>(RubberduckSemanticTokenModifier.SemanticTokenModifiers),
                         }
                     },
                     SelectionRange = new()
                     {
                         Value = new()
                         {
-                            LineFoldingOnly = supported,
-                            RangeLimit = 10000,
+                            LineFoldingOnly = supported, // we don't fold partial lines.
+                            RangeLimit = 10000, // larger than that can't be sync'd with VBE.
                         },
                     },
                     Synchronization = new()

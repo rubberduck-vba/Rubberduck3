@@ -1,6 +1,7 @@
 ﻿using IOException = System.IO.IOException;
 using System.Runtime.InteropServices;
 using Rubberduck.Unmanaged.Model;
+using System;
 
 namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
 {
@@ -10,45 +11,14 @@ namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
         /// Gets the standard projectId for a <em>library reference</em>.
         /// <strong>Do not</strong> use this overload for <em>referenced user projects</em>.
         /// </summary>
-        public static string GetProjectId(this ReferenceInfo reference)
+        public static Uri GetWorkspaceUri(this ReferenceInfo reference)
         {
-            return new QualifiedModuleName(reference).ProjectId;
+            return new Uri(reference.FullPath);
         }
     }
 
     public static class VBProjectExtensions
     {
-        /// <summary>
-        /// Gets the standard projectId for a <em>locked</em> user projects.
-        /// <strong>Do not</strong> use this overload for <em>unlocked</em> user projects.
-        /// </summary>
-        public static string GetProjectId(this IVBProject project, string projectName, string projectPath)
-        {
-            return new QualifiedModuleName(projectName, projectPath, projectName).ProjectId;
-        }
-
-        /// <summary>
-        /// Gets the standard projectId for an <em>unlocked</em> user projects.
-        /// <strong>Do not</strong> use this overload for <em>locked</em> user projects.
-        /// </summary>
-        public static string GetProjectId(this IVBProject project)
-        {
-            if (project.IsWrappingNullReference)
-            {
-                return string.Empty;
-            }
-
-            var projectId = project.ProjectId;
-
-            if (string.IsNullOrEmpty(projectId))
-            {
-                project.AssignProjectId();
-                projectId = project.ProjectId;
-            }
-
-            return projectId;
-        }
-
         public static bool TryGetFullPath(this IVBProject project, out string fullPath)
         {
             if (project.IsWrappingNullReference)

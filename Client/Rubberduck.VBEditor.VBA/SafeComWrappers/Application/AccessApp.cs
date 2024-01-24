@@ -207,7 +207,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 return new HostDocument(moduleName, accessObject.Target.Name, className, state, null);
             }
 
-            if (moduleName.ProjectName == _dbcProject.Value.Name && moduleName.ProjectId == _dbcProject.Value.HelpFile)
+            if (moduleName.ProjectName == _dbcProject.Value.Name && moduleName.WorkspaceUri == _dbcProject.Value.WorkspaceUri)
             {
                 state = DetermineDocumentState(accessObject.Target.CurrentView);
             }

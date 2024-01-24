@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
+
 //using NLog;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
@@ -25,19 +27,19 @@ namespace Rubberduck.VBEditor.Utility
             _attributeSourceCodeHandler = attributesComponentSourceCodeProvider;
         }
 
-        public void AddComponent(string projectId, ComponentType componentType, string? code = null, string? additionalPrefixInModule = null, string? componentName = null)
+        public void AddComponent(Uri workspaceUri, ComponentType componentType, string? code = null, string? additionalPrefixInModule = null, string? componentName = null)
         {
-            AddComponent(_codePaneSourceCodeHandler, projectId, componentType, code, additionalPrefixInModule, componentName);
+            AddComponent(_codePaneSourceCodeHandler, workspaceUri, componentType, code, additionalPrefixInModule, componentName);
         }
 
-        public void AddComponentWithAttributes(string projectId, ComponentType componentType, string code, string? prefixInModule = null, string? componentName = null)
+        public void AddComponentWithAttributes(Uri workspaceUri, ComponentType componentType, string code, string? prefixInModule = null, string? componentName = null)
         {
-            AddComponent(_attributeSourceCodeHandler, projectId, componentType, code, prefixInModule, componentName);
+            AddComponent(_attributeSourceCodeHandler, workspaceUri, componentType, code, prefixInModule, componentName);
         }
 
-        public void AddComponent(IComponentSourceCodeHandler sourceCodeHandler, string projectId, ComponentType componentType, string? code = null, string? prefixInModule = null, string? componentName = null)
+        public void AddComponent(IComponentSourceCodeHandler sourceCodeHandler, Uri workspaceUri, ComponentType componentType, string? code = null, string? prefixInModule = null, string? componentName = null)
         {
-            using var newComponent = CreateComponent(projectId, componentType);
+            using var newComponent = CreateComponent(workspaceUri, componentType);
             if (newComponent is null)
             {
                 return;
@@ -103,9 +105,9 @@ namespace Rubberduck.VBEditor.Utility
             codeModule.InsertLines(1, prefix);
         }
 
-        private IVBComponent CreateComponent(string? projectId, ComponentType componentType)
+        private IVBComponent CreateComponent(Uri workspaceUri, ComponentType componentType)
         {
-            var componentsCollection = _projectsProvider.ComponentsCollection(projectId);
+            var componentsCollection = _projectsProvider.ComponentsCollection(workspaceUri);
             if (componentsCollection is null)
             {
                 return null!;

@@ -1,13 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider;
-using Rubberduck.SettingsProvider.Model;
-using Rubberduck.SettingsProvider.Model.LanguageClient;
+using Rubberduck.InternalApi.Settings.Model;
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 
 namespace Rubberduck.ServerPlatform
@@ -19,7 +17,7 @@ namespace Rubberduck.ServerPlatform
         void Start();
     }
 
-    public sealed class ClientProcessHealthCheckService<TSettings> : ServiceBase, IHealthCheckService<TSettings>, IDisposable
+    public sealed class ClientProcessHealthCheckService<TSettings> : ServerPlatformServiceBase, IHealthCheckService<TSettings>, IDisposable
         where TSettings : RubberduckSetting, IHealthCheckSettingsProvider
     {
         private readonly ILogger _logger;

@@ -1,5 +1,6 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Model.Declarations.Types;
+using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,17 +9,19 @@ namespace Rubberduck.InternalApi.Model.Declarations;
 
 public abstract record class Symbol : DocumentSymbol
 {
-    protected Symbol(SymbolKind kind, string name, Uri uri, Accessibility accessibility, IEnumerable<Symbol>? children = default, IEnumerable<IParseTreeAnnotation>? annotations = default)
+    protected Symbol(RubberduckSymbolKind kind, string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = default, IEnumerable<IParseTreeAnnotation>? annotations = default)
     {
-        Kind = kind;
+        Kind = (SymbolKind)kind;
         Name = name;
-        Uri = uri;
+        ParentUri = parentUri;
+        Uri = new(parentUri.OriginalString + $"#{name}");
         Accessibility = accessibility;
         Children = new(children ?? []);
         Annotations = annotations?.ToArray() ?? [];
     }
 
     public bool IsUserDefined { get; init; }
+    public Uri ParentUri { get; }
     public Uri Uri { get; }
 
     public Accessibility Accessibility { get; }
@@ -28,16 +31,16 @@ public abstract record class Symbol : DocumentSymbol
 
 public record class ProjectSymbol : Symbol
 {
-    public ProjectSymbol(string name, Uri uri, IEnumerable<Symbol> children)
-        : base(SymbolKind.Package, name, uri, Accessibility.Global, children)
+    public ProjectSymbol(string name, Uri workspaceUri, IEnumerable<Symbol> children)
+        : base(RubberduckSymbolKind.Project, name, workspaceUri, Accessibility.Global, children)
     {
     }
 }
 
 public record class FileSymbol : Symbol
 {
-    public FileSymbol(string name, Uri uri, IEnumerable<Symbol> children)
-        : base(SymbolKind.File, name, uri, Accessibility.Global, children)
+    public FileSymbol(string name, Uri projectUri, IEnumerable<Symbol> children)
+        : base(RubberduckSymbolKind.File, name, projectUri, Accessibility.Global, children)
     {
     }
 }
@@ -45,18 +48,18 @@ public record class FileSymbol : Symbol
 
 public record class StandardModuleSymbol : Symbol
 {
-    public StandardModuleSymbol(string name, Uri uri, IEnumerable<Symbol> children)
-        : base(SymbolKind.Module, name, uri, Accessibility.Global, children)
+    public StandardModuleSymbol(string name, Uri fileUri, IEnumerable<Symbol> children)
+        : base(RubberduckSymbolKind.Module, name, fileUri, Accessibility.Global, children)
     {
     }
 }
 
 public record class ClassModuleSymbol : TypedSymbol<ClassModuleSymbol>
 {
-    public ClassModuleSymbol(Instancing instancing, string name, Uri uri, IEnumerable<Symbol> children, bool isUserDefined = false)
-        : base(SymbolKind.Class, instancing == Instancing.Private ? Accessibility.Private : Accessibility.Public, name, uri, children, asTypeExpression: name)
+    public ClassModuleSymbol(Instancing instancing, string name, Uri fileUri, IEnumerable<Symbol> children, bool isUserDefined = false)
+        : base(RubberduckSymbolKind.Class, instancing == Instancing.Private ? Accessibility.Private : Accessibility.Public, name, fileUri, children, asTypeExpression: name)
     {
-        ResolvedType = new VBClassType(name, uri, this, isUserDefined: isUserDefined);
+        ResolvedType = new VBClassType(name, fileUri, this, isUserDefined: isUserDefined);
         Instancing = instancing;
     }
 
@@ -65,8 +68,8 @@ public record class ClassModuleSymbol : TypedSymbol<ClassModuleSymbol>
 
 public abstract record class TypedSymbol<T> : Symbol, ITypedSymbol<T> where T : Symbol
 {
-    public TypedSymbol(SymbolKind kind, Accessibility accessibility, string name, Uri uri, IEnumerable<Symbol>? children, string? asTypeExpression)
-        : base(kind, name, uri, accessibility, children)
+    public TypedSymbol(RubberduckSymbolKind kind, Accessibility accessibility, string name, Uri parentUri, IEnumerable<Symbol>? children, string? asTypeExpression)
+        : base(kind, name, parentUri, accessibility, children)
     {
         IsImplicit = string.IsNullOrWhiteSpace(asTypeExpression);
         AsTypeExpression = asTypeExpression ?? string.Empty;
@@ -95,8 +98,8 @@ public abstract record class TypedSymbol<T> : Symbol, ITypedSymbol<T> where T : 
 /// </summary>
 public abstract record class ValuedTypedSymbol : TypedSymbol<ValuedTypedSymbol>, IValuedSymbol<ValuedTypedSymbol>
 {
-    public ValuedTypedSymbol(SymbolKind kind, Accessibility accessibility, string name, Uri uri, string? asTypeExpression, string? valueExpression)
-        : base(kind, accessibility, name, uri, [], asTypeExpression)
+    public ValuedTypedSymbol(RubberduckSymbolKind kind, Accessibility accessibility, string name, Uri parentUri, string? asTypeExpression, string? valueExpression)
+        : base(kind, accessibility, name, parentUri, [], asTypeExpression)
     {
         ValueExpression = valueExpression;
     }
@@ -130,8 +133,8 @@ public abstract record class ValuedTypedSymbol : TypedSymbol<ValuedTypedSymbol>,
 
 public record class ParameterSymbol : TypedSymbol<ParameterSymbol>
 {
-    public ParameterSymbol(string name, Uri uri, ParameterModifier modifier, string asTypeExpression)
-        : base(SymbolKind.Variable, Accessibility.Private, name, uri, [], asTypeExpression)
+    public ParameterSymbol(string name, Uri parentUri, ParameterModifier modifier, string asTypeExpression)
+        : base(RubberduckSymbolKind.Variable, Accessibility.Private, name, parentUri, [], asTypeExpression)
     {
         Modifier = new(modifier);
     }
@@ -144,8 +147,8 @@ public record class ParameterSymbol : TypedSymbol<ParameterSymbol>
 
 public record class ParamArrayParameterSymbol : ParameterSymbol
 {
-    public ParamArrayParameterSymbol(string name, Uri uri, string asTypeExpression)
-        : base(name, uri, ParameterModifier.ExplicitByRef, asTypeExpression)
+    public ParamArrayParameterSymbol(string name, Uri parentUri, string asTypeExpression)
+        : base(name, parentUri, ParameterModifier.ExplicitByRef, asTypeExpression)
     {
         IsArray = true;
     }
@@ -153,8 +156,8 @@ public record class ParamArrayParameterSymbol : ParameterSymbol
 
 public record class OptionalParameterSymbol : ParameterSymbol
 {
-    public OptionalParameterSymbol(string name, Uri uri, ParameterModifier modifier, string asTypeExpression, string? valueExpression)
-        : base(name, uri, modifier, asTypeExpression)
+    public OptionalParameterSymbol(string name, Uri parentUri, ParameterModifier modifier, string asTypeExpression, string? valueExpression)
+        : base(name, parentUri, modifier, asTypeExpression)
     {
         ValueExpression = valueExpression;
     }
@@ -170,25 +173,23 @@ public record class OptionalParameterSymbol : ParameterSymbol
 
 public record class UserDefinedTypeSymbol : TypedSymbol<UserDefinedTypeSymbol>
 {
-    public UserDefinedTypeSymbol(string name, Uri uri, Accessibility accessibility, IEnumerable<Symbol> children)
-        : base(SymbolKind.Struct, accessibility, name, uri, children, name)
+    public UserDefinedTypeSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol> children)
+        : base(RubberduckSymbolKind.UserDefinedType, accessibility, name, parentUri, children, name)
     {
-        ResolvedType = new VBUserDefinedType(name, uri, this);
+        ResolvedType = new VBUserDefinedType(name, parentUri, this);
     }
 }
 
 public record class UserDefinedTypeMemberSymbol : TypedSymbol<UserDefinedTypeMemberSymbol>
 {
-    public UserDefinedTypeMemberSymbol(string name, Uri uri, string? typeName)
-        : base(SymbolKind.Field, Accessibility.Public, name, uri, [], typeName)
-    {
-    }
+    public UserDefinedTypeMemberSymbol(string name, Uri parentUri, string? typeName)
+        : base(RubberduckSymbolKind.Field, Accessibility.Public, name, parentUri, [], typeName) { }
 }
 
 public record class LibraryFunctionImportSymbol : TypedSymbol<LibraryFunctionImportSymbol>
 {
-    public LibraryFunctionImportSymbol(string library, string name, string? alias, Uri uri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, string? typeName)
-        : base(SymbolKind.Function, accessibility, alias ?? name, uri, parameters, typeName)
+    public LibraryFunctionImportSymbol(string library, string name, string? alias, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, string? typeName)
+        : base(RubberduckSymbolKind.Function, accessibility, alias ?? name, parentUri, parameters, typeName)
     {
         Library = library;
         OriginalName = name;
@@ -200,8 +201,8 @@ public record class LibraryFunctionImportSymbol : TypedSymbol<LibraryFunctionImp
 
 public record class LibraryProcedureImportSymbol : Symbol
 {
-    public LibraryProcedureImportSymbol(string library, string name, string? alias, Uri uri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters)
-        : base(SymbolKind.Method, alias ?? name, uri, accessibility, parameters)
+    public LibraryProcedureImportSymbol(string library, string name, string? alias, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters)
+        : base(RubberduckSymbolKind.Procedure, alias ?? name, parentUri, accessibility, parameters)
     {
         Library = library;
         OriginalName = name;
@@ -213,84 +214,64 @@ public record class LibraryProcedureImportSymbol : Symbol
 
 public record class FunctionSymbol : TypedSymbol<FunctionSymbol>
 {
-    public FunctionSymbol(string name, Uri uri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, IEnumerable<Symbol>? children, string? typeName)
-        : base(SymbolKind.Function, accessibility, name, uri, parameters?.Concat(children ?? []).ToArray(), typeName)
-    { }
+    public FunctionSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, IEnumerable<Symbol>? children, string? typeName, RubberduckSymbolKind kind = RubberduckSymbolKind.Function)
+        : base(kind, accessibility, name, parentUri, parameters?.Concat(children ?? []).ToArray(), typeName) { }
 }
 
 public record class ProcedureSymbol : Symbol
 {
-    public ProcedureSymbol(string name, Uri uri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, IEnumerable<Symbol>? children)
-        : base(SymbolKind.Method, name, uri, accessibility, parameters?.Concat(children ?? []).ToArray())
-    { }
+    public ProcedureSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, IEnumerable<Symbol>? children, RubberduckSymbolKind kind = RubberduckSymbolKind.Procedure)
+        : base(kind, name, parentUri, accessibility, parameters?.Concat(children ?? []).ToArray()) { }
 }
 
 public record class PropertyGetSymbol : FunctionSymbol
 {
-    public PropertyGetSymbol(string name, Uri uri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, IEnumerable<Symbol>? children, string? asTypeNameExpression)
-        : base(name, uri, accessibility, parameters, children, asTypeNameExpression)
-    {
-        Kind = SymbolKind.Property;
-    }
+    public PropertyGetSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, IEnumerable<Symbol>? children, string? asTypeNameExpression)
+        : base(name, parentUri, accessibility, parameters, children, asTypeNameExpression, RubberduckSymbolKind.Property) { }
 }
 
 public record class PropertyLetSymbol : ProcedureSymbol
 {
-    public PropertyLetSymbol(string name, Uri uri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, IEnumerable<Symbol>? children)
-        : base(name, uri, accessibility, parameters, children)
-    {
-        Kind = SymbolKind.Property;
-    }
+    public PropertyLetSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, IEnumerable<Symbol>? children)
+        : base(name, parentUri, accessibility, parameters, children, RubberduckSymbolKind.Property) { }
 }
 
 public record class PropertySetSymbol : ProcedureSymbol
 {
-    public PropertySetSymbol(string name, Uri uri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, IEnumerable<Symbol>? children)
-        : base(name, uri, accessibility, parameters, children)
-    {
-        Kind = SymbolKind.Property;
-    }
+    public PropertySetSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, IEnumerable<Symbol>? children)
+        : base(name, parentUri, accessibility, parameters, children, RubberduckSymbolKind.Property) { }
 }
 
 public record class EnumSymbol : TypedSymbol<EnumSymbol>
 {
-    public EnumSymbol(string name, Uri uri, Accessibility accessibility, IEnumerable<EnumMemberSymbol> children, bool isUserDefined = false)
-        : base(SymbolKind.Enum, accessibility, name, uri, children, name)
+    public EnumSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<EnumMemberSymbol> children, bool isUserDefined = false)
+        : base(RubberduckSymbolKind.Enum, accessibility, name, parentUri, children, name) 
     {
-        ResolvedType = new VBEnumType(name, uri, this, isUserDefined: isUserDefined);
+        ResolvedType = new VBEnumType(name, parentUri, this, isUserDefined: isUserDefined);
     }
 }
 
 public record class EnumMemberSymbol : ValuedTypedSymbol
 {
-    public EnumMemberSymbol(string name, Uri uri, string typeName, string? value)
-        : base(SymbolKind.EnumMember, Accessibility.Public, name, uri, typeName, value)
-    {
-    }
+    public EnumMemberSymbol(string name, Uri parentUri, string typeName, string? value)
+        : base(RubberduckSymbolKind.EnumMember, Accessibility.Public, name, parentUri, typeName, value) { }
 }
 
 public record class EventMemberSymbol : ProcedureSymbol
 {
-    public EventMemberSymbol(string name, Uri uri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters)
-        : base(name, uri, accessibility, parameters, null)
-    {
-        Kind = SymbolKind.Event;
-    }
+    public EventMemberSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters)
+        : base(name, parentUri, accessibility, parameters, null, RubberduckSymbolKind.Event) { }
 }
 
 public record class ConstantDeclarationSymbol : ValuedTypedSymbol
 {
-    public ConstantDeclarationSymbol(string name, Uri uri, Accessibility accessibility, string? asTypeNameExpression, string? valueExpression)
-        : base(SymbolKind.Constant, accessibility, name, uri, asTypeNameExpression, valueExpression)
-    { 
-    }
+    public ConstantDeclarationSymbol(string name, Uri parentUri, Accessibility accessibility, string? asTypeNameExpression, string? valueExpression)
+        : base(RubberduckSymbolKind.Constant, accessibility, name, parentUri, asTypeNameExpression, valueExpression) { }
 }
 
 public record class VariableDeclarationSymbol : TypedSymbol<VariableDeclarationSymbol>
 {
-    public VariableDeclarationSymbol(string name, Uri uri, Accessibility accessibility, string? asTypeNameExpression)
-        : base(SymbolKind.Variable, accessibility, name, uri, [], asTypeNameExpression)
-    {
-    }
+    public VariableDeclarationSymbol(string name, Uri parentUri, Accessibility accessibility, string? asTypeNameExpression)
+        : base(RubberduckSymbolKind.Variable, accessibility, name, parentUri, [], asTypeNameExpression) { }
 }
 

@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
+using Rubberduck.InternalApi.Settings.Model;
+using Rubberduck.InternalApi.Settings.Model.LanguageClient;
 using Rubberduck.ServerPlatform;
-using Rubberduck.SettingsProvider.Model;
-using Rubberduck.SettingsProvider.Model.LanguageClient;
 using System;
 using System.Diagnostics;
 using ILogger = Microsoft.Extensions.Logging.ILogger;

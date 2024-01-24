@@ -9,17 +9,17 @@ using Rubberduck.Editor.RPC.EditorServer.Handlers.Lifecycle;
 using Rubberduck.Editor.RPC.EditorServer.Handlers.Workspace;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
-using Rubberduck.LanguageServer.Model;
 using Rubberduck.ServerPlatform;
-using Rubberduck.SettingsProvider.Model;
-using Rubberduck.SettingsProvider;
-using Rubberduck.SettingsProvider.Model.LanguageClient;
-using Rubberduck.SettingsProvider.Model.LanguageServer;
 using System;
 using System.IO.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
+using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
+using Rubberduck.InternalApi.Settings.Model;
+using Rubberduck.InternalApi.Settings.Model.LanguageServer;
+using Rubberduck.InternalApi.Settings.Model.LanguageClient;
+using Rubberduck.InternalApi.Services;
 
 namespace Rubberduck.Editor
 {
@@ -56,7 +56,6 @@ namespace Rubberduck.Editor
             services.AddSingleton<IDefaultSettingsProvider<LanguageServerSettings>>(provider => LanguageServerSettings.Default);
             services.AddSingleton<RubberduckSettingsProvider>();
 
-            services.AddSingleton<SupportedLanguage, VisualBasicForApplicationsLanguage>();
             //services.AddSingleton<DocumentContentStore>();
 
             services.AddSingleton<IExitHandler, ExitHandler>();

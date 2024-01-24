@@ -5,44 +5,42 @@ namespace Rubberduck.Parsing.PreProcessing;
 public class CompilationArgumentsCache : ICompilationArgumentsCache
 {
     private readonly ICompilationArgumentsProvider _provider;
-    private readonly Dictionary<string,Dictionary<string,short>> _compilationArguments = new();
-    private readonly HashSet<string> _projectsWhoseCompilationArgumentsChanged = new();
+    private readonly Dictionary<Uri, Dictionary<string, short>> _compilationArguments = [];
+    private readonly HashSet<Uri> _projectsWhoseCompilationArgumentsChanged = [];
 
     public CompilationArgumentsCache(ICompilationArgumentsProvider compilationArgumentsProvider)
     {
         _provider = compilationArgumentsProvider;
     }
 
-    public VBAPredefinedCompilationConstants PredefinedCompilationConstants =>
-        _provider.PredefinedCompilationConstants;
+    public VBAPredefinedCompilationConstants PredefinedCompilationConstants => _provider.PredefinedCompilationConstants;
 
-    public Dictionary<string, short> UserDefinedCompilationArguments(string projectId)
+    public Dictionary<string, short> UserDefinedCompilationArguments(Uri workspaceUri)
     {
-        return _compilationArguments.TryGetValue(projectId, out var compilatioarguments)
-            ? compilatioarguments
-            : new Dictionary<string, short>();
+        return _compilationArguments.TryGetValue(workspaceUri, out var args) ? args : [];
     }
 
-    public void ReloadCompilationArguments(IEnumerable<string> projectIds)
+    public void ReloadCompilationArguments(IEnumerable<Uri> workspaceUris)
     {
-        foreach (var projectId in projectIds)
+        foreach (var uri in workspaceUris)
         {
-            var oldCompilationArguments = UserDefinedCompilationArguments(projectId);
-            ReloadCompilationArguments(projectId);
-            var newCompilationArguments = UserDefinedCompilationArguments(projectId);
+            var oldCompilationArguments = UserDefinedCompilationArguments(uri);
+            ReloadCompilationArguments(uri);
+
+            var newCompilationArguments = UserDefinedCompilationArguments(uri);
             if (!newCompilationArguments.HasEqualContent(oldCompilationArguments))
             {
-                _projectsWhoseCompilationArgumentsChanged.Add(projectId);
+                _projectsWhoseCompilationArgumentsChanged.Add(uri);
             }
         }
     }
 
-    private void ReloadCompilationArguments(string projectId)
+    private void ReloadCompilationArguments(Uri workspaceUri)
     {
-        _compilationArguments[projectId] = _provider.UserDefinedCompilationArguments(projectId);
+        _compilationArguments[workspaceUri] = _provider.UserDefinedCompilationArguments(workspaceUri);
     }
 
-    public IReadOnlyCollection<string> ProjectWhoseCompilationArgumentsChanged()
+    public IReadOnlyCollection<Uri> ProjectWhoseCompilationArgumentsChanged()
     {
         return _projectsWhoseCompilationArgumentsChanged;
     }
@@ -52,11 +50,11 @@ public class CompilationArgumentsCache : ICompilationArgumentsCache
         _projectsWhoseCompilationArgumentsChanged.Clear();
     }
 
-    public void RemoveCompilationArgumentsFromCache(IEnumerable<string> projectIds)
+    public void RemoveCompilationArgumentsFromCache(IEnumerable<Uri> workspaceUris)
     {
-        foreach (var projectId in projectIds)
+        foreach (var uri in workspaceUris)
         {
-            _compilationArguments.Remove(projectId);
+            _compilationArguments.Remove(uri);
         }
     }
 }

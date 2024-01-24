@@ -23,7 +23,7 @@ public class VBFoldingListener : VBAParserBaseListener
 
     public override void ExitModuleConfig([NotNull] VBAParser.ModuleConfigContext context)
     {
-        if (_settings.FoldModuleHeader && context.ChildCount > 0 && context.Offset.Length > 0)
+        if ((_settings?.FoldModuleHeader ?? true) && context.ChildCount > 0 && context.Offset.Length > 0)
         {
             var offset = context.Offset;
             var endToken = context.END().Symbol;
@@ -35,7 +35,7 @@ public class VBFoldingListener : VBAParserBaseListener
     private int? _topOfModuleCommentsStartOffset;
     public override void ExitModuleAttributes([NotNull] VBAParser.ModuleAttributesContext context)
     {
-        if (_settings.FoldModuleAttributes && context.ChildCount > 0 && context.Offset.Length > 0)
+        if ((_settings?.FoldModuleAttributes ?? true) && context.ChildCount > 0 && context.Offset.Length > 0)
         {
             var offset = context.Offset;
             var comments = context.GetDescendents<VBAParser.CommentOrAnnotationContext>();
@@ -119,7 +119,7 @@ public class VBFoldingListener : VBAParserBaseListener
 
     private void FoldModuleDeclarations(DocumentOffset offset)
     {
-        if (_settings.FoldModuleDeclarations && offset.Length > 0)
+        if ((_settings?.FoldModuleDeclarations ?? true) && offset.Length > 0)
         {
             _foldings.Add(new BlockFoldingInfo($"[ModuleDeclarations]", offset));
             _moduleDeclarationsOffset = null;
@@ -128,7 +128,7 @@ public class VBFoldingListener : VBAParserBaseListener
 
     public override void ExitModuleDeclarations([NotNull] VBAParser.ModuleDeclarationsContext context)
     {
-        if (_settings.FoldModuleDeclarations && context.ChildCount > 0 && context.Offset.Length > 0)
+        if ((_settings?.FoldModuleDeclarations ?? true) && context.ChildCount > 0 && context.Offset.Length > 0)
         {
             var current = context as VBABaseParserRuleContext;
             var offset = current.Offset;

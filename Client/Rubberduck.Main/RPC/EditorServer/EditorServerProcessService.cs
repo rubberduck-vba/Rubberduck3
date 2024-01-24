@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Services;
+using Rubberduck.InternalApi.Settings;
+using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.ServerPlatform;
-using Rubberduck.SettingsProvider;
-using Rubberduck.SettingsProvider.Model;
 using Rubberduck.Unmanaged.WindowsApi;
 using System;
 using System.Diagnostics;
@@ -9,7 +10,7 @@ using Env = System.Environment;
 
 namespace Rubberduck.Main.RPC.EditorServer
 {
-    class EditorServerProcessService : ServerPlatform.ServiceBase, IServerProcessService
+    class EditorServerProcessService : ServerPlatform.ServerPlatformServiceBase, IServerProcessService
     {
         private readonly ILogger _logger;
         private Process? _process;

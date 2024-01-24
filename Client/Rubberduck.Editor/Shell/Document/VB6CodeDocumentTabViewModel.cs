@@ -1,4 +1,4 @@
-﻿using Rubberduck.LanguageServer.Model;
+﻿using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shell.StatusBar;
 using System;
@@ -14,7 +14,7 @@ namespace Rubberduck.Editor.Shell.Document
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindowCommand,
             IDocumentStatusViewModel activeDocumentStatus)
-            : base(documentUri, VisualBasicLanguage.LanguageId, title, content, isReadOnly, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus)
+            : base(documentUri, SupportedLanguage.VB6.Id, title, content, isReadOnly, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus)
         {
         }
     }

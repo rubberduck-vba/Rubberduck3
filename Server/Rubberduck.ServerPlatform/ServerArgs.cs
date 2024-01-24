@@ -1,5 +1,5 @@
 ﻿using CommandLine;
-using Rubberduck.SettingsProvider.Model.ServerStartup;
+using Rubberduck.InternalApi.Settings.Model.ServerStartup;
 using System;
 using System.IO.Pipes;
 using System.Linq;

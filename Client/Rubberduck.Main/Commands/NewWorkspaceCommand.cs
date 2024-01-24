@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Linq;
 using Reference = Rubberduck.InternalApi.Model.Workspace.Reference;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.ServerPlatform;
 
 namespace Rubberduck.Main.Commands.NewWorkspace
 {
@@ -46,10 +47,10 @@ namespace Rubberduck.Main.Commands.NewWorkspace
             _folderMigration = folderMigration;
         }
 
-        public void ExportWorkspaceModules(string projectId, Uri workspaceRoot, IEnumerable<Module> modules)
+        public void ExportWorkspaceModules(Uri workspaceRoot, IEnumerable<Module> modules)
         {
             var workspaceModules = modules.ToDictionary(e => e.Name);
-            foreach (var qualifiedComponent in _projects.Components(projectId))
+            foreach (var qualifiedComponent in _projects.Components(workspaceRoot))
             {
                 var component = qualifiedComponent.Component;
                 if (workspaceModules.TryGetValue(component.Name, out var module))
@@ -60,10 +61,10 @@ namespace Rubberduck.Main.Commands.NewWorkspace
             }
         }
 
-        public void ImportWorkspaceModules(string projectId, Uri workspaceRoot, IEnumerable<Module> modules)
+        public void ImportWorkspaceModules(Uri workspaceRoot, IEnumerable<Module> modules)
         {
             var workspaceModules = modules.ToDictionary(e => e.Name);
-            foreach (var qualifiedComponent in _projects.Components(projectId))
+            foreach (var qualifiedComponent in _projects.Components(workspaceRoot))
             {
                 var component = qualifiedComponent.Component;
                 var collection = component.Collection;
@@ -77,9 +78,9 @@ namespace Rubberduck.Main.Commands.NewWorkspace
             }
         }
 
-        public IEnumerable<Module> GetWorkspaceModules(string projectId, Uri workspaceRoot, bool scanFolderAnnotations)
+        public IEnumerable<Module> GetWorkspaceModules(Uri workspaceRoot, bool scanFolderAnnotations)
         {
-            foreach (var qualifiedComponent in _projects.Components(projectId))
+            foreach (var qualifiedComponent in _projects.Components(workspaceRoot))
             {
                 var component = qualifiedComponent.Component;
                 var module = component.CodeModule;
@@ -90,7 +91,7 @@ namespace Rubberduck.Main.Commands.NewWorkspace
                 {
                     try
                     {
-                        uri = _folderMigration.ParseModuleUri(workspaceRoot, projectId, uri.FileName, declarations);
+                        uri = _folderMigration.ParseModuleUri(workspaceRoot, uri.FileName, declarations);
                     }
                     catch(Exception exception)
                     {
@@ -126,9 +127,9 @@ namespace Rubberduck.Main.Commands.NewWorkspace
             }
         }
 
-        public IEnumerable<Reference> GetWorkspaceReferences(string projectId)
+        public IEnumerable<Reference> GetWorkspaceReferences(Uri workspaceUri)
         {
-            var project = _projects.Project(projectId);
+            var project = _projects.Project(workspaceUri);
             var collection = project.References;
             foreach (var reference in collection)
             {
@@ -145,9 +146,9 @@ namespace Rubberduck.Main.Commands.NewWorkspace
             }
         }
 
-        public void SetProjectReferences(string projectId, Reference[] references)
+        public void SetProjectReferences(Uri workspaceUri, Reference[] references)
         {
-            var project = _projects.Project(projectId);
+            var project = _projects.Project(workspaceUri);
             var collection = project.References;
 
             var keys = collection.Select(e => e.FullPath).ToHashSet();

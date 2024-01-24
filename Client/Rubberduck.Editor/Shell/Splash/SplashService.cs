@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Model.Abstract;
-using Rubberduck.SettingsProvider;
+using Rubberduck.InternalApi.Services;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Shell.Splash;
 

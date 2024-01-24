@@ -8,11 +8,10 @@ namespace Rubberduck.Unmanaged.Model.Abstract
     public interface IQualifiedModuleName : IEquatable<IQualifiedModuleName>
     {
         ComponentType ComponentType { get; }
-        string ProjectId { get; }
+        Uri WorkspaceUri { get; }
         bool IsParsable { get; }
         string Name { get; }
         string ComponentName { get; }
         string ProjectName { get; }
-        string ProjectPath { get; }
     }
 }

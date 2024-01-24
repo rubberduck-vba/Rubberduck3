@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.SettingsProvider.Model;
+using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.UI.Shared.Settings.Abstract;
 
 namespace Rubberduck.UI.Shared.Settings

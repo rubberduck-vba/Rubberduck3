@@ -1,4 +1,4 @@
-﻿using Rubberduck.SettingsProvider.Model.Editor.Tools;
+﻿using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
 using System.Windows.Input;
 
 namespace Rubberduck.UI.Windows

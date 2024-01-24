@@ -1,5 +1,5 @@
-﻿using Rubberduck.SettingsProvider.Model;
-using Rubberduck.SettingsProvider.Model.ServerStartup;
+﻿using Rubberduck.InternalApi.Settings.Model;
+using Rubberduck.InternalApi.Settings.Model.ServerStartup;
 using Rubberduck.UI.Shared.Settings.Abstract;
 
 namespace Rubberduck.UI.Shared.Settings

@@ -1,5 +1,5 @@
 ﻿using Rubberduck.Editor.Commands;
-using Rubberduck.SettingsProvider.Model.Editor.Tools;
+using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Shell.Tools.ServerTrace;

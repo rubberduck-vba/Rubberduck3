@@ -44,7 +44,7 @@ namespace Rubberduck.Main.Commands.ShowRubberduckEditor
         {
             workspace = null;
 
-            var projectId = _vbe.ActiveVBProject?.ProjectId;
+            var projectId = _vbe.ActiveVBProject?.WorkspaceUri;
             _vbeProjects.Refresh();
 
             var settings = Service.Settings.LanguageClientSettings;

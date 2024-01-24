@@ -65,11 +65,14 @@ namespace Rubberduck.InternalApi.Extensions
         public WorkspaceUri([StringSyntax("Uri")] string? relativeUriString, Uri workspaceRoot)
             : base(relativeUriString ?? ProjectFile.SourceRoot, UriKind.Relative)
         {
-            IsSrcRoot = relativeUriString is null;
-            _relativeUri = relativeUriString;
-
             _root = workspaceRoot;
             _srcRoot = new(System.IO.Path.Combine(workspaceRoot.LocalPath, ProjectFile.SourceRoot));
+            IsSrcRoot = relativeUriString is null;
+
+            var localRoot = _srcRoot.LocalPath;
+            _relativeUri = (relativeUriString ??= ProjectFile.SourceRoot).StartsWith(localRoot)
+                ? relativeUriString.Substring(localRoot.Length, relativeUriString.Length - localRoot.Length)
+                : relativeUriString;
         }
 
         /// <summary>

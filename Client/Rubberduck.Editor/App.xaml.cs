@@ -21,18 +21,18 @@ using Rubberduck.Editor.Shell.Tools.WorkspaceExplorer;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
+using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
-using Rubberduck.LanguageServer.Model;
+using Rubberduck.InternalApi.Settings.Model;
+using Rubberduck.InternalApi.Settings.Model.Editor;
+using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
+using Rubberduck.InternalApi.Settings.Model.General;
+using Rubberduck.InternalApi.Settings.Model.LanguageClient;
+using Rubberduck.InternalApi.Settings.Model.LanguageServer;
+using Rubberduck.InternalApi.Settings.Model.TelemetryServer;
+using Rubberduck.InternalApi.Settings.Model.UpdateServer;
 using Rubberduck.ServerPlatform;
-using Rubberduck.SettingsProvider;
-using Rubberduck.SettingsProvider.Model;
-using Rubberduck.SettingsProvider.Model.Editor;
-using Rubberduck.SettingsProvider.Model.Editor.Tools;
-using Rubberduck.SettingsProvider.Model.General;
-using Rubberduck.SettingsProvider.Model.LanguageClient;
-using Rubberduck.SettingsProvider.Model.LanguageServer;
-using Rubberduck.SettingsProvider.Model.TelemetryServer;
-using Rubberduck.SettingsProvider.Model.UpdateServer;
 using Rubberduck.UI.Chrome;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.SharedHandlers;
@@ -283,7 +283,6 @@ namespace Rubberduck.Editor
 
             services.AddSingleton<ShowRubberduckSettingsCommand>();
             services.AddSingleton<RubberduckSettingsProvider>();
-            services.AddSingleton<SupportedLanguage, VisualBasicForApplicationsLanguage>();
 
             services.AddSingleton<IExitHandler, ExitHandler>();
 

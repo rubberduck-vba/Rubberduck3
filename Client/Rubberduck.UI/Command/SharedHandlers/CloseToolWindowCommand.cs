@@ -1,4 +1,4 @@
-﻿using Rubberduck.SettingsProvider.Model.Editor.Tools;
+﻿using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Shell.Document;

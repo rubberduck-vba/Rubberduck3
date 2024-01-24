@@ -1,6 +1,6 @@
 ﻿using Rubberduck.InternalApi.Model.Workspace;
-using Rubberduck.SettingsProvider.Model;
-using Rubberduck.SettingsProvider.Model.LanguageClient;
+using Rubberduck.InternalApi.Settings.Model;
+using Rubberduck.InternalApi.Settings.Model.LanguageClient;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shared.Message;
@@ -64,7 +64,7 @@ namespace Rubberduck.UI.Services.NewProject
 
         protected override void ResetToDefaults()
         {
-            var vbProject = VBProjects.FirstOrDefault() ?? new VBProjectInfo { Name = "VBAProject", ProjectId = Guid.NewGuid().ToString() };
+            var vbProject = VBProjects.FirstOrDefault() ?? new VBProjectInfo { Name = "VBAProject", WorkspaceUri = null! };
             _projectName = vbProject.Name;
             _workspaceLocation = _settings.LanguageClientSettings.WorkspaceSettings.DefaultWorkspaceRoot.LocalPath;
             if (!_settings.LanguageClientSettings.WorkspaceSettings.RequireDefaultWorkspaceRootHost

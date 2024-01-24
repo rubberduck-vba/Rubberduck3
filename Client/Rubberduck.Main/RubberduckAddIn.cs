@@ -1,35 +1,27 @@
 ﻿using Extensibility;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.InternalApi.Settings;
+using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.Main.Root;
 using Rubberduck.Main.RPC.EditorServer;
 using Rubberduck.Resources;
-using Rubberduck.SettingsProvider;
-using Rubberduck.SettingsProvider.Model;
-using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.UI.Shared.Message;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.TypeLibs.Public;
 using Rubberduck.Unmanaged.UIContext;
-using Rubberduck.VBEditor.UI.OfficeMenus;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO.Abstractions;
-using System.IO.Pipes;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using EditorClient = OmniSharp.Extensions.LanguageServer.Client.LanguageClient;
-using EditorClientOptions = OmniSharp.Extensions.LanguageServer.Client.LanguageClientOptions;
-using Env = System.Environment;
 
 namespace Rubberduck.Main
 {

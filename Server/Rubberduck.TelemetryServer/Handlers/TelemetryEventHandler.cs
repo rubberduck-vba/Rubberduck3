@@ -2,14 +2,14 @@
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using Rubberduck.ServerPlatform.Model.Telemetry;
-using Rubberduck.SettingsProvider.Model;
 using Rubberduck.InternalApi.Extensions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text.Json;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider.Model.TelemetryServer;
+using Rubberduck.InternalApi.Settings.Model;
+using Rubberduck.InternalApi.Settings.Model.TelemetryServer;
 
 namespace Rubberduck.TelemetryServer.Handlers
 {

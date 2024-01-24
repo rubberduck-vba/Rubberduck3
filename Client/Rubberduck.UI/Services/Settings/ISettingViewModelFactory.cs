@@ -1,7 +1,7 @@
-﻿using Rubberduck.SettingsProvider.Model;
-using Rubberduck.SettingsProvider.Model.Editor.Tools;
-using Rubberduck.SettingsProvider.Model.Logging;
-using Rubberduck.SettingsProvider.Model.ServerStartup;
+﻿using Rubberduck.InternalApi.Settings.Model;
+using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
+using Rubberduck.InternalApi.Settings.Model.Logging;
+using Rubberduck.InternalApi.Settings.Model.ServerStartup;
 using Rubberduck.UI.Shared.Settings.Abstract;
 using System;
 

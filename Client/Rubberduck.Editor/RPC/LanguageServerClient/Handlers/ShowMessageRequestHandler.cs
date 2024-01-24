@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Window;
+using Rubberduck.InternalApi.Settings.Model.LanguageClient;
 using Rubberduck.ServerPlatform;
-using Rubberduck.SettingsProvider.Model.LanguageClient;
 using Rubberduck.UI.Shared.Message;
 using System.Collections.Generic;
 using System.Linq;

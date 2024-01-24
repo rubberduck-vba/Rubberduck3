@@ -20,11 +20,6 @@ namespace Rubberduck.InternalApi.Model.Workspace
         /// <remarks>This property is not serialized.</remarks>
         [JsonIgnore]
         public Uri Uri { get; set; }
-        /// <summary>
-        /// The ID string used by the VBIDE addin to uniquely identify this project.
-        /// </summary>
-        [JsonIgnore]
-        public string? ProjectId { get; set; }
 
         /// <summary>
         /// The Rubberduck version that created the file.

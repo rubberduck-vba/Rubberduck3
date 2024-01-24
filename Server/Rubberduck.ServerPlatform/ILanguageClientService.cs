@@ -1,7 +1,7 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Client;
 using System.Reflection;
-using Rubberduck.SettingsProvider.Model;
 using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.InternalApi.Settings.Model;
 
 namespace Rubberduck.ServerPlatform
 {

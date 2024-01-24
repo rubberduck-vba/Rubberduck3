@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Abstract;
 using Rubberduck.Parsing.Expressions;
 using Rubberduck.Parsing.Model;
@@ -17,11 +18,11 @@ public sealed class VBAPreprocessor : ITokenStreamPreprocessor
         _parser = preprocessorParser;
     }
 
-    public CommonTokenStream? PreprocessTokenStream(string projectId, string moduleName, CommonTokenStream tokenStream, CancellationToken token, CodeKind codeKind = CodeKind.SnippetCode)
+    public CommonTokenStream? PreprocessTokenStream(WorkspaceFileUri uri, CommonTokenStream tokenStream, CancellationToken token, CodeKind codeKind = CodeKind.SnippetCode)
     {
         token.ThrowIfCancellationRequested();
 
-        var tree = _parser.Parse(moduleName, projectId, tokenStream, token, codeKind);
+        var tree = _parser.Parse(uri, tokenStream, token, codeKind);
         token.ThrowIfCancellationRequested();
 
         var charStream = tokenStream.TokenSource.InputStream;
@@ -29,7 +30,7 @@ public sealed class VBAPreprocessor : ITokenStreamPreprocessor
         Dictionary<string, short> userCompilationArguments = [];
         try
         {
-            userCompilationArguments = _compilationArgumentsProvider.UserDefinedCompilationArguments(projectId);
+            userCompilationArguments = _compilationArgumentsProvider.UserDefinedCompilationArguments(uri.WorkspaceRoot);
         }
         catch (Exception)
         {

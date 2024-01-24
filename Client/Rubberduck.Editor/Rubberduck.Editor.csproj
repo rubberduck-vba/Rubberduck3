@@ -44,7 +44,6 @@
     <ProjectReference Include="..\..\Server\Rubberduck.ServerPlatform\Rubberduck.ServerPlatform.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj" />
-    <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
     <ProjectReference Include="..\Rubberduck.UI\Rubberduck.UI.csproj" />
   </ItemGroup>
   

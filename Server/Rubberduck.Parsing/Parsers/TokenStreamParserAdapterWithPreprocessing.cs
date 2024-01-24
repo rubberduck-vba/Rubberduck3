@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Abstract;
 using Rubberduck.Parsing.Model;
 
@@ -18,12 +19,11 @@ public class TokenStreamParserAdapterWithPreprocessing<TContent> : IParser<TCont
         _preprocessor = preprocessor;
     }
 
-    public (IParseTree tree, ITokenStream tokenStream, LogicalLineStore? logicalLines) Parse(
-        string moduleName, 
-        string projectId, 
-        TContent content, 
+    public ParseResult Parse(
+        WorkspaceFileUri uri,
+        TContent content,
         CancellationToken token,
-        CodeKind codeKind = CodeKind.SnippetCode, 
+        CodeKind codeKind = CodeKind.SnippetCode,
         ParserMode parserMode = ParserMode.FallBackSllToLl,
         IEnumerable<IParseTreeListener>? parseListeners = null)
     {
@@ -32,10 +32,16 @@ public class TokenStreamParserAdapterWithPreprocessing<TContent> : IParser<TCont
         var rawTokenStream = _tokenStreamProvider.Tokens(content);
         token.ThrowIfCancellationRequested();
 
-        var tokenStream = _preprocessor.PreprocessTokenStream(projectId, moduleName, rawTokenStream, token, codeKind);
+        var tokenStream = _preprocessor.PreprocessTokenStream(uri, rawTokenStream, token, codeKind);
         token.ThrowIfCancellationRequested();
 
-        var tree = _tokenStreamParser.Parse(moduleName, projectId, tokenStream ?? rawTokenStream, token, codeKind, parserMode, parseListeners);
-        return (tree, tokenStream ?? rawTokenStream, null);
+        var tree = _tokenStreamParser.Parse(uri, tokenStream ?? rawTokenStream, token, codeKind, parserMode, parseListeners);
+        return new ParseResult
+        {
+            Tree = tree,
+            TokenStream = tokenStream ?? rawTokenStream,
+            LogicalLines = null,
+            Listeners = parseListeners ?? []
+        };
     }
 }

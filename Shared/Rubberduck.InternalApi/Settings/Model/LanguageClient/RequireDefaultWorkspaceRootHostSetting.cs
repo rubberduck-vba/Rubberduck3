@@ -1,0 +1,16 @@
+﻿namespace Rubberduck.InternalApi.Settings.Model.LanguageClient
+{
+    /// <summary>
+    /// Whether host documents are required to be saved in a folder under the default workspace root.
+    /// </summary>
+    public record class RequireDefaultWorkspaceRootHostSetting : BooleanRubberduckSetting
+    {
+        public static bool DefaultSettingValue { get; } = true;
+
+        public RequireDefaultWorkspaceRootHostSetting()
+        {
+            DefaultValue = DefaultSettingValue;
+            Tags = SettingTags.Advanced;
+        }
+    }
+}
