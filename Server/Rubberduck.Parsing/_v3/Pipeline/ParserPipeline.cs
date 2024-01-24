@@ -6,12 +6,12 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations;
+using Rubberduck.InternalApi.Model.Document;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Parsing.Abstract;
 using Rubberduck.Parsing.Listeners;
-using Rubberduck.Parsing.Model;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -41,7 +41,7 @@ internal class FirstPassParserResult
 {
     public WorkspaceFileUri Uri { get; init; } = null!;
     public ParseResult ParseResult { get; init; } = null!;
-    public IEnumerable<BlockFoldingInfo> Foldings { get; init; } = [];
+    public IEnumerable<FoldingRange> Foldings { get; init; } = [];
 }
 
 internal class ParserPipeline : ServiceBase, IDisposable
@@ -73,7 +73,7 @@ internal class ParserPipeline : ServiceBase, IDisposable
         PrioritizeFilesBlock = new(PrioritizeFiles, options);
         AcquireDocumentBlock = new(AcquireDocumentState, options);
         ParseDocumentBlock = new(ParseDocumentText, options);
-        BroadcastParseResultBlock = new(result => result);
+        BroadcastFirstPassParseResultBlock = new(result => result);
         UpdateInitialPassDocumentStateBlock = new(UpdateDocumentState, options);
         UpdateWorkspaceTypeSymbolsBlock = new(UpdateWorkspaceTypeSymbols, options);
 
@@ -82,9 +82,9 @@ internal class ParserPipeline : ServiceBase, IDisposable
             AcquireWorkspaceBlock.LinkTo(PrioritizeFilesBlock, _withCompletionPropagation),
             PrioritizeFilesBlock.LinkTo(AcquireDocumentBlock, _withCompletionPropagation),
             AcquireDocumentBlock.LinkTo(ParseDocumentBlock, _withCompletionPropagation),
-            ParseDocumentBlock.LinkTo(BroadcastParseResultBlock, _withCompletionPropagation),
-            BroadcastParseResultBlock.LinkTo(UpdateInitialPassDocumentStateBlock, _withCompletionPropagation),
-            BroadcastParseResultBlock.LinkTo(UpdateWorkspaceTypeSymbolsBlock, _withCompletionPropagation),
+            ParseDocumentBlock.LinkTo(BroadcastFirstPassParseResultBlock, _withCompletionPropagation),
+            BroadcastFirstPassParseResultBlock.LinkTo(UpdateInitialPassDocumentStateBlock, _withCompletionPropagation),
+            BroadcastFirstPassParseResultBlock.LinkTo(UpdateWorkspaceTypeSymbolsBlock, _withCompletionPropagation),
         ];
     }
 
@@ -110,9 +110,12 @@ internal class ParserPipeline : ServiceBase, IDisposable
     private TransformManyBlock<IWorkspaceState, WorkspaceFileUri> PrioritizeFilesBlock { get; }
     private TransformBlock<WorkspaceFileUri, DocumentState> AcquireDocumentBlock { get; }
     private TransformBlock<DocumentState, FirstPassParserResult> ParseDocumentBlock { get; }
-    private BroadcastBlock<FirstPassParserResult> BroadcastParseResultBlock { get; }
+    private BroadcastBlock<FirstPassParserResult> BroadcastFirstPassParseResultBlock { get; }
+    public Task FirstPassParserResultTask => BroadcastFirstPassParseResultBlock.Completion;
+
     private ActionBlock<FirstPassParserResult> UpdateInitialPassDocumentStateBlock { get; }
     private TransformBlock<FirstPassParserResult, Symbol[]> UpdateWorkspaceTypeSymbolsBlock { get; }
+    
 
     private void ThrowIfCancellationRequested() => _tokenSource.Token.ThrowIfCancellationRequested();
     private void FaultDataflowBlock(IDataflowBlock block, Exception exception)
@@ -242,7 +245,7 @@ internal class ParserPipeline : ServiceBase, IDisposable
             ThrowIfCancellationRequested();
 
             var tree = result.ParseResult.Tree;
-            // TODO walk the tree, spawn symbols
+            // TODO walk the tree, spawn first pass symbols
 
         }, out var exception) && exception != null)
         {

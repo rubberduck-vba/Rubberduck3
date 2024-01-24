@@ -1,10 +1,8 @@
-﻿using Rubberduck.InternalApi.Model;
-
-namespace Rubberduck.Parsing.Model;
+﻿namespace Rubberduck.InternalApi.Model.Document;
 
 public abstract record class NamedDocumentOffset
 {
-    protected NamedDocumentOffset(string name, DocumentOffset offset) 
+    protected NamedDocumentOffset(string name, DocumentOffset offset)
     {
         Name = name;
         Offset = offset;

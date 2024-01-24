@@ -1,19 +1,35 @@
-﻿using Antlr4.Runtime.Misc;
+﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Model;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Model;
 
 namespace Rubberduck.Parsing.Listeners;
 
 public class VBFoldingListener : VBAParserBaseListener
 {
     private readonly IBlockFoldingSettings _settings;
-    private readonly IList<BlockFoldingInfo> _foldings = new List<BlockFoldingInfo>();
-    public IEnumerable<BlockFoldingInfo> Foldings => _foldings.OrderBy(e => e.Offset.Start);
+    private readonly List<FoldingRange> _foldings = [];
+    public IEnumerable<FoldingRange> Foldings => _foldings.OrderBy(e => e.StartLine);
 
     public VBFoldingListener(IBlockFoldingSettings settings)
     {
         _settings = settings;
+    }
+
+    private FoldingRange Fold(string text, FoldingRangeKind kind, IToken start, IToken end)
+    {
+        return new()
+        {
+            CollapsedText = text,
+            Kind = kind,
+            // IToken.Line: 1..n
+            StartLine = start.Line,
+            EndLine = end.Line,
+            // IToken.Column: 0..n
+            StartCharacter = 1 + start.Column,
+            EndCharacter = 1 + end.Column,
+        };
     }
 
     public override void EnterModule([NotNull] VBAParser.ModuleContext context)
@@ -25,43 +41,41 @@ public class VBFoldingListener : VBAParserBaseListener
     {
         if ((_settings?.FoldModuleHeader ?? true) && context.ChildCount > 0 && context.Offset.Length > 0)
         {
-            var offset = context.Offset;
-            var endToken = context.END().Symbol;
-
-            _foldings.Add(new BlockFoldingInfo($"[ModuleHeader]", new DocumentOffset(0, endToken.StopIndex)));
+            var folding = Fold("[ModuleHeader]", HeaderFolding, context.Start, context.Stop);
+            _foldings.Add(folding);
         }
     }
 
-    private int? _topOfModuleCommentsStartOffset;
+    private IToken? _topOfModuleCommentsStartToken;
     public override void ExitModuleAttributes([NotNull] VBAParser.ModuleAttributesContext context)
     {
         if ((_settings?.FoldModuleAttributes ?? true) && context.ChildCount > 0 && context.Offset.Length > 0)
         {
-            var offset = context.Offset;
+            var start = context.Start;
+            var end = context.Stop;
+
             var comments = context.GetDescendents<VBAParser.CommentOrAnnotationContext>();
             if (comments.Any())
             {
-                var lastAttribute = context.GetDescendents<VBAParser.AttributeStmtContext>()
-                    .OrderBy(e => e.Offset.Start).LastOrDefault();
+                var lastAttribute = context
+                    .GetDescendents<VBAParser.AttributeStmtContext>()
+                    .OrderBy(e => e.Start.StartIndex)
+                    .LastOrDefault();
 
-                var end = lastAttribute?.Offset.End ?? -1;
+                end = lastAttribute?.Stop ?? context.Stop;
 
-                var firstComment = comments.OrderBy(e => e.Offset.Start)
-                    .Where(e => e.Offset.Start > (lastAttribute?.Offset.End ?? -1))
+                var firstComment = comments.OrderBy(e => e.Start.StartIndex)
+                    .Where(e => e.Start.StartIndex > (end?.StartIndex ?? -1))
                     .FirstOrDefault();
 
                 if (firstComment != null)
                 {
-                    _topOfModuleCommentsStartOffset = firstComment.Offset.Start;
+                    _topOfModuleCommentsStartToken = firstComment.Start;
                 }
-
-                offset = new DocumentOffset(offset.Start, end);
             }
 
-            if (offset.Length > 0)
-            {
-                _foldings.Add(new BlockFoldingInfo($"[ModuleAttributes]", offset));
-            }
+            var folding = Fold("[ModuleAttributes]", AttributesFolding, start, end);
+            _foldings.Add(folding);
         }
     }
 
@@ -69,9 +83,9 @@ public class VBFoldingListener : VBAParserBaseListener
     {
         base.EnterModuleBodyElement(context);
 
-        if (_moduleDeclarationsOffset.HasValue)
+        if (_moduleDeclarationsEndToken != null)
         {
-            var startOffset = context.Offset.Start;
+            var start = context.Start;
 
             var declarationsContext = ((VBABaseParserRuleContext)context.Parent.Parent).GetChild<VBAParser.ModuleDeclarationsContext>();
             var declarationComments = declarationsContext.GetDescendents<VBAParser.CommentOrAnnotationContext>()
@@ -98,42 +112,31 @@ public class VBFoldingListener : VBAParserBaseListener
 
                 if (mbeComments.Any())
                 {
-                    startOffset = mbeComments.Last().Offset.Start;
+                    start = mbeComments.Last().Start;
                 }
             }
 
             var declarationElements = declarationsContext.GetDescendents<VBABaseParserRuleContext>()
-                .Where(e => e.Offset.Start < startOffset && !(e is VBAParser.WhiteSpaceContext || e is VBAParser.EndOfStatementContext || e is VBAParser.EndOfLineContext || e is VBAParser.IndividualNonEOFEndOfStatementContext))
+                .Where(e => e.Start.StartIndex < start.StartIndex && !(e is VBAParser.WhiteSpaceContext || e is VBAParser.EndOfStatementContext || e is VBAParser.EndOfLineContext || e is VBAParser.IndividualNonEOFEndOfStatementContext))
                 .OrderBy(e => e.Start.StartIndex);
 
-            var lastDeclarationOffset = declarationElements.LastOrDefault()?.Offset.End;
-
-            if (lastDeclarationOffset.HasValue)
+            var lastDeclarationEndToken = declarationElements.LastOrDefault()?.Stop;
+            if (lastDeclarationEndToken != null && (_settings?.FoldModuleDeclarations ?? true))
             {
-                FoldModuleDeclarations(new DocumentOffset(_moduleDeclarationsOffset.Value.Start, lastDeclarationOffset.Value));
+                var folding = Fold("[Declarations]", DeclarationsFolding, start, lastDeclarationEndToken);
+                _foldings.Add(folding);
             }
         }
     }
 
-    private DocumentOffset? _moduleDeclarationsOffset;
-
-    private void FoldModuleDeclarations(DocumentOffset offset)
-    {
-        if ((_settings?.FoldModuleDeclarations ?? true) && offset.Length > 0)
-        {
-            _foldings.Add(new BlockFoldingInfo($"[ModuleDeclarations]", offset));
-            _moduleDeclarationsOffset = null;
-        }
-    }
-
+    private IToken? _moduleDeclarationsEndToken;
     public override void ExitModuleDeclarations([NotNull] VBAParser.ModuleDeclarationsContext context)
     {
         if ((_settings?.FoldModuleDeclarations ?? true) && context.ChildCount > 0 && context.Offset.Length > 0)
         {
-            var current = context as VBABaseParserRuleContext;
-            var offset = current.Offset;
-
-            _moduleDeclarationsOffset = new DocumentOffset(_topOfModuleCommentsStartOffset.HasValue ? _topOfModuleCommentsStartOffset.Value : offset.Start, context.Offset.End - 2);
+            _moduleDeclarationsEndToken = _topOfModuleCommentsStartToken != null
+                ? _topOfModuleCommentsStartToken
+                : context.Stop;
         }
     }
 
@@ -141,6 +144,8 @@ public class VBFoldingListener : VBAParserBaseListener
     {
         if (context.ChildCount > 0 && context.Offset.Length > 0 && _settings.FoldProcedures)
         {
+            var kind = ScopeFolding;
+
             var sub = context.subStmt();
             var function = context.functionStmt();
             var propGet = context.propertyGetStmt();
@@ -149,87 +154,86 @@ public class VBFoldingListener : VBAParserBaseListener
 
             if (sub != null)
             {
-                var offset = sub.Offset;
-                _foldings.Add(new BlockFoldingInfo($"{sub.visibility()?.GetText()} {Tokens.Sub} {sub.subroutineName()?.GetText() ?? string.Empty}()".TrimStart(), offset, isDefinition: true));
+                _foldings.Add(Fold($"{sub.visibility()?.GetText()} {Tokens.Sub} {sub.subroutineName()?.GetText() ?? string.Empty}()".TrimStart(), kind, sub.Start, sub.Stop));
             }
             else if (function != null)
             {
-                var offset = function.Offset;
-                _foldings.Add(new BlockFoldingInfo($"{function.visibility()?.GetText()} {Tokens.Function} {function.functionName()?.GetText() ?? string.Empty}()".TrimStart(), offset, isDefinition: true));
+                _foldings.Add(Fold($"{function.visibility()?.GetText()} {Tokens.Function} {function.functionName()?.GetText() ?? string.Empty}()".TrimStart(), kind, function.Start, function.Stop));
             }
             else if (propGet != null)
             {
-                var offset = propGet.Offset;
-                _foldings.Add(new BlockFoldingInfo($"{propGet.visibility()?.GetText()} {Tokens.Property} {Tokens.Get} {propGet.functionName()?.GetText() ?? string.Empty}()".TrimStart(), offset, isDefinition: true));
+                _foldings.Add(Fold($"{propGet.visibility()?.GetText()} {Tokens.Property} {Tokens.Get} {propGet.functionName()?.GetText() ?? string.Empty}()".TrimStart(), kind, propGet.Start, propGet.Stop));
             }
             else if (propLet != null)
             {
-                var offset = propLet.Offset;
-                _foldings.Add(new BlockFoldingInfo($"{propLet.visibility()?.GetText()} {Tokens.Property} {Tokens.Let} {propLet.subroutineName()?.GetText() ?? string.Empty}()".TrimStart(), offset, isDefinition: true));
+                _foldings.Add(Fold($"{propLet.visibility()?.GetText()} {Tokens.Property} {Tokens.Let} {propLet.subroutineName()?.GetText() ?? string.Empty}()".TrimStart(), kind, propLet.Start, propLet.Stop));
             }
             else if (propSet != null)
             {
-                var offset = propSet.Offset;
-                _foldings.Add(new BlockFoldingInfo($"{propSet.visibility()?.GetText()} {Tokens.Property} {Tokens.Set} {propSet.subroutineName()?.GetText() ?? string.Empty}()".TrimStart(), offset, isDefinition: true));
+                _foldings.Add(Fold($"{propSet.visibility()?.GetText()} {Tokens.Property} {Tokens.Set} {propSet.subroutineName()?.GetText() ?? string.Empty}()".TrimStart(), kind, propSet.Start, propSet.Stop));
             }
         }
     }
 
+    private static FoldingRangeKind HeaderFolding { get; } = new("header");
+    private static FoldingRangeKind AttributesFolding { get; } = new("attributes");
+    private static FoldingRangeKind DeclarationsFolding { get; } = new("declarations");
+    private static FoldingRangeKind ScopeFolding { get; } = new("scope");
+    private static FoldingRangeKind BlockFolding { get; } = new("block");
+
     public override void ExitForNextStmt([NotNull] VBAParser.ForNextStmtContext context)
     {
-        if (context.ChildCount > 0 && context.Offset.Length > 0 && _settings.FoldBlockStatements)
+        if (context.ChildCount > 0 && _settings.FoldBlockStatements)
         {
-            _foldings.Add(new BlockFoldingInfo(
-                $"For {context.expression(0).GetText()}...", context.Offset));
+            _foldings.Add(Fold($"For {context.expression(0).GetText()}... Next", BlockFolding, context.Start, context.Stop));
         }
     }
 
     public override void ExitForEachStmt([NotNull] VBAParser.ForEachStmtContext context)
     {
-        if (context.ChildCount > 0 && context.Offset.Length > 0 && _settings.FoldBlockStatements)
+        if (context.ChildCount > 0 && _settings.FoldBlockStatements)
         {
-            _foldings.Add(new BlockFoldingInfo(
-                $"For Each {context.expression(0).GetText()} In {context.expression(1).GetText()}...", context.Offset));
+            _foldings.Add(Fold($"For Each {context.expression(0).GetText()} In {context.expression(1).GetText()}... Next", BlockFolding, context.Start, context.Stop));
         }
     }
 
     public override void ExitDoLoopStmt([NotNull] VBAParser.DoLoopStmtContext context)
     {
-        if (context.ChildCount > 0 && context.Offset.Length > 0 && _settings.FoldBlockStatements)
+        if (context.ChildCount > 0 && _settings.FoldBlockStatements)
         {
-            _foldings.Add(new BlockFoldingInfo($"Do...", context.Offset));
+            _foldings.Add(Fold($"Do... Loop", BlockFolding, context.Start, context.Stop));
         }
     }
 
     public override void ExitWhileWendStmt([NotNull] VBAParser.WhileWendStmtContext context)
     {
-        if (context.ChildCount > 0 && context.Offset.Length > 0 && _settings.FoldBlockStatements)
+        if (context.ChildCount > 0 && _settings.FoldBlockStatements)
         {
-            _foldings.Add(new BlockFoldingInfo($"While {context.expression().GetText()}...", context.Offset));
+            _foldings.Add(Fold($"While {context.expression().GetText()}... Wend", BlockFolding, context.Start, context.Stop));
         }
     }
 
     public override void ExitIfStmt([NotNull] VBAParser.IfStmtContext context)
     {
-        if (context.ChildCount > 0 && context.Offset.Length > 0 && _settings.FoldBlockStatements)
+        if (context.ChildCount > 0 && _settings.FoldBlockStatements)
         {
-            _foldings.Add(new BlockFoldingInfo($"If {context.booleanExpression().GetText()}...", context.Offset));
+            _foldings.Add(Fold($"If {context.booleanExpression().GetText()}... End If", BlockFolding, context.Start, context.Stop));
         }
     }
 
     public override void ExitSelectCaseStmt([NotNull] VBAParser.SelectCaseStmtContext context)
     {
-        if (context.ChildCount > 0 && context.Offset.Length > 0 && _settings.FoldBlockStatements)
+        if (context.ChildCount > 0 && _settings.FoldBlockStatements)
         {
-            _foldings.Add(new BlockFoldingInfo($"Select Case {context.selectExpression().GetText()}", context.Offset));
+            _foldings.Add(Fold($"Select Case {context.selectExpression().GetText()}... End Select", BlockFolding, context.Start, context.Stop));
         }
     }
 
     public override void ExitWithStmt([NotNull] VBAParser.WithStmtContext context)
     {
-        if (context.ChildCount > 0 && context.Offset.Length > 0 && _settings.FoldBlockStatements)
+        if (context.ChildCount > 0 && _settings.FoldBlockStatements)
         {
-            _foldings.Add(new BlockFoldingInfo($"With {context.expression().GetText()}...", context.Offset));
+            _foldings.Add(Fold($"With {context.expression().GetText()}... End With", BlockFolding, context.Start, context.Stop));
         }
     }
 }

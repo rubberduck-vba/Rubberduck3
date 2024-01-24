@@ -1,6 +1,4 @@
-﻿using Rubberduck.InternalApi.Model;
-
-namespace Rubberduck.Parsing.Model;
+﻿namespace Rubberduck.InternalApi.Model.Document;
 
 public record class BlockFoldingInfo : NamedDocumentOffset
 {
