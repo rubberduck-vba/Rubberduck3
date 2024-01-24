@@ -23,7 +23,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IApplication Parent => new Application((IsWrappingNullReference ? null : Target.Parent)!);
 
-        public Uri? Uri => IsSaved ? new Uri(FileName) : null;
+        public Uri? Uri => IsSaved ? new Uri(new System.IO.DirectoryInfo(FileName).Parent!.FullName) : null;
 
         public string HelpFile
         {
