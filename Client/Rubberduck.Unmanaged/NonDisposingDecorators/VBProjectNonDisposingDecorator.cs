@@ -29,7 +29,7 @@ namespace Rubberduck.Unmanaged.NonDisposingDecorators
 
         public IVBComponents VBComponents => WrappedItem.VBComponents;
 
-        public Uri WorkspaceUri => WrappedItem.WorkspaceUri;
+        public Uri Uri => WrappedItem.Uri;
 
         public string Name
         {

@@ -148,7 +148,7 @@ namespace Rubberduck.Unmanaged
                 foreach (var project in projects)
                     using (project)
                     {
-                        if (moduleName.ProjectName != project.Name || moduleName.WorkspaceUri != project.WorkspaceUri)
+                        if (moduleName.ProjectName != project.Name || moduleName.WorkspaceUri != project.Uri)
                         {
                             continue;
                         }

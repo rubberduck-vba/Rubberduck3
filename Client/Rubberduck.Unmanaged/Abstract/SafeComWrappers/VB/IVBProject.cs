@@ -13,7 +13,7 @@ namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
         IReferences References { get; }
         IVBComponents VBComponents { get; }
 
-        Uri WorkspaceUri { get; }
+        Uri Uri { get; }
         string Name { get; set; }
         string Description { get; set; }
         string HelpFile { get; set; }

@@ -23,7 +23,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IApplication Parent => new Application((IsWrappingNullReference ? null : Target.Parent)!);
 
-        public Uri? WorkspaceUri => IsSaved ? new Uri(FileName) : null;
+        public Uri? Uri => IsSaved ? new Uri(FileName) : null;
 
         public string HelpFile
         {
@@ -197,7 +197,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             using var mainWindow = vbe.MainWindow;
             try
             {
-                if (WorkspaceUri != activeProject.WorkspaceUri)
+                if (Uri != activeProject.Uri)
                 {
                     vbe.ActiveVBProject = this;
                 }

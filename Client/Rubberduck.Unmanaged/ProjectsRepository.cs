@@ -49,7 +49,7 @@ namespace Rubberduck.Unmanaged
                 }
                 else
                 {
-                    _projects.Add(project.WorkspaceUri, project);
+                    _projects.Add(project.Uri, project);
                 }
             }
         }
@@ -62,7 +62,7 @@ namespace Rubberduck.Unmanaged
                 return false;
             }
 
-            _lockedProjects.Add(project.WorkspaceUri, project);
+            _lockedProjects.Add(project.Uri, project);
             return true;
         }
 

@@ -11,7 +11,7 @@ namespace Rubberduck.Unmanaged.Model
             {
                 foreach (var item in projects)
                 {
-                    if (item.WorkspaceUri == moduleName.WorkspaceUri && item.Name == moduleName.ProjectName)
+                    if (item.Uri == moduleName.WorkspaceUri && item.Name == moduleName.ProjectName)
                     {
                         project = item;
                         return true;

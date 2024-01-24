@@ -27,7 +27,7 @@ namespace Rubberduck.Main.Root
             var result = new List<VBProjectInfo?>();
             foreach (var e in _projects.Projects())
             {
-                result.Add(GetProjectInfo(e.Project.WorkspaceUri, e.Project));
+                result.Add(GetProjectInfo(e.Project.Uri, e.Project));
             }
             return result;
         }

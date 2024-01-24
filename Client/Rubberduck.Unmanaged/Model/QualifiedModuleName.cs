@@ -19,7 +19,7 @@ namespace Rubberduck.Unmanaged.Model
             ComponentType = ComponentType.Undefined;
             _projectName = project.Name;
             ProjectPath = string.Empty;
-            WorkspaceUri = project.WorkspaceUri;
+            WorkspaceUri = project.Uri;
         }
 
         public QualifiedModuleName(IVBComponent component)
@@ -33,7 +33,7 @@ namespace Rubberduck.Unmanaged.Model
                 {
                     _projectName = project == null ? string.Empty : project.Name;
                     ProjectPath = string.Empty;
-                    WorkspaceUri = project.WorkspaceUri;
+                    WorkspaceUri = project.Uri;
                 }
             }
         }
