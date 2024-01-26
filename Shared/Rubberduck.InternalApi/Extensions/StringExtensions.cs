@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Rubberduck.InternalApi.Extensions
 {
+
     public static class StringExtensions
     {
         public static string Capitalize(this string input)

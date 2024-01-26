@@ -1,10 +1,127 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Listeners;
+
+public class VBSymbolListener : VBAParserBaseListener
+{
+    private readonly string _fileName;
+    private readonly WorkspaceUri _workspaceUri;
+    private readonly WorkspaceFileUri _workspaceFileUri;
+
+    private bool _hasModuleHeader;
+    private string _vbNameAttributeValue;
+
+    /// <summary>
+    /// Accumulates symbols to be added to the current context.
+    /// </summary>
+    /// <remarks>
+    /// Push an empty list when entering a new context; Pop the child symbols list when creating the current symbol when exiting the context.
+    /// </remarks>
+    private readonly Stack<List<(Type TContext,Symbol Symbol)>> _currentSymbolChildren = [];
+    private Type? _currentContextType;
+
+    public VBSymbolListener(string fileName, WorkspaceUri workspaceRoot)
+    {
+        _fileName = fileName;
+        _workspaceUri = workspaceRoot;
+        _workspaceFileUri = new(fileName, workspaceRoot);
+    }
+
+    public Symbol Result { get; private set; }
+    private void OnEnterNewCurrentSymbol<TContext>(TContext? context = null) where TContext : ParserRuleContext
+        => _currentSymbolChildren.Push([]);
+
+    private Symbol CreateCurrentSymbol<TContext>(Func<IEnumerable<Symbol>, Symbol> create, TContext? _ = null) where TContext:  ParserRuleContext
+    {
+        if (typeof(TContext) != _currentContextType)
+        {
+            throw new InvalidOperationException($"BUG: Expected current symbol under current context type {_currentContextType?.Name ?? "(null)"}, but context is {typeof(TContext).Name}.");
+        }
+
+        var children = _currentSymbolChildren.Pop().Select(node => node.Symbol).ToArray();
+        return create(children);
+    }
+
+    public override void EnterModule([NotNull] VBAParser.ModuleContext context) 
+        => OnEnterNewCurrentSymbol(context);
+
+    public override void ExitModule([NotNull] VBAParser.ModuleContext context)
+    {
+        Symbol moduleSymbol;
+        if (_hasModuleHeader)
+        {
+            var instancing = Instancing.Private; // TODO get from attributes
+            moduleSymbol = CreateCurrentSymbol(children => new ClassModuleSymbol(instancing, _vbNameAttributeValue, _workspaceFileUri, children), context);
+        }
+        else
+        {
+            moduleSymbol = CreateCurrentSymbol(children => new StandardModuleSymbol(_vbNameAttributeValue, _workspaceFileUri, children), context);
+        }
+
+        Result = moduleSymbol;
+    }
+
+    public override void ExitModuleHeader([NotNull] VBAParser.ModuleHeaderContext context) 
+        => _hasModuleHeader = context.ChildCount > 0;
+
+    public override void EnterSubStmt([NotNull] VBAParser.SubStmtContext context)
+        => OnEnterNewCurrentSymbol(context);
+
+    public override void ExitArg([NotNull] VBAParser.ArgContext context)
+    {
+        string name = context.unrestrictedIdentifier().identifier().GetText();
+        var asTypeExpression = context.asTypeClause()?.type().GetText();
+
+        var parentUri = _workspaceFileUri.GetChildSymbolUri(name);
+
+        ParameterModifier modifier;
+        if (context.BYREF() != null)
+        {
+            modifier = ParameterModifier.ExplicitByRef;
+        }
+        else if (context.BYVAL() != null)
+        {
+            modifier = ParameterModifier.ExplicitByVal;
+        }
+        else if (_currentContextType == typeof(VBAParser.PropertyLetStmtContext) 
+              || _currentContextType == typeof(VBAParser.PropertySetStmtContext))
+        {
+            modifier = ParameterModifier.ImplicitByVal;
+        }
+        else
+        {
+            modifier = ParameterModifier.ImplicitByRef;
+        }
+
+        Symbol symbol;
+        if (context.OPTIONAL() != null)
+        {
+            var valueExpression = context.argDefaultValue()?.GetText();
+            symbol = new OptionalParameterSymbol(name, parentUri, modifier, asTypeExpression, valueExpression);
+        }
+        else if (context.PARAMARRAY() != null)
+        {
+            symbol = new ParamArrayParameterSymbol(name, parentUri, asTypeExpression);
+        }
+        else
+        {
+            symbol = new ParameterSymbol(name, parentUri, modifier, asTypeExpression);
+        }
+
+        _currentSymbolChildren.Peek().Add((context.GetType(), symbol));
+    }
+
+    public override void ExitSubStmt([NotNull] VBAParser.SubStmtContext context)
+    {
+        
+    }
+}
 
 public class VBFoldingListener : VBAParserBaseListener
 {

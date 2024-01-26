@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.InternalApi.Model;
+﻿using System.Collections.Generic;
+
+namespace Rubberduck.InternalApi.Model;
 
 //Needed for VB6 support, although 1 and 2 are applicable to VBA.  See 5.2.4.1.1 https://msdn.microsoft.com/en-us/library/ee177292.aspx
 //and 5.2.4.1.2 https://msdn.microsoft.com/en-us/library/ee199159.aspx
@@ -14,7 +16,8 @@ public enum Instancing
 
 public enum Accessibility
 {
-    Implicit,
+    Undefined = -1,
+    Implicit = 0,
     Private,
     Friend,
     Public,
@@ -32,4 +35,12 @@ public static class AccessibilityExtensions
     {
         return access == Accessibility.Implicit ? string.Empty : access.ToString();
     }
+}
+
+public static class InstancingExtensions
+{
+    //public static Instancing FromAttributeSymbols(this Instancing value, IEnumerable<IValuedSymbol<>>)
+    //{
+    //    return Instancing.Private;
+    //}
 }

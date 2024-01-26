@@ -13,7 +13,7 @@ public enum RubberduckSymbolKind
 
     /* LSP: values 1-18 (from the initial LSP version) deemed supported if DocumentSymbolClientCapabilities.SymbolKind is not specified. */
 
-    File = SymbolKind.File,
+    //File = SymbolKind.File, /* files and modules are interchangeable in Classic-VB; a single class/module is defined per file. */
     Module = SymbolKind.Module,
     //Namespace = SymbolKind.Namespace, /* no namespaces in Classic-VB */
     Project = SymbolKind.Package,
