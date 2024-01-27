@@ -23,6 +23,7 @@ public record class VBArrayType : VBIntrinsicType<object[]>, IEnumerableType
     public int? DeclaredUpperBound { get; init; }
 
     public override object[]? DefaultValue => [];
+    public override bool CanPassByValue { get; } = false;
 
     /// <summary>
     /// Creates and returns a copy of this <c>VBArray</c> type, with the specified bounds.

@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.InternalApi.Model.Declarations.Types;
+﻿namespace Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 
 /// <summary>
 /// Represents a type that can be iterated in a <c>For Each...Next</c> loop.
