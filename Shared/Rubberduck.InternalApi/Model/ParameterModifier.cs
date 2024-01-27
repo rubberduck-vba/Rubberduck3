@@ -6,5 +6,7 @@
         ImplicitByVal,
         ExplicitByRef,
         ExplicitByVal,
+
+        ExternalOutByRef,
     }
 }

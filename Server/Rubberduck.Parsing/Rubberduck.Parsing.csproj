@@ -46,8 +46,4 @@
     </Antlr4>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="_v3\Pipeline\Services\" />
-  </ItemGroup>
-
 </Project>

@@ -33,14 +33,18 @@ public abstract record class Symbol : DocumentSymbol
     /// <remarks>
     /// This information should not be used to construct a symbol hierarchy.
     /// </remarks>
-    public Uri ParentUri { get; }
+    public Uri ParentUri { get; init; }
     /// <summary>
     /// The URI of the symbol as a fragment of the parent URI.
     /// </summary>
     /// <remarks>
     /// Formed with the original string of the parent URI concatenated with a '#' followed by the <c>Name</c> of the symbol.
     /// </remarks>
-    public Uri Uri { get; }
+    public Uri Uri { get; init; }
+
+    public Symbol WithName(string name) => this with { Name = name, Uri = ParentUri.GetChildSymbolUri(name) };
+    public Symbol WithParentUri(Uri parentUri) => this with { Uri = parentUri.GetChildSymbolUri(Name), ParentUri = parentUri };
+    public Symbol WithChildren(IEnumerable<Symbol> children) => this with { Children = new(children ?? []) };
 }
 
 /// <summary>
@@ -167,58 +171,66 @@ public record class UserDefinedTypeMemberSymbol : DeclarationExpressionSymbol
 
 public record class LibraryFunctionImportSymbol : FunctionSymbol
 {
-    public LibraryFunctionImportSymbol(string library, string name, string? alias, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, string? typeName)
-        : base(name, parentUri, accessibility, parameters, [], typeName)
+    public LibraryFunctionImportSymbol(string library, string name, string? alias, bool isPtrSafe, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, string? typeName)
+        : base(name, parentUri, accessibility, parameters, typeName)
     {
         Library = library;
         OriginalName = name;
+        Alias = alias;
+        IsPtrSafe = isPtrSafe;
     }
 
+    public bool IsPtrSafe { get; init; }
     public string Library { get; init; }
     public string? OriginalName { get; init; }
+    public string? Alias { get; init; }
 }
 
 public record class LibraryProcedureImportSymbol : ProcedureSymbol
 {
-    public LibraryProcedureImportSymbol(string library, string name, string? alias, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters)
+    public LibraryProcedureImportSymbol(string library, string name, string? alias, bool isPtrSafe, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters)
         : base(name, parentUri, accessibility, parameters)
     {
         Library = library;
         OriginalName = name;
+        Alias = alias;
+        IsPtrSafe = isPtrSafe;
     }
 
+    public bool IsPtrSafe { get; init; }
     public string Library { get; init; }
     public string? OriginalName { get; init; }
+    public string? Alias { get; init; }
 }
 
 public record class FunctionSymbol : TypedSymbol
 {
-    public FunctionSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, IEnumerable<Symbol>? children = null, string? typeName = null, RubberduckSymbolKind kind = RubberduckSymbolKind.Function)
-        : base(kind, accessibility, name, parentUri, parameters?.Concat(children ?? []).ToArray()) { }
+    public FunctionSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, string? typeName = null, RubberduckSymbolKind kind = RubberduckSymbolKind.Function)
+        : base(kind, accessibility, name, parentUri, (children ?? []).ToArray()) { }
 }
 
 public record class ProcedureSymbol : Symbol
 {
-    public ProcedureSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, IEnumerable<Symbol>? children = null, RubberduckSymbolKind kind = RubberduckSymbolKind.Procedure)
-        : base(kind, name, parentUri, accessibility, parameters?.Concat(children ?? []).ToArray()) { }
+    public ProcedureSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, RubberduckSymbolKind kind = RubberduckSymbolKind.Procedure)
+        : base(kind, name, parentUri, accessibility, (children ?? []).ToArray()) { }
 }
 
 public record class PropertyGetSymbol : FunctionSymbol
 {
-    public PropertyGetSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, IEnumerable<Symbol>? children = null, string? asTypeNameExpression = null)
-        : base(name, parentUri, accessibility, parameters, children, asTypeNameExpression, RubberduckSymbolKind.Property) { }
+    public PropertyGetSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, string? asTypeNameExpression = null)
+        : base(name, parentUri, accessibility, (children ?? []).ToArray(), asTypeNameExpression, RubberduckSymbolKind.Property) { }
 }
 
 public record class PropertyLetSymbol : ProcedureSymbol
 {
-    public PropertyLetSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, IEnumerable<Symbol>? children = null)
-        : base(name, parentUri, accessibility, parameters, children, RubberduckSymbolKind.Property) { }
+    public PropertyLetSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null)
+        : base(name, parentUri, accessibility, (children ?? []).ToArray(), RubberduckSymbolKind.Property) { }
 }
 
 public record class PropertySetSymbol : ProcedureSymbol
 {
-    public PropertySetSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, IEnumerable<Symbol>? children = null)
-        : base(name, parentUri, accessibility, parameters, children, RubberduckSymbolKind.Property) { }
+    public PropertySetSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null)
+        : base(name, parentUri, accessibility, (children ?? []).ToArray(), RubberduckSymbolKind.Property) { }
 }
 
 public record class EnumSymbol : TypedSymbol
@@ -232,14 +244,14 @@ public record class EnumSymbol : TypedSymbol
 
 public record class EnumMemberSymbol : ValuedTypedSymbol
 {
-    public EnumMemberSymbol(string name, Uri parentUri, string typeName, string? value)
-        : base(RubberduckSymbolKind.EnumMember, Accessibility.Public, name, parentUri, typeName, value) { }
+    public EnumMemberSymbol(string name, Uri parentUri, string? value)
+        : base(RubberduckSymbolKind.EnumMember, Accessibility.Public, name, parentUri, null, value) { }
 }
 
 public record class EventMemberSymbol : ProcedureSymbol
 {
     public EventMemberSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters)
-        : base(name, parentUri, accessibility, parameters, null, RubberduckSymbolKind.Event) { }
+        : base(name, parentUri, accessibility, parameters, RubberduckSymbolKind.Event) { }
 }
 
 public record class ConstantDeclarationSymbol : ValuedTypedSymbol
@@ -251,13 +263,13 @@ public record class ConstantDeclarationSymbol : ValuedTypedSymbol
 public record class VariableDeclarationSymbol : DeclarationExpressionSymbol
 {
     public VariableDeclarationSymbol(string name, Uri parentUri, Accessibility accessibility, string? asTypeNameExpression)
-        : base(RubberduckSymbolKind.Variable,name,parentUri, accessibility, children: [], annotations: [], asTypeNameExpression) { }
+        : base(RubberduckSymbolKind.Variable, name, parentUri, accessibility, children: [], annotations: [], asTypeNameExpression) { }
 }
 
 public record class StringLiteralSymbol : TypedSymbol
 {
     public StringLiteralSymbol(string name, Uri parentUri)
-        : base(RubberduckSymbolKind.StringLiteral, Accessibility.Undefined, name, parentUri, null, null)
+        : base(RubberduckSymbolKind.StringLiteral, Accessibility.Undefined, name, parentUri, null, VBType.VbStringType)
     {
     }
 }

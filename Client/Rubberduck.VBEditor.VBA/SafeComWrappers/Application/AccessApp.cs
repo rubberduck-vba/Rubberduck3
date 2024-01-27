@@ -160,11 +160,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return false;
         }
 
-        private DocumentState GetDocumentState(IVBProject project, string name, string className)
+        private VBDocumentState GetDocumentState(IVBProject project, string name, string className)
         {
             if (!project.Equals(_dbcProject.Value))
             {
-                return DocumentState.Inaccessible;
+                return VBDocumentState.Inaccessible;
             }
 
             using (var currentProject = new SafeIDispatchWrapper<_CurrentProject>(Application.CurrentProject))
@@ -196,12 +196,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 }
             }
 
-            return DocumentState.Inaccessible;
+            return VBDocumentState.Inaccessible;
         }
 
         private HostDocument LoadHostDocument(IQualifiedModuleName moduleName, string className, SafeIDispatchWrapper<AccessObject> accessObject)
         {
-            var state = DocumentState.Inaccessible;
+            var state = VBDocumentState.Inaccessible;
             if (!accessObject.Target.IsLoaded)
             {
                 return new HostDocument(moduleName, accessObject.Target.Name, className, state, null);
@@ -215,11 +215,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return new HostDocument(moduleName, accessObject.Target.Name, className, state, null);
         }
 
-        private static DocumentState DetermineDocumentState(AcCurrentView CurrentView)
+        private static VBDocumentState DetermineDocumentState(AcCurrentView CurrentView)
         {
             return CurrentView == AcCurrentView.acCurViewDesign
-                ? DocumentState.DesignView
-                : DocumentState.ActiveView;
+                ? VBDocumentState.DesignView
+                : VBDocumentState.ActiveView;
         }
 
         private bool _disposed;

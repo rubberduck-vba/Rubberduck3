@@ -13,12 +13,14 @@
                             || Value == ParameterModifier.ImplicitByVal;
 
         public bool IsByRef => Value == ParameterModifier.ExplicitByRef
-                            || Value == ParameterModifier.ImplicitByRef;
+                            || Value == ParameterModifier.ImplicitByRef
+                            || Value == ParameterModifier.ExternalOutByRef;
 
         public bool IsImplicit => Value == ParameterModifier.ImplicitByVal
                             || Value == ParameterModifier.ImplicitByRef;
 
         public bool IsExplicit => Value == ParameterModifier.ExplicitByVal
-                            || Value == ParameterModifier.ExplicitByRef;
+                            || Value == ParameterModifier.ExplicitByRef
+                            || Value == ParameterModifier.ExternalOutByRef;
     }
 }

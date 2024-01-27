@@ -25,6 +25,7 @@ public class WorkspaceParserPipeline : ParserPipeline<WorkspaceUri, ParserPipeli
     {
         _workspaceManager = workspaceManager;
     }
+
     protected override (ITargetBlock<WorkspaceUri> inputBlock, Task completion) DefinePipelineBlocks()
     {
         AcquireWorkspaceBlock = new(AcquireWorkspaceState, ExecutionOptions);
@@ -39,51 +40,28 @@ public class WorkspaceParserPipeline : ParserPipeline<WorkspaceUri, ParserPipeli
 
     protected override void SetInitialState(WorkspaceUri input) => State = new() { WorkspaceRootUri = input };
 
-    private TransformBlock<WorkspaceUri, IWorkspaceState>? AcquireWorkspaceBlock { get; set; }
-    private TransformManyBlock<IWorkspaceState, WorkspaceFileUri>? PrioritizeFilesBlock { get; set; }
-    private BufferBlock<WorkspaceFileUri>? WorkspaceFileUriBufferBlock { get; set; }
+    private TransformBlock<WorkspaceUri, IWorkspaceState> AcquireWorkspaceBlock { get; set; } = null!;
+    private TransformManyBlock<IWorkspaceState, WorkspaceFileUri> PrioritizeFilesBlock { get; set; } = null!;
+    private BufferBlock<WorkspaceFileUri> WorkspaceFileUriBufferBlock { get; set; } = null!;
 
 
-    private IWorkspaceState AcquireWorkspaceState(WorkspaceUri uri)
-    {
-        IWorkspaceState? result = null;
-        if (State != null && !TryRunAction(() =>
-        {
-            ThrowIfCancellationRequested();
-            
-            result = _workspaceManager.GetWorkspace(uri.WorkspaceRoot) 
-                ?? throw new InvalidOperationException($"Could not find workspace state for URI '{uri.WorkspaceRoot}'.");
-
-        }, out var exception) && exception != null)
-        {
-            FaultDataflowBlock(AcquireWorkspaceBlock!, exception);
-        }
-
-        return result ?? throw new InvalidOperationException("Result was unexpectedly null.");
-    }
+    private IWorkspaceState AcquireWorkspaceState(WorkspaceUri uri) => 
+        RunTransformBlock(AcquireWorkspaceBlock, uri, e => _workspaceManager.GetWorkspace(uri.WorkspaceRoot)
+            ?? throw new InvalidOperationException($"Could not find workspace state for URI '{uri.WorkspaceRoot}'."));
 
     private WorkspaceFileUri[] PrioritizeFiles(IWorkspaceState state)
     {
-        WorkspaceFileUri[]? result = null;
-        if (State != null && !TryRunAction(() =>
-        {
-            ThrowIfCancellationRequested();
-
-            result = state.WorkspaceFiles
+        var result = RunTransformBlock(PrioritizeFilesBlock, state, 
+            e => e.WorkspaceFiles
                 .OrderByDescending(file => file.IsOpened)
                 .ThenBy(file => file.Name)
-                .Select(file => file.Uri).ToArray();
+                .Select(file => file.Uri).ToArray());
 
-            if (result.Length == 0)
-            {
-                throw new InvalidOperationException($"Workspace state has no files to process.");
-            }
-
-        }, out var exception) && exception != null)
+        if (result.Length == 0)
         {
-            FaultDataflowBlock(PrioritizeFilesBlock!, exception);
+            throw new InvalidOperationException($"Workspace state has no files to process.");
         }
 
-        return result ?? throw new InvalidOperationException("Result was unexpectedly null.");
+        return result;
     }
 }

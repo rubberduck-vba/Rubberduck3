@@ -136,7 +136,7 @@ namespace Rubberduck.Unmanaged
                 var moduleName = new QualifiedModuleName(document);
                 var name = GetName(document);
 
-                result.Add(new HostDocument(moduleName, name, ComponentName, DocumentState.DesignView, null));
+                result.Add(new HostDocument(moduleName, name, ComponentName, VBDocumentState.DesignView, null));
             }
             return result;
         }
@@ -156,7 +156,7 @@ namespace Rubberduck.Unmanaged
                         using var components = project.VBComponents;
                         using var component = components[moduleName.ComponentName];
                         var name = GetName(component);
-                        return new HostDocument(moduleName, name, ComponentName, DocumentState.DesignView, null);
+                        return new HostDocument(moduleName, name, ComponentName, VBDocumentState.DesignView, null);
                     }
             }
 

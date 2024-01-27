@@ -7,7 +7,7 @@ namespace Rubberduck.InternalApi.Model.Declarations.Symbols;
 
 public record class ClassModuleSymbol : TypedSymbol
 {
-    public ClassModuleSymbol(Instancing instancing, string name, Uri fileUri, IEnumerable<Symbol> children, bool isUserDefined = false)
+    public ClassModuleSymbol(Instancing instancing, string name, Uri fileUri, IEnumerable<Symbol>? children = null, bool isUserDefined = false)
         : base(RubberduckSymbolKind.Class, instancing == Instancing.Private ? Accessibility.Private : Accessibility.Public, name, fileUri, children)
     {
         ResolvedType = new VBClassType(name, fileUri, isUserDefined: isUserDefined);

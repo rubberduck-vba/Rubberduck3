@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline.Abstract;
@@ -102,6 +103,51 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
         InputBlock.Complete();
 
         return Completion;
+    }
+
+    private void LogBlockActionStart(string? actionName)
+    {
+        LogTrace($"Thread {Environment.CurrentManagedThreadId} is starting pipeline action '{GetType().Name}::{actionName ?? "(null)"}'.");
+    }
+
+    private void LogBlockActionEnd(string? actionName)
+    {
+        LogTrace($"Thread {Environment.CurrentManagedThreadId} has completed pipeline action '{GetType().Name}::{actionName ?? "(null)"}'.");
+    }
+
+    protected virtual TResult RunTransformBlock<T, TResult>(IDataflowBlock block, T param, Func<T, TResult> action, [CallerMemberName]string? actionName = null) where TResult : class
+    {
+        LogBlockActionStart(actionName);
+        TResult? result = null;
+        if (State != null && !TryRunAction(() =>
+        {
+            ThrowIfCancellationRequested();
+            result = action.Invoke(param);
+
+        }, out var exception, actionName) && exception != null)
+        {
+            FaultDataflowBlock(block, exception);
+        }
+
+        LogBlockActionEnd(actionName);
+        return result ?? throw new InvalidOperationException("Result was unexpectedly null.");
+    }
+
+    protected virtual void RunActionBlock<T>(IDataflowBlock block, T param, Action<T> action, [CallerMemberName] string? actionName = null)
+    {
+        LogBlockActionStart(actionName);
+
+        if (State != null && !TryRunAction(() =>
+        {
+            ThrowIfCancellationRequested();
+            action.Invoke(param);
+
+        }, out var exception, actionName) && exception != null)
+        {
+            FaultDataflowBlock(block, exception);
+        }
+
+        LogBlockActionEnd(actionName);
     }
 
     protected void Link<T>(ISourceBlock<T> source, ITargetBlock<T> target, DataflowLinkOptions options)

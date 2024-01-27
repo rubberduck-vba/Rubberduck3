@@ -35,7 +35,7 @@ public enum RubberduckSymbolKind
     /* LSP: values 19-26 reserved v3.17 */
 
     Object = SymbolKind.Object,
-    Keyword = SymbolKind.Key,
+    //Key = SymbolKind.Key, /* any idea what this could be? */
     Nothing = SymbolKind.Null,
     EnumMember = SymbolKind.EnumMember,
     UserDefinedType = SymbolKind.Struct,
