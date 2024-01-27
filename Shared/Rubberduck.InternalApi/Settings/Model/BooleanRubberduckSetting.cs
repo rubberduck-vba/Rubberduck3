@@ -1,10 +1,9 @@
-﻿namespace Rubberduck.InternalApi.Settings.Model
+﻿namespace Rubberduck.InternalApi.Settings.Model;
+
+public record class BooleanRubberduckSetting : TypedRubberduckSetting<bool>
 {
-    public record class BooleanRubberduckSetting : TypedRubberduckSetting<bool>
+    public BooleanRubberduckSetting()
     {
-        public BooleanRubberduckSetting()
-        {
-            SettingDataType = SettingDataType.BooleanSetting;
-        }
+        SettingDataType = SettingDataType.BooleanSetting;
     }
 }

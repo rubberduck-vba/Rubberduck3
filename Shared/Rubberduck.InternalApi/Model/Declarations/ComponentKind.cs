@@ -1,22 +1,21 @@
-﻿namespace Rubberduck.InternalApi.Model.Declarations
+﻿namespace Rubberduck.InternalApi.Model.Declarations;
+
+public enum ComponentKind
 {
-    public enum ComponentKind
-    {
-        ComComponent = -1,
-        Undefined = 0,
+    ComComponent = -1,
+    Undefined = 0,
 
-        StandardModule,
-        ClassModule,
-        DocumentModule,
-        UserFormModule,
+    StandardModule,
+    ClassModule,
+    DocumentModule,
+    UserFormModule,
 
-        ResourceFile,
-        VBForm,
-        MDIForm,
-        PropertyPage,
-        UserControl,
-        DocObject,
-        RelatedDocument,
-        ActiveXDesigner,
-    }
+    ResourceFile,
+    VBForm,
+    MDIForm,
+    PropertyPage,
+    UserControl,
+    DocObject,
+    RelatedDocument,
+    ActiveXDesigner,
 }

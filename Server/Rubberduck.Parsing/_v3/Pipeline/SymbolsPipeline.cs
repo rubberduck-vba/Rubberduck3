@@ -28,8 +28,8 @@ public class SymbolsPipeline : ParserPipeline<PipelineParseResult, DocumentState
         _service = service;
     }
 
-    private TransformBlock<PipelineParseResult, IParseTree> AcquireParseTreeBlock { get; set; }
-    private TransformBlock<IParseTree, Symbol[]> AcquireSymbolsBlock { get; set; }
+    private TransformBlock<PipelineParseResult, IParseTree> AcquireParseTreeBlock { get; set; } = null!;
+    private TransformBlock<IParseTree, Symbol[]> AcquireSymbolsBlock { get; set; } = null!;
 
     protected override (ITargetBlock<PipelineParseResult> inputBlock, Task completion) DefinePipelineBlocks()
     {
@@ -47,19 +47,8 @@ public class SymbolsPipeline : ParserPipeline<PipelineParseResult, DocumentState
 
     private IParseTree AcquireParseTree(PipelineParseResult input) =>
         RunTransformBlock(AcquireParseTreeBlock, input, e => input.ParseResult.Tree);
-    
-    private Symbol[] AcquireSymbols(IParseTree syntaxTree)
-    {
-        List<Symbol> result = [];
-        if (State != null && !TryRunAction(() =>
-        {
-            ThrowIfCancellationRequested();
 
-        }, out var exception) && exception != null)
-        {
-            FaultDataflowBlock(AcquireSymbolsBlock!, exception);
-        }
+    private Symbol[] AcquireSymbols(IParseTree syntaxTree) =>
+        RunTransformBlock(AcquireSymbolsBlock, syntaxTree, e => Array.Empty<Symbol>());
 
-        return [.. result];
-    }
 }

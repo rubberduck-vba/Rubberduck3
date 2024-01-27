@@ -1,11 +1,10 @@
 ﻿using System.Diagnostics;
 
-namespace Rubberduck.InternalApi.Settings
+namespace Rubberduck.InternalApi.Settings;
+
+public enum MessageTraceLevel
 {
-    public enum MessageTraceLevel
-    {
-        Off = TraceLevel.Off,
-        Verbose = TraceLevel.Verbose,
-        Message = TraceLevel.Info,
-    }
+    Off = TraceLevel.Off,
+    Verbose = TraceLevel.Verbose,
+    Message = TraceLevel.Info,
 }

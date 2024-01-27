@@ -1,11 +1,10 @@
-﻿namespace Rubberduck.InternalApi.Settings.Model.Editor.Tools
+﻿namespace Rubberduck.InternalApi.Settings.Model.Editor.Tools;
+
+public enum DockingLocation
 {
-    public enum DockingLocation
-    {
-        None,
-        DocumentPane,
-        DockLeft,
-        DockRight,
-        DockBottom,
-    }
+    None,
+    DocumentPane,
+    DockLeft,
+    DockRight,
+    DockBottom,
 }

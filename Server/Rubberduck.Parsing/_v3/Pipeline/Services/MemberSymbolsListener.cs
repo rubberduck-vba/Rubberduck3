@@ -16,8 +16,15 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
 {
     private readonly WorkspaceFileUri _workspaceFileUri;
 
+    private bool _isVB6 = false;
     private bool _hasModuleHeader;
+    private bool _isMultiUse = true;
+
     private string _vbNameAttributeValue = null!;
+    private bool _isGlobalNamespace = false;
+    private bool _isCreatable = false;
+    private bool _isPredeclaredId = false;
+    private bool _isExposed = false;
 
     /// <summary>
     /// Accumulates symbols to be added to the current context.
@@ -28,9 +35,10 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
     private readonly Stack<List<(Type TContext, Symbol Symbol)>> _currentSymbolChildren = [];
     private Type? _currentContextType;
 
-    public MemberSymbolsListener(WorkspaceFileUri uri)
+    public MemberSymbolsListener(WorkspaceFileUri uri, bool isVB6 = false)
     {
         _workspaceFileUri = uri;
+        _isVB6 = isVB6;
     }
 
     public Symbol Result { get; private set; } = null!;
@@ -61,8 +69,20 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
         Symbol moduleSymbol;
         if (_hasModuleHeader)
         {
-            var instancing = Instancing.Private; // TODO get from attributes
-            moduleSymbol = CreateCurrentSymbol(children => new ClassModuleSymbol(instancing, _vbNameAttributeValue, _workspaceFileUri, children), context);
+            foreach (var element in context.moduleConfig().moduleConfigElement())
+            {
+                var name = GetIdentifierNameTokenText(element.unrestrictedIdentifier());
+                if (string.Equals(name, "MultiUse", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    if (element.expression() is VBAParser.LiteralExprContext literal)
+                    {
+                        var value = int.Parse(literal.literalExpression()?.numberLiteral().GetText() ?? "0");
+                        _isMultiUse = value != 0;
+                    }
+                }
+            }
+
+            moduleSymbol = CreateCurrentSymbol(children => new ClassModuleSymbol(EvaluateClassInstancingMode(), _vbNameAttributeValue, _workspaceFileUri, children, isUserDefined: true), context);
         }
         else
         {
@@ -72,8 +92,65 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
         Result = moduleSymbol;
     }
 
+    public override void ExitModuleAttributes([NotNull] VBAParser.ModuleAttributesContext context)
+    {
+        var comparison = StringComparison.InvariantCultureIgnoreCase;
+        foreach (var attribute in context.attributeStmt())
+        {
+            var name = attribute.attributeName().GetText();
+            var value = attribute.attributeValue()[0].GetText();
+
+            if (string.Equals("VB_Name", name, comparison))
+            {
+                _vbNameAttributeValue = value.UnQuote();
+            }
+            else if (string.Equals("VB_GlobalNameSpace", name, comparison))
+            {
+                _isGlobalNamespace = string.Equals(Tokens.True, value, comparison);
+            }
+            else if (string.Equals("VB_Creatable", name, comparison))
+            {
+                _isCreatable = string.Equals(Tokens.True, value, comparison);
+            }
+            else if (string.Equals("VB_PredeclaredId", name, comparison))
+            {
+                _isPredeclaredId = string.Equals(Tokens.True, value, comparison);
+            }
+            else if (string.Equals("VB_Exposed", name, comparison))
+            {
+                _isExposed = string.Equals(Tokens.True, value, comparison);
+            }
+        }
+    }
+
     public override void ExitModuleHeader([NotNull] VBAParser.ModuleHeaderContext context)
         => _hasModuleHeader = context.ChildCount > 0;
+
+    protected Instancing EvaluateClassInstancingMode()
+    {
+        if (!_isVB6)
+        {
+            // VBA classes are either private or public but not creatable (regardless of VB_GlobalNameSpace and/or VB_Creatable):
+            return _isExposed ? Instancing.PublicNotCreatable : Instancing.Private;
+        }
+
+        if (_isExposed)
+        {
+            if (!_isCreatable)
+            {
+                return Instancing.PublicNotCreatable;
+            }
+
+            if (!_isGlobalNamespace)
+            {
+                return _isMultiUse ? Instancing.MultiUse : Instancing.SingleUse;
+            }
+
+            return _isMultiUse ? Instancing.GlobalMultiUse : Instancing.GlobalSingleUse;
+        }
+
+        return Instancing.Private;
+    }
 
     protected InternalApi.Model.Accessibility GetAccessibility(VBAParser.VisibilityContext context)
     {

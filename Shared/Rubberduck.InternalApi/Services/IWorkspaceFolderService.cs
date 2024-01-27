@@ -1,10 +1,9 @@
 ﻿using Rubberduck.InternalApi.Model.Workspace;
 
-namespace Rubberduck.InternalApi.Services
+namespace Rubberduck.InternalApi.Services;
+
+public interface IWorkspaceFolderService
 {
-    public interface IWorkspaceFolderService
-    {
-        void CreateWorkspaceFolders(ProjectFile projectFile);
-        void CopyTemplateFiles(ProjectFile projectFile, string templateSourceRoot);
-    }
+    void CreateWorkspaceFolders(ProjectFile projectFile);
+    void CopyTemplateFiles(ProjectFile projectFile, string templateSourceRoot);
 }

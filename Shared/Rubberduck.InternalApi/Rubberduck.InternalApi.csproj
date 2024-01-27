@@ -38,5 +38,9 @@
     </PackageReference>
     <PackageReference Include="System.Management" Version="7.0.2" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Model\Declarations\Operators\" />
+  </ItemGroup>
 
 </Project>

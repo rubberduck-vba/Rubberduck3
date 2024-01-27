@@ -1,15 +1,14 @@
-﻿namespace Rubberduck.InternalApi.Settings.Model.TelemetryServer
-{
-    /// <summary>
-    /// Determines whether trace telemetry data is transmitted.
-    /// </summary>
-    public record class SendTraceTelemetrySetting : BooleanRubberduckSetting
-    {
-        public static bool DefaultSettingValue { get; } = false;
+﻿namespace Rubberduck.InternalApi.Settings.Model.TelemetryServer;
 
-        public SendTraceTelemetrySetting()
-        {
-            DefaultValue = DefaultSettingValue;
-        }
+/// <summary>
+/// Determines whether trace telemetry data is transmitted.
+/// </summary>
+public record class SendTraceTelemetrySetting : BooleanRubberduckSetting
+{
+    public static bool DefaultSettingValue { get; } = false;
+
+    public SendTraceTelemetrySetting()
+    {
+        DefaultValue = DefaultSettingValue;
     }
 }

@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace Rubberduck.InternalApi.Settings.Model
+namespace Rubberduck.InternalApi.Settings.Model;
+
+public record class UriRubberduckSetting : TypedRubberduckSetting<Uri>
 {
-    public record class UriRubberduckSetting : TypedRubberduckSetting<Uri>
+    public UriRubberduckSetting()
     {
-        public UriRubberduckSetting()
-        {
-            SettingDataType = SettingDataType.UriSetting;
-        }
+        SettingDataType = SettingDataType.UriSetting;
     }
 }

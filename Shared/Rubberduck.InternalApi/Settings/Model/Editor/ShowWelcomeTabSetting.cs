@@ -1,12 +1,11 @@
-﻿namespace Rubberduck.InternalApi.Settings.Model.Editor
-{
-    public record class ShowWelcomeTabSetting : BooleanRubberduckSetting
-    {
-        public static bool DefaultSettingValue { get; } = true;
+﻿namespace Rubberduck.InternalApi.Settings.Model.Editor;
 
-        public ShowWelcomeTabSetting()
-        {
-            DefaultValue = DefaultSettingValue;
-        }
+public record class ShowWelcomeTabSetting : BooleanRubberduckSetting
+{
+    public static bool DefaultSettingValue { get; } = true;
+
+    public ShowWelcomeTabSetting()
+    {
+        DefaultValue = DefaultSettingValue;
     }
 }

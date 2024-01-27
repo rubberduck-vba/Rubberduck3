@@ -1,20 +1,19 @@
-﻿namespace Rubberduck.InternalApi.Common
+﻿namespace Rubberduck.InternalApi.Common;
+
+/// <summary>
+/// Allows exporting to a variety of formats
+/// </summary>
+public interface IExportable
 {
     /// <summary>
-    /// Allows exporting to a variety of formats
+    /// Exports the object as an array of members
     /// </summary>
-    public interface IExportable
-    {
-        /// <summary>
-        /// Exports the object as an array of members
-        /// </summary>
-        /// <returns></returns>
-        object[] ToArray();
+    /// <returns></returns>
+    object[] ToArray();
 
-        /// <summary>
-        /// Exports the object as a formatted string
-        /// </summary>
-        /// <returns></returns>
-        string ToClipboardString();
-    }
+    /// <summary>
+    /// Exports the object as a formatted string
+    /// </summary>
+    /// <returns></returns>
+    string ToClipboardString();
 }

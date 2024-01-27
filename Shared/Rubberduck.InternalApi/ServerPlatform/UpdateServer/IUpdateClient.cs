@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Rubberduck.InternalApi.ServerPlatform.UpdateServer
+namespace Rubberduck.InternalApi.ServerPlatform.UpdateServer;
+
+public interface IUpdateClient
 {
-    public interface IUpdateClient
-    {
-        Task CheckForUpdatesAsync();
-    }
+    Task CheckForUpdatesAsync();
 }

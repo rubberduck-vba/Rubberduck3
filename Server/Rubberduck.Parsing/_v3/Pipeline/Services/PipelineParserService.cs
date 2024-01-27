@@ -81,10 +81,11 @@ public class PipelineParseTreeSymbolsService
     public Symbol DiscoverDeclarationSymbols(IParseTree tree, Symbol moduleSymbol)
         => TraverseTree(tree, new MemberSymbolsListener((WorkspaceFileUri)moduleSymbol.Uri));
 
-
+    /// <summary>
+    /// Resolves a <c>VBType</c> for the given typed symbol.
+    /// </summary>
     public TypedSymbol ResolveMemberSymbols(TypedSymbol moduleSymbol)
         => ResolveDataType(moduleSymbol);
-
 
     private Symbol TraverseTree(IParseTree tree, IVBListener<Symbol> listener)
     {

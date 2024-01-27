@@ -1,12 +1,11 @@
-﻿namespace Rubberduck.InternalApi.Model
-{
-    public enum ParameterModifier
-    {
-        ImplicitByRef,
-        ImplicitByVal,
-        ExplicitByRef,
-        ExplicitByVal,
+﻿namespace Rubberduck.InternalApi.Model;
 
-        ExternalOutByRef,
-    }
+public enum ParameterModifier
+{
+    ImplicitByRef,
+    ImplicitByVal,
+    ExplicitByRef,
+    ExplicitByVal,
+
+    ExternalOutByRef,
 }

@@ -1,7 +1,6 @@
-﻿namespace Rubberduck.InternalApi.Settings
+﻿namespace Rubberduck.InternalApi.Settings;
+
+public interface IDefaultSettingsProvider<TSettings>
 {
-    public interface IDefaultSettingsProvider<TSettings>
-    {
-        TSettings Default { get; }
-    }
+    TSettings Default { get; }
 }

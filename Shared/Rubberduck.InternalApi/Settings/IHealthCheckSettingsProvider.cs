@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace Rubberduck.InternalApi.Settings
+namespace Rubberduck.InternalApi.Settings;
+
+public interface IHealthCheckSettingsProvider
 {
-    public interface IHealthCheckSettingsProvider
-    {
-        MessageTraceLevel ServerTraceLevel { get; }
-        TimeSpan ClientHealthCheckInterval { get; }
-    }
+    MessageTraceLevel ServerTraceLevel { get; }
+    TimeSpan ClientHealthCheckInterval { get; }
 }
