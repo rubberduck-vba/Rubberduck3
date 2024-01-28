@@ -14,12 +14,12 @@ namespace Rubberduck.InternalApi.Model.Declarations.Symbols;
 /// </summary>
 public abstract record class Symbol : DocumentSymbol
 {
-    protected Symbol(RubberduckSymbolKind kind, string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = default)
+    protected Symbol(RubberduckSymbolKind kind, string name, Uri? parentUri = null, Accessibility accessibility = Accessibility.Undefined, IEnumerable<Symbol>? children = default)
     {
         Kind = (SymbolKind)kind;
         Name = name;
-        ParentUri = parentUri;
-        Uri = parentUri.GetChildSymbolUri(name);
+        ParentUri = parentUri ?? new Uri($"vb://symbols/{kind}");       
+        Uri = ParentUri.GetChildSymbolUri(name);
         Children = new(children ?? []);
     }
 
@@ -52,7 +52,7 @@ public abstract record class Symbol : DocumentSymbol
 /// </summary>
 public abstract record class TypedSymbol : Symbol, ITypedSymbol
 {
-    public TypedSymbol(RubberduckSymbolKind kind, Accessibility accessibility, string name, Uri parentUri, IEnumerable<Symbol>? children = null, VBType? type = null)
+    public TypedSymbol(RubberduckSymbolKind kind, Accessibility accessibility, string name, Uri? parentUri = null, IEnumerable<Symbol>? children = null, VBType? type = null)
         : base(kind, name, parentUri, accessibility, children)
     {
         Accessibility = accessibility;
