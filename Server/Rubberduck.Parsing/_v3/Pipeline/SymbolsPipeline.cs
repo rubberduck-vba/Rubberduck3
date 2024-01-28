@@ -15,13 +15,13 @@ namespace Rubberduck.Parsing._v3.Pipeline;
 public class SymbolsPipeline : ParserPipeline<PipelineParseResult, DocumentState>
 {
     private readonly DocumentContentStore _contentStore;
-    private readonly PipelineParserService _service;
+    private readonly PipelineParseTreeSymbolsService _service;
 
     public SymbolsPipeline(ILogger<WorkspaceParserPipeline> logger, 
         RubberduckSettingsProvider settingsProvider, 
         PerformanceRecordAggregator performance,
         DocumentContentStore contentStore,
-        PipelineParserService service) 
+        PipelineParseTreeSymbolsService service) 
         : base(logger, settingsProvider, performance)
     {
         _contentStore = contentStore;
@@ -29,7 +29,7 @@ public class SymbolsPipeline : ParserPipeline<PipelineParseResult, DocumentState
     }
 
     private TransformBlock<PipelineParseResult, IParseTree> AcquireParseTreeBlock { get; set; } = null!;
-    private TransformBlock<IParseTree, Symbol[]> AcquireSymbolsBlock { get; set; } = null!;
+    private TransformBlock<IParseTree, Symbol> AcquireSymbolsBlock { get; set; } = null!;
 
     protected override (ITargetBlock<PipelineParseResult> inputBlock, Task completion) DefinePipelineBlocks()
     {
@@ -48,7 +48,7 @@ public class SymbolsPipeline : ParserPipeline<PipelineParseResult, DocumentState
     private IParseTree AcquireParseTree(PipelineParseResult input) =>
         RunTransformBlock(AcquireParseTreeBlock, input, e => input.ParseResult.Tree);
 
-    private Symbol[] AcquireSymbols(IParseTree syntaxTree) =>
-        RunTransformBlock(AcquireSymbolsBlock, syntaxTree, e => Array.Empty<Symbol>());
+    private Symbol AcquireSymbols(IParseTree syntaxTree) =>
+        RunTransformBlock(AcquireSymbolsBlock, syntaxTree, e => _service.DiscoverDeclarationSymbols(e, State!.Uri));
 
 }

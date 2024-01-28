@@ -78,8 +78,8 @@ public class PipelineParseTreeSymbolsService
     /// <returns>
     /// Returns a copy of the provided <c>moduleSymbol</c> with all its members, including parameters. Types are not resolved, unless implicit or intrinsic.
     /// </returns>
-    public Symbol DiscoverDeclarationSymbols(IParseTree tree, Symbol moduleSymbol)
-        => TraverseTree(tree, new DeclarationSymbolsListener((WorkspaceFileUri)moduleSymbol.Uri));
+    public Symbol DiscoverDeclarationSymbols(IParseTree tree, WorkspaceFileUri uri)
+        => TraverseTree(tree, new DeclarationSymbolsListener(uri));
 
     /// <summary>
     /// Resolves a <c>VBType</c> for the given typed symbol.
