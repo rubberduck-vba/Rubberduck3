@@ -66,8 +66,7 @@ public class PipelineParseTreeSymbolsService
     /// <returns>
     /// Returns a copy of the provided <c>moduleSymbol</c> with all its members, including parameters. Types are not resolved, unless implicit or intrinsic.
     /// </returns>
-    public Symbol DiscoverMemberSymbols(IParseTree tree, Symbol moduleSymbol) 
-        => TraverseTree(tree, new MemberSymbolsListener((WorkspaceFileUri)moduleSymbol.Uri));
+    public Symbol DiscoverMemberSymbols(IParseTree tree, Symbol moduleSymbol) => TraverseTree(tree, new MemberSymbolsListener((WorkspaceFileUri)moduleSymbol.Uri));
 
     /// <summary>
     /// A second pass to discover all declaration symbols in the module, including inside member scopes.
@@ -78,14 +77,15 @@ public class PipelineParseTreeSymbolsService
     /// <returns>
     /// Returns a copy of the provided <c>moduleSymbol</c> with all its members, including parameters. Types are not resolved, unless implicit or intrinsic.
     /// </returns>
-    public Symbol DiscoverDeclarationSymbols(IParseTree tree, WorkspaceFileUri uri)
-        => TraverseTree(tree, new DeclarationSymbolsListener(uri));
+    public Symbol DiscoverDeclarationSymbols(IParseTree tree, WorkspaceFileUri uri) => TraverseTree(tree, new DeclarationSymbolsListener(uri));
 
     /// <summary>
-    /// Resolves a <c>VBType</c> for the given typed symbol.
+    /// Resolves a <c>VBType</c> for the given module symbol.
     /// </summary>
-    public TypedSymbol ResolveMemberSymbols(TypedSymbol moduleSymbol)
-        => ResolveDataType(moduleSymbol);
+    /// <remarks>
+    /// Recursively resolves child symbols' types.
+    /// </remarks>
+    public TypedSymbol ResolveMemberSymbols(TypedSymbol module) => ResolveDataType(module);
 
     private Symbol TraverseTree(IParseTree tree, IVBListener<Symbol> listener)
     {

@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime.Tree;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Bson;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
@@ -30,11 +31,17 @@ public class SymbolsPipeline : ParserPipeline<PipelineParseResult, DocumentState
 
     private TransformBlock<PipelineParseResult, IParseTree> AcquireParseTreeBlock { get; set; } = null!;
     private TransformBlock<IParseTree, Symbol> AcquireSymbolsBlock { get; set; } = null!;
+    private BroadcastBlock<Symbol> BroadcastDeclarationSymbolsBlock { get; set; } = null!;
+    private ActionBlock<Symbol> UpdateDocumentStateBlock { get; set; } = null!;
 
     protected override (ITargetBlock<PipelineParseResult> inputBlock, Task completion) DefinePipelineBlocks()
     {
         AcquireParseTreeBlock = new(AcquireParseTree, ExecutionOptions);
         AcquireSymbolsBlock = new(AcquireSymbols, ExecutionOptions);
+        BroadcastDeclarationSymbolsBlock = new(BroadcastDeclarationSymbols, ExecutionOptions);
+
+        Link(AcquireParseTreeBlock, AcquireSymbolsBlock, WithCompletionPropagation);
+        Link(AcquireSymbolsBlock, BroadcastDeclarationSymbolsBlock, WithCompletionPropagation);
 
         return (AcquireParseTreeBlock, AcquireParseTreeBlock.Completion);
     }
@@ -45,10 +52,15 @@ public class SymbolsPipeline : ParserPipeline<PipelineParseResult, DocumentState
         State = _contentStore.GetContent(uri);
     }
 
-    private IParseTree AcquireParseTree(PipelineParseResult input) =>
+    private IParseTree AcquireParseTree(PipelineParseResult input) => 
         RunTransformBlock(AcquireParseTreeBlock, input, e => input.ParseResult.Tree);
 
-    private Symbol AcquireSymbols(IParseTree syntaxTree) =>
+    private Symbol AcquireSymbols(IParseTree syntaxTree) => 
         RunTransformBlock(AcquireSymbolsBlock, syntaxTree, e => _service.DiscoverDeclarationSymbols(e, State!.Uri));
 
+    private Symbol BroadcastDeclarationSymbols(Symbol symbol) => 
+        RunTransformBlock(BroadcastDeclarationSymbolsBlock, symbol, symbol => symbol);
+
+    private void UpdateDocumentState(Symbol symbol) =>
+        RunActionBlock(UpdateDocumentStateBlock, symbol, symbol => State = State!.WithSymbols(symbol));
 }

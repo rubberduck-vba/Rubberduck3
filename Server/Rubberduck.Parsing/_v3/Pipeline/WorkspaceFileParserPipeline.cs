@@ -61,7 +61,7 @@ public class WorkspaceFileParserPipeline : ParserPipeline<WorkspaceFileUri, Docu
         RunTransformBlock(ParseDocumentTextBlock, documentState, e => _parser.ParseDocument(e, Token));
 
     private void UpdateDocumentState(PipelineParseResult parserResult) =>
-        State = RunTransformBlock(UpdateDocumentStateBlock, parserResult, e => State?.WithFoldings(e.Foldings)
+        State = RunTransformBlock(UpdateDocumentStateBlock, parserResult, e => State = State?.WithFoldings(e.Foldings)
             ?? throw new InvalidOperationException("Document state was unexpectedly null."));
 
     private PipelineParseResult BroadcastParserResult(PipelineParseResult parserResult) =>

@@ -1,6 +1,6 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
-using System;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
@@ -23,10 +23,12 @@ public record class DocumentState
 
     public IImmutableSet<FoldingRange> Foldings { get; init; } = [];
     public IImmutableSet<Diagnostic> Diagnostics { get; init; } = [];
+    public Symbol? Symbols { get; init; }
 
     public DocumentState WithUri(WorkspaceFileUri uri) => this with { Uri = uri };
     public DocumentState WithText(string text) => this with { Text = text, Version = this.Version + 1 };
     public DocumentState WithOpened(bool opened = true) => this with { IsOpened = opened };
     public DocumentState WithFoldings(IEnumerable<FoldingRange> foldings) => this with { Foldings = foldings.ToImmutableHashSet() };
+    public DocumentState WithSymbols(Symbol module) => this with { Symbols = module };
     public DocumentState WithDiagnostics(IEnumerable<Diagnostic> diagnostics) => this with { Diagnostics = diagnostics.ToImmutableHashSet() };
 }

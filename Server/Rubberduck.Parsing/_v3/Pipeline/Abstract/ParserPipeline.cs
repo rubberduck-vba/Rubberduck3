@@ -78,7 +78,7 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
     /// <remarks>
     /// Useful for linking different pipelines.
     /// </remarks>
-    public IDataflowBlock OutputBlock { get; }
+    public IDataflowBlock OutputBlock { get; } = null!;
 
     public Task Completion { get; }
 
