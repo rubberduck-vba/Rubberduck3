@@ -1,15 +1,23 @@
-﻿using Rubberduck.InternalApi.Model.Declarations.Symbols;
+﻿using Rubberduck.InternalApi.Model.Declarations.Execution;
+using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 
-public abstract record class VBOperator : TypedSymbol
+public abstract record class VBOperator : TypedSymbol, IExecutableSymbol
 {
     protected VBOperator(string token, TypedSymbol[]? operands = null, VBType? type = null)
         : base(RubberduckSymbolKind.Operator, Accessibility.Undefined, token, parentUri: null, operands, type)
     {
     }
+
+    public bool? IsReachable { get; init; }
+
+    public virtual VBTypedValue? Evaluate(ExecutionContext context) => null;
+
+    public virtual ExecutionContext Execute(ExecutionContext context) => context;
 
     public VBOperator WithOperands(TypedSymbol[] operands) => this with { Children = new(operands) };
 }

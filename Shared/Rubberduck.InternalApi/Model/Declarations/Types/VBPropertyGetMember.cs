@@ -5,14 +5,20 @@ using System;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Types;
 
-public record class VBPropertyGetMember : VBReturningMember
+public interface IVBProperty
 {
-    public VBPropertyGetMember(Uri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, Symbol declaration, Symbol[]? definitions = null, string? asTypeExpression = null, VBType? type = null)
+    string Name { get; }
+    VBType? ResolvedType { get; } 
+}
+
+public record class VBPropertyGetMember : VBReturningMember, IVBProperty
+{
+    public VBPropertyGetMember(Uri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, PropertyGetSymbol declaration, PropertyGetSymbol[]? definitions = null, string? asTypeExpression = null, VBType? type = null)
         : base(uri, name, kind, accessibility, declaration, definitions, asTypeExpression, type)
     {
     }
 
-    public VBPropertyGetMember(Uri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, Symbol? declaration = null, Symbol[]? definitions = null, bool isUserDefined = false, VBType? type = null, bool isHidden = false)
+    public VBPropertyGetMember(Uri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, PropertyGetSymbol? declaration = null, PropertyGetSymbol[]? definitions = null, bool isUserDefined = false, VBType? type = null, bool isHidden = false)
         : base(uri, name, kind, accessibility, declaration, definitions, isUserDefined, type, isHidden)
     {
     }

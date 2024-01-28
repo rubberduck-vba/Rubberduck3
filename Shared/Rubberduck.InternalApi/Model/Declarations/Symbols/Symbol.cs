@@ -1,5 +1,7 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Declarations.Execution;
+using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Types;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
@@ -8,6 +10,33 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Symbols;
+
+public interface IExecutableSymbol
+{
+    /// <summary>
+    /// Indicates whether an executable symbol is reachable or not.
+    /// </summary>
+    /// <remarks>
+    /// <c>null</c> if unknown, <c>false</c> only if determined to be unreachable.
+    /// </remarks>
+    bool? IsReachable { get; init; }
+
+    /// <summary>
+    /// Evaluates the symbol in the specified execution context.
+    /// </summary>
+    /// <returns>
+    /// If evaluation is successful, returns a typed value.
+    /// </returns>
+    VBTypedValue? Evaluate(ExecutionContext context);
+
+    /// <summary>
+    /// Executes the symbol in the specified execution context.
+    /// </summary>
+    /// <remarks>
+    /// Returns the altered execution context.
+    /// </remarks>
+    ExecutionContext Execute(ExecutionContext context);
+}
 
 /// <summary>
 /// Represents a document symbol, as defined by LSP.
@@ -203,16 +232,24 @@ public record class LibraryProcedureImportSymbol : ProcedureSymbol
     public string? Alias { get; init; }
 }
 
-public record class FunctionSymbol : TypedSymbol
+public record class FunctionSymbol : TypedSymbol, IExecutableSymbol
 {
     public FunctionSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, string? typeName = null, RubberduckSymbolKind kind = RubberduckSymbolKind.Function)
         : base(kind, accessibility, name, parentUri, (children ?? []).ToArray()) { }
+
+    public bool? IsReachable { get; init; }
+    public VBTypedValue? Evaluate(ExecutionContext context) => null;
+    public ExecutionContext Execute(ExecutionContext context) => context;
 }
 
-public record class ProcedureSymbol : Symbol
+public record class ProcedureSymbol : Symbol, IExecutableSymbol
 {
     public ProcedureSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, RubberduckSymbolKind kind = RubberduckSymbolKind.Procedure)
         : base(kind, name, parentUri, accessibility, (children ?? []).ToArray()) { }
+
+    public bool? IsReachable { get; init; }
+    public VBTypedValue? Evaluate(ExecutionContext context) => null;
+    public ExecutionContext Execute(ExecutionContext context) => context;
 }
 
 public record class PropertyGetSymbol : FunctionSymbol
@@ -246,6 +283,8 @@ public record class EnumMemberSymbol : ValuedTypedSymbol
 {
     public EnumMemberSymbol(string name, Uri parentUri, string? value)
         : base(RubberduckSymbolKind.EnumMember, Accessibility.Public, name, parentUri, null, value) { }
+
+
 }
 
 public record class EventMemberSymbol : ProcedureSymbol
