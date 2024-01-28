@@ -2,7 +2,7 @@
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 using System.Linq;
 
-namespace Rubberduck.InternalApi.Model.Declarations.Operators;
+namespace Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 
 public abstract record class VBBinaryOperator : VBOperator
 {

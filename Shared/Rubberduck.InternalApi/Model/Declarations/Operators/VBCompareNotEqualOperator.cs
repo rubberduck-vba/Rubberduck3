@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.Model.Declarations.Symbols;
+﻿using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Operators;
 

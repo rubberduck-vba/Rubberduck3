@@ -1,7 +1,7 @@
 ﻿using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 
-namespace Rubberduck.InternalApi.Model.Declarations.Operators;
+namespace Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 
 public abstract record class VBComparisonOperator : VBBinaryOperator
 {

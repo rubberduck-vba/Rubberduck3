@@ -2,11 +2,11 @@
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 
-namespace Rubberduck.InternalApi.Model.Declarations.Operators;
+namespace Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 
 public abstract record class VBOperator : TypedSymbol
 {
-    protected VBOperator(string token, TypedSymbol[]? operands = null, VBType? type = null) 
+    protected VBOperator(string token, TypedSymbol[]? operands = null, VBType? type = null)
         : base(RubberduckSymbolKind.Operator, Accessibility.Undefined, token, parentUri: null, operands, type)
     {
     }
