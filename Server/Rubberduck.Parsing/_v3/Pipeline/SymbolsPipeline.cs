@@ -39,9 +39,11 @@ public class SymbolsPipeline : ParserPipeline<PipelineParseResult, DocumentState
         AcquireParseTreeBlock = new(AcquireParseTree, ExecutionOptions);
         AcquireSymbolsBlock = new(AcquireSymbols, ExecutionOptions);
         BroadcastDeclarationSymbolsBlock = new(BroadcastDeclarationSymbols, ExecutionOptions);
+        UpdateDocumentStateBlock = new(UpdateDocumentState, ExecutionOptions);
 
         Link(AcquireParseTreeBlock, AcquireSymbolsBlock, WithCompletionPropagation);
         Link(AcquireSymbolsBlock, BroadcastDeclarationSymbolsBlock, WithCompletionPropagation);
+        Link(BroadcastDeclarationSymbolsBlock, UpdateDocumentStateBlock, WithCompletionPropagation);
 
         return (AcquireParseTreeBlock, AcquireParseTreeBlock.Completion);
     }
