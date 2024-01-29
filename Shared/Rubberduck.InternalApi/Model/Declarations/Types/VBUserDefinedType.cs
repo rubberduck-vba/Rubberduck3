@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 
@@ -10,6 +11,7 @@ public record class VBUserDefinedType : VBMemberOwnerType, IVBDeclaredType
     public VBUserDefinedType(string name, Uri uri, Symbol declaration, Symbol[]? definitions = null, IEnumerable<VBUserDefinedTypeMember>? members = null)
         : base(name, uri, isUserDefined: true, members)
     {
+        Size = members?.Sum(member => (member.Declaration as TypedSymbol)?.ResolvedType?.Size);
         DefaultValue = new();
         Declaration = declaration;
         Definitions = definitions;

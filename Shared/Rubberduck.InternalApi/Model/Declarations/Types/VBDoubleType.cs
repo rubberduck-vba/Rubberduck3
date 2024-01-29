@@ -2,9 +2,12 @@
 
 namespace Rubberduck.InternalApi.Model.Declarations.Types;
 
-public record class VBDoubleType : VBIntrinsicType<double>
+public record class VBDoubleType : VBIntrinsicType<double>, INumericType
 {
-    private VBDoubleType() : base(Tokens.Double) { }
+    private VBDoubleType() : base(Tokens.Double) 
+    {
+        Size = 128;
+    }
     public static VBDoubleType TypeInfo { get; } = new();
 
     public override double DefaultValue { get; }

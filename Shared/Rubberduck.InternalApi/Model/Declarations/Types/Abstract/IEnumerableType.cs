@@ -10,4 +10,3 @@ public interface IEnumerableType
     /// </summary>
     bool IsArray { get; }
 }
-

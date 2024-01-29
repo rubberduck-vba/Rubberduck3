@@ -4,7 +4,10 @@ namespace Rubberduck.InternalApi.Model.Declarations.Types;
 
 public record class VBBooleanType : VBIntrinsicType<bool>
 {
-    private VBBooleanType() : base(Tokens.Boolean) { }
+    private VBBooleanType() : base(Tokens.Boolean) 
+    {
+        Size = 1;
+    }
     public static VBBooleanType TypeInfo { get; } = new();
 
     public override bool DefaultValue { get; }

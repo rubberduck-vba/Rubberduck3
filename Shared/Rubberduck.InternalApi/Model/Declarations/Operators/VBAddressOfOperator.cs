@@ -5,12 +5,12 @@ using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Operators;
 
-public record class VBTypeOfOperator : VBUnaryOperator
+public record class VBAddressOfOperator : VBUnaryOperator
 {
-    public VBTypeOfOperator(string expression, TypedSymbol? operand = null, VBType? type = null)
-        : base(Tokens.TypeOf, expression, operand, type)
+    public VBAddressOfOperator(string expression, TypedSymbol? operand = null)
+        : base(Tokens.AddressOf, expression, operand, VBType.VbLongPtrType)
     {
     }
 
-    protected override VBTypedValue ExecuteUnaryOperator(VBTypedValue value) => new VBTypeDescValue(value.Symbol);
+    protected override VBTypedValue ExecuteUnaryOperator(VBTypedValue value) => new VBLongPtrValue(value.Symbol);
 }

@@ -10,6 +10,10 @@ public record class VBStringValue : VBTypedValue, IVBTypedValue<string?>
     public VBStringValue(TypedSymbol? declarationSymbol = null) 
         : base(VBStringType.TypeInfo, declarationSymbol) { }
 
-    public string? CurrentValue { get; } = default;
+    public double? AsCoercedNumeric() => double.TryParse(Value, out var numericValue) ? numericValue : null;
+    public string? AsCoercedString() => string.Empty;
+    public string? Value { get; init; } = default;
     public string? DefaultValue { get; } = default;
+
+    public VBTypedValue WithValue(string value) => this with { Value = value };
 }

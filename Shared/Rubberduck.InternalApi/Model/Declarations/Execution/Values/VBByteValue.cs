@@ -3,11 +3,17 @@ using Rubberduck.InternalApi.Model.Declarations.Types;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
-public record class VBByteValue : VBTypedValue, IVBTypedValue<byte>
+public record class VBByteValue : VBTypedValue, IVBTypedValue<byte>, INumericValue, INumericCoercion, IStringCoercion
 {
     public VBByteValue(TypedSymbol? declarationSymbol = null) 
         : base(VBByteType.TypeInfo, declarationSymbol) { }
 
-    public byte CurrentValue { get; } = default;
+    public byte Value { get; init; } = default;
     public byte DefaultValue { get; } = default;
+
+    public double? AsCoercedNumeric(int depth = 0) => AsDouble();
+    public string? AsCoercedString(int depth = 0) => Value.ToString();
+
+    public double AsDouble() => (double)Value;
+    public VBTypedValue WithValue(double value) => this with { Value = (byte)value };
 }

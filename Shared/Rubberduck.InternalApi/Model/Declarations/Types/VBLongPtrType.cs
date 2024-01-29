@@ -2,11 +2,12 @@
 
 namespace Rubberduck.InternalApi.Model.Declarations.Types;
 
-public record class VBLongPtrType : VBIntrinsicType<int>
+public record class VBLongPtrType : VBIntrinsicType<int>, INumericType
 {
-    public static int Size { get; } = sizeof(int); // FIXME use bitness from client info
-
-    public VBLongPtrType() : base(Tokens.LongPtr) { }
+    public VBLongPtrType() : base(Tokens.LongPtr) 
+    {
+        Size = 32; // FIXME needs to be the LongPtr size of the host application process.
+    }
     public static VBLongPtrType TypeInfo { get; } = new();
 
     public override int DefaultValue { get; }

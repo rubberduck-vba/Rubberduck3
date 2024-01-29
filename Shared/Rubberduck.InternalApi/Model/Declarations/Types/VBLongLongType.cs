@@ -2,9 +2,12 @@
 
 namespace Rubberduck.InternalApi.Model.Declarations.Types;
 
-public record class VBLongLongType : VBIntrinsicType<long>
+public record class VBLongLongType : VBIntrinsicType<long>, INumericType
 {
-    private VBLongLongType() : base(Tokens.LongLong) { }
+    private VBLongLongType() : base(Tokens.LongLong) 
+    {
+        Size = 64;
+    }
     public static VBLongLongType TypeInfo { get; } = new();
 
     public override long DefaultValue { get; }

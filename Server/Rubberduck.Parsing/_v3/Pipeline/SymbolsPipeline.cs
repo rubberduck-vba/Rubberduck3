@@ -34,6 +34,8 @@ public class SymbolsPipeline : ParserPipeline<PipelineParseResult, DocumentState
     private BroadcastBlock<Symbol> BroadcastDeclarationSymbolsBlock { get; set; } = null!;
     private ActionBlock<Symbol> UpdateDocumentStateBlock { get; set; } = null!;
 
+    private TransformManyBlock<Symbol, Symbol> GetMemberScopeSymbols { get; set; } = null!;
+
     protected override (ITargetBlock<PipelineParseResult> inputBlock, Task completion) DefinePipelineBlocks()
     {
         AcquireParseTreeBlock = new(AcquireParseTree, ExecutionOptions);

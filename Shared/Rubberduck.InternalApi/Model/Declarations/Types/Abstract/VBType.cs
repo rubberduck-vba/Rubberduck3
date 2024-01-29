@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
+using System;
 using System.Collections.Immutable;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
@@ -21,6 +22,19 @@ public abstract record class VBType<TValue> : VBType
     public abstract TValue? DefaultValue { get; }
 }
 
+/// <summary>
+/// A metatype that describes a type. Not used in many places!
+/// </summary>
+public record class VBTypeDesc : VBType
+{
+    public static VBType TypeInfo { get; } = new VBTypeDesc();
+
+    public VBTypeDesc() 
+        : base(typeof(Type), nameof(Type), isHidden: true)
+    {
+    }
+}
+
 public abstract record class VBType
 {
     #region intrinsic types
@@ -39,6 +53,8 @@ public abstract record class VBType
     public static VBType VbObjectType { get; } = VBObjectType.TypeInfo;
     public static VBType VbVariantType { get; } = VBVariantType.TypeInfo;
     public static VBType VbEmptyType { get; } = VBEmptyType.TypeInfo;
+    public static VBType VbNullType { get; } = VBNullType.TypeInfo;
+    public static VBType VbErrorType { get; } = VBErrorType.TypeInfo;
 
     public static ImmutableArray<VBType> IntrinsicTypes { get; } =
         [
@@ -55,6 +71,9 @@ public abstract record class VBType
             VbStringType,
             VbObjectType,
             VbVariantType,
+            VbEmptyType,
+            VbNullType,
+            VbErrorType,
         ];
     #endregion
 
@@ -67,6 +86,7 @@ public abstract record class VBType
     }
 
     public Type? ManagedType { get; init; }
+    public int? Size { get; init; }
 
     /// <summary>
     /// The symbolic name of the type, as it is used in code.
@@ -78,6 +98,7 @@ public abstract record class VBType
 
     public bool IsUserDefined { get; init; }
     public bool IsHidden { get; init; }
+
 
     /// <summary>
     /// Whether this type can be passed by value.

@@ -10,6 +10,7 @@ public record class VBEnumType : VBMemberOwnerType, IVBDeclaredType
     public VBEnumType(string name, Uri uri, Symbol declaration, Symbol[]? definitions = null, IEnumerable<VBEnumMember>? members = null, bool isUserDefined = false)
         : base(name, uri, isUserDefined, members)
     {
+        Size = 16;
         Declaration = declaration;
         Definitions = definitions;
     }

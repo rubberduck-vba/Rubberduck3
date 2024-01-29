@@ -2,9 +2,12 @@
 
 namespace Rubberduck.InternalApi.Model.Declarations.Types;
 
-public record class VBCurrencyType : VBIntrinsicType<decimal>
+public record class VBCurrencyType : VBIntrinsicType<decimal>, INumericType
 {
-    private VBCurrencyType() : base(Tokens.Currency) { }
+    private VBCurrencyType() : base(Tokens.Currency) 
+    {
+        Size = 64;
+    }
     public static VBCurrencyType TypeInfo { get; } = new();
 
     public override decimal DefaultValue { get; }

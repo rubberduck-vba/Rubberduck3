@@ -6,7 +6,10 @@ public record class VBObjectType : VBIntrinsicType<object?>
 {
     public static object? Nothing { get; } = null;
 
-    private VBObjectType() : base(Tokens.Object) { }
+    private VBObjectType() : base(Tokens.Object) 
+    {
+        Size = 32;
+    }
     public static VBObjectType TypeInfo { get; } = new();
 
     public override bool RuntimeBinding { get; } = true;

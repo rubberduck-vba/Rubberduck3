@@ -2,9 +2,12 @@
 
 namespace Rubberduck.InternalApi.Model.Declarations.Types;
 
-public record class VBByteType : VBIntrinsicType<byte>
+public record class VBByteType : VBIntrinsicType<byte>, INumericType
 {
-    private VBByteType() : base(Tokens.Byte) { }
+    private VBByteType() : base(Tokens.Byte) 
+    {
+        Size = 8;
+    }
     public static VBByteType TypeInfo { get; } = new();
 
     public override byte DefaultValue { get; }

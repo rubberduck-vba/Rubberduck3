@@ -2,9 +2,12 @@
 
 namespace Rubberduck.InternalApi.Model.Declarations.Types;
 
-public record class VBDecimalType : VBIntrinsicType<decimal>
+public record class VBDecimalType : VBIntrinsicType<decimal>, INumericType
 {
-    private VBDecimalType() : base(Tokens.Decimal) { }
+    private VBDecimalType() : base(Tokens.Decimal) 
+    {
+        Size = 64;
+    }
     public static VBDecimalType TypeInfo { get; } = new();
 
     public override decimal DefaultValue { get; }

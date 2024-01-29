@@ -22,14 +22,6 @@ public interface IExecutableSymbol
     bool? IsReachable { get; init; }
 
     /// <summary>
-    /// Evaluates the symbol in the specified execution context.
-    /// </summary>
-    /// <returns>
-    /// If evaluation is successful, returns a typed value.
-    /// </returns>
-    VBTypedValue? Evaluate(ExecutionContext context);
-
-    /// <summary>
     /// Executes the symbol in the specified execution context.
     /// </summary>
     /// <remarks>

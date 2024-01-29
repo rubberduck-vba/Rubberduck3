@@ -6,7 +6,10 @@ public record class VBStringType : VBIntrinsicType<string?>
 {
     public static string? VBNullString { get; } = null;
 
-    private VBStringType() : base(Tokens.String) { }
+    private VBStringType() : base(Tokens.String) 
+    {
+        Size = 32;
+    }
     public static VBStringType TypeInfo { get; } = new();
 
     public override string? DefaultValue { get; } = VBNullString;

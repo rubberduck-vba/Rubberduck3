@@ -2,7 +2,7 @@
 
 namespace Rubberduck.InternalApi.Model.Declarations.Types;
 
-public record class VBSingleType : VBIntrinsicType<float>
+public record class VBSingleType : VBIntrinsicType<float>, INumericType
 {
     private VBSingleType() : base(Tokens.Single) { }
     public static VBSingleType TypeInfo { get; } = new();
