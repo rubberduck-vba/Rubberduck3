@@ -35,21 +35,13 @@ public enum RubberduckSymbolKind
     /* LSP: values 19-26 reserved v3.17 */
 
     Object = SymbolKind.Object,
-    //Key = SymbolKind.Key, /* any idea what this could be? */
+    Key = SymbolKind.Key,
     Nothing = SymbolKind.Null,
     EnumMember = SymbolKind.EnumMember,
     UserDefinedType = SymbolKind.Struct,
     Event = SymbolKind.Event,
     Operator = SymbolKind.Operator,
     //TypeParameter = SymbolKind.TypeParameter, /* no generics in Classic-VB */
-
-    /* RD3: start extension values at 1024 to avoid any possible clash with a future LSP version
-     * Unlike semantic token types and their modifiers, it's not clearly stated anywhere that this type is intended to be extended.
-     */
-    Comment = 1024,
-    Annotation,
-    LineLabel,
-
 }
 
 public static class RubberduckSymbolKindExtensions

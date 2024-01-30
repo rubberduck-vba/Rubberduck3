@@ -1,6 +1,6 @@
 ﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.Model.Declarations;
-using Rubberduck.Unmanaged.Model;
 
 namespace Rubberduck.Parsing.Annotations.Concrete;
 
@@ -43,7 +43,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete;
 public sealed class ExcelHotKeyAnnotation : FlexibleAttributeValueAnnotationBase
 {
     public ExcelHotKeyAnnotation()
-        : base("ExcelHotkey", AnnotationTarget.Member, "VB_ProcData.VB_Invoke_Func", 1, [AnnotationArgumentType.Text]) 
+        : base("ExcelHotkey", AnnotationTarget.Member, Tokens.VB_Invoke_Func, 1, [AnnotationArgumentType.Text]) 
     {
     }
 

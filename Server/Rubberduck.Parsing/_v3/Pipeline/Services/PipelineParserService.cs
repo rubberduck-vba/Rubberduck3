@@ -64,9 +64,9 @@ public class PipelineParseTreeSymbolsService
     /// Ignores most symbols to produce a simple representation of a module that can be returned and sent to the client immediately.
     /// </remarks>
     /// <returns>
-    /// Returns a copy of the provided <c>moduleSymbol</c> with all its members, including parameters. Types are not resolved, unless implicit or intrinsic.
+    /// Returns a module symbol with all its members, including parameters. Types are not resolved, unless implicit or intrinsic.
     /// </returns>
-    public Symbol DiscoverMemberSymbols(IParseTree tree, Symbol moduleSymbol) => TraverseTree(tree, new MemberSymbolsListener((WorkspaceFileUri)moduleSymbol.Uri));
+    public Symbol DiscoverMemberSymbols(IParseTree tree, WorkspaceFileUri uri) => TraverseTree(tree, new MemberSymbolsListener(uri));
 
     /// <summary>
     /// A second pass to discover all declaration symbols in the module, including inside member scopes.
@@ -110,7 +110,7 @@ public class PipelineParseTreeSymbolsService
     /// </returns>
     private TypedSymbol ResolveDataType(TypedSymbol symbol, bool recursive = true)
     {
-        var type = _resolver.Resolve(symbol);
+        var type = symbol.ResolvedType ?? _resolver.Resolve(symbol);
 
         if (recursive)
         {

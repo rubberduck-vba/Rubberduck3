@@ -116,23 +116,23 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
             var name = attribute.attributeName().GetText();
             var value = attribute.attributeValue()[0].GetText();
 
-            if (string.Equals("VB_Name", name, comparison))
+            if (string.Equals(Tokens.VB_Name, name, comparison))
             {
                 _vbNameAttributeValue = value.UnQuote();
             }
-            else if (string.Equals("VB_GlobalNameSpace", name, comparison))
+            else if (string.Equals(Tokens.VB_GlobalNameSpace, name, comparison))
             {
                 _isGlobalNamespace = string.Equals(Tokens.True, value, comparison);
             }
-            else if (string.Equals("VB_Creatable", name, comparison))
+            else if (string.Equals(Tokens.VB_Creatable, name, comparison))
             {
                 _isCreatable = string.Equals(Tokens.True, value, comparison);
             }
-            else if (string.Equals("VB_PredeclaredId", name, comparison))
+            else if (string.Equals(Tokens.VB_PredeclaredId, name, comparison))
             {
                 _isPredeclaredId = string.Equals(Tokens.True, value, comparison);
             }
-            else if (string.Equals("VB_Exposed", name, comparison))
+            else if (string.Equals(Tokens.VB_Exposed, name, comparison))
             {
                 _isExposed = string.Equals(Tokens.True, value, comparison);
             }
@@ -277,17 +277,16 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
             alias = context.STRINGLITERAL()[1].GetText().UnQuote();
         }
 
-        Symbol symbol;
         if (context.FUNCTION() != null)
         {
-            symbol = CreateCurrentSymbol(children => new LibraryFunctionImportSymbol(library, name, alias, isPtrSafe, _workspaceFileUri, accessibility, children.OfType<ParameterSymbol>(), asTypeExpression), context);
+            OnChildSymbol(CreateCurrentSymbol(children => 
+                new LibraryFunctionImportSymbol(library, name, alias, isPtrSafe, _workspaceFileUri, accessibility, children.OfType<ParameterSymbol>(), asTypeExpression), context), context);
         }
-        else //if (context.SUB() != null)
+        else if (context.SUB() != null)
         {
-            symbol = CreateCurrentSymbol(children => new LibraryProcedureImportSymbol(library, name, alias, isPtrSafe, _workspaceFileUri, accessibility, children.OfType<ParameterSymbol>()), context);
+            OnChildSymbol(CreateCurrentSymbol(children => 
+                new LibraryProcedureImportSymbol(library, name, alias, isPtrSafe, _workspaceFileUri, accessibility, children.OfType<ParameterSymbol>()), context), context);
         }
-
-        OnChildSymbol(symbol, context);
     }
 
     public override void EnterEventStmt([NotNull] VBAParser.EventStmtContext context)

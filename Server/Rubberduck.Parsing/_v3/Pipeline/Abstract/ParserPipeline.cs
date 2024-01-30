@@ -52,7 +52,9 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
     }
 
     protected CancellationToken Token => _tokenSource.Token;
-    protected TState? State { get; set; }
+
+    protected TInput InputParameter { get; private set; }
+    protected TState State { get; set; }
 
     protected abstract void SetInitialState(TInput input);
 
@@ -97,6 +99,7 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
             throw new InvalidOperationException("BUG: This pipeline instance is already in use; a new one should be created every time.");
         }
 
+        InputParameter = input;
         SetInitialState(input);
 
         ((ITargetBlock<TInput>)InputBlock).Post(input);
