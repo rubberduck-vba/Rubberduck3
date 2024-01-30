@@ -20,13 +20,10 @@ public record class VBAdditionOperator : VBBinaryOperator
             // TODO possible diagnostic here
         }
 
-        if (lhs is VBStringValue lhsString && rhs is VBStringValue rhsString)
+        if (lhs is INumericValue lhsNumeric && rhs is INumericValue rhsNumeric)
         {
-            return Addition(lhsString, rhsString);
-        }
-        if (lhs is VBNullValue lhsNull && rhs is VBStringValue rhsStringValue)
-        {
-            return Addition(lhsNull, rhsStringValue);
+            // return type is the widest of the supplied types.
+            return Addition(lhsNumeric, rhsNumeric);
         }
         if (lhs is INumericValue lhsNumber && rhs is VBStringValue rhsNumericString)
         {
@@ -35,15 +32,21 @@ public record class VBAdditionOperator : VBBinaryOperator
                 return Addition(lhsNumber, new VBDoubleValue() { Value = rhsDouble });
             }
         }
+
+        if (lhs is VBStringValue lhsString && rhs is VBStringValue rhsString)
+        {
+            return Addition(lhsString, rhsString);
+        }
+        if (lhs is VBNullValue lhsNull && rhs is VBStringValue rhsStringValue)
+        {
+            return Addition(lhsNull, rhsStringValue);
+        }
+
         if (lhs is VBDateValue lhsDate && rhs is INumericValue rhsNumericDate)
         {
             return Addition(lhsDate, rhsNumericDate);
         }
-        if (lhs is INumericValue lhsNumeric && rhs is INumericValue rhsNumeric)
-        {
-            // return type is the widest of the supplied types.
-            return Addition(lhsNumeric, rhsNumeric);
-        }
+
         if (lhs is VBBooleanValue lhsBoolean && rhs is VBBooleanValue rhsBoolean)
         {
             return Addition(lhsBoolean, rhsBoolean);
@@ -84,7 +87,7 @@ public record class VBAdditionOperator : VBBinaryOperator
     private VBTypedValue Addition(VBStringValue lhs, VBStringValue rhs)
     {
         // TODO issue diagnostic / suggest replacing with string concatenation operator
-        return new VBStringValue(this) { Value = $"{lhs.Value}{rhs.Value}" };
+        return new VBStringValue(this).WithValue($"{lhs.Value}{rhs.Value}");
     }
 
     private VBTypedValue Addition(VBNullValue _, VBStringValue rhs) => rhs;
