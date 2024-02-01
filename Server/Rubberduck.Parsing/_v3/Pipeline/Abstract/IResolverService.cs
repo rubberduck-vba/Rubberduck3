@@ -5,5 +5,5 @@ namespace Rubberduck.Parsing._v3.Pipeline;
 
 public interface IResolverService
 {
-    VBType Resolve(TypedSymbol symbol);
+    VBType? Resolve(TypedSymbol symbol);
 }

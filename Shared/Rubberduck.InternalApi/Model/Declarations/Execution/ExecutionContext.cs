@@ -1,32 +1,76 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
+using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution;
 
+public record class ExecutionScope
+{
+    private readonly Stack<ExecutionScope> _callStack;
+    private readonly Dictionary<Symbol, VBTypedValue?> _symbols;
+    
+    public ExecutionScope(Stack<ExecutionScope> callStack, Dictionary<Symbol, VBTypedValue?> symbolTable, VBTypeMember member, VBRuntimeErrorException? error = null)
+    {
+        _callStack = callStack;
+        _symbols = symbolTable;
+
+        MemberInfo = member;
+        Names = symbolTable.Select(e => e.Key.Name).ToImmutableHashSet();
+        Error = error;
+    }
+
+    public ImmutableHashSet<string> Names { get; }
+    public VBTypeMember MemberInfo { get; init; }
+
+    public VBRuntimeErrorException? Error { get; init; }
+    public bool ActiveOnErrorResumeNext { get; init; }
+    public Symbol? ActiveOnErrorGoTo { get; init; }
+
+}
+
 public class ExecutionContext : ServiceBase
 {
-    private readonly Stack<ExecutionContext> _callStack;
-    private readonly ImmutableArray<Symbol> _locals;
-    private readonly Dictionary<TypedSymbol, VBTypedValue> _symbols = [];
+    private readonly Stack<ExecutionScope> _callStack = new();
+    private readonly ConcurrentDictionary<TypedSymbol, VBTypedValue> _symbols = new();
 
     public ExecutionContext(ILogger logger, 
         RubberduckSettingsProvider settingsProvider, 
-        PerformanceRecordAggregator performance,
-        Stack<ExecutionContext> callStack, 
-        IEnumerable<VBTypedValue> symbolTable) 
+        PerformanceRecordAggregator performance) 
         : base(logger, settingsProvider, performance)
     {
-        _callStack = callStack;
-        _symbols = symbolTable
-            .Select(e => (Symbol: e.Symbol!, Value: e))
-            .ToDictionary(e => e.Symbol, e => e.Value);
     }
+
+    public void AddTypedSymbol(TypedSymbol symbol) => _symbols.TryAdd(symbol, null!);
+
+    public ExecutionScope EnterScope(VBTypeMember member)
+    {
+        var scope = new ExecutionScope(_callStack, _symbols.Select(e => (e.Key, e.Value)).ToDictionary(e => (Symbol)e.Key, e => (VBTypedValue?)e.Value), member);
+        _callStack.Push(scope);
+        return scope;
+    }
+
+    public ExecutionScope? ExitScope(VBRuntimeErrorException? error = null)
+    {
+        return _callStack.Pop();
+    }
+
+    /// <summary>
+    /// Gets all resolved symbols in the context.
+    /// </summary>
+    public ImmutableHashSet<TypedSymbol> ResolvedSymbols => _symbols.Keys.Where(e => e.ResolvedType != null).ToImmutableHashSet();
+
+    /// <summary>
+    /// Gets all <c>VBMemberOwnerType</c> data types in the context.
+    /// </summary>
+    public ImmutableHashSet<TypedSymbol> MemberOwnerTypes => _symbols.Keys.Where(e => e.ResolvedType is VBMemberOwnerType).ToImmutableHashSet();
 
     /// <summary>
     /// Associates the specified value to a symbol, registering the provided executable symbol as a write site.

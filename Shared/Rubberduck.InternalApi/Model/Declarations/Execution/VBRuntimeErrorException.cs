@@ -103,4 +103,10 @@ public class VBRuntimeErrorException : ApplicationException
 
     public int VBErrorNumber { get; }
     public string? Verbose { get; }
+
+    public (int, string) Deconstruct(out int vbErrorNumber, out string message) => 
+        (vbErrorNumber = VBErrorNumber, message = Message);
+
+    public (int, string, string?) Deconstruct(out int vbErrorNumber, out string message, out string? verbose) => 
+        (vbErrorNumber = VBErrorNumber, message = Message, verbose = Verbose);
 }
