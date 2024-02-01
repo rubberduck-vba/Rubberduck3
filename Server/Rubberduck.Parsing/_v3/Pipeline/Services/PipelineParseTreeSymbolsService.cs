@@ -3,6 +3,7 @@ using Rubberduck.Parsing._v3.Pipeline.Services;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
+using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
@@ -37,15 +38,12 @@ public class PipelineParseTreeSymbolsService
     /// <returns>
     /// Returns a copy of the provided <c>moduleSymbol</c> with all its members, including parameters. Types are not resolved, unless implicit or intrinsic.
     /// </returns>
-    public Symbol DiscoverDeclarationSymbols(IParseTree tree, WorkspaceFileUri uri) => TraverseTree(tree, new DeclarationSymbolsListener(uri));
+    public Symbol DiscoverHierarchicalSymbols(IParseTree tree, WorkspaceFileUri uri) => TraverseTree(tree, new DeclarationSymbolsListener(uri));
 
     /// <summary>
-    /// Resolves a <c>VBType</c> for the given module symbol.
+    /// Resolves a <c>VBType</c> for all symbols in the provided module.
     /// </summary>
-    /// <remarks>
-    /// Recursively resolves child symbols' types.
-    /// </remarks>
-    public TypedSymbol ResolveMemberSymbols(TypedSymbol module) => ResolveDataType(module);
+    public Symbol RecursivelyResolveSymbols(Symbol module) => ResolveDataType(module);
 
     private Symbol TraverseTree(IParseTree tree, IVBListener<Symbol> listener)
     {
@@ -66,22 +64,33 @@ public class PipelineParseTreeSymbolsService
     /// Recursively resolves the data type of each child item unless specified otherwise.
     /// </remarks>
     /// <returns>
-    /// Returns a copy of the provided <c>symbol</c> with its data type resolved.
+    /// Returns a copy of the provided <c>symbol</c> with its data type resolved, or the symbol itself if it isn't typed.
     /// </returns>
-    private TypedSymbol ResolveDataType(TypedSymbol symbol, bool recursive = true)
+    private Symbol ResolveDataType(Symbol symbol, bool recursive = true)
     {
-        var type = symbol.ResolvedType ?? _resolver.Resolve(symbol);
+        VBType? type = null;
+
+        var typedSymbol = symbol as TypedSymbol;
+        if (typedSymbol != null)
+        {
+            type = typedSymbol.ResolvedType ?? _resolver.Resolve(typedSymbol);
+        }
 
         if (recursive)
         {
             var children = new List<Symbol>();
-            foreach (var child in symbol.Children?.OfType<TypedSymbol>() ?? [])
+            foreach (var child in symbol.Children?.OfType<Symbol>() ?? [])
             {
                 children.Add(ResolveDataType(child));
             }
             return symbol with { Children = children.ToArray() };
         }
 
-        return symbol with { ResolvedType = type };
+        if (typedSymbol != null && type != null)
+        {
+            return typedSymbol with { ResolvedType = type };
+        }
+
+        return symbol;
     }
 }

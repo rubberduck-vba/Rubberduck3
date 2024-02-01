@@ -13,6 +13,14 @@ public interface IParserPipeline
     /// </summary>
     Task StartAsync(object input);
     /// <summary>
+    /// Cancels the ongoing execution of the pipeline.
+    /// </summary>
+    /// <remarks>
+    /// If a block does not collaboratively cancel, execution stops when the currently executing block exits.
+    /// </remarks>
+    void Cancel();
+
+    /// <summary>
     /// Gets a <c>Task</c> that completes when the last pipeline block has completed, regardless of its state.
     /// </summary>
     Task Completion { get; }
@@ -22,7 +30,7 @@ public interface IParserPipeline<TInput> : IParserPipeline
     /// <summary>
     /// Starts executing the parser pipeline for the provided input.
     /// </summary>
-    Task StartAsync(TInput input);
+    Task StartAsync(TInput input, CancellationTokenSource? tokenSource = null);
 }
 
 public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipeline<TInput>, IDisposable
@@ -30,9 +38,11 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
     protected static DataflowLinkOptions WithCompletionPropagation { get; } = new() { PropagateCompletion = true };
     protected static DataflowLinkOptions WithoutCompletionPropagation { get; } = new() { PropagateCompletion = false };
 
+    protected GroupingDataflowBlockOptions GreedyJoinExecutionOptions { get; }
     protected ExecutionDataflowBlockOptions ExecutionOptions { get; }
 
-    private readonly CancellationTokenSource _tokenSource;
+    protected CancellationTokenSource TokenSource { get; private set; } = new();
+
     private readonly List<IDisposable> _disposables = [];
 
     protected ParserPipeline(ILogger<WorkspaceParserPipeline> logger,
@@ -40,23 +50,27 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
         PerformanceRecordAggregator performance)
         : base(logger, settingsProvider, performance)
     {
-        _tokenSource = new();
-
         ExecutionOptions = new() 
         { 
-            CancellationToken = _tokenSource.Token,
+            CancellationToken = TokenSource.Token,
             MaxDegreeOfParallelism = 4, // TODO make this configurable
+        };
+        GreedyJoinExecutionOptions = new()
+        {
+            CancellationToken = TokenSource.Token,
+            Greedy = true,
         };
 
         (InputBlock, Completion) = DefinePipelineBlocks();
     }
 
-    protected CancellationToken Token => _tokenSource.Token;
+    protected CancellationToken Token => TokenSource.Token;
+    public void Cancel() => TokenSource.Cancel();
 
-    protected TInput InputParameter { get; private set; }
-    protected TState State { get; set; }
+    private TInput InputParameter { get; set; } = default!;
+    public TState State { get; protected set; } = default!;
 
-    protected abstract void SetInitialState(TInput input);
+    protected virtual void SetInitialState(TInput input) => State = default!;
 
     /// <summary>
     /// Defines and links all pipeline blocks.
@@ -74,17 +88,9 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
     /// </remarks>
     public IDataflowBlock InputBlock { get; }
 
-    /// <summary>
-    /// Gets the <c>IDataflowBlock</c> that produces the output for this part of the processing.
-    /// </summary>
-    /// <remarks>
-    /// Useful for linking different pipelines.
-    /// </remarks>
-    public IDataflowBlock OutputBlock { get; } = null!;
-
     public Task Completion { get; }
 
-    public virtual Task StartAsync(object input) => StartAsync((TInput)input);
+    public virtual Task StartAsync(object input) => StartAsync((TInput)input, TokenSource);
 
     /// <summary>
     /// Starts the pipeline by posting the specified input to the <c>InputBlock</c>.
@@ -92,11 +98,16 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
     /// <remarks>
     /// Returns immediately with the <c>Completion</c> task.
     /// </remarks>
-    public virtual Task StartAsync(TInput input)
+    public virtual Task StartAsync(TInput input, CancellationTokenSource? tokenSource = null)
     {
         if (State != null)
         {
             throw new InvalidOperationException("BUG: This pipeline instance is already in use; a new one should be created every time.");
+        }
+
+        if (tokenSource != null)
+        {
+            TokenSource = tokenSource;
         }
 
         InputParameter = input;
@@ -126,6 +137,26 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
         {
             ThrowIfCancellationRequested();
             result = action.Invoke(param);
+            ThrowIfCancellationRequested();
+
+        }, out var exception, actionName) && exception != null)
+        {
+            FaultDataflowBlock(block, exception);
+        }
+
+        LogBlockActionEnd(actionName);
+        return result ?? throw new InvalidOperationException("Result was unexpectedly null.");
+    }
+
+    protected virtual TResult RunTransformBlock<T, TResult>(IDataflowBlock block, T param, Func<T, CancellationToken, TResult> action, [CallerMemberName] string? actionName = null) where TResult : class
+    {
+        LogBlockActionStart(actionName);
+        TResult? result = null;
+        if (State != null && !TryRunAction(() =>
+        {
+            ThrowIfCancellationRequested();
+            result = action.Invoke(param, Token);
+            ThrowIfCancellationRequested();
 
         }, out var exception, actionName) && exception != null)
         {
@@ -144,6 +175,25 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
         {
             ThrowIfCancellationRequested();
             action.Invoke(param);
+            ThrowIfCancellationRequested();
+
+        }, out var exception, actionName) && exception != null)
+        {
+            FaultDataflowBlock(block, exception);
+        }
+
+        LogBlockActionEnd(actionName);
+    }
+
+    protected virtual void RunActionBlock<T>(IDataflowBlock block, T param, Action<T, CancellationToken> action, [CallerMemberName] string? actionName = null)
+    {
+        LogBlockActionStart(actionName);
+
+        if (State != null && !TryRunAction(() =>
+        {
+            ThrowIfCancellationRequested();
+            action.Invoke(param, Token);
+            ThrowIfCancellationRequested();
 
         }, out var exception, actionName) && exception != null)
         {
@@ -161,17 +211,19 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
     protected void FaultDataflowBlock(IDataflowBlock block, Exception exception)
     {
         block.Fault(exception);
-        _tokenSource?.Cancel();
+        TokenSource?.Cancel();
     }
 
-    protected void ThrowIfCancellationRequested() => _tokenSource.Token.ThrowIfCancellationRequested();
+    protected void ThrowIfCancellationRequested() => TokenSource.Token.ThrowIfCancellationRequested();
 
     public void Dispose()
     {
-        _tokenSource?.Dispose();
+        TokenSource?.Dispose();
         foreach (var disposable in _disposables)
         {
             disposable.Dispose();
         }
+
+        GC.SuppressFinalize(this);
     }
 }

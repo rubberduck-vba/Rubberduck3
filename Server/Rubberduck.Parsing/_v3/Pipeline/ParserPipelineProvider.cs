@@ -18,58 +18,42 @@ public class ParserPipelineProvider : IParserPipelineProvider<WorkspaceUri>, IPa
         _filePipelineFactory = filePipelineFactory;
     }
 
-    public IParserPipeline<TInput> GetCurrentOrStartNew<TInput>(WorkspaceUri uri, TInput input)
+    private IParserPipeline<TInput> StartNew<TPipeline, TInput>(IParserPipelineFactory<TPipeline> factory, TInput uri, CancellationTokenSource? tokenSource = null) 
+        where TPipeline : IParserPipeline
+        where TInput : Uri
     {
-        _ = input ?? throw new ArgumentNullException(nameof(input));
+        _ = uri ?? throw new ArgumentNullException(nameof(uri));
 
-        if (!_pipelines.TryGetValue(uri, out var pipeline))
+        if (_pipelines.TryGetValue(uri, out var pipeline))
         {
-            pipeline = _workspacePipelineFactory.Create();
+            try
+            {
+                pipeline.Cancel();
+            }
+            finally
+            {
+                _tasks.Remove(uri, out _);
+            }
         }
 
-        _pipelines[uri] = pipeline ?? throw new InvalidOperationException();
+        var newPipeline = factory.Create() as IParserPipeline<TInput> ?? throw new InvalidOperationException("BUG: IParserPipeline was not of the expected type.");
+        var completion = newPipeline.StartAsync(uri, tokenSource) ?? throw new InvalidOperationException("BUG: Completion Task was unexpectly null.");
         
-        if (pipeline is IParserPipeline<TInput> parserPipeline)
-        {
-            _ = pipeline.StartAsync(input);
-            return parserPipeline;
-        }
+        _tasks.TryAdd(uri, completion);
+        _pipelines[uri] = newPipeline;
 
-        throw new InvalidCastException($"Expected `IParser<{typeof(TInput).Name}>` but was `{pipeline?.GetType().Name ?? "(null)"}`.");
+        return newPipeline;
     }
 
-    public IParserPipeline<TInput>? GetCurrent<TInput>(WorkspaceUri uri)
-    {
-        if (_pipelines.TryGetValue(uri, out var current) && current is IParserPipeline<TInput> result)
-        {
-            return result;
-        }
+    public IParserPipeline<WorkspaceUri> StartNew(WorkspaceUri uri, CancellationTokenSource? tokenSource = null) =>
+        StartNew(_workspacePipelineFactory, uri, tokenSource);
 
-        return null;
-    }
+    public IParserPipeline<WorkspaceFileUri> StartNew(WorkspaceFileUri uri, CancellationTokenSource? tokenSource = null) =>
+        StartNew(_filePipelineFactory, uri, tokenSource);
 
-    public IParserPipeline<TInput> GetCurrentOrStartNew<TInput>(WorkspaceFileUri uri, TInput input)
-    {
-        _ = input ?? throw new ArgumentNullException(nameof(input));
+    public IParserPipeline<WorkspaceUri>? GetCurrent(WorkspaceUri uri) =>
+        _pipelines.TryGetValue(uri, out var current) && current is IParserPipeline<WorkspaceUri> result ? result : null;
 
-        if (!_pipelines.TryGetValue(uri, out var pipeline))
-        {
-            pipeline = _filePipelineFactory.Create();
-        }
-
-        _pipelines[uri] = pipeline;
-        _ = pipeline.StartAsync(uri);
-
-        return (IParserPipeline<TInput>)pipeline;
-    }
-
-    public IParserPipeline<TInput>? GetCurrent<TInput>(WorkspaceFileUri uri)
-    {
-        if (_pipelines.TryGetValue(uri, out var current) && current is IParserPipeline<TInput> result)
-        {
-            return result;
-        }
-
-        return null;
-    }
+    public IParserPipeline<WorkspaceFileUri>? GetCurrent(WorkspaceFileUri uri) =>
+        _pipelines.TryGetValue(uri, out var current) && current is IParserPipeline<WorkspaceFileUri> result ? result : null;
 }
