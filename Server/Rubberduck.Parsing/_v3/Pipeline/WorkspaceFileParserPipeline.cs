@@ -76,7 +76,7 @@ public class WorkspaceFileParserPipeline : ParserPipeline<WorkspaceFileUri, Docu
 
     private ActionBlock<Symbol> SetDocumentStateSymbolsBlock { get; set; } = null!;
     private void SetDocumentStateSymbols(Symbol symbol) =>
-        RunActionBlock(SetDocumentStateSymbolsBlock, symbol, e => State = DocumentParserState.WithHierarchicalSymbols(e));
+        RunActionBlock(SetDocumentStateSymbolsBlock, symbol, e => State = DocumentParserState.WithSymbols(e));
 
 
     private JoinBlock<IParseTree, Symbol> JoinMemberSymbolsBlock { get; set; } = null!;
@@ -92,7 +92,7 @@ public class WorkspaceFileParserPipeline : ParserPipeline<WorkspaceFileUri, Docu
 
     private DocumentParserState DocumentParserState => (DocumentParserState)State;
     private void SetDocumentStateHierarchicalSymbols(Symbol symbol) =>
-        RunActionBlock(SetDocumentStateSymbolsBlock, symbol, e => State = DocumentParserState.WithHierarchicalSymbols(e));
+        RunActionBlock(SetDocumentStateSymbolsBlock, symbol, e => State = DocumentParserState.WithSymbols(e));
 
     protected override (ITargetBlock<WorkspaceFileUri> inputBlock, Task completion) DefinePipelineBlocks()
     {
