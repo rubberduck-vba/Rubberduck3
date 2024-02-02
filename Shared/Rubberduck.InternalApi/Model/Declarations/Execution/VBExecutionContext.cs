@@ -36,12 +36,12 @@ public record class ExecutionScope
 
 }
 
-public class ExecutionContext : ServiceBase
+public class VBExecutionContext : ServiceBase
 {
     private readonly Stack<ExecutionScope> _callStack = new();
     private readonly ConcurrentDictionary<TypedSymbol, VBTypedValue> _symbols = new();
 
-    public ExecutionContext(ILogger logger, 
+    public VBExecutionContext(ILogger logger, 
         RubberduckSettingsProvider settingsProvider, 
         PerformanceRecordAggregator performance) 
         : base(logger, settingsProvider, performance)

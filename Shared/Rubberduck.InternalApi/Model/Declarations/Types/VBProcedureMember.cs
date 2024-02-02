@@ -30,7 +30,7 @@ public abstract record class VBExecutableMember : VBTypeMember, IExecutableMembe
 
     public bool? IsReachable { get; init; }
 
-    public virtual ExecutionContext Execute(ExecutionContext context) => context;
+    public virtual VBExecutionContext Execute(VBExecutionContext context) => context;
 }
 
 public record class VBProcedureMember : VBExecutableMember

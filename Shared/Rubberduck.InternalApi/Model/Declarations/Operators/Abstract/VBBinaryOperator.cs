@@ -30,7 +30,7 @@ public abstract record class VBBinaryOperator : VBOperator
             Children = new[] { lhs, rhs }.Where(e => e != null).OfType<TypedSymbol>().ToArray() ?? [],
         };
 
-    protected override ExecutionContext ExecuteOperator(ExecutionContext context)
+    protected override VBExecutionContext ExecuteOperator(VBExecutionContext context)
     {
         context.TryRunAction(() =>
         {
@@ -46,7 +46,7 @@ public abstract record class VBBinaryOperator : VBOperator
         return context;
     }
 
-    protected abstract VBTypedValue ExecuteBinaryOperator(ExecutionContext context, VBTypedValue lhsValue, VBTypedValue rhsValue);
+    protected abstract VBTypedValue ExecuteBinaryOperator(VBExecutionContext context, VBTypedValue lhsValue, VBTypedValue rhsValue);
 
     protected bool CanConvertSafely(VBTypedValue lhsValue, VBTypedValue rhsValue)
         => lhsValue.TypeInfo.ConvertsSafelyToTypes.Contains(rhsValue.TypeInfo);

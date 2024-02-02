@@ -1,26 +1,26 @@
-﻿using Rubberduck.InternalApi.Extensions;
+﻿using NLog.Config;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing._v3.Pipeline.Abstract;
 using System.Collections.Concurrent;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
-public class ParserPipelineProvider : IParserPipelineProvider<WorkspaceUri>, IParserPipelineProvider<WorkspaceFileUri>
+public class ParserPipelineProvider
 {
     private readonly IParserPipelineFactory<WorkspaceParserPipeline> _workspacePipelineFactory;
     private readonly IParserPipelineFactory<WorkspaceFileParserPipeline> _filePipelineFactory;
     private readonly ConcurrentDictionary<Uri, IParserPipeline> _pipelines = [];
     private readonly ConcurrentDictionary<Uri, Task> _tasks = [];
 
-    public ParserPipelineProvider(IParserPipelineFactory<WorkspaceParserPipeline> workspacePipelineFactory,
+    public ParserPipelineProvider(
+        IParserPipelineFactory<WorkspaceParserPipeline> workspacePipelineFactory,
         IParserPipelineFactory<WorkspaceFileParserPipeline> filePipelineFactory)
     {
         _workspacePipelineFactory = workspacePipelineFactory;
         _filePipelineFactory = filePipelineFactory;
     }
 
-    private IParserPipeline<TInput> StartNew<TPipeline, TInput>(IParserPipelineFactory<TPipeline> factory, TInput uri, CancellationTokenSource? tokenSource = null) 
-        where TPipeline : IParserPipeline
-        where TInput : Uri
+    public WorkspaceParserPipeline StartNew(WorkspaceUri uri, CancellationTokenSource tokenSource)
     {
         _ = uri ?? throw new ArgumentNullException(nameof(uri));
 
@@ -36,24 +36,43 @@ public class ParserPipelineProvider : IParserPipelineProvider<WorkspaceUri>, IPa
             }
         }
 
-        var newPipeline = factory.Create() as IParserPipeline<TInput> ?? throw new InvalidOperationException("BUG: IParserPipeline was not of the expected type.");
-        var completion = newPipeline.StartAsync(uri, tokenSource) ?? throw new InvalidOperationException("BUG: Completion Task was unexpectly null.");
-        
+        var newPipeline = _workspacePipelineFactory.Create();
+        var completion = newPipeline.StartAsync(uri, null, tokenSource);
+
         _tasks.TryAdd(uri, completion);
         _pipelines[uri] = newPipeline;
 
         return newPipeline;
     }
 
-    public IParserPipeline<WorkspaceUri> StartNew(WorkspaceUri uri, CancellationTokenSource? tokenSource = null) =>
-        StartNew(_workspacePipelineFactory, uri, tokenSource);
+    public WorkspaceFileParserPipeline StartNew(WorkspaceFileUri uri, CancellationTokenSource tokenSource)
+    {
+        _ = uri ?? throw new ArgumentNullException(nameof(uri));
 
-    public IParserPipeline<WorkspaceFileUri> StartNew(WorkspaceFileUri uri, CancellationTokenSource? tokenSource = null) =>
-        StartNew(_filePipelineFactory, uri, tokenSource);
+        if (_pipelines.TryGetValue(uri, out var pipeline))
+        {
+            try
+            {
+                pipeline.Cancel();
+            }
+            finally
+            {
+                _tasks.Remove(uri, out _);
+            }
+        }
 
-    public IParserPipeline<WorkspaceUri>? GetCurrent(WorkspaceUri uri) =>
-        _pipelines.TryGetValue(uri, out var current) && current is IParserPipeline<WorkspaceUri> result ? result : null;
+        var newPipeline = _filePipelineFactory.Create();
+        var completion = newPipeline.StartAsync(uri, null, tokenSource);
 
-    public IParserPipeline<WorkspaceFileUri>? GetCurrent(WorkspaceFileUri uri) =>
-        _pipelines.TryGetValue(uri, out var current) && current is IParserPipeline<WorkspaceFileUri> result ? result : null;
+        _tasks.TryAdd(uri, completion);
+        _pipelines[uri] = newPipeline;
+
+        return newPipeline;
+    }
+
+    public WorkspaceParserPipeline? GetCurrent(WorkspaceUri uri) =>
+        _pipelines.TryGetValue(uri, out var current) && current is WorkspaceParserPipeline result ? result : null;
+
+    public WorkspaceFileParserPipeline? GetCurrent(WorkspaceFileUri uri) =>
+        _pipelines.TryGetValue(uri, out var current) && current is WorkspaceFileParserPipeline result ? result : null;
 }

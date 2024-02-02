@@ -27,7 +27,7 @@ public interface IExecutableSymbol
     /// <remarks>
     /// Returns the altered execution context.
     /// </remarks>
-    ExecutionContext Execute(ExecutionContext context);
+    VBExecutionContext Execute(VBExecutionContext context);
 }
 
 /// <summary>
@@ -230,8 +230,8 @@ public record class FunctionSymbol : TypedSymbol, IExecutableSymbol
         : base(kind, accessibility, name, parentUri, (children ?? []).ToArray()) { }
 
     public bool? IsReachable { get; init; }
-    public VBTypedValue? Evaluate(ExecutionContext context) => null;
-    public ExecutionContext Execute(ExecutionContext context) => context;
+    public VBTypedValue? Evaluate(VBExecutionContext context) => null;
+    public VBExecutionContext Execute(VBExecutionContext context) => context;
 }
 
 public record class ProcedureSymbol : Symbol, IExecutableSymbol
@@ -240,8 +240,8 @@ public record class ProcedureSymbol : Symbol, IExecutableSymbol
         : base(kind, name, parentUri, accessibility, (children ?? []).ToArray()) { }
 
     public bool? IsReachable { get; init; }
-    public VBTypedValue? Evaluate(ExecutionContext context) => null;
-    public ExecutionContext Execute(ExecutionContext context) => context;
+    public VBTypedValue? Evaluate(VBExecutionContext context) => null;
+    public VBExecutionContext Execute(VBExecutionContext context) => context;
 }
 
 public record class PropertyGetSymbol : FunctionSymbol

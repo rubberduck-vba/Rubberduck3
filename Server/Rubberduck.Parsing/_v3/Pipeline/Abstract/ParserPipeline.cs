@@ -11,7 +11,7 @@ public interface IParserPipeline
     /// <summary>
     /// Starts executing the parser pipeline for the provided input.
     /// </summary>
-    Task StartAsync(object input);
+    Task StartAsync(object input, object state, CancellationTokenSource tokenSource);
     /// <summary>
     /// Cancels the ongoing execution of the pipeline.
     /// </summary>
@@ -25,21 +25,22 @@ public interface IParserPipeline
     /// </summary>
     Task Completion { get; }
 }
-public interface IParserPipeline<TInput> : IParserPipeline
+public interface IParserPipeline<TInput, TState> : IParserPipeline
 {
     /// <summary>
     /// Starts executing the parser pipeline for the provided input.
     /// </summary>
-    Task StartAsync(TInput input, CancellationTokenSource? tokenSource = null);
+    Task StartAsync(TInput input, TState state, CancellationTokenSource tokenSource);
 }
 
-public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipeline<TInput>, IDisposable
+public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipeline<TInput, TState>, IDisposable
 {
     protected static DataflowLinkOptions WithCompletionPropagation { get; } = new() { PropagateCompletion = true };
     protected static DataflowLinkOptions WithoutCompletionPropagation { get; } = new() { PropagateCompletion = false };
 
     protected GroupingDataflowBlockOptions GreedyJoinExecutionOptions { get; }
-    protected ExecutionDataflowBlockOptions ExecutionOptions { get; }
+    protected ExecutionDataflowBlockOptions ConcurrentExecutionOptions { get; }
+    protected ExecutionDataflowBlockOptions SingleMessageExecutionOptions { get; }
 
     protected CancellationTokenSource TokenSource { get; private set; } = new();
 
@@ -50,7 +51,12 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
         PerformanceRecordAggregator performance)
         : base(logger, settingsProvider, performance)
     {
-        ExecutionOptions = new() 
+        SingleMessageExecutionOptions = new()
+        {
+            CancellationToken = TokenSource.Token,
+            MaxDegreeOfParallelism = 1,
+        };
+        ConcurrentExecutionOptions = new() 
         { 
             CancellationToken = TokenSource.Token,
             MaxDegreeOfParallelism = 4, // TODO make this configurable
@@ -70,7 +76,7 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
     private TInput InputParameter { get; set; } = default!;
     public TState State { get; protected set; } = default!;
 
-    protected virtual void SetInitialState(TInput input) => State = default!;
+    protected virtual void SetInitialState(TState state) => State = state;
 
     /// <summary>
     /// Defines and links all pipeline blocks.
@@ -90,7 +96,7 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
 
     public Task Completion { get; }
 
-    public virtual Task StartAsync(object input) => StartAsync((TInput)input, TokenSource);
+    public virtual Task StartAsync(object input, object state, CancellationTokenSource tokenSource) => StartAsync((TInput)input, (TState)state, tokenSource);
 
     /// <summary>
     /// Starts the pipeline by posting the specified input to the <c>InputBlock</c>.
@@ -98,20 +104,18 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
     /// <remarks>
     /// Returns immediately with the <c>Completion</c> task.
     /// </remarks>
-    public virtual Task StartAsync(TInput input, CancellationTokenSource? tokenSource = null)
+    public virtual Task StartAsync(TInput input, TState? state, CancellationTokenSource tokenSource)
     {
-        if (State != null)
-        {
-            throw new InvalidOperationException("BUG: This pipeline instance is already in use; a new one should be created every time.");
-        }
-
         if (tokenSource != null)
         {
             TokenSource = tokenSource;
         }
 
         InputParameter = input;
-        SetInitialState(input);
+        if (state != null)
+        {
+            SetInitialState(state);
+        }
 
         ((ITargetBlock<TInput>)InputBlock).Post(input);
         InputBlock.Complete();

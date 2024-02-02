@@ -3,14 +3,14 @@ using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
-using ExecutionContext = Rubberduck.InternalApi.Model.Declarations.Execution.ExecutionContext;
+using VBExecutionContext = Rubberduck.InternalApi.Model.Declarations.Execution.VBExecutionContext;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
 public class ResolverService : ServiceBase, IResolverService
 {
-    private readonly ExecutionContext _context;
-    public ResolverService(ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance, ExecutionContext context) 
+    private readonly VBExecutionContext _context;
+    public ResolverService(ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance, VBExecutionContext context) 
         : base(logger, settingsProvider, performance)
     {
         _context = context;

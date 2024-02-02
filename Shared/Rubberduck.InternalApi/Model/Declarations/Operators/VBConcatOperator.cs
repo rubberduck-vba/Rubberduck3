@@ -13,7 +13,7 @@ public record class VBConcatOperator : VBBinaryOperator
     {
     }
 
-    protected override VBTypedValue ExecuteBinaryOperator(ExecutionContext context, VBTypedValue lhsValue, VBTypedValue rhsValue)
+    protected override VBTypedValue ExecuteBinaryOperator(VBExecutionContext context, VBTypedValue lhsValue, VBTypedValue rhsValue)
     {
         string? lhsString;
         if (lhsValue is VBStringValue stringValueLhs)

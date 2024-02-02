@@ -20,7 +20,7 @@ public abstract record class VBUnaryOperator : VBOperator
 
     public VBUnaryOperator WithOperand(TypedSymbol operand) => this with { ResolvedExpression = operand, Children = new(operand) };
 
-    protected override ExecutionContext ExecuteOperator(ExecutionContext context)
+    protected override VBExecutionContext ExecuteOperator(VBExecutionContext context)
     {
         context.TryRunAction(() =>
         {

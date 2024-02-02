@@ -15,13 +15,13 @@ public abstract record class VBOperator : TypedSymbol, IExecutableSymbol
 
     public bool? IsReachable { get; init; }
 
-    public ExecutionContext Execute(ExecutionContext context)
+    public VBExecutionContext Execute(VBExecutionContext context)
     {
         context.TryRunAction(() => ExecuteOperator(context));
         return context;
     }
 
-    protected abstract ExecutionContext ExecuteOperator(ExecutionContext context);
+    protected abstract VBExecutionContext ExecuteOperator(VBExecutionContext context);
 
     public VBOperator WithOperands(TypedSymbol[] operands) => this with { Children = new(operands) };
 }

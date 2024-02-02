@@ -11,8 +11,7 @@ public record class DocumentParserState : DocumentState
     {
     }
 
-    public IParseTree? ParseTree { get; init; }
+    public IParseTree? SyntaxTree { get; init; }
 
-    public DocumentParserState WithParseTree(IParseTree tree) => this with { ParseTree = tree };
-    public new DocumentParserState WithHierarchicalSymbols(Symbol symbol) => this with { Symbols = symbol };
+    public DocumentParserState WithSyntaxTree(IParseTree tree) => this with { SyntaxTree = tree };
 }

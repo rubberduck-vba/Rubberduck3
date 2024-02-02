@@ -46,4 +46,8 @@
     </Antlr4>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="_v3\Pipeline\Orchestration\" />
+  </ItemGroup>
+
 </Project>

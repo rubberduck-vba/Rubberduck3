@@ -13,7 +13,7 @@ public record class VBAdditionOperator : VBBinaryOperator
     {
     }
 
-    protected override VBTypedValue ExecuteBinaryOperator(ExecutionContext context, VBTypedValue lhs, VBTypedValue rhs)
+    protected override VBTypedValue ExecuteBinaryOperator(VBExecutionContext context, VBTypedValue lhs, VBTypedValue rhs)
     {
         if (!CanConvertSafely(lhs, rhs))
         {
