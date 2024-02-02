@@ -80,16 +80,20 @@ public readonly struct RubberduckSemanticTokenType
     public static SemanticTokenType Operator { get; } = SemanticTokenType.Operator;
     public static SemanticTokenType Annotation { get; } = SemanticTokenType.Decorator;
 
-    public static SemanticTokenType Attribute { get; } = new SemanticTokenType("attribute");
-    public static SemanticTokenType ClassHeader { get; } = new SemanticTokenType("header");
-    public static SemanticTokenType BooleanLiteral { get; } = new SemanticTokenType("boolean");
-    public static SemanticTokenType NullLiteral { get; } = new SemanticTokenType("null");
-    public static SemanticTokenType NothingLiteral { get; } = new SemanticTokenType("nothing");
-    public static SemanticTokenType EmptyLiteral { get; } = new SemanticTokenType("empty");
-    public static SemanticTokenType DateLiteral { get; } = new SemanticTokenType("date");
-    public static SemanticTokenType HexLiteral { get; } = new SemanticTokenType("hex");
-    public static SemanticTokenType OctLiteral { get; } = new SemanticTokenType("oct");
-    public static SemanticTokenType TypeHint { get; } = new SemanticTokenType("typeHint");
+    // LSP token types are extensible
+
+    public static SemanticTokenType PropertyGet { get; } = new("propertyGet");
+    public static SemanticTokenType PropertyLet { get; } = new("propertyLet");
+    public static SemanticTokenType PropertySet { get; } = new("propertySet");
+    public static SemanticTokenType Attribute { get; } = new("attribute");
+    public static SemanticTokenType ClassHeader { get; } = new("header");
+    public static SemanticTokenType Constant { get; } = new("const");
+    public static SemanticTokenType BooleanLiteral { get; } = new("boolean");
+    public static SemanticTokenType NullLiteral { get; } = new("null");
+    public static SemanticTokenType NothingLiteral { get; } = new("nothing");
+    public static SemanticTokenType EmptyLiteral { get; } = new("empty");
+    public static SemanticTokenType DateLiteral { get; } = new("date");
+    public static SemanticTokenType TypeHint { get; } = new("typeHint");
 }
 
 public readonly struct RubberduckSemanticTokenModifier
@@ -110,6 +114,9 @@ public readonly struct RubberduckSemanticTokenModifier
     public static SemanticTokenModifier Documentation { get; } = SemanticTokenModifier.Documentation;
     public static SemanticTokenModifier DefaultLibrary { get; } = SemanticTokenModifier.DefaultLibrary;
 
-    public static SemanticTokenModifier Optional { get; } = new SemanticTokenModifier("optional");
-    public static SemanticTokenModifier LateBound { get; } = new SemanticTokenModifier("lateBound");
+    // LSP token modifiers are extensible
+
+    public static SemanticTokenModifier Optional { get; } = new("optional");
+    public static SemanticTokenModifier LateBound { get; } = new("lateBound");
+    public static SemanticTokenModifier Unreachable { get; } = new("unreachable");
 }
