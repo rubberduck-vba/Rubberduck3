@@ -31,8 +31,7 @@ public record class VBTypedValue
 
 public record class VBTypeDescValue : VBTypedValue
 {
-    public VBTypeDescValue(TypedSymbol? symbol = null) 
-        : base(VBTypeDesc.TypeInfo, symbol)
+    public VBTypeDescValue(TypedSymbol symbol) : base(symbol.ResolvedType!)
     {
     }
 }

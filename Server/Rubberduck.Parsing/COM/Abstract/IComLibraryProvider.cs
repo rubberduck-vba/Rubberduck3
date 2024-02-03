@@ -7,6 +7,6 @@ namespace Rubberduck.Parsing.COM.Abstract;
 public interface IComLibraryProvider
 {
     ITypeLib LoadTypeLibrary(string libraryPath);
-    IComDocumentation GetComDocumentation(ITypeLib typelib);
+    IComDocumentation? GetComDocumentation(ITypeLib typelib);
     ReferenceInfo GetReferenceInfo(ITypeLib typelib, string name, string path);
 }

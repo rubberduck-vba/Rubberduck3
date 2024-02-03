@@ -25,12 +25,9 @@ public abstract record class VBType<TValue> : VBType
 /// <summary>
 /// A metatype that describes a type. Not used in many places!
 /// </summary>
-public record class VBTypeDesc : VBType
+public record class VBTypeDescValue : VBTypedValue
 {
-    public static VBType TypeInfo { get; } = new VBTypeDesc();
-
-    public VBTypeDesc() 
-        : base(typeof(Type), nameof(Type), isHidden: true)
+    public VBTypeDescValue(VBType type) : base(type)
     {
     }
 }

@@ -16,3 +16,17 @@ public record class VBDoubleValue : VBTypedValue, IVBTypedValue<double>, INumeri
     public double AsDouble() => (double)Value;
     public VBTypedValue WithValue(double value) => this with { Value = value };
 }
+
+public record class VBDecimalValue : VBTypedValue, IVBTypedValue<decimal>, INumericValue, INumericCoercion, IStringCoercion
+{
+    public VBDecimalValue(TypedSymbol? declarationSymbol = null)
+        : base(VBDecimalType.TypeInfo, declarationSymbol) { }
+
+    public decimal Value { get; init; } = default;
+    public decimal DefaultValue { get; } = default;
+
+    public double? AsCoercedNumeric(int depth = 0) => AsDouble();
+    public string? AsCoercedString(int depth = 0) => Value.ToString();
+    public double AsDouble() => (double)Value;
+    public VBTypedValue WithValue(double value) => this with { Value = value };
+}

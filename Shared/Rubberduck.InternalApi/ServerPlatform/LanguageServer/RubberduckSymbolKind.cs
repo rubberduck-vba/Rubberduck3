@@ -1,4 +1,6 @@
-﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+﻿using OmniSharp.Extensions.JsonRpc.Generation;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -51,13 +53,18 @@ public static class RubberduckSymbolKindExtensions
 
 public readonly struct RubberduckSemanticTokenType
 {
-    public static SemanticTokenType[] SemanticTokenTypes { get; } = typeof(RubberduckSemanticTokenType)
+    public int Id { get; init; }
+    public SemanticTokenType TokenType { get; init; }
+
+    public static RubberduckSemanticTokenType[] SemanticTokenTypes { get; } = typeof(RubberduckSemanticTokenType)
         .GetProperties(BindingFlags.Public | BindingFlags.Static)
         .Select(property => property.GetGetMethod())
         .Where(method => method != null && method.ReturnType == typeof(SemanticTokenType))
-        .Select(method => (SemanticTokenType)method!.Invoke(null, null)!)
+        .Select((method, index) => new RubberduckSemanticTokenType { Id = index, TokenType = (SemanticTokenType)method!.Invoke(null, null)! })
         .ToArray();
 
+    public static Dictionary<SemanticTokenType, int> TokenTypeId { get; } = SemanticTokenTypes.ToDictionary(e => e.TokenType, e => e.Id);
+    
     public static SemanticTokenType Type { get; } = SemanticTokenType.Type;
     public static SemanticTokenType Class { get; } = SemanticTokenType.Class;
     public static SemanticTokenType Enum { get; } = SemanticTokenType.Enum;
@@ -82,28 +89,37 @@ public readonly struct RubberduckSemanticTokenType
 
     // LSP token types are extensible
 
+    public static SemanticTokenType FileNumber { get; } = new("filenumber");
+    public static SemanticTokenType ArraySubscripts { get; } = new("subscripts");
     public static SemanticTokenType PropertyGet { get; } = new("propertyGet");
     public static SemanticTokenType PropertyLet { get; } = new("propertyLet");
     public static SemanticTokenType PropertySet { get; } = new("propertySet");
     public static SemanticTokenType Attribute { get; } = new("attribute");
-    public static SemanticTokenType ClassHeader { get; } = new("header");
     public static SemanticTokenType Constant { get; } = new("const");
     public static SemanticTokenType BooleanLiteral { get; } = new("boolean");
     public static SemanticTokenType NullLiteral { get; } = new("null");
     public static SemanticTokenType NothingLiteral { get; } = new("nothing");
     public static SemanticTokenType EmptyLiteral { get; } = new("empty");
     public static SemanticTokenType DateLiteral { get; } = new("date");
+    public static SemanticTokenType GuidLiteral { get; } = new("guid");
     public static SemanticTokenType TypeHint { get; } = new("typeHint");
+    public static SemanticTokenType IgnoredExpression { get; } = new("ignored");
 }
 
 public readonly struct RubberduckSemanticTokenModifier
 {
-    public static SemanticTokenModifier[] SemanticTokenModifiers { get; } = typeof(RubberduckSemanticTokenModifier)
+    public int Id { get; init; }
+    public SemanticTokenModifier TokenModifier { get; init; }
+    public int Value => 2 ^ Id;
+
+    public static RubberduckSemanticTokenModifier[] SemanticTokenModifiers { get; } = typeof(RubberduckSemanticTokenModifier)
         .GetProperties(BindingFlags.Public | BindingFlags.Static)
         .Select(property => property.GetGetMethod())
         .Where(method => method != null && method.ReturnType == typeof(SemanticTokenModifier))
-        .Select(method => (SemanticTokenModifier)method!.Invoke(null, null)!)
+        .Select((method, index) => new RubberduckSemanticTokenModifier { Id = index, TokenModifier = (SemanticTokenModifier)method!.Invoke(null, null)! })
         .ToArray();
+
+    public static Dictionary<SemanticTokenModifier, int> TokenModifierId { get; } = SemanticTokenModifiers.ToDictionary(e => e.TokenModifier, e => e.Value);
 
     public static SemanticTokenModifier Declaration { get; } = SemanticTokenModifier.Declaration;
     public static SemanticTokenModifier Definition { get; } = SemanticTokenModifier.Definition;
@@ -116,6 +132,8 @@ public readonly struct RubberduckSemanticTokenModifier
 
     // LSP token modifiers are extensible
 
+    public static SemanticTokenModifier ModuleHeader { get; } = new("header");
+    public static SemanticTokenModifier Attribute { get; } = new("attribute");
     public static SemanticTokenModifier Optional { get; } = new("optional");
     public static SemanticTokenModifier LateBound { get; } = new("lateBound");
     public static SemanticTokenModifier Unreachable { get; } = new("unreachable");

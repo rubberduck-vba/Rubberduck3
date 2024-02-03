@@ -12,13 +12,12 @@ public interface IVBListener<TResult> : IVBAParserListener
     TResult Result { get; }
 }
 
-
-public class DeclarationSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
+public class HierarchicalSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
 {
     private readonly WorkspaceFileUri _workspaceFileUri;
     private readonly bool _isVB6 = false;
 
-    public DeclarationSymbolsListener(WorkspaceFileUri uri, bool isVB6 = false)
+    public HierarchicalSymbolsListener(WorkspaceFileUri uri, bool isVB6 = false)
     {
         _workspaceFileUri = uri;
         _isVB6 = isVB6;

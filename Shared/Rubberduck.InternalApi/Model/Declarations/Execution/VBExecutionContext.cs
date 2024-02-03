@@ -15,17 +15,23 @@ namespace Rubberduck.InternalApi.Model.Declarations.Execution;
 public record class ExecutionScope
 {
     private readonly Stack<ExecutionScope> _callStack;
-    private readonly Dictionary<Symbol, VBTypedValue?> _symbols;
+    private readonly Dictionary<Symbol, VBTypedValue> _symbols;
     
-    public ExecutionScope(Stack<ExecutionScope> callStack, Dictionary<Symbol, VBTypedValue?> symbolTable, VBTypeMember member, VBRuntimeErrorException? error = null)
+    public ExecutionScope(Stack<ExecutionScope> callStack, Dictionary<Symbol, VBTypedValue> symbolTable, VBTypeMember member, VBRuntimeErrorException? error = null)
     {
         _callStack = callStack;
         _symbols = symbolTable;
 
         MemberInfo = member;
-        Names = symbolTable.Select(e => e.Key.Name).ToImmutableHashSet();
         Error = error;
+
+        Names = symbolTable.Select(e => e.Key.Name).ToImmutableHashSet();
     }
+
+    public bool Is64BitHost { get; init; }
+
+    public VBTypedValue GetTypedValue(Symbol symbol) => _symbols[symbol];
+    public void SetTypedValue(Symbol symbol, VBTypedValue value) => _symbols[symbol] = value;
 
     public ImmutableHashSet<string> Names { get; }
     public VBTypeMember MemberInfo { get; init; }
@@ -33,6 +39,7 @@ public record class ExecutionScope
     public VBRuntimeErrorException? Error { get; init; }
     public bool ActiveOnErrorResumeNext { get; init; }
     public Symbol? ActiveOnErrorGoTo { get; init; }
+
 
 }
 
@@ -57,10 +64,18 @@ public class VBExecutionContext : ServiceBase
         return scope;
     }
 
+    public ExecutionScope CurrentScope => _callStack.Peek();
+
     public ExecutionScope? ExitScope(VBRuntimeErrorException? error = null)
     {
         return _callStack.Pop();
     }
+
+    public VBTypeMember? GetModuleMember(Symbol symbol) => 
+        _symbols.Keys
+            .Where(e => e is ClassModuleSymbol || e is StandardModuleSymbol)
+            .SelectMany(e => ((VBMemberOwnerType)e.ResolvedType!).Members)
+            .SingleOrDefault(e => e.Declaration == symbol);
 
     /// <summary>
     /// Gets all resolved symbols in the context.

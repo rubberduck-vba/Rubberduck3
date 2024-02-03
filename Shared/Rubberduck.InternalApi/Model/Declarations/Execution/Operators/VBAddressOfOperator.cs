@@ -1,16 +1,22 @@
-﻿using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
+﻿using Rubberduck.InternalApi.Model.Declarations.Execution;
+using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
-using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
+using System;
+using System.Linq;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Operators;
 
 public record class VBAddressOfOperator : VBUnaryOperator
 {
-    public VBAddressOfOperator(string expression, TypedSymbol? operand = null)
-        : base(Tokens.AddressOf, expression, operand, VBType.VbLongPtrType)
+    public VBAddressOfOperator(string expression, TypedSymbol operand, Uri parentUri)
+        : base(Tokens.AddressOf, expression, parentUri, operand)
     {
     }
 
-    protected override VBTypedValue ExecuteUnaryOperator(VBTypedValue value) => new VBLongPtrValue(value.Symbol);
+    public override VBTypedValue? Evaluate(ExecutionScope context)
+    {
+        var member = (TypedSymbol)Children!.Single();
+        return context.GetTypedValue(member);
+    }
 }

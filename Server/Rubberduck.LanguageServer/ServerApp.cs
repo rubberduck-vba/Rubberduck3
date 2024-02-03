@@ -13,6 +13,7 @@ using Rubberduck.InternalApi.Settings.Model.LanguageClient;
 using Rubberduck.InternalApi.Settings.Model.LanguageServer;
 using Rubberduck.LanguageServer.Handlers.Lifecycle;
 using Rubberduck.LanguageServer.Handlers.Workspace;
+using Rubberduck.Parsing._v3.Pipeline;
 using Rubberduck.ServerPlatform;
 using System;
 using System.Diagnostics;
@@ -146,8 +147,8 @@ namespace Rubberduck.LanguageServer
         protected async override Task OnServerStartedAsync(ILanguageServer server, CancellationToken token, IWorkDoneObserver? progress, ServerPlatformServiceHelper service)
         {
             var store = server.Services.GetRequiredService<DocumentContentStore>();
-
-            var rootUriString = ((ILanguageServerState)ServerState).RootUri!.GetFileSystemPath();
+            var state = (ILanguageServerState)ServerState;
+            var rootUriString = state.RootUri!.GetFileSystemPath();
             service.LogTrace($"ServerState RootUri: {rootUriString}");
             var rootUri = new Uri(rootUriString);
 
@@ -188,14 +189,9 @@ namespace Rubberduck.LanguageServer
                 service.LogTrace($"TODO: load definitions from '{item.Uri}'.");
             }
 
-            progress?.OnNext(message: "Parsing...", percentage: 25, cancellable: false);
-            // todo: parse all source files in workspace, make code foldings immediately available for open documents
-
-            progress?.OnNext(message: "Resolving...", percentage: 50, cancellable: false);
-            // todo: make semantic highlighting immediately available for open documents
-
-            progress?.OnNext(message: "Analyzing...", percentage: 75, cancellable: false);
-            // todo: make diagnostics immediately available for open documents
+            progress?.OnNext(message: "Processing workspace documents", percentage: 25, cancellable: false);
+            var pipeline = server.GetRequiredService<WorkspaceParserPipeline>();
+            _ = pipeline.StartAsync(state.RootUri, default!, new CancellationTokenSource());
 
             progress?.OnCompleted();
             if (progress != null)

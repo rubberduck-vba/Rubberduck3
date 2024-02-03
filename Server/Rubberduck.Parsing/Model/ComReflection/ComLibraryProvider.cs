@@ -42,7 +42,7 @@ public class ComLibraryProvider : IComLibraryProvider
         return typeLibrary;
     }
 
-    public IComDocumentation GetComDocumentation(ITypeLib typelib)
+    public IComDocumentation? GetComDocumentation(ITypeLib typelib)
     {
         try
         {
@@ -61,7 +61,7 @@ public class ComLibraryProvider : IComLibraryProvider
             typelib.GetLibAttr(out var attributes);
             using (DisposalActionContainer.Create(attributes, typelib.ReleaseTLibAttr))
             {
-                var typeAttr = Marshal.PtrToStructure<System.Runtime.InteropServices.ComTypes.TYPELIBATTR>(attributes);
+                var typeAttr = Marshal.PtrToStructure<TYPELIBATTR>(attributes);
 
                 return new ReferenceInfo(typeAttr.guid, name, path, typeAttr.wMajorVerNum, typeAttr.wMinorVerNum);
             }

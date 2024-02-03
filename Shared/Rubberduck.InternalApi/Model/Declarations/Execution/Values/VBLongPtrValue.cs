@@ -1,10 +1,9 @@
 ﻿using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
-using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
-public record class VBLongPtrValue : VBTypedValue, IVBTypedValue<int>, INumericCoercion, IStringCoercion, INumericType
+public record class VBLongPtrValue : VBTypedValue, IVBTypedValue<int>, INumericCoercion, IStringCoercion
 {
     public VBLongPtrValue(TypedSymbol? declarationSymbol = null) 
         : base(VBLongPtrType.TypeInfo, declarationSymbol) { }

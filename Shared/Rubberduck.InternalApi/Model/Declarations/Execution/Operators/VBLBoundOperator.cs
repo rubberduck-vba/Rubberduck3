@@ -1,25 +1,32 @@
-﻿using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
+﻿using Rubberduck.InternalApi.Model.Declarations.Execution;
+using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
-using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
+using System;
+using System.Linq;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Operators;
 
 public record class VBLBoundOperator : VBUnaryOperator
 {
-    public VBLBoundOperator(string expression, TypedSymbol? operand = null)
-        : base(Tokens.LBound, expression, operand, VBType.VbLongType)
+    public VBLBoundOperator(string expression, TypedSymbol operand, Uri parentUri)
+        : base(Tokens.LBound, expression, parentUri, operand)
     {
     }
 
-    protected override VBTypedValue ExecuteUnaryOperator(VBTypedValue value)
+    public override VBTypedValue? Evaluate(ExecutionScope context)
     {
-        if (value.TypeInfo is VBArrayType arrayType && arrayType.DeclaredLowerBound.HasValue)
+        var symbol = (TypedSymbol)Children!.Single();
+        var value = context.GetTypedValue(symbol);
+
+        if (value.TypeInfo is VBArrayType arrayType)
         {
-            return new VBLongValue(this).WithValue(arrayType.DeclaredLowerBound.Value);
+            return arrayType.DeclaredLowerBound.HasValue
+                ? new VBLongValue(this).WithValue(arrayType.DeclaredLowerBound.Value)
+                : new VBLongValue(this).WithValue(VBArrayType.ImplicitBoundary);
         }
 
-        return new VBLongValue(this).WithValue(VBArrayType.ImplicitBoundary);
+        throw new InvalidOperationException("VBCompileError: Expected array");
     }
 }

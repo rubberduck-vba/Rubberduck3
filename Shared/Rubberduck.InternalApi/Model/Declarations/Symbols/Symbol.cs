@@ -11,23 +11,28 @@ using System.Linq;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Symbols;
 
-public interface IExecutableSymbol
+public interface IValuedExpression<TValue> where TValue : VBTypedValue
 {
     /// <summary>
-    /// Indicates whether an executable symbol is reachable or not.
+    /// Evaluates the expression in the given context.
     /// </summary>
-    /// <remarks>
-    /// <c>null</c> if unknown, <c>false</c> only if determined to be unreachable.
-    /// </remarks>
-    bool? IsReachable { get; init; }
+    /// <returns>Returns a <c>VBTypedValue</c> representing the result of the expression.</returns>
+    TValue? Evaluate(ExecutionScope context);
+}
 
-    /// <summary>
-    /// Executes the symbol in the specified execution context.
-    /// </summary>
-    /// <remarks>
-    /// Returns the altered execution context.
-    /// </remarks>
-    VBExecutionContext Execute(VBExecutionContext context);
+public interface IExecutableSymbol
+{
+    void Execute(VBExecutionContext context);
+}
+
+public interface IExecutableSymbol<TValue> where TValue : VBTypedValue
+{
+    TValue? Execute(VBExecutionContext context);
+}
+
+public abstract record class BooleanValuedExpression : IValuedExpression<VBBooleanValue>
+{
+    public abstract VBBooleanValue? Evaluate(ExecutionScope context);
 }
 
 /// <summary>
@@ -136,6 +141,9 @@ public abstract record class ValuedTypedSymbol : TypedSymbol, IValuedSymbol
     /// May or may not match the symbol's declared type, or safely convert to it.
     /// </remarks>
     public VBType? ResolvedValueExpressionType { get; init; }
+
+    public abstract VBTypedValue Evaluate(ExecutionScope context);
+
     public ITypedSymbol WithResolvedValueExpressionType(VBType? type) => this with { ResolvedValueExpressionType = type };
 }
 
@@ -171,6 +179,8 @@ public record class OptionalParameterSymbol : ParameterSymbol, IValuedSymbol
 
     public string? ValueExpression { get; init; }
     public VBType? ResolvedValueExpressionType { get; init; }
+
+    public VBTypedValue? Evaluate(ExecutionScope context) => context.GetTypedValue(this);
 
     public ITypedSymbol WithResolvedValueExpressionType(VBType? resolvedValueExpressionType) => this with { ResolvedValueExpressionType = resolvedValueExpressionType };
 }
@@ -224,24 +234,49 @@ public record class LibraryProcedureImportSymbol : ProcedureSymbol
     public string? Alias { get; init; }
 }
 
-public record class FunctionSymbol : TypedSymbol, IExecutableSymbol
+public record class FunctionSymbol : TypedSymbol, IValuedExpression<VBTypedValue>, IExecutableSymbol<VBTypedValue>
 {
     public FunctionSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, string? typeName = null, RubberduckSymbolKind kind = RubberduckSymbolKind.Function)
         : base(kind, accessibility, name, parentUri, (children ?? []).ToArray()) { }
 
     public bool? IsReachable { get; init; }
-    public VBTypedValue? Evaluate(VBExecutionContext context) => null;
-    public VBExecutionContext Execute(VBExecutionContext context) => context;
+
+    public VBTypedValue? Evaluate(ExecutionScope context)
+    {
+        // TODO walk the executable symbol tree to track the assigned value
+        return context.GetTypedValue(this);
+    }
+
+    public VBTypedValue? Execute(VBExecutionContext context)
+    {
+        var member = context.GetModuleMember(this);
+        if (member != null)
+        {
+            context.EnterScope(member);
+            return Evaluate(context.CurrentScope);
+        }
+
+        throw VBRuntimeErrorException.PropertyOrMethodNotFound;
+    }
 }
 
-public record class ProcedureSymbol : Symbol, IExecutableSymbol
+public record class ProcedureSymbol : TypedSymbol, IExecutableSymbol, IExecutableSymbol<VBLongPtrValue>
 {
     public ProcedureSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, RubberduckSymbolKind kind = RubberduckSymbolKind.Procedure)
-        : base(kind, name, parentUri, accessibility, (children ?? []).ToArray()) { }
+        : base(kind, accessibility, name, parentUri, (children ?? []).ToArray(), VBLongPtrType.TypeInfo) { }
 
-    public bool? IsReachable { get; init; }
-    public VBTypedValue? Evaluate(VBExecutionContext context) => null;
-    public VBExecutionContext Execute(VBExecutionContext context) => context;
+    public VBLongPtrValue? Execute(VBExecutionContext context) => context.GetSymbolValue(this) as VBLongPtrValue;
+
+    void IExecutableSymbol.Execute(VBExecutionContext context)
+    {
+        var member = context.GetModuleMember(this);
+        if (member != null)
+        {
+            context.EnterScope(member);
+            // TODO walk the executable symbol tree
+            context.ExitScope();
+        }
+    }
 }
 
 public record class PropertyGetSymbol : FunctionSymbol
@@ -276,7 +311,7 @@ public record class EnumMemberSymbol : ValuedTypedSymbol
     public EnumMemberSymbol(string name, Uri parentUri, string? value)
         : base(RubberduckSymbolKind.EnumMember, Accessibility.Public, name, parentUri, null, value) { }
 
-
+    public override VBTypedValue Evaluate(ExecutionScope context) => context.GetTypedValue(this);
 }
 
 public record class EventMemberSymbol : ProcedureSymbol
@@ -289,6 +324,8 @@ public record class ConstantDeclarationSymbol : ValuedTypedSymbol
 {
     public ConstantDeclarationSymbol(string name, Uri parentUri, Accessibility accessibility, string? asTypeNameExpression, string? valueExpression)
         : base(RubberduckSymbolKind.Constant, accessibility, name, parentUri, asTypeNameExpression, valueExpression) { }
+
+    public override VBTypedValue Evaluate(ExecutionScope context) => context.GetTypedValue(this);
 }
 
 public record class VariableDeclarationSymbol : DeclarationExpressionSymbol
@@ -305,10 +342,12 @@ public record class StringLiteralSymbol : TypedSymbol
     }
 }
 
-public record class OperatorSymbol : TypedSymbol
+public abstract record class OperatorSymbol : TypedSymbol, IValuedExpression<VBTypedValue>
 {
     public OperatorSymbol(string token, Uri parentUri, IEnumerable<Symbol>? children)
         : base(RubberduckSymbolKind.Operator, Accessibility.Undefined, token, parentUri, children, null)
     {
     }
+
+    public abstract VBTypedValue? Evaluate(ExecutionScope context);
 }

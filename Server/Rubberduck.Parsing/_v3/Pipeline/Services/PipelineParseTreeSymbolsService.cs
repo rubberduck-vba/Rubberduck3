@@ -38,7 +38,7 @@ public class PipelineParseTreeSymbolsService
     /// <returns>
     /// Returns a copy of the provided <c>moduleSymbol</c> with all its members, including parameters. Types are not resolved, unless implicit or intrinsic.
     /// </returns>
-    public Symbol DiscoverHierarchicalSymbols(IParseTree tree, WorkspaceFileUri uri) => TraverseTree(tree, new DeclarationSymbolsListener(uri));
+    public Symbol DiscoverHierarchicalSymbols(IParseTree tree, WorkspaceFileUri uri) => TraverseTree(tree, new HierarchicalSymbolsListener(uri));
 
     /// <summary>
     /// Resolves a <c>VBType</c> for all symbols in the provided module.
@@ -51,7 +51,7 @@ public class PipelineParseTreeSymbolsService
         return listener.Result ?? throw new InvalidOperationException($"{listener.GetType().Name}.Result was unexpectedly null.");
     }
 
-    private SemanticToken[] TraverseTree(IParseTree tree, IVBListener<SemanticToken[]> listener)
+    private AbsoluteToken[] TraverseTree(IParseTree tree, IVBListener<AbsoluteToken[]> listener)
     {
         ParseTreeWalker.Default.Walk(listener, tree);
         return listener.Result ?? throw new InvalidOperationException($"{listener.GetType().Name}.Result was unexpectedly null.");

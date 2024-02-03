@@ -1,16 +1,22 @@
-﻿using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
+﻿using Rubberduck.InternalApi.Model.Declarations.Execution;
+using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
-using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
+using System;
+using System.Linq;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Operators;
 
 public record class VBTypeOfOperator : VBUnaryOperator
 {
-    public VBTypeOfOperator(string expression, TypedSymbol? operand = null, VBType? type = null)
-        : base(Tokens.TypeOf, expression, operand, type)
+    public VBTypeOfOperator(string expression, TypedSymbol operand, Uri parentUri)
+        : base(Tokens.TypeOf, expression, parentUri, operand)
     {
     }
 
-    protected override VBTypedValue ExecuteUnaryOperator(VBTypedValue value) => new VBTypeDescValue(value.Symbol);
+    public override VBTypedValue? Evaluate(ExecutionScope context)
+    {
+        var symbol = (TypedSymbol)Children!.Single();
+        return new VBTypeDescValue(symbol);
+    }
 }

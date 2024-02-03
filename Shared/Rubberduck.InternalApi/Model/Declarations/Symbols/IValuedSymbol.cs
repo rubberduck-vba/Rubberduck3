@@ -5,7 +5,7 @@ namespace Rubberduck.InternalApi.Model.Declarations.Symbols;
 /// <summary>
 /// Represents a typed symbol that defines a value expression that can be resolved to a <c>VBType</c>.
 /// </summary>
-public interface IValuedSymbol : ITypedSymbol
+public interface IValuedSymbol : ITypedSymbol, IValuedExpression
 {
     /// <summary>
     /// The declared value expression, if present.

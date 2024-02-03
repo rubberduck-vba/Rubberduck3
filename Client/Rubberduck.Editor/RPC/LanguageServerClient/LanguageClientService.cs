@@ -288,9 +288,9 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
                         {
                             Formats = new Container<SemanticTokenFormat>(SemanticTokenFormat.Defaults),
                             MultilineTokenSupport = supported,
-                            AugmentsSyntaxTokens = false, // client does not know about syntax tokens, initial highlighting is via regex rules
-                            //ServerCancelSupport = supported,
-                            OverlappingTokenSupport = false, // or... maybe?
+                            AugmentsSyntaxTokens = false, // client does not know about syntax tokens, initial highlighting is approximated via regex rules
+                            ServerCancelSupport = supported,
+                            OverlappingTokenSupport = false,
                             Requests = new()
                             {
                                 // configured like this, we're going to be requesting tokens for full documents, not dealing with deltas.

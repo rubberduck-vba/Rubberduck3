@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution;
 
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class VBRuntimeErrorException : ApplicationException
 {
+    private string DebuggerDisplay => $"Error {VBErrorNumber}: {Message}{(Verbose is null ? string.Empty : " | " + Verbose)}";
+
     public static VBRuntimeErrorException ReturnWithoutGoSub => new(3, "Return without GoSub");
     public static VBRuntimeErrorException InvalidProcedureCallOrArgument => new(5, "Invalid procedure call or argument");
     public static VBRuntimeErrorException Overflow => new(6, "Overflow");
