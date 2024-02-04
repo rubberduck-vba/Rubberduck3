@@ -14,12 +14,11 @@ public record class VBNewOperator : VBUnaryOperator
     {
     }
 
-    public override VBTypedValue? Evaluate(ExecutionScope context)
+    protected override VBTypedValue? EvaluateResult(ref ExecutionScope context)
     {
         var type = (TypedSymbol)Children!.Single();
-        return new VBObjectValue 
+        return new VBObjectValue(this)
         { 
-            Symbol = this, 
             TypeInfo = type.ResolvedType!, 
             Value = new object() 
         };

@@ -1,112 +1,160 @@
-﻿using System;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
+using System;
+using System.Collections.Immutable;
 using System.Diagnostics;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution;
 
-[DebuggerDisplay("{DebuggerDisplay,nq}")]
-public class VBRuntimeErrorException : ApplicationException
+public enum VBCompileErrorId
 {
-    private string DebuggerDisplay => $"Error {VBErrorNumber}: {Message}{(Verbose is null ? string.Empty : " | " + Verbose)}";
+    InvalidUseOfObject,
+    ExpectedArray,
+}
 
-    public static VBRuntimeErrorException ReturnWithoutGoSub => new(3, "Return without GoSub");
-    public static VBRuntimeErrorException InvalidProcedureCallOrArgument => new(5, "Invalid procedure call or argument");
-    public static VBRuntimeErrorException Overflow => new(6, "Overflow");
-    public static VBRuntimeErrorException OutOfMemory => new(7, "Out of memory");
-    public static VBRuntimeErrorException SubscriptOutOfRange => new(9, "Subscript out of range");
-    public static VBRuntimeErrorException ArrayIsFixedOrLocked => new(10, "This array is fixed or temporarily locked");
-    public static VBRuntimeErrorException DivisionByZero => new(11, "Division by zero");
-    public static VBRuntimeErrorException TypeMismatch => new(13, "Type mismatch");
-    public static VBRuntimeErrorException OutOfStringSpace => new(14, "Out of string space");
-    public static VBRuntimeErrorException ExpressionTooComplex => new(16, "Expression too complex");
-    public static VBRuntimeErrorException CantPerformRequestedOperation => new(17, "Can't perform requested operation");
-    public static VBRuntimeErrorException UserInterruptOccurred => new(18, "User interrupt occurred");
-    public static VBRuntimeErrorException ResumeWithoutError => new(20, "Resume without error");
-    public static VBRuntimeErrorException OutOfStackSpace => new(28, "Out of stack space");
-    public static VBRuntimeErrorException SubOrFunctionNotDefined => new(35, "Sub or Function not defined");
-    public static VBRuntimeErrorException TooManyDllApplicationClients => new(47, "Too many DLL application clients");
-    public static VBRuntimeErrorException ErrorLoadingDll => new(48, "Error in loading DLL");
-    public static VBRuntimeErrorException BadDllCallingConvention => new(49, "Bad DLL calling convention");
-    public static VBRuntimeErrorException InternalError => new(51, "Internal error");
-    public static VBRuntimeErrorException BadFileNameOrNumber => new(52, "Bad file name or number");
-    public static VBRuntimeErrorException FileNorFound => new(53, "File not found");
-    public static VBRuntimeErrorException BadFileMode => new(54, "Bad file mode");
-    public static VBRuntimeErrorException FileAlreadyOpen => new(55, "File already open");
-    public static VBRuntimeErrorException DeviseIOError => new(57, "Devise I/O error");
-    public static VBRuntimeErrorException FileAlreadyExists => new(58, "File already exists");
-    public static VBRuntimeErrorException BadRecordLength => new(59, "Bad record length");
-    public static VBRuntimeErrorException DiskFull => new(61, "Disk full");
-    public static VBRuntimeErrorException InputPastEndOfFile => new(62, "Input past end of file");
-    public static VBRuntimeErrorException BadRecordNumber => new(63, "Bad record number");
-    public static VBRuntimeErrorException TooManyFiles => new(67, "Too many files");
-    public static VBRuntimeErrorException DeviceUnavailable => new(68, "Devise unavailable");
-    public static VBRuntimeErrorException PermissionDenied => new(70, "Permission denied");
-    public static VBRuntimeErrorException DiskNotReady => new(71, "Disk not ready");
-    public static VBRuntimeErrorException CantRenameWithDifferentDrive => new(74, "Can't rename with different drive");
-    public static VBRuntimeErrorException PathFileAccessError => new(75, "Path/File access error");
-    public static VBRuntimeErrorException PathNotFound => new(76, "Path not found");
-    public static VBRuntimeErrorException ObjectVariableNotSet => new(91, "Object variable or With block variable not set");
-    public static VBRuntimeErrorException ForLoopNotInitialized => new(92, "For loop not initialized");
-    public static VBRuntimeErrorException InvalidPatternString => new(93, "Invalid pattern string");
-    public static VBRuntimeErrorException InvalidUseOfNull => new(94, "Invalid use of Null");
-    public static VBRuntimeErrorException CannotSinkEvents => new(96, "Unable to sink events of object because the object is already firing events to the maximum number of event receivers that it supports");
-    public static VBRuntimeErrorException CannotCallFriendFunction => new(97, "Can not call friend function on object which is not an instance of defining class");
-    public static VBRuntimeErrorException ReferenceToPrivateObject => new(98, "A property or method call cannot include a reference to a private object, either as an argument or as a return value");
-    public static VBRuntimeErrorException InvalidFileFormat => new(321, "Invalid file format");
-    public static VBRuntimeErrorException CantCreateTempFile => new(322, "Can't create necessary temporary file");
-    public static VBRuntimeErrorException InvalidResourceFormat => new(325, "Invalid format in resource file");
-    public static VBRuntimeErrorException InvalidPropertyValue => new(380, "Invalid property value");
-    public static VBRuntimeErrorException InvalidPropertyArrayIndex => new(381, "Invalid property array index");
-    public static VBRuntimeErrorException SetNotRuntimeSupported => new(382, "Set not supported at runtime");
-    public static VBRuntimeErrorException SetNotSupported => new(383, "Set not supported (read-only property)");
-    public static VBRuntimeErrorException NeedPropertyArrayIndex => new(385, "Need property array index");
-    public static VBRuntimeErrorException SetNotPermitted => new(387, "Set not permitted");
-    public static VBRuntimeErrorException GetNotRuntimeSupported => new(393, "Get not supported at runtime");
-    public static VBRuntimeErrorException GetNotSupported => new(394, "Get not supported (write-only property)");
-    public static VBRuntimeErrorException PropertyNotFound => new(422, "Property not found");
-    public static VBRuntimeErrorException PropertyOrMethodNotFound => new(423, "Property or method not found");
-    public static VBRuntimeErrorException ObjectRequired => new(424, "Object required");
-    public static VBRuntimeErrorException ActiveXComponentCantCreateObject => new(429, "ActiveX component can't create object");
-    public static VBRuntimeErrorException AutomationNotSupported => new(430, "Class does not support Automation or does not support expected interface");
-    public static VBRuntimeErrorException AutomationFileOrClassNameNotFound => new(432, "File name or class name not found during Automation operation");
-    public static VBRuntimeErrorException ObjectDoesntSupportPropertyOrMethod => new(438, "Object doesn't support this property or method");
-    public static VBRuntimeErrorException AutomationError => new(440, "Automation error");
-    public static VBRuntimeErrorException RemoteProcessConnectionLost => new(442, "Connection to type library or object library for remote process has been lost. Press OK for dialog to remove reference.");
-    public static VBRuntimeErrorException AutomationObjectHasNoDefaultValue => new(443, "Automation object does not have a default value");
-    public static VBRuntimeErrorException UnsupportedObjectAction => new(445, "Object doesn't support this action");
-    public static VBRuntimeErrorException UnsupportedObjectNamedArguments => new(446, "Object doesn't support named arguments");
-    public static VBRuntimeErrorException UnsupportedObjectLocaleSetting => new(447, "Object doesn't support current locale setting");
-    public static VBRuntimeErrorException NamedArgumentNotFound => new(448, "Named argument not found");
-    public static VBRuntimeErrorException ArgumentNotOptional => new(449, "Argument not optional");
-    public static VBRuntimeErrorException WrongNumberOfArgumentsOrInvalidPropertyAssignment => new(450, "Wrong number of arguments or invalid property assignment");
-    public static VBRuntimeErrorException PropertyLetNotDefinedPropertyGetNotAnObject => new(451, "Property let procedure not defined and property get procedure did not return an object");
-    public static VBRuntimeErrorException InvalidOrdinal => new(452, "Invalid ordinal");
-    public static VBRuntimeErrorException DllFunctionNotFound => new(453, "Specified DLL function not found");
-    public static VBRuntimeErrorException CodeResourceNotFound => new(454, "Code resource not found");
-    public static VBRuntimeErrorException CodeResourceLockError => new(455, "Code resource lock error");
-    public static VBRuntimeErrorException KeyAlreadyExists => new(457, "This key is already associated with an element of this collection");
-    public static VBRuntimeErrorException UnsupportedAutomationType => new(458, "Variable uses an Automation type not supported in Visual Basic");
-    public static VBRuntimeErrorException UnsupportedSetOfEvents => new(459, "Object or class does not support the set of events.");
-    public static VBRuntimeErrorException InvalidClipboardFormat => new(460, "Invalid clipboard format");
-    public static VBRuntimeErrorException MethodOrDataMemberNotFound => new(461, "Method or data member not found");
-    public static VBRuntimeErrorException RemoteMachineUnavailable => new(462, "The remote machine does not exist or is unavailable");
-    public static VBRuntimeErrorException ClassNotRegistered => new(463, "Class not registered on local machine");
-    public static VBRuntimeErrorException InvalidPicture => new(481, "Invalid picture");
-    public static VBRuntimeErrorException PrinterError => new(482, "Printer error");
-    public static VBRuntimeErrorException CantSaveFileToTemp => new(735, "Can't save file to TEMP");
-    public static VBRuntimeErrorException SearchTextNotFound => new(744, "Search text not found");
-    public static VBRuntimeErrorException ReplacementsTooLong => new(746, "Replacements too long");
+public interface IDiagnosticSource
+{
+    ImmutableArray<Diagnostic> Diagnostics { get; }
+}
 
-    public static VBRuntimeErrorException ApplicationDefinedError(int number = 1004) => new(number, "Application-defined or object-defined error");
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+public class VBCompileErrorException : ApplicationException, IDiagnosticSource
+{
+    private string DebuggerDisplay => $"{Message}{(Verbose is null ? string.Empty : " | " + Verbose)}";
 
-    public VBRuntimeErrorException(int vBErrorNumber, string message, string? verbose = null)
+    #region Classic-VB compile-time errors
+    // NOTE: VB compile errors are just messages, ID is made up.
+    public static VBCompileErrorException InvalidUseOfObject(Symbol symbol, string? verbose = null) => new(symbol, VBCompileErrorId.InvalidUseOfObject, "Invalid use of object", verbose);
+    public static VBCompileErrorException ExpectedArray(Symbol symbol, string? verbose = null) => new(symbol, VBCompileErrorId.ExpectedArray, "Expected array", verbose);
+    #endregion
+
+    public VBCompileErrorException(Symbol symbol, VBCompileErrorId id, string message, string? verbose = null)
+        : base($"Compile error: {message}")
+    {
+        Id = (int)id;
+        Symbol = symbol;
+        Verbose = verbose;
+    }
+
+    public string DiagnosticCode => $"VBC{Id:00000}";
+    public int Id { get; }
+    public Symbol Symbol { get; }
+    public string? Verbose { get; }
+
+    public ImmutableArray<Diagnostic> Diagnostics => [RubberduckDiagnostic.CompileError(this)];
+}
+
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+public class VBRuntimeErrorException : ApplicationException, IDiagnosticSource
+{
+    private string DebuggerDisplay => $"[{DiagnosticCode}] Error {VBErrorNumber}: {Message}{(Verbose is null ? string.Empty : " | " + Verbose)}";
+
+    #region Classic-VB run-time errors
+    public static VBRuntimeErrorException ReturnWithoutGoSub(Symbol symbol, string? verbose = null) => new(symbol, 3, "Return without GoSub", verbose);
+    public static VBRuntimeErrorException InvalidProcedureCallOrArgument(Symbol symbol, string? verbose = null) => new(symbol, 5, "Invalid procedure call or argument", verbose);
+    public static VBRuntimeErrorException Overflow(Symbol symbol, string? verbose = null) => new(symbol, 6, "Overflow", verbose);
+    public static VBRuntimeErrorException OutOfMemory(Symbol symbol, string? verbose = null) => new(symbol, 7, "Out of memory", verbose);
+    public static VBRuntimeErrorException SubscriptOutOfRange(Symbol symbol, string? verbose = null) => new(symbol, 9, "Subscript out of range", verbose);
+    public static VBRuntimeErrorException ArrayIsFixedOrLocked(Symbol symbol, string? verbose = null) => new(symbol, 10, "This array is fixed or temporarily locked", verbose);
+    public static VBRuntimeErrorException DivisionByZero(Symbol symbol, string? verbose = null) => new(symbol, 11, "Division by zero", verbose);
+    public static VBRuntimeErrorException TypeMismatch(Symbol symbol, string? verbose = null) => new(symbol, 13, "Type mismatch", verbose);
+    public static VBRuntimeErrorException OutOfStringSpace(Symbol symbol, string? verbose = null) => new(symbol, 14, "Out of string space", verbose);
+    public static VBRuntimeErrorException ExpressionTooComplex(Symbol symbol, string? verbose = null) => new(symbol, 16, "Expression too complex", verbose);
+    public static VBRuntimeErrorException CantPerformRequestedOperation(Symbol symbol, string? verbose = null) => new(symbol, 17, "Can't perform requested operation", verbose);
+    public static VBRuntimeErrorException UserInterruptOccurred(Symbol symbol, string? verbose = null) => new(symbol, 18, "User interrupt occurred", verbose);
+    public static VBRuntimeErrorException ResumeWithoutError(Symbol symbol, string? verbose = null) => new(symbol, 20, "Resume without error", verbose);
+    public static VBRuntimeErrorException OutOfStackSpace(Symbol symbol, string? verbose = null) => new(symbol, 28, "Out of stack space", verbose);
+    public static VBRuntimeErrorException SubOrFunctionNotDefined(Symbol symbol, string? verbose = null) => new(symbol, 35, "Sub or Function not defined", verbose);
+    public static VBRuntimeErrorException TooManyDllApplicationClients(Symbol symbol, string? verbose = null) => new(symbol, 47, "Too many DLL application clients", verbose);
+    public static VBRuntimeErrorException ErrorLoadingDll(Symbol symbol, string? verbose = null) => new(symbol, 48, "Error in loading DLL", verbose);
+    public static VBRuntimeErrorException BadDllCallingConvention(Symbol symbol, string? verbose = null) => new(symbol, 49, "Bad DLL calling convention", verbose);
+    public static VBRuntimeErrorException InternalError(Symbol symbol, string? verbose = null) => new(symbol, 51, "Internal error", verbose);
+    public static VBRuntimeErrorException BadFileNameOrNumber(Symbol symbol, string? verbose = null) => new(symbol, 52, "Bad file name or number", verbose);
+    public static VBRuntimeErrorException FileNorFound(Symbol symbol, string? verbose = null) => new(symbol, 53, "File not found", verbose);
+    public static VBRuntimeErrorException BadFileMode(Symbol symbol, string? verbose = null) => new(symbol, 54, "Bad file mode", verbose);
+    public static VBRuntimeErrorException FileAlreadyOpen(Symbol symbol, string? verbose = null) => new(symbol, 55, "File already open", verbose);
+    public static VBRuntimeErrorException DeviseIOError(Symbol symbol, string? verbose = null) => new(symbol, 57, "Devise I/O error", verbose);
+    public static VBRuntimeErrorException FileAlreadyExists(Symbol symbol, string? verbose = null) => new(symbol, 58, "File already exists", verbose);
+    public static VBRuntimeErrorException BadRecordLength(Symbol symbol, string? verbose = null) => new(symbol, 59, "Bad record length", verbose);
+    public static VBRuntimeErrorException DiskFull(Symbol symbol, string? verbose = null) => new(symbol, 61, "Disk full", verbose);
+    public static VBRuntimeErrorException InputPastEndOfFile(Symbol symbol, string? verbose = null) => new(symbol, 62, "Input past end of file", verbose);
+    public static VBRuntimeErrorException BadRecordNumber(Symbol symbol, string? verbose = null) => new(symbol, 63, "Bad record number", verbose);
+    public static VBRuntimeErrorException TooManyFiles(Symbol symbol, string? verbose = null) => new(symbol, 67, "Too many files", verbose);
+    public static VBRuntimeErrorException DeviceUnavailable(Symbol symbol, string? verbose = null) => new(symbol, 68, "Devise unavailable", verbose);
+    public static VBRuntimeErrorException PermissionDenied(Symbol symbol, string? verbose = null) => new(symbol, 70, "Permission denied", verbose);
+    public static VBRuntimeErrorException DiskNotReady(Symbol symbol, string? verbose = null) => new(symbol, 71, "Disk not ready", verbose);
+    public static VBRuntimeErrorException CantRenameWithDifferentDrive(Symbol symbol, string? verbose = null) => new(symbol, 74, "Can't rename with different drive", verbose);
+    public static VBRuntimeErrorException PathFileAccessError(Symbol symbol, string? verbose = null) => new(symbol, 75, "Path/File access error", verbose);
+    public static VBRuntimeErrorException PathNotFound(Symbol symbol, string? verbose = null) => new(symbol, 76, "Path not found", verbose);
+    public static VBRuntimeErrorException ObjectVariableNotSet(Symbol symbol, string? verbose = null) => new(symbol, 91, "Object variable or With block variable not set", verbose);
+    public static VBRuntimeErrorException ForLoopNotInitialized(Symbol symbol, string? verbose = null) => new(symbol, 92, "For loop not initialized", verbose);
+    public static VBRuntimeErrorException InvalidPatternString(Symbol symbol, string? verbose = null) => new(symbol, 93, "Invalid pattern string", verbose);
+    public static VBRuntimeErrorException InvalidUseOfNull(Symbol symbol, string? verbose = null) => new(symbol, 94, "Invalid use of Null", verbose);
+    public static VBRuntimeErrorException CannotSinkEvents(Symbol symbol, string? verbose = null) => new(symbol, 96, "Unable to sink events of object because the object is already firing events to the maximum number of event receivers that it supports", verbose);
+    public static VBRuntimeErrorException CannotCallFriendFunction(Symbol symbol, string? verbose = null) => new(symbol, 97, "Can not call friend function on object which is not an instance of defining class", verbose);
+    public static VBRuntimeErrorException ReferenceToPrivateObject(Symbol symbol, string? verbose = null) => new(symbol, 98, "A property or method call cannot include a reference to a private object, either as an argument or as a return value", verbose);
+    public static VBRuntimeErrorException InvalidFileFormat(Symbol symbol, string? verbose = null) => new(symbol, 321, "Invalid file format", verbose);
+    public static VBRuntimeErrorException CantCreateTempFile(Symbol symbol, string? verbose = null) => new(symbol, 322, "Can't create necessary temporary file", verbose);
+    public static VBRuntimeErrorException InvalidResourceFormat(Symbol symbol, string? verbose = null) => new(symbol, 325, "Invalid format in resource file", verbose);
+    public static VBRuntimeErrorException InvalidPropertyValue(Symbol symbol, string? verbose = null) => new(symbol, 380, "Invalid property value", verbose);
+    public static VBRuntimeErrorException InvalidPropertyArrayIndex(Symbol symbol, string? verbose = null) => new(symbol, 381, "Invalid property array index", verbose);
+    public static VBRuntimeErrorException SetNotRuntimeSupported(Symbol symbol, string? verbose = null) => new(symbol, 382, "Set not supported at runtime", verbose);
+    public static VBRuntimeErrorException SetNotSupported(Symbol symbol, string? verbose = null) => new(symbol, 383, "Set not supported (read-only property)", verbose);
+    public static VBRuntimeErrorException NeedPropertyArrayIndex(Symbol symbol, string? verbose = null) => new(symbol, 385, "Need property array index", verbose);
+    public static VBRuntimeErrorException SetNotPermitted(Symbol symbol, string? verbose = null) => new(symbol, 387, "Set not permitted", verbose);
+    public static VBRuntimeErrorException GetNotRuntimeSupported(Symbol symbol, string? verbose = null) => new(symbol, 393, "Get not supported at runtime", verbose);
+    public static VBRuntimeErrorException GetNotSupported(Symbol symbol, string? verbose = null) => new(symbol, 394, "Get not supported (write-only property)", verbose);
+    public static VBRuntimeErrorException PropertyNotFound(Symbol symbol, string? verbose = null) => new(symbol, 422, "Property not found", verbose);
+    public static VBRuntimeErrorException PropertyOrMethodNotFound(Symbol symbol, string? verbose = null) => new(symbol, 423, "Property or method not found", verbose);
+    public static VBRuntimeErrorException ObjectRequired(Symbol symbol, string? verbose = null) => new(symbol, 424, "Object required", verbose);
+    public static VBRuntimeErrorException ActiveXComponentCantCreateObject(Symbol symbol, string? verbose = null) => new(symbol, 429, "ActiveX component can't create object", verbose);
+    public static VBRuntimeErrorException AutomationNotSupported(Symbol symbol, string? verbose = null) => new(symbol, 430, "Class does not support Automation or does not support expected interface", verbose);
+    public static VBRuntimeErrorException AutomationFileOrClassNameNotFound(Symbol symbol, string? verbose = null) => new(symbol, 432, "File name or class name not found during Automation operation", verbose);
+    public static VBRuntimeErrorException ObjectDoesntSupportPropertyOrMethod(Symbol symbol, string? verbose = null) => new(symbol, 438, "Object doesn't support this property or method", verbose);
+    public static VBRuntimeErrorException AutomationError(Symbol symbol, string? verbose = null) => new(symbol, 440, "Automation error", verbose);
+    public static VBRuntimeErrorException RemoteProcessConnectionLost(Symbol symbol, string? verbose = null) => new(symbol, 442, "Connection to type library or object library for remote process has been lost. Press OK for dialog to remove reference.", verbose);
+    public static VBRuntimeErrorException AutomationObjectHasNoDefaultValue(Symbol symbol, string? verbose = null) => new(symbol, 443, "Automation object does not have a default value", verbose);
+    public static VBRuntimeErrorException UnsupportedObjectAction(Symbol symbol, string? verbose = null) => new(symbol, 445, "Object doesn't support this action", verbose);
+    public static VBRuntimeErrorException UnsupportedObjectNamedArguments(Symbol symbol, string? verbose = null) => new(symbol, 446, "Object doesn't support named arguments", verbose);
+    public static VBRuntimeErrorException UnsupportedObjectLocaleSetting(Symbol symbol, string? verbose = null) => new(symbol, 447, "Object doesn't support current locale setting", verbose);
+    public static VBRuntimeErrorException NamedArgumentNotFound(Symbol symbol, string? verbose = null) => new(symbol, 448, "Named argument not found", verbose);
+    public static VBRuntimeErrorException ArgumentNotOptional(Symbol symbol, string? verbose = null) => new(symbol, 449, "Argument not optional", verbose);
+    public static VBRuntimeErrorException WrongNumberOfArgumentsOrInvalidPropertyAssignment(Symbol symbol, string? verbose = null) => new(symbol, 450, "Wrong number of arguments or invalid property assignment", verbose);
+    public static VBRuntimeErrorException PropertyLetNotDefinedPropertyGetNotAnObject(Symbol symbol, string? verbose = null) => new(symbol, 451, "Property let procedure not defined and property get procedure did not return an object", verbose);
+    public static VBRuntimeErrorException InvalidOrdinal(Symbol symbol, string? verbose = null) => new(symbol, 452, "Invalid ordinal", verbose);
+    public static VBRuntimeErrorException DllFunctionNotFound(Symbol symbol, string? verbose = null) => new(symbol, 453, "Specified DLL function not found", verbose);
+    public static VBRuntimeErrorException CodeResourceNotFound(Symbol symbol, string? verbose = null) => new(symbol, 454, "Code resource not found", verbose);
+    public static VBRuntimeErrorException CodeResourceLockError(Symbol symbol, string? verbose = null) => new(symbol, 455, "Code resource lock error", verbose);
+    public static VBRuntimeErrorException KeyAlreadyExists(Symbol symbol, string? verbose = null) => new(symbol, 457, "This key is already associated with an element of this collection", verbose);
+    public static VBRuntimeErrorException UnsupportedAutomationType(Symbol symbol, string? verbose = null) => new(symbol, 458, "Variable uses an Automation type not supported in Visual Basic", verbose);
+    public static VBRuntimeErrorException UnsupportedSetOfEvents(Symbol symbol, string? verbose = null) => new(symbol, 459, "Object or class does not support the set of events.", verbose);
+    public static VBRuntimeErrorException InvalidClipboardFormat(Symbol symbol, string? verbose = null) => new(symbol, 460, "Invalid clipboard format", verbose);
+    public static VBRuntimeErrorException MethodOrDataMemberNotFound(Symbol symbol, string? verbose = null) => new(symbol, 461, "Method or data member not found", verbose);
+    public static VBRuntimeErrorException RemoteMachineUnavailable(Symbol symbol, string? verbose = null) => new(symbol, 462, "The remote machine does not exist or is unavailable", verbose);
+    public static VBRuntimeErrorException ClassNotRegistered(Symbol symbol, string? verbose = null) => new(symbol, 463, "Class not registered on local machine", verbose);
+    public static VBRuntimeErrorException InvalidPicture(Symbol symbol, string? verbose = null) => new(symbol, 481, "Invalid picture", verbose);
+    public static VBRuntimeErrorException PrinterError(Symbol symbol, string? verbose = null) => new(symbol, 482, "Printer error", verbose);
+    public static VBRuntimeErrorException CantSaveFileToTemp(Symbol symbol, string? verbose = null) => new(symbol, 735, "Can't save file to TEMP", verbose);
+    public static VBRuntimeErrorException SearchTextNotFound(Symbol symbol, string? verbose = null) => new(symbol, 744, "Search text not found", verbose);
+    public static VBRuntimeErrorException ReplacementsTooLong(Symbol symbol, string? verbose = null) => new(symbol, 746, "Replacements too long", verbose);
+
+    public static VBRuntimeErrorException ApplicationDefinedError(Symbol symbol, int number = 1004, string? verbose = null) => new (symbol, number, "Application-defined or object-defined error", verbose);
+    #endregion
+
+    public VBRuntimeErrorException(Symbol symbol, int vBErrorNumber, string message, string? verbose = null)
         : base($"Runtime error '{vBErrorNumber}': {message}")
     {
+        Symbol = symbol;
         VBErrorNumber = vBErrorNumber;
         Verbose = verbose;
     }
 
+    public string DiagnosticCode => $"VBR{VBErrorNumber:00000}";
+    public Symbol Symbol { get; }
     public int VBErrorNumber { get; }
     public string? Verbose { get; }
+
+    public ImmutableArray<Diagnostic> Diagnostics => [RubberduckDiagnostic.RuntimeError(this)];
 
     public (int, string) Deconstruct(out int vbErrorNumber, out string message) => 
         (vbErrorNumber = VBErrorNumber, message = Message);

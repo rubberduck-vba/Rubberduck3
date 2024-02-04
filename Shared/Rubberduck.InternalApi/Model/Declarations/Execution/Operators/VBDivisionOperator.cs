@@ -2,19 +2,24 @@
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
-using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
+using System;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Operators;
 
 public record class VBDivisionOperator : VBBinaryOperator
 {
-    public VBDivisionOperator(string lhsExpression, string rhsExpression, TypedSymbol? lhs = null, TypedSymbol? rhs = null, VBType? type = null)
-        : base(Tokens.DivisionOp, lhsExpression, rhsExpression, lhs, rhs, type)
+    public VBDivisionOperator(Uri parentUri, string lhsExpression, string rhsExpression, TypedSymbol? lhs = null, TypedSymbol? rhs = null)
+        : base(Tokens.DivisionOp, parentUri, lhsExpression, rhsExpression, lhs, rhs)
     {
     }
 
-    protected override VBTypedValue ExecuteBinaryOperator(VBExecutionContext context, VBTypedValue lhsValue, VBTypedValue rhsValue)
-    {
-        throw new System.NotImplementedException();
-    }
+    protected override VBTypedValue ExecuteBinaryOperator(ref ExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue) =>
+        NumericSymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, (lhs, rhs) =>
+        {
+            if (rhs == 0)
+            {
+                throw VBRuntimeErrorException.DivisionByZero(this, "RHS/divisor operand must be non-zero. Consider validating the expression before using it as a divisor operand.");
+            }
+            return lhs / rhs;
+        });
 }

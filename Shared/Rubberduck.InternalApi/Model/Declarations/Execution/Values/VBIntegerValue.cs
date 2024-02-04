@@ -5,6 +5,9 @@ namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
 public record class VBIntegerValue : VBTypedValue, IVBTypedValue<short>, INumericValue, INumericCoercion, IStringCoercion
 {
+    public static short MinValue { get; } = short.MinValue;
+    public static short MaxValue { get; } = short.MaxValue;
+
     public VBIntegerValue(TypedSymbol? declarationSymbol = null) 
         : base(VBIntegerType.TypeInfo, declarationSymbol) { }
 
@@ -15,5 +18,12 @@ public record class VBIntegerValue : VBTypedValue, IVBTypedValue<short>, INumeri
     public string? AsCoercedString(int depth = 0) => Value.ToString();
     public double AsDouble() => (double)Value;
 
-    public VBTypedValue WithValue(double value) => this with { Value = (short)value };
+    public VBTypedValue WithValue(double value)
+    {
+        if (value > MaxValue || value < MinValue)
+        {
+            throw VBRuntimeErrorException.Overflow(Symbol!, $"`{TypeInfo.Name}` values must be between **{MinValue:N}** and **{MaxValue:N}**.");
+        }
+        return this with { Value = (short)value };
+    }
 }

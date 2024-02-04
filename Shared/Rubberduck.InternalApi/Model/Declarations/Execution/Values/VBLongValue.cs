@@ -14,5 +14,12 @@ public record class VBLongValue : VBTypedValue, IVBTypedValue<int>, INumericValu
     public double? AsCoercedNumeric(int depth = 0) => AsDouble();
     public string? AsCoercedString(int depth = 0) => Value.ToString();
     public double AsDouble() => (double)Value;
-    public VBTypedValue WithValue(double value) => this with { Value = (int)value };
+    public VBTypedValue WithValue(double value)
+    {
+        if (value > int.MaxValue || value < int.MinValue)
+        {
+            throw VBRuntimeErrorException.Overflow;
+        }
+        return this with { Value = (int)value };
+    }
 }

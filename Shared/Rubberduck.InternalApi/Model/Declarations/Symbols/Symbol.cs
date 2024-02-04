@@ -17,22 +17,22 @@ public interface IValuedExpression<TValue> where TValue : VBTypedValue
     /// Evaluates the expression in the given context.
     /// </summary>
     /// <returns>Returns a <c>VBTypedValue</c> representing the result of the expression.</returns>
-    TValue? Evaluate(ExecutionScope context);
+    TValue? Evaluate(ref ExecutionScope context);
 }
 
 public interface IExecutableSymbol
 {
-    void Execute(VBExecutionContext context);
+    void Execute(ref VBExecutionContext context);
 }
 
 public interface IExecutableSymbol<TValue> where TValue : VBTypedValue
 {
-    TValue? Execute(VBExecutionContext context);
+    TValue? Execute(ref VBExecutionContext context);
 }
 
 public abstract record class BooleanValuedExpression : IValuedExpression<VBBooleanValue>
 {
-    public abstract VBBooleanValue? Evaluate(ExecutionScope context);
+    public abstract VBBooleanValue? Evaluate(ref ExecutionScope context);
 }
 
 /// <summary>
@@ -142,7 +142,7 @@ public abstract record class ValuedTypedSymbol : TypedSymbol, IValuedSymbol
     /// </remarks>
     public VBType? ResolvedValueExpressionType { get; init; }
 
-    public abstract VBTypedValue Evaluate(ExecutionScope context);
+    public abstract VBTypedValue Evaluate(ref ExecutionScope context);
 
     public ITypedSymbol WithResolvedValueExpressionType(VBType? type) => this with { ResolvedValueExpressionType = type };
 }
@@ -180,7 +180,7 @@ public record class OptionalParameterSymbol : ParameterSymbol, IValuedSymbol
     public string? ValueExpression { get; init; }
     public VBType? ResolvedValueExpressionType { get; init; }
 
-    public VBTypedValue? Evaluate(ExecutionScope context) => context.GetTypedValue(this);
+    public VBTypedValue? Evaluate(ref ExecutionScope context) => context.GetTypedValue(this);
 
     public ITypedSymbol WithResolvedValueExpressionType(VBType? resolvedValueExpressionType) => this with { ResolvedValueExpressionType = resolvedValueExpressionType };
 }
@@ -241,22 +241,22 @@ public record class FunctionSymbol : TypedSymbol, IValuedExpression<VBTypedValue
 
     public bool? IsReachable { get; init; }
 
-    public VBTypedValue? Evaluate(ExecutionScope context)
+    public VBTypedValue? Evaluate(ref ExecutionScope context)
     {
         // TODO walk the executable symbol tree to track the assigned value
+        // for now we're happy just getting a resolved type back
         return context.GetTypedValue(this);
     }
 
-    public VBTypedValue? Execute(VBExecutionContext context)
+    public VBTypedValue? Execute(ref VBExecutionContext context)
     {
         var member = context.GetModuleMember(this);
         if (member != null)
         {
-            context.EnterScope(member);
-            return Evaluate(context.CurrentScope);
+            var scope = context.EnterScope(member);
+            return Evaluate(ref scope);
         }
-
-        throw VBRuntimeErrorException.PropertyOrMethodNotFound;
+        throw VBRuntimeErrorException.PropertyOrMethodNotFound(this);
     }
 }
 
@@ -265,16 +265,27 @@ public record class ProcedureSymbol : TypedSymbol, IExecutableSymbol, IExecutabl
     public ProcedureSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, RubberduckSymbolKind kind = RubberduckSymbolKind.Procedure)
         : base(kind, accessibility, name, parentUri, (children ?? []).ToArray(), VBLongPtrType.TypeInfo) { }
 
-    public VBLongPtrValue? Execute(VBExecutionContext context) => context.GetSymbolValue(this) as VBLongPtrValue;
+    public VBLongPtrValue? Execute(ref VBExecutionContext context) => context.GetSymbolValue(this) as VBLongPtrValue;
 
-    void IExecutableSymbol.Execute(VBExecutionContext context)
+    void IExecutableSymbol.Execute(ref VBExecutionContext context)
     {
         var member = context.GetModuleMember(this);
         if (member != null)
         {
-            context.EnterScope(member);
-            // TODO walk the executable symbol tree
-            context.ExitScope();
+            try
+            {
+                var scope = context.EnterScope(member);
+                // TODO walk the executable symbol tree
+                context.ExitScope();
+            }
+            catch (VBCompileErrorException vbCompileError)
+            {
+                context.Diagnostics.AddRange(vbCompileError.Diagnostics);
+            }
+            catch (VBRuntimeErrorException vbRuntimeError) 
+            {
+                context.Diagnostics.AddRange(vbRuntimeError.Diagnostics);
+            }
         }
     }
 }
@@ -311,7 +322,7 @@ public record class EnumMemberSymbol : ValuedTypedSymbol
     public EnumMemberSymbol(string name, Uri parentUri, string? value)
         : base(RubberduckSymbolKind.EnumMember, Accessibility.Public, name, parentUri, null, value) { }
 
-    public override VBTypedValue Evaluate(ExecutionScope context) => context.GetTypedValue(this);
+    public override VBTypedValue Evaluate(ref ExecutionScope context) => context.GetTypedValue(this);
 }
 
 public record class EventMemberSymbol : ProcedureSymbol
@@ -325,7 +336,7 @@ public record class ConstantDeclarationSymbol : ValuedTypedSymbol
     public ConstantDeclarationSymbol(string name, Uri parentUri, Accessibility accessibility, string? asTypeNameExpression, string? valueExpression)
         : base(RubberduckSymbolKind.Constant, accessibility, name, parentUri, asTypeNameExpression, valueExpression) { }
 
-    public override VBTypedValue Evaluate(ExecutionScope context) => context.GetTypedValue(this);
+    public override VBTypedValue Evaluate(ref ExecutionScope context) => context.GetTypedValue(this);
 }
 
 public record class VariableDeclarationSymbol : DeclarationExpressionSymbol
@@ -349,5 +360,23 @@ public abstract record class OperatorSymbol : TypedSymbol, IValuedExpression<VBT
     {
     }
 
-    public abstract VBTypedValue? Evaluate(ExecutionScope context);
+    public VBTypedValue? Evaluate(ref ExecutionScope context)
+    {
+        try
+        {
+            return EvaluateResult(ref context);
+        }
+        catch (VBCompileErrorException vbCompileError)
+        {
+            context = context.WithDiagnostics(vbCompileError.Diagnostics);
+            return null;
+        }
+        catch (VBRuntimeErrorException vbRuntimeError)
+        {
+            context = context.WithError(vbRuntimeError);
+            return null;
+        }
+    }
+
+    protected abstract VBTypedValue? EvaluateResult(ref ExecutionScope context);
 }

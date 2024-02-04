@@ -15,9 +15,9 @@ public record class VBUBoundOperator : VBUnaryOperator
     {
     }
 
-    public override VBTypedValue? Evaluate(ExecutionScope context)
+    protected override VBTypedValue? EvaluateResult(ref ExecutionScope context)
     {
-        var symbol = (TypedSymbol)Children!.Single();
+        var symbol = (TypedSymbol)Children!.First();
         var value = context.GetTypedValue(symbol);
 
         if (value.TypeInfo is VBArrayType arrayType)
@@ -27,6 +27,6 @@ public record class VBUBoundOperator : VBUnaryOperator
                 : new VBLongValue(this).WithValue(VBArrayType.ImplicitBoundary);
         }
 
-        throw new InvalidOperationException("VBCompileError: Expected array");
+        throw VBCompileErrorException.ExpectedArray(symbol, "Use the `UBound` operator to find the upper boundary of an array variable.");
     }
 }

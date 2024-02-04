@@ -28,5 +28,5 @@ public record class VBDecimalValue : VBTypedValue, IVBTypedValue<decimal>, INume
     public double? AsCoercedNumeric(int depth = 0) => AsDouble();
     public string? AsCoercedString(int depth = 0) => Value.ToString();
     public double AsDouble() => (double)Value;
-    public VBTypedValue WithValue(double value) => this with { Value = value };
+    public VBTypedValue WithValue(double value) => this with { Value = (decimal)value };
 }

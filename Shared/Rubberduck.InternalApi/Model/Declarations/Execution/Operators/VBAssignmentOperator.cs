@@ -2,6 +2,7 @@
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
+using System;
 using System.Linq;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Operators;
@@ -16,8 +17,8 @@ public record class VBAssignmentOperator : VBBinaryOperator
 {
     private readonly AssignmentKind _kind;
 
-    public VBAssignmentOperator(AssignmentKind kind, string lhsExpression, string rhsExpression, TypedSymbol? lhs = null, TypedSymbol? rhs = null)
-        : base(Tokens.CompareEqualOp, lhsExpression, rhsExpression, lhs, rhs, lhs?.ResolvedType)
+    public VBAssignmentOperator(AssignmentKind kind, Uri parentUri, string lhsExpression, string rhsExpression, TypedSymbol? lhs = null, TypedSymbol? rhs = null)
+        : base(Tokens.CompareEqualOp, parentUri, lhsExpression, rhsExpression, lhs, rhs)
     {
         _kind = kind;
     }
@@ -31,15 +32,32 @@ public record class VBAssignmentOperator : VBBinaryOperator
             ResolvedType = lhs?.ResolvedType,
         };
 
-    protected override VBTypedValue ExecuteBinaryOperator(VBExecutionContext context, VBTypedValue lhsValue, VBTypedValue rhsValue)
+    protected override VBTypedValue ExecuteBinaryOperator(ref ExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue)
     {
         var assignmentTarget = lhsValue;
-        if (lhsValue is VBObjectValue lhsObject && _kind == AssignmentKind.ValueAssignment)
+
+        if (lhsValue is VBObjectValue lhsObject)
         {
-            assignmentTarget = lhsObject.LetCoerce();
-            if (assignmentTarget is null)
+            if (_kind == AssignmentKind.ReferenceAssignment && assignmentTarget.TypeInfo != rhsValue.TypeInfo)
             {
-                throw VBRuntimeErrorException.TypeMismatch; // TODO get the real error, this isn't it (memory fails right now)
+                if (assignmentTarget.TypeInfo.ConvertsSafelyToTypes.Contains(rhsValue.TypeInfo))
+                {
+                    context = context.WithDiagnostics([RubberduckDiagnostic.TypeCastConversion(this)]);
+                }
+                else
+                {
+                    throw VBRuntimeErrorException.TypeMismatch(this, "This reference assignment is referring to incompatible object types.");
+                }
+            }
+            else if (_kind == AssignmentKind.ValueAssignment)
+            {
+                assignmentTarget = lhsObject.LetCoerce();
+                context = context.WithDiagnostics([RubberduckDiagnostic.ImplicitLetCoercion(lhsObject.Symbol!)]);
+
+                if (rhsValue is VBObjectValue rhsObject)
+                {
+                    context = context.WithDiagnostics([RubberduckDiagnostic.SuspiciousValueAssignment(this)]);
+                }
             }
         }
 
@@ -49,23 +67,28 @@ public record class VBAssignmentOperator : VBBinaryOperator
             {
                 if (rhsValue is VBObjectValue rhsObject && _kind == AssignmentKind.ValueAssignment)
                 {
-                    // TODO issue diagnostic for implicit let coercion
                     var letCoercedValue = rhsObject.LetCoerce();
-                    if (letCoercedValue != null)
-                    {
-                        return ExecuteBinaryOperator(context, assignmentTarget, letCoercedValue);
-                    }
+                    context = context.WithDiagnostics([RubberduckDiagnostic.ImplicitLetCoercion(rhsObject.Symbol!)]);
+                    context.SetTypedValue(lhsValue.Symbol!, letCoercedValue);
+                    return letCoercedValue;
                 }
 
-                throw VBRuntimeErrorException.TypeMismatch;
+                throw VBRuntimeErrorException.TypeMismatch(this, "This value assignment is referring to incompatible data types.");
             }
             else if (_kind == AssignmentKind.ValueAssignment)
             {
-                // TODO issue diagnostic for implicit value conversion
+                if (assignmentTarget.TypeInfo.ConvertsSafelyToTypes.Contains(rhsValue.TypeInfo))
+                {
+                    context = context.WithDiagnostics([RubberduckDiagnostic.ImplicitWideningConversion(this)]);
+                }
+                else
+                {
+                    throw VBRuntimeErrorException.TypeMismatch(this, "This value assignment is referring to conflicting data types.");
+                }
             }
         }
 
-        context.WriteSymbolValue(assignmentTarget.Symbol!, rhsValue, this);
+        context.SetTypedValue(assignmentTarget.Symbol!, rhsValue);
         return rhsValue;
     }
 }

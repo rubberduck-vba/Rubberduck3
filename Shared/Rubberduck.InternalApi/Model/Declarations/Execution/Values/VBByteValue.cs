@@ -15,5 +15,12 @@ public record class VBByteValue : VBTypedValue, IVBTypedValue<byte>, INumericVal
     public string? AsCoercedString(int depth = 0) => Value.ToString();
 
     public double AsDouble() => (double)Value;
-    public VBTypedValue WithValue(double value) => this with { Value = (byte)value };
+    public VBTypedValue WithValue(double value)
+    {
+        if (value > byte.MaxValue || value < byte.MinValue)
+        {
+            throw VBRuntimeErrorException.Overflow;
+        }
+        return this with { Value = (byte)value };
+    }
 }

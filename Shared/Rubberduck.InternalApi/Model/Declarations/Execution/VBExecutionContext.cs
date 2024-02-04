@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
@@ -12,12 +13,12 @@ using System.Linq;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution;
 
-public record class ExecutionScope
+public record class ExecutionScope : IDiagnosticSource
 {
     private readonly Stack<ExecutionScope> _callStack;
     private readonly Dictionary<Symbol, VBTypedValue> _symbols;
     
-    public ExecutionScope(Stack<ExecutionScope> callStack, Dictionary<Symbol, VBTypedValue> symbolTable, VBTypeMember member, VBRuntimeErrorException? error = null)
+    public ExecutionScope(Stack<ExecutionScope> callStack, Dictionary<Symbol, VBTypedValue> symbolTable, VBTypeMember member, VBRuntimeErrorException? error = null, Diagnostic[]? diagnostics = null)
     {
         _callStack = callStack;
         _symbols = symbolTable;
@@ -40,10 +41,13 @@ public record class ExecutionScope
     public bool ActiveOnErrorResumeNext { get; init; }
     public Symbol? ActiveOnErrorGoTo { get; init; }
 
+    public ImmutableArray<Diagnostic> Diagnostics { get; init; }
 
+    public ExecutionScope WithError(VBRuntimeErrorException error) => WithDiagnostics(error.Diagnostics) with { Error = error };
+    public ExecutionScope WithDiagnostics(IEnumerable<Diagnostic> diagnostics) => this with { Diagnostics = Diagnostics.AddRange(diagnostics) };
 }
 
-public class VBExecutionContext : ServiceBase
+public class VBExecutionContext : ServiceBase, IDiagnosticSource
 {
     private readonly Stack<ExecutionScope> _callStack = new();
     private readonly ConcurrentDictionary<TypedSymbol, VBTypedValue> _symbols = new();
@@ -59,12 +63,14 @@ public class VBExecutionContext : ServiceBase
 
     public ExecutionScope EnterScope(VBTypeMember member)
     {
-        var scope = new ExecutionScope(_callStack, _symbols.Select(e => (e.Key, e.Value)).ToDictionary(e => (Symbol)e.Key, e => (VBTypedValue?)e.Value), member);
+        var scope = new ExecutionScope(_callStack, _symbols.Select(e => (e.Key, e.Value)).ToDictionary(e => (Symbol)e.Key, e => (VBTypedValue)e.Value), member);
         _callStack.Push(scope);
         return scope;
     }
 
     public ExecutionScope CurrentScope => _callStack.Peek();
+
+    public void End() => _callStack.Clear();
 
     public ExecutionScope? ExitScope(VBRuntimeErrorException? error = null)
     {
@@ -86,6 +92,8 @@ public class VBExecutionContext : ServiceBase
     /// Gets all <c>VBMemberOwnerType</c> data types in the context.
     /// </summary>
     public ImmutableHashSet<TypedSymbol> MemberOwnerTypes => _symbols.Keys.Where(e => e.ResolvedType is VBMemberOwnerType).ToImmutableHashSet();
+
+    public ImmutableArray<Diagnostic> Diagnostics { get; init; } = [];
 
     /// <summary>
     /// Associates the specified value to a symbol, registering the provided executable symbol as a write site.

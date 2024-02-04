@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Types;
@@ -14,9 +15,9 @@ public record class VBClassType : VBMemberOwnerType
 
     public VBType[] Supertypes { get; init; } = [VbObjectType];
     public VBType[] Subtypes { get; init; } = [];
-    public VBReturningMember? DefaultMember { get; init; }
+    public VBTypeMember? DefaultMember { get; init; }
     public bool IsInterface => Subtypes.Length != 0;
 
     public override VBType[] ConvertsSafelyToTypes => Supertypes.Concat([VbVariantType]).ToArray();
-    public override object? DefaultValue { get; } = VBObjectType.Nothing;
+    public override object? DefaultValue { get; } = VBObjectValue.Nothing;
 }

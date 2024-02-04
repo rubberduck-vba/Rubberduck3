@@ -6,7 +6,7 @@ namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
 public record class VBVariantValue : VBTypedValue, IVBTypedValue<object?>, INumericCoercion, IStringCoercion
 {
-    public VBVariantValue(VBType subtype, TypedSymbol? declarationSymbol = null) 
+    public VBVariantValue(VBType subtype, TypedSymbol declarationSymbol) 
         : base(VBVariantType.TypeInfo with { Subtype = subtype }, declarationSymbol) { }
 
     public object? Value { get; } = default;

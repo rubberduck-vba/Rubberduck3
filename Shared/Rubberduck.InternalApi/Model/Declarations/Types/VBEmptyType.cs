@@ -4,7 +4,7 @@ namespace Rubberduck.InternalApi.Model.Declarations.Types;
 
 public record class VBEmptyType : VBIntrinsicType<int?>
 {
-    private VBEmptyType() : base(Tokens.Empty) 
+    private VBEmptyType() : base(Tokens.vbEmpty) 
     {
         Size = 0;
     }

@@ -1,11 +1,12 @@
-﻿using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
+﻿using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
+using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Symbols;
 
 /// <summary>
 /// Represents a typed symbol that defines a value expression that can be resolved to a <c>VBType</c>.
 /// </summary>
-public interface IValuedSymbol : ITypedSymbol, IValuedExpression
+public interface IValuedSymbol : ITypedSymbol, IValuedExpression<VBTypedValue>
 {
     /// <summary>
     /// The declared value expression, if present.

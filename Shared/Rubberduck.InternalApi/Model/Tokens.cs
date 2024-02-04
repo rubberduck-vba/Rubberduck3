@@ -217,6 +217,7 @@ public static class Tokens
     public const string vbBack = "vbBack";
     public const string vbCr = "vbCr";
     public const string vbCrLf = "vbCrLf";
+    public const string vbEmpty = "vbEmpty";
     public const string vbFormFeed = "vbFormFeed";
     public const string vbLf = "vbLf";
     public const string vbNewLine = "vbNewLine";

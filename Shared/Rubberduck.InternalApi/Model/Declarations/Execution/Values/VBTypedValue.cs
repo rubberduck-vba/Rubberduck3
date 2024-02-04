@@ -1,7 +1,5 @@
 ﻿using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
-using System.Collections.Immutable;
-using System.Linq;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
@@ -13,7 +11,7 @@ public interface IVBTypedValue<TValue>
 
 public record class VBTypedValue
 {
-    public VBTypedValue(VBType type, TypedSymbol? symbol = null)
+    public VBTypedValue(VBType type, TypedSymbol? symbol)
     {
         TypeInfo = type;
         Symbol = symbol;
@@ -31,7 +29,7 @@ public record class VBTypedValue
 
 public record class VBTypeDescValue : VBTypedValue
 {
-    public VBTypeDescValue(TypedSymbol symbol) : base(symbol.ResolvedType!)
+    public VBTypeDescValue(TypedSymbol symbol) : base(symbol.ResolvedType!, symbol)
     {
     }
 }

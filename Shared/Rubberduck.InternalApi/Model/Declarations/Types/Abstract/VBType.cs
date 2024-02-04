@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using System;
 using System.Collections.Immutable;
 
@@ -27,7 +28,7 @@ public abstract record class VBType<TValue> : VBType
 /// </summary>
 public record class VBTypeDescValue : VBTypedValue
 {
-    public VBTypeDescValue(VBType type) : base(type)
+    public VBTypeDescValue(VBType type) : base(type, null)
     {
     }
 }
