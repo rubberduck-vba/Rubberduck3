@@ -13,6 +13,6 @@ public record class VBMultiplicationOperator : VBBinaryOperator
     {
     }
 
-    protected override VBTypedValue ExecuteBinaryOperator(ref ExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue) =>
+    protected override VBTypedValue ExecuteBinaryOperator(ref VBExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue) =>
         NumericSymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, (lhs, rhs) => lhs * rhs);
 }

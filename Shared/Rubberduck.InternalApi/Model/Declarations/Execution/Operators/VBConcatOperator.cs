@@ -2,7 +2,6 @@
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
-using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 using System;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Operators;
@@ -14,7 +13,7 @@ public record class VBConcatOperator : VBBinaryOperator
     {
     }
 
-    protected override VBTypedValue ExecuteBinaryOperator(ref ExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue)
+    protected override VBTypedValue ExecuteBinaryOperator(ref VBExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue)
     {
         string? lhsString;
         if (lhsValue is VBStringValue stringValueLhs)

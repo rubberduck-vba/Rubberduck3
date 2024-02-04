@@ -14,7 +14,7 @@ public record class VBNewOperator : VBUnaryOperator
     {
     }
 
-    protected override VBTypedValue? EvaluateResult(ref ExecutionScope context)
+    protected override VBTypedValue? EvaluateResult(ref VBExecutionScope context)
     {
         var type = (TypedSymbol)Children!.Single();
         return new VBObjectValue(this)

@@ -12,6 +12,6 @@ public record class VBNegationOperator : VBUnaryOperator
     public VBNegationOperator(string expression, TypedSymbol operand, Uri parentUri)
         : base(Tokens.NegationOp, expression, parentUri, operand) { }
 
-    protected override VBTypedValue? EvaluateResult(ref ExecutionScope context) => 
+    protected override VBTypedValue? EvaluateResult(ref VBExecutionScope context) => 
         NumericSymbolOperation.EvaluateUnaryOpResult(ref context, (TypedSymbol)Children!.Single(), e => -e);
 }

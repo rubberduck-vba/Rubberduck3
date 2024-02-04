@@ -9,7 +9,7 @@ namespace Rubberduck.InternalApi.Model.Declarations.Operators;
 
 public static class NumericSymbolOperation
 {
-    public static VBTypedValue EvaluateUnaryOpResult(ref ExecutionScope context, TypedSymbol symbol, Func<double, double> unaryOp)
+    public static VBTypedValue EvaluateUnaryOpResult(ref VBExecutionScope context, TypedSymbol symbol, Func<double, double> unaryOp)
     {
         if (symbol.ResolvedType is VBNullType)
         {
@@ -65,7 +65,7 @@ public static class NumericSymbolOperation
         }
     }
 
-    public static VBTypedValue EvaluateBinaryOpResult(ref ExecutionScope context, TypedSymbol opSymbol, VBTypedValue lhsValue, VBTypedValue rhsValue, Func<double, double, double> binaryOp)
+    public static VBTypedValue EvaluateBinaryOpResult(ref VBExecutionScope context, TypedSymbol opSymbol, VBTypedValue lhsValue, VBTypedValue rhsValue, Func<double, double, double> binaryOp)
     {
         var lhsType = lhsValue.TypeInfo!;
         var rhsType = rhsValue.TypeInfo!;

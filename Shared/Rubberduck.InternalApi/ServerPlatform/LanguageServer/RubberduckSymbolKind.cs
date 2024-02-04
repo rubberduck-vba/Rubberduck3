@@ -64,7 +64,7 @@ public readonly struct RubberduckSemanticTokenType
         .ToArray();
 
     public static Dictionary<SemanticTokenType, int> TokenTypeId { get; } = SemanticTokenTypes.ToDictionary(e => e.TokenType, e => e.Id);
-    
+
     public static SemanticTokenType Type { get; } = SemanticTokenType.Type;
     public static SemanticTokenType Class { get; } = SemanticTokenType.Class;
     public static SemanticTokenType Enum { get; } = SemanticTokenType.Enum;

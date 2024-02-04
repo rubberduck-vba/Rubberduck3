@@ -17,14 +17,14 @@ public record class VBTypedValue
         Symbol = symbol;
     }
 
-    public IExecutableSymbol[] Writes { get; init; } = [];
-    public IExecutableSymbol[] Reads { get; init; } = [];
+    public IExecutable[] Writes { get; init; } = [];
+    public IExecutable[] Reads { get; init; } = [];
 
     public TypedSymbol? Symbol { get; init; }
     public VBType TypeInfo { get; init; }
 
-    public VBTypedValue WithWriteSite(IExecutableSymbol site) => this with { Writes = [.. Writes, site] };
-    public VBTypedValue WithReadSite(IExecutableSymbol site) => this with { Reads = [.. Reads, site] };
+    public VBTypedValue WithWriteSite(IExecutable site) => this with { Writes = [.. Writes, site] };
+    public VBTypedValue WithReadSite(IExecutable site) => this with { Reads = [.. Reads, site] };
 }
 
 public record class VBTypeDescValue : VBTypedValue

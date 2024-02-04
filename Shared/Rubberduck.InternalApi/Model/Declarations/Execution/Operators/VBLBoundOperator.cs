@@ -15,7 +15,7 @@ public record class VBLBoundOperator : VBUnaryOperator
     {
     }
 
-    protected override VBTypedValue? EvaluateResult(ref ExecutionScope context)
+    protected override VBTypedValue? EvaluateResult(ref VBExecutionScope context)
     {
         var symbol = (TypedSymbol)Children!.First();
         var value = context.GetTypedValue(symbol);

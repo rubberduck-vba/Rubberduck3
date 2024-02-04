@@ -298,8 +298,8 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
                                 //Range = new() { Value = new() } // could enable requesting tokens for a particular range in a document. maybe later.
                             },
                             // these two are fully extensible:
-                            TokenTypes = new Container<SemanticTokenType>(RubberduckSemanticTokenType.SemanticTokenTypes),
-                            TokenModifiers = new Container<SemanticTokenModifier>(RubberduckSemanticTokenModifier.SemanticTokenModifiers),
+                            TokenTypes = new Container<SemanticTokenType>(RubberduckSemanticTokenType.SemanticTokenTypes.OrderBy(e => e.Id).Select(e => e.TokenType)),
+                            TokenModifiers = new Container<SemanticTokenModifier>(RubberduckSemanticTokenModifier.SemanticTokenModifiers.OrderBy(e => e.Id).Select(e => e.TokenModifier)),
                         }
                     },
                     SelectionRange = new()

@@ -1,7 +1,7 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using System;
-using System.Collections.Immutable;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution;
@@ -14,7 +14,7 @@ public enum VBCompileErrorId
 
 public interface IDiagnosticSource
 {
-    ImmutableArray<Diagnostic> Diagnostics { get; }
+    IEnumerable<Diagnostic> Diagnostics { get; }
 }
 
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
@@ -41,7 +41,8 @@ public class VBCompileErrorException : ApplicationException, IDiagnosticSource
     public Symbol Symbol { get; }
     public string? Verbose { get; }
 
-    public ImmutableArray<Diagnostic> Diagnostics => [RubberduckDiagnostic.CompileError(this)];
+    public Diagnostic Diagnostic => RubberduckDiagnostic.CompileError(this);
+    public IEnumerable<Diagnostic> Diagnostics => [Diagnostic];
 }
 
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
@@ -154,7 +155,8 @@ public class VBRuntimeErrorException : ApplicationException, IDiagnosticSource
     public int VBErrorNumber { get; }
     public string? Verbose { get; }
 
-    public ImmutableArray<Diagnostic> Diagnostics => [RubberduckDiagnostic.RuntimeError(this)];
+    public IEnumerable<Diagnostic> Diagnostics => [Diagnostic];
+    public Diagnostic Diagnostic => RubberduckDiagnostic.RuntimeError(this);
 
     public (int, string) Deconstruct(out int vbErrorNumber, out string message) => 
         (vbErrorNumber = VBErrorNumber, message = Message);

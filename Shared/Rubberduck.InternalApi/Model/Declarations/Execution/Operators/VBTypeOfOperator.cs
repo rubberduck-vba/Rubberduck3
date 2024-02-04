@@ -14,6 +14,6 @@ public record class VBTypeOfOperator : VBUnaryOperator
     {
     }
 
-    protected override VBTypedValue? EvaluateResult(ref ExecutionScope context) =>
+    protected override VBTypedValue? EvaluateResult(ref VBExecutionScope context) =>
         new VBTypeDescValue((TypedSymbol)Children!.Single());
 }

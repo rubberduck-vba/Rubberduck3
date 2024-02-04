@@ -14,6 +14,6 @@ public record class VBAddressOfOperator : VBUnaryOperator
     {
     }
 
-    protected override VBTypedValue? EvaluateResult(ref ExecutionScope context) =>
+    protected override VBTypedValue? EvaluateResult(ref VBExecutionScope context) =>
         context.GetTypedValue((TypedSymbol)Children!.Single());
 }

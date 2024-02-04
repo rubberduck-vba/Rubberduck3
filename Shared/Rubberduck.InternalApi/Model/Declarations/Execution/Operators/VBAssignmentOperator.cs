@@ -32,7 +32,7 @@ public record class VBAssignmentOperator : VBBinaryOperator
             ResolvedType = lhs?.ResolvedType,
         };
 
-    protected override VBTypedValue ExecuteBinaryOperator(ref ExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue)
+    protected override VBTypedValue ExecuteBinaryOperator(ref VBExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue)
     {
         var assignmentTarget = lhsValue;
 

@@ -17,22 +17,23 @@ public interface IValuedExpression<TValue> where TValue : VBTypedValue
     /// Evaluates the expression in the given context.
     /// </summary>
     /// <returns>Returns a <c>VBTypedValue</c> representing the result of the expression.</returns>
-    TValue? Evaluate(ref ExecutionScope context);
+    TValue? Evaluate(ref VBExecutionScope context);
 }
 
-public interface IExecutableSymbol
+public interface IExecutable : IValuedExpression<VBTypedValue>
 {
-    void Execute(ref VBExecutionContext context);
-}
-
-public interface IExecutableSymbol<TValue> where TValue : VBTypedValue
-{
-    TValue? Execute(ref VBExecutionContext context);
+    /// <summary>
+    /// Executes the symbol in the given context.
+    /// </summary>
+    /// <returns>
+    /// Returns a <c>VBTypedValue</c> representing the result of the expression; <c>null</c> if the symbol is a non-returning executable member.
+    /// </returns>
+    VBTypedValue? Execute(ref VBExecutionContext context);
 }
 
 public abstract record class BooleanValuedExpression : IValuedExpression<VBBooleanValue>
 {
-    public abstract VBBooleanValue? Evaluate(ref ExecutionScope context);
+    public abstract VBBooleanValue? Evaluate(ref VBExecutionScope context);
 }
 
 /// <summary>
@@ -142,7 +143,7 @@ public abstract record class ValuedTypedSymbol : TypedSymbol, IValuedSymbol
     /// </remarks>
     public VBType? ResolvedValueExpressionType { get; init; }
 
-    public abstract VBTypedValue Evaluate(ref ExecutionScope context);
+    public abstract VBTypedValue Evaluate(ref VBExecutionScope context);
 
     public ITypedSymbol WithResolvedValueExpressionType(VBType? type) => this with { ResolvedValueExpressionType = type };
 }
@@ -180,7 +181,7 @@ public record class OptionalParameterSymbol : ParameterSymbol, IValuedSymbol
     public string? ValueExpression { get; init; }
     public VBType? ResolvedValueExpressionType { get; init; }
 
-    public VBTypedValue? Evaluate(ref ExecutionScope context) => context.GetTypedValue(this);
+    public VBTypedValue? Evaluate(ref VBExecutionScope context) => context.GetTypedValue(this);
 
     public ITypedSymbol WithResolvedValueExpressionType(VBType? resolvedValueExpressionType) => this with { ResolvedValueExpressionType = resolvedValueExpressionType };
 }
@@ -234,14 +235,14 @@ public record class LibraryProcedureImportSymbol : ProcedureSymbol
     public string? Alias { get; init; }
 }
 
-public record class FunctionSymbol : TypedSymbol, IValuedExpression<VBTypedValue>, IExecutableSymbol<VBTypedValue>
+public record class FunctionSymbol : TypedSymbol, IExecutable
 {
     public FunctionSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, string? typeName = null, RubberduckSymbolKind kind = RubberduckSymbolKind.Function)
         : base(kind, accessibility, name, parentUri, (children ?? []).ToArray()) { }
 
     public bool? IsReachable { get; init; }
 
-    public VBTypedValue? Evaluate(ref ExecutionScope context)
+    public VBTypedValue? Evaluate(ref VBExecutionScope context)
     {
         // TODO walk the executable symbol tree to track the assigned value
         // for now we're happy just getting a resolved type back
@@ -256,18 +257,19 @@ public record class FunctionSymbol : TypedSymbol, IValuedExpression<VBTypedValue
             var scope = context.EnterScope(member);
             return Evaluate(ref scope);
         }
-        throw VBRuntimeErrorException.PropertyOrMethodNotFound(this);
+        throw VBRuntimeErrorException.PropertyOrMethodNotFound(this); // fitting, but is it really a VB-trappable error? or it's a .net-side bug?
     }
 }
 
-public record class ProcedureSymbol : TypedSymbol, IExecutableSymbol, IExecutableSymbol<VBLongPtrValue>
+public record class ProcedureSymbol : TypedSymbol, IExecutable
 {
     public ProcedureSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, RubberduckSymbolKind kind = RubberduckSymbolKind.Procedure)
         : base(kind, accessibility, name, parentUri, (children ?? []).ToArray(), VBLongPtrType.TypeInfo) { }
 
-    public VBLongPtrValue? Execute(ref VBExecutionContext context) => context.GetSymbolValue(this) as VBLongPtrValue;
+    public VBTypedValue? Evaluate(ref VBExecutionScope context) =>
+        context.GetTypedValue(this) as VBLongPtrValue; // symbol table contains a VBLongPtrValue for procedures that can be used with the AddressOf operator.
 
-    void IExecutableSymbol.Execute(ref VBExecutionContext context)
+    public VBTypedValue? Execute(ref VBExecutionContext context)
     {
         var member = context.GetModuleMember(this);
         if (member != null)
@@ -275,18 +277,21 @@ public record class ProcedureSymbol : TypedSymbol, IExecutableSymbol, IExecutabl
             try
             {
                 var scope = context.EnterScope(member);
-                // TODO walk the executable symbol tree
-                context.ExitScope();
+                scope.Execute(ref context);
             }
             catch (VBCompileErrorException vbCompileError)
             {
-                context.Diagnostics.AddRange(vbCompileError.Diagnostics);
+                context.Diagnostics.Add(vbCompileError.Diagnostic);
+                context.End();
             }
-            catch (VBRuntimeErrorException vbRuntimeError) 
+            catch (VBRuntimeErrorException vbRuntimeError)
             {
-                context.Diagnostics.AddRange(vbRuntimeError.Diagnostics);
+                // unhandled runtime error
+                context.Diagnostics.Add(vbRuntimeError.Diagnostic);
             }
+            return null;
         }
+        throw VBRuntimeErrorException.PropertyOrMethodNotFound(this); // fitting, but is it really a VB-trappable error? or it's a .net-side bug?
     }
 }
 
@@ -322,7 +327,7 @@ public record class EnumMemberSymbol : ValuedTypedSymbol
     public EnumMemberSymbol(string name, Uri parentUri, string? value)
         : base(RubberduckSymbolKind.EnumMember, Accessibility.Public, name, parentUri, null, value) { }
 
-    public override VBTypedValue Evaluate(ref ExecutionScope context) => context.GetTypedValue(this);
+    public override VBTypedValue Evaluate(ref VBExecutionScope context) => context.GetTypedValue(this);
 }
 
 public record class EventMemberSymbol : ProcedureSymbol
@@ -336,7 +341,7 @@ public record class ConstantDeclarationSymbol : ValuedTypedSymbol
     public ConstantDeclarationSymbol(string name, Uri parentUri, Accessibility accessibility, string? asTypeNameExpression, string? valueExpression)
         : base(RubberduckSymbolKind.Constant, accessibility, name, parentUri, asTypeNameExpression, valueExpression) { }
 
-    public override VBTypedValue Evaluate(ref ExecutionScope context) => context.GetTypedValue(this);
+    public override VBTypedValue Evaluate(ref VBExecutionScope context) => context.GetTypedValue(this);
 }
 
 public record class VariableDeclarationSymbol : DeclarationExpressionSymbol
@@ -360,7 +365,7 @@ public abstract record class OperatorSymbol : TypedSymbol, IValuedExpression<VBT
     {
     }
 
-    public VBTypedValue? Evaluate(ref ExecutionScope context)
+    public VBTypedValue? Evaluate(ref VBExecutionScope context)
     {
         try
         {
@@ -378,5 +383,5 @@ public abstract record class OperatorSymbol : TypedSymbol, IValuedExpression<VBT
         }
     }
 
-    protected abstract VBTypedValue? EvaluateResult(ref ExecutionScope context);
+    protected abstract VBTypedValue? EvaluateResult(ref VBExecutionScope context);
 }

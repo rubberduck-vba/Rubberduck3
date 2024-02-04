@@ -11,7 +11,7 @@ public record class VBIntegerDivisionOperator : VBBinaryOperator
     public VBIntegerDivisionOperator(Uri parentUri, string lhsExpression, string rhsExpression, TypedSymbol? lhs = null, TypedSymbol? rhs = null)
         : base(Tokens.IntegerDivisionOp, parentUri, lhsExpression, rhsExpression, lhs, rhs) { }
 
-    protected override VBTypedValue ExecuteBinaryOperator(ref ExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue) =>
+    protected override VBTypedValue ExecuteBinaryOperator(ref VBExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue) =>
         NumericSymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, (lhs, rhs) =>
         {
             if (rhs == 0)
