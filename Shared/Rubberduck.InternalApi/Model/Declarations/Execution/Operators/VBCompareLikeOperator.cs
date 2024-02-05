@@ -60,10 +60,13 @@ public record class VBCompareLikeOperator : VBComparisonOperator
         }
 
         var builder = new StringBuilder();
-        var lastToken = '\0';
+        var isTokenGroup = false;
 
-        foreach (var token in rhsPatternString)
+        // TODO test this extensively
+        for (var i = 0; i < rhsPatternString.Length; i++)
         {
+            var token = rhsPatternString[i];
+
             if (!LikePatternChars.Contains(token))
             {
                 builder.Append(token);
@@ -80,31 +83,32 @@ public record class VBCompareLikeOperator : VBComparisonOperator
             {
                 builder.Append(@".*?");
             }
-            else if (token == '[')
+            else if (!isTokenGroup && token == '[' && i < rhsPatternString.Length - 1 && rhsPatternString[i + 1] != ']')
             {
+                isTokenGroup = true;
                 builder.Append('[');
             }
-            else if (token == '!')
+            else if (isTokenGroup && token == '!')
             {
-                if (lastToken == '[')
+                if (rhsPatternString[i - 1] == '[')
                 {
                     builder.Append('^');
                 }
-                else
-                {
-                    throw VBRuntimeErrorException.InvalidPatternString(rhsValue.Symbol!);
-                }
             }
-            else if (token == ']')
+            else if (isTokenGroup && token == ']' && rhsPatternString[i - 1] != '[')
             {
+                isTokenGroup = false;
                 builder.Append(']');
             }
             else
             {
                 builder.Append(token);
             }
+        }
 
-            lastToken = token;
+        if (isTokenGroup)
+        {
+            throw VBRuntimeErrorException.InvalidPatternString(rhsValue.Symbol!, "Character list '[...]' appears to be missing a ']' delimiter.");
         }
 
         var patternString = $"^{builder}$";
