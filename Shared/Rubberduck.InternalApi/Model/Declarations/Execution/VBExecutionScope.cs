@@ -10,6 +10,13 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution;
 
+public enum VBOptionCompare
+{
+    Binary,
+    Text,
+    Database
+}
+
 public record class VBExecutionScope : IDiagnosticSource, IExecutable
 {
     private readonly Stack<VBExecutionScope> _callStack;
@@ -27,6 +34,8 @@ public record class VBExecutionScope : IDiagnosticSource, IExecutable
     }
 
     public bool Is64BitHost { get; init; }
+    public bool OptionStrict { get; init; }
+    public VBOptionCompare OptionCompare { get; init; }
 
     public VBTypedValue GetTypedValue(Symbol symbol) => _symbols[symbol];
     public void SetTypedValue(Symbol symbol, VBTypedValue value) => _symbols[symbol] = value;
@@ -44,6 +53,7 @@ public record class VBExecutionScope : IDiagnosticSource, IExecutable
 
     public VBExecutionScope WithError(VBRuntimeErrorException error) => WithDiagnostics(error.Diagnostics) with { Error = error };
     public VBExecutionScope WithDiagnostics(IEnumerable<Diagnostic> diagnostics) => this with { Diagnostics = Diagnostics.Concat(diagnostics).ToArray() };
+    public VBExecutionScope WithDiagnostic(Diagnostic diagnostic) => this with { Diagnostics = Diagnostics.Append(diagnostic).ToArray() };
 
     public VBTypedValue? Execute(ref VBExecutionContext context)
     {

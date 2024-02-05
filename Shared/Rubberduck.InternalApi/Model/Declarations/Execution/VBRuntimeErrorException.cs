@@ -8,6 +8,7 @@ namespace Rubberduck.InternalApi.Model.Declarations.Execution;
 
 public enum VBCompileErrorId
 {
+    ForbiddenWithOptionStrict = 9000,
     InvalidUseOfObject,
     ExpectedArray,
 }
@@ -24,6 +25,7 @@ public class VBCompileErrorException : ApplicationException, IDiagnosticSource
 
     #region Classic-VB compile-time errors
     // NOTE: VB compile errors are just messages, ID is made up.
+    public static VBCompileErrorException OptionStrictForbidden(Symbol symbol, string? verbose = null) => new(symbol, VBCompileErrorId.ForbiddenWithOptionStrict, "Option Strict forbidden implicit narrowing conversion or late-bound call.", verbose);
     public static VBCompileErrorException InvalidUseOfObject(Symbol symbol, string? verbose = null) => new(symbol, VBCompileErrorId.InvalidUseOfObject, "Invalid use of object", verbose);
     public static VBCompileErrorException ExpectedArray(Symbol symbol, string? verbose = null) => new(symbol, VBCompileErrorId.ExpectedArray, "Expected array", verbose);
     #endregion

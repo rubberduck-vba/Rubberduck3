@@ -3,7 +3,7 @@ using Rubberduck.InternalApi.Model.Declarations.Types;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
-public record class VBStringValue : VBTypedValue, IVBTypedValue<string?>, INumericCoercion
+public record class VBStringValue : VBTypedValue, IVBTypedValue<string?>, INumericCoercion, IStringCoercion
 {
     public static VBStringValue VBNullString { get; } = new VBStringValue();
 
@@ -26,4 +26,6 @@ public record class VBStringValue : VBTypedValue, IVBTypedValue<string?>, INumer
 
         throw VBRuntimeErrorException.TypeMismatch(Symbol!, $"Numeric coercion failed to coerce \"{Value}\" to a numeric value.");
     }
+
+    public string? AsCoercedString(int depth = 0) => Value;
 }

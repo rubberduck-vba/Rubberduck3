@@ -12,5 +12,5 @@ public record class VBAdditionOperator : VBBinaryOperator
         : base(Tokens.AdditionOp, parentUri, lhsExpression, rhsExpression, lhs, rhs) { }
 
     protected override VBTypedValue ExecuteBinaryOperator(ref VBExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue)
-        => NumericSymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, (lhs, rhs) => lhs + rhs);
+        => SymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, (lhs, rhs) => lhs + rhs);
 }

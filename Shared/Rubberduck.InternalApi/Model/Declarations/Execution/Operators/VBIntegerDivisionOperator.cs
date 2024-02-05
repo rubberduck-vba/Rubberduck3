@@ -12,7 +12,7 @@ public record class VBIntegerDivisionOperator : VBBinaryOperator
         : base(Tokens.IntegerDivisionOp, parentUri, lhsExpression, rhsExpression, lhs, rhs) { }
 
     protected override VBTypedValue ExecuteBinaryOperator(ref VBExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue) =>
-        NumericSymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, (lhs, rhs) =>
+        SymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, (lhs, rhs) =>
         {
             if (rhs == 0)
             {

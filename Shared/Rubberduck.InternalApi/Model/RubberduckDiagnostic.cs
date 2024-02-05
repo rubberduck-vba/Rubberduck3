@@ -13,6 +13,7 @@ public enum RubberduckDiagnosticId
     ImplicitNumericCoercion,
     ImplicitLetCoercion,
     ImplicitDateSerialConversion,
+    ImplicitNarrowingConversion,
     ImplicitWideningConversion,
 
     UnintendedConstantExpression = 1001,
@@ -42,6 +43,8 @@ public record class RubberduckDiagnostic : Diagnostic
         CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.ImplicitLetCoercion, "Implicit `Let` coercion; consider invoking the object's default member explicitly.");
     public static Diagnostic SuspiciousValueAssignment(Symbol symbol) =>
         CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.SuspiciousValueAssignment, "Suspicious value assignment; since both LHS and RHS are object types, it looks like a reference assignment may have been intended. Are you missing a `Set` keyword?");
+    public static Diagnostic ImplicitNarrowingConversion(Symbol symbol) =>
+        CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.ImplicitNarrowingConversion, "Implicit narrowing conversion; possible arithmetic overflow. Consider using a larger data type.");
     public static Diagnostic ImplicitWideningConversion(Symbol symbol) =>
         CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.ImplicitWideningConversion, "Implicit widening conversion; consider using an explicit type conversion.");
     public static Diagnostic ImplicitDateSerialConversion(Symbol symbol) =>

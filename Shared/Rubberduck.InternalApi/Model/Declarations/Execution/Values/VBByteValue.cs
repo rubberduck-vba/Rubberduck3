@@ -5,6 +5,9 @@ namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
 public record class VBByteValue : VBTypedValue, IVBTypedValue<byte>, INumericValue, INumericCoercion, IStringCoercion
 {
+    public static byte MinValue { get; } = byte.MinValue;
+    public static byte MaxValue { get; } = byte.MaxValue;
+
     public VBByteValue(TypedSymbol? declarationSymbol = null) 
         : base(VBByteType.TypeInfo, declarationSymbol) { }
 
@@ -17,9 +20,9 @@ public record class VBByteValue : VBTypedValue, IVBTypedValue<byte>, INumericVal
     public double AsDouble() => (double)Value;
     public VBTypedValue WithValue(double value)
     {
-        if (value > byte.MaxValue || value < byte.MinValue)
+        if (value > MaxValue || value < MinValue)
         {
-            throw VBRuntimeErrorException.Overflow;
+            throw VBRuntimeErrorException.Overflow(Symbol!, $"`{TypeInfo.Name}` values must be between **{MinValue:N}** and **{MaxValue:N}**.");
         }
         return this with { Value = (byte)value };
     }

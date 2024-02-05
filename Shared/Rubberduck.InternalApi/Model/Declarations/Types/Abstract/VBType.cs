@@ -2,6 +2,7 @@
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using System;
 using System.Collections.Immutable;
+using System.Linq;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 
@@ -107,4 +108,5 @@ public abstract record class VBType
     /// Override in derived types to specify VBTypes that are safe to convert this type into.
     /// </summary>
     public virtual VBType[] ConvertsSafelyToTypes { get; } = [];
+    public bool ConvertsSafelyToType(VBType type) => ConvertsSafelyToTypes.Contains(type);
 }

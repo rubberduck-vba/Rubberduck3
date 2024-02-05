@@ -6,6 +6,7 @@ namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
 public record class VBDateValue : VBTypedValue, IVBTypedValue<DateTime>, INumericValue, INumericCoercion, IStringCoercion
 {
+    public static VBDateValue MinValue { get; } = new() { Value = new DateTime(100, 01, 01) };
     public static VBDateValue Zero { get; } = new() { Value = new DateTime(1899, 12, 30) };
     public static VBDateValue MaxValue { get; } = new() { Value = new DateTime(9999, 12, 31, 23, 59, 59) };
     
@@ -27,7 +28,7 @@ public record class VBDateValue : VBTypedValue, IVBTypedValue<DateTime>, INumeri
     {
         if (value > MaxSerial || value < MinSerial)
         {
-            throw VBRuntimeErrorException.Overflow;
+            throw VBRuntimeErrorException.Overflow(Symbol!, $"`{TypeInfo.Name}` values must be between **{MinValue.Value}** and **{MaxValue}**.");
         }
         return this with { Value = Zero.Value.AddDays(value) };
     }

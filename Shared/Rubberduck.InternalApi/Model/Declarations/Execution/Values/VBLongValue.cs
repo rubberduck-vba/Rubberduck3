@@ -5,6 +5,9 @@ namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
 public record class VBLongValue : VBTypedValue, IVBTypedValue<int>, INumericValue, INumericCoercion, IStringCoercion
 {
+    public static int MinValue { get; } = int.MinValue;
+    public static int MaxValue { get; } = int.MaxValue;
+
     public VBLongValue(TypedSymbol? declarationSymbol = null) 
         : base(VBLongType.TypeInfo, declarationSymbol) { }
 
@@ -16,9 +19,9 @@ public record class VBLongValue : VBTypedValue, IVBTypedValue<int>, INumericValu
     public double AsDouble() => (double)Value;
     public VBTypedValue WithValue(double value)
     {
-        if (value > int.MaxValue || value < int.MinValue)
+        if (value > MaxValue || value < MinValue)
         {
-            throw VBRuntimeErrorException.Overflow;
+            throw VBRuntimeErrorException.Overflow(Symbol!, $"`{TypeInfo.Name}` values must be between **{MinValue:N}** and **{MaxValue:N}**.");
         }
         return this with { Value = (int)value };
     }
