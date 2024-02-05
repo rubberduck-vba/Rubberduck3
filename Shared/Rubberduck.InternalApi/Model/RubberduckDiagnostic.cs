@@ -7,6 +7,8 @@ namespace Rubberduck.InternalApi.Model;
 
 public enum RubberduckDiagnosticId
 {
+    // TODO sort and categorize, then carve in stone.
+
     PreferConcatOperatorForStringConcatenation = 10,
     
     ImplicitStringCoercion = 101,
@@ -24,6 +26,20 @@ public enum RubberduckDiagnosticId
 
 public record class RubberduckDiagnostic : Diagnostic
 {
+    private static Diagnostic CreateDiagnostic(Symbol symbol, DiagnosticSeverity severity, RubberduckDiagnosticId id, string message, string? source = null) =>
+    CreateDiagnostic(symbol, severity, $"RD3{(int)id:00000}", message, source);
+    private static Diagnostic CreateDiagnostic(Symbol symbol, DiagnosticSeverity severity, string code, string message, string? source = null) =>
+        new()
+        {
+            Code = new DiagnosticCode(code),
+            CodeDescription = new CodeDescription { Href = new Uri($"https://rd3.rubberduckvba.com/diagnostics/{code}") },
+            Message = message,
+            Severity = severity,
+            Source = source ?? symbol.Uri.ToString(),
+            Range = symbol.Range,
+        };
+
+
     /* [VBC]: VB [C]ompile-time errors */
     public static Diagnostic CompileError(VBCompileErrorException error) =>
         CreateDiagnostic(error.Symbol, DiagnosticSeverity.Error, error.DiagnosticCode, error.Message, error.StackTrace);
@@ -33,7 +49,6 @@ public record class RubberduckDiagnostic : Diagnostic
         CreateDiagnostic(error.Symbol, DiagnosticSeverity.Error, error.DiagnosticCode, error.Message, error.StackTrace);
 
     /* [RD3]: RD3 Language Server diagnostics */
-
     public static Diagnostic PreferConcatOperatorForStringConcatenation(Symbol symbol) =>
         CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.PreferConcatOperatorForStringConcatenation, "Both operands are `String` values; consider using the `&` string concatenation operator instead.");
     public static Diagnostic ImplicitStringCoercion(Symbol symbol) =>
@@ -57,20 +72,4 @@ public record class RubberduckDiagnostic : Diagnostic
         CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.UnintendedConstantExpression, "Possibly unintended constant expression; this operation does not affect the value.");
     public static Diagnostic BitwiseOperator(Symbol symbol) =>
         CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.BitwiseOperator, "Bitwise operator; the result of this operation is resolved using bitwise arithmetics.");
-
-
-
-    /**/
-    private static Diagnostic CreateDiagnostic(Symbol symbol, DiagnosticSeverity severity, RubberduckDiagnosticId id, string message, string? source = null) =>
-        CreateDiagnostic(symbol, severity, $"RD3{(int)id:00000}", message, source);
-    private static Diagnostic CreateDiagnostic(Symbol symbol, DiagnosticSeverity severity, string code, string message, string? source = null) =>
-        new()
-        {
-            Code = new DiagnosticCode(code),
-            CodeDescription = new CodeDescription { Href = new Uri($"https://rd3.rubberduckvba.com/diagnostics/{code}") },
-            Message = message,
-            Severity = severity,
-            Source = source ?? symbol.Uri.ToString(),
-            Range = symbol.Range,
-        };
 }
