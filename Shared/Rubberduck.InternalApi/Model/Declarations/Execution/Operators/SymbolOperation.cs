@@ -149,6 +149,26 @@ public static class SymbolOperation
         throw VBRuntimeErrorException.TypeMismatch(opSymbol, "The data types involved in this binary operation are not compatible.");
     }
 
+    public static VBTypedValue EvaluateBinaryOpResult(ref VBExecutionScope context, TypedSymbol opSymbol, VBTypedValue lhsValue, VBTypedValue rhsValue, Func<int, int, int> binaryOp)
+    {
+        var lhsType = lhsValue.TypeInfo!;
+        var rhsType = rhsValue.TypeInfo!;
+
+        if (lhsValue is VBStringValue lhsString)
+        {
+            return EvaluateStringCoercedIntegerOp(ref context, opSymbol, lhsString, rhsValue, binaryOp);
+        }
+
+        if (lhsType is INumericType)
+        {
+            var lhsNumericValue = (INumericValue)lhsValue;
+            return EvaluateIntegerOp(ref context, opSymbol, lhsNumericValue, rhsValue, binaryOp);
+        }
+
+        throw VBRuntimeErrorException.TypeMismatch(opSymbol, "The data types involved in this binary operation are not compatible.");
+    }
+
+    #region TODO refactor
     private static VBTypedValue EvaluateStringCoercedNumericOp(ref VBExecutionScope context, TypedSymbol opSymbol, VBStringValue lhsString, VBTypedValue rhsValue, Func<double, double, double> binaryOp)
     {
         if (rhsValue is VBStringValue rhsString)
@@ -186,6 +206,45 @@ public static class SymbolOperation
         throw VBRuntimeErrorException.TypeMismatch(rhsValue.Symbol!, $"Could not coerce RHS operand ({rhsType.Name}) into a `String`.");
     }
 
+    private static VBTypedValue EvaluateStringCoercedIntegerOp(ref VBExecutionScope context, TypedSymbol opSymbol, VBStringValue lhsString, VBTypedValue rhsValue, Func<int, int, int> binaryOp)
+    {
+        if (rhsValue is VBStringValue rhsString)
+        {
+            context = context.WithDiagnostic(RubberduckDiagnostic.PreferConcatOperatorForStringConcatenation(opSymbol));
+            return lhsString.WithValue(lhsString.Value + rhsString.Value);
+        }
+
+        var rhsType = rhsValue.TypeInfo;
+        if (rhsType is INumericCoercion coercible)
+        {
+            if (!double.TryParse(lhsString.Value, out var lhsNumberValue))
+            {
+                throw VBRuntimeErrorException.TypeMismatch(opSymbol, "This expression evaluates to a `Double`; LHS `String` value must have a numeric value. Consider explicitly validating and converting the values first.");
+            }
+
+            var rhsNumberValue = coercible.AsCoercedNumeric() ?? 0;
+            context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitStringCoercion(rhsValue.Symbol!));
+
+            return new VBLongValue { Value = binaryOp.Invoke((int)lhsNumberValue, (int)rhsNumberValue), Symbol = opSymbol };
+        }
+        if (rhsType is VBNullType)
+        {
+            return VBNullValue.Null;
+        }
+        if (rhsType is VBEmptyType)
+        {
+            return lhsString;
+        }
+        if (rhsType is VBObjectType && context.GetTypedValue(rhsValue.Symbol!) is null)
+        {
+            throw VBCompileErrorException.InvalidUseOfObject(rhsValue.Symbol!, "Object could not be let-coerced into a `String`.");
+        }
+
+        throw VBRuntimeErrorException.TypeMismatch(rhsValue.Symbol!, $"Could not coerce RHS operand ({rhsType.Name}) into a `String`.");
+    }
+    #endregion
+
+    #region TODO refactor
     private static VBTypedValue EvaluateNumericOp(ref VBExecutionScope context, TypedSymbol opSymbol, INumericValue lhsNumericValue, VBTypedValue rhsValue, Func<double, double, double> binaryOp)
     {
         var rhsType = rhsValue.TypeInfo!;
@@ -209,9 +268,53 @@ public static class SymbolOperation
             var rhsCoercedValue = coercible.AsCoercedNumeric();
             context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitNumericCoercion(opSymbol));
 
-            return lhsNumericValue.WithValue(binaryOp.Invoke(lhsNumericValue.AsDouble(), rhsCoercedValue ?? 0));
+            if (lhsNumericValue.TypeInfo.Size >= rhsValue.TypeInfo.Size)
+            {
+                return lhsNumericValue.WithValue(binaryOp.Invoke(lhsNumericValue.AsDouble(), rhsCoercedValue ?? 0));
+            }
+            else
+            {
+                return ((INumericValue)rhsValue).WithValue(binaryOp.Invoke(lhsNumericValue.AsDouble(), rhsCoercedValue ?? 0));
+            }
         }
 
         throw VBRuntimeErrorException.TypeMismatch(opSymbol, $"Could not coerce RHS operand ({rhsType.Name}) into a numeric value.");
     }
+
+    private static VBTypedValue EvaluateIntegerOp(ref VBExecutionScope context, TypedSymbol opSymbol, INumericValue lhsNumericValue, VBTypedValue rhsValue, Func<int, int, int> binaryOp)
+    {
+        var rhsType = rhsValue.TypeInfo!;
+
+        if (rhsType is INumericType)
+        {
+            var rhsNumericValue = (INumericValue)rhsValue;
+            return lhsNumericValue.WithValue(binaryOp.Invoke((int)lhsNumericValue.AsDouble(), (int)rhsNumericValue.AsDouble()));
+        }
+
+        if (rhsType is VBDateType)
+        {
+            var rhsDateValue = (VBDateValue)rhsValue;
+            context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitDateSerialConversion(rhsValue.Symbol!));
+
+            return rhsDateValue.WithValue(binaryOp.Invoke((int)rhsDateValue.SerialValue, (int)lhsNumericValue.AsDouble()));
+        }
+
+        if (rhsType is INumericCoercion coercible)
+        {
+            var rhsCoercedValue = coercible.AsCoercedNumeric();
+            context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitNumericCoercion(opSymbol));
+
+            if (lhsNumericValue.TypeInfo.Size >= rhsValue.TypeInfo.Size)
+            {
+                return lhsNumericValue.WithValue(binaryOp.Invoke((int)lhsNumericValue.AsDouble(), (int)(rhsCoercedValue ?? 0)));
+            }
+            else
+            {
+                return ((INumericValue)rhsValue).WithValue(binaryOp.Invoke((int)lhsNumericValue.AsDouble(), (int)(rhsCoercedValue ?? 0)));
+            }
+        }
+
+        throw VBRuntimeErrorException.TypeMismatch(opSymbol, $"Could not coerce RHS operand ({rhsType.Name}) into a numeric value.");
+    }
+    #endregion
 }

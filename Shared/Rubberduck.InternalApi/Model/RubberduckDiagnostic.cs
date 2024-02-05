@@ -19,6 +19,7 @@ public enum RubberduckDiagnosticId
     UnintendedConstantExpression = 1001,
     SuspiciousValueAssignment,
     TypeCastConversion,
+    BitwiseOperator,
 }
 
 public record class RubberduckDiagnostic : Diagnostic
@@ -54,6 +55,8 @@ public record class RubberduckDiagnostic : Diagnostic
 
     public static Diagnostic UnintendedConstantExpression(Symbol symbol) =>
         CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.UnintendedConstantExpression, "Possibly unintended constant expression; this operation does not affect the value.");
+    public static Diagnostic BitwiseOperator(Symbol symbol) =>
+        CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.BitwiseOperator, "Bitwise operator; the result of this operation is resolved using bitwise arithmetics.");
 
 
 
