@@ -24,11 +24,20 @@ public record class VBDateValue : VBTypedValue, IVBTypedValue<DateTime>, INumeri
     public DateTime Value { get; init; } = default;
     public DateTime DefaultValue { get; } = default;
 
+    public VBDateValue WithValue(DateTime value)
+    {
+        if (value > MaxValue.Value || value < MinValue.Value)
+        {
+            throw VBRuntimeErrorException.Overflow(Symbol!, $"`{TypeInfo.Name}` values must be between **{MinValue.Value}** and **{MaxValue.Value}**.");
+        }
+        return this with { Value = value };
+    }
+
     public VBTypedValue WithValue(double value)
     {
         if (value > MaxSerial || value < MinSerial)
         {
-            throw VBRuntimeErrorException.Overflow(Symbol!, $"`{TypeInfo.Name}` values must be between **{MinValue.Value}** and **{MaxValue}**.");
+            throw VBRuntimeErrorException.Overflow(Symbol!, $"`{TypeInfo.Name}` values must be between **{MinValue.Value}** and **{MaxValue.Value}**.");
         }
         return this with { Value = Zero.Value.AddDays(value) };
     }

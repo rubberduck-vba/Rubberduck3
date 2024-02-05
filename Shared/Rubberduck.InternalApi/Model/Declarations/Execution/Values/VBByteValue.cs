@@ -26,4 +26,6 @@ public record class VBByteValue : VBTypedValue, IVBTypedValue<byte>, INumericVal
         }
         return this with { Value = (byte)value };
     }
+
+    public VBByteValue WithValue(int value) => (VBByteValue)WithValue((double)value);
 }

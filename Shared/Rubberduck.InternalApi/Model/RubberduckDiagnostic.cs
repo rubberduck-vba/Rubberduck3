@@ -10,6 +10,7 @@ public enum RubberduckDiagnosticId
     // TODO sort and categorize, then carve in stone.
 
     PreferConcatOperatorForStringConcatenation = 10,
+    PreferErrRaiseOverErrorStatement,
     
     ImplicitStringCoercion = 101,
     ImplicitNumericCoercion,
@@ -51,6 +52,8 @@ public record class RubberduckDiagnostic : Diagnostic
     /* [RD3]: RD3 Language Server diagnostics */
     public static Diagnostic PreferConcatOperatorForStringConcatenation(Symbol symbol) =>
         CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.PreferConcatOperatorForStringConcatenation, "Both operands are `String` values; consider using the `&` string concatenation operator instead.");
+    public static Diagnostic PreferErrRaiseOverErrorStatement(Symbol symbol) =>
+        CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.PreferErrRaiseOverErrorStatement, "Consider using the `Err.Raise` method instead of the legacy `Error` statement to raise run-time errors.");
     public static Diagnostic ImplicitStringCoercion(Symbol symbol) =>
         CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.ImplicitStringCoercion, "Implicit `String` coercion; consider using an explicit type conversion.");
     public static Diagnostic ImplicitNumericCoercion(Symbol symbol) =>

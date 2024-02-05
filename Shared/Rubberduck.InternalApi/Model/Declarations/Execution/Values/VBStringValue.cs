@@ -10,12 +10,13 @@ public record class VBStringValue : VBTypedValue, IVBTypedValue<string?>, INumer
     public VBStringValue(TypedSymbol? declarationSymbol = null) 
         : base(VBStringType.TypeInfo, declarationSymbol) { }
 
+    public int? FixedWidth { get; init; }
     public double? AsCoercedNumeric() => double.TryParse(Value, out var numericValue) ? numericValue : null;
     public string? AsCoercedString() => string.Empty;
     public string? Value { get; init; } = default;
     public string? DefaultValue { get; } = default;
 
-    public VBTypedValue WithValue(string value) => this with { Value = value };
+    public VBStringValue WithValue(string? value) => this with { Value = value };
 
     public double? AsCoercedNumeric(int depth = 0)
     {

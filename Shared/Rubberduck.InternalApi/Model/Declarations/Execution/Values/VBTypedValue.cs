@@ -6,7 +6,7 @@ namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 public interface IVBTypedValue<TValue>
 {
     TValue Value { get; }
-    TValue DefaultValue { get; }
+    TValue DefaultValue { get; } // needed?
 }
 
 public record class VBTypedValue

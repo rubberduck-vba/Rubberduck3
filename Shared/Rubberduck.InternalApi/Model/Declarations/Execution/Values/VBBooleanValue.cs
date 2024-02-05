@@ -13,4 +13,6 @@ public record class VBBooleanValue : VBTypedValue, IVBTypedValue<bool>, INumeric
 
     public double? AsCoercedNumeric(int depth = 0) => Value ? -1 : 0;
     public string? AsCoercedString(int depth = 0) => Value ? Tokens.True : Tokens.False;
+
+    public VBBooleanValue WithValue(bool value) => this with { Value = value };
 }

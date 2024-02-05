@@ -7,6 +7,7 @@ public record class VBIntegerValue : VBTypedValue, IVBTypedValue<short>, INumeri
 {
     public static short MinValue { get; } = short.MinValue;
     public static short MaxValue { get; } = short.MaxValue;
+    public static VBIntegerValue Zero { get; } = new VBIntegerValue { Value = 0 };
 
     public VBIntegerValue(TypedSymbol? declarationSymbol = null) 
         : base(VBIntegerType.TypeInfo, declarationSymbol) { }
