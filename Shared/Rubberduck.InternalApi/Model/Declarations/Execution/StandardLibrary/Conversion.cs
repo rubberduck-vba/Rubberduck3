@@ -91,6 +91,13 @@ namespace Rubberduck.InternalApi.Model.Declarations.Execution.StandardLibrary
             if (lhs is null) // function is being used as a statement
             {
                 context = context.WithDiagnostic(RubberduckDiagnostic.PreferErrRaiseOverErrorStatement(symbol));
+                if (number == 0)
+                {
+                    throw VBRuntimeErrorException.InvalidProcedureCallOrArgument(symbol, 
+                        "Error code 0 encodes the \"no error\" state; the `Error` statement cannot raise error 0, so the argument is invalid.");
+                }
+
+                // throwing the user-intended runtime error here
                 throw new VBRuntimeErrorException(symbol, number, message);
             }
 
