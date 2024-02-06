@@ -15,6 +15,8 @@ public record class VBDateValue : VBTypedValue, IVBTypedValue<DateTime>, INumeri
     public static VBDateValue FromSerial(double value) => new() { Value = Zero.Value.AddDays(value) };
 
     public double AsDouble() => SerialValue;
+    public int AsLong() => (int)SerialValue;
+    public short AsInteger() => (short)SerialValue; // bad idea
 
     public VBDateValue(TypedSymbol? declarationSymbol = null) 
         : base(VBDateType.TypeInfo, declarationSymbol) { }

@@ -14,5 +14,7 @@ public record class VBLongLongValue : VBTypedValue, IVBTypedValue<long>, INumeri
     public double? AsCoercedNumeric(int depth = 0) => AsDouble();
     public string? AsCoercedString(int depth = 0) => Value.ToString();
     public double AsDouble() => (double)Value;
+    public int AsLong() => (int)Value;
+    public short AsInteger() => (short)Value;
     public VBTypedValue WithValue(double value) => this with { Value = (long)value };
 }

@@ -12,6 +12,8 @@ public record class VBSingleValue : VBTypedValue, IVBTypedValue<float>, INumeric
     public float DefaultValue { get; } = default;
 
     public double AsDouble() => (double)Value;
+    public int AsLong() => (int)Value;
+    public short AsInteger() => (short)Value;
     public double? AsCoercedNumeric(int depth = 0) => 0;
     public string? AsCoercedString(int depth = 0) => string.Empty;
     public VBTypedValue WithValue(double value) => this with { Value = (float)value };

@@ -15,6 +15,9 @@ public record class RelativeToken
     public int TokenModifiers { get; init; }
 }
 
+/// <summary>
+/// Represents a raw token from the IParseTree, with an absolute position.
+/// </summary>
 public record class AbsoluteToken
 {
     /// <summary>
@@ -77,7 +80,16 @@ public record class AbsoluteToken
         return encoded.SelectMany(e => e).ToArray();
     }
 
-    public static RelativeToken GetToken(int[] encodedTokens, int index) => new()
+    public static IEnumerable<RelativeToken> Decode(int[] encodedTokens)
+    {
+        var tokenCount = encodedTokens.Length / 5;
+        for (var i = 0; i < tokenCount; i++)
+        {
+            yield return GetToken(encodedTokens, i);
+        }
+    }
+
+    private static RelativeToken GetToken(int[] encodedTokens, int index) => new()
     {
         DeltaLine = encodedTokens[5 * index],
         DeltaStartChar = encodedTokens[5 * index + 1],

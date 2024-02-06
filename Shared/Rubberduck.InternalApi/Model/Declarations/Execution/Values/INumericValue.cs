@@ -6,6 +6,8 @@ public interface INumericValue
 {
     VBType TypeInfo { get; }
     double AsDouble();
+    int AsLong();
+    short AsInteger();
 
     VBTypedValue WithValue(double value);
 }
@@ -17,5 +19,5 @@ public interface INumericCoercion
 
 public interface IStringCoercion
 {
-    string? AsCoercedString(int depth = 0);
+    string AsCoercedString(int depth = 0);
 }

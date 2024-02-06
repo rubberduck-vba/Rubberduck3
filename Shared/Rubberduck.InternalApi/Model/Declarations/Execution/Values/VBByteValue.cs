@@ -18,6 +18,8 @@ public record class VBByteValue : VBTypedValue, IVBTypedValue<byte>, INumericVal
     public string? AsCoercedString(int depth = 0) => Value.ToString();
 
     public double AsDouble() => (double)Value;
+    public int AsLong() => (int)Value;
+    public short AsInteger() => (short)Value;
     public VBTypedValue WithValue(double value)
     {
         if (value > MaxValue || value < MinValue)
