@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
+using Rubberduck.Unmanaged.Registration;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Types;
 
@@ -9,6 +11,9 @@ namespace Rubberduck.InternalApi.Model.Declarations.Types;
 /// </summary>
 public record class VBCollectionType : VBClassType, IEnumerableType
 {
+    public VBCollectionType(VBClassType vbClass)
+        : this(vbClass.Name, vbClass.Uri, vbClass.IsUserDefined, vbClass.Members, vbClass.Members.OfType<VBReturningMember>().Single(e => e.UserMemId == WellKnownDispIds.NewEnum)) { }
+
     public VBCollectionType(string name, Uri uri, bool isUserDefined = false, IEnumerable<VBTypeMember>? members = null, VBReturningMember? newEnumMember = null) 
         : base(name, uri, isUserDefined, members)
     {

@@ -1,22 +1,28 @@
 ﻿using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
+using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
+using System;
+using System.Linq;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
-public record class VBVariantValue : VBTypedValue, IVBTypedValue<object?>, INumericCoercion, IStringCoercion
+public record class VBVariantValue : VBTypedValue, IVBTypedValue<VBVariantValue, object?>, INumericCoercion, IStringCoercion
 {
-    public VBVariantValue(VBTypedValue typedValue, TypedSymbol declarationSymbol) 
-        : base(VBVariantType.TypeInfo with { Subtype = typedValue.TypeInfo }, declarationSymbol) { }
+    public VBVariantValue(VBTypedValue typedValue, TypedSymbol? symbol = null) 
+        : base(VBVariantType.TypeInfo with { Subtype = typedValue.TypeInfo }, symbol) { }
 
     public VBTypedValue? TypedValue { get; init; } = default;
     public object? Value { get; init; } = default;
-    public object? DefaultValue { get; } = default;
+    public VBVariantValue DefaultValue { get; } = VBEmptyValue.Empty.AsVariant();
 
-    public double? AsCoercedNumeric(int depth = 0) => 
-        ((VBVariantType)TypeInfo).Subtype is INumericCoercion coercibleNumeric ? coercibleNumeric.AsCoercedNumeric(depth) : null;
+    public override int Size => IntPtr.Size;
+    public object? NominalValue => Value;
+
+    public VBDoubleValue? AsCoercedNumeric(int depth = 0) => 
+        ((VBVariantType)TypeInfo).Subtype is INumericCoercion coercibleNumeric ? coercibleNumeric.AsCoercedNumeric(depth) : null!;
     
-    public string? AsCoercedString(int depth = 0) => 
-        ((VBVariantType)TypeInfo).Subtype is IStringCoercion coercibleString ? coercibleString.AsCoercedString(depth) : null;
+    public VBStringValue? AsCoercedString(int depth = 0) => 
+        ((VBVariantType)TypeInfo).Subtype is IStringCoercion coercibleString ? coercibleString.AsCoercedString(depth) : null!;
 
     public VBVariantValue WithValue(VBTypedValue value) => 
         this with 

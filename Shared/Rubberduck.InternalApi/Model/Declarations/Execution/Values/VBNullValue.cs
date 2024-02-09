@@ -1,21 +1,17 @@
 ﻿using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
+using System;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
-public record class VBNullValue : VBTypedValue, IVBTypedValue<object?>, INumericCoercion, IStringCoercion
+public record class VBNullValue : VBTypedValue, IVBTypedValue<VBNullValue, IntPtr>
 {
     public static VBNullValue Null { get; } = new VBNullValue();
+    public VBNullValue(TypedSymbol? symbol = null) : base(VBNullType.TypeInfo, symbol) { }
 
-    public VBNullValue(TypedSymbol? symbol = null) 
-        : base(VBNullType.TypeInfo, symbol)
-    {
-    }
+    public IntPtr Value { get; } = IntPtr.Zero;
+    public VBNullValue DefaultValue => new();
+    public IntPtr NominalValue => Value;
 
-    public object? Value => null;
-
-    public object? DefaultValue => null;
-
-    public double? AsCoercedNumeric(int depth = 0) => 0;
-    public string? AsCoercedString(int depth = 0) => string.Empty;
+    public override int Size => 0;
 }

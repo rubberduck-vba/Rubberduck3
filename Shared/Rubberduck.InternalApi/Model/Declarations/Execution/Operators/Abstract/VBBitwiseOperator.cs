@@ -25,7 +25,7 @@ public abstract record class VBBitwiseOperator : VBBinaryOperator
         var result = SymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, BitwiseOp);
         if (lhsValue.TypeInfo is VBBooleanType && rhsValue.TypeInfo is VBBooleanType)
         {
-            return new VBBooleanValue(this) { Value = ((INumericValue)result).AsDouble() != 0 };
+            return new VBBooleanValue(this) { Value = ((INumericValue)result).AsDouble().Value != 0 };
         }
 
         context.WithDiagnostic(RubberduckDiagnostic.BitwiseOperator(this));

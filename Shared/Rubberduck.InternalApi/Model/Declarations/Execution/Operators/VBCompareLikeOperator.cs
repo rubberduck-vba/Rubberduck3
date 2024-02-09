@@ -28,33 +28,35 @@ public record class VBCompareLikeOperator : VBComparisonOperator
             return new VBNullValue(this);
         }
 
-        string? lhsString;
+        string? lhsString = null;
         if (lhsType is VBStringType)
         {
             lhsString = ((VBStringValue)lhsValue).Value;
         }
         else if (lhsType is IStringCoercion coercible)
         {
-            lhsString = coercible.AsCoercedString();
+            lhsString = coercible.AsCoercedString()!.Value;
             context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitStringCoercion(lhsValue.Symbol!));
         }
-        else
+
+        if (lhsString is null)
         {
             throw VBRuntimeErrorException.TypeMismatch(this, "LHS value expression did not resolve or coerce to a `String`.");
         }
 
 
-        string? rhsPatternString;
+        string? rhsPatternString = null;
         if (rhsType is VBStringType)
         {
             rhsPatternString = ((VBStringValue)rhsValue).Value!;
         }
         else if (rhsType is IStringCoercion coercible)
         {
-            rhsPatternString = coercible.AsCoercedString()!;
+            rhsPatternString = coercible.AsCoercedString()!.Value;
             context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitStringCoercion(lhsValue.Symbol!));
         }
-        else
+
+        if (rhsPatternString is null)
         {
             throw VBRuntimeErrorException.TypeMismatch(this, "RHS pattern expression did not resolve or coerce to a `String`.");
         }

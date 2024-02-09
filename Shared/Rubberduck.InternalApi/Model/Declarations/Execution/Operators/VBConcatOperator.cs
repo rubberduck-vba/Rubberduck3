@@ -15,7 +15,7 @@ public record class VBConcatOperator : VBBinaryOperator
 
     protected override VBTypedValue ExecuteBinaryOperator(ref VBExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue)
     {
-        string? lhsString;
+        string? lhsString = null;
         if (lhsValue is VBStringValue stringValueLhs)
         {
             lhsString = stringValueLhs.Value;
@@ -23,14 +23,15 @@ public record class VBConcatOperator : VBBinaryOperator
         else if (lhsValue is IStringCoercion stringCoercibleLhs)
         {
             context = context.WithDiagnostics([RubberduckDiagnostic.ImplicitStringCoercion(lhsValue.Symbol!)]);
-            lhsString = stringCoercibleLhs.AsCoercedString();
+            lhsString = stringCoercibleLhs.AsCoercedString()!.Value;
         }
-        else
+
+        if (lhsString is null)
         {
             throw VBRuntimeErrorException.TypeMismatch(lhsValue.Symbol!, "LHS value must be coercible to `String`.");
         }
 
-        string? rhsString;
+        string? rhsString = null;
         if (rhsValue is VBStringValue stringValueRhs)
         {
             rhsString = stringValueRhs.Value;
@@ -38,9 +39,10 @@ public record class VBConcatOperator : VBBinaryOperator
         else if (rhsValue is IStringCoercion stringCoercibleRhs)
         {
             context = context.WithDiagnostics([RubberduckDiagnostic.ImplicitStringCoercion(rhsValue.Symbol!)]);
-            rhsString = stringCoercibleRhs.AsCoercedString();
+            rhsString = stringCoercibleRhs.AsCoercedString()!.Value;
         }
-        else
+
+        if (rhsString is null)
         {
             throw VBRuntimeErrorException.TypeMismatch(rhsValue.Symbol!, "RHS value must be coercible to `String`.");
         }

@@ -4,27 +4,33 @@ using Rubberduck.InternalApi.Model.Declarations.Types;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
-public record class VBDateValue : VBTypedValue, IVBTypedValue<DateTime>, INumericValue, INumericCoercion, IStringCoercion
+public record class VBDateValue : VBTypedValue, 
+    IVBTypedValue<VBDateValue, DateTime>,
+    INumericCoercion, 
+    IStringCoercion
 {
+    public VBDateValue(TypedSymbol? declarationSymbol = null)
+        : base(VBDateType.TypeInfo, declarationSymbol) { }
+
     public static VBDateValue MinValue { get; } = new() { Value = new DateTime(100, 01, 01) };
-    public static VBDateValue Zero { get; } = new() { Value = new DateTime(1899, 12, 30) };
     public static VBDateValue MaxValue { get; } = new() { Value = new DateTime(9999, 12, 31, 23, 59, 59) };
-    
+    public static VBDateValue Zero { get; } = new() { Value = new DateTime(1899, 12, 30) };
+
     public const long MinSerial = -657434;
     public const long MaxSerial = 2958465;
     public static VBDateValue FromSerial(double value) => new() { Value = Zero.Value.AddDays(value) };
 
+    public double SerialValue => Value.ToOADate();
     public double AsDouble() => SerialValue;
-    public int AsLong() => (int)SerialValue;
-    public short AsInteger() => (short)SerialValue; // bad idea
 
-    public VBDateValue(TypedSymbol? declarationSymbol = null) 
-        : base(VBDateType.TypeInfo, declarationSymbol) { }
-
-    public double? AsCoercedNumeric(int depth = 0) => AsDouble();
-    public string? AsCoercedString(int depth = 0) => Value.ToString("M/dd/yyyy hh:mm:ss tt");
     public DateTime Value { get; init; } = default;
-    public DateTime DefaultValue { get; } = default;
+    public VBDateValue DefaultValue { get; } = Zero;
+    public DateTime NominalValue => throw new NotImplementedException();
+
+    public override int Size => 8;
+
+    public VBDoubleValue AsCoercedNumeric(int depth = 0) => new VBDoubleValue(Symbol).WithValue(SerialValue);
+    public VBStringValue AsCoercedString(int depth = 0) => new VBStringValue(Symbol).WithValue(Value.ToString("M/dd/yyyy hh:mm:ss tt"));
 
     public VBDateValue WithValue(DateTime value)
     {
@@ -35,7 +41,7 @@ public record class VBDateValue : VBTypedValue, IVBTypedValue<DateTime>, INumeri
         return this with { Value = value };
     }
 
-    public VBTypedValue WithValue(double value)
+    public VBDateValue WithValue(double value)
     {
         if (value > MaxSerial || value < MinSerial)
         {
@@ -43,6 +49,4 @@ public record class VBDateValue : VBTypedValue, IVBTypedValue<DateTime>, INumeri
         }
         return this with { Value = Zero.Value.AddDays(value) };
     }
-
-    public double SerialValue => (Value - Zero.Value).TotalDays;
 }

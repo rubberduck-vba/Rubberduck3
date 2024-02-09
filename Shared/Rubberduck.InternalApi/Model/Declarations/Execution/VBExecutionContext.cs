@@ -77,14 +77,14 @@ public class VBExecutionContext : ServiceBase, IDiagnosticSource
     /// <remarks>
     /// Local symbols without write sites should be considered unassigned.
     /// </remarks>
-    public void WriteSymbolValue(TypedSymbol symbol, VBTypedValue value, IExecutable site) => _symbols[symbol] = value.WithWriteSite(site);
+    //public void WriteSymbolValue(TypedSymbol symbol, VBTypedValue value, IExecutable site) => _symbols[symbol] = value.WithWriteSite(site);
     /// <summary>
     /// Returns the currently held value of the specified symbol, registering the provided executable symbol as a read site.
     /// </summary>
     /// <remarks>
     /// Local symbols without read sites should be considered unused.
     /// </remarks>
-    public VBTypedValue ReadSymbolValue(TypedSymbol symbol, IExecutable site) => _symbols[symbol] = _symbols[symbol].WithReadSite(site);
+    //public VBTypedValue ReadSymbolValue(TypedSymbol symbol, IExecutable site) => _symbols[symbol] = _symbols[symbol].WithReadSite(site);
 
     /// <summary>
     /// Gets the currently held value of the specified symbol.

@@ -3,28 +3,36 @@ using Rubberduck.InternalApi.Model.Declarations.Types;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
-public record class VBLongValue : VBTypedValue, IVBTypedValue<int>, INumericValue, INumericCoercion, IStringCoercion
+public record class VBLongValue : VBNumericTypedValue, 
+    IVBTypedValue<VBLongValue, int>, 
+    INumericValue<VBLongValue>
 {
-    public static int MinValue { get; } = int.MinValue;
-    public static int MaxValue { get; } = int.MaxValue;
-
-    public VBLongValue(TypedSymbol? declarationSymbol = null) 
+    public VBLongValue(TypedSymbol? declarationSymbol = null)
         : base(VBLongType.TypeInfo, declarationSymbol) { }
 
-    public int Value { get; init; } = default;
-    public int DefaultValue { get; } = default;
+    public static VBLongValue MinValue { get; } = new VBLongValue().WithValue(int.MinValue);
+    public static VBLongValue MaxValue { get; } = new VBLongValue().WithValue(int.MaxValue);
+    public static VBLongValue Zero { get; } = new VBLongValue().WithValue(0);
 
-    public double? AsCoercedNumeric(int depth = 0) => AsDouble();
-    public string? AsCoercedString(int depth = 0) => Value.ToString();
-    public double AsDouble() => (double)Value;
-    public int AsLong() => (int)Value;
-    public short AsInteger() => (short)Value;
-    public VBTypedValue WithValue(double value)
+    VBLongValue INumericValue<VBLongValue>.MinValue => MinValue;
+    VBLongValue INumericValue<VBLongValue>.Zero => Zero;
+    VBLongValue INumericValue<VBLongValue>.MaxValue => MaxValue;
+
+    public int Value { get; init; } = default;
+    public VBLongValue DefaultValue { get; } = Zero;
+    public int NominalValue => Value;
+
+    public override int Size => sizeof(int);
+    protected override double State => Value;
+
+    public VBLongValue WithValue(double value)
     {
-        if (value > MaxValue || value < MinValue)
+        if (value > MaxValue.Value || value < MinValue.Value)
         {
-            throw VBRuntimeErrorException.Overflow(Symbol!, $"`{TypeInfo.Name}` values must be between **{MinValue:N}** and **{MaxValue:N}**.");
+            throw VBRuntimeErrorException.Overflow(Symbol!, $"`{TypeInfo.Name}` values must be between **{MinValue.Value:N}** and **{MaxValue.Value:N}**.");
         }
         return this with { Value = (int)value };
     }
+
+    public VBLongValue WithValue(int value) => WithValue((double)value);
 }

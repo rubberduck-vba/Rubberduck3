@@ -3,18 +3,27 @@ using Rubberduck.InternalApi.Model.Declarations.Types;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
-public record class VBSingleValue : VBTypedValue, IVBTypedValue<float>, INumericValue, INumericCoercion, IStringCoercion
+public record class VBSingleValue : VBNumericTypedValue, 
+    IVBTypedValue<VBSingleValue, float>, 
+    INumericValue<VBSingleValue>
 {
-    public VBSingleValue(TypedSymbol? declarationSymbol = null) 
+    public VBSingleValue(TypedSymbol? declarationSymbol = null)
         : base(VBSingleType.TypeInfo, declarationSymbol) { }
 
-    public float Value { get; set; } = default;
-    public float DefaultValue { get; } = default;
+    public static VBSingleValue MinValue { get; } = new VBSingleValue().WithValue(float.MinValue);
+    public static VBSingleValue MaxValue { get; } = new VBSingleValue().WithValue(float.MaxValue);
+    public static VBSingleValue Zero { get; } = new VBSingleValue().WithValue(0);
 
-    public double AsDouble() => (double)Value;
-    public int AsLong() => (int)Value;
-    public short AsInteger() => (short)Value;
-    public double? AsCoercedNumeric(int depth = 0) => 0;
-    public string? AsCoercedString(int depth = 0) => string.Empty;
-    public VBTypedValue WithValue(double value) => this with { Value = (float)value };
+    VBSingleValue INumericValue<VBSingleValue>.MinValue => MinValue;
+    VBSingleValue INumericValue<VBSingleValue>.Zero => Zero;
+    VBSingleValue INumericValue<VBSingleValue>.MaxValue => MaxValue;
+
+    public float Value { get; set; } = default;
+    public VBSingleValue DefaultValue { get; } = Zero;
+    public float NominalValue => Value;
+
+    public override int Size => sizeof(float);
+    protected override double State => Value;
+
+    public VBSingleValue WithValue(double value) => this with { Value = (float)value };
 }

@@ -1,14 +1,12 @@
-﻿using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
+﻿using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
+using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Types;
 
 public record class VBVariantType : VBIntrinsicType<object?>
 {
-    public static object? VBEmpty { get; } = null;
-
     private VBVariantType(VBType? subtype = null) : base(Tokens.Variant) 
     {
-        Size = 32;
         Subtype = subtype ?? VbEmptyType;
     }
 
@@ -18,6 +16,6 @@ public record class VBVariantType : VBIntrinsicType<object?>
     public static VBVariantType TypeInfo { get; } = new();
 
     public override bool RuntimeBinding { get; } = true;
-    public override object? DefaultValue { get; } = VBEmpty;
+    public override VBVariantValue DefaultValue { get; } = new VBVariantValue(VBEmptyType.TypeInfo.DefaultValue);
     public override VBType[] ConvertsSafelyToTypes { get; } = [];
 }

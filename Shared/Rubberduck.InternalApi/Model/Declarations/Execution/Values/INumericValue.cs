@@ -2,22 +2,35 @@
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
-public interface INumericValue
+public interface INumericValue 
+{
+    VBBooleanValue AsBoolean();
+    VBByteValue AsByte();
+    VBIntegerValue AsInteger();
+    VBLongValue AsLong();
+    VBLongLongValue AsLongLong();
+    VBSingleValue AsSingle();
+    VBDoubleValue AsDouble();
+    VBCurrencyValue AsCurrency();
+    VBDecimalValue AsDecimal();
+}
+
+public interface INumericValue<VBTValue> : INumericValue
+    where VBTValue : VBTypedValue
 {
     VBType TypeInfo { get; }
-    double AsDouble();
-    int AsLong();
-    short AsInteger();
 
-    VBTypedValue WithValue(double value);
+    VBTValue MinValue { get; }
+    VBTValue MaxValue { get; }
+    VBTValue Zero { get; }
 }
 
 public interface INumericCoercion
 {
-    double? AsCoercedNumeric(int depth = 0);
+    VBDoubleValue? AsCoercedNumeric(int depth = 0);
 }
 
 public interface IStringCoercion
 {
-    string AsCoercedString(int depth = 0);
+    VBStringValue? AsCoercedString(int depth = 0);
 }

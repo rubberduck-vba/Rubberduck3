@@ -19,5 +19,5 @@ public record class VBClassType : VBMemberOwnerType
     public bool IsInterface => Subtypes.Length != 0;
 
     public override VBType[] ConvertsSafelyToTypes => Supertypes.Concat([VbVariantType]).ToArray();
-    public override object? DefaultValue { get; } = VBObjectValue.Nothing;
+    public override VBObjectValue DefaultValue { get; } = VBObjectValue.Nothing;
 }

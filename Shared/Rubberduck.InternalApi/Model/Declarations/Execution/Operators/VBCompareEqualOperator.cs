@@ -23,7 +23,7 @@ public record class VBCompareEqualOperator : VBComparisonOperator
         }
         else
         {
-            if (lhsValue is INumericValue lhsNumeric)
+            if (lhsValue is VBNumericTypedValue lhsNumeric)
             {
                 return SymbolOperation.EvaluateCompareOpResult(ref context, this, lhsNumeric, rhsValue,
                     (lhs, rhs) => lhs.CompareTo(rhs) == 0);

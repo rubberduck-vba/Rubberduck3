@@ -3,10 +3,10 @@ using System.Linq;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 
-public abstract record class VBIntrinsicType<T> : VBType<T>
+public abstract record class VBIntrinsicType<T> : VBType
 {
     protected VBIntrinsicType(string name) 
-        : base(name, isUserDefined: false)
+        : base(typeof(T), name, isUserDefined: false)
     {
     }
 

@@ -10,6 +10,8 @@ public enum VBCompileErrorId
 {
     ForbiddenWithOptionStrict = 9000,
     InvalidUseOfObject,
+    InvalidParamArrayUse,
+    InvalidReDim,
     ExpectedArray,
 }
 
@@ -27,6 +29,8 @@ public class VBCompileErrorException : ApplicationException, IDiagnosticSource
     // NOTE: VB compile errors are just messages, ID is made up.
     public static VBCompileErrorException OptionStrictForbidden(Symbol symbol, string? verbose = null) => new(symbol, VBCompileErrorId.ForbiddenWithOptionStrict, "Option Strict forbidden implicit narrowing conversion or late-bound call.", verbose);
     public static VBCompileErrorException InvalidUseOfObject(Symbol symbol, string? verbose = null) => new(symbol, VBCompileErrorId.InvalidUseOfObject, "Invalid use of object", verbose);
+    public static VBCompileErrorException InvalidParamArrayUse(Symbol symbol, string? verbose = null) => new(symbol, VBCompileErrorId.InvalidParamArrayUse, "Invalid ParamArray use", verbose);
+    public static VBCompileErrorException InvalidReDim(Symbol symbol, string? verbose = null) => new(symbol, VBCompileErrorId.InvalidReDim, "Invalid ReDim", verbose);
     public static VBCompileErrorException ExpectedArray(Symbol symbol, string? verbose = null) => new(symbol, VBCompileErrorId.ExpectedArray, "Expected array", verbose);
     #endregion
 

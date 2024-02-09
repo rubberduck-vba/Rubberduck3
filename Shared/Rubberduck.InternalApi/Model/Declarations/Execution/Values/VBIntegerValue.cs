@@ -1,32 +1,39 @@
 ﻿using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
+using System;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
-public record class VBIntegerValue : VBTypedValue, IVBTypedValue<short>, INumericValue, INumericCoercion, IStringCoercion
+public record class VBIntegerValue : VBNumericTypedValue, 
+    IVBTypedValue<VBIntegerValue, short>,
+    INumericValue<VBIntegerValue>
 {
-    public static short MinValue { get; } = short.MinValue;
-    public static short MaxValue { get; } = short.MaxValue;
-    public static VBIntegerValue Zero { get; } = new VBIntegerValue { Value = 0 };
-
-    public VBIntegerValue(TypedSymbol? declarationSymbol = null) 
+    public VBIntegerValue(TypedSymbol? declarationSymbol = null)
         : base(VBIntegerType.TypeInfo, declarationSymbol) { }
 
+    public static VBIntegerValue MinValue { get; } = new VBIntegerValue().WithValue(short.MinValue);
+    public static VBIntegerValue MaxValue { get; } = new VBIntegerValue().WithValue(short.MaxValue);
+    public static VBIntegerValue Zero { get; } = new VBIntegerValue().WithValue(0);
+
+    VBIntegerValue INumericValue<VBIntegerValue>.MinValue => MinValue;
+    VBIntegerValue INumericValue<VBIntegerValue>.Zero => Zero;
+    VBIntegerValue INumericValue<VBIntegerValue>.MaxValue => MaxValue;
+
     public short Value { get; init; } = default;
-    public short DefaultValue { get; } = default;
+    public VBIntegerValue DefaultValue { get; } = Zero;
+    public short NominalValue => Value;
 
-    public double? AsCoercedNumeric(int depth = 0) => AsDouble();
-    public string? AsCoercedString(int depth = 0) => Value.ToString();
-    public double AsDouble() => (double)Value;
-    public int AsLong() => (int)Value;
-    public short AsInteger() => (short)Value;
+    public override int Size { get; } = sizeof(short);
+    protected override double State => Value;
 
-    public VBTypedValue WithValue(double value)
+    public VBIntegerValue WithValue(double value)
     {
-        if (value > MaxValue || value < MinValue)
+        if (value > MaxValue.Value || value < MinValue.Value)
         {
-            throw VBRuntimeErrorException.Overflow(Symbol!, $"`{TypeInfo.Name}` values must be between **{MinValue:N}** and **{MaxValue:N}**.");
+            throw VBRuntimeErrorException.Overflow(Symbol!, $"`{TypeInfo.Name}` values must be between **{MinValue.Value:N}** and **{MaxValue.Value:N}**.");
         }
         return this with { Value = (short)value };
     }
+
+    public VBIntegerValue WithValue(int value) => WithValue((double)value);
 }

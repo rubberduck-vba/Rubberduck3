@@ -1,38 +1,9 @@
 ﻿using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
-using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using System;
 using System.Collections.Immutable;
 using System.Linq;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
-
-public abstract record class VBType<TValue> : VBType
-{
-    protected VBType(string name, bool isUserDefined = false, bool isHidden = false)
-        : base(typeof(TValue), name, isUserDefined, isHidden)
-    {
-    }
-
-    /// <summary>
-    /// If <c>true</c>, the type is bound at run-time (i.e. late binding)
-    /// </summary>
-    public virtual bool RuntimeBinding { get; } = false;
-
-    /// <summary>
-    /// Gets the default managed value for this data type.
-    /// </summary>
-    public abstract TValue? DefaultValue { get; }
-}
-
-/// <summary>
-/// A metatype that describes a type. Not used in many places!
-/// </summary>
-public record class VBTypeDescValue : VBTypedValue
-{
-    public VBTypeDescValue(VBType type) : base(type, null)
-    {
-    }
-}
 
 public abstract record class VBType
 {
@@ -85,7 +56,6 @@ public abstract record class VBType
     }
 
     public Type? ManagedType { get; init; }
-    public int? Size { get; init; }
 
     /// <summary>
     /// The symbolic name of the type, as it is used in code.
@@ -97,6 +67,16 @@ public abstract record class VBType
 
     public bool IsUserDefined { get; init; }
     public bool IsHidden { get; init; }
+
+    /// <summary>
+    /// If <c>true</c>, the type is bound at run-time (i.e. late binding)
+    /// </summary>
+    public virtual bool RuntimeBinding { get; } = false;
+
+    /// <summary>
+    /// Gets the default managed value for this data type.
+    /// </summary>
+    public abstract VBTypedValue DefaultValue { get; }
 
 
     /// <summary>

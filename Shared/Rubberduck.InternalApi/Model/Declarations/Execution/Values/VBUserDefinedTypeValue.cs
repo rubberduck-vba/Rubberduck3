@@ -1,17 +1,24 @@
 ﻿using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
+using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
+using System;
+using System.Linq;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
-public record class VBUserDefinedTypeValue : VBTypedValue, IVBTypedValue<object>
+public record class VBUserDefinedTypeValue : VBTypedValue, 
+    IVBTypedValue<VBUserDefinedTypeValue, Guid>
 {
-    public VBUserDefinedTypeValue(VBUserDefinedType type, TypedSymbol? declarationSymbol = null) 
-        : base(type, declarationSymbol)
+    public VBUserDefinedTypeValue(VBUserDefinedType type, TypedSymbol? symbol = null) 
+        : base(type, symbol)
     {
-        DefaultValue = new object();
-        Value = DefaultValue;
+        Value = Guid.NewGuid();
     }
 
-    public object Value { get; }
-    public object DefaultValue { get; }
+    public Guid Value { get; }
+    public VBUserDefinedTypeValue DefaultValue => throw new NotSupportedException();
+    public Guid NominalValue => Value;
+
+    public override int Size => ((IVBMemberOwnerType)TypeInfo).Members.OfType<VBUserDefinedTypeMember>()
+        .Sum(member => ((TypedSymbol)member.Declaration!).ResolvedType!.DefaultValue.Size);
 }

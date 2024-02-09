@@ -1,20 +1,30 @@
 ﻿using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
+using System;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
-public record class VBDoubleValue : VBTypedValue, IVBTypedValue<double>, INumericValue, INumericCoercion, IStringCoercion
+public record class VBDoubleValue : VBNumericTypedValue, 
+    IVBTypedValue<VBDoubleValue, double>,
+    INumericValue<VBDoubleValue>
 {
-    public VBDoubleValue(TypedSymbol? declarationSymbol = null) 
-        : base(VBDoubleType.TypeInfo, declarationSymbol) { }
+    public VBDoubleValue(TypedSymbol? symbol = null)
+        : base(VBDoubleType.TypeInfo, symbol) { }
+
+    public static VBDoubleValue MinValue { get; } = new VBDoubleValue().WithValue(double.MinValue * Math.Pow(10, -4));
+    public static VBDoubleValue MaxValue { get; } = new VBDoubleValue().WithValue(double.MaxValue * Math.Pow(10, -4));
+    public static VBDoubleValue Zero { get; } = new VBDoubleValue().WithValue(0);
+
+    VBDoubleValue INumericValue<VBDoubleValue>.MinValue => MinValue;
+    VBDoubleValue INumericValue<VBDoubleValue>.Zero => Zero;
+    VBDoubleValue INumericValue<VBDoubleValue>.MaxValue => MaxValue;
 
     public double Value { get; init; } = default;
-    public double DefaultValue { get; } = default;
+    public VBDoubleValue DefaultValue { get; } = Zero;
+    public double NominalValue => Value;
 
-    public double? AsCoercedNumeric(int depth = 0) => AsDouble();
-    public string? AsCoercedString(int depth = 0) => Value.ToString();
-    public double AsDouble() => (double)Value;
-    public int AsLong() => (int)Value;
-    public short AsInteger() => (short)Value;
-    public VBTypedValue WithValue(double value) => this with { Value = value };
+    public override int Size => 8;
+    protected override double State => (double)Value;
+
+    public VBDoubleValue WithValue(double value) => this with { Value = value };
 }

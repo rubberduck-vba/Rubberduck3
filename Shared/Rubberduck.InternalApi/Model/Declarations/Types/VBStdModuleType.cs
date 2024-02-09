@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
+﻿using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
+using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 using System;
 using System.Collections.Generic;
 
@@ -11,5 +12,5 @@ public record class VBStdModuleType : VBMemberOwnerType
     {
     }
 
-    public override object? DefaultValue { get; } = new();
+    public override VBTypedValue DefaultValue { get; } = null!;
 }

@@ -42,9 +42,13 @@ public abstract record class VBTypeMember
     public RubberduckSymbolKind Kind { get; init; }
     public Accessibility Accessibility { get; init; }
 
+    public string DocString { get; init; }
+    public int UserMemId { get; init; }
+    public int MemberFlags { get; init; }
+
     public Symbol? Declaration { get; init; }
     public Symbol[] Definitions { get; init; }
-
+    
     public VBTypeMember WithUri(Uri uri) => this with { Uri = uri };
     public VBTypeMember WithName(string name) => this with { Name = name };
     public VBTypeMember WithSymbolKind(RubberduckSymbolKind kind) => this with { Kind = Kind };

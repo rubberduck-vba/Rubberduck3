@@ -3,6 +3,7 @@ using Rubberduck.InternalApi.Model.Declarations.Operators;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
+using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using System;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution.StandardLibrary
@@ -14,11 +15,11 @@ namespace Rubberduck.InternalApi.Model.Declarations.Execution.StandardLibrary
                 ? nop : SymbolOperation.EvaluateCompareOpResult(ref context, symbol, VBIntegerValue.Zero, value, (lhs, rhs) => lhs != rhs);
 
         public static VBByteValue CByte(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
-            CheckNullError(value, e => new VBByteValue(symbol).WithValue(e.Value ?? 0), out var nop)
-                ? nop : (VBByteValue)new VBByteValue(symbol).WithValue(GetNumericValueOrThrow(ref context, value));
+            CheckNullError(value, e => new VBByteValue(symbol).WithValue(e.Value), out var nop)
+                ? nop : (VBByteValue)(new VBByteValue(symbol)).WithValue(GetNumericValueOrThrow(ref context, value));
 
         public static VBCurrencyValue CCur(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
-            CheckNullError(value, e => (VBCurrencyValue)new VBCurrencyValue(symbol).WithValue(e.Value ?? 0), out var nop)
+            CheckNullError(value, e => (VBCurrencyValue)new VBCurrencyValue(symbol).WithValue(e.Value), out var nop)
                 ? nop : (VBCurrencyValue)new VBCurrencyValue(symbol).WithValue(GetNumericValueOrThrow(ref context, value));
 
         public static VBDateValue CDate(ref VBExecutionScope context, VBTypedValue value)
@@ -45,34 +46,34 @@ namespace Rubberduck.InternalApi.Model.Declarations.Execution.StandardLibrary
         }
 
         public static VBDoubleValue CDbl(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
-            CheckNullError(value, e => (VBDoubleValue)new VBDoubleValue(symbol).WithValue(e.Value ?? 0), out var nop)
+            CheckNullError(value, e => (VBDoubleValue)new VBDoubleValue(symbol).WithValue(e.Value), out var nop)
                 ? nop : (VBDoubleValue)new VBDoubleValue(symbol).WithValue(GetNumericValueOrThrow(ref context, value));
 
         public static VBDecimalValue CDec(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
-            CheckNullError(value, e => new VBDecimalValue(symbol).WithValue((decimal)(e.Value ?? 0)), out var nop)
+            CheckNullError(value, e => new VBDecimalValue(symbol).WithValue(e.Value), out var nop)
                 ? nop : (VBDecimalValue)new VBDecimalValue(symbol).WithValue(GetNumericValueOrThrow(ref context, value));
 
         public static VBIntegerValue CInt(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
-            CheckNullError(value, e => (VBIntegerValue)new VBIntegerValue(symbol).WithValue(e.Value ?? 0), out var nop)
+            CheckNullError(value, e => (VBIntegerValue)new VBIntegerValue(symbol).WithValue(e.Value), out var nop)
                 ? nop : (VBIntegerValue)new VBIntegerValue(symbol).WithValue(GetNumericValueOrThrow(ref context, value));
 
         public static VBLongValue CLng(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
-            CheckNullError(value, e => (VBLongValue)new VBLongValue(symbol).WithValue(e.Value ?? 0), out var nop)
+            CheckNullError(value, e => (VBLongValue)new VBLongValue(symbol).WithValue(e.Value), out var nop)
                 ? nop : (VBLongValue)new VBLongValue(symbol).WithValue(GetNumericValueOrThrow(ref context, value));
 
         public static VBLongLongValue CLngLng(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
-            CheckNullError(value, e => (VBLongLongValue)new VBLongLongValue(symbol).WithValue(e.Value ?? 0), out var nop)
+            CheckNullError(value, e => (VBLongLongValue)new VBLongLongValue(symbol).WithValue(e.Value), out var nop)
                 ? nop : (VBLongLongValue) new VBLongLongValue(symbol).WithValue(GetNumericValueOrThrow(ref context, value));
 
         public static VBLongPtrValue CLngPtr(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value)
         {
             VBType ptrSize = context.Is64BitHost ? VBLongLongType.TypeInfo : VBLongType.TypeInfo;
-            return CheckNullError(value, e => (VBLongPtrValue)new VBLongPtrValue(symbol).WithValue(e.Value ?? 0, ptrSize), out var nop)
+            return CheckNullError(value, e => (VBLongPtrValue)new VBLongPtrValue(symbol).WithValue(e.Value, ptrSize), out var nop)
                 ? nop : (VBLongPtrValue)new VBLongPtrValue(symbol).WithValue(GetNumericValueOrThrow(ref context, value), ptrSize);
         }
 
         public static VBSingleValue CSng(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
-            CheckNullError(value, e => (VBSingleValue)new VBSingleValue(symbol).WithValue(e.Value ?? 0), out var nop)
+            CheckNullError(value, e => (VBSingleValue)new VBSingleValue(symbol).WithValue(e.Value), out var nop)
                 ? nop : (VBSingleValue)new VBSingleValue(symbol).WithValue(GetNumericValueOrThrow(ref context, value));
 
         public static VBStringValue CStr(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
@@ -107,21 +108,31 @@ namespace Rubberduck.InternalApi.Model.Declarations.Execution.StandardLibrary
         public static VBStringValue ErrorS(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
             new VBStringValue(symbol).WithValue(VBRuntimeErrorException.GetErrorString((int)GetNumericValueOrThrow(ref context, value)));
 
-        public static VBStringValue HexS(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
-            ConvertNumericString(ref context, symbol, value, n => n.ToString("X"));
         public static VBVariantValue CVErr(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
             Convert(ref context, symbol, value, n => new VBErrorValue(symbol, (int)n));
         public static VBVariantValue Fix(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
             Convert(ref context, symbol, value, n => Math.Sign(n) * Math.Truncate(Math.Abs(n)));
         public static VBVariantValue Hex(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
             Convert(ref context, symbol, value, n => n.ToString("X"));
+        public static VBStringValue HexS(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
+            ConvertNumericString(ref context, symbol, value, n => n.ToString("X"));
         public static VBVariantValue Int(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
             Convert(ref context, symbol, value, n => Math.Truncate(n));
         public static VBVariantValue Oct(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
             Convert(ref context, symbol, value, n => System.Convert.ToString((long)n, toBase: 8));
+        public static VBStringValue OctS(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
+            ConvertNumericString(ref context, symbol, value, n => System.Convert.ToString((long)n, toBase: 8));
+        public static VBVariantValue Str(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
+            new VBVariantValue(new VBStringValue(symbol).WithValue(GetStringValueOrThrow(value)), symbol);
+        public static VBStringValue StrS(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
+            new VBStringValue(symbol).WithValue(GetStringValueOrThrow(value));
+
+        public static VBDoubleValue Val(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value) =>
+            CheckNullError(value, null as Func<VBTypedValue, VBDoubleValue>, out var nop) 
+                ? nop : throw new NotImplementedException(); // <~ TODO!
 
         private static VBVariantValue Convert<T>(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value, Func<double, T> op) =>
-            new VBVariantValue(value, symbol) { Value = op(GetNumericValueOrThrow(ref context, value)) };
+            new VBVariantValue(value, symbol) { Value = value is VBNullValue ? value : op(GetNumericValueOrThrow(ref context, value)) };
 
         private static VBStringValue ConvertNumericString(ref VBExecutionScope context, TypedSymbol symbol, VBTypedValue value, Func<double, string> op) =>
             new VBStringValue(symbol).WithValue(op(GetNumericValueOrThrow(ref context, value)));
@@ -131,14 +142,14 @@ namespace Rubberduck.InternalApi.Model.Declarations.Execution.StandardLibrary
         /// </summary>
         /// <exception cref="VBRuntimeErrorException" />
         private static string GetStringValueOrThrow(VBTypedValue value) => value is IStringCoercion coercible
-            ? coercible.AsCoercedString() // NOTE: diagnostics here would be noisy.
+            ? coercible.AsCoercedString()?.Value ?? throw VBRuntimeErrorException.TypeMismatch(value.Symbol!)
             : throw VBRuntimeErrorException.TypeMismatch(value.Symbol!);
 
         /// <summary>
         /// Throws a <c>VBRuntimeErrorException.TypeMismatch</c> if it isn't a number, or can't be coerced into one.
         /// </summary>
         /// <exception cref="VBRuntimeErrorException" />
-        private static double GetNumericValueOrThrow(ref VBExecutionScope context, VBTypedValue value) => 
+        private static double GetNumericValueOrThrow(ref VBExecutionScope context, VBTypedValue value) =>
             TryConvertNumericValue(ref context, value, out var numericResult)
                 ? numericResult
                 : throw VBRuntimeErrorException.TypeMismatch(value.Symbol!);
@@ -147,20 +158,23 @@ namespace Rubberduck.InternalApi.Model.Declarations.Execution.StandardLibrary
         {
             if (value is INumericValue numeric)
             {
-                numericResult = numeric.AsDouble();
+                numericResult = numeric.AsDouble().Value;
                 return true;
             }
 
             if (value is INumericCoercion coercible)
             {
-                var coerced = coercible.AsCoercedNumeric() ?? 0;
+                var coerced = coercible.AsCoercedNumeric();
                 context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitNumericCoercion(value.Symbol!));
 
-                numericResult = coerced;
-                return true;
+                if (coerced != null)
+                {
+                    numericResult = coerced.Value;
+                    return true;
+                }
             }
 
-            numericResult = double.NaN;
+            numericResult = VBDoubleValue.Zero.Value;
             return false;
         }
 
@@ -200,7 +214,12 @@ namespace Rubberduck.InternalApi.Model.Declarations.Execution.StandardLibrary
 
             if (value is VBNullValue)
             {
-                throw VBRuntimeErrorException.InvalidUseOfNull(value.Symbol!, "There is no possible type conversion from `Null`.");
+                throw VBRuntimeErrorException.InvalidUseOfNull(value.Symbol!, "Cannot convert from `Null`.");
+            }
+
+            if ((RubberduckSymbolKind)value.Symbol!.Kind == RubberduckSymbolKind.Nothing)
+            {
+                throw VBCompileErrorException.InvalidUseOfObject(value.Symbol, "The ");
             }
 
             typedResult = null!;

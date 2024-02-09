@@ -1,21 +1,30 @@
 ﻿using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
+using System;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
-public record class VBObjectValue : VBTypedValue, IVBTypedValue<object?>, INumericCoercion, IStringCoercion
+public record class VBObjectValue : VBTypedValue, 
+    IVBTypedValue<VBObjectValue, Guid>, 
+    INumericCoercion, 
+    IStringCoercion
 {
-    public VBObjectValue(TypedSymbol declarationSymbol)
-        : base(VBObjectType.TypeInfo, declarationSymbol) { }
+    public VBObjectValue(TypedSymbol? symbol)
+        : base(VBObjectType.TypeInfo, symbol) { }
 
-    public static object? Nothing { get; } = null;
+    public static VBObjectValue Nothing { get; } = new VBNothingValue();
 
-    public object? Value { get; init; }
-    public object? DefaultValue { get; init; }
+    public Guid Value { get; init; }
+    public VBObjectValue DefaultValue { get; init; } = Nothing;
+    public Guid NominalValue => Value;
 
-    public double? AsCoercedNumeric(int depth = 0) => LetCoerce(depth) is INumericValue value ? value.AsDouble() : null;
-    public string? AsCoercedString(int depth = 0) => LetCoerce(depth) is VBStringValue value ? value.Value : null;
+    public override int Size => sizeof(int);
+
+    public bool IsNothing() => Value == Nothing.Value;
+
+    public VBDoubleValue? AsCoercedNumeric(int depth = 0) => LetCoerce(depth) is INumericValue value ? value.AsDouble() : null;
+    public VBStringValue? AsCoercedString(int depth = 0) => LetCoerce(depth) is VBStringValue value ? value : null;
 
     /// <summary>
     /// Implicit default member call coerces the object reference into an intrinsic value.
@@ -30,7 +39,7 @@ public record class VBObjectValue : VBTypedValue, IVBTypedValue<object?>, INumer
             throw VBRuntimeErrorException.OutOfStackSpace(Symbol!, $"Recursive `Let` coercion did not resolve a typed value, {depth} levels deep.");
         }
 
-        if (Value is null)
+        if (IsNothing())
         {
             throw VBRuntimeErrorException.ObjectVariableNotSet(Symbol!, $"Recursive `Let` coercion requires the object reference to be assigned so that the default member can be invoked.");
         }
@@ -53,7 +62,7 @@ public record class VBObjectValue : VBTypedValue, IVBTypedValue<object?>, INumer
                     var value = coercibleString.AsCoercedString(depth);
                     if (symbol != null && value != null)
                     {
-                        return new VBStringValue(symbol).WithValue(value);
+                        return value;
                     }
                 }
             }

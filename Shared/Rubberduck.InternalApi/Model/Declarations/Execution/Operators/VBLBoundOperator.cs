@@ -2,31 +2,39 @@
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
-using Rubberduck.InternalApi.Model.Declarations.Types;
 using System;
-using System.Linq;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Operators;
 
-public record class VBLBoundOperator : VBUnaryOperator
+public record class VBLBoundOperator : VBOperator
 {
-    public VBLBoundOperator(string expression, TypedSymbol operand, Uri parentUri)
-        : base(Tokens.LBound, expression, parentUri, operand)
+    public VBLBoundOperator(Uri parentUri, string arrayOperandExpression, string dimensionIndexExpression, TypedSymbol? resolvedArrayOperand = null, TypedSymbol? resolvedDimensionIndex = null)
+        : base(Tokens.LBound, parentUri, (resolvedArrayOperand is null || resolvedDimensionIndex is null) ? null : [resolvedArrayOperand, resolvedDimensionIndex!])
     {
+        ArrayOperandExpression = arrayOperandExpression;
+        DimensionIndexExpression = dimensionIndexExpression;
+
+        ResolvedArrayOperand = resolvedArrayOperand;
+        ResolvedDimensionIndex = resolvedDimensionIndex;
     }
+
+    public string ArrayOperandExpression { get; init; }
+    public TypedSymbol? ResolvedArrayOperand { get; init; }
+
+    public string DimensionIndexExpression { get; init; }
+    public TypedSymbol? ResolvedDimensionIndex { get; init; }
 
     protected override VBTypedValue? EvaluateResult(ref VBExecutionScope context)
     {
-        var symbol = (TypedSymbol)Children!.First();
-        var value = context.GetTypedValue(symbol);
+        var array = context.GetTypedValue(ResolvedArrayOperand!) as VBArrayValue;
+        var dimension = context.GetTypedValue(ResolvedDimensionIndex!) as VBNumericTypedValue;
 
-        if (value.TypeInfo is VBArrayType arrayType)
+        if (array != null)
         {
-            return arrayType.DeclaredLowerBound.HasValue
-                ? new VBLongValue(this).WithValue(arrayType.DeclaredLowerBound.Value)
-                : new VBLongValue(this).WithValue(VBArrayType.ImplicitBoundary);
+            var index = dimension?.AsLong().Value ?? 0;
+            return new VBLongValue(ResolvedDimensionIndex).WithValue(array.Dimensions[index].LowerBound);
         }
 
-        throw VBCompileErrorException.ExpectedArray(symbol, "Use the `LBound` operator to find the lower boundary of an array variable.");
+        throw VBCompileErrorException.ExpectedArray(ResolvedArrayOperand!, "Use the `LBound` operator to find the lower boundary of an array variable.");
     }
 }

@@ -20,7 +20,7 @@ public record class VBNewOperator : VBUnaryOperator
         return new VBObjectValue(this)
         { 
             TypeInfo = type.ResolvedType!, 
-            Value = new object() 
+            Value = Guid.NewGuid()
         };
     }
 }
