@@ -5,14 +5,13 @@ namespace Rubberduck.InternalApi.Model.Declarations.Types;
 
 public record class VBDecimalType : VBIntrinsicType<decimal>, INumericType
 {
+    private static readonly VBDecimalType _type = new();
+
     private VBDecimalType() : base(Tokens.Decimal) { }
 
-    public static VBDecimalType TypeInfo { get; } = new();
+    public static VBDecimalType TypeInfo => _type;
 
     public override VBTypedValue DefaultValue { get; } = VBDecimalValue.Zero;
 
-    public override bool IsDeclarable { get; } = false; // indeed, "As Decimal" is illegal, ..but CDec() returns a Decimal.
-
-    public override VBType[] ConvertsSafelyToTypes { get; }
-        = [VbCurrencyType, VbSingleType, VbDoubleType, VbStringType, VbVariantType];
+    public override bool IsDeclarable { get; } = false; // "As Decimal" is explicitly specified as illegal.
 }

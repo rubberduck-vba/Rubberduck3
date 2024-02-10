@@ -15,5 +15,5 @@ public interface ITypedSymbol
     /// <summary>
     /// Gets a copy of this symbol with the specified resolved type.
     /// </summary>
-    ITypedSymbol WithResolvedType(VBType resolvedType);
+    TypedSymbol WithResolvedType(VBType resolvedType);
 }

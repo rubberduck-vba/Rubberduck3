@@ -5,11 +5,11 @@ namespace Rubberduck.InternalApi.Model.Declarations.Types;
 
 public record class VBCurrencyType : VBIntrinsicType<decimal>, INumericType
 {
+    private static readonly VBCurrencyType _type = new();
+
     private VBCurrencyType() : base(Tokens.Currency) { }
 
-    public static VBCurrencyType TypeInfo { get; } = new();
+    public static VBCurrencyType TypeInfo => _type;
 
     public override VBTypedValue DefaultValue { get; } = VBCurrencyValue.Zero;
-    public override VBType[] ConvertsSafelyToTypes { get; }
-        = [VbDecimalType, VbSingleType, VbDoubleType, VbStringType, VbVariantType];
 }

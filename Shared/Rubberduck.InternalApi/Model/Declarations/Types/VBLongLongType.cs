@@ -5,11 +5,11 @@ namespace Rubberduck.InternalApi.Model.Declarations.Types;
 
 public record class VBLongLongType : VBIntrinsicType<long>, INumericType
 {
+    private static readonly VBLongLongType _type = new();
+
     private VBLongLongType() : base(Tokens.LongLong) { }
 
-    public static VBLongLongType TypeInfo { get; } = new();
+    public static VBLongLongType TypeInfo => _type;
 
     public override VBTypedValue DefaultValue { get; } = VBLongLongValue.Zero;
-    public override VBType[] ConvertsSafelyToTypes { get; }
-        = [VbDecimalType, VbCurrencyType, VbSingleType, VbDoubleType, VbStringType, VbVariantType];
 }

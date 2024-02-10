@@ -95,7 +95,7 @@ public abstract record class TypedSymbol : Symbol, ITypedSymbol
     public Accessibility Accessibility { get; }
 
     public VBType? ResolvedType { get; init; }
-    public ITypedSymbol WithResolvedType(VBType? resolvedType) => this with { ResolvedType = resolvedType };
+    public TypedSymbol WithResolvedType(VBType? resolvedType) => this with { ResolvedType = resolvedType };
 }
 
 public abstract record class DeclarationExpressionSymbol : TypedSymbol, IDeclaredTypeSymbol
@@ -110,7 +110,7 @@ public abstract record class DeclarationExpressionSymbol : TypedSymbol, IDeclare
         if (type is null)
         {
             return string.IsNullOrWhiteSpace(asTypeExpression) 
-                ? VBType.VbVariantType // type not specified is an implicit variant
+                ? VBVariantType.TypeInfo // type not specified is an implicit variant
                 : null; // type must be resolved later
         }
 
@@ -353,7 +353,15 @@ public record class VariableDeclarationSymbol : DeclarationExpressionSymbol
 public record class StringLiteralSymbol : TypedSymbol
 {
     public StringLiteralSymbol(string name, Uri parentUri)
-        : base(RubberduckSymbolKind.StringLiteral, Accessibility.Undefined, name, parentUri, null, VBType.VbStringType)
+        : base(RubberduckSymbolKind.StringLiteral, Accessibility.Undefined, name, parentUri, null, VBStringType.TypeInfo)
+    {
+    }
+}
+
+public record class NumberLiteralSymbol : TypedSymbol
+{
+    public NumberLiteralSymbol(string name, Uri parentUri)
+        : base(RubberduckSymbolKind.NumberLiteral, Accessibility.Undefined, name, parentUri, null)
     {
     }
 }

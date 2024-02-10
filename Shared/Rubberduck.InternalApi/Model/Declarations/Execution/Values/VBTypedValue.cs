@@ -4,14 +4,10 @@ using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
-public interface IVBTypedValue<VBTValue, TValue, TNominal> where VBTValue : VBTypedValue
+public interface IVBTypedValue<VBTValue, TValue> where VBTValue : VBTypedValue
 {
-    VBTValue DefaultValue { get; }
     TValue Value { get; }
-    TNominal NominalValue { get; }
 }
-
-public interface IVBTypedValue<VBTValue, TValue> : IVBTypedValue<VBTValue, TValue, TValue> where VBTValue : VBTypedValue { }
 
 public abstract record class VBTypedValue
 {

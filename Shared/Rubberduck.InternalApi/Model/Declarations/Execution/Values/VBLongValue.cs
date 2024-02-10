@@ -10,20 +10,17 @@ public record class VBLongValue : VBNumericTypedValue,
     public VBLongValue(TypedSymbol? declarationSymbol = null)
         : base(VBLongType.TypeInfo, declarationSymbol) { }
 
-    public static VBLongValue MinValue { get; } = new VBLongValue().WithValue(int.MinValue);
-    public static VBLongValue MaxValue { get; } = new VBLongValue().WithValue(int.MaxValue);
-    public static VBLongValue Zero { get; } = new VBLongValue().WithValue(0);
+    public static VBLongValue MinValue { get; } = new VBLongValue { NumericValue = int.MinValue };
+    public static VBLongValue MaxValue { get; } = new VBLongValue { NumericValue = int.MaxValue };
+    public static VBLongValue Zero { get; } = new VBLongValue { NumericValue = 0 };
 
     VBLongValue INumericValue<VBLongValue>.MinValue => MinValue;
     VBLongValue INumericValue<VBLongValue>.Zero => Zero;
     VBLongValue INumericValue<VBLongValue>.MaxValue => MaxValue;
 
-    public int Value { get; init; } = default;
-    public VBLongValue DefaultValue { get; } = Zero;
-    public int NominalValue => Value;
-
+    public int Value => (int)NumericValue;
     public override int Size => sizeof(int);
-    protected override double State => Value;
+    public override double NumericValue { get; init; }
 
     public VBLongValue WithValue(double value)
     {
@@ -31,8 +28,8 @@ public record class VBLongValue : VBNumericTypedValue,
         {
             throw VBRuntimeErrorException.Overflow(Symbol!, $"`{TypeInfo.Name}` values must be between **{MinValue.Value:N}** and **{MaxValue.Value:N}**.");
         }
-        return this with { Value = (int)value };
+        return this with { NumericValue = (int)value };
     }
 
-    public VBLongValue WithValue(int value) => WithValue((double)value);
+    public new VBLongValue WithValue(int value) => WithValue((double)value);
 }

@@ -11,20 +11,17 @@ public record class VBDecimalValue : VBNumericTypedValue,
     public VBDecimalValue(TypedSymbol? declarationSymbol = null)
         : base(VBDecimalType.TypeInfo, declarationSymbol) { }
 
-    public static VBDecimalValue MinValue { get; } = new VBDecimalValue().WithValue(long.MinValue * Math.Pow(10, -4));
-    public static VBDecimalValue MaxValue { get; } = new VBDecimalValue().WithValue(long.MaxValue * Math.Pow(10, -4));
-    public static VBDecimalValue Zero { get; } = new VBDecimalValue().WithValue(0);
+    public static VBDecimalValue MinValue { get; } = new VBDecimalValue { NumericValue = (double)(long.MinValue * Math.Pow(10, -4)) };
+    public static VBDecimalValue MaxValue { get; } = new VBDecimalValue { NumericValue = (double)(long.MaxValue * Math.Pow(10, -4)) };
+    public static VBDecimalValue Zero { get; } = new VBDecimalValue { NumericValue = 0 };
 
     VBDecimalValue INumericValue<VBDecimalValue>.MinValue => MinValue;
     VBDecimalValue INumericValue<VBDecimalValue>.Zero => Zero;
     VBDecimalValue INumericValue<VBDecimalValue>.MaxValue => MaxValue;
 
-    public decimal Value { get; init; } = default;
-    public VBDecimalValue DefaultValue { get; } = Zero;
-    public decimal NominalValue => Value;
-
+    public decimal Value => (decimal)NumericValue;    
     public override int Size => 14;
-    protected override double State => (double)Value;
+    public override double NumericValue { get; init; }
 
-    public VBDecimalValue WithValue(double value) => this with { Value = (decimal)value };
+    public VBDecimalValue WithValue(double value) => this with { NumericValue = (double)value };
 }

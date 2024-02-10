@@ -7,46 +7,6 @@ namespace Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 
 public abstract record class VBType
 {
-    #region intrinsic types
-    public static VBType VbBooleanType { get; } = VBBooleanType.TypeInfo;
-    public static VBType VbByteType { get; } = VBByteType.TypeInfo;
-    public static VBType VbIntegerType { get; } = VBIntegerType.TypeInfo;
-    public static VBType VbLongType { get; } = VBLongType.TypeInfo;
-    public static VBType VbLongPtrType { get; } = VBLongPtrType.TypeInfo;
-    public static VBType VbLongLongType { get; } = VBLongLongType.TypeInfo;
-    public static VBType VbCurrencyType { get; } = VBCurrencyType.TypeInfo;
-    public static VBType VbDecimalType { get; } = VBDecimalType.TypeInfo;
-    public static VBType VbSingleType { get; } = VBSingleType.TypeInfo;
-    public static VBType VbDoubleType { get; } = VBDoubleType.TypeInfo;
-    public static VBType VbDateType { get; } = VBDateType.TypeInfo;
-    public static VBType VbStringType { get; } = VBStringType.TypeInfo;
-    public static VBType VbObjectType { get; } = VBObjectType.TypeInfo;
-    public static VBType VbVariantType { get; } = VBVariantType.TypeInfo;
-    public static VBType VbEmptyType { get; } = VBEmptyType.TypeInfo;
-    public static VBType VbNullType { get; } = VBNullType.TypeInfo;
-    public static VBType VbErrorType { get; } = VBErrorType.TypeInfo;
-
-    public static ImmutableArray<VBType> IntrinsicTypes { get; } =
-        [
-            VbBooleanType,
-            VbByteType,
-            VbIntegerType,
-            VbLongType,
-            VbLongLongType,
-            VbCurrencyType,
-            VbDecimalType,
-            VbSingleType,
-            VbDoubleType,
-            VbDateType,
-            VbStringType,
-            VbObjectType,
-            VbVariantType,
-            VbEmptyType,
-            VbNullType,
-            VbErrorType,
-        ];
-    #endregion
-
     public VBType(Type? managedType, string name, bool isUserDefined = false, bool isHidden = false)
     {
         ManagedType = managedType;

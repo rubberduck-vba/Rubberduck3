@@ -10,20 +10,17 @@ public record class VBSingleValue : VBNumericTypedValue,
     public VBSingleValue(TypedSymbol? declarationSymbol = null)
         : base(VBSingleType.TypeInfo, declarationSymbol) { }
 
-    public static VBSingleValue MinValue { get; } = new VBSingleValue().WithValue(float.MinValue);
-    public static VBSingleValue MaxValue { get; } = new VBSingleValue().WithValue(float.MaxValue);
-    public static VBSingleValue Zero { get; } = new VBSingleValue().WithValue(0);
+    public static VBSingleValue MinValue { get; } = new VBSingleValue { NumericValue = float.MinValue };
+    public static VBSingleValue MaxValue { get; } = new VBSingleValue { NumericValue = float.MaxValue };
+    public static VBSingleValue Zero { get; } = new VBSingleValue { NumericValue = 0 };
 
     VBSingleValue INumericValue<VBSingleValue>.MinValue => MinValue;
     VBSingleValue INumericValue<VBSingleValue>.Zero => Zero;
     VBSingleValue INumericValue<VBSingleValue>.MaxValue => MaxValue;
 
-    public float Value { get; set; } = default;
-    public VBSingleValue DefaultValue { get; } = Zero;
-    public float NominalValue => Value;
-
+    public float Value => (float)NumericValue;
     public override int Size => sizeof(float);
-    protected override double State => Value;
+    public override double NumericValue { get; init; }
 
-    public VBSingleValue WithValue(double value) => this with { Value = (float)value };
+    public VBSingleValue WithValue(double value) => this with { NumericValue = (float)value };
 }

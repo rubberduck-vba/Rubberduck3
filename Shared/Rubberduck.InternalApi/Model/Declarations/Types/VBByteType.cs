@@ -5,11 +5,10 @@ namespace Rubberduck.InternalApi.Model.Declarations.Types;
 
 public record class VBByteType : VBIntrinsicType<byte>, INumericType
 {
+    private static readonly VBByteType _type = new();
+
     private VBByteType() : base(Tokens.Byte) { }
 
-    public static VBByteType TypeInfo { get; } = new();
-
+    public static VBByteType TypeInfo => _type;
     public override VBByteValue DefaultValue { get; } = new();
-    public override VBType[] ConvertsSafelyToTypes { get; }
-        = [VbIntegerType, VbLongType, VbLongLongType, VbCurrencyType, VbSingleType, VbDoubleType, VbStringType, VbVariantType];
 }

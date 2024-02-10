@@ -24,9 +24,6 @@ public record class VBDateValue : VBTypedValue,
     public double AsDouble() => SerialValue;
 
     public DateTime Value { get; init; } = default;
-    public VBDateValue DefaultValue { get; } = Zero;
-    public DateTime NominalValue => throw new NotImplementedException();
-
     public override int Size => 8;
 
     public VBDoubleValue AsCoercedNumeric(int depth = 0) => new VBDoubleValue(Symbol).WithValue(SerialValue);

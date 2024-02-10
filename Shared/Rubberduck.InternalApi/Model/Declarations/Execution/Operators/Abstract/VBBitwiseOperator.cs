@@ -2,7 +2,6 @@
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
-using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 using System;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
@@ -12,7 +11,7 @@ public abstract record class VBBitwiseOperator : VBBinaryOperator
     protected VBBitwiseOperator(string token, Uri parentUri, string lhsExpression, string rhsExpression, TypedSymbol? lhs = null, TypedSymbol? rhs = null) 
         : base(token, parentUri, lhsExpression, rhsExpression, lhs, rhs)
     {
-        ResolvedType = VBType.VbLongType;
+        ResolvedType = VBLongType.TypeInfo;
     }
 
     public VBBooleanValue ExecuteAsLogicalOp(ref VBExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue) =>

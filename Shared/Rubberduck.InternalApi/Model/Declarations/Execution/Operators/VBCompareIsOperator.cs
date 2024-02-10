@@ -16,14 +16,12 @@ public record class VBCompareIsOperator : VBComparisonOperator
 
     protected override VBTypedValue ExecuteBinaryOperator(ref VBExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue)
     {
-        if (VBType.IntrinsicTypes.Contains(lhsValue.TypeInfo)
-            || lhsValue is not VBObjectValue lhsObj)
+        if (lhsValue is not VBObjectValue lhsObj || lhsValue.TypeInfo is VBIntrinsicType)
         {
             throw VBRuntimeErrorException.TypeMismatch(lhsValue.Symbol!);
         }
         
-        if (VBType.IntrinsicTypes.Contains(rhsValue.TypeInfo)
-            || rhsValue is not VBObjectValue rhsObj)
+        if (rhsValue is not VBObjectValue rhsObj || rhsValue.TypeInfo is VBIntrinsicType)
         {
             throw VBRuntimeErrorException.TypeMismatch(rhsValue.Symbol!);
         }
@@ -31,3 +29,4 @@ public record class VBCompareIsOperator : VBComparisonOperator
         return new VBBooleanValue(this) { Value = ReferenceEquals(lhsObj, rhsObj) };
     }
 }
+ 

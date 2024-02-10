@@ -15,9 +15,6 @@ public record class VBEmptyValue : VBTypedValue,
     public static VBEmptyValue Empty { get; } = new VBEmptyValue();
 
     public IntPtr Value => IntPtr.Zero;
-    public VBEmptyValue DefaultValue => Empty;
-    public IntPtr NominalValue => IntPtr.Zero;
-
     public override int Size => sizeof(int);
 
     public VBDoubleValue AsCoercedNumeric(int depth = 0) => VBDoubleValue.Zero;

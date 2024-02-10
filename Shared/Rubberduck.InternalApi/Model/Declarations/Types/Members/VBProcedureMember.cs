@@ -15,12 +15,7 @@ namespace Rubberduck.InternalApi.Model.Declarations.Types;
 /// </summary>
 public abstract record class VBExecutableMember : VBTypeMember
 {
-    public VBExecutableMember(Uri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, Symbol declaration, TypedSymbol[]? definitions = null)
-        : base(uri, name, kind, accessibility, declaration, definitions)
-    {
-    }
-
-    public VBExecutableMember(Uri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, Symbol? declaration = null, TypedSymbol[]? definitions = null, bool isUserDefined = false)
+    public VBExecutableMember(Uri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, Symbol? declaration, TypedSymbol[]? definitions = null, bool isUserDefined = false)
         : base(uri, name, kind, accessibility, declaration, definitions, isUserDefined)
     {
     }
@@ -33,12 +28,7 @@ public abstract record class VBExecutableMember : VBTypeMember
 
 public record class VBProcedureMember : VBExecutableMember
 {
-    public VBProcedureMember(Uri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, Symbol declaration, TypedSymbol[]? definitions = null)
-        : base(uri, name, kind, accessibility, declaration, definitions)
-    {
-    }
-
-    public VBProcedureMember(Uri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, Symbol? declaration = null, TypedSymbol[]? definitions = null, bool isUserDefined = false)
+    public VBProcedureMember(Uri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, Symbol? declaration, TypedSymbol[]? definitions = null, bool isUserDefined = false)
         : base(uri, name, kind, accessibility, declaration, definitions, isUserDefined)
     {
     }

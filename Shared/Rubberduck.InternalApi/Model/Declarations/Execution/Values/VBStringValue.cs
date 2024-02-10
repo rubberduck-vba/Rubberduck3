@@ -12,17 +12,13 @@ public record class VBStringValue : VBTypedValue,
         : base(VBStringType.TypeInfo, symbol) { }
 
     public static VBStringValue VBNullString { get; } = new VBStringValue();
-    public static VBStringValue ZeroLengthString { get; } = new VBStringValue().WithValue(string.Empty);
+    public static VBStringValue ZeroLengthString { get; } = new VBStringValue { Value = string.Empty };
 
-    public string? Value { get; init; } = default;
-    public VBStringValue DefaultValue { get; } = VBNullString;
-    public virtual string NominalValue => Value ?? string.Empty;
-
-    public virtual int Length => NominalValue.Length;
-
+    public string Value { get; init; } = default!;
+    public virtual int Length => Value?.Length ?? 0;
     public override int Size => Value is null ? 0 : 2 * Length + 2;
 
-    public VBStringValue AsCoercedString(int depth = 0) => new VBStringValue(Symbol).WithValue(NominalValue);
+    public VBStringValue AsCoercedString(int depth = 0) => this;
     public VBDoubleValue AsCoercedNumeric(int depth = 0)
     {
         if (double.TryParse(Value, out var coerced))

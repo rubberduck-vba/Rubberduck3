@@ -11,20 +11,17 @@ public record class VBIntegerValue : VBNumericTypedValue,
     public VBIntegerValue(TypedSymbol? declarationSymbol = null)
         : base(VBIntegerType.TypeInfo, declarationSymbol) { }
 
-    public static VBIntegerValue MinValue { get; } = new VBIntegerValue().WithValue(short.MinValue);
-    public static VBIntegerValue MaxValue { get; } = new VBIntegerValue().WithValue(short.MaxValue);
-    public static VBIntegerValue Zero { get; } = new VBIntegerValue().WithValue(0);
+    public static VBIntegerValue MinValue { get; } = new VBIntegerValue { NumericValue = short.MinValue };
+    public static VBIntegerValue MaxValue { get; } = new VBIntegerValue { NumericValue = short.MaxValue };
+    public static VBIntegerValue Zero { get; } = new VBIntegerValue { NumericValue = 0 };
 
     VBIntegerValue INumericValue<VBIntegerValue>.MinValue => MinValue;
     VBIntegerValue INumericValue<VBIntegerValue>.Zero => Zero;
     VBIntegerValue INumericValue<VBIntegerValue>.MaxValue => MaxValue;
 
-    public short Value { get; init; } = default;
-    public VBIntegerValue DefaultValue { get; } = Zero;
-    public short NominalValue => Value;
-
+    public short Value => (short)NumericValue;
     public override int Size { get; } = sizeof(short);
-    protected override double State => Value;
+    public override double NumericValue { get; init; }
 
     public VBIntegerValue WithValue(double value)
     {
@@ -32,8 +29,8 @@ public record class VBIntegerValue : VBNumericTypedValue,
         {
             throw VBRuntimeErrorException.Overflow(Symbol!, $"`{TypeInfo.Name}` values must be between **{MinValue.Value:N}** and **{MaxValue.Value:N}**.");
         }
-        return this with { Value = (short)value };
+        return this with { NumericValue = (short)value };
     }
 
-    public VBIntegerValue WithValue(int value) => WithValue((double)value);
+    public new VBIntegerValue WithValue(int value) => WithValue((double)value);
 }

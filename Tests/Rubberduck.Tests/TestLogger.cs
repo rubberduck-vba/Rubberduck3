@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 using System;
 
-namespace Rubberduck.Tests.VBTypes
+namespace Rubberduck.Tests
 {
     internal class TestLogger : ILogger
     {

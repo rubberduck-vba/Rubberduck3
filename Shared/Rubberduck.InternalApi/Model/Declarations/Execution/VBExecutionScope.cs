@@ -47,9 +47,9 @@ public record class VBExecutionScope : IDiagnosticSource, IExecutable
     public bool ActiveOnErrorResumeNext { get; init; }
     public Symbol? ActiveOnErrorGoTo { get; init; }
     public Symbol? ActiveGoSubReturnTo { get; init; }
-    public bool ActiveErrorState { get; init; }
+    public bool ActiveErrorState => Error != null;
 
-    public IEnumerable<Diagnostic> Diagnostics { get; init; }
+    public IEnumerable<Diagnostic> Diagnostics { get; init; } = [];
 
     public VBExecutionScope WithError(VBRuntimeErrorException error) => WithDiagnostics(error.Diagnostics) with { Error = error };
     public VBExecutionScope WithDiagnostics(IEnumerable<Diagnostic> diagnostics) => this with { Diagnostics = Diagnostics.Concat(diagnostics).ToArray() };
@@ -74,7 +74,7 @@ public record class VBExecutionScope : IDiagnosticSource, IExecutable
             var scope = context.CurrentScope;
             if (scope.ActiveOnErrorGoTo != null)
             {
-                scope = scope with { ActiveErrorState = true };
+                scope = scope with { Error = vbRuntimeError };
                 // TODO implement an InstructionPointer and give it the ActiveOnErrorGoTo executable symbol.
             }
             else if (!scope.ActiveOnErrorResumeNext)

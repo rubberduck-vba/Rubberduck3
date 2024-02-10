@@ -13,10 +13,7 @@ public record class VBVariantValue : VBTypedValue, IVBTypedValue<VBVariantValue,
 
     public VBTypedValue? TypedValue { get; init; } = default;
     public object? Value { get; init; } = default;
-    public VBVariantValue DefaultValue { get; } = VBEmptyValue.Empty.AsVariant();
-
     public override int Size => IntPtr.Size;
-    public object? NominalValue => Value;
 
     public VBDoubleValue? AsCoercedNumeric(int depth = 0) => 
         ((VBVariantType)TypeInfo).Subtype is INumericCoercion coercibleNumeric ? coercibleNumeric.AsCoercedNumeric(depth) : null!;

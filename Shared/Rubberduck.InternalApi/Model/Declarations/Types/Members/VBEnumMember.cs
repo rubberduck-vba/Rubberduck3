@@ -4,7 +4,7 @@ using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using System;
 
-namespace Rubberduck.InternalApi.Model.Declarations.Types;
+namespace Rubberduck.InternalApi.Model.Declarations.Types.Members;
 
 public record class VBEnumMember : VBTypeMember
 {

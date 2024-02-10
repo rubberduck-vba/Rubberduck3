@@ -16,7 +16,7 @@ public record class VBUserDefinedType : VBMemberOwnerType, IVBDeclaredType
         Definitions = definitions;
     }
 
-    public override VBType[] ConvertsSafelyToTypes { get; } = [VbVariantType];
+    public override VBType[] ConvertsSafelyToTypes { get; } = [VBVariantType.TypeInfo];
     public override VBTypedValue DefaultValue { get; }
 
     public override bool CanPassByValue { get; } = false;

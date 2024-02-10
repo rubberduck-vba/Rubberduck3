@@ -11,44 +11,56 @@ public static class SymbolOperation
 {
     public static VBTypedValue EvaluateUnaryOpResult(ref VBExecutionScope context, TypedSymbol symbol, Func<double, double> unaryOp)
     {
-        if (symbol.ResolvedType is VBNullType)
+        var type = symbol.ResolvedType;
+        if (type is VBVariantType variant)
+        {
+            type = variant.Subtype;
+        }
+
+        if (type is VBNullType)
         {
             context = context.WithDiagnostic(RubberduckDiagnostic.UnintendedConstantExpression(symbol));
             return new VBNullValue(symbol);
         }
 
-        if (symbol.ResolvedType is INumericType)
+        if (type is VBEmptyType)
+        {
+            context = context.WithDiagnostic(RubberduckDiagnostic.UnintendedConstantExpression(symbol));
+            return new VBLongValue(symbol).WithValue(0);
+        }
+
+        if (type is INumericType)
         {
             var value = unaryOp.Invoke(((INumericValue)context.GetTypedValue(symbol)).AsDouble().Value);
 
-            if (symbol.ResolvedType is VBByteType || symbol.ResolvedType is VBIntegerType)
+            if (type is VBByteType || type is VBIntegerType)
             {
                 context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitWideningConversion(symbol));
-                return new VBIntegerValue(symbol) { Value = (short)value };
+                return new VBIntegerValue(symbol) { NumericValue = (short)value };
             }
-            if (symbol.ResolvedType is VBLongType || (!context.Is64BitHost && symbol.ResolvedType is VBLongPtrType))
+            if (type is VBLongType || (!context.Is64BitHost && type is VBLongPtrType))
             {
-                return new VBLongValue(symbol) { Value = (int)value };
+                return new VBLongValue(symbol) { NumericValue = (int)value };
             }
-            if (symbol.ResolvedType is VBLongLongType || (context.Is64BitHost && symbol.ResolvedType is VBLongPtrType))
+            if (type is VBLongLongType || (context.Is64BitHost && type is VBLongPtrType))
             {
-                return new VBLongLongValue(symbol) { Value = (long)value };
+                return new VBLongLongValue(symbol) { NumericValue = (long)value };
             }
-            if (symbol.ResolvedType is VBCurrencyType)
+            if (type is VBCurrencyType)
             {
-                return new VBCurrencyValue(symbol) { Value = (decimal)value };
+                return new VBCurrencyValue(symbol) { NumericValue = value };
             }
-            if (symbol.ResolvedType is VBDecimalType)
+            if (type is VBDecimalType)
             {
-                return new VBDecimalValue(symbol) { Value = (decimal)value };
+                return new VBDecimalValue(symbol) { NumericValue = value };
             }
-            if (symbol.ResolvedType is VBSingleType)
+            if (type is VBSingleType)
             {
-                return new VBSingleValue(symbol) { Value = (float)value };
+                return new VBSingleValue(symbol) { NumericValue = (float)value };
             }
-            if (symbol.ResolvedType is VBDoubleType)
+            if (type is VBDoubleType)
             {
-                return new VBDoubleValue(symbol) { Value = (double)value };
+                return new VBDoubleValue(symbol) { NumericValue = (double)value };
             }
 
             throw VBRuntimeErrorException.TypeMismatch(symbol);
@@ -57,11 +69,17 @@ public static class SymbolOperation
         if (symbol.ResolvedType is INumericCoercion coercible)
         {
             context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitNumericCoercion(symbol));
-            return new VBIntegerValue(symbol) { Value = (short)coercible.AsCoercedNumeric()!.Value };
+            return new VBIntegerValue(symbol) { NumericValue = (short)coercible.AsCoercedNumeric()!.Value };
         }
 
-        if (symbol.ResolvedType is VBObjectType)
+        if (type is VBObjectType)
         {
+            var value = context.GetTypedValue(symbol);
+            if (value is VBNothingValue)
+            {
+                throw VBRuntimeErrorException.ObjectVariableNotSet(symbol);
+            }
+
             throw VBRuntimeErrorException.ObjectDoesntSupportPropertyOrMethod(symbol);
         }
         else
@@ -77,7 +95,7 @@ public static class SymbolOperation
             if (rhsValue is IStringCoercion coercible)
             {
                 var rhsString = coercible.AsCoercedString()?.Value;
-                if (rhsValue.TypeInfo != VBType.VbStringType)
+                if (rhsValue.TypeInfo != VBErrorType.TypeInfo)
                 {
                     context.WithDiagnostic(RubberduckDiagnostic.ImplicitStringCoercion(rhsValue.Symbol!));
                 }
@@ -185,7 +203,7 @@ public static class SymbolOperation
             var rhsNumberValue = coercible.AsCoercedNumeric()?.Value ?? 0;
             context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitStringCoercion(rhsValue.Symbol!));
 
-            return new VBDoubleValue { Value = binaryOp.Invoke(lhsNumberValue, rhsNumberValue), Symbol = opSymbol };
+            return new VBDoubleValue { NumericValue = binaryOp.Invoke(lhsNumberValue, rhsNumberValue), Symbol = opSymbol };
         }
         if (rhsType is VBNullType)
         {
@@ -222,7 +240,7 @@ public static class SymbolOperation
             var rhsNumberValue = coercible.AsCoercedNumeric()?.Value ?? 0;
             context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitStringCoercion(rhsValue.Symbol!));
 
-            return new VBLongValue { Value = binaryOp.Invoke((int)lhsNumberValue, (int)rhsNumberValue), Symbol = opSymbol };
+            return new VBLongValue { NumericValue = binaryOp.Invoke((int)lhsNumberValue, (int)rhsNumberValue), Symbol = opSymbol };
         }
         if (rhsType is VBNullType)
         {
@@ -249,7 +267,7 @@ public static class SymbolOperation
         if (rhsType is INumericType)
         {
             var rhsNumericValue = ((VBNumericTypedValue)rhsValue).AsDouble();
-            return lhsNumericValue.WithValue(binaryOp.Invoke(lhsNumericValue.AsDouble().Value, rhsNumericValue.Value));
+            return lhsNumericValue.AsDouble().WithValue(binaryOp.Invoke(lhsNumericValue.AsDouble().Value, rhsNumericValue.Value));
         }
 
         if (rhsType is VBDateType)
@@ -267,11 +285,11 @@ public static class SymbolOperation
 
             if (lhsNumericValue.Size >= rhsValue.Size)
             {
-                return lhsNumericValue.WithValue(binaryOp.Invoke(lhsNumericValue.AsDouble().Value, rhsCoercedValue?.Value ?? 0));
+                return lhsNumericValue.AsDouble().WithValue(binaryOp.Invoke(lhsNumericValue.AsDouble().Value, rhsCoercedValue?.Value ?? 0));
             }
             else
             {
-                return ((VBNumericTypedValue)rhsValue).WithValue(binaryOp.Invoke(lhsNumericValue.AsDouble().Value, rhsCoercedValue?.Value ?? 0));
+                return ((VBNumericTypedValue)rhsValue).AsDouble().WithValue(binaryOp.Invoke(lhsNumericValue.AsDouble().Value, rhsCoercedValue?.Value ?? 0));
             }
         }
 
@@ -285,7 +303,7 @@ public static class SymbolOperation
         if (rhsType is INumericType)
         {
             var rhsNumericValue = (INumericValue)rhsValue;
-            return lhsNumericValue.WithValue(binaryOp.Invoke((int)lhsNumericValue.AsDouble().Value, (int)rhsNumericValue.AsDouble().Value));
+            return lhsNumericValue.AsDouble().WithValue(binaryOp.Invoke((int)lhsNumericValue.AsDouble().Value, (int)rhsNumericValue.AsDouble().Value));
         }
 
         if (rhsType is VBDateType)
@@ -307,7 +325,7 @@ public static class SymbolOperation
             }
             else
             {
-                return ((VBNumericTypedValue)rhsValue).WithValue(binaryOp.Invoke((int)lhsNumericValue.AsDouble().Value, (int)(rhsCoercedValue?.Value ?? 0)));
+                return ((VBNumericTypedValue)rhsValue).AsDouble().WithValue(binaryOp.Invoke((int)lhsNumericValue.AsDouble().Value, (int)(rhsCoercedValue?.Value ?? 0)));
             }
         }
 

@@ -16,8 +16,6 @@ public record class VBUserDefinedTypeValue : VBTypedValue,
     }
 
     public Guid Value { get; }
-    public VBUserDefinedTypeValue DefaultValue => throw new NotSupportedException();
-    public Guid NominalValue => Value;
 
     public override int Size => ((IVBMemberOwnerType)TypeInfo).Members.OfType<VBUserDefinedTypeMember>()
         .Sum(member => ((TypedSymbol)member.Declaration!).ResolvedType!.DefaultValue.Size);

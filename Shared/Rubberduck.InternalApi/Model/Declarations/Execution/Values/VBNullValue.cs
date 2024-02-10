@@ -10,8 +10,5 @@ public record class VBNullValue : VBTypedValue, IVBTypedValue<VBNullValue, IntPt
     public VBNullValue(TypedSymbol? symbol = null) : base(VBNullType.TypeInfo, symbol) { }
 
     public IntPtr Value { get; } = IntPtr.Zero;
-    public VBNullValue DefaultValue => new();
-    public IntPtr NominalValue => Value;
-
     public override int Size => 0;
 }

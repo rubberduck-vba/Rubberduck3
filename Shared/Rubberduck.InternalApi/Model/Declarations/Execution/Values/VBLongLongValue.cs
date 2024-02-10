@@ -10,21 +10,18 @@ public record class VBLongLongValue : VBNumericTypedValue,
     public VBLongLongValue(TypedSymbol? declarationSymbol = null)
         : base(VBLongLongType.TypeInfo, declarationSymbol) { }
 
-    public static VBLongLongValue MinValue { get; } = new VBLongLongValue().WithValue(long.MinValue);
-    public static VBLongLongValue MaxValue { get; } = new VBLongLongValue().WithValue(long.MaxValue);
-    public static VBLongLongValue Zero { get; } = new VBLongLongValue().WithValue(0);
+    public static VBLongLongValue MinValue { get; } = new VBLongLongValue { NumericValue = long.MinValue };
+    public static VBLongLongValue MaxValue { get; } = new VBLongLongValue { NumericValue = long.MaxValue };
+    public static VBLongLongValue Zero { get; } = new VBLongLongValue { NumericValue = 0 };
 
     VBLongLongValue INumericValue<VBLongLongValue>.MinValue => MinValue;
     VBLongLongValue INumericValue<VBLongLongValue>.Zero => Zero;
     VBLongLongValue INumericValue<VBLongLongValue>.MaxValue => MaxValue;
 
-    public long Value { get; init; } = default;
-    public VBLongLongValue DefaultValue { get; } = Zero;
-    public long NominalValue => Value;
-
+    public long Value => (long)NumericValue;    
     public override int Size => sizeof(long);
-    protected override double State => Value;
+    public override double NumericValue { get; init; }
 
-    public VBLongLongValue WithValue(double value) => this with { Value = (long)value };
-    public VBLongLongValue WithValue(int value) => this with { Value = (long)value };
+    public VBLongLongValue WithValue(double value) => this with { NumericValue = (long)value };
+    public new VBLongLongValue WithValue(int value) => this with { NumericValue = (long)value };
 }

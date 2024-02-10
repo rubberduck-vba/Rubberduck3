@@ -17,10 +17,10 @@ using Rubberduck.InternalApi.Settings.Model;
 namespace Rubberduck.Tests.VBTypes
 {
     [TestClass]
-    internal abstract class ServiceBaseTest<SUT> where SUT : class
+    public abstract class ServiceBaseTest
     {
         protected IServiceProvider Services { get; private set; } = null!;
-        protected Dictionary<Type, Mock> Mocks { get; private set; } = null!;
+        protected Dictionary<Type, Mock> Mocks { get; private set; } = [];
 
         protected virtual IEnumerable<(Type, Mock)> ConfigureMocking() => [(typeof(IFileSystem), new Mock<IFileSystem>())];
 
@@ -31,7 +31,7 @@ namespace Rubberduck.Tests.VBTypes
                 Mocks[(typeof(IFileSystem))] = new Mock<IFileSystem>();
             }
 
-            services.AddSingleton<SUT>();
+            services.AddLogging();
             services.AddSingleton<ILogger>(provider => new TestLogger());
             services.AddSingleton<IFileSystem>(provider => (IFileSystem)Mocks[typeof(IFileSystem)].Object);
             services.AddSingleton<RubberduckSettingsProvider>();
@@ -39,13 +39,11 @@ namespace Rubberduck.Tests.VBTypes
             services.AddSingleton<PerformanceRecordAggregator>();
         }
 
-        protected virtual SUT CreateSUT() => Services.GetRequiredService<SUT>();
-
         [TestInitialize]
         public virtual void OnInitialize()
         {
             var services = new ServiceCollection();
-            ConfigureMocking();
+            Mocks = ConfigureMocking().ToDictionary();
             ConfigureServices(services);
 
             Services = services.BuildServiceProvider();

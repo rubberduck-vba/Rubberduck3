@@ -13,11 +13,11 @@ public record class VBClassType : VBMemberOwnerType
     {
     }
 
-    public VBType[] Supertypes { get; init; } = [VbObjectType];
+    public VBType[] Supertypes { get; init; } = [VBObjectType.TypeInfo];
     public VBType[] Subtypes { get; init; } = [];
     public VBTypeMember? DefaultMember { get; init; }
     public bool IsInterface => Subtypes.Length != 0;
 
-    public override VBType[] ConvertsSafelyToTypes => Supertypes.Concat([VbVariantType]).ToArray();
+    public override VBType[] ConvertsSafelyToTypes => Supertypes.Concat([VBVariantType.TypeInfo]).ToArray();
     public override VBObjectValue DefaultValue { get; } = VBObjectValue.Nothing;
 }

@@ -24,12 +24,17 @@ public class VBExecutionContext : ServiceBase, IDiagnosticSource
     {
     }
 
+    public bool Is64BitHost { get; set; }
+
     public void AddTypedSymbol(TypedSymbol symbol) => _symbols.TryAdd(symbol, null!);
     public void AddDiagnostic(Diagnostic diagnostic) => Diagnostics.Add(diagnostic);
 
     public VBExecutionScope EnterScope(VBTypeMember member)
     {
-        var scope = new VBExecutionScope(_callStack, _symbols.Select(e => (e.Key, e.Value)).ToDictionary(e => (Symbol)e.Key, e => (VBTypedValue)e.Value), member);
+        var scope = new VBExecutionScope(_callStack, _symbols.Select(e => (e.Key, e.Value)).ToDictionary(e => (Symbol)e.Key, e => (VBTypedValue)e.Value), member)
+        {
+            Is64BitHost = Is64BitHost,
+        };
         _callStack.Push(scope);
         return scope;
     }

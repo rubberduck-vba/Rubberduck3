@@ -16,9 +16,6 @@ public record class VBObjectValue : VBTypedValue,
     public static VBObjectValue Nothing { get; } = new VBNothingValue();
 
     public Guid Value { get; init; }
-    public VBObjectValue DefaultValue { get; init; } = Nothing;
-    public Guid NominalValue => Value;
-
     public override int Size => sizeof(int);
 
     public bool IsNothing() => Value == Nothing.Value;
