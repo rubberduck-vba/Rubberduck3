@@ -276,7 +276,19 @@ public static class SymbolOperation
         var rhsType = rhsValue.TypeInfo;
         if (rhsValue is VBNumericTypedValue numeric) 
         {
-            if (!double.TryParse(lhsString.Value, out var lhsNumberValue) || !double.IsRealNumber(lhsNumberValue))
+            double lhsNumberValue;
+            if (lhsString.Value.StartsWith("&H"))
+            {
+                try
+                {
+                    lhsNumberValue = Convert.ToInt32(lhsString.Value.Replace("&H", "0x"), 16);
+                }
+                catch 
+                {
+                    throw VBRuntimeErrorException.TypeMismatch(opSymbol, "This expression evaluates to a `Double`; LHS `String` value must have a numeric value. Consider explicitly validating and converting the values first.");
+                }
+            }
+            else if (!double.TryParse(lhsString.Value, out lhsNumberValue) || !double.IsRealNumber(lhsNumberValue))
             {
                 throw VBRuntimeErrorException.TypeMismatch(opSymbol, "This expression evaluates to a `Double`; LHS `String` value must have a numeric value. Consider explicitly validating and converting the values first.");
             }
