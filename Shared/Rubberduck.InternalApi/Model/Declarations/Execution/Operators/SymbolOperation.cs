@@ -12,9 +12,9 @@ public static class SymbolOperation
     public static VBTypedValue EvaluateUnaryOpResult(ref VBExecutionScope context, TypedSymbol symbol, Func<double, double> unaryOp)
     {
         var type = symbol.ResolvedType;
-        if (type is VBVariantType variant)
+        if (type is VBVariantType)
         {
-            type = variant.Subtype;
+            type = context.GetTypedValue(symbol).TypeInfo;
         }
 
         if (type is VBNullType)
@@ -35,7 +35,10 @@ public static class SymbolOperation
 
             if (type is VBByteType || type is VBIntegerType)
             {
-                context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitWideningConversion(symbol));
+                if (type is VBByteType)
+                {
+                    context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitWideningConversion(symbol));
+                }
                 return new VBIntegerValue(symbol) { NumericValue = (short)value };
             }
             if (type is VBLongType || (!context.Is64BitHost && type is VBLongPtrType))

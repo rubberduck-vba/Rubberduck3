@@ -42,8 +42,42 @@ public class NegationOperatorTests : ServiceBaseTest
         var asType = asTypeToken is null ? null : $"{Tokens.As} {asTypeToken}";
         var symbol = new VariableDeclarationSymbol(name, ParentProcedureUri, accessibility, asType).WithResolvedType(type);
 
+        if (type is VBVariantType variant)
+        {
+            type = variant.Subtype;
+        }
         context.SetSymbolValue(symbol, type.DefaultValue);
         return symbol;
+    }
+
+    private void OutputExecutionScope(VBExecutionScope scope, bool outputNames = true, bool verboseDiagnostics = false)
+    {
+        Console.WriteLine($"Scope: [{scope.MemberInfo.Kind}] {scope.MemberInfo.Uri}");
+        Console.WriteLine($"Option Compare {scope.OptionCompare}");
+        Console.WriteLine($"Option Explicit {(scope.OptionExplicit ? "On" : "Off")}");
+        Console.WriteLine($"Option Strict {(scope.OptionStrict ? "On" : "Off")}");
+        if (outputNames)
+        {
+            Console.WriteLine($"Symbol names: [{string.Join(',', scope.Names)}]");
+        }
+
+        Console.WriteLine($"Diagnostics:");
+        foreach (var diagnostic in scope.Diagnostics)
+        {
+            Console.WriteLine($"[{diagnostic.Code!.Value.String}] {diagnostic.Message}");
+            if (verboseDiagnostics)
+            {
+                Console.WriteLine(diagnostic.ToString());
+            }
+        }
+
+        Console.WriteLine($"Active OnErrorRedirect: {(scope.ActiveOnErrorResumeNext ? "ResumeNext" : (scope.ActiveOnErrorGoTo != null ? $"GoTo {scope.ActiveOnErrorGoTo.Name}" : "(none)") )}");
+        Console.WriteLine($"Active ErrorState: {scope.ActiveErrorState}");
+        if (scope.ActiveErrorState || scope.Error != null)
+        {
+            Console.WriteLine($"Error details:");
+            Console.WriteLine($"{scope.Error!}");
+        }
     }
 
     private VBNegationOperator CreateNegationOperator(ref VBProcedureMember scope, TypedSymbol variable)
@@ -69,6 +103,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBIntegerValue);
@@ -91,6 +126,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.AreEqual(VBIntegerValue.Zero, result);
@@ -113,6 +149,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBLongValue, result.TypeInfo.Name);
@@ -137,6 +174,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBLongLongValue, result.TypeInfo.Name);
@@ -159,6 +197,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBIntegerValue);
@@ -179,6 +218,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBLongValue);
@@ -199,6 +239,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBLongLongValue);
@@ -219,6 +260,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBCurrencyValue);
@@ -239,6 +281,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBDecimalValue);
@@ -259,6 +302,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBSingleValue);
@@ -279,6 +323,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBDoubleValue);
@@ -302,6 +347,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBLongValue, result.TypeInfo.Name);
@@ -326,6 +372,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBLongLongValue, result.TypeInfo.Name);
@@ -348,6 +395,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBIntegerValue);
@@ -368,6 +416,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBLongValue);
@@ -388,6 +437,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBLongLongValue);
@@ -408,6 +458,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBCurrencyValue);
@@ -428,6 +479,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBDecimalValue);
@@ -448,6 +500,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBSingleValue);
@@ -468,6 +521,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBDoubleValue);
@@ -484,6 +538,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(result);
         Assert.IsTrue(scope.ActiveErrorState);
@@ -504,6 +559,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(result);
         Assert.IsTrue(scope.ActiveErrorState);
@@ -521,6 +577,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.AreEqual(VBLongValue.Zero, result);
@@ -541,8 +598,28 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
 
         Assert.IsNull(scope.Error, scope.Error?.ToString());
         Assert.IsTrue(result is VBDateValue, result?.TypeInfo.Name);
+    }
+
+    [TestMethod]
+    public void EvaluateResultGivenVBNullValue_ReturnsVBNullValue()
+    {
+        var context = Services.GetRequiredService<VBExecutionContext>();
+        var procedure = ParentProcedure;
+        var variable = CreateVariable(context, VBVariantType.TypeInfo, "TEST");
+        var value = new VBNullValue(variable);
+        context.SetSymbolValue(variable, value);
+
+        var sut = CreateNegationOperator(ref procedure, value.Symbol);
+
+        var scope = context.EnterScope(procedure);
+        var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
+
+        Assert.IsNull(scope.Error, scope.Error?.ToString());
+        Assert.IsTrue(result is VBNullValue, result?.TypeInfo.Name);
     }
 }

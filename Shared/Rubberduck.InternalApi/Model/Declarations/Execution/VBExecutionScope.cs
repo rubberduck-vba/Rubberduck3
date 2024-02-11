@@ -35,6 +35,7 @@ public record class VBExecutionScope : IDiagnosticSource, IExecutable
 
     public bool Is64BitHost { get; init; }
     public bool OptionStrict { get; init; }
+    public bool OptionExplicit { get; init; }
     public VBOptionCompare OptionCompare { get; init; }
 
     public VBTypedValue GetTypedValue(Symbol symbol) => _symbols[symbol];
