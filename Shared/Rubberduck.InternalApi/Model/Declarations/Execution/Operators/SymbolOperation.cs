@@ -1,5 +1,6 @@
 ﻿using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
+using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
@@ -9,7 +10,7 @@ namespace Rubberduck.InternalApi.Model.Declarations.Operators;
 
 public static class SymbolOperation
 {
-    public static VBTypedValue EvaluateUnaryOpResult(ref VBExecutionScope context, TypedSymbol symbol, Func<double, double> unaryOp)
+    public static VBTypedValue EvaluateUnaryOpResult(ref VBExecutionScope context, VBUnaryOperator opSymbol, TypedSymbol symbol, Func<double, double> unaryOp)
     {
         var type = symbol.ResolvedType;
         if (type is VBVariantType variant)
@@ -23,6 +24,12 @@ public static class SymbolOperation
             return new VBNullValue(symbol);
         }
 
+        if (opSymbol is VBNotOperator && type is VBBooleanType)
+        {
+            var value = (VBBooleanValue)context.GetTypedValue(symbol);
+            return new VBBooleanValue(symbol).WithValue((int)unaryOp.Invoke(value.AsCoercedNumeric().NumericValue));
+        }
+
         if (type is VBEmptyType)
         {
             context = context.WithDiagnostic(RubberduckDiagnostic.UnintendedConstantExpression(symbol));
@@ -32,6 +39,10 @@ public static class SymbolOperation
         if (type is INumericType)
         {
             var value = unaryOp.Invoke(((INumericValue)context.GetTypedValue(symbol)).AsDouble().Value);
+            if (opSymbol is VBNotOperator)
+            {
+                return new VBLongValue(symbol).WithValue(value);
+            }
 
             if (type is VBByteType || type is VBIntegerType)
             {
@@ -212,9 +223,9 @@ public static class SymbolOperation
 
         if (lhsType is VBDateType)
         {
-            var lhsNumericValue = new VBDoubleValue(lhsValue.Symbol) { NumericValue = ((VBDateValue)lhsValue).SerialValue };
+            var lhsSerialDateValue = new VBDoubleValue(lhsValue.Symbol) { NumericValue = ((VBDateValue)lhsValue).SerialValue };
             context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitDateSerialConversion(lhsValue.Symbol!));
-            var result = ((VBDoubleValue)EvaluateIntegerOp(ref context, opSymbol, lhsNumericValue, rhsValue, binaryOp)).NumericValue;
+            var result = ((VBDoubleValue)EvaluateIntegerOp(ref context, opSymbol, lhsSerialDateValue, rhsValue, binaryOp)).NumericValue;
 
             if (opSymbol is VBAdditionOperator || opSymbol is VBSubtractionOperator)
             {
@@ -224,15 +235,21 @@ public static class SymbolOperation
             return new VBDoubleValue(opSymbol) { NumericValue = result };
         }
 
-        if (lhsType is INumericType)
+        if (lhsValue is VBNumericTypedValue lhsNumericValue)
         {
-            var lhsNumericValue = (VBNumericTypedValue)lhsValue;
             var result = EvaluateIntegerOp(ref context, opSymbol, lhsNumericValue, rhsValue, binaryOp);
             if (opSymbol is VBAdditionOperator || opSymbol is VBSubtractionOperator || opSymbol is VBMultiplicationOperator)
             {
                 return result;
             }
             return ((INumericValue)result).AsDouble();
+        }
+
+        if (lhsValue is VBBooleanValue lhsBool && rhsValue is VBBooleanValue rhsBool)
+        {
+            var lhsNumeric = lhsBool.AsCoercedNumeric().AsLong().Value;
+            var rhsNumeric = rhsBool.AsCoercedNumeric().AsLong().Value;
+            return new VBBooleanValue(opSymbol).WithValue(binaryOp.Invoke(lhsNumeric, rhsNumeric));
         }
 
         throw VBRuntimeErrorException.TypeMismatch(opSymbol, "The data types involved in this binary operation are not compatible.");
