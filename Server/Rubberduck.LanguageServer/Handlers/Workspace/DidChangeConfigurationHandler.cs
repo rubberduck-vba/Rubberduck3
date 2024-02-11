@@ -1,12 +1,9 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
-using Rubberduck.InternalApi.Common;
-using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
+using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.ServerPlatform;
-using Rubberduck.SettingsProvider.Model;
 using System.Threading;
 using System.Threading.Tasks;
 

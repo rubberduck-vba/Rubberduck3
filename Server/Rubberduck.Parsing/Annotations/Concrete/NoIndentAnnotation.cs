@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Parsing.Annotations.Concrete;
+﻿using Rubberduck.InternalApi.Model.Declarations;
+
+namespace Rubberduck.Parsing.Annotations.Concrete;
 
 /// <summary>
 /// @NoIndent annotation, used by the "indent project" feature to ignore/skip particular modules when bulk-indenting.

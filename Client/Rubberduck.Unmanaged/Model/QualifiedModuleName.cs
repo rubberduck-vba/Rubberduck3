@@ -1,8 +1,8 @@
-using System.Globalization;
 using Path = System.IO.Path;
 using System;
 using Rubberduck.Unmanaged.Model.Abstract;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
+using System.IO;
 
 namespace Rubberduck.Unmanaged.Model
 {
@@ -19,7 +19,7 @@ namespace Rubberduck.Unmanaged.Model
             ComponentType = ComponentType.Undefined;
             _projectName = project.Name;
             ProjectPath = string.Empty;
-            ProjectId = project.GetProjectId();
+            WorkspaceUri = project.Uri;
         }
 
         public QualifiedModuleName(IVBComponent component)
@@ -33,7 +33,7 @@ namespace Rubberduck.Unmanaged.Model
                 {
                     _projectName = project == null ? string.Empty : project.Name;
                     ProjectPath = string.Empty;
-                    ProjectId = project.GetProjectId();
+                    WorkspaceUri = project.Uri;
                 }
             }
         }
@@ -42,18 +42,23 @@ namespace Rubberduck.Unmanaged.Model
         /// Creates a QualifiedModuleName for a library reference.
         /// Do not use this overload for referenced user projects.
         /// </summary>
-        public QualifiedModuleName(ReferenceInfo reference)
-        :this(reference.Name, reference.FullPath, reference.Name) { }
+        public QualifiedModuleName(ReferenceInfo reference) :this(reference.Name, reference.FullPath, reference.Name) { }
 
         /// <summary>
         /// Creates a QualifiedModuleName for a built-in declaration.
         /// Do not use this overload for user declarations.
         /// </summary>
-        public QualifiedModuleName(string projectName, string projectPath, string componentName, string projectId = null)
+        public QualifiedModuleName(string projectName, string projectPath, string componentName, Uri workspaceUri = null)
         {
+            if (workspaceUri is null)
+            {
+                var root = new DirectoryInfo(projectPath).Parent.FullName;
+                workspaceUri = new Uri(root);
+            }
+
             _projectName = projectName;
             ProjectPath = projectPath;
-            ProjectId = projectId ?? $"External {_projectName};{ProjectPath}".GetHashCode().ToString(CultureInfo.InvariantCulture);
+            WorkspaceUri = workspaceUri;
             _componentName = componentName;
             ComponentType = ComponentType.ComComponent;
         }
@@ -70,7 +75,7 @@ namespace Rubberduck.Unmanaged.Model
         public ComponentType ComponentType { get; }
 
         public bool IsParsable => ComponentType != ComponentType.ResFile && ComponentType != ComponentType.RelatedDocument;
-        public string ProjectId { get; }
+        public Uri WorkspaceUri { get; }
 
         private readonly string _componentName;
         public string ComponentName => _componentName ?? string.Empty;
@@ -92,7 +97,7 @@ namespace Rubberduck.Unmanaged.Model
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(ProjectId ?? string.Empty, _componentName ?? string.Empty);
+            return HashCode.Combine(WorkspaceUri, _componentName);
         }
 
         public override bool Equals(object obj)
@@ -117,47 +122,8 @@ namespace Rubberduck.Unmanaged.Model
                 return true;
             }
 
-            return other.ProjectId == ProjectId 
+            return other.WorkspaceUri == WorkspaceUri 
                 && other.ComponentName == ComponentName;
-        }
-    }
-
-    public static class QualifiedModuleNameExtensions
-    {
-        public static bool TryGetProject(this IQualifiedModuleName moduleName, IVBE vbe, out IVBProject project)
-        {
-            using (var projects = vbe.VBProjects)
-            {
-                foreach (var item in projects)
-                {
-                    if (item.ProjectId == moduleName.ProjectId && item.Name == moduleName.ProjectName)
-                    {
-                        project = item;
-                        return true;
-                    }
-
-                    item.Dispose();
-                }
-
-                project = null;
-                return false;
-            }
-        }
-
-        public static bool TryGetComponent(this IQualifiedModuleName moduleName, IVBE vbe, out IVBComponent component)
-        {
-            if (TryGetProject(moduleName, vbe, out var project))
-            {
-                using (project)
-                using (var components = project.VBComponents)
-                {
-                    component = components[moduleName.ComponentName];
-                    return true;
-                }
-            }
-
-            component = null;
-            return false;
         }
     }
 }

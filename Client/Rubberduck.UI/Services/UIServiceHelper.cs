@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.SettingsProvider;
+using Rubberduck.InternalApi.Services;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.Unmanaged.UIContext;
 using System;
 using System.Threading;

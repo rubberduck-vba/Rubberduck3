@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Parsing.Annotations.Concrete;
+﻿using Rubberduck.InternalApi.Model.Declarations;
+
+namespace Rubberduck.Parsing.Annotations.Concrete;
 
 /// <summary>
 /// @IgnoreModule annotation, used by Rubberduck to filter inspection results module-wide.
@@ -35,6 +37,6 @@
 public sealed class IgnoreModuleAnnotation : AnnotationBase
 {
     public IgnoreModuleAnnotation()
-        : base("IgnoreModule", AnnotationTarget.Module, allowedArguments: null, allowedArgumentTypes: new[] { AnnotationArgumentType.Inspection }, allowMultiple: true)
+        : base("IgnoreModule", AnnotationTarget.Module, allowedArguments: null, allowedArgumentTypes: [AnnotationArgumentType.Inspection], allowMultiple: true)
     {}
 }

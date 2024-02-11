@@ -1,11 +1,10 @@
-﻿using Rubberduck.Parsing.Model;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.Parsing.Model;
 
 namespace Rubberduck.Parsing.Exceptions;
 
 public class ParsePassErrorListenerBase : RubberduckParseErrorListenerBase
 {
-    public ParsePassErrorListenerBase(string moduleName, CodeKind codeKind) 
-    :base(moduleName, codeKind)
-    {
-    }
+    public ParsePassErrorListenerBase(WorkspaceFileUri uri, CodeKind codeKind) 
+        : base(uri, codeKind) { }
 }

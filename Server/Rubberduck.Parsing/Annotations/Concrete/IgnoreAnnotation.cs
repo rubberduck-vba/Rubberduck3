@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Parsing.Annotations.Concrete;
+﻿using Rubberduck.InternalApi.Model.Declarations;
+
+namespace Rubberduck.Parsing.Annotations.Concrete;
 
 /// <summary>
 /// @Ignore annotation, used by Rubberduck to filter inspection results at member and local level.
@@ -28,6 +30,6 @@
 public sealed class IgnoreAnnotation : AnnotationBase
 {
     public IgnoreAnnotation()
-        : base("Ignore", AnnotationTarget.General, 1, null, new[] { AnnotationArgumentType.Inspection}, true)
+        : base("Ignore", AnnotationTarget.General, 1, null, [AnnotationArgumentType.Inspection], true)
     {}
 }

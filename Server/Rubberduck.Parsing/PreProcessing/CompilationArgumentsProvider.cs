@@ -18,16 +18,16 @@ public class CompilationArgumentsProvider : ICompilationArgumentsProvider
 
     public VBAPredefinedCompilationConstants PredefinedCompilationConstants { get; }
 
-    public Dictionary<string, short> UserDefinedCompilationArguments(string projectId)
+    public Dictionary<string, short> UserDefinedCompilationArguments(Uri uri)
     {
-        return GetUserDefinedCompilationArguments(projectId);
+        return GetUserDefinedCompilationArguments(uri);
     }
 
-    private Dictionary<string, short> GetUserDefinedCompilationArguments(string projectId)
+    private Dictionary<string, short> GetUserDefinedCompilationArguments(Uri uri)
     {
         // use the TypeLib API to grab the user defined compilation arguments; must be obtained on the main thread.
         var task = _uiDispatcher.StartTask(() => {
-            using var typeLib = _typeLibWrapperProvider.TypeLibWrapperFromProject(projectId);
+            using var typeLib = _typeLibWrapperProvider.TypeLibWrapperFromProject(uri);
             return typeLib?.VBEExtensions.ConditionalCompilationArguments ?? new Dictionary<string, short>();
         });
         return task.Result;

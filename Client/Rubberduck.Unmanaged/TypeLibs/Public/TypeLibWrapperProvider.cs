@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices.ComTypes;
+﻿using System;
+using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.TypeLibs.Abstract;
 
@@ -21,9 +22,9 @@ namespace Rubberduck.Unmanaged.TypeLibs.Public
             _projectsProvider = projectsProvider;
         }
 
-        public ITypeLibWrapper TypeLibWrapperFromProject(string projectId)
+        public ITypeLibWrapper TypeLibWrapperFromProject(Uri uri)
         {
-            var project = _projectsProvider.Project(projectId);
+            var project = _projectsProvider.Project(uri);
             return TypeLibWrapperFromProject(project);
         }
 

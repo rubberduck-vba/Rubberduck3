@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Parsing.Annotations.Concrete;
+﻿using Rubberduck.InternalApi.Model.Declarations;
+
+namespace Rubberduck.Parsing.Annotations.Concrete;
 
 public abstract class DescriptionAttributeAnnotationBase : FlexibleAttributeValueAnnotationBase
 {

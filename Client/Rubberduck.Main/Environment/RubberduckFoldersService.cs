@@ -1,14 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Resources;
 using Rubberduck.ServerPlatform;
-using Rubberduck.SettingsProvider;
-using Rubberduck.SettingsProvider.Model;
 using System;
 using System.IO.Abstractions;
 using System.Windows.Forms;
 using Env = System.Environment;
-using ServiceBase = Rubberduck.ServerPlatform.ServiceBase;
+using ServerPlatformServiceBase = Rubberduck.ServerPlatform.ServerPlatformServiceBase;
 
 namespace Rubberduck.Environment
 {
@@ -26,7 +25,7 @@ namespace Rubberduck.Environment
         HostInfo GetHostInfo(Application application);
     }
 
-    public class HostInfoService : ServiceBase, IHostInfoService
+    public class HostInfoService : ServerPlatformServiceBase, IHostInfoService
     {
         private readonly Version _rubberduckVersion;
 
@@ -81,7 +80,7 @@ namespace Rubberduck.Environment
         void EnsureDefaultWorkspacePathExists();
     }
 
-    public class RubberduckFoldersService : ServiceBase, IRubberduckFoldersService
+    public class RubberduckFoldersService : ServerPlatformServiceBase, IRubberduckFoldersService
     {
         private readonly IFileSystem _fileSystem;
 

@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Declarations;
 
 namespace Rubberduck.Parsing.Annotations;
 
@@ -12,13 +13,13 @@ public abstract class FlexibleAttributeAnnotationBase : AnnotationBase, IAttribu
     {
         // skip the attribute specification, which is taken from the annotationValues
         // also we MUST NOT adjust quotation of annotationValues here
-        return annotationValues?.Skip(1).ToList();
+        return annotationValues?.Skip(1).ToList() ?? [];
     }
 
     public string Attribute(IReadOnlyList<string> annotationValues)
     {
         // The Attribute name is NEVER quoted, therefore unquote here
-        return annotationValues.FirstOrDefault()?.UnQuote() ?? "";
+        return annotationValues.FirstOrDefault()?.UnQuote() ?? string.Empty;
     }
 
     public IReadOnlyList<string> AttributeToAnnotationValues(IReadOnlyList<string> attributeValues)

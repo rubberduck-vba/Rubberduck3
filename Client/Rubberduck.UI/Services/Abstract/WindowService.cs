@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.SettingsProvider;
+using Rubberduck.InternalApi.Services;
+using Rubberduck.InternalApi.Settings;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;

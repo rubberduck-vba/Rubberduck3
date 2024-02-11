@@ -1,4 +1,5 @@
-﻿using Rubberduck.Unmanaged.Model;
+﻿using Rubberduck.InternalApi.Model.Declarations;
+using System.Collections.Immutable;
 
 namespace Rubberduck.Parsing.Annotations.Concrete;
 
@@ -41,17 +42,17 @@ public class ModuleAttributeAnnotation : FlexibleAttributeAnnotationBase
     public ModuleAttributeAnnotation()
     : base("ModuleAttribute", AnnotationTarget.Module, _argumentTypes, true)
     {
-        _incompatibleComponentTypes = base.IncompatibleComponentTypes
-            .Concat(new[] { ComponentType.Document })
-            .Distinct().ToList();
+        IncompatibleComponentKinds = new HashSet<ComponentKind>(base.IncompatibleComponentKinds)
+        { 
+            ComponentKind.DocumentModule
+        }.ToImmutableList();
     }
 
-    private readonly IReadOnlyList<ComponentType> _incompatibleComponentTypes;
-    public override IReadOnlyList<ComponentType> IncompatibleComponentTypes => _incompatibleComponentTypes;
+    public override IReadOnlyList<ComponentKind> IncompatibleComponentKinds { get; }
 
-    private static readonly AnnotationArgumentType[] _argumentTypes = new[]
-    {
+    private static readonly AnnotationArgumentType[] _argumentTypes =
+    [
         AnnotationArgumentType.Attribute,
         AnnotationArgumentType.Text | AnnotationArgumentType.Number | AnnotationArgumentType.Boolean
-    };
+    ];
 }

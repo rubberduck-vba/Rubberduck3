@@ -1,3 +1,5 @@
+using Rubberduck.InternalApi.Model;
+using Rubberduck.InternalApi.Model.Declarations;
 using Rubberduck.Unmanaged.Registration;
 
 namespace Rubberduck.Parsing.Annotations.Concrete;
@@ -43,6 +45,6 @@ namespace Rubberduck.Parsing.Annotations.Concrete;
 public sealed class EnumeratorMemberAnnotation : FixedAttributeValueAnnotationBase
 {
     public EnumeratorMemberAnnotation()
-        : base("Enumerator", AnnotationTarget.Member, "VB_UserMemId", new[] { WellKnownDispIds.NewEnum.ToString() })
+        : base("Enumerator", AnnotationTarget.Member, Tokens.VB_UserMemId, [WellKnownDispIds.NewEnum.ToString()])
     {}
 }

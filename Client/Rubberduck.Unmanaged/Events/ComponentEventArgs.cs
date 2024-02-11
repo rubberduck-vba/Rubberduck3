@@ -10,7 +10,7 @@ namespace Rubberduck.Unmanaged.Events
             QualifiedModuleName = qualifiedModuleName;
         }
 
-        public string ProjectId => QualifiedModuleName.ProjectId;
+        public Uri WorkspaceUri => QualifiedModuleName.WorkspaceUri;
         public IQualifiedModuleName QualifiedModuleName { get; }
     }
 }

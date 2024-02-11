@@ -1,5 +1,6 @@
 ﻿using Rubberduck.InternalApi.Extensions;
-using Rubberduck.Unmanaged.Model;
+using Rubberduck.InternalApi.Model;
+using Rubberduck.InternalApi.Model.Declarations;
 
 namespace Rubberduck.Parsing.Annotations.Concrete;
 
@@ -42,11 +43,11 @@ namespace Rubberduck.Parsing.Annotations.Concrete;
 public sealed class ExcelHotKeyAnnotation : FlexibleAttributeValueAnnotationBase
 {
     public ExcelHotKeyAnnotation()
-        : base("ExcelHotkey", AnnotationTarget.Member, "VB_ProcData.VB_Invoke_Func", 1, new[] { AnnotationArgumentType.Text}) 
+        : base("ExcelHotkey", AnnotationTarget.Member, Tokens.VB_Invoke_Func, 1, [AnnotationArgumentType.Text]) 
     {
     }
 
-    public override ComponentType? RequiredComponentType => ComponentType.StandardModule;
+    public override ComponentKind? RequiredComponentKind => ComponentKind.StandardModule;
 
     public override IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues) =>
         annotationValues.Take(1).Select(v => (v.UnQuote()[0] + @"\n14").EnQuote()).ToList();

@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Abstract;
 using Rubberduck.Parsing.Model;
 
@@ -16,14 +17,14 @@ public class TokenStreamParserStringParserAdapter : IStringParser
         _tokenStreamParser = tokenStreamParser;
     }
 
-    public (IParseTree tree, ITokenStream tokenStream, LogicalLineStore? logicalLines) Parse(string moduleName, string projectId, string content, CancellationToken token, CodeKind codeKind, ParserMode parserMode, IEnumerable<IParseTreeListener>? parseListeners = null)
+    public ParseResult Parse(WorkspaceFileUri uri, string content, CancellationToken token, CodeKind codeKind, ParserMode parserMode, IEnumerable<IParseTreeListener>? parseListeners = null)
     {
         token.ThrowIfCancellationRequested();
         var tokenStream = _tokenStreamProvider.Tokens(content);
 
         token.ThrowIfCancellationRequested();
 
-        var tree = _tokenStreamParser.Parse(moduleName, projectId, tokenStream, token, codeKind, parserMode, parseListeners);
-        return (tree, tokenStream, null);
+        var tree = _tokenStreamParser.Parse(uri, tokenStream, token, codeKind, parserMode, parseListeners);
+        return new ParseResult { Tree = tree, TokenStream = tokenStream };
     }
 }

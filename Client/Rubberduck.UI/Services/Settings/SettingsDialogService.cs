@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.SettingsProvider;
-using Rubberduck.SettingsProvider.Model;
 using Rubberduck.UI.Shared.Settings;
 using Rubberduck.UI.Shared.Message;
 using Rubberduck.UI.Windows;
 using System;
 using System.Linq;
+using Rubberduck.InternalApi.Settings;
+using Rubberduck.InternalApi.Settings.Model;
+using Rubberduck.InternalApi.Services;
 
 namespace Rubberduck.UI.Services.Settings
 {

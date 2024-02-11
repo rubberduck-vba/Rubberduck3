@@ -23,7 +23,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IApplication Parent => new Application((IsWrappingNullReference ? null : Target.Parent)!);
 
-        public string ProjectId => HelpFile;
+        public Uri? Uri => IsSaved ? new Uri(new System.IO.DirectoryInfo(FileName).Parent!.FullName) : null;
 
         public string HelpFile
         {
@@ -118,39 +118,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return names.ToArray();
         }
 
-        public void AssignProjectId()
-        {
-            //assign a hashcode if no helpfile is present
-            if (string.IsNullOrEmpty(HelpFile))
-            {
-                HelpFile = GetHashCode().ToString();
-            }
-
-            //loop until the helpfile is unique for this host session
-            while (!IsProjectIdUnique())
-            {
-                HelpFile = (GetHashCode() ^ HelpFile.GetHashCode()).ToString();
-            }
-        }
-
-        private bool IsProjectIdUnique()
-        {
-            using var vbe = VBE;
-            using var projects = vbe.VBProjects;
-            var helpFile = HelpFile;
-            int matchCount = 0;
-            foreach (var project in projects)
-            {
-                if (project.HelpFile == helpFile)
-                {
-                    matchCount++;
-                }
-                project.Dispose();
-            }
-            return matchCount == 1;
-        }
-
-
         /// <summary>
         /// Exports all code modules in the VbProject to a destination directory. Files are given the same name as their parent code Module name and file extensions are based on what type of code Module it is.
         /// </summary>
@@ -230,7 +197,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             using var mainWindow = vbe.MainWindow;
             try
             {
-                if (ProjectId != activeProject.ProjectId)
+                if (Uri != activeProject.Uri)
                 {
                     vbe.ActiveVBProject = this;
                 }

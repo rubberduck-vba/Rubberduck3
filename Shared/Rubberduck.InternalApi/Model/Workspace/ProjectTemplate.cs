@@ -1,14 +1,13 @@
-﻿namespace Rubberduck.InternalApi.Model.Workspace
+﻿namespace Rubberduck.InternalApi.Model.Workspace;
+
+public record class ProjectTemplate
 {
-    public record class ProjectTemplate
-    {
-        public const string TemplateSourceFolderName = ".template";
+    public const string TemplateSourceFolderName = ".template";
 
-        public static ProjectTemplate Default { get; } = new();
+    public static ProjectTemplate Default { get; } = new();
 
-        public string Rubberduck { get; init; } = "3.0";
-        public string Name { get; init; } = "EmptyProject";
+    public string Rubberduck { get; init; } = "3.0";
+    public string Name { get; init; } = "EmptyProject";
 
-        public ProjectFile ProjectFile { get; init; }
-    }
+    public ProjectFile ProjectFile { get; init; }
 }

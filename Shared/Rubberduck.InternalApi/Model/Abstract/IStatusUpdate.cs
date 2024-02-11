@@ -1,8 +1,7 @@
-﻿namespace Rubberduck.InternalApi.Model.Abstract
+﻿namespace Rubberduck.InternalApi.Model.Abstract;
+
+public interface IStatusUpdate
 {
-    public interface IStatusUpdate
-    {
-        string Status { get; }
-        void UpdateStatus(string status);
-    }
+    string Status { get; }
+    void UpdateStatus(string status);
 }

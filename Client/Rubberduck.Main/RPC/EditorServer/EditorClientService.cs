@@ -3,8 +3,9 @@ using Newtonsoft.Json.Linq;
 using NLog.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.InternalApi.Services;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.ServerPlatform;
-using Rubberduck.SettingsProvider;
 using System.Collections.Generic;
 
 namespace Rubberduck.Main.RPC.EditorServer

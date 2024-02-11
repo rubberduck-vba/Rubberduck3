@@ -265,7 +265,6 @@
     <ProjectReference Include="..\Rubberduck.Unmanaged\Rubberduck.Unmanaged.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj" />
-    <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
   </ItemGroup>
   
   <ItemGroup>

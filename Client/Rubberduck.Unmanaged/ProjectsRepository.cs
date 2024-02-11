@@ -14,10 +14,10 @@ namespace Rubberduck.Unmanaged
     public class ProjectsRepository : IProjectsRepository
     {
         private IVBProjects _projectsCollection;
-        private readonly IDictionary<string, IVBProject> _projects = new Dictionary<string, IVBProject>();
-        private readonly IDictionary<string, IVBComponents> _componentsCollections = new Dictionary<string, IVBComponents>();
-        private readonly IDictionary<IQualifiedModuleName, IVBComponent> _components = new Dictionary<IQualifiedModuleName, IVBComponent>();
-        private readonly IDictionary<string, IVBProject> _lockedProjects = new Dictionary<string, IVBProject>();
+        private readonly Dictionary<Uri, IVBProject> _projects = new();
+        private readonly Dictionary<Uri, IVBComponents> _componentsCollections = new();
+        private readonly Dictionary<IQualifiedModuleName, IVBComponent> _components = new();
+        private readonly Dictionary<Uri, IVBProject> _lockedProjects = new();
 
         private readonly ReaderWriterLockSlim _refreshProtectionLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
 
@@ -49,8 +49,7 @@ namespace Rubberduck.Unmanaged
                 }
                 else
                 {
-                    EnsureValidProjectId(project);
-                    _projects.Add(project.ProjectId, project);
+                    _projects.Add(project.Uri, project);
                 }
             }
         }
@@ -60,21 +59,11 @@ namespace Rubberduck.Unmanaged
             if (!project.TryGetFullPath(out var path))
             {
                 _logger.LogWarning("Path of locked project could not be read.");
+                return false;
             }
 
-            var projectName = project.Name;
-            var projectId = project.GetProjectId(projectName, path);
-
-            _lockedProjects.Add(projectId, project);
+            _lockedProjects.Add(project.Uri, project);
             return true;
-        }
-
-        private void EnsureValidProjectId(IVBProject project)
-        {
-            if (string.IsNullOrEmpty(project.ProjectId) || _projects.Keys.Contains(project.ProjectId))
-            {
-                project.AssignProjectId();
-            }
         }
 
         private void LoadComponentsCollections()
@@ -168,15 +157,15 @@ namespace Rubberduck.Unmanaged
             }
         }
 
-        private void RefreshCollections(string projectId)
+        private void RefreshCollections(Uri uri)
         {
-            if (!_projects.TryGetValue(projectId, out var project))
+            if (!_projects.TryGetValue(uri, out var project))
             {
                 return;
             }
 
-            var componentsCollection = _componentsCollections[projectId];
-            var components = _components.Where(kvp => kvp.Key.ProjectId.Equals(projectId)).ToList();
+            var componentsCollection = _componentsCollections[uri];
+            var components = _components.Where(kvp => kvp.Key.WorkspaceUri.Equals(uri)).ToList();
 
             foreach (var qmn in components.Select(kvp => kvp.Key))
             {
@@ -185,8 +174,8 @@ namespace Rubberduck.Unmanaged
 
             try
             {
-                _componentsCollections[projectId] = project.VBComponents;
-                LoadComponents(_componentsCollections[projectId]);
+                _componentsCollections[uri] = project.VBComponents;
+                LoadComponents(_componentsCollections[uri]);
             }
             finally
             {
@@ -195,9 +184,9 @@ namespace Rubberduck.Unmanaged
             } 
         }
 
-        public void Refresh(string projectId)
+        public void Refresh(Uri uri)
         {
-            ExecuteWithinWriteLock(() => RefreshCollections(projectId));
+            ExecuteWithinWriteLock(() => RefreshCollections(uri));
         }
 
         public IVBProjects ProjectsCollection()
@@ -207,20 +196,20 @@ namespace Rubberduck.Unmanaged
                 : null;
         }
 
-        public IEnumerable<(string ProjectId, IVBProject Project)> Projects()
+        public IEnumerable<(Uri Uri, IVBProject Project)> Projects()
         {
             return EvaluateWithinReadLock(() => _projects
                         .Select(kvp => (kvp.Key, new VBProjectNonDisposingDecorator<IVBProject>(kvp.Value) as IVBProject))
-                        .ToList()) 
-                   ?? new List<(string, IVBProject)>();
+                        .ToList())
+                ?? Enumerable.Empty<(Uri, IVBProject)>();
         }
 
-        public IEnumerable<(string ProjectId, IVBProject Project)> LockedProjects()
+        public IEnumerable<(Uri Uri, IVBProject Project)> LockedProjects()
         {
             return EvaluateWithinReadLock(() => _lockedProjects
                         .Select(kvp => (kvp.Key, new VBProjectNonDisposingDecorator<IVBProject>(kvp.Value) as IVBProject))
-                        .ToList()) 
-                   ?? new List<(string, IVBProject)>();
+                        .ToList())
+                ?? Enumerable.Empty<(Uri, IVBProject)>();
         }
 
         private T EvaluateWithinReadLock<T>(Func<T> function) where T: class
@@ -246,26 +235,26 @@ namespace Rubberduck.Unmanaged
             }
         }
 
-        public IVBProject Project(string projectId)
+        public IVBProject Project(Uri uri)
         {
-            if (projectId == null)
+            if (uri == null)
             {
                 return null;
             }
 
-            return EvaluateWithinReadLock(() => _projects.TryGetValue(projectId, out var project) 
+            return EvaluateWithinReadLock(() => _projects.TryGetValue(uri, out var project) 
                 ? new VBProjectNonDisposingDecorator<IVBProject>(project)
                 : null);
         }
 
-        public IVBComponents ComponentsCollection(string projectId)
+        public IVBComponents ComponentsCollection(Uri uri)
         {
-            if (projectId == null)
+            if (uri == null)
             {
                 return null;
             }
 
-            return EvaluateWithinReadLock(() => _componentsCollections.TryGetValue(projectId, out var componentsCollection) 
+            return EvaluateWithinReadLock(() => _componentsCollections.TryGetValue(uri, out var componentsCollection) 
                 ? new VBComponentsNonDisposingDecorator<IVBComponents>(componentsCollection)
                 : null);
         }
@@ -275,12 +264,12 @@ namespace Rubberduck.Unmanaged
             return EvaluateWithinReadLock(() => _components
                         .Select(kvp => (kvp.Key as IQualifiedModuleName, new VBComponentNonDisposingDecorator<IVBComponent>(kvp.Value) as IVBComponent))
                         .ToList()) 
-                   ?? new List<(IQualifiedModuleName, IVBComponent)>();
+                ?? new List<(IQualifiedModuleName, IVBComponent)>();
         }
 
-        public IEnumerable<(IQualifiedModuleName QualifiedModuleName, IVBComponent Component)> Components(string projectId)
+        public IEnumerable<(IQualifiedModuleName QualifiedModuleName, IVBComponent Component)> Components(Uri uri)
         {
-            return EvaluateWithinReadLock(() => _components.Where(kvp => kvp.Key.ProjectId.Equals(projectId))
+            return EvaluateWithinReadLock(() => _components.Where(kvp => kvp.Key.WorkspaceUri.Equals(uri))
                        .Select(kvp => (kvp.Key as IQualifiedModuleName, new VBComponentNonDisposingDecorator<IVBComponent>(kvp.Value) as IVBComponent))
                        .ToList())
                    ?? new List<(IQualifiedModuleName, IVBComponent)>();
@@ -298,7 +287,7 @@ namespace Rubberduck.Unmanaged
             ExecuteWithinWriteLock(() =>
             {
                 if (!_components.TryGetValue(qualifiedModuleName, out var component) ||
-                    !_componentsCollections.TryGetValue(qualifiedModuleName.ProjectId, out var componentsCollectionItem))
+                    !_componentsCollections.TryGetValue(qualifiedModuleName.WorkspaceUri, out var componentsCollectionItem))
                 {
                     return;
                 }

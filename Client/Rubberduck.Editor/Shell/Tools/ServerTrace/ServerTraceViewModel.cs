@@ -1,6 +1,6 @@
 ﻿using Rubberduck.Editor.Commands;
 using Rubberduck.InternalApi.ServerPlatform;
-using Rubberduck.SettingsProvider.Model.Editor.Tools;
+using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services;

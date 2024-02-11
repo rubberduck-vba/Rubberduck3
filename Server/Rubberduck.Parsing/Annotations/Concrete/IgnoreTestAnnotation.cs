@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Parsing.Annotations.Concrete;
+﻿using Rubberduck.InternalApi.Model.Declarations;
+
+namespace Rubberduck.Parsing.Annotations.Concrete;
 
 /// <summary>
 /// @IgnoreTest annotation, used by Rubberduck for skipping a particular test when running the tests of a test module.
@@ -28,6 +30,6 @@
 public sealed class IgnoreTestAnnotation : AnnotationBase
 {
     public IgnoreTestAnnotation()
-        : base("IgnoreTest", AnnotationTarget.Member, allowedArguments: 1, allowedArgumentTypes: new []{AnnotationArgumentType.Text})
+        : base("IgnoreTest", AnnotationTarget.Member, allowedArguments: 1, allowedArgumentTypes: [AnnotationArgumentType.Text])
     {}
 }

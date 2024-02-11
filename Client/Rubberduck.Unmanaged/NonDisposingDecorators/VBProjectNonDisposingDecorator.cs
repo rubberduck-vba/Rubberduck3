@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace Rubberduck.Unmanaged.NonDisposingDecorators
@@ -28,7 +29,7 @@ namespace Rubberduck.Unmanaged.NonDisposingDecorators
 
         public IVBComponents VBComponents => WrappedItem.VBComponents;
 
-        public string ProjectId => WrappedItem.ProjectId;
+        public Uri Uri => WrappedItem.Uri;
 
         public string Name
         {
@@ -59,11 +60,6 @@ namespace Rubberduck.Unmanaged.NonDisposingDecorators
         public EnvironmentMode Mode => WrappedItem.Mode;
 
         public ProjectProtection Protection => WrappedItem.Protection;
-
-        public void AssignProjectId()
-        {
-            WrappedItem.AssignProjectId();
-        }
 
         public void SaveAs(string fileName)
         {

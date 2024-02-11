@@ -2,8 +2,7 @@
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider;
-using Rubberduck.SettingsProvider.Model.Editor.Tools;
+using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services.Abstract;

@@ -1,7 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Model;
-using Rubberduck.Parsing.Model.Symbols;
 using Rubberduck.Unmanaged.Model;
 
 namespace Rubberduck.Parsing.VBA.Parsing;
@@ -13,7 +12,7 @@ public sealed class ModuleState : IEquatable<ModuleState>
         Module = module;
         ContentHash = results?.ContentHash ?? 0;
         LogicalLines = results?.LogicalLines ?? new LogicalLineStore(Enumerable.Empty<int>());
-        Comments = results?.Comments ?? Enumerable.Empty<CommentNode>();
+        //Comments = results?.Comments ?? Enumerable.Empty<CommentNode>();
 
         (ParseTree, TokenStream) = results?[CodeKind.RubberduckEditorModule] ?? (null, null);
 
@@ -29,14 +28,14 @@ public sealed class ModuleState : IEquatable<ModuleState>
     public bool IsModified { get; }
 
     public LogicalLineStore LogicalLines { get; }
-    public IEnumerable<CommentNode> Comments { get; }
+    //public IEnumerable<CommentNode> Comments { get; }
 
-    public ITokenStream TokenStream { get; }
-    public IParseTree ParseTree { get; }
+    public ITokenStream? TokenStream { get; }
+    public IParseTree? ParseTree { get; }
 
     public ParserState Status { get; internal set; }
 
-    public bool Equals(ModuleState other)
+    public bool Equals(ModuleState? other)
     {
         if (other is null) { return false; }
         if (ReferenceEquals(this, other)) { return true; }
@@ -44,6 +43,6 @@ public sealed class ModuleState : IEquatable<ModuleState>
         return other.Module.Equals(Module);
     }
 
-    public override bool Equals(object obj) => Equals(obj as ModuleState);
+    public override bool Equals(object? obj) => Equals(obj as ModuleState);
     public override int GetHashCode() => Module.GetHashCode();
 }

@@ -1,4 +1,4 @@
-﻿using Rubberduck.Unmanaged.Model;
+﻿using Rubberduck.InternalApi.Model.Declarations;
 
 namespace Rubberduck.Parsing.Annotations.Concrete;
 
@@ -26,5 +26,5 @@ public sealed class ModuleInitializeAnnotation : AnnotationBase, ITestAnnotation
         : base("ModuleInitialize", AnnotationTarget.Member)
     {}
 
-    public override ComponentType? RequiredComponentType => ComponentType.StandardModule;
+    public override ComponentKind? RequiredComponentKind { get; } = ComponentKind.StandardModule;
 }

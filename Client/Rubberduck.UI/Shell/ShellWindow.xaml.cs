@@ -1,14 +1,10 @@
 ﻿using Dragablz;
-using Rubberduck.SettingsProvider.Model.Editor.Tools;
 using Rubberduck.UI.Command.SharedHandlers;
-using Rubberduck.UI.Shell.Document;
-using Rubberduck.UI.Windows;
 using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Rubberduck.UI.Shell

@@ -93,12 +93,14 @@ namespace Rubberduck.Unmanaged
         {
             using var projects = vbe.VBProjects;
             foreach (var project in projects)
+            {
                 using (project)
                 {
                     if (project.Protection == ProjectProtection.Locked) continue;
 
                     using var components = project.VBComponents;
                     foreach (var component in components)
+                    {
                         using (component)
                         {
                             if (component.Type != ComponentType.Document) continue;
@@ -112,7 +114,9 @@ namespace Rubberduck.Unmanaged
                                     if (property.Name == "Application") return property;
                                 }
                         }
+                    }
                 }
+            }
 
             return null;
         }
@@ -132,7 +136,7 @@ namespace Rubberduck.Unmanaged
                 var moduleName = new QualifiedModuleName(document);
                 var name = GetName(document);
 
-                result.Add(new HostDocument(moduleName, name, ComponentName, DocumentState.DesignView, null));
+                result.Add(new HostDocument(moduleName, name, ComponentName, VBDocumentState.DesignView, null));
             }
             return result;
         }
@@ -144,17 +148,15 @@ namespace Rubberduck.Unmanaged
                 foreach (var project in projects)
                     using (project)
                     {
-                        if (moduleName.ProjectName != project.Name || moduleName.ProjectId != project.HelpFile)
+                        if (moduleName.ProjectName != project.Name || moduleName.WorkspaceUri != project.Uri)
                         {
                             continue;
                         }
 
-                        using (var components = project.VBComponents)
-                        using (var component = components[moduleName.ComponentName])
-                        {
-                            var name = GetName(component);
-                            return new HostDocument(moduleName, name, ComponentName, DocumentState.DesignView, null);
-                        }
+                        using var components = project.VBComponents;
+                        using var component = components[moduleName.ComponentName];
+                        var name = GetName(component);
+                        return new HostDocument(moduleName, name, ComponentName, VBDocumentState.DesignView, null);
                     }
             }
 
@@ -178,11 +180,9 @@ namespace Rubberduck.Unmanaged
             var name = string.Empty;
             try
             {
-                using (var properties = component.Properties)
-                using (var nameProperty = properties["Name"])
-                {
-                    name = nameProperty?.Value.ToString() ?? string.Empty;
-                }
+                using var properties = component.Properties;
+                using var nameProperty = properties["Name"];
+                name = nameProperty?.Value.ToString() ?? string.Empty;
             }
             catch (Exception)
             {
@@ -199,21 +199,21 @@ namespace Rubberduck.Unmanaged
 
         protected IEnumerable<IVBComponent> DocumentComponents()
         {
-            using (var projects = Vbe.VBProjects)
+            using var projects = Vbe.VBProjects;
+            foreach (var project in projects)
             {
-                foreach (var project in projects)
-                    using (project)
-                    using (var components = project.VBComponents)
-                    {
-                        foreach (var component in components)
-                            using (component)
+                using (project)
+                using (var components = project.VBComponents)
+                {
+                    foreach (var component in components)
+                        using (component)
+                        {
+                            if (component.Type == ComponentType.Document)
                             {
-                                if (component.Type == ComponentType.Document)
-                                {
-                                    yield return component;
-                                }
+                                yield return component;
                             }
-                    }
+                        }
+                }
             }
         }
 

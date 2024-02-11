@@ -1,51 +1,19 @@
-﻿namespace Rubberduck.LanguageServer.Model
+﻿namespace Rubberduck.InternalApi.ServerPlatform.LanguageServer;
+
+public class SupportedLanguage
 {
-    public abstract class SupportedLanguage
+    public static SupportedLanguage VBA = new("vba", "Microsoft Visual Basic for Applications", "*.bas", "*.cls", "*.frm", "*.doccls");
+    public static SupportedLanguage VB6 = new("vb6", "Microsoft Visual Basic 6.0", "*.bas", "*.cls", "*.frm");
+
+    private SupportedLanguage(string id, string name, params string[] fileTypes)
     {
-        protected SupportedLanguage(string id, string name)
-        {
-            Id = id;
-            Name = name;
-        }
-
-        public string Id { get; }
-        public string Name { get; }
-
-        public abstract string[] FileTypes { get; }
+        Id = id;
+        Name = name;
+        FileTypes = fileTypes;
     }
 
-    public class VisualBasicLanguage : SupportedLanguage
-    {
-        public const string LanguageId = "vb6";
-        public const string LanguageName = "Visual Basic 6.0";
+    public string Id { get; }
+    public string Name { get; }
 
-        public VisualBasicLanguage() : base(LanguageId, LanguageName) { }
-
-        public override string[] FileTypes { get; } = new[]
-        {
-            "*.vbp",
-            "*.bas",
-            "*.cls",
-            "*.doccls",
-            "*.frm",
-            //...
-        };
-    }
-
-    public class VisualBasicForApplicationsLanguage : SupportedLanguage
-    {
-        public const string LanguageId = "vba";
-        public const string LanguageName = "Visual Basic for Applications";
-
-        public VisualBasicForApplicationsLanguage() : base(LanguageId, LanguageName) { }
-
-        public override string[] FileTypes { get; } = new[]
-        {
-            "*.bas",
-            "*.cls",
-            "*.doccls",
-            "*.frm",
-            //...
-        };
-    }
+    public string[] FileTypes { get; }
 }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Settings.Model;
+using Rubberduck.InternalApi.Settings.Model.ServerStartup;
 using Rubberduck.ServerPlatform;
-using Rubberduck.SettingsProvider.Model;
-using Rubberduck.SettingsProvider.Model.ServerStartup;
 using System;
 using System.Threading;
 

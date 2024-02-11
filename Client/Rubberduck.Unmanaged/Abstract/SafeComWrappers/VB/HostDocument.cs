@@ -15,7 +15,7 @@ namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
     /// will treat the document. All hosts need not implement the full set of the enum but must
     /// represent it exactly as per the description of the enum member.
     /// </remarks>
-    public enum DocumentState
+    public enum VBDocumentState
     {
         /// <summary>
         /// The document is not accessible. It might be closed or otherwise unavailable. In this case
@@ -37,7 +37,7 @@ namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
         IQualifiedModuleName QualifiedName { get; }
         string DocumentName { get; }
         string ClassName { get; }
-        DocumentState State { get; }
+        VBDocumentState State { get; }
         bool TryGetTarget(out SafeIDispatchWrapper iDispatch);
     }
 
@@ -45,7 +45,7 @@ namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
     {
         private readonly Func<SafeIDispatchWrapper> _getTargetFunc;
 
-        public HostDocument(IQualifiedModuleName qualifedName, string name, string className, DocumentState state, Func<SafeIDispatchWrapper> getTargetFunc)
+        public HostDocument(IQualifiedModuleName qualifedName, string name, string className, VBDocumentState state, Func<SafeIDispatchWrapper> getTargetFunc)
         {
             QualifiedName = qualifedName;
             DocumentName = name;
@@ -58,7 +58,7 @@ namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
         public IQualifiedModuleName QualifiedName { get; }
         public string DocumentName { get; }
         public string ClassName { get; }
-        public DocumentState State { get; }
+        public VBDocumentState State { get; }
 
         public bool TryGetTarget(out SafeIDispatchWrapper iDispatch)
         {

@@ -1,4 +1,4 @@
-﻿using Rubberduck.Unmanaged.Model;
+﻿using Rubberduck.InternalApi.Model.Declarations;
 
 namespace Rubberduck.Parsing.Annotations.Concrete;
 
@@ -44,5 +44,5 @@ public sealed class ModuleDescriptionAnnotation : DescriptionAttributeAnnotation
     {}
 
     // override incompatibility for Document module to allow RD docstrings without the corresponding VB_Attribute.
-    public override IReadOnlyList<ComponentType> IncompatibleComponentTypes { get; } = new ComponentType[] { };
+    public override IReadOnlyList<ComponentKind> IncompatibleComponentKinds { get; } = [];
 }

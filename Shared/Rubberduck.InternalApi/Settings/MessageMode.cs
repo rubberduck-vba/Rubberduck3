@@ -1,8 +1,7 @@
-﻿namespace Rubberduck.InternalApi.Settings
+﻿namespace Rubberduck.InternalApi.Settings;
+
+public enum MessageMode
 {
-    public enum MessageMode
-    {
-        Byte = 0,
-        Message = 1,
-    }
+    Byte = 0,
+    Message = 1,
 }

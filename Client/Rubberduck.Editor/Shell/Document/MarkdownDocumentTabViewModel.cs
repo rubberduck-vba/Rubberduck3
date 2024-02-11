@@ -1,4 +1,4 @@
-﻿using Rubberduck.SettingsProvider.Model.Editor;
+﻿using Rubberduck.InternalApi.Settings.Model.Editor;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;

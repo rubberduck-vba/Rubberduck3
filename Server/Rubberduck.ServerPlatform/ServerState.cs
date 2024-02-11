@@ -4,9 +4,9 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider;
-using Rubberduck.SettingsProvider.Model;
+using Rubberduck.InternalApi.Settings.Model;
 using System;
 using System.Collections.Concurrent;
 using System.Globalization;
@@ -32,7 +32,7 @@ namespace Rubberduck.ServerPlatform
         void OnProgress(ProgressToken token, WorkDoneProgressReport? value = null);
     }
 
-    public class WorkDoneProgressStateService : ServiceBase, IWorkDoneProgressStateService
+    public class WorkDoneProgressStateService : ServerPlatformServiceBase, IWorkDoneProgressStateService
     {
         private readonly ConcurrentDictionary<ProgressToken, WorkDoneProgressReport?> _progressTokens = new();
         public event EventHandler<ProgressEventArgs> Progress = delegate { };

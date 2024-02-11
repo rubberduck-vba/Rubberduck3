@@ -4,13 +4,13 @@ namespace Rubberduck.Unmanaged.Events
 {
     public class ProjectEventArgs : EventArgs
     {
-        public ProjectEventArgs(string projectId, string projectName)
+        public ProjectEventArgs(Uri workspaceUri, string projectName)
         {
-            ProjectId = projectId;
+            WorkspaceUri = workspaceUri;
             ProjectName = projectName;
         }
 
-        public string ProjectId { get; }
+        public Uri WorkspaceUri { get; }
 
         public string ProjectName { get; }
     }

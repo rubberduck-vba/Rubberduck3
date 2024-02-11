@@ -1,5 +1,5 @@
 ﻿using Rubberduck.InternalApi.Settings;
-using Rubberduck.SettingsProvider.Model;
+using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Chrome;
 using Rubberduck.UI.Services;

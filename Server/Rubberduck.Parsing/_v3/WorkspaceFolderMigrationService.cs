@@ -28,17 +28,17 @@ namespace Rubberduck.Parsing._v3
         /// <summary>
         /// Gets a URI for a project component / module, given the content of its <em>declarations</em> section.
         /// </summary>
-        /// <param name="projectId">The project ID associated with the workspace..</param>
+        /// <param name="workspaceUri">The root URI of the project associated with the workspace.</param>
         /// <param name="fileName">The file name of the module, including its extension.</param>
         /// <param name="declarations">The string content of the <em>declaration lines</em> header section of the module (nothing more is needed).</param>
         /// <returns>A URI under the workspace source root for the specified module, respective of any <c>@Folder</c> annotation found in its <em>declarations</em> header section.</returns>
-        public WorkspaceFileUri ParseModuleUri(Uri workspaceRoot, string projectId, string fileName, string declarations)
+        public WorkspaceFileUri ParseModuleUri(Uri workspaceRoot, string fileName, string declarations)
         {
             var uri = fileName;
             var name = _fileSystem.Path.GetFileNameWithoutExtension(fileName);
 
             var listener = new FolderAnnotationsListener();
-            var (tree, tokens, logicalLines) = _parser.Parse(name, projectId, declarations, CancellationToken.None, CodeKind.CodePaneCode, parseListeners: [listener]);
+            var result = _parser.Parse(new WorkspaceFileUri(uri, workspaceRoot), declarations, CancellationToken.None, parseListeners: [listener]);
 
             if (listener.Folder != null)
             {
