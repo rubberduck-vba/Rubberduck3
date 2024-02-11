@@ -53,6 +53,7 @@ public class NegationOperatorTests : ServiceBaseTest
     private void OutputExecutionScope(VBExecutionScope scope, bool outputNames = true, bool verboseDiagnostics = false)
     {
         Console.WriteLine($"Scope: [{scope.MemberInfo.Kind}] {scope.MemberInfo.Uri}");
+        Console.WriteLine($"x64: {scope.Is64BitHost}");
         Console.WriteLine($"Option Compare {scope.OptionCompare}");
         Console.WriteLine($"Option Explicit {(scope.OptionExplicit ? "On" : "Off")}");
         Console.WriteLine($"Option Strict {(scope.OptionStrict ? "On" : "Off")}");

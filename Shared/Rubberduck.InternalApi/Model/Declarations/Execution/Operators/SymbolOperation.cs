@@ -12,9 +12,9 @@ public static class SymbolOperation
     public static VBTypedValue EvaluateUnaryOpResult(ref VBExecutionScope context, TypedSymbol symbol, Func<double, double> unaryOp)
     {
         var type = symbol.ResolvedType;
-        if (type is VBVariantType)
+        if (type is VBVariantType variant)
         {
-            type = context.GetTypedValue(symbol).TypeInfo;
+            type = context.GetTypedValue(symbol).TypeInfo ?? variant.Subtype;
         }
 
         if (type is VBNullType)
@@ -69,10 +69,15 @@ public static class SymbolOperation
             throw VBRuntimeErrorException.TypeMismatch(symbol);
         }
 
-        if (symbol.ResolvedType is INumericCoercion coercible)
+        if (context.GetTypedValue(symbol) is INumericCoercion coercible)
         {
-            context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitNumericCoercion(symbol));
-            return new VBIntegerValue(symbol) { NumericValue = (short)coercible.AsCoercedNumeric()!.Value };
+            var value = unaryOp.Invoke(coercible.AsCoercedNumeric()!.Value);
+            if (type is VBDateType)
+            {
+                context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitDateSerialConversion(symbol));
+                return VBDateValue.FromSerial(value);
+            }
+            return new VBIntegerValue(symbol) { NumericValue = value };
         }
 
         if (type is VBObjectType)
