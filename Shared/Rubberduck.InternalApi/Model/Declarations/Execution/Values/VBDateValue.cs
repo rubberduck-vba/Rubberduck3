@@ -16,8 +16,8 @@ public record class VBDateValue : VBTypedValue,
     public static VBDateValue MaxValue { get; } = new() { Value = new DateTime(9999, 12, 31, 23, 59, 59) };
     public static VBDateValue Zero { get; } = new() { Value = new DateTime(1899, 12, 30) };
 
-    public const long MinSerial = -657434;
-    public const long MaxSerial = 2958465;
+    public const double MinSerial = -657434;
+    public const double MaxSerial = 2958465;
     public static VBDateValue FromSerial(double value) => new() { Value = DateTime.FromOADate(value) };
 
     public double SerialValue => Value.ToOADate();

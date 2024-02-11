@@ -14,7 +14,7 @@ public record class VBMultiplicationOperator : VBBinaryOperator
     }
     
     protected override VBTypedValue ExecuteBinaryOperator(ref VBExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue) =>
-        rhsValue is VBDateValue
-        ? SymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, (double lhs, double rhs) => lhs * ((VBDateValue)rhsValue).SerialValue)
-        : SymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, (int lhs, int rhs) => lhs * rhs);
+        rhsValue is VBDateValue rhsDateValue
+        ? (SymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, (double lhs, double rhs) => lhs * rhsDateValue.SerialValue))
+        : (SymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, (int lhs, int rhs) => lhs * rhs));
 }

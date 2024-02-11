@@ -429,13 +429,13 @@ public static class SymbolOperation
             return lhsNumericValue.AsDouble().WithValue(binaryOp.Invoke(lhsNumericValue.AsDouble().Value, rhsNumericValue.Value));
         }
 
-        //if (rhsType is VBDateType)
-        //{
-        //    var rhsDateValue = (VBDateValue)rhsValue;
-        //    context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitDateSerialConversion(rhsValue.Symbol!));
+        if (rhsType is VBDateType)
+        {
+            var rhsDateValue = (VBDateValue)rhsValue;
+            context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitDateSerialConversion(rhsValue.Symbol!));
 
-        //    return rhsDateValue.WithValue(binaryOp.Invoke(rhsDateValue.SerialValue, lhsNumericValue.AsDouble().Value));
-        //}
+            return new VBDoubleValue(opSymbol).WithValue(binaryOp.Invoke(lhsNumericValue.AsDouble().Value, rhsDateValue.SerialValue));
+        }
 
         if (rhsType is INumericCoercion coercible)
         {
