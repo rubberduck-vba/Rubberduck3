@@ -207,20 +207,85 @@ public static class SymbolOperation
 
         if (lhsValue is VBStringValue lhsString)
         {
-            return EvaluateStringCoercedIntegerOp(ref context, opSymbol, lhsString, rhsValue, binaryOp);
+            return EvaluateStringCoercedIntegerOp(ref context, opSymbol, lhsString, rhsValue, (lhs, rhs) => binaryOp(lhs, rhs));
         }
 
         if (lhsType is VBDateType)
         {
             var lhsNumericValue = new VBDoubleValue(lhsValue.Symbol) { NumericValue = ((VBDateValue)lhsValue).SerialValue };
             context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitDateSerialConversion(lhsValue.Symbol!));
-            return VBDateValue.FromSerial(((VBDoubleValue)EvaluateIntegerOp(ref context, opSymbol, lhsNumericValue, rhsValue, binaryOp)).NumericValue);
+            var result = ((VBDoubleValue)EvaluateIntegerOp(ref context, opSymbol, lhsNumericValue, rhsValue, binaryOp)).NumericValue;
+
+            if (opSymbol is VBAdditionOperator || opSymbol is VBSubtractionOperator)
+            {
+                return VBDateValue.FromSerial(result);
+            }
+
+            return new VBDoubleValue(opSymbol) { NumericValue = result };
         }
 
         if (lhsType is INumericType)
         {
             var lhsNumericValue = (VBNumericTypedValue)lhsValue;
-            return EvaluateIntegerOp(ref context, opSymbol, lhsNumericValue, rhsValue, binaryOp);
+            var result = EvaluateIntegerOp(ref context, opSymbol, lhsNumericValue, rhsValue, binaryOp);
+            if (opSymbol is VBAdditionOperator || opSymbol is VBSubtractionOperator || opSymbol is VBMultiplicationOperator)
+            {
+                return result;
+            }
+            return ((INumericValue)result).AsDouble();
+        }
+
+        throw VBRuntimeErrorException.TypeMismatch(opSymbol, "The data types involved in this binary operation are not compatible.");
+    }
+
+    public static VBTypedValue EvaluateBinaryOpResult(ref VBExecutionScope context, TypedSymbol opSymbol, VBTypedValue lhsValue, VBTypedValue rhsValue, Func<int, int, double> binaryOp)
+    {
+        var lhsType = lhsValue.TypeInfo!;
+        if (lhsType is VBVariantType lhsVariant)
+        {
+            lhsType = lhsVariant.Subtype;
+        }
+
+        var rhsType = rhsValue.TypeInfo!;
+        if (rhsType is VBVariantType rhsVariant)
+        {
+            rhsType = rhsVariant.Subtype;
+        }
+
+        if (lhsType is VBNullType || rhsType is VBNullType)
+        {
+            context = context.WithDiagnostic(RubberduckDiagnostic.UnintendedConstantExpression(opSymbol));
+            return VBNullValue.Null;
+        }
+
+        if (lhsValue is VBStringValue lhsString)
+        {
+            return EvaluateStringCoercedIntegerOp(ref context, opSymbol, lhsString, rhsValue, (lhs, rhs) => binaryOp(lhs, rhs));
+        }
+
+        if (lhsType is VBDateType)
+        {
+            var lhsNumericValue = new VBDoubleValue(lhsValue.Symbol) { NumericValue = ((VBDateValue)lhsValue).SerialValue };
+            context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitDateSerialConversion(lhsValue.Symbol!));
+            var result = ((VBDoubleValue)EvaluateIntegerOp(ref context, opSymbol, lhsNumericValue, rhsValue, (lhs, rhs) => (int)binaryOp(lhs, rhs))).NumericValue;
+
+            if (opSymbol is VBAdditionOperator || opSymbol is VBSubtractionOperator)
+            {
+                return VBDateValue.FromSerial(result);
+            }
+
+            return new VBDoubleValue(opSymbol) { NumericValue = result };
+        }
+
+        if (lhsType is INumericType)
+        {
+            var lhsNumericValue = (VBNumericTypedValue)lhsValue;
+            var result = EvaluateIntegerOp(ref context, opSymbol, lhsNumericValue, rhsValue, (lhs, rhs) => (int)binaryOp(lhs, rhs));
+            if (opSymbol is VBAdditionOperator || opSymbol is VBSubtractionOperator)
+            {
+                return result;
+            }
+            return ((INumericValue)result).AsDouble();
         }
 
         throw VBRuntimeErrorException.TypeMismatch(opSymbol, "The data types involved in this binary operation are not compatible.");
@@ -229,13 +294,38 @@ public static class SymbolOperation
     #region TODO refactor
     private static VBTypedValue EvaluateStringCoercedNumericOp(ref VBExecutionScope context, TypedSymbol opSymbol, VBStringValue lhsString, VBTypedValue rhsValue, Func<double, double, double> binaryOp)
     {
-        if (rhsValue is VBStringValue rhsString)
+        if (rhsValue is VBStringValue rhsString && opSymbol is VBAdditionOperator)
         {
             context = context.WithDiagnostic(RubberduckDiagnostic.PreferConcatOperatorForStringConcatenation(opSymbol));
             return lhsString.WithValue(lhsString.Value + rhsString.Value);
         }
 
         var rhsType = rhsValue.TypeInfo;
+        if (rhsValue is VBNumericTypedValue numeric)
+        {
+            double lhsNumberValue;
+            if (lhsString.Value.StartsWith("&H"))
+            {
+                try
+                {
+                    lhsNumberValue = Convert.ToInt32(lhsString.Value.Replace("&H", "0x"), 16);
+                }
+                catch
+                {
+                    throw VBRuntimeErrorException.TypeMismatch(opSymbol, "This expression evaluates to a `Double`; LHS `String` value must have a numeric value. Consider explicitly validating and converting the values first.");
+                }
+            }
+            else if (!double.TryParse(lhsString.Value, out lhsNumberValue) || !double.IsRealNumber(lhsNumberValue))
+            {
+                throw VBRuntimeErrorException.TypeMismatch(opSymbol, "This expression evaluates to a `Double`; LHS `String` value must have a numeric value. Consider explicitly validating and converting the values first.");
+            }
+
+            var rhsNumberValue = numeric.NumericValue;
+            context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitStringCoercion(rhsValue.Symbol!));
+
+            return new VBDoubleValue { NumericValue = binaryOp.Invoke((int)lhsNumberValue, (int)rhsNumberValue), Symbol = opSymbol };
+        }
+
         if (rhsType is INumericCoercion coercible)
         {
             if (!double.TryParse(lhsString.Value, out var lhsNumberValue))
@@ -265,9 +355,9 @@ public static class SymbolOperation
         throw VBRuntimeErrorException.TypeMismatch(rhsValue.Symbol!, $"Could not coerce RHS operand ({rhsType.Name}) into a `String`.");
     }
 
-    private static VBTypedValue EvaluateStringCoercedIntegerOp(ref VBExecutionScope context, TypedSymbol opSymbol, VBStringValue lhsString, VBTypedValue rhsValue, Func<int, int, int> binaryOp)
+    private static VBTypedValue EvaluateStringCoercedIntegerOp(ref VBExecutionScope context, TypedSymbol opSymbol, VBStringValue lhsString, VBTypedValue rhsValue, Func<int, int, double> binaryOp)
     {
-        if (rhsValue is VBStringValue rhsString)
+        if (rhsValue is VBStringValue rhsString && opSymbol is VBAdditionOperator)
         {
             context = context.WithDiagnostic(RubberduckDiagnostic.PreferConcatOperatorForStringConcatenation(opSymbol));
             return lhsString.WithValue(lhsString.Value + rhsString.Value);
@@ -339,13 +429,13 @@ public static class SymbolOperation
             return lhsNumericValue.AsDouble().WithValue(binaryOp.Invoke(lhsNumericValue.AsDouble().Value, rhsNumericValue.Value));
         }
 
-        if (rhsType is VBDateType)
-        {
-            var rhsDateValue = (VBDateValue)rhsValue;
-            context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitDateSerialConversion(rhsValue.Symbol!));
+        //if (rhsType is VBDateType)
+        //{
+        //    var rhsDateValue = (VBDateValue)rhsValue;
+        //    context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitDateSerialConversion(rhsValue.Symbol!));
 
-            return rhsDateValue.WithValue(binaryOp.Invoke(rhsDateValue.SerialValue, lhsNumericValue.AsDouble().Value));
-        }
+        //    return rhsDateValue.WithValue(binaryOp.Invoke(rhsDateValue.SerialValue, lhsNumericValue.AsDouble().Value));
+        //}
 
         if (rhsType is INumericCoercion coercible)
         {
@@ -389,7 +479,7 @@ public static class SymbolOperation
             return rhsDateValue.WithValue(binaryOp.Invoke((int)rhsDateValue.SerialValue, (int)lhsNumericValue.AsDouble().Value));
         }
 
-        if (rhsType is INumericCoercion coercible)
+        if (rhsValue is INumericCoercion coercible)
         {
             var rhsCoercedValue = coercible.AsCoercedNumeric();
             context = context.WithDiagnostic(RubberduckDiagnostic.ImplicitNumericCoercion(opSymbol));
@@ -400,7 +490,7 @@ public static class SymbolOperation
             }
             else
             {
-                return ((VBNumericTypedValue)rhsValue).AsDouble().WithValue(binaryOp.Invoke((int)lhsNumericValue.AsDouble().Value, (int)(rhsCoercedValue?.Value ?? 0)));
+                return rhsCoercedValue!.AsDouble().WithValue(binaryOp.Invoke((int)lhsNumericValue.AsDouble().Value, (int)(rhsCoercedValue?.Value ?? 0)));
             }
         }
 

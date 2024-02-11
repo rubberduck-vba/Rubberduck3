@@ -14,7 +14,7 @@ public record class VBDivisionOperator : VBBinaryOperator
     }
 
     protected override VBTypedValue ExecuteBinaryOperator(ref VBExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue) =>
-        SymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, (lhs, rhs) =>
+        SymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, (double lhs, double rhs) =>
         {
             if (rhs == 0)
             {

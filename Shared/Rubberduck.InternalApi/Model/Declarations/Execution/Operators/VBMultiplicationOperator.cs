@@ -12,7 +12,9 @@ public record class VBMultiplicationOperator : VBBinaryOperator
         : base(Tokens.MultiplicationOp, parentUri, lhsExpression, rhsExpression, lhs, rhs)
     {
     }
-
+    
     protected override VBTypedValue ExecuteBinaryOperator(ref VBExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue) =>
-        SymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, (lhs, rhs) => lhs * rhs);
+        rhsValue is VBDateValue
+        ? SymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, (double lhs, double rhs) => lhs * ((VBDateValue)rhsValue).SerialValue)
+        : SymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, (int lhs, int rhs) => lhs * rhs);
 }

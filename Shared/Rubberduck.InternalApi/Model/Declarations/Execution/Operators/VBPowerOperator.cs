@@ -14,5 +14,5 @@ public record class VBPowerOperator : VBBinaryOperator
     }
 
     protected override VBTypedValue ExecuteBinaryOperator(ref VBExecutionScope context, VBTypedValue lhsValue, VBTypedValue rhsValue) =>
-        SymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, Math.Pow);
+        SymbolOperation.EvaluateBinaryOpResult(ref context, this, lhsValue, rhsValue, (double lhs, double rhs) => Math.Pow(lhs, rhs));
 }

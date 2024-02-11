@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Operators;
+using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
 using System;
@@ -10,16 +11,9 @@ using System;
 namespace Rubberduck.Tests.VBTypes;
 
 [TestClass]
-public class NegationOperatorTests : OperatorTests
+public class NegationOperatorTests : UnaryOperatorTests
 {
-
-    private VBNegationOperator CreateNegationOperator(ref VBProcedureMember scope, TypedSymbol variable)
-    {
-        var procedureSymbol = ParentProcedureSymbol.WithChildren([variable]);
-        var parentProcedure = ParentProcedure.WithDeclaration(procedureSymbol);
-
-        return new VBNegationOperator(expression: $"-{variable.Name}", variable, parentProcedure.Uri);
-    }
+    protected override VBUnaryOperator CreateOperator(Uri uri, TypedSymbol symbol) => new VBNegationOperator(expression: $"-{symbol.Name}", symbol, uri);
 
     [TestMethod]
     [TestCategory("Operators")]
@@ -34,7 +28,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBByteValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -59,7 +53,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBByteValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -84,7 +78,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBLongPtrValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -111,7 +105,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBLongPtrValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
         
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -136,7 +130,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBIntegerValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -159,7 +153,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBLongValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -182,7 +176,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBLongLongValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -205,7 +199,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBCurrencyValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -228,7 +222,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBDecimalValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -251,7 +245,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBSingleValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -274,7 +268,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBDoubleValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -300,7 +294,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBLongPtrValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -327,7 +321,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBLongPtrValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -352,7 +346,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBIntegerValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -375,7 +369,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBLongValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -398,7 +392,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBLongLongValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -421,7 +415,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBCurrencyValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -444,7 +438,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBDecimalValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -467,7 +461,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBSingleValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -490,7 +484,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBDoubleValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -508,7 +502,7 @@ public class NegationOperatorTests : OperatorTests
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBObjectType.TypeInfo, "TEST");
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -530,7 +524,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBObjectValue(variable) { Value = Guid.NewGuid() };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -549,7 +543,7 @@ public class NegationOperatorTests : OperatorTests
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBVariantType.TypeInfo, "TEST");
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -572,7 +566,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBDateValue(variable) { Value = initialValue };
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -593,7 +587,7 @@ public class NegationOperatorTests : OperatorTests
         var value = new VBNullValue(variable);
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, value.Symbol!);
+        var sut = CreateOperator(ref procedure, value.Symbol!);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);

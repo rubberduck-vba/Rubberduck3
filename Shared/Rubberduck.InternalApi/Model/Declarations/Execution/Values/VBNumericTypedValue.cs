@@ -32,7 +32,7 @@ public abstract record class VBNumericTypedValue : VBTypedValue,
     public int CompareTo(VBNumericTypedValue? other) => other is null ? 1 : NumericValue.CompareTo(other.NumericValue);
     public override string ToString() => NumericValue.ToString();
 
-    internal VBTypedValue WithValue(int value)
+    internal VBTypedValue WithValue(double value)
     {
         return this switch
         {

@@ -4,22 +4,19 @@ using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Operators;
+using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
 using System;
 
 namespace Rubberduck.Tests.VBTypes;
 
-[TestClass]
-public class NewOperatorTests : OperatorTests
-{
-    private VBNewOperator CreateNewOperator(ref VBProcedureMember scope, TypedSymbol symbol)
-    {
-        var procedureSymbol = ParentProcedureSymbol.WithChildren([]);
-        var parentProcedure = ParentProcedure.WithDeclaration(procedureSymbol);
 
-        return new VBNewOperator(expression: $"{Tokens.New} {symbol.Name}", symbol, parentProcedure.Uri);
-    }
+[TestClass]
+public class NewOperatorTests : UnaryOperatorTests
+{
+    protected override VBUnaryOperator CreateOperator(Uri uri, TypedSymbol symbol) =>
+        new VBNewOperator(expression: $"{Tokens.New} {symbol.Name}", symbol, uri);
 
     [TestMethod]
     [TestCategory("Operators")]
@@ -29,7 +26,7 @@ public class NewOperatorTests : OperatorTests
         var procedure = ParentProcedure;
         var classType = CreateClassType(context, "Class1");
 
-        var sut = CreateNewOperator(ref procedure, classType);
+        var sut = CreateOperator(ref procedure, classType);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);
@@ -49,7 +46,7 @@ public class NewOperatorTests : OperatorTests
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBIntegerType.TypeInfo, "Thing");
 
-        var sut = CreateNewOperator(ref procedure, variable);
+        var sut = CreateOperator(ref procedure, variable);
         var scope = context.EnterScope(procedure);
 
         try
@@ -76,7 +73,7 @@ public class NewOperatorTests : OperatorTests
         var procedure = ParentProcedure;
         var classType = CreateClassType(context, "Class1", false, false);
 
-        var sut = CreateNewOperator(ref procedure, classType);
+        var sut = CreateOperator(ref procedure, classType);
         var scope = context.EnterScope(procedure);
 
         try

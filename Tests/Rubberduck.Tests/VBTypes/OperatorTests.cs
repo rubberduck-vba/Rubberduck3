@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.Model.Declarations.Execution;
+using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
+using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
@@ -29,6 +32,22 @@ public abstract class OperatorTests : ServiceBaseTest
         base.ConfigureServices(services);
         services.AddScoped<VBExecutionContext>();
     }
+
+    protected VBBinaryOperator CreateOperator(ref VBProcedureMember scope, TypedSymbol lhs, TypedSymbol rhs)
+    {
+        var procedureSymbol = ParentProcedureSymbol.WithChildren([lhs, rhs]);
+        var parentProcedure = ParentProcedure.WithDeclaration(procedureSymbol);
+        return CreateOperator(parentProcedure.Uri, lhs, rhs);
+    }
+    protected abstract VBBinaryOperator CreateOperator(Uri uri, TypedSymbol lhs, TypedSymbol rhs);
+
+    protected VBUnaryOperator CreateOperator(ref VBProcedureMember scope, TypedSymbol symbol)
+    {
+        var procedureSymbol = ParentProcedureSymbol.WithChildren([symbol]);
+        var parentProcedure = ParentProcedure.WithDeclaration(procedureSymbol);
+        return CreateOperator(parentProcedure.Uri, symbol);
+    }
+    protected abstract VBUnaryOperator CreateOperator(Uri uri, TypedSymbol symbol);
 
     protected void OutputExecutionScope(VBExecutionScope scope, bool outputNames = true, bool verboseDiagnostics = false)
     {
