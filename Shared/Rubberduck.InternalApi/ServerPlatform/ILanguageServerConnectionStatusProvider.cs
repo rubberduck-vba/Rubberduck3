@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Rubberduck.InternalApi.ServerPlatform
+namespace Rubberduck.InternalApi.ServerPlatform;
+
+public interface ILanguageServerConnectionStatusProvider
 {
-    public interface ILanguageServerConnectionStatusProvider
-    {
-        event EventHandler Connecting;
-        event EventHandler Connected;
-        event EventHandler Disconnected;
-    }
+    event EventHandler Connecting;
+    event EventHandler Connected;
+    event EventHandler Disconnected;
 }

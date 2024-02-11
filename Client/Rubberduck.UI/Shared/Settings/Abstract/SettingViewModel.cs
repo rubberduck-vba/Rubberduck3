@@ -1,4 +1,4 @@
-﻿using Rubberduck.SettingsProvider.Model;
+﻿using Rubberduck.InternalApi.Settings.Model;
 using System;
 
 namespace Rubberduck.UI.Shared.Settings.Abstract

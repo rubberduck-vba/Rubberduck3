@@ -1,5 +1,7 @@
 using Rubberduck.Unmanaged.Registration;
-using Rubberduck.Unmanaged.Model;
+using Rubberduck.InternalApi.Model.Declarations;
+using System.Collections.Immutable;
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.Parsing.Annotations.Concrete;
 
@@ -56,9 +58,13 @@ namespace Rubberduck.Parsing.Annotations.Concrete;
 public sealed class DefaultMemberAnnotation : FixedAttributeValueAnnotationBase
 {
     public DefaultMemberAnnotation()
-        : base("DefaultMember", AnnotationTarget.Member, "VB_UserMemId", new[] { WellKnownDispIds.Value.ToString() })
-    {}
+        : base("DefaultMember", AnnotationTarget.Member, Tokens.VB_UserMemId, new[] { WellKnownDispIds.Value.ToString() })
+    {
+        IncompatibleComponentKinds = new HashSet<ComponentKind>(base.IncompatibleComponentKinds)
+        {
+            ComponentKind.StandardModule
+        }.ToImmutableList();
+    }
 
-    public override IReadOnlyList<ComponentType> IncompatibleComponentTypes =>
-        base.IncompatibleComponentTypes.Concat(new[] { ComponentType.StandardModule }).Distinct().ToList();
+    public override IReadOnlyList<ComponentKind> IncompatibleComponentKinds { get; }
 }

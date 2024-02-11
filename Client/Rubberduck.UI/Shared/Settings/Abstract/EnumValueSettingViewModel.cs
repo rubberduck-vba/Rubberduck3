@@ -1,4 +1,4 @@
-﻿using Rubberduck.SettingsProvider.Model;
+﻿using Rubberduck.InternalApi.Settings.Model;
 using System;
 using System.Collections.Generic;
 

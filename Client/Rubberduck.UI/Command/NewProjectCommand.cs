@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.Model.Workspace;
+using Rubberduck.InternalApi.Services;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
@@ -62,11 +63,11 @@ namespace Rubberduck.UI.Command
                     _workspaceFolderService.CreateWorkspaceFolders(projectFile);
                     _projectFileService.CreateFile(projectFile);
 
-                    if (_workspaceModulesService is not null && projectFile.ProjectId is not null)
+                    if (_workspaceModulesService is not null)
                     {
                         // command is executed from the VBE add-in;
                         // we're migrating an existing project to RD3 so we need to create the files now:
-                        _workspaceModulesService.ExportWorkspaceModules(projectFile.ProjectId, workspaceRootUri, projectFile.VBProject.Modules);
+                        _workspaceModulesService.ExportWorkspaceModules(workspaceRootUri, projectFile.VBProject.Modules);
                     }
                     else
                     {
@@ -103,13 +104,13 @@ namespace Rubberduck.UI.Command
                 if (_workspaceModulesService is not null)
                 {
                     var workspaceRoot = new Uri(_fileSystem.Path.Combine(model.WorkspaceLocation, model.ProjectName));
-                    var modules = _workspaceModulesService.GetWorkspaceModules(model.SelectedVBProject.ProjectId, workspaceRoot, model.ScanFolderAnnotations);
+                    var modules = _workspaceModulesService.GetWorkspaceModules(workspaceRoot, model.ScanFolderAnnotations);
                     foreach (var module in modules)
                     {
                         builder.WithModule(module);
                     }
 
-                    var references = _workspaceModulesService.GetWorkspaceReferences(model.SelectedVBProject.ProjectId);
+                    var references = _workspaceModulesService.GetWorkspaceReferences(model.SelectedVBProject.WorkspaceUri);
                     foreach (var reference in references)
                     {
                         builder.WithReference(reference);

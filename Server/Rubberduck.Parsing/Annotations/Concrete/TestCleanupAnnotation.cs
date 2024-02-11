@@ -1,4 +1,5 @@
-﻿using Rubberduck.Unmanaged.Model;
+﻿using Rubberduck.InternalApi.Model.Declarations;
+using Rubberduck.Unmanaged.Model;
 
 namespace Rubberduck.Parsing.Annotations.Concrete;
 
@@ -27,5 +28,5 @@ public sealed class TestCleanupAnnotation : AnnotationBase, ITestAnnotation
         : base("TestCleanup", AnnotationTarget.Member)
     {}
 
-    public override ComponentType? RequiredComponentType => ComponentType.StandardModule;
+    public override ComponentKind? RequiredComponentKind { get; } = ComponentKind.StandardModule;
 }

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
-using Rubberduck.SettingsProvider;
-using Rubberduck.UI.Services.Abstract;
+using Rubberduck.InternalApi.Services;
+using Rubberduck.InternalApi.Settings;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -146,6 +146,7 @@ namespace Rubberduck.Editor
         }
 
         private Dictionary<Uri, IWorkspaceState> _workspaces = [];
+        public IWorkspaceState GetWorkspace(Uri workspaceRoot) => _workspaces[workspaceRoot];
         public IEnumerable<IWorkspaceState> Workspaces => _workspaces.Values;
         public IWorkspaceState? ActiveWorkspace { get; set; }
 

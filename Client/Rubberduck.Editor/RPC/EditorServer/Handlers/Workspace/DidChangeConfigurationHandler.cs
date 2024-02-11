@@ -2,8 +2,8 @@
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
 using Rubberduck.InternalApi.Settings;
+using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.ServerPlatform;
-using Rubberduck.SettingsProvider.Model;
 using System.Threading;
 using System.Threading.Tasks;
 

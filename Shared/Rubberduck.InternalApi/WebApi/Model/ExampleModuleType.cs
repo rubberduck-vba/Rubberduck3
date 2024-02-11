@@ -1,16 +1,15 @@
 ﻿using System.ComponentModel;
 
-namespace Rubberduck.InternalApi.WebApi.Model
+namespace Rubberduck.InternalApi.WebApi.Model;
+
+public enum ExampleModuleType
 {
-    public enum ExampleModuleType
-    {
-        None = 0,
-        [Description("(Any)")] Any,
-        [Description("Class Module")] ClassModule,
-        [Description("Document Module")] DocumentModule,
-        [Description("Interface Module")] InterfaceModule,
-        [Description("Predeclared Class")] PredeclaredClass,
-        [Description("Standard Module")] StandardModule,
-        [Description("UserForm Module")] UserFormModule
-    }
+    None = 0,
+    [Description("(Any)")] Any,
+    [Description("Class Module")] ClassModule,
+    [Description("Document Module")] DocumentModule,
+    [Description("Interface Module")] InterfaceModule,
+    [Description("Predeclared Class")] PredeclaredClass,
+    [Description("Standard Module")] StandardModule,
+    [Description("UserForm Module")] UserFormModule
 }

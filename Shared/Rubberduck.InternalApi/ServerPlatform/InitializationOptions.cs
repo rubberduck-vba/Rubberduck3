@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Rubberduck.InternalApi.ServerPlatform
+namespace Rubberduck.InternalApi.ServerPlatform;
+
+public readonly struct InitializationOptions
 {
-    public readonly struct InitializationOptions
-    {
-        public DateTime Timestamp { get; init; }
-        public string Locale { get; init; }
-        public string HostApplication { get; init; }
-    }
+    public DateTime Timestamp { get; init; }
+    public string Locale { get; init; }
+    public string HostApplication { get; init; }
 }

@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.VBEditor.Utility;
 using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using PARAMFLAG = System.Runtime.InteropServices.ComTypes.PARAMFLAG;
@@ -16,7 +17,7 @@ namespace Rubberduck.Parsing.Model.ComReflection;
 [DebuggerDisplay("{" + nameof(DeclarationName) + "}")]
 public class ComParameter
 {
-    public static ComParameter Void = new() { _typeName = new ComTypeName(null, string.Empty) };
+    public static ComParameter Void = new() { _typeName = ComTypeName.Void };
 
     [DataMember(IsRequired = true)]
     public string Name { get; private set; }
@@ -46,7 +47,7 @@ public class ComParameter
     {
         get
         {
-            if (!_typeName.IsEnumMember || !HasDefaultValue || !ComProject.KnownEnumerations.TryGetValue(_typeName.EnumGuid, out ComEnumeration enumType))
+            if (!_typeName.IsEnumMember || !HasDefaultValue || !ComProject.KnownEnumerations.TryGetValue(_typeName.EnumGuid, out ComEnumeration? enumType))
             {
                 return string.Empty;
             }
@@ -61,7 +62,7 @@ public class ComParameter
 
     [DataMember(IsRequired = true)]
     ComMember Parent { get; set; }
-    public ComProject Project => Parent?.Project;
+    public ComProject? Project => Parent?.Project;
 
     private ComParameter() { }
 
@@ -150,7 +151,7 @@ public class ComParameter
         }
         else
         {
-            _typeName = new ComTypeName(Project, (ComVariant.TypeNames.TryGetValue(vt, out string result)) ? result : Tokens.Object);
+            _typeName = new ComTypeName(Project, ComVariant.TypeNames.TryGetValue(vt, out string? result) ? result : Tokens.Object);
         }
     }
 }

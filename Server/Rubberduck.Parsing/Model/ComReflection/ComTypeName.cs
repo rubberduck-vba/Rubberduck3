@@ -6,6 +6,8 @@ namespace Rubberduck.Parsing.Model.ComReflection;
 [KnownType(typeof(ComProject))]
 public class ComTypeName
 {
+    public static ComTypeName Void { get; } = new ComTypeName(null, string.Empty);
+
     [DataMember(IsRequired = true)]
     public Guid EnumGuid { get; private set; } = Guid.Empty;
     public bool IsEnumMember => !EnumGuid.Equals(Guid.Empty);
@@ -14,7 +16,7 @@ public class ComTypeName
     public Guid AliasGuid { get; private set; } = Guid.Empty;
     public bool IsAliased => !AliasGuid.Equals(Guid.Empty);
 
-    public ComProject Project { get; set; }
+    public ComProject? Project { get; set; }
 
     [DataMember(IsRequired = true)]
     private string _rawName;
@@ -42,13 +44,13 @@ public class ComTypeName
         }
     }
 
-    public ComTypeName(ComProject project, string name)
+    public ComTypeName(ComProject? project, string name)
     {
         Project = project;
         _rawName = name;
     }
 
-    public ComTypeName(ComProject project, string name, Guid enumGuid, Guid aliasGuid) : this(project, name)
+    public ComTypeName(ComProject? project, string name, Guid enumGuid, Guid aliasGuid) : this(project, name)
     {
         EnumGuid = enumGuid;
         AliasGuid = aliasGuid;

@@ -1,4 +1,5 @@
 using Antlr4.Runtime;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Model;
 
 namespace Rubberduck.Parsing.Exceptions;
@@ -11,10 +12,10 @@ namespace Rubberduck.Parsing.Exceptions;
 public class PreprocessorSyntaxErrorException : ParsePassSyntaxErrorException
 {
     public PreprocessorSyntaxErrorException(ParsePassSyntaxErrorInfo info)
-        : this(info.Message, info.Exception, info.OffendingSymbol, info.LineNumber, info.Position, info.ModuleName, info.CodeKind) { }
+        : this(info.Message, info.Exception, info.OffendingSymbol, info.LineNumber, info.Position, info.Uri, info.CodeKind) { }
 
-    public PreprocessorSyntaxErrorException(string message, RecognitionException innerException, IToken offendingSymbol, int line, int position, string moduleName, CodeKind codeKind)
-        : base(message, innerException, offendingSymbol, line, position, moduleName, codeKind)
+    public PreprocessorSyntaxErrorException(string message, RecognitionException innerException, IToken offendingSymbol, int line, int position, WorkspaceFileUri uri, CodeKind codeKind)
+        : base(message, innerException, offendingSymbol, line, position, uri, codeKind)
     {}
 
     public override string ToString()

@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Parsing.Annotations.Concrete;
+﻿using Rubberduck.InternalApi.Model.Declarations;
+
+namespace Rubberduck.Parsing.Annotations.Concrete;
 
 /// <summary>
 /// @Folder annotation, used by Rubberduck to represent and organize modules under a custom folder structure.
@@ -34,6 +36,6 @@ public sealed class FolderAnnotation : AnnotationBase
     public static char SeparatorChar { get; } = '.';
 
     public FolderAnnotation()
-        : base("Folder", AnnotationTarget.Module, 1, 1, new[] { AnnotationArgumentType.Text})
+        : base("Folder", AnnotationTarget.Module, 1, 1, [AnnotationArgumentType.Text])
     {}
 }

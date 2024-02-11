@@ -29,7 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
     <ProjectReference Include="..\Rubberduck.ServerPlatform\Rubberduck.ServerPlatform.csproj" />
   </ItemGroup>
 

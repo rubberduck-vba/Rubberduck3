@@ -1,4 +1,4 @@
-﻿using Rubberduck.Unmanaged.Model;
+﻿using Rubberduck.InternalApi.Model.Declarations;
 
 namespace Rubberduck.Parsing.Annotations.Concrete;
 
@@ -38,5 +38,5 @@ public sealed class InterfaceAnnotation : AnnotationBase
         : base("Interface", AnnotationTarget.Module)
     {}
 
-    public override ComponentType? RequiredComponentType => ComponentType.ClassModule;
+    public override ComponentKind? RequiredComponentKind => ComponentKind.ClassModule;
 }

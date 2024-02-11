@@ -1,4 +1,4 @@
-﻿using Rubberduck.Unmanaged.Model;
+﻿using Rubberduck.InternalApi.Model.Declarations;
 
 namespace Rubberduck.Parsing.Annotations.Concrete;
 
@@ -32,7 +32,7 @@ namespace Rubberduck.Parsing.Annotations.Concrete;
 /// </example>
 public sealed class EntryPointAnnotation : AnnotationBase
 {
-    public string CallerName { get; private set; }
+    public string CallerName { get; private set; } = string.Empty;
 
     public EntryPointAnnotation()
         : base("EntryPoint", AnnotationTarget.Member, allowedArguments: 1, allowedArgumentTypes: new[] { AnnotationArgumentType.Text })
@@ -40,21 +40,20 @@ public sealed class EntryPointAnnotation : AnnotationBase
 
     // annotation is legal in ComponentType.StandardModule and ComponentType.Document modules.
 
-    public override IReadOnlyList<ComponentType> IncompatibleComponentTypes => new[]
-    {
-        ComponentType.ActiveXDesigner,
-        ComponentType.ClassModule,
-        ComponentType.ComComponent,
-        ComponentType.DocObject,
-        ComponentType.MDIForm,
-        ComponentType.PropPage,
-        ComponentType.RelatedDocument,
-        ComponentType.ResFile,
-        ComponentType.Undefined,
-        ComponentType.UserControl,
-        ComponentType.UserForm,
-        ComponentType.VBForm,
-    };
+    public override IReadOnlyList<ComponentKind> IncompatibleComponentKinds => [
+        ComponentKind.ActiveXDesigner,
+        ComponentKind.ClassModule,
+        ComponentKind.ComComponent,
+        ComponentKind.DocObject,
+        ComponentKind.MDIForm,
+        ComponentKind.PropertyPage,
+        ComponentKind.RelatedDocument,
+        ComponentKind.ResourceFile,
+        ComponentKind.Undefined,
+        ComponentKind.UserControl,
+        ComponentKind.UserFormModule,
+        ComponentKind.VBForm,
+    ];
 
     public override IReadOnlyList<string> ProcessAnnotationArguments(IEnumerable<string> arguments)
     {

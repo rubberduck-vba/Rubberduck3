@@ -2,9 +2,9 @@
 using System.IO.Abstractions;
 using System.Text;
 using System.Text.RegularExpressions;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Unmanaged;
 using Rubberduck.Unmanaged.Model;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor.Utility
 {

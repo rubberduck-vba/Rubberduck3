@@ -2,10 +2,9 @@
 using Rubberduck.Environment;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
+using Rubberduck.InternalApi.Settings.Model;
+using Rubberduck.InternalApi.Settings.Model.Logging;
 using Rubberduck.Resources;
-using Rubberduck.SettingsProvider;
-using Rubberduck.SettingsProvider.Model;
-using Rubberduck.SettingsProvider.Model.Logging;
 using Rubberduck.UI.Shared.Message;
 using Rubberduck.Unmanaged.UIContext;
 using Rubberduck.VBEditor.UI.OfficeMenus.RubberduckMenu;

@@ -1,28 +1,26 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server.WorkDone;
 using OmniSharp.Extensions.LanguageServer.Server;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
+using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
+using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
+using Rubberduck.InternalApi.Settings.Model;
+using Rubberduck.InternalApi.Settings.Model.LanguageClient;
+using Rubberduck.InternalApi.Settings.Model.LanguageServer;
 using Rubberduck.LanguageServer.Handlers.Lifecycle;
 using Rubberduck.LanguageServer.Handlers.Workspace;
-using Rubberduck.LanguageServer.Model;
-using Rubberduck.LanguageServer.Services;
+using Rubberduck.Parsing._v3.Pipeline;
 using Rubberduck.ServerPlatform;
-using Rubberduck.SettingsProvider;
-using Rubberduck.SettingsProvider.Model;
-using Rubberduck.SettingsProvider.Model.LanguageClient;
-using Rubberduck.SettingsProvider.Model.LanguageServer;
 using System;
 using System.Diagnostics;
 using System.IO.Abstractions;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Rubberduck.LanguageServer
 {
@@ -64,6 +62,8 @@ namespace Rubberduck.LanguageServer
             //services.AddSingleton<ILanguageServerFacade>(provider => _languageServer);
             services.AddSingleton<ServerStartupOptions>(provider => options);
             services.AddSingleton<Process>(provider => Process.GetProcessById(options.ClientProcessId));
+            
+            services.AddSingleton<SupportedLanguage>(provider => SupportedLanguage.VBA);
 
             services.AddSingleton<IFileSystem, FileSystem>();
             services.AddSingleton<PerformanceRecordAggregator>();
@@ -79,7 +79,6 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<IDefaultSettingsProvider<LanguageServerSettings>>(provider => LanguageServerSettings.Default);
             services.AddSingleton<RubberduckSettingsProvider>();
 
-            services.AddSingleton<SupportedLanguage, VisualBasicForApplicationsLanguage>();
             services.AddSingleton<DocumentContentStore>();
 
             services.AddSingleton<IExitHandler, ExitHandler>();
@@ -148,8 +147,8 @@ namespace Rubberduck.LanguageServer
         protected async override Task OnServerStartedAsync(ILanguageServer server, CancellationToken token, IWorkDoneObserver? progress, ServerPlatformServiceHelper service)
         {
             var store = server.Services.GetRequiredService<DocumentContentStore>();
-
-            var rootUriString = ((ILanguageServerState)ServerState).RootUri!.GetFileSystemPath();
+            var state = (ILanguageServerState)ServerState;
+            var rootUriString = state.RootUri!.GetFileSystemPath();
             service.LogTrace($"ServerState RootUri: {rootUriString}");
             var rootUri = new Uri(rootUriString);
 
@@ -168,10 +167,12 @@ namespace Rubberduck.LanguageServer
                     progress?.OnNext($"Loading file: {item.Name}", 10, false);
 
                     var path = System.IO.Path.Combine(srcRootPath, item.Uri);
-                    var document = new DocumentState(System.IO.File.ReadAllText(path));
-                    document.IsOpened = item.IsAutoOpen;
-
                     var uri = new WorkspaceFileUri(item.Uri, rootUri);
+                    var document = new DocumentState(uri, System.IO.File.ReadAllText(path))
+                    {
+                        IsOpened = item.IsAutoOpen
+                    };
+
                     if (service.TraceLevel == TraceLevel.Verbose)
                     {
                         service.LogTrace($"Loaded: {uri}");
@@ -188,14 +189,9 @@ namespace Rubberduck.LanguageServer
                 service.LogTrace($"TODO: load definitions from '{item.Uri}'.");
             }
 
-            progress?.OnNext(message: "Parsing...", percentage: 25, cancellable: false);
-            // todo: parse all source files in workspace, make code foldings immediately available for open documents
-
-            progress?.OnNext(message: "Resolving...", percentage: 50, cancellable: false);
-            // todo: make semantic highlighting immediately available for open documents
-
-            progress?.OnNext(message: "Analyzing...", percentage: 75, cancellable: false);
-            // todo: make diagnostics immediately available for open documents
+            progress?.OnNext(message: "Processing workspace documents", percentage: 25, cancellable: false);
+            var pipeline = server.GetRequiredService<WorkspaceParserPipeline>();
+            _ = pipeline.StartAsync(state.RootUri, default!, new CancellationTokenSource());
 
             progress?.OnCompleted();
             if (progress != null)

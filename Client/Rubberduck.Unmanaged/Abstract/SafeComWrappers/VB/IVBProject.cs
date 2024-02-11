@@ -13,7 +13,7 @@ namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
         IReferences References { get; }
         IVBComponents VBComponents { get; }
 
-        string ProjectId { get; }
+        Uri Uri { get; }
         string Name { get; set; }
         string Description { get; set; }
         string HelpFile { get; set; }
@@ -25,7 +25,6 @@ namespace Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB
         EnvironmentMode Mode { get; }
         ProjectProtection Protection { get; }
 
-        void AssignProjectId();
         void SaveAs(string fileName);
         void MakeCompiledFile();
         void ExportSourceFiles(string folder);

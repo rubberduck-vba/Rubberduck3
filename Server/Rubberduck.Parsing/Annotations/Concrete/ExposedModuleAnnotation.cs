@@ -1,3 +1,5 @@
+using Rubberduck.InternalApi.Model.Declarations;
+
 namespace Rubberduck.Parsing.Annotations.Concrete;
 
 /// <summary>
@@ -31,6 +33,6 @@ namespace Rubberduck.Parsing.Annotations.Concrete;
 public sealed class ExposedModuleAnnotation : FixedAttributeValueAnnotationBase
 {
     public ExposedModuleAnnotation()
-        : base("Exposed", AnnotationTarget.Module, "VB_Exposed", new[] { "True" })
+        : base("Exposed", AnnotationTarget.Module, "VB_Exposed", ["True"])
     {}
 }

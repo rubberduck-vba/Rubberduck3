@@ -1,4 +1,4 @@
-﻿using Rubberduck.Unmanaged.Model;
+﻿using Rubberduck.InternalApi.Model.Declarations;
 
 namespace Rubberduck.Parsing.Annotations;
 
@@ -10,13 +10,13 @@ public abstract class AnnotationBase : IAnnotation
     public IReadOnlyList<AnnotationArgumentType> AllowedArgumentTypes { get; }
     public string Name { get; }
     public AnnotationTarget Target { get; }
-    public virtual IReadOnlyList<ComponentType> IncompatibleComponentTypes { get; } = new ComponentType[] { };
-    public virtual ComponentType? RequiredComponentType { get; } = null;
+    public virtual IReadOnlyList<ComponentKind> IncompatibleComponentKinds { get; } = [];
+    public virtual ComponentKind? RequiredComponentKind { get; } = null;
 
     protected AnnotationBase(string name, AnnotationTarget target, 
         int requiredArguments = 0, 
         int? allowedArguments = 0, 
-        IReadOnlyList<AnnotationArgumentType> allowedArgumentTypes = null, 
+        IReadOnlyList<AnnotationArgumentType>? allowedArgumentTypes = null, 
         bool allowMultiple = false)
     {
         Name = name;
@@ -24,14 +24,14 @@ public abstract class AnnotationBase : IAnnotation
         AllowMultiple = allowMultiple;
         RequiredArguments = requiredArguments;
         AllowedArguments = allowedArguments;
-        AllowedArgumentTypes = allowedArgumentTypes ?? new List<AnnotationArgumentType>();
+        AllowedArgumentTypes = allowedArgumentTypes ?? [];
     }
 
-    public virtual string Text { get; }
+    public virtual string Text { get; } = string.Empty;
 
     public virtual IReadOnlyList<string> ProcessAnnotationArguments(IEnumerable<string> arguments) => arguments.ToList();
 
-    public override bool Equals(object obj) => obj is AnnotationBase annotation && Equals(annotation);
+    public override bool Equals(object? obj) => obj is AnnotationBase annotation && Equals(annotation);
 
     public bool Equals(AnnotationBase other) => other != null && Name.Equals(other.Name);
     

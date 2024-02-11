@@ -1,5 +1,5 @@
 ﻿using Rubberduck.InternalApi.Extensions;
-using Rubberduck.Unmanaged.Model;
+using Rubberduck.InternalApi.Model.Declarations;
 
 namespace Rubberduck.Parsing.Annotations;
 
@@ -15,25 +15,16 @@ public abstract class FlexibleAttributeValueAnnotationBase : AnnotationBase, IAt
         _numberOfValues = numberOfValues;
     }
 
-    public override IReadOnlyList<ComponentType> IncompatibleComponentTypes { get; } = new[] { ComponentType.Document };
+    public override IReadOnlyList<ComponentKind> IncompatibleComponentKinds { get; } = [ComponentKind.DocumentModule];
 
-    public bool MatchesAttributeDefinition(string attributeName, IReadOnlyList<string> attributeValues)
-    {
-        return _attribute == attributeName && _numberOfValues == attributeValues.Count;
-    }
+    public bool MatchesAttributeDefinition(string attributeName, IReadOnlyList<string> attributeValues) => 
+        _attribute == attributeName && _numberOfValues == attributeValues.Count;
 
-    public virtual IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues)
-    {
-        return annotationValues.Take(_numberOfValues).Select(v => v.EnQuote()).ToList();
-    }
+    public virtual IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues) => 
+        annotationValues.Take(_numberOfValues).Select(v => v.EnQuote()).ToList();
 
-    public virtual IReadOnlyList<string> AttributeToAnnotationValues(IReadOnlyList<string> attributeValues)
-    {
-        return attributeValues.Take(_numberOfValues).Select(v => v.EnQuote()).ToList();
-    }
+    public virtual IReadOnlyList<string> AttributeToAnnotationValues(IReadOnlyList<string> attributeValues) => 
+        attributeValues.Take(_numberOfValues).Select(v => v.EnQuote()).ToList();
 
-    public string Attribute(IReadOnlyList<string> annotationValues)
-    {
-        return _attribute;
-    }
+    public string Attribute(IReadOnlyList<string> annotationValues) => _attribute;
 }

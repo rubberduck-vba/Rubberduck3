@@ -1,4 +1,4 @@
-using Rubberduck.Unmanaged.Model;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
 namespace Rubberduck.Parsing.Model.Symbols;
 
@@ -11,19 +11,12 @@ public class CommentNode
     /// Creates a new comment node.
     /// </summary>
     /// <param name="comment">The comment line text, without the comment marker.</param>
-    /// <param name="qualifiedSelection">The information required to locate and select this node in its VBE code pane.</param>
-    public CommentNode(string comment, string marker, QualifiedSelection qualifiedSelection)
+    /// <param name="location">The information required to locate and select this node in the editor.</param>
+    public CommentNode(string comment, string marker, Location location)
     {
         CommentText = comment;
         Marker = marker;
-        QualifiedSelection = qualifiedSelection;
-    }
-
-    public CommentNode(string comment, string marker, QualifiedDocumentOffset qualifiedOffset)
-    {
-        CommentText = comment;
-        Marker = marker;
-        QualifiedOffset = qualifiedOffset;
+        Location = location;
     }
 
     /// <summary>
@@ -37,14 +30,9 @@ public class CommentNode
     public string Marker { get; }
 
     /// <summary>
-    /// Gets the information required to locate and select this node in its VBE code pane.
+    /// Gets the information required to locate and select this node in the editor.
     /// </summary>
-    public QualifiedSelection QualifiedSelection { get; }
-
-    /// <summary>
-    /// Gets the information required to locate and select this node in its RDE tab.
-    /// </summary>
-    public QualifiedDocumentOffset QualifiedOffset { get; }
+    public Location Location { get; }
 
     /// <summary>
     /// Returns the comment text.

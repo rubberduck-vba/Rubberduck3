@@ -8,16 +8,17 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Serialization;
 using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using Rubberduck.InternalApi.ServerPlatform;
-using Rubberduck.SettingsProvider;
-using Rubberduck.SettingsProvider.Model;
-using Rubberduck.SettingsProvider.Model.General;
+using Rubberduck.InternalApi.Services;
+using Rubberduck.InternalApi.Settings;
+using Rubberduck.InternalApi.Settings.Model;
+using Rubberduck.InternalApi.Settings.Model.General;
 using System;
 using System.IO;
 using System.Reflection;
 
 namespace Rubberduck.ServerPlatform
 {
-    public abstract class ServerPlatformClientService : ServiceBase, ILanguageClientService
+    public abstract class ServerPlatformClientService : ServerPlatformServiceBase, ILanguageClientService
     {
         public event EventHandler Connecting = delegate { };
         public event EventHandler Connected = delegate { };

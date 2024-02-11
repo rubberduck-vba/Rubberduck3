@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.InternalApi.Settings.Model.UpdateServer;
 using Rubberduck.ServerPlatform;
-using Rubberduck.SettingsProvider.Model.UpdateServer;
 using System.Collections.Generic;
 using System.Threading;
 

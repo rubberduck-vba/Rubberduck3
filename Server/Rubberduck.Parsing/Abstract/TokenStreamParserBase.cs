@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Tree;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Exceptions;
 using Rubberduck.Parsing.Model;
 
@@ -40,34 +41,34 @@ public abstract class TokenStreamParserBase<TParser> : ITokenStreamParser
     }
     protected abstract TParser GetParser(ITokenStream tokenStream);
     protected abstract IParseTree Parse(TParser parser);
-    public IParseTree Parse(string moduleName, string projectId, CommonTokenStream tokenStream, CancellationToken token, CodeKind codeKind = CodeKind.RubberduckEditorModule, ParserMode parserMode = ParserMode.FallBackSllToLl, IEnumerable<IParseTreeListener>? parseListeners = null)
+    public IParseTree Parse(WorkspaceFileUri uri, CommonTokenStream tokenStream, CancellationToken token, CodeKind codeKind = CodeKind.RubberduckEditorModule, ParserMode parserMode = ParserMode.FallBackSllToLl, IEnumerable<IParseTreeListener>? parseListeners = null)
     {
         return parserMode switch
         {
-            ParserMode.FallBackSllToLl => ParseWithFallBack(moduleName, tokenStream, codeKind, parseListeners),
-            ParserMode.LlOnly => ParseLl(moduleName, tokenStream, codeKind, parseListeners),
-            ParserMode.SllOnly => ParseSll(moduleName, tokenStream, codeKind, parseListeners),
+            ParserMode.FallBackSllToLl => ParseWithFallBack(uri, tokenStream, codeKind, parseListeners),
+            ParserMode.LlOnly => ParseLl(uri, tokenStream, codeKind, parseListeners),
+            ParserMode.SllOnly => ParseSll(uri, tokenStream, codeKind, parseListeners),
             _ => throw new ArgumentException($"Value '{parserMode}' is not supported.", nameof(parserMode)),
         };
     }
 
-    private IParseTree ParseWithFallBack(string moduleName, CommonTokenStream tokenStream, CodeKind codeKind, IEnumerable<IParseTreeListener>? parseListeners = null)
+    private IParseTree ParseWithFallBack(WorkspaceFileUri uri, CommonTokenStream tokenStream, CodeKind codeKind, IEnumerable<IParseTreeListener>? parseListeners = null)
     {
         try
         {
-            return ParseSll(moduleName, tokenStream, codeKind, parseListeners);
+            return ParseSll(uri, tokenStream, codeKind, parseListeners);
         }
         catch (ParsePassSyntaxErrorException syntaxErrorException)
         {
-            var message = $"SLL mode failed while parsing the {codeKind} version of module {moduleName} at symbol {syntaxErrorException.OffendingSymbol.Text} at L{syntaxErrorException.LineNumber}C{syntaxErrorException.Position}. Retrying using LL.";
+            var message = $"SLL mode failed while parsing the {codeKind} version of URI {uri} at symbol {syntaxErrorException.OffendingSymbol.Text} at L{syntaxErrorException.LineNumber}C{syntaxErrorException.Position}. Retrying using LL.";
             LogAndReset(tokenStream, message, syntaxErrorException);
-            return ParseLl(moduleName, tokenStream, codeKind, parseListeners);
+            return ParseLl(uri, tokenStream, codeKind, parseListeners);
         }
         catch (Exception exception)
         {
-            var message = $"SLL mode failed while parsing the {codeKind} version of module {moduleName}. Retrying using LL.";
+            var message = $"SLL mode failed while parsing the {codeKind} version of URI {uri}. Retrying using LL.";
             LogAndReset(tokenStream, message, exception);
-            return ParseLl(moduleName, tokenStream, codeKind, parseListeners);
+            return ParseLl(uri, tokenStream, codeKind, parseListeners);
         }
     }
 
@@ -80,25 +81,17 @@ public abstract class TokenStreamParserBase<TParser> : ITokenStreamParser
         tokenStream.Reset();
     }
 
-    private IParseTree ParseLl(string moduleName, ITokenStream tokenStream, CodeKind codeKind, IEnumerable<IParseTreeListener>? parseListeners = null)
+    private IParseTree ParseLl(WorkspaceFileUri uri, ITokenStream tokenStream, CodeKind codeKind, IEnumerable<IParseTreeListener>? parseListeners = null)
     {
-        var errorListener = _llErrorListenerFactory.Create(moduleName, codeKind);
+        var errorListener = _llErrorListenerFactory.Create(uri, codeKind);
         var tree = Parse(tokenStream, PredictionMode.Ll, errorListener, parseListeners);
-        if (errorListener.HasPostponedException(out var exception))
-        {
-            throw exception;
-        }
         return tree;
     }
 
-    private IParseTree ParseSll(string moduleName, ITokenStream tokenStream, CodeKind codeKind, IEnumerable<IParseTreeListener>? parseListeners = null)
+    private IParseTree ParseSll(WorkspaceFileUri uri, ITokenStream tokenStream, CodeKind codeKind, IEnumerable<IParseTreeListener>? parseListeners = null)
     {
-        var errorListener = _sllErrorListenerFactory.Create(moduleName, codeKind);
+        var errorListener = _sllErrorListenerFactory.Create(uri, codeKind);
         var tree = Parse(tokenStream, PredictionMode.Sll, errorListener, parseListeners);
-        if (errorListener.HasPostponedException(out var exception))
-        {
-            throw exception;
-        }
         return tree;
     }
 }

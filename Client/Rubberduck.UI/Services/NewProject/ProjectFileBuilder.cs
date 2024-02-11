@@ -1,6 +1,6 @@
 ﻿using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
-using Rubberduck.SettingsProvider;
+using Rubberduck.InternalApi.Settings;
 using Rubberduck.UI.Shared.NewProject;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,6 @@ namespace Rubberduck.UI.Services.NewProject
 
         private Uri? _uri = default;
         private string _name = "Project1";
-        private string? _projectId = null;
 
         private readonly HashSet<File> _files = [];
         private readonly Dictionary<string, Module> _modules = [];
@@ -44,15 +43,12 @@ namespace Rubberduck.UI.Services.NewProject
                 References = _references.ToArray(),
                 Folders = _folders.ToArray(),
             },
-            
-            ProjectId = _projectId
         };
 
         public ProjectFileBuilder WithModel(INewProjectWindowViewModel viewModel)
         {
             _uri = new Uri(_fileSystem.Path.Combine(viewModel.WorkspaceLocation, viewModel.ProjectName));
             _name = viewModel.ProjectName;
-            _projectId = viewModel.SelectedVBProject?.ProjectId;
 
             if (viewModel.SelectedProjectTemplate != null)
             {
@@ -86,12 +82,6 @@ namespace Rubberduck.UI.Services.NewProject
         public ProjectFileBuilder WithProjectName(string name)
         {
             _name = name;
-            return this;
-        }
-
-        public ProjectFileBuilder WithProjectId(string id)
-        {
-            _projectId = id;
             return this;
         }
 
