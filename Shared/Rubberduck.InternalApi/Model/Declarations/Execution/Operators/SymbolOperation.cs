@@ -216,6 +216,20 @@ public static class SymbolOperation
             return VBNullValue.Null;
         }
 
+        if (opSymbol is VBBitwiseOperator)
+        {
+            if (lhsType is VBEmptyType)
+            {
+                context = context.WithDiagnostic(RubberduckDiagnostic.UnintendedConstantExpression(lhsValue.Symbol!));
+                lhsValue = VBLongValue.Zero;
+            }
+            if (rhsType is VBEmptyType)
+            {
+                context = context.WithDiagnostic(RubberduckDiagnostic.UnintendedConstantExpression(rhsValue.Symbol!));
+                rhsValue = VBLongValue.Zero;
+            }
+        }
+
         if (lhsValue is VBStringValue lhsString)
         {
             return EvaluateStringCoercedIntegerOp(ref context, opSymbol, lhsString, rhsValue, (lhs, rhs) => binaryOp(lhs, rhs));

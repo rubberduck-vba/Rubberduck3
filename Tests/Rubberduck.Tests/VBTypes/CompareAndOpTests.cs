@@ -78,6 +78,150 @@ public class CompareAndOpTests : OperatorTests
         Assert.IsTrue(result is VBLongValue, result.TypeInfo.Name);
         Assert.AreEqual(expectedValue, ((VBLongValue)result).Value);
     }
+
+    [TestMethod]
+    [TestCategory("Operators")]
+    public void NumericCoercedLHS_VBStringValue()
+    {
+        var context = Services.GetRequiredService<VBExecutionContext>();
+        var procedure = ParentProcedure;
+
+        var lhsSymbol = CreateVariable(context, VBStringType.TypeInfo, "LHS");
+        context.SetSymbolValue(lhsSymbol, new VBStringValue(lhsSymbol) { Value = "1" });
+
+        var rhsSymbol = CreateVariable(context, VBIntegerType.TypeInfo, "RHS");
+        context.SetSymbolValue(rhsSymbol, new VBIntegerValue(rhsSymbol) { NumericValue = 1 });
+
+        var sut = CreateOperator(ref procedure, lhsSymbol, rhsSymbol);
+        var scope = context.EnterScope(procedure);
+
+        var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
+
+        Assert.IsNotNull(result);
+        Assert.IsTrue(result is VBLongValue, result.TypeInfo.Name);
+        Assert.AreEqual(1, ((VBLongValue)result).Value);
+    }
+
+    [TestMethod]
+    [TestCategory("Operators")]
+    public void NumericCoercedRHS_VBStringValue()
+    {
+        var context = Services.GetRequiredService<VBExecutionContext>();
+        var procedure = ParentProcedure;
+
+        var lhsSymbol = CreateVariable(context, VBIntegerType.TypeInfo, "LHS");
+        context.SetSymbolValue(lhsSymbol, new VBIntegerValue(lhsSymbol) { NumericValue = 1 });
+
+        var rhsSymbol = CreateVariable(context, VBStringType.TypeInfo, "RHS");
+        context.SetSymbolValue(rhsSymbol, new VBStringValue(rhsSymbol) { Value = "1" });
+
+        var sut = CreateOperator(ref procedure, lhsSymbol, rhsSymbol);
+        var scope = context.EnterScope(procedure);
+
+        var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
+
+        Assert.IsNotNull(result);
+        Assert.IsTrue(result is VBLongValue, result.TypeInfo.Name);
+        Assert.AreEqual(1, ((VBLongValue)result).Value);
+    }
+
+    [TestMethod]
+    [TestCategory("Operators")]
+    public void NumericCoercedLHS_VBDateValue()
+    {
+        var context = Services.GetRequiredService<VBExecutionContext>();
+        var procedure = ParentProcedure;
+
+        var lhsSymbol = CreateVariable(context, VBDateType.TypeInfo, "LHS");
+        context.SetSymbolValue(lhsSymbol, new VBDateValue(lhsSymbol) { Value = new DateTime(2024, 1, 1) });
+
+        var rhsSymbol = CreateVariable(context, VBIntegerType.TypeInfo, "RHS");
+        context.SetSymbolValue(rhsSymbol, new VBIntegerValue(rhsSymbol) { NumericValue = 1 });
+
+        var sut = CreateOperator(ref procedure, lhsSymbol, rhsSymbol);
+        var scope = context.EnterScope(procedure);
+
+        var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
+
+        Assert.IsNotNull(result);
+        Assert.IsTrue(result is VBLongValue, result.TypeInfo.Name);
+        Assert.AreEqual(1, ((VBLongValue)result).Value);
+    }
+
+    [TestMethod]
+    [TestCategory("Operators")]
+    public void NumericCoercedRHS_VBDateValue()
+    {
+        var context = Services.GetRequiredService<VBExecutionContext>();
+        var procedure = ParentProcedure;
+
+        var lhsSymbol = CreateVariable(context, VBIntegerType.TypeInfo, "LHS");
+        context.SetSymbolValue(lhsSymbol, new VBIntegerValue(lhsSymbol) { NumericValue = 1 });
+
+        var rhsSymbol = CreateVariable(context, VBDateType.TypeInfo, "RHS");
+        context.SetSymbolValue(rhsSymbol, new VBDateValue(rhsSymbol) { Value = new DateTime(2024, 1, 1) });
+
+        var sut = CreateOperator(ref procedure, lhsSymbol, rhsSymbol);
+        var scope = context.EnterScope(procedure);
+
+        var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
+
+        Assert.IsNotNull(result);
+        Assert.IsTrue(result is VBLongValue, result.TypeInfo.Name);
+        Assert.AreEqual(1, ((VBLongValue)result).Value);
+    }
+
+    [TestMethod]
+    [TestCategory("Operators")]
+    public void NumericCoercedLHS_VBEmptyValue()
+    {
+        var context = Services.GetRequiredService<VBExecutionContext>();
+        var procedure = ParentProcedure;
+
+        var lhsSymbol = CreateVariable(context, VBVariantType.TypeInfo, "LHS");
+        context.SetSymbolValue(lhsSymbol, VBEmptyValue.Empty);
+
+        var rhsSymbol = CreateVariable(context, VBIntegerType.TypeInfo, "RHS");
+        context.SetSymbolValue(rhsSymbol, new VBIntegerValue(rhsSymbol) { NumericValue = 1 });
+
+        var sut = CreateOperator(ref procedure, lhsSymbol, rhsSymbol);
+        var scope = context.EnterScope(procedure);
+
+        var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
+
+        Assert.IsNotNull(result);
+        Assert.IsTrue(result is VBLongValue, result.TypeInfo.Name);
+        Assert.AreEqual(0, ((VBLongValue)result).Value);
+    }
+
+    [TestMethod]
+    [TestCategory("Operators")]
+    public void NumericCoercedRHS_VBEmptyValue()
+    {
+        var context = Services.GetRequiredService<VBExecutionContext>();
+        var procedure = ParentProcedure;
+
+        var lhsSymbol = CreateVariable(context, VBIntegerType.TypeInfo, "LHS");
+        context.SetSymbolValue(lhsSymbol, new VBIntegerValue(lhsSymbol) { NumericValue = 1 });
+
+        var rhsSymbol = CreateVariable(context, VBVariantType.TypeInfo, "RHS");
+        context.SetSymbolValue(rhsSymbol, VBEmptyValue.Empty);
+
+        var sut = CreateOperator(ref procedure, lhsSymbol, rhsSymbol);
+        var scope = context.EnterScope(procedure);
+
+        var result = sut.Evaluate(ref scope);
+        OutputExecutionScope(scope);
+
+        Assert.IsNotNull(result);
+        Assert.IsTrue(result is VBLongValue, result.TypeInfo.Name);
+        Assert.AreEqual(0, ((VBLongValue)result).Value);
+    }
 }
 
 [TestClass]
