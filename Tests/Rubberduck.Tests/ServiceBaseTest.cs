@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using Moq;
 using Rubberduck.InternalApi.Settings.Model;
 
-namespace Rubberduck.Tests.VBTypes
+namespace Rubberduck.Tests
 {
     [TestClass]
     public abstract class ServiceBaseTest
@@ -28,12 +28,12 @@ namespace Rubberduck.Tests.VBTypes
         {
             if (!Mocks.ContainsKey(typeof(IFileSystem)))
             {
-                Mocks[(typeof(IFileSystem))] = new Mock<IFileSystem>();
+                Mocks[typeof(IFileSystem)] = new Mock<IFileSystem>();
             }
 
             services.AddLogging();
             services.AddSingleton<ILogger>(provider => new TestLogger());
-            services.AddSingleton<IFileSystem>(provider => (IFileSystem)Mocks[typeof(IFileSystem)].Object);
+            services.AddSingleton(provider => (IFileSystem)Mocks[typeof(IFileSystem)].Object);
             services.AddSingleton<RubberduckSettingsProvider>();
             services.AddSingleton<IDefaultSettingsProvider<RubberduckSettings>>(provider => RubberduckSettings.Default);
             services.AddSingleton<PerformanceRecordAggregator>();

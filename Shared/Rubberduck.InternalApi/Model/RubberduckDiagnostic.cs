@@ -37,7 +37,7 @@ public record class RubberduckDiagnostic : Diagnostic
             Message = message,
             Severity = severity,
             Source = source ?? symbol.Uri.ToString(),
-            Range = symbol?.Range,
+            Range = symbol?.Range!,
         };
 
 

@@ -18,6 +18,8 @@ public record class VBClassType : VBMemberOwnerType
     public VBTypeMember? DefaultMember { get; init; }
     public bool IsInterface => Subtypes.Length != 0;
 
+    public bool IsCreatable { get; init; }
+
     public override VBType[] ConvertsSafelyToTypes => Supertypes.Concat([VBVariantType.TypeInfo]).ToArray();
     public override VBObjectValue DefaultValue { get; } = VBObjectValue.Nothing;
 }

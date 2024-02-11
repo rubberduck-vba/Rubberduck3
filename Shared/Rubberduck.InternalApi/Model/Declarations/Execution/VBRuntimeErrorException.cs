@@ -13,6 +13,7 @@ public enum VBCompileErrorId
     InvalidParamArrayUse,
     InvalidReDim,
     ExpectedArray,
+    ExpectedIdentifier,
 }
 
 public interface IDiagnosticSource
@@ -32,18 +33,19 @@ public class VBCompileErrorException : ApplicationException, IDiagnosticSource
     public static VBCompileErrorException InvalidParamArrayUse(Symbol symbol, string? verbose = null) => new(symbol, VBCompileErrorId.InvalidParamArrayUse, "Invalid ParamArray use", verbose);
     public static VBCompileErrorException InvalidReDim(Symbol symbol, string? verbose = null) => new(symbol, VBCompileErrorId.InvalidReDim, "Invalid ReDim", verbose);
     public static VBCompileErrorException ExpectedArray(Symbol symbol, string? verbose = null) => new(symbol, VBCompileErrorId.ExpectedArray, "Expected array", verbose);
+    public static VBCompileErrorException ExpectedIdentifier(Symbol symbol, string? verbose = null) => new(symbol, VBCompileErrorId.ExpectedIdentifier, "Expected identifier", verbose);
     #endregion
 
     public VBCompileErrorException(Symbol symbol, VBCompileErrorId id, string message, string? verbose = null)
         : base($"Compile error: {message}")
     {
-        Id = (int)id;
+        VBCompileErrorId = id;
         Symbol = symbol;
         Verbose = verbose;
     }
 
-    public string DiagnosticCode => $"VBC{Id:00000}";
-    public int Id { get; }
+    public string DiagnosticCode => $"VBC{(int)VBCompileErrorId:00000}";
+    public VBCompileErrorId VBCompileErrorId { get; }
     public Symbol Symbol { get; }
     public string? Verbose { get; }
 

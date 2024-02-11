@@ -56,7 +56,7 @@ public record class VBExecutionScope : IDiagnosticSource, IExecutable
     public VBExecutionScope WithDiagnostics(IEnumerable<Diagnostic> diagnostics) => this with { Diagnostics = Diagnostics.Concat(diagnostics).ToArray() };
     public VBExecutionScope WithDiagnostic(Diagnostic diagnostic) => this with { Diagnostics = Diagnostics.Append(diagnostic).ToArray() };
 
-    public VBTypedValue? Execute(ref VBExecutionContext context)
+    public VBTypedValue? Execute(ref VBExecutionContext context, bool rethrow = false)
     {
         try
         {
@@ -69,6 +69,10 @@ public record class VBExecutionScope : IDiagnosticSource, IExecutable
         catch (VBCompileErrorException vbCompileError)
         {
             context.AddDiagnostic(RubberduckDiagnostic.CompileError(vbCompileError));
+            if (rethrow)
+            {
+                throw;
+            }
         }
         catch (VBRuntimeErrorException vbRuntimeError)
         {
@@ -82,9 +86,14 @@ public record class VBExecutionScope : IDiagnosticSource, IExecutable
             {
                 context.ExitScope(vbRuntimeError);
             }
+
+            if (rethrow)
+            {
+                throw;
+            }
         }
         return null;
     }
 
-    public VBTypedValue? Evaluate(ref VBExecutionScope context) => context.GetTypedValue(MemberInfo.Declaration!);
+    public VBTypedValue? Evaluate(ref VBExecutionScope context, bool rethrow = false) => context.GetTypedValue(MemberInfo.Declaration!);
 }

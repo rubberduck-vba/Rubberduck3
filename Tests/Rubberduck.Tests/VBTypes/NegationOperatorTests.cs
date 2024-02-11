@@ -1,85 +1,17 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Operators;
-using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
-using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
-using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using System;
-using System.IO.Abstractions;
-
-using Visibility = Rubberduck.InternalApi.Model.Accessibility;
 
 namespace Rubberduck.Tests.VBTypes;
 
 [TestClass]
-public class NegationOperatorTests : ServiceBaseTest
+public class NegationOperatorTests : OperatorTests
 {
-    private static readonly Uri ParentModuleUri = new Uri("test://project/module");
-    private static readonly Uri ParentProcedureUri = new Uri("test://project/module/procedure");
-
-    private static readonly ProcedureSymbol ParentProcedureSymbol = new("Procedure", ParentProcedureUri, Visibility.Public);
-    private static VBProcedureMember ParentProcedure = new(ParentProcedureUri, "Procedure", RubberduckSymbolKind.Procedure, Visibility.Public, ParentProcedureSymbol, isUserDefined: true);
-    private static readonly VBStdModuleType ParentModule = new("Module", ParentModuleUri, members: [ParentProcedure]);
-
-    protected override void ConfigureServices(IServiceCollection services)
-    {
-        ((Mock<IFileSystem>)Mocks[typeof(IFileSystem)]).Setup(m => m.Path.Combine(It.IsAny<string>(), It.IsAny<string>())).Returns(() => "some path");
-
-        base.ConfigureServices(services);
-        services.AddScoped<VBExecutionContext>();
-    }
-
-    private TypedSymbol CreateVariable(VBExecutionContext context, VBType type, string name, 
-        Visibility accessibility = Visibility.Implicit,
-        string? asTypeToken = null)
-    {
-        var asType = asTypeToken is null ? null : $"{Tokens.As} {asTypeToken}";
-        var symbol = new VariableDeclarationSymbol(name, ParentProcedureUri, accessibility, asType).WithResolvedType(type);
-
-        if (type is VBVariantType variant)
-        {
-            type = variant.Subtype;
-        }
-        context.SetSymbolValue(symbol, type.DefaultValue);
-        return symbol;
-    }
-
-    private void OutputExecutionScope(VBExecutionScope scope, bool outputNames = true, bool verboseDiagnostics = false)
-    {
-        Console.WriteLine($"Scope: [{scope.MemberInfo.Kind}] {scope.MemberInfo.Uri}");
-        Console.WriteLine($"x64: {scope.Is64BitHost}");
-        Console.WriteLine($"Option Compare {scope.OptionCompare}");
-        Console.WriteLine($"Option Explicit {(scope.OptionExplicit ? "On" : "Off")}");
-        Console.WriteLine($"Option Strict {(scope.OptionStrict ? "On" : "Off")}");
-        if (outputNames)
-        {
-            Console.WriteLine($"Symbol names: [{string.Join(',', scope.Names)}]");
-        }
-
-        Console.WriteLine($"Diagnostics:");
-        foreach (var diagnostic in scope.Diagnostics)
-        {
-            Console.WriteLine($"[{diagnostic.Code!.Value.String}] {diagnostic.Message}");
-            if (verboseDiagnostics)
-            {
-                Console.WriteLine(diagnostic.ToString());
-            }
-        }
-
-        Console.WriteLine($"Active OnErrorRedirect: {(scope.ActiveOnErrorResumeNext ? "ResumeNext" : (scope.ActiveOnErrorGoTo != null ? $"GoTo {scope.ActiveOnErrorGoTo.Name}" : "(none)") )}");
-        Console.WriteLine($"Active ErrorState: {scope.ActiveErrorState}");
-        if (scope.ActiveErrorState || scope.Error != null)
-        {
-            Console.WriteLine($"Error details:");
-            Console.WriteLine($"{scope.Error!}");
-        }
-    }
 
     private VBNegationOperator CreateNegationOperator(ref VBProcedureMember scope, TypedSymbol variable)
     {
@@ -90,13 +22,15 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenVBByteValue_ReturnsNegativeVBIntegerValue()
+    [TestCategory("Operators")]
+    public void GivenVBByteValue_ReturnsNegativeVBIntegerValue()
     {
         var initialValue = 42;
 
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBByteType.TypeInfo, "TEST");
+        
         var value = new VBByteValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -113,13 +47,15 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenVBByteZero_ReturnsVBIntegerZeroValue()
+    [TestCategory("Operators")]
+    public void GivenVBByteZero_ReturnsVBIntegerZeroValue()
     {
         var initialValue = 0;
 
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBByteType.TypeInfo, "TEST");
+        
         var value = new VBByteValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -134,7 +70,8 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenPositiveVBLongPtrValue_32bit_ReturnsNegativeVBLongValue()
+    [TestCategory("Operators")]
+    public void GivenPositiveVBLongPtrValue_32bit_ReturnsNegativeVBLongValue()
     {
         var initialValue = 42;
 
@@ -143,6 +80,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBLongPtrType.TypeInfo, "TEST");
+       
         var value = new VBLongPtrValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -159,7 +97,8 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenPositiveVBLongPtrValue_64bit_ReturnsNegativeVBLongLongValue()
+    [TestCategory("Operators")]
+    public void GivenPositiveVBLongPtrValue_64bit_ReturnsNegativeVBLongLongValue()
     {
         var initialValue = 42;
 
@@ -168,6 +107,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBLongPtrType.TypeInfo, "TEST");
+        
         var value = new VBLongPtrValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
         
@@ -184,13 +124,15 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenPositiveNumericValue_ReturnsSameNumericType_VBInteger()
+    [TestCategory("Operators")]
+    public void GivenPositiveNumericValue_ReturnsSameNumericType_VBInteger()
     {
         var initialValue = 42;
 
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBIntegerType.TypeInfo, "TEST");
+        
         var value = new VBIntegerValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -205,13 +147,15 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenPositiveNumericValue_ReturnsSameNumericType_VBLong()
+    [TestCategory("Operators")]
+    public void GivenPositiveNumericValue_ReturnsSameNumericType_VBLong()
     {
         var initialValue = 42;
 
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBLongType.TypeInfo, "TEST");
+        
         var value = new VBLongValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -226,13 +170,15 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenPositiveNumericValue_ReturnsSameNumericType_VBLongLong()
+    [TestCategory("Operators")]
+    public void GivenPositiveNumericValue_ReturnsSameNumericType_VBLongLong()
     {
         var initialValue = 42;
 
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBLongLongType.TypeInfo, "TEST");
+        
         var value = new VBLongLongValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -247,13 +193,15 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenPositiveNumericValue_ReturnsSameNumericType_VBCurrency()
+    [TestCategory("Operators")]
+    public void GivenPositiveNumericValue_ReturnsSameNumericType_VBCurrency()
     {
         var initialValue = 42;
 
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBCurrencyType.TypeInfo, "TEST");
+        
         var value = new VBCurrencyValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -268,13 +216,15 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenPositiveNumericValue_ReturnsSameNumericType_VBDecimal()
+    [TestCategory("Operators")]
+    public void GivenPositiveNumericValue_ReturnsSameNumericType_VBDecimal()
     {
         var initialValue = 42;
 
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBDecimalType.TypeInfo, "TEST");
+        
         var value = new VBDecimalValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -289,13 +239,15 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenPositiveNumericValue_ReturnsSameNumericType_VBSingle()
+    [TestCategory("Operators")]
+    public void GivenPositiveNumericValue_ReturnsSameNumericType_VBSingle()
     {
         var initialValue = 42;
 
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBSingleType.TypeInfo, "TEST");
+        
         var value = new VBSingleValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -310,13 +262,15 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenPositiveNumericValue_ReturnsSameNumericType_VBDouble()
+    [TestCategory("Operators")]
+    public void GivenPositiveNumericValue_ReturnsSameNumericType_VBDouble()
     {
         var initialValue = 42;
 
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBDoubleType.TypeInfo, "TEST");
+        
         var value = new VBDoubleValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -332,7 +286,8 @@ public class NegationOperatorTests : ServiceBaseTest
 
 
     [TestMethod]
-    public void EvaluateResultGivenNegativeVBLongPtrValue_32bit_ReturnsPositiveVBLongValue()
+    [TestCategory("Operators")]
+    public void GivenNegativeVBLongPtrValue_32bit_ReturnsPositiveVBLongValue()
     {
         var initialValue = -42;
 
@@ -341,6 +296,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBLongPtrType.TypeInfo, "TEST");
+        
         var value = new VBLongPtrValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -357,7 +313,8 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenNegativeVBLongPtrValue_64bit_ReturnsPositiveVBLongLongValue()
+    [TestCategory("Operators")]
+    public void GivenNegativeVBLongPtrValue_64bit_ReturnsPositiveVBLongLongValue()
     {
         var initialValue = -42;
 
@@ -366,6 +323,7 @@ public class NegationOperatorTests : ServiceBaseTest
 
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBLongPtrType.TypeInfo, "TEST");
+        
         var value = new VBLongPtrValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -382,13 +340,15 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenNegativeNumericValue_ReturnsSameNumericType_VBInteger()
+    [TestCategory("Operators")]
+    public void GivenNegativeNumericValue_ReturnsSameNumericType_VBInteger()
     {
         var initialValue = -42;
 
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBIntegerType.TypeInfo, "TEST");
+        
         var value = new VBIntegerValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -403,13 +363,15 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenNegativeNumericValue_ReturnsSameNumericType_VBLong()
+    [TestCategory("Operators")]
+    public void GivenNegativeNumericValue_ReturnsSameNumericType_VBLong()
     {
         var initialValue = -42;
 
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBLongType.TypeInfo, "TEST");
+        
         var value = new VBLongValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -424,13 +386,15 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenNegativeNumericValue_ReturnsSameNumericType_VBLongLong()
+    [TestCategory("Operators")]
+    public void GivenNegativeNumericValue_ReturnsSameNumericType_VBLongLong()
     {
         var initialValue = -42;
 
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBLongLongType.TypeInfo, "TEST");
+        
         var value = new VBLongLongValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -445,13 +409,15 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenNegativeNumericValue_ReturnsSameNumericType_VBCurrency()
+    [TestCategory("Operators")]
+    public void GivenNegativeNumericValue_ReturnsSameNumericType_VBCurrency()
     {
         var initialValue = -42;
 
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBCurrencyType.TypeInfo, "TEST");
+        
         var value = new VBCurrencyValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -466,13 +432,15 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenNegativeNumericValue_ReturnsSameNumericType_VBDecimal()
+    [TestCategory("Operators")]
+    public void GivenNegativeNumericValue_ReturnsSameNumericType_VBDecimal()
     {
         var initialValue = -42;
 
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBDecimalType.TypeInfo, "TEST");
+        
         var value = new VBDecimalValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -487,13 +455,15 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenNegativeNumericValue_ReturnsSameNumericType_VBSingle()
+    [TestCategory("Operators")]
+    public void GivenNegativeNumericValue_ReturnsSameNumericType_VBSingle()
     {
         var initialValue = -42;
 
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBSingleType.TypeInfo, "TEST");
+        
         var value = new VBSingleValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -508,13 +478,15 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenNegativeNumericValue_ReturnsSameNumericType_VBDouble()
+    [TestCategory("Operators")]
+    public void GivenNegativeNumericValue_ReturnsSameNumericType_VBDouble()
     {
         var initialValue = -42;
 
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBDoubleType.TypeInfo, "TEST");
+        
         var value = new VBDoubleValue(variable) { NumericValue = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -529,7 +501,8 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenNothingObjectValue_ThrowsError91()
+    [TestCategory("Operators")]
+    public void GivenNothingObjectValue_ThrowsError91()
     {
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
@@ -547,7 +520,8 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenObjectValueWithoutDefaultMember_ThrowsError438()
+    [TestCategory("Operators")]
+    public void GivenObjectValueWithoutDefaultMember_ThrowsError438()
     {
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
@@ -568,7 +542,8 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenVBEmptyValue_ReturnsVBLongZero()
+    [TestCategory("Operators")]
+    public void GivenVBEmptyValue_ReturnsVBLongZero()
     {
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
@@ -585,13 +560,15 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenVBDateValue_ReturnsVBDateValue()
+    [TestCategory("Operators")]
+    public void GivenVBDateValue_ReturnsVBDateValue()
     {
         var initialValue = DateTime.Now;
 
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBDateType.TypeInfo, "TEST");
+        
         var value = new VBDateValue(variable) { Value = initialValue };
         context.SetSymbolValue(variable, value);
 
@@ -606,15 +583,17 @@ public class NegationOperatorTests : ServiceBaseTest
     }
 
     [TestMethod]
-    public void EvaluateResultGivenVBNullValue_ReturnsVBNullValue()
+    [TestCategory("Operators")]
+    public void GivenVBNullValue_ReturnsVBNullValue()
     {
         var context = Services.GetRequiredService<VBExecutionContext>();
         var procedure = ParentProcedure;
         var variable = CreateVariable(context, VBVariantType.TypeInfo, "TEST");
+
         var value = new VBNullValue(variable);
         context.SetSymbolValue(variable, value);
 
-        var sut = CreateNegationOperator(ref procedure, value.Symbol);
+        var sut = CreateNegationOperator(ref procedure, value.Symbol!);
 
         var scope = context.EnterScope(procedure);
         var result = sut.Evaluate(ref scope);

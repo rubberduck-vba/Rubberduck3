@@ -18,7 +18,7 @@ public record class VBDateValue : VBTypedValue,
 
     public const long MinSerial = -657434;
     public const long MaxSerial = 2958465;
-    public static VBDateValue FromSerial(double value) => new() { Value = Zero.Value.AddDays(value) };
+    public static VBDateValue FromSerial(double value) => new() { Value = DateTime.FromOADate(value) };
 
     public double SerialValue => Value.ToOADate();
     public double AsDouble() => SerialValue;

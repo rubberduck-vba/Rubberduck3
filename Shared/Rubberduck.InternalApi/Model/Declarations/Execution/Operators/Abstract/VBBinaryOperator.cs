@@ -13,6 +13,9 @@ public abstract record class VBBinaryOperator : VBOperator
     {
         LeftHandSideExpression = lhsExpression;
         RightHandSideExpression = rhsExpression;
+
+        ResolvedLeftHandSideExpression = lhs;
+        ResolvedRightHandSideExpression = rhs;
     }
 
     public string LeftHandSideExpression { get; init; }

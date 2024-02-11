@@ -23,11 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="VBTypes\IntrinsicTypeTests\" />
-    <Folder Include="VBTypes\VBObjectTypeTests\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
   </ItemGroup>
 
