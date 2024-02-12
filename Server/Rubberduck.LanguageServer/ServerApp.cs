@@ -15,7 +15,11 @@ using Rubberduck.LanguageServer.Handlers.Lifecycle;
 using Rubberduck.LanguageServer.Handlers.Workspace;
 using Rubberduck.Parsing._v3.Pipeline;
 using Rubberduck.Parsing._v3.Pipeline.Abstract;
+using Rubberduck.Parsing.Abstract;
+using Rubberduck.Parsing.Parsers;
+using Rubberduck.Parsing.TokenStreamProviders;
 using Rubberduck.ServerPlatform;
+using Rubberduck.UI.Converters;
 using System;
 using System.Diagnostics;
 using System.IO.Abstractions;
@@ -68,6 +72,21 @@ namespace Rubberduck.LanguageServer
 
             services.AddSingleton<IFileSystem, FileSystem>();
             services.AddSingleton<PerformanceRecordAggregator>();
+
+            services.AddSingleton<IWorkspaceStateManager, WorkspaceStateManager>();
+
+            services.AddSingleton<WorkspaceParserPipeline>();
+            services.AddSingleton<ParserPipelineProvider>();
+            services.AddSingleton<IParserPipelineFactory<WorkspaceParserPipeline>, ParserPipelineFactory<WorkspaceParserPipeline>>();
+            services.AddSingleton<IParserPipelineFactory<WorkspaceFileParserPipeline>, ParserPipelineFactory<WorkspaceFileParserPipeline>>();
+            services.AddSingleton<IParserPipelineFactory<DocumentMembersPipeline>, ParserPipelineFactory<DocumentMembersPipeline>>();
+            services.AddSingleton<IParserPipelineFactory<HierarchicalSymbolsPipeline>, ParserPipelineFactory<HierarchicalSymbolsPipeline>>();
+            services.AddSingleton<PipelineParseTreeSymbolsService>();
+            services.AddSingleton<IResolverService, ResolverService>();
+            services.AddSingleton<PipelineParserService>();
+            services.AddSingleton<IParser<string>, TokenStreamParserAdapterWithPreprocessing<string>>();
+            services.AddSingleton<ICommonTokenStreamProvider<string>, StringTokenStreamProvider>();
+            services.AddSingleton<ITokenStreamParser, VBATokenStreamParser>();
 
             services.AddSingleton<ServerPlatformServiceHelper>();
             services.AddSingleton<LanguageServerState>();
@@ -193,7 +212,7 @@ namespace Rubberduck.LanguageServer
             progress?.OnNext(message: "Processing workspace documents", percentage: 25, cancellable: false);
             var pipeline = server.GetRequiredService<WorkspaceParserPipeline>();
             var parserState = new ParserPipelineState();
-            var completion = pipeline.StartAsync(state.RootUri, parserState, new CancellationTokenSource())
+            await pipeline.StartAsync(new WorkspaceFileUri(null!, state.RootUri.ToUri()), parserState, new CancellationTokenSource())
                 .ContinueWith(t =>
                 {
                     progress?.OnCompleted();

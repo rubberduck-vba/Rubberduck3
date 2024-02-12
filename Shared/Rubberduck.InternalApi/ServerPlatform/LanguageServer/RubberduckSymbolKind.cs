@@ -56,15 +56,6 @@ public readonly struct RubberduckSemanticTokenType
     public int Id { get; init; }
     public SemanticTokenType TokenType { get; init; }
 
-    public static RubberduckSemanticTokenType[] SemanticTokenTypes { get; } = typeof(RubberduckSemanticTokenType)
-        .GetProperties(BindingFlags.Public | BindingFlags.Static)
-        .Select(property => property.GetGetMethod())
-        .Where(method => method != null && method.ReturnType == typeof(SemanticTokenType))
-        .Select((method, index) => new RubberduckSemanticTokenType { Id = index, TokenType = (SemanticTokenType)method!.Invoke(null, null)! })
-        .ToArray();
-
-    public static Dictionary<SemanticTokenType, int> TokenTypeId { get; } = SemanticTokenTypes.ToDictionary(e => e.TokenType, e => e.Id);
-
     public static SemanticTokenType Type { get; } = SemanticTokenType.Type;
     public static SemanticTokenType Class { get; } = SemanticTokenType.Class;
     public static SemanticTokenType Enum { get; } = SemanticTokenType.Enum;
@@ -104,6 +95,16 @@ public readonly struct RubberduckSemanticTokenType
     public static SemanticTokenType GuidLiteral { get; } = new("guid");
     public static SemanticTokenType TypeHint { get; } = new("typeHint");
     public static SemanticTokenType IgnoredExpression { get; } = new("ignored");
+
+    public static RubberduckSemanticTokenType[] SemanticTokenTypes { get; } = typeof(RubberduckSemanticTokenType)
+        .GetProperties(BindingFlags.Public | BindingFlags.Static)
+        .Select(property => property.GetGetMethod())
+        .Where(method => method != null && method.ReturnType == typeof(SemanticTokenType))
+        .Select((method, index) => new RubberduckSemanticTokenType { Id = index, TokenType = (SemanticTokenType)method!.Invoke(null, null)! })
+        .ToArray();
+
+    public static Dictionary<SemanticTokenType, int> TokenTypeId { get; } = SemanticTokenTypes.ToDictionary(e => e.TokenType, e => e.Id);
+
 }
 
 public readonly struct RubberduckSemanticTokenModifier
@@ -111,15 +112,6 @@ public readonly struct RubberduckSemanticTokenModifier
     public int Id { get; init; }
     public SemanticTokenModifier TokenModifier { get; init; }
     public int Value => 2 ^ Id;
-
-    public static RubberduckSemanticTokenModifier[] SemanticTokenModifiers { get; } = typeof(RubberduckSemanticTokenModifier)
-        .GetProperties(BindingFlags.Public | BindingFlags.Static)
-        .Select(property => property.GetGetMethod())
-        .Where(method => method != null && method.ReturnType == typeof(SemanticTokenModifier))
-        .Select((method, index) => new RubberduckSemanticTokenModifier { Id = index, TokenModifier = (SemanticTokenModifier)method!.Invoke(null, null)! })
-        .ToArray();
-
-    public static Dictionary<SemanticTokenModifier, int> TokenModifierId { get; } = SemanticTokenModifiers.ToDictionary(e => e.TokenModifier, e => e.Value);
 
     public static SemanticTokenModifier Declaration { get; } = SemanticTokenModifier.Declaration;
     public static SemanticTokenModifier Definition { get; } = SemanticTokenModifier.Definition;
@@ -137,4 +129,13 @@ public readonly struct RubberduckSemanticTokenModifier
     public static SemanticTokenModifier Optional { get; } = new("optional");
     public static SemanticTokenModifier LateBound { get; } = new("lateBound");
     public static SemanticTokenModifier Unreachable { get; } = new("unreachable");
+
+    public static RubberduckSemanticTokenModifier[] SemanticTokenModifiers { get; } = typeof(RubberduckSemanticTokenModifier)
+        .GetProperties(BindingFlags.Public | BindingFlags.Static)
+        .Select(property => property.GetGetMethod())
+        .Where(method => method != null && method.ReturnType == typeof(SemanticTokenModifier))
+        .Select((method, index) => new RubberduckSemanticTokenModifier { Id = index, TokenModifier = (SemanticTokenModifier)method!.Invoke(null, null)! })
+        .ToArray();
+
+    public static Dictionary<SemanticTokenModifier, int> TokenModifierId { get; } = SemanticTokenModifiers.ToDictionary(e => e.TokenModifier, e => e.Value);
 }

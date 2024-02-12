@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
+using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks.Dataflow;
 
@@ -118,7 +119,7 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
         }
 
         ((ITargetBlock<TInput>)InputBlock).Post(input);
-        InputBlock.Complete();
+        //InputBlock.Complete();
 
         return Completion;
     }
@@ -214,6 +215,7 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
 
     protected void FaultDataflowBlock(IDataflowBlock block, Exception exception)
     {
+        LogWarning("Faulting dataflow block", $"{exception}");
         block.Fault(exception);
         TokenSource?.Cancel();
     }
@@ -222,6 +224,7 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
 
     public void Dispose()
     {
+        LogTrace("Disposing pipeline");
         TokenSource?.Dispose();
         foreach (var disposable in _disposables)
         {

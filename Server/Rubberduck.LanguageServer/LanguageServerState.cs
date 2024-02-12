@@ -2,6 +2,7 @@
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Settings.Model.LanguageServer;
 using Rubberduck.ServerPlatform;
 using System.Collections.Generic;

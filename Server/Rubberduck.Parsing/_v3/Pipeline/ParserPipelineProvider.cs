@@ -8,16 +8,23 @@ namespace Rubberduck.Parsing._v3.Pipeline;
 public class ParserPipelineProvider
 {
     private readonly IParserPipelineFactory<WorkspaceParserPipeline> _workspacePipelineFactory;
-    private readonly IParserPipelineFactory<WorkspaceDocumentPipeline> _filePipelineFactory;
+    private readonly IParserPipelineFactory<WorkspaceFileParserPipeline> _fileParserPipelineFactory;
+    private readonly IParserPipelineFactory<DocumentMembersPipeline> _membersPipelineFactory;
+    private readonly IParserPipelineFactory<HierarchicalSymbolsPipeline> _symbolsPipelineFactory;
+
     private readonly ConcurrentDictionary<Uri, IParserPipeline> _pipelines = [];
     private readonly ConcurrentDictionary<Uri, Task> _tasks = [];
 
     public ParserPipelineProvider(
         IParserPipelineFactory<WorkspaceParserPipeline> workspacePipelineFactory,
-        IParserPipelineFactory<WorkspaceFileParserPipeline> filePipelineFactory)
+        IParserPipelineFactory<WorkspaceFileParserPipeline> fileParserPipelineFactory,
+        IParserPipelineFactory<DocumentMembersPipeline> membersPipelineFactory,
+        IParserPipelineFactory<HierarchicalSymbolsPipeline> symbolsPipelineFactory)
     {
         _workspacePipelineFactory = workspacePipelineFactory;
-        _filePipelineFactory = filePipelineFactory;
+        _fileParserPipelineFactory = fileParserPipelineFactory;
+        _membersPipelineFactory = membersPipelineFactory;
+        _symbolsPipelineFactory = symbolsPipelineFactory;
     }
 
     public WorkspaceParserPipeline StartNew(WorkspaceUri uri, CancellationTokenSource tokenSource)
@@ -61,7 +68,7 @@ public class ParserPipelineProvider
             }
         }
 
-        var newPipeline = _filePipelineFactory.Create();
+        var newPipeline = _fileParserPipelineFactory.Create();
         var completion = newPipeline.StartAsync(uri, null, tokenSource);
 
         _tasks.TryAdd(uri, completion);
