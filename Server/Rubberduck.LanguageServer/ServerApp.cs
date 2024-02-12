@@ -14,6 +14,7 @@ using Rubberduck.InternalApi.Settings.Model.LanguageServer;
 using Rubberduck.LanguageServer.Handlers.Lifecycle;
 using Rubberduck.LanguageServer.Handlers.Workspace;
 using Rubberduck.Parsing._v3.Pipeline;
+using Rubberduck.Parsing._v3.Pipeline.Abstract;
 using Rubberduck.ServerPlatform;
 using System;
 using System.Diagnostics;
@@ -191,13 +192,16 @@ namespace Rubberduck.LanguageServer
 
             progress?.OnNext(message: "Processing workspace documents", percentage: 25, cancellable: false);
             var pipeline = server.GetRequiredService<WorkspaceParserPipeline>();
-            _ = pipeline.StartAsync(state.RootUri, default!, new CancellationTokenSource());
-
-            progress?.OnCompleted();
-            if (progress != null)
-            {
-                service.LogTrace($"Progress token '{progress.WorkDoneToken}' has been completed.");
-            }
+            var parserState = new ParserPipelineState();
+            var completion = pipeline.StartAsync(state.RootUri, parserState, new CancellationTokenSource())
+                .ContinueWith(t =>
+                {
+                    progress?.OnCompleted();
+                    if (progress != null)
+                    {
+                        service.LogTrace($"Progress token '{progress.WorkDoneToken}' has been completed.");
+                    }
+                }, token, TaskContinuationOptions.None, TaskScheduler.Default);
         }
     }
 }

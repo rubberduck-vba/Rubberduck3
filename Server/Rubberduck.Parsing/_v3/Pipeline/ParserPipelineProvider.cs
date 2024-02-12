@@ -8,7 +8,7 @@ namespace Rubberduck.Parsing._v3.Pipeline;
 public class ParserPipelineProvider
 {
     private readonly IParserPipelineFactory<WorkspaceParserPipeline> _workspacePipelineFactory;
-    private readonly IParserPipelineFactory<WorkspaceFileParserPipeline> _filePipelineFactory;
+    private readonly IParserPipelineFactory<WorkspaceDocumentPipeline> _filePipelineFactory;
     private readonly ConcurrentDictionary<Uri, IParserPipeline> _pipelines = [];
     private readonly ConcurrentDictionary<Uri, Task> _tasks = [];
 
@@ -45,7 +45,7 @@ public class ParserPipelineProvider
         return newPipeline;
     }
 
-    public WorkspaceFileParserPipeline StartNew(WorkspaceFileUri uri, CancellationTokenSource tokenSource)
+    public WorkspaceDocumentPipeline StartNew(WorkspaceFileUri uri, CancellationTokenSource tokenSource)
     {
         _ = uri ?? throw new ArgumentNullException(nameof(uri));
 
