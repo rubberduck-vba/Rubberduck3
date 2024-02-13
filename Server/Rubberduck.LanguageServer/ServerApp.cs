@@ -17,6 +17,7 @@ using Rubberduck.Parsing._v3.Pipeline;
 using Rubberduck.Parsing._v3.Pipeline.Abstract;
 using Rubberduck.Parsing.Abstract;
 using Rubberduck.Parsing.Parsers;
+using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.TokenStreamProviders;
 using Rubberduck.ServerPlatform;
 using Rubberduck.UI.Converters;
@@ -75,8 +76,11 @@ namespace Rubberduck.LanguageServer
 
             services.AddSingleton<IWorkspaceStateManager, WorkspaceStateManager>();
 
-            services.AddSingleton<WorkspaceParserPipeline>();
             services.AddSingleton<ParserPipelineProvider>();
+            services.AddSingleton<WorkspaceParserPipeline>();
+            services.AddSingleton<WorkspaceFileParserPipeline>();
+            services.AddSingleton<DocumentMembersPipeline>();
+            services.AddSingleton<HierarchicalSymbolsPipeline>();
             services.AddSingleton<IParserPipelineFactory<WorkspaceParserPipeline>, ParserPipelineFactory<WorkspaceParserPipeline>>();
             services.AddSingleton<IParserPipelineFactory<WorkspaceFileParserPipeline>, ParserPipelineFactory<WorkspaceFileParserPipeline>>();
             services.AddSingleton<IParserPipelineFactory<DocumentMembersPipeline>, ParserPipelineFactory<DocumentMembersPipeline>>();
@@ -87,6 +91,9 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<IParser<string>, TokenStreamParserAdapterWithPreprocessing<string>>();
             services.AddSingleton<ICommonTokenStreamProvider<string>, StringTokenStreamProvider>();
             services.AddSingleton<ITokenStreamParser, VBATokenStreamParser>();
+            services.AddSingleton<ITokenStreamPreprocessor, VBAPreprocessor>();
+            services.AddSingleton<VBAPreprocessorParser>();
+            services.AddSingleton<ICompilationArgumentsProvider, WorkspaceCompilationArgumentsProvider>();
 
             services.AddSingleton<ServerPlatformServiceHelper>();
             services.AddSingleton<LanguageServerState>();

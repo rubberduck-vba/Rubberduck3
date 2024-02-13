@@ -1,28 +1,24 @@
 using Antlr4.Runtime;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Model;
 
 namespace Rubberduck.Parsing.Exceptions;
 
-public class SyntaxErrorInfo
+public record class SyntaxErrorInfo
 {
-    public SyntaxErrorInfo(string message, RecognitionException innerException, IToken offendingSymbol, int line, int position, WorkspaceFileUri uri, CodeKind codeKind)
-    {
-        Message = message;
-        Exception = innerException;
-        OffendingSymbol = offendingSymbol;
-        LineNumber = line;
-        Position = position;
-        Uri = uri;
-        CodeKind = codeKind;
-    }
+    public WorkspaceFileUri Uri { get; init; } = default!;
+    public CodeKind CodeKind { get; init; }
 
-    public string Message { get; }
-    public RecognitionException Exception { get; }
-    public IToken OffendingSymbol { get; }
-    public int LineNumber { get; }
-    public int Position { get; }
+    public string Message { get; init; } = default!;
 
-    public WorkspaceFileUri Uri { get; }
-    public CodeKind CodeKind { get; }
+    public RecognitionException Exception { get; init; } = default!;
+    public IToken OffendingSymbol { get; init; } = default!;
+
+    public int LineNumber { get; init; }
+    public int Position { get; init; }
+
+    public OmniSharp.Extensions.LanguageServer.Protocol.Models.Range Range() =>
+        new(start: new Position(OffendingSymbol.Line, OffendingSymbol.Column), 
+            end: new Position(OffendingSymbol.EndLine(), OffendingSymbol.EndColumn()));
 }

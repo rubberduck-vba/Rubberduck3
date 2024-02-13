@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ public interface IWorkspaceState
     Uri? WorkspaceRoot { get; set; }
     string ProjectName { get; set; }
     IEnumerable<DocumentState> WorkspaceFiles { get; }
+
+    VBExecutionContext ExecutionContext { get; }
 
     bool SaveWorkspaceFile(WorkspaceFileUri uri);
     /// <summary>

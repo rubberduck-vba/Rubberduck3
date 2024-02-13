@@ -12,16 +12,6 @@ public abstract class TokenStreamParserBase<TParser> : ITokenStreamParser
 {
     //protected static ILogger Logger = LogManager.GetCurrentClassLogger();
 
-    private readonly IParsePassErrorListenerFactory _sllErrorListenerFactory;
-    private readonly IParsePassErrorListenerFactory _llErrorListenerFactory;
-
-    public TokenStreamParserBase(IParsePassErrorListenerFactory sllErrorListenerFactory,
-        IParsePassErrorListenerFactory llErrorListenerFactory)
-    {
-        _sllErrorListenerFactory = sllErrorListenerFactory;
-        _llErrorListenerFactory = llErrorListenerFactory;
-    }
-
     protected IParseTree Parse(ITokenStream tokenStream, PredictionMode predictionMode, IParserErrorListener? errorListener, IEnumerable<IParseTreeListener>? parseListeners = null)
     {
         var parser = GetParser(tokenStream);
@@ -58,7 +48,7 @@ public abstract class TokenStreamParserBase<TParser> : ITokenStreamParser
         {
             return ParseSll(uri, tokenStream, codeKind, parseListeners);
         }
-        catch (ParsePassSyntaxErrorException syntaxErrorException)
+        catch (SyntaxErrorException syntaxErrorException)
         {
             var message = $"SLL mode failed while parsing the {codeKind} version of URI {uri} at symbol {syntaxErrorException.OffendingSymbol.Text} at L{syntaxErrorException.LineNumber}C{syntaxErrorException.Position}. Retrying using LL.";
             LogAndReset(tokenStream, message, syntaxErrorException);
@@ -83,14 +73,15 @@ public abstract class TokenStreamParserBase<TParser> : ITokenStreamParser
 
     private IParseTree ParseLl(WorkspaceFileUri uri, ITokenStream tokenStream, CodeKind codeKind, IEnumerable<IParseTreeListener>? parseListeners = null)
     {
-        var errorListener = _llErrorListenerFactory.Create(uri, codeKind);
+
+        var errorListener = new ReportingSyntaxErrorListener(uri, codeKind);
         var tree = Parse(tokenStream, PredictionMode.Ll, errorListener, parseListeners);
         return tree;
     }
 
     private IParseTree ParseSll(WorkspaceFileUri uri, ITokenStream tokenStream, CodeKind codeKind, IEnumerable<IParseTreeListener>? parseListeners = null)
     {
-        var errorListener = _sllErrorListenerFactory.Create(uri, codeKind);
+        var errorListener = new ThrowingSyntaxErrorListener(uri, codeKind);
         var tree = Parse(tokenStream, PredictionMode.Sll, errorListener, parseListeners);
         return tree;
     }

@@ -15,6 +15,17 @@ public class SyntaxErrorNotificationListener : RubberduckParseErrorListenerBase
 
     public override void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
     {
-        _errors.Add(new SyntaxErrorInfo(msg, e, offendingSymbol, line, charPositionInLine, Uri, CodeKind));
+        _errors.Add(new SyntaxErrorInfo
+        {
+            Uri = Uri,
+            CodeKind = CodeKind,
+
+            Message = msg,
+            Exception = e,
+            OffendingSymbol = offendingSymbol,
+
+            LineNumber = line,
+            Position = charPositionInLine,
+        });
     }
 }

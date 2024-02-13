@@ -243,7 +243,6 @@ namespace Rubberduck.Main.Root
             _services.AddSingleton<ITokenStreamParser, VBATokenStreamParser>();
             _services.AddSingleton<VBAPreprocessorParser>();
             _services.AddSingleton<ITokenStreamPreprocessor, VBAPreprocessor>();
-            _services.AddSingleton<IParsePassErrorListenerFactory, PreprocessingParseErrorListenerFactory>();
             return this;
         }
 

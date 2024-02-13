@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Settings;
@@ -15,7 +16,6 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
     {
         private readonly HashSet<Reference> _references = [];
         private readonly HashSet<Folder> _folders = [];
-        //private readonly ConcurrentDictionary<Uri, DocumentState> _workspaceFiles = [];
         private readonly DocumentContentStore _store;
 
         public ProjectStateManager(ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance,
@@ -23,7 +23,10 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
             : base(logger, settingsProvider, performance)
         {
             _store = store;
+            ExecutionContext = new VBExecutionContext(logger, settingsProvider, performance);
         }
+
+        public VBExecutionContext ExecutionContext { get; }
 
         public Uri? WorkspaceRoot { get; set; }
         public string ProjectName { get; set; } = "Project1";
