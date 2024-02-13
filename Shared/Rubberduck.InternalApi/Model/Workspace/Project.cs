@@ -4,12 +4,25 @@ using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.Model.Workspace;
 
+public enum ProjectType
+{
+    VBA,
+    VB6,
+}
+
 public record class Project
 {
     /// <summary>
     /// The name of the project.
     /// </summary>
     public string Name { get; set; } = "Project1";
+    /// <summary>
+    /// The type of project.
+    /// </summary>
+    /// <remarks>
+    /// Determines the VB dialect and editor tooling available.
+    /// </remarks>
+    public ProjectType ProjectType { get; set; }
     /// <summary>
     /// Project references.
     /// </summary>

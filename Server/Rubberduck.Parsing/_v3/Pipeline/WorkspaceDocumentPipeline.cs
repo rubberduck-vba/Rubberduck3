@@ -22,7 +22,7 @@ public abstract class WorkspaceDocumentPipeline : ParserPipeline<WorkspaceFileUr
 
     private TransformBlock<WorkspaceFileUri, DocumentParserState> AcquireDocumentStateBlock { get; set; } = null!;
     private DocumentParserState AcquireDocumentState(WorkspaceFileUri uri) =>
-        State = RunTransformBlock(AcquireDocumentStateBlock, uri, e => (DocumentParserState)_contentStore.GetContent(e)
+        State = RunTransformBlock(AcquireDocumentStateBlock, uri, e => (DocumentParserState)_contentStore.GetDocument(e)
             ?? throw new InvalidOperationException("Document state was not found in the content store."));
 
     protected sealed override (ITargetBlock<WorkspaceFileUri> inputBlock, Task completion) DefinePipelineBlocks()

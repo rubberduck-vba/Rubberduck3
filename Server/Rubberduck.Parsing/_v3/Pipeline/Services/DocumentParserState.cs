@@ -4,9 +4,9 @@ using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
-public record class DocumentParserState : DocumentState
+public record class DocumentParserState : SourceFileDocumentState
 {
-    public DocumentParserState(DocumentState original)
+    public DocumentParserState(SourceFileDocumentState original)
         : base(original)
     {
     }

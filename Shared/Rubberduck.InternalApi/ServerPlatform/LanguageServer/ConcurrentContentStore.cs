@@ -10,6 +10,8 @@ public class ConcurrentContentStore<TContent>
 {
     protected ConcurrentDictionary<Uri, TContent> Store = new();
 
+    public bool Exists(Uri documentUri) => Store.ContainsKey(documentUri);
+
     public void AddOrUpdate(Uri documentUri, TContent content)
     {
         Store.AddOrUpdate(documentUri, content, (uri, content) => content);
@@ -21,14 +23,14 @@ public class ConcurrentContentStore<TContent>
     }
 
     /// <exception cref="UnknownUriException"></exception>
-    public TContent GetContent(Uri uri)
+    public TContent GetDocument(Uri uri)
     {
         return Store.TryGetValue(uri, out var content)
             ? content
             : throw new UnknownUriException(uri);
     }
 
-    public bool TryGetContent(Uri uri, out TContent? content)
+    public bool TryGetDocument(Uri uri, out TContent? content)
     {
         return Store.TryGetValue(uri, out content);
     }

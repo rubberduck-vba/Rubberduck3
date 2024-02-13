@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
+using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Settings;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,11 +15,14 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
     {
         private readonly HashSet<Reference> _references = [];
         private readonly HashSet<Folder> _folders = [];
-        private readonly ConcurrentDictionary<Uri, WorkspaceFileInfo> _workspaceFiles = [];
+        //private readonly ConcurrentDictionary<Uri, DocumentState> _workspaceFiles = [];
+        private readonly DocumentContentStore _store;
 
-        public ProjectStateManager(ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
+        public ProjectStateManager(ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance,
+            DocumentContentStore store)
             : base(logger, settingsProvider, performance)
         {
+            _store = store;
         }
 
         public Uri? WorkspaceRoot { get; set; }
@@ -62,65 +65,61 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
             (first, second) = (second, first);
         }
 
-        public IEnumerable<WorkspaceFileInfo> WorkspaceFiles
+        public IEnumerable<DocumentState> WorkspaceFiles
         {
             get
             {
-                foreach (var file in _workspaceFiles)
+                foreach (var file in _store.Enumerate())
                 {
-                    yield return file.Value;
+                    yield return file;
                 }
             }
         }
 
-        public bool LoadWorkspaceFile(WorkspaceFileInfo file)
+        public bool LoadWorkspaceFile(DocumentState file)
         {
-            if (!_workspaceFiles.TryGetValue(file.Uri, out var existingCache) || file.Content != existingCache.Content)
-            {
-                _workspaceFiles[file.Uri] = file;
-                return true;
-            }
-
-            return false;
+            _store.AddOrUpdate(file.Uri, file);
+            return true;
         }
 
         public void UnloadAllFiles()
         {
-            foreach (var file in _workspaceFiles.Values)
+            var files = _store.Enumerate().ToArray();
+            foreach (var file in files)
             {
-                file.IsOpened = false;
+                _store.TryRemove(file.Uri);
             }
-            _workspaceFiles.Clear();
         }
 
-        public bool TryGetWorkspaceFile(WorkspaceFileUri uri, out WorkspaceFileInfo? fileInfo) => _workspaceFiles.TryGetValue(uri, out fileInfo);
+        public bool TryGetWorkspaceFile(WorkspaceFileUri uri, out DocumentState? state) => _store.TryGetDocument(uri, out state);
 
-        public bool CloseWorkspaceFile(WorkspaceFileUri uri, out WorkspaceFileInfo? fileInfo)
+        public bool CloseWorkspaceFile(WorkspaceFileUri uri, out DocumentState? state)
         {
-            if (_workspaceFiles.TryGetValue(uri, out fileInfo))
+            if (_store.TryGetDocument(uri, out state))
             {
-                if (!fileInfo.IsOpened)
+                if (state!.IsOpened)
                 {
-                    fileInfo.IsOpened = false;
+                    state = state.WithOpened(false);
+                    _store.AddOrUpdate(uri, state);
                     return true;
                 }
             }
 
-            fileInfo = default;
+            state = default;
             return false;
         }
 
         public bool RenameWorkspaceFile(WorkspaceFileUri oldUri, WorkspaceFileUri newUri)
         {
-            if (_workspaceFiles.TryGetValue(newUri, out _))
+            if (_store.TryGetDocument(newUri, out _))
             {
                 // new URI already exists... TODO check for a name collision
                 return false;
             }
 
-            if (_workspaceFiles.TryGetValue(oldUri, out var oldCache))
+            if (_store.TryGetDocument(oldUri, out var oldCache))
             {
-                _workspaceFiles[newUri] = oldCache with { Uri = newUri };
+                _store.AddOrUpdate(newUri, oldCache! with { Uri = newUri });
             }
 
             return false;
@@ -128,20 +127,32 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
 
         public bool UnloadWorkspaceFile(WorkspaceFileUri uri)
         {
-            if (_workspaceFiles.TryGetValue(uri, out var cache))
+            if (_store.TryGetDocument(uri, out _))
             {
-                cache.IsOpened = false;
-                return _workspaceFiles.TryRemove(uri, out _);
+                return _store.TryRemove(uri);
             }
 
             return false;
         }
+
+        public bool SaveWorkspaceFile(WorkspaceFileUri uri)
+        {
+            if (_store.TryGetDocument(uri, out var file))
+            {
+                _store.AddOrUpdate(uri, file!.WithResetVersion());
+                return true;
+            }
+            return false;
+        }
     }
 
-    public WorkspaceStateManager(ILogger<WorkspaceStateManager> logger,
-        RubberduckSettingsProvider settings, PerformanceRecordAggregator performance)
+    private readonly DocumentContentStore _store;
+
+    public WorkspaceStateManager(ILogger<WorkspaceStateManager> logger, RubberduckSettingsProvider settings, PerformanceRecordAggregator performance,
+        DocumentContentStore store)
         : base(logger, settings, performance)
     {
+        _store = store;
     }
 
     private Dictionary<Uri, IWorkspaceState> _workspaces = [];
@@ -166,7 +177,7 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
 
     public IWorkspaceState AddWorkspace(Uri workspaceRoot)
     {
-        var state = new ProjectStateManager(_logger, SettingsProvider, _performance)
+        var state = new ProjectStateManager(_logger, SettingsProvider, _performance, _store)
         {
             WorkspaceRoot = workspaceRoot
         };

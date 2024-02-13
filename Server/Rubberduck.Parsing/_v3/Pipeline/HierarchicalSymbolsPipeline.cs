@@ -23,7 +23,7 @@ public class HierarchicalSymbolsPipeline : WorkspaceDocumentPipeline
 
     private TransformBlock<DocumentParserState, Symbol> AcquireDocumentStateSymbolsBlock { get; set; } = null!;
     private Symbol AcquireDocumentStateSymbols(DocumentParserState state) =>
-        RunTransformBlock(AcquireDocumentStateSymbolsBlock, state, e => e.Symbols ?? throw new InvalidOperationException("Document.Symbols is unexpectedly null."));
+        RunTransformBlock(AcquireDocumentStateSymbolsBlock, state, e => e.Symbol ?? throw new InvalidOperationException("Document.Symbol is unexpectedly null."));
 
     private TransformBlock<Symbol, Symbol> DiscoverHierarchicalSymbolsBlock { get; set; } = null!;
     private Symbol ResolveMemberSymbols(Symbol symbol) =>
@@ -31,7 +31,7 @@ public class HierarchicalSymbolsPipeline : WorkspaceDocumentPipeline
 
     private ActionBlock<Symbol> SetDocumentStateMemberSymbolsBlock { get; set; } = null!;
     private void SetDocumentStateMemberSymbols(Symbol symbol) =>
-        RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol, e => State = (DocumentParserState)State.WithSymbols(e));
+        RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol, e => State = (DocumentParserState)State.WithSymbol(e));
 
     protected override (ITargetBlock<DocumentParserState>, Task) DefinePipelineBlocks(ISourceBlock<DocumentParserState> source)
     {

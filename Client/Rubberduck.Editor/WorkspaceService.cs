@@ -3,6 +3,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
+using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.UI.Services.Abstract;
@@ -152,10 +153,11 @@ namespace Rubberduck.Editor
 
         public async Task<bool> SaveWorkspaceFileAsync(WorkspaceFileUri uri)
         {
-            if (_state.ActiveWorkspace?.WorkspaceRoot != null && _state.ActiveWorkspace.TryGetWorkspaceFile(uri, out var file) && file != null)
+            var workspace = _state.ActiveWorkspace;
+            if (workspace?.WorkspaceRoot != null && workspace.TryGetWorkspaceFile(uri, out var file) && file != null)
             {
-                var path = _fileSystem.Path.Combine(_state.ActiveWorkspace.WorkspaceRoot.LocalPath, ProjectFile.SourceRoot, file.Uri.LocalPath);
-                await _fileSystem.File.WriteAllTextAsync(path, file.Content);
+                var path = _fileSystem.Path.Combine(workspace.WorkspaceRoot.LocalPath, ProjectFile.SourceRoot, file.Uri.LocalPath);
+                await _fileSystem.File.WriteAllTextAsync(path, file.Text);
                 return true;
             }
 
@@ -164,10 +166,11 @@ namespace Rubberduck.Editor
 
         public async Task<bool> SaveWorkspaceFileAsAsync(WorkspaceFileUri uri, string path)
         {
-            if (_state.ActiveWorkspace?.WorkspaceRoot != null && _state.ActiveWorkspace.TryGetWorkspaceFile(uri, out var file) && file != null)
+            var workspace = _state.ActiveWorkspace;
+            if (workspace?.WorkspaceRoot != null && workspace.TryGetWorkspaceFile(uri, out var file) && file != null)
             {
                 // note: saves a copy but only keeps the original URI in the workspace
-                await _fileSystem.File.WriteAllTextAsync(path, file.Content);
+                await _fileSystem.File.WriteAllTextAsync(path, file.Text);
                 return true;
             }
 
@@ -177,15 +180,19 @@ namespace Rubberduck.Editor
         public async Task<bool> SaveAllAsync()
         {
             var tasks = new List<Task>();
-            if (_state.ActiveWorkspace?.WorkspaceRoot != null)
+            var workspace = _state.ActiveWorkspace;
+            if (workspace?.WorkspaceRoot != null)
             {
-                var srcRoot = _fileSystem.Path.Combine(_state.ActiveWorkspace.WorkspaceRoot.LocalPath, ProjectFile.SourceRoot);
-                foreach (var file in _state.ActiveWorkspace.WorkspaceFiles.Where(e => e.IsModified))
+                var srcRoot = _fileSystem.Path.Combine(workspace.WorkspaceRoot.LocalPath, ProjectFile.SourceRoot);
+                foreach (var file in workspace.WorkspaceFiles.Where(e => e.IsModified).ToArray())
                 {
                     var path = _fileSystem.Path.Combine(srcRoot, file.Uri.ToString());
-                    tasks.Add(_fileSystem.File.WriteAllTextAsync(path, file.Content));
+                    tasks.Add(_fileSystem.File.WriteAllTextAsync(path, file.Text));
 
-                    file.ResetModifiedState();
+                    if (!workspace.SaveWorkspaceFile(file.Uri))
+                    {
+                        LogWarning("Could not reset document version.", file.Uri.ToString());
+                    }
                 }
             }
 
@@ -368,12 +375,8 @@ namespace Rubberduck.Editor
                         }
                     }
 
-                    var info = new WorkspaceFileInfo
+                    var info = new DocumentState(uri, content, version: 1, open && !isMissing)
                     {
-                        Uri = uri,
-                        Content = content,
-                        IsSourceFile = isSourceFile,
-                        IsOpened = open && !isMissing,
                         IsMissing = isMissing,
                         IsLoadError = isLoadError
                     };

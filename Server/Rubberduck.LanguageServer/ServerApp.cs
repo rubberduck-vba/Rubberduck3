@@ -172,6 +172,9 @@ namespace Rubberduck.LanguageServer
             service.LogTrace($"ServerState RootUri: {rootUriString}");
             var rootUri = new Uri(rootUriString);
 
+            var stateService = server.GetRequiredService<IWorkspaceStateManager>();
+            var workspace = stateService.AddWorkspace(rootUri);
+
             var projectFilePath = System.IO.Path.Combine(rootUriString, ProjectFile.FileName);
             var projectFileContent = System.IO.File.ReadAllText(projectFilePath);
             var projectFile = JsonSerializer.Deserialize<ProjectFile>(projectFileContent) ?? throw new InvalidOperationException("Project file could not be deserialized.");
@@ -180,6 +183,9 @@ namespace Rubberduck.LanguageServer
             service.LogTrace($"Workspace source root: {srcRootPath}");
 
             progress?.OnNext(message: "Loading source files...", percentage: 10, cancellable: false);
+            
+            var sourceFilesLanguage = projectFile.VBProject.ProjectType == ProjectType.VBA ? SupportedLanguage.VBA : SupportedLanguage.VB6;
+
             foreach (var item in projectFile.VBProject.Modules)
             {
                 service.TryRunAction(() =>
@@ -188,10 +194,9 @@ namespace Rubberduck.LanguageServer
 
                     var path = System.IO.Path.Combine(srcRootPath, item.Uri);
                     var uri = new WorkspaceFileUri(item.Uri, rootUri);
-                    var document = new DocumentState(uri, System.IO.File.ReadAllText(path))
-                    {
-                        IsOpened = item.IsAutoOpen
-                    };
+                    var text = System.IO.File.ReadAllText(path);
+
+                    var document = new SourceFileDocumentState(sourceFilesLanguage, uri, text, isOpened: item.IsAutoOpen);
 
                     if (service.TraceLevel == TraceLevel.Verbose)
                     {
@@ -199,6 +204,7 @@ namespace Rubberduck.LanguageServer
                     }
 
                     store.AddOrUpdate(uri, document);
+                    workspace.LoadWorkspaceFile(document);
                 }, "LoadWorkspaceFile");
             }
 

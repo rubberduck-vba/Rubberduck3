@@ -50,7 +50,7 @@ public class WorkspaceSymbolsParserPipeline : ParserPipeline<WorkspaceUri, Parse
 
     private TransformBlock<WorkspaceFileUri, DocumentParserState> AcquireWorkspaceDocumentsBlock { get; set; } = null!;
     private DocumentParserState AcquireWorkspaceDocuments(WorkspaceFileUri uri) =>
-        RunTransformBlock(AcquireWorkspaceDocumentsBlock, uri, e => (DocumentParserState)_contentStore.GetContent(e)
+        RunTransformBlock(AcquireWorkspaceDocumentsBlock, uri, e => (DocumentParserState)_contentStore.GetDocument(e)
             ?? throw new InvalidOperationException("Document state was not found in the content store."));
 
     private ActionBlock<DocumentParserState> AcquireHierarchicalSymbolsBlock { get; set; } = null!;
@@ -66,7 +66,7 @@ public class WorkspaceSymbolsParserPipeline : ParserPipeline<WorkspaceUri, Parse
             var resolved = _symbolsService.RecursivelyResolveSymbols(symbols);
             ThrowIfCancellationRequested();
 
-            State.Documents[e.Uri] = e.WithSymbols(resolved);
+            State.Documents[e.Uri] = e.WithSymbol(resolved);
         });
 
     protected override (ITargetBlock<WorkspaceUri> inputBlock, Task completion) DefinePipelineBlocks()
