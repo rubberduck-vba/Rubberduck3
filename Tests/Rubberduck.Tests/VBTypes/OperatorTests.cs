@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
@@ -15,9 +16,9 @@ namespace Rubberduck.Tests.VBTypes;
 
 public abstract class OperatorTests : ServiceBaseTest
 {
-    protected static readonly Uri ParentProjectUri = new Uri("test://project");
-    protected static readonly Uri ParentModuleUri = new Uri("test://project/module");
-    protected static readonly Uri ParentProcedureUri = new Uri("test://project/module/procedure");
+    protected static readonly WorkspaceUri ParentProjectUri = new WorkspaceFolderUri(null, new("test://project"));
+    protected static readonly WorkspaceUri ParentModuleUri = new WorkspaceFileUri("module", ParentProjectUri);
+    protected static readonly WorkspaceUri ParentProcedureUri = new WorkspaceFileUri("module/procedure", ParentProjectUri);
 
     protected static readonly ProcedureSymbol ParentProcedureSymbol = new("Procedure", ParentProcedureUri, Visibility.Public);
     protected static VBProcedureMember ParentProcedure = new(ParentProcedureUri, "Procedure", RubberduckSymbolKind.Procedure, Visibility.Public, ParentProcedureSymbol, isUserDefined: true);
@@ -37,7 +38,7 @@ public abstract class OperatorTests : ServiceBaseTest
         var parentProcedure = ParentProcedure.WithDeclaration(procedureSymbol);
         return CreateOperator(parentProcedure.Uri, lhs, rhs);
     }
-    protected abstract VBBinaryOperator CreateOperator(Uri uri, TypedSymbol lhs, TypedSymbol rhs);
+    protected abstract VBBinaryOperator CreateOperator(WorkspaceUri uri, TypedSymbol lhs, TypedSymbol rhs);
 
     protected VBUnaryOperator CreateOperator(ref VBProcedureMember scope, TypedSymbol symbol)
     {
@@ -45,7 +46,7 @@ public abstract class OperatorTests : ServiceBaseTest
         var parentProcedure = ParentProcedure.WithDeclaration(procedureSymbol);
         return CreateOperator(parentProcedure.Uri, symbol);
     }
-    protected abstract VBUnaryOperator CreateOperator(Uri uri, TypedSymbol symbol);
+    protected abstract VBUnaryOperator CreateOperator(WorkspaceUri uri, TypedSymbol symbol);
 
     protected void OutputExecutionScope(VBExecutionScope scope, bool outputNames = true, bool verboseDiagnostics = false)
     {

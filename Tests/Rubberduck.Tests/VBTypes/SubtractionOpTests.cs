@@ -7,13 +7,14 @@ using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
 using System;
+using Rubberduck.InternalApi.Extensions;
 
 namespace Rubberduck.Tests.VBTypes;
 
 [TestClass]
 public class SubtractionOpTests : WideningArithmeticOpTests
 {
-    protected override VBBinaryOperator CreateOperator(Uri uri, TypedSymbol lhs, TypedSymbol rhs) => new VBSubtractionOperator(uri, lhs.Name, rhs.Name, lhs, rhs);
+    protected override VBBinaryOperator CreateOperator(WorkspaceUri uri, TypedSymbol lhs, TypedSymbol rhs) => new VBSubtractionOperator(uri, lhs.Name, rhs.Name, lhs, rhs);
     protected override double ExpectResult(double lhs, double rhs) => lhs - rhs;
     protected override T ExpectResult<T>(DateTime lhs, int rhs) => (T)Convert.ChangeType(DateTime.FromOADate(ExpectResult(lhs.ToOADate(), rhs)), typeof(T));
 

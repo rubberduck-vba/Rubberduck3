@@ -1,4 +1,5 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
@@ -15,7 +16,7 @@ namespace Rubberduck.InternalApi.Model.Declarations.Types;
 /// </summary>
 public abstract record class VBExecutableMember : VBTypeMember
 {
-    public VBExecutableMember(Uri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, Symbol? declaration, TypedSymbol[]? definitions = null, bool isUserDefined = false)
+    public VBExecutableMember(WorkspaceUri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, Symbol? declaration, TypedSymbol[]? definitions = null, bool isUserDefined = false)
         : base(uri, name, kind, accessibility, declaration, definitions, isUserDefined)
     {
     }
@@ -28,7 +29,7 @@ public abstract record class VBExecutableMember : VBTypeMember
 
 public record class VBProcedureMember : VBExecutableMember
 {
-    public VBProcedureMember(Uri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, Symbol? declaration, TypedSymbol[]? definitions = null, bool isUserDefined = false)
+    public VBProcedureMember(WorkspaceUri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, Symbol? declaration, TypedSymbol[]? definitions = null, bool isUserDefined = false)
         : base(uri, name, kind, accessibility, declaration, definitions, isUserDefined)
     {
     }

@@ -7,6 +7,7 @@ using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
 using System;
+using Rubberduck.InternalApi.Extensions;
 
 namespace Rubberduck.Tests.VBTypes;
 
@@ -15,7 +16,7 @@ public class MultiplicationOpTests : WideningArithmeticOpTests
 {
     protected override LargestVBType Mode => LargestVBType.FromOperands;
 
-    protected override VBBinaryOperator CreateOperator(Uri uri, TypedSymbol lhs, TypedSymbol rhs) => new VBMultiplicationOperator(uri, lhs.Name, rhs.Name, lhs, rhs);
+    protected override VBBinaryOperator CreateOperator(WorkspaceUri uri, TypedSymbol lhs, TypedSymbol rhs) => new VBMultiplicationOperator(uri, lhs.Name, rhs.Name, lhs, rhs);
     protected override double ExpectResult(double lhs, double rhs) => lhs * rhs;
 
     [TestMethod]

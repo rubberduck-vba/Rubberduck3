@@ -41,13 +41,13 @@ public abstract record class BooleanValuedExpression : IValuedExpression<VBBoole
 /// </summary>
 public abstract record class Symbol : DocumentSymbol
 {
-    protected Symbol(RubberduckSymbolKind kind, string name, Uri? parentUri = null, Accessibility accessibility = Accessibility.Undefined, IEnumerable<Symbol>? children = default)
+    protected Symbol(RubberduckSymbolKind kind, string name, WorkspaceUri? parentUri = null, Accessibility accessibility = Accessibility.Undefined, IEnumerable<Symbol>? children = default)
     {
         Kind = (SymbolKind)kind;
         Name = name;
-        ParentUri = parentUri ?? new Uri($"vb://symbols/{kind}");       
+        ParentUri = parentUri ?? new WorkspaceFileUri($"{kind}", new Uri("vb://symbols"));
         Uri = ParentUri.GetChildSymbolUri(name);
-        Children = new(children ?? []);
+        Children = new(children?.Select(e => e.WithParentUri(Uri)) ?? []);
     }
 
     /// <summary>
@@ -60,17 +60,17 @@ public abstract record class Symbol : DocumentSymbol
     /// <remarks>
     /// This information should not be used to construct a symbol hierarchy.
     /// </remarks>
-    public Uri ParentUri { get; init; }
+    public WorkspaceUri ParentUri { get; init; }
     /// <summary>
     /// The URI of the symbol as a fragment of the parent URI.
     /// </summary>
     /// <remarks>
     /// Formed with the original string of the parent URI concatenated with a '#' followed by the <c>Name</c> of the symbol.
     /// </remarks>
-    public Uri Uri { get; init; }
+    public WorkspaceUri Uri { get; init; }
 
     public Symbol WithName(string name) => this with { Name = name, Uri = ParentUri.GetChildSymbolUri(name) };
-    public Symbol WithParentUri(Uri parentUri) => this with { Uri = parentUri.GetChildSymbolUri(Name), ParentUri = parentUri };
+    public Symbol WithParentUri(WorkspaceUri parentUri) => this with { Uri = parentUri.GetChildSymbolUri(Name), ParentUri = parentUri };
     public Symbol WithChildren(IEnumerable<Symbol> children) => this with { Children = new(children ?? []) };
 }
 
@@ -79,7 +79,7 @@ public abstract record class Symbol : DocumentSymbol
 /// </summary>
 public abstract record class TypedSymbol : Symbol, ITypedSymbol
 {
-    public TypedSymbol(RubberduckSymbolKind kind, Accessibility accessibility, string name, Uri? parentUri = null, IEnumerable<Symbol>? children = null, VBType? type = null)
+    public TypedSymbol(RubberduckSymbolKind kind, Accessibility accessibility, string name, WorkspaceUri? parentUri = null, IEnumerable<Symbol>? children = null, VBType? type = null)
         : base(kind, name, parentUri, accessibility, children)
     {
         Accessibility = accessibility;
@@ -100,7 +100,7 @@ public abstract record class TypedSymbol : Symbol, ITypedSymbol
 
 public record class ClassTypeDefinitionSymbol : TypedSymbol
 {
-    public ClassTypeDefinitionSymbol(Accessibility accessibility, string name, Uri parentUri) 
+    public ClassTypeDefinitionSymbol(Accessibility accessibility, string name, WorkspaceUri parentUri) 
         : base(RubberduckSymbolKind.Class, accessibility, name, parentUri, [], null)
     {
     }
@@ -108,7 +108,7 @@ public record class ClassTypeDefinitionSymbol : TypedSymbol
 
 public abstract record class DeclarationExpressionSymbol : TypedSymbol, IDeclaredTypeSymbol
 {
-    protected DeclarationExpressionSymbol(RubberduckSymbolKind kind, string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, IEnumerable<IParseTreeAnnotation>? annotations = null, string? asTypeExpression = null, VBType? type = null)
+    protected DeclarationExpressionSymbol(RubberduckSymbolKind kind, string name, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, IEnumerable<IParseTreeAnnotation>? annotations = null, string? asTypeExpression = null, VBType? type = null)
         : base(kind, accessibility, name, parentUri, children, ResolveVariantIfUnspecified(type, asTypeExpression))
     {
     }
@@ -133,7 +133,7 @@ public abstract record class DeclarationExpressionSymbol : TypedSymbol, IDeclare
 /// </summary>
 public abstract record class ValuedTypedSymbol : TypedSymbol, IValuedSymbol
 {
-    public ValuedTypedSymbol(RubberduckSymbolKind kind, Accessibility accessibility, string name, Uri parentUri, string? asTypeExpression, string? valueExpression)
+    public ValuedTypedSymbol(RubberduckSymbolKind kind, Accessibility accessibility, string name, WorkspaceUri parentUri, string? asTypeExpression, string? valueExpression)
         : base(kind, accessibility, name, parentUri, [])
     {
         ValueExpression = valueExpression;
@@ -158,7 +158,7 @@ public abstract record class ValuedTypedSymbol : TypedSymbol, IValuedSymbol
 
 public record class ParameterSymbol : DeclarationExpressionSymbol
 {
-    public ParameterSymbol(string name, Uri parentUri, ParameterModifier modifier, string? asTypeExpression)
+    public ParameterSymbol(string name, WorkspaceUri parentUri, ParameterModifier modifier, string? asTypeExpression)
         : base(RubberduckSymbolKind.Variable, name, parentUri, Accessibility.Private, asTypeExpression: asTypeExpression)
     {
         Modifier = new(modifier);
@@ -172,7 +172,7 @@ public record class ParameterSymbol : DeclarationExpressionSymbol
 
 public record class ParamArrayParameterSymbol : ParameterSymbol
 {
-    public ParamArrayParameterSymbol(string name, Uri parentUri, string? asTypeExpression)
+    public ParamArrayParameterSymbol(string name, WorkspaceUri parentUri, string? asTypeExpression)
         : base(name, parentUri, ParameterModifier.ExplicitByRef, asTypeExpression)
     {
     }
@@ -180,7 +180,7 @@ public record class ParamArrayParameterSymbol : ParameterSymbol
 
 public record class OptionalParameterSymbol : ParameterSymbol, IValuedSymbol
 {
-    public OptionalParameterSymbol(string name, Uri parentUri, ParameterModifier modifier, string? asTypeExpression, string? valueExpression)
+    public OptionalParameterSymbol(string name, WorkspaceUri parentUri, ParameterModifier modifier, string? asTypeExpression, string? valueExpression)
         : base(name, parentUri, modifier, asTypeExpression)
     {
         ValueExpression = valueExpression;
@@ -196,7 +196,7 @@ public record class OptionalParameterSymbol : ParameterSymbol, IValuedSymbol
 
 public record class UserDefinedTypeSymbol : TypedSymbol
 {
-    public UserDefinedTypeSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<UserDefinedTypeMemberSymbol> children)
+    public UserDefinedTypeSymbol(string name, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<UserDefinedTypeMemberSymbol> children)
         : base(RubberduckSymbolKind.UserDefinedType, accessibility, name, parentUri, children.Cast<Symbol>())
     {
         ResolvedType = new VBUserDefinedType(name, parentUri, this);
@@ -205,13 +205,13 @@ public record class UserDefinedTypeSymbol : TypedSymbol
 
 public record class UserDefinedTypeMemberSymbol : DeclarationExpressionSymbol
 {
-    public UserDefinedTypeMemberSymbol(string name, Uri parentUri, string? asTypeExpression)
+    public UserDefinedTypeMemberSymbol(string name, WorkspaceUri parentUri, string? asTypeExpression)
         : base(RubberduckSymbolKind.Field, name, parentUri, Accessibility.Public, asTypeExpression: asTypeExpression) { }
 }
 
 public record class LibraryFunctionImportSymbol : FunctionSymbol
 {
-    public LibraryFunctionImportSymbol(string library, string name, string? alias, bool isPtrSafe, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, string? typeName)
+    public LibraryFunctionImportSymbol(string library, string name, string? alias, bool isPtrSafe, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters, string? typeName)
         : base(name, parentUri, accessibility, parameters, typeName)
     {
         Library = library;
@@ -228,7 +228,7 @@ public record class LibraryFunctionImportSymbol : FunctionSymbol
 
 public record class LibraryProcedureImportSymbol : ProcedureSymbol
 {
-    public LibraryProcedureImportSymbol(string library, string name, string? alias, bool isPtrSafe, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters)
+    public LibraryProcedureImportSymbol(string library, string name, string? alias, bool isPtrSafe, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters)
         : base(name, parentUri, accessibility, parameters)
     {
         Library = library;
@@ -245,7 +245,7 @@ public record class LibraryProcedureImportSymbol : ProcedureSymbol
 
 public record class FunctionSymbol : TypedSymbol, IExecutable
 {
-    public FunctionSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, string? typeName = null, RubberduckSymbolKind kind = RubberduckSymbolKind.Function)
+    public FunctionSymbol(string name, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, string? typeName = null, RubberduckSymbolKind kind = RubberduckSymbolKind.Function)
         : base(kind, accessibility, name, parentUri, (children ?? []).ToArray()) { }
 
     public bool? IsReachable { get; init; }
@@ -271,7 +271,7 @@ public record class FunctionSymbol : TypedSymbol, IExecutable
 
 public record class ProcedureSymbol : TypedSymbol, IExecutable
 {
-    public ProcedureSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, RubberduckSymbolKind kind = RubberduckSymbolKind.Procedure)
+    public ProcedureSymbol(string name, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, RubberduckSymbolKind kind = RubberduckSymbolKind.Procedure)
         : base(kind, accessibility, name, parentUri, (children ?? []).ToArray(), VBLongPtrType.TypeInfo) { }
 
     public VBTypedValue? Evaluate(ref VBExecutionScope context, bool rethrow = false) =>
@@ -305,25 +305,25 @@ public record class ProcedureSymbol : TypedSymbol, IExecutable
 
 public record class PropertyGetSymbol : FunctionSymbol
 {
-    public PropertyGetSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, string? asTypeNameExpression = null)
+    public PropertyGetSymbol(string name, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, string? asTypeNameExpression = null)
         : base(name, parentUri, accessibility, (children ?? []).ToArray(), asTypeNameExpression, RubberduckSymbolKind.Property) { }
 }
 
 public record class PropertyLetSymbol : ProcedureSymbol
 {
-    public PropertyLetSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null)
+    public PropertyLetSymbol(string name, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null)
         : base(name, parentUri, accessibility, (children ?? []).ToArray(), RubberduckSymbolKind.Property) { }
 }
 
 public record class PropertySetSymbol : ProcedureSymbol
 {
-    public PropertySetSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null)
+    public PropertySetSymbol(string name, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null)
         : base(name, parentUri, accessibility, (children ?? []).ToArray(), RubberduckSymbolKind.Property) { }
 }
 
 public record class EnumSymbol : TypedSymbol
 {
-    public EnumSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<EnumMemberSymbol>? children = null, bool isUserDefined = false)
+    public EnumSymbol(string name, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<EnumMemberSymbol>? children = null, bool isUserDefined = false)
         : base(RubberduckSymbolKind.Enum, accessibility, name, parentUri, children)
     {
         ResolvedType = new VBEnumType(name, parentUri, this, isUserDefined: isUserDefined);
@@ -332,7 +332,7 @@ public record class EnumSymbol : TypedSymbol
 
 public record class EnumMemberSymbol : ValuedTypedSymbol
 {
-    public EnumMemberSymbol(string name, Uri parentUri, string? value)
+    public EnumMemberSymbol(string name, WorkspaceUri parentUri, string? value)
         : base(RubberduckSymbolKind.EnumMember, Accessibility.Public, name, parentUri, null, value) { }
 
     public override VBTypedValue Evaluate(ref VBExecutionScope context, bool rethrow = false) => context.GetTypedValue(this);
@@ -340,13 +340,13 @@ public record class EnumMemberSymbol : ValuedTypedSymbol
 
 public record class EventMemberSymbol : ProcedureSymbol
 {
-    public EventMemberSymbol(string name, Uri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters)
+    public EventMemberSymbol(string name, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters)
         : base(name, parentUri, accessibility, parameters, RubberduckSymbolKind.Event) { }
 }
 
 public record class ConstantDeclarationSymbol : ValuedTypedSymbol
 {
-    public ConstantDeclarationSymbol(string name, Uri parentUri, Accessibility accessibility, string? asTypeNameExpression, string? valueExpression)
+    public ConstantDeclarationSymbol(string name, WorkspaceUri parentUri, Accessibility accessibility, string? asTypeNameExpression, string? valueExpression)
         : base(RubberduckSymbolKind.Constant, accessibility, name, parentUri, asTypeNameExpression, valueExpression) { }
 
     public override VBTypedValue Evaluate(ref VBExecutionScope context, bool rethrow = false) => context.GetTypedValue(this);
@@ -354,13 +354,13 @@ public record class ConstantDeclarationSymbol : ValuedTypedSymbol
 
 public record class VariableDeclarationSymbol : DeclarationExpressionSymbol
 {
-    public VariableDeclarationSymbol(string name, Uri parentUri, Accessibility accessibility, string? asTypeNameExpression)
+    public VariableDeclarationSymbol(string name, WorkspaceUri parentUri, Accessibility accessibility, string? asTypeNameExpression)
         : base(RubberduckSymbolKind.Variable, name, parentUri, accessibility, children: [], annotations: [], asTypeNameExpression) { }
 }
 
 public record class StringLiteralSymbol : TypedSymbol
 {
-    public StringLiteralSymbol(string name, Uri parentUri)
+    public StringLiteralSymbol(string name, WorkspaceUri parentUri)
         : base(RubberduckSymbolKind.StringLiteral, Accessibility.Undefined, name, parentUri, null, VBStringType.TypeInfo)
     {
     }
@@ -368,7 +368,7 @@ public record class StringLiteralSymbol : TypedSymbol
 
 public record class NumberLiteralSymbol : TypedSymbol
 {
-    public NumberLiteralSymbol(string name, Uri parentUri)
+    public NumberLiteralSymbol(string name, WorkspaceUri parentUri)
         : base(RubberduckSymbolKind.NumberLiteral, Accessibility.Undefined, name, parentUri, null)
     {
     }
@@ -376,7 +376,7 @@ public record class NumberLiteralSymbol : TypedSymbol
 
 public abstract record class OperatorSymbol : TypedSymbol, IValuedExpression<VBTypedValue>
 {
-    public OperatorSymbol(string token, Uri parentUri, IEnumerable<Symbol>? children)
+    public OperatorSymbol(string token, WorkspaceUri parentUri, IEnumerable<Symbol>? children)
         : base(RubberduckSymbolKind.Operator, Accessibility.Undefined, token, parentUri, children, null)
     {
     }

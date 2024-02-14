@@ -16,10 +16,10 @@ public class WorkspaceFileParserPipeline : WorkspaceDocumentPipeline
     public WorkspaceFileParserPipeline(ILogger<WorkspaceParserPipeline> logger, 
         RubberduckSettingsProvider settingsProvider, 
         PerformanceRecordAggregator performance,
-        DocumentContentStore contentStore,
+        IWorkspaceService workspaces,
         PipelineParserService parser,
         PipelineParseTreeSymbolsService symbolsService)
-        : base(logger, settingsProvider, performance, contentStore)
+        : base(logger, settingsProvider, performance, workspaces)
     {
         _parser = parser;
         _symbolsService = symbolsService;

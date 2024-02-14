@@ -8,7 +8,7 @@ using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
-public abstract class WorkspaceOrchestratorPipeline : ParserPipeline<WorkspaceUri, ParserPipelineState>
+public abstract class WorkspaceOrchestratorPipeline : ParserPipeline<Uri, ParserPipelineState>
 {
     private readonly IWorkspaceStateManager _workspaceManager;
     private readonly ConcurrentBag<WorkspaceDocumentPipeline> _filePipelines = [];
@@ -24,10 +24,10 @@ public abstract class WorkspaceOrchestratorPipeline : ParserPipeline<WorkspaceUr
 
     protected abstract WorkspaceDocumentPipeline StartDocumentPipeline(WorkspaceFileUri uri);
 
-    private TransformBlock<WorkspaceUri, IWorkspaceState> AcquireWorkspaceBlock { get; set; } = null!;
-    private IWorkspaceState AcquireWorkspaceState(WorkspaceUri uri) =>
-        RunTransformBlock(AcquireWorkspaceBlock, uri, e => _workspaceManager.GetWorkspace(uri.WorkspaceRoot)
-            ?? throw new InvalidOperationException($"Could not find workspace state for URI '{uri.WorkspaceRoot}'."));
+    private TransformBlock<Uri, IWorkspaceState> AcquireWorkspaceBlock { get; set; } = null!;
+    private IWorkspaceState AcquireWorkspaceState(Uri uri) =>
+        RunTransformBlock(AcquireWorkspaceBlock, uri, e => _workspaceManager.GetWorkspace(uri)
+            ?? throw new InvalidOperationException($"Could not find workspace state for URI '{uri}'."));
 
     private TransformManyBlock<IWorkspaceState, WorkspaceFileUri> PrioritizeFilesBlock { get; set; } = null!;
     private WorkspaceFileUri[] PrioritizeFiles(IWorkspaceState state) =>
@@ -54,7 +54,7 @@ public abstract class WorkspaceOrchestratorPipeline : ParserPipeline<WorkspaceUr
     private void AquireWorkspaceFilePipeline(WorkspaceDocumentPipeline pipeline) =>
         RunActionBlock(AcquireWorkspaceFilePipelineBlock, pipeline, e => _filePipelines.Add(pipeline));
 
-    protected override (ITargetBlock<WorkspaceUri> inputBlock, Task completion) DefinePipelineBlocks()
+    protected override (ITargetBlock<Uri> inputBlock, Task completion) DefinePipelineBlocks()
     {
         AcquireWorkspaceBlock = new(AcquireWorkspaceState, ConcurrentExecutionOptions);
         PrioritizeFilesBlock = new(PrioritizeFiles, ConcurrentExecutionOptions);

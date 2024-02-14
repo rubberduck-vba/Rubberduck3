@@ -4,6 +4,7 @@ using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
+using Microsoft.Extensions.Logging;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
@@ -11,11 +12,13 @@ public class PipelineParseTreeSymbolsService
 {
     private readonly RubberduckSettingsProvider _settingsProvider;
     private readonly IResolverService _resolver;
+    private readonly ILogger _logger;
 
-    public PipelineParseTreeSymbolsService(RubberduckSettingsProvider settingsProvider, IResolverService resolver)
+    public PipelineParseTreeSymbolsService(ILogger<PipelineParseTreeSymbolsService> logger, RubberduckSettingsProvider settingsProvider, IResolverService resolver)
     {
         _settingsProvider = settingsProvider;
         _resolver = resolver;
+        _logger = logger;
     }
 
     /// <summary>
@@ -27,7 +30,7 @@ public class PipelineParseTreeSymbolsService
     /// <returns>
     /// Returns a module symbol with all its members, including parameters. Types are not resolved, unless implicit or intrinsic.
     /// </returns>
-    public Symbol DiscoverMemberSymbols(IParseTree tree, WorkspaceFileUri uri) => TraverseTree(tree, new MemberSymbolsListener(uri));
+    public Symbol DiscoverMemberSymbols(IParseTree tree, WorkspaceFileUri uri) => TraverseTree(tree, new MemberSymbolsListener(_logger, uri));
 
     /// <summary>
     /// A second pass to discover all declaration symbols in the module, including inside member scopes.

@@ -14,9 +14,9 @@ public class DocumentMembersPipeline : WorkspaceDocumentPipeline
     public DocumentMembersPipeline(ILogger<WorkspaceParserPipeline> logger, 
         RubberduckSettingsProvider settingsProvider, 
         PerformanceRecordAggregator performance, 
-        DocumentContentStore contentStore,
+        IWorkspaceService workspaces,
         PipelineParseTreeSymbolsService symbolsService)
-        : base(logger, settingsProvider, performance, contentStore)
+        : base(logger, settingsProvider, performance, workspaces)
     {
         _symbolsService = symbolsService;
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
@@ -15,7 +16,7 @@ namespace Rubberduck.Tests.VBTypes;
 [TestClass]
 public class NewOperatorTests : UnaryOperatorTests
 {
-    protected override VBUnaryOperator CreateOperator(Uri uri, TypedSymbol symbol) =>
+    protected override VBUnaryOperator CreateOperator(WorkspaceUri uri, TypedSymbol symbol) =>
         new VBNewOperator(expression: $"{Tokens.New} {symbol.Name}", symbol, uri);
 
     [TestMethod]

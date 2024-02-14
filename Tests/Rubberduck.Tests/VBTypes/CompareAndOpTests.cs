@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
@@ -15,8 +16,8 @@ namespace Rubberduck.Tests.VBTypes;
 [TestClass]
 public class CompareAndOpTests : OperatorTests
 {
-    protected override VBUnaryOperator CreateOperator(Uri uri, TypedSymbol symbol) => throw new NotSupportedException();
-    protected override VBBinaryOperator CreateOperator(Uri uri, TypedSymbol lhs, TypedSymbol rhs) =>
+    protected override VBUnaryOperator CreateOperator(WorkspaceUri uri, TypedSymbol symbol) => throw new NotSupportedException();
+    protected override VBBinaryOperator CreateOperator(WorkspaceUri uri, TypedSymbol lhs, TypedSymbol rhs) =>
         new VBAndOperator(Tokens.And, uri, lhs.Name, rhs.Name, lhs, rhs);
 
     [TestMethod]
@@ -227,8 +228,8 @@ public class CompareAndOpTests : OperatorTests
 [TestClass]
 public class CompareOrOpTests : OperatorTests
 {
-    protected override VBUnaryOperator CreateOperator(Uri uri, TypedSymbol symbol) => throw new NotSupportedException();
-    protected override VBBinaryOperator CreateOperator(Uri uri, TypedSymbol lhs, TypedSymbol rhs) =>
+    protected override VBUnaryOperator CreateOperator(WorkspaceUri uri, TypedSymbol symbol) => throw new NotSupportedException();
+    protected override VBBinaryOperator CreateOperator(WorkspaceUri uri, TypedSymbol lhs, TypedSymbol rhs) =>
         new VBOrOperator(Tokens.And, uri, lhs.Name, rhs.Name, lhs, rhs);
 
     [TestMethod]

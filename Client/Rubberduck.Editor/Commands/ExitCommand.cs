@@ -1,6 +1,6 @@
-﻿using Rubberduck.UI.Command.Abstract;
+﻿using Rubberduck.InternalApi.Services;
+using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
-using Rubberduck.UI.Services.Abstract;
 using System.Threading.Tasks;
 using System.Windows;
 

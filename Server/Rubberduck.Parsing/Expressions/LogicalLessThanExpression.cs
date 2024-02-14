@@ -15,11 +15,11 @@ public sealed class LogicalLessThanExpression : Expression
 
     public override IValue Evaluate()
     {
-        var left = _left.Evaluate();
-        var right = _right.Evaluate();
+        var left = _left?.Evaluate();
+        var right = _right?.Evaluate();
         if (left == null || right == null)
         {
-            return null;
+            return null!;
         }
         if ((left.ValueType == ValueType.String || left.ValueType == ValueType.Empty)
             && (right.ValueType == ValueType.String || right.ValueType == ValueType.Empty))

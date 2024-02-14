@@ -33,15 +33,15 @@ namespace Rubberduck.UI.Services.NewProject
 
         public ProjectFile Build() => new()
         {
-            Rubberduck = "3.0",
+            Rubberduck = ProjectFile.RubberduckVersion,
             Uri = _uri ?? DefaultUri,
             VBProject = new()
             {
                 Name = _name,
-                Modules = _modules.Values.ToArray(),
-                OtherFiles = _files.ToArray(),
-                References = _references.ToArray(),
-                Folders = _folders.ToArray(),
+                Modules = [.. _modules.Values],
+                OtherFiles = [.. _files],
+                References = [.. _references],
+                Folders = [.. _folders],
             },
         };
 

@@ -1,11 +1,12 @@
-﻿using Rubberduck.InternalApi.Model.Declarations.Symbols;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using System;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 
 public abstract record class VBUnaryOperator : VBOperator
 {
-    protected VBUnaryOperator(string token, string expression, Uri parentUri, TypedSymbol? operand = null)
+    protected VBUnaryOperator(string token, string expression, WorkspaceUri parentUri, TypedSymbol? operand = null)
         : base(token, parentUri, operand is null ? null : [operand])
     {
         Expression = expression;

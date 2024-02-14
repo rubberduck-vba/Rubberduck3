@@ -16,7 +16,7 @@ public record class PrecompilerConstantSymbol : ValuedTypedSymbol
         ResolvedValueExpressionType = VBIntegerType.TypeInfo;
     }
 
-    public PrecompilerConstantSymbol(Accessibility accessibility, string name, Uri parentUri, string? asTypeExpression, string? valueExpression) 
+    public PrecompilerConstantSymbol(Accessibility accessibility, string name, WorkspaceUri parentUri, string? asTypeExpression, string? valueExpression) 
         : base(RubberduckSymbolKind.Constant, accessibility, name, parentUri, asTypeExpression, valueExpression)
     {
     }

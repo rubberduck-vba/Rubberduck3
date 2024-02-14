@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Operators;
@@ -14,7 +15,7 @@ namespace Rubberduck.Tests.VBTypes;
 [TestClass]
 public class AdditionOpTests : WideningArithmeticOpTests
 {
-    protected override VBBinaryOperator CreateOperator(Uri uri, TypedSymbol lhs, TypedSymbol rhs) => new VBAdditionOperator(uri, lhs.Name, rhs.Name, lhs, rhs);
+    protected override VBBinaryOperator CreateOperator(WorkspaceUri uri, TypedSymbol lhs, TypedSymbol rhs) => new VBAdditionOperator(uri, lhs.Name, rhs.Name, lhs, rhs);
     protected override double ExpectResult(double lhs, double rhs) => lhs + rhs;
     protected override T ExpectResult<T>(DateTime lhs, int rhs) => (T)Convert.ChangeType(lhs.AddDays(rhs), typeof(T));
 

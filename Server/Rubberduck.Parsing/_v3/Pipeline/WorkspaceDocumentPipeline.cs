@@ -10,20 +10,29 @@ namespace Rubberduck.Parsing._v3.Pipeline;
 
 public abstract class WorkspaceDocumentPipeline : ParserPipeline<WorkspaceFileUri, DocumentParserState>
 {
-    private readonly DocumentContentStore _contentStore;
+    private readonly IWorkspaceService _workspaceService;
+    
     protected WorkspaceDocumentPipeline(ILogger<WorkspaceParserPipeline> logger, 
         RubberduckSettingsProvider settingsProvider, 
         PerformanceRecordAggregator performance,
-        DocumentContentStore contentStore) 
+        IWorkspaceService workspaceService) 
         : base(logger, settingsProvider, performance)
     {
-        _contentStore = contentStore;
+        _workspaceService = workspaceService;
     }
 
     private TransformBlock<WorkspaceFileUri, DocumentParserState> AcquireDocumentStateBlock { get; set; } = null!;
-    private DocumentParserState AcquireDocumentState(WorkspaceFileUri uri) =>
-        State = RunTransformBlock(AcquireDocumentStateBlock, uri, e => (DocumentParserState)_contentStore.GetDocument(e)
-            ?? throw new InvalidOperationException("Document state was not found in the content store."));
+    private DocumentParserState AcquireDocumentState(WorkspaceFileUri uri)
+    {
+        var workspace = _workspaceService.State.GetWorkspace(uri.WorkspaceRoot);
+        if (workspace.TryGetWorkspaceFile(uri, out var state) && state != null)
+        {
+            State = new DocumentParserState((SourceFileDocumentState)state);
+            return State;
+        }
+
+        throw new InvalidOperationException("Document state was not found in the content store.");
+    }
 
     protected sealed override (ITargetBlock<WorkspaceFileUri> inputBlock, Task completion) DefinePipelineBlocks()
     {

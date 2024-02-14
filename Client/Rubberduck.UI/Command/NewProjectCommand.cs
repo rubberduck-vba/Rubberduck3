@@ -2,7 +2,6 @@
 using Rubberduck.InternalApi.Services;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
-using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Services.NewProject;
 using System;
 using System.IO.Abstractions;
