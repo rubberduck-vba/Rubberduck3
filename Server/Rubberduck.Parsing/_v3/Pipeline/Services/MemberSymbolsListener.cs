@@ -5,6 +5,7 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.Parsing.Grammar;
+using System.Runtime.CompilerServices;
 
 namespace Rubberduck.Parsing._v3.Pipeline.Services;
 
@@ -53,54 +54,77 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
     private readonly Stack<WorkspaceFileUri> _currentParentUri = [];
     private Stack<Type> _currentContextType = [];
 
+    private void LogStackState([CallerMemberName]string? name = null, bool isBefore = true)
+    {
+        if (!_currentContextType.TryPeek(out var currentContextType))
+        {
+            currentContextType = null;
+        }
+        if (!_currentParentUri.TryPeek(out var currentParentUri))
+        {
+            currentParentUri = null;
+        }
+        if (!_currentSymbolChildren.TryPeek(out var currentSymbolChildren))
+        {
+            currentSymbolChildren = null;
+        }
+
+        _logger.LogTrace($"Thread {Environment.CurrentManagedThreadId} [{name}] ({(isBefore ? "before" : "after")}) | ContentType: {currentContextType?.Name ?? "(top of stack)"} (stack depth: {_currentContextType.Count}) | CurrentParentUri: {currentParentUri?.ToString() ?? "(top of stack)"} (stack depth: {_currentParentUri.Count}) | CurrentSymbolChildren: {currentSymbolChildren?.Count.ToString() ?? "(top of stack)"} (stack depth: {_currentSymbolChildren.Count})");
+    }
+
     public MemberSymbolsListener(ILogger logger, WorkspaceFileUri uri, bool isVB6 = false)
     {
         _logger = logger;
         _workspaceFileUri = uri;
         _isVB6 = isVB6;
-
-        _currentParentUri.Push(uri);
     }
 
     public Symbol Result { get; private set; } = null!;
 
     private void OnChildSymbol<TContext>(Symbol symbol, TContext _) where TContext : ParserRuleContext
     {
-        _logger.LogTrace($"Thread {Environment.CurrentManagedThreadId} is adding child symbol {symbol.Name} ({typeof(TContext).Name}) to the current symbol ({_currentContextType.Peek()?.Name ?? "(null)"}).");
-        _currentSymbolChildren.Peek().Add((typeof(TContext), symbol));
+        _currentSymbolChildren.Peek().Add((typeof(TContext), symbol));        
+        LogStackState(isBefore: false);
     }
 
     private void OnEnterNewCurrentSymbol<TContext>(TContext context) where TContext : ParserRuleContext
     {
-        var newParentUri = _currentParentUri.Peek().GetChildSymbolUri($"{typeof(TContext)}#{context.Start.StartIndex}");
+        LogStackState(isBefore: true);
+
+        var newParentUri = _workspaceFileUri;
+        if (_currentParentUri.TryPeek(out var uri))
+        {
+            newParentUri = uri;
+        }
+        
+        newParentUri = newParentUri.GetChildSymbolUri($"{typeof(TContext).Name}@{context.Start.StartIndex}") ?? _workspaceFileUri;
 
         _currentParentUri.Push(newParentUri);
         _currentSymbolChildren.Push([]);
         _currentContextType.Push(typeof(TContext));
 
-        _logger.LogTrace($"Thread {Environment.CurrentManagedThreadId} entered a new current symbol for {typeof(TContext).Name}. Stack depth: {_currentSymbolChildren.Count}");
+        LogStackState(isBefore: false);
     }
 
     private Symbol CreateCurrentSymbol<TContext>(Func<IEnumerable<Symbol>, Symbol> create, TContext context) where TContext : ParserRuleContext
     {
+        LogStackState(isBefore: true);
+
         var type = _currentContextType.Pop();
         if (type != null && typeof(TContext) != type)
         {
             throw new InvalidOperationException($"***Thread {Environment.CurrentManagedThreadId} BUG: Expected current symbol under current context type {type.Name ?? "(null)"}, but context is {typeof(TContext).Name}.");
         }
 
-        _logger.LogTrace($"Thread {Environment.CurrentManagedThreadId} is getting current symbol ({type?.Name}) child symbols... Stack depth: {_currentSymbolChildren.Count}");
         _currentParentUri.Pop();
 
         var children = _currentSymbolChildren.Pop()
-            .Select(node => node.Symbol.WithParentUri(_currentParentUri.Peek()))
+            .Select(node => node.Symbol.WithParentUri(_currentParentUri.TryPeek(out var parentUri) ? parentUri : _workspaceFileUri))
             .ToArray();
 
-        _currentContextType.Push(typeof(TContext));
-
         var symbol = create(children);
-        _logger.LogTrace($"Thread {Environment.CurrentManagedThreadId} created current symbol ({symbol.Uri}) with {children.Length} children. Stack depth: {_currentSymbolChildren.Count}");
 
+        LogStackState(isBefore: false);
         return symbol;
     }
 
@@ -108,6 +132,7 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
 
     public override void ExitModule([NotNull] VBAParser.ModuleContext context)
     {
+        LogStackState(isBefore: true);
         Symbol moduleSymbol;
         if (_hasModuleHeader)
         {
@@ -132,6 +157,7 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
         }
 
         Result = moduleSymbol;
+        LogStackState(isBefore: false);
     }
 
     public override void ExitModuleAttributes([NotNull] VBAParser.ModuleAttributesContext context)

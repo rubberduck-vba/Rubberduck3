@@ -5,7 +5,6 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server.WorkDone;
 using OmniSharp.Extensions.LanguageServer.Server;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
@@ -21,7 +20,6 @@ using Rubberduck.Parsing.Parsers;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.TokenStreamProviders;
 using Rubberduck.ServerPlatform;
-using Rubberduck.UI.Converters;
 using System;
 using System.Diagnostics;
 using System.IO.Abstractions;
@@ -108,10 +106,11 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<IWorkspaceStateManager, WorkspaceStateManager>();
 
             services.AddSingleton<ParserPipelineProvider>();
-            services.AddSingleton<WorkspaceParserPipeline>();
-            services.AddSingleton<WorkspaceFileParserPipeline>();
-            services.AddSingleton<DocumentMembersPipeline>();
-            services.AddSingleton<HierarchicalSymbolsPipeline>();
+            services.AddTransient<WorkspaceParserPipeline>();
+            services.AddTransient<WorkspaceFileParserPipeline>();
+            services.AddTransient<DocumentMembersPipeline>();
+            services.AddTransient<HierarchicalSymbolsPipeline>();
+
             services.AddSingleton<IParserPipelineFactory<WorkspaceParserPipeline>, ParserPipelineFactory<WorkspaceParserPipeline>>();
             services.AddSingleton<IParserPipelineFactory<WorkspaceFileParserPipeline>, ParserPipelineFactory<WorkspaceFileParserPipeline>>();
             services.AddSingleton<IParserPipelineFactory<DocumentMembersPipeline>, ParserPipelineFactory<DocumentMembersPipeline>>();

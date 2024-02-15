@@ -215,12 +215,29 @@ public abstract class ParserPipeline<TInput, TState> : ServiceBase, IParserPipel
 
     protected void FaultDataflowBlock(IDataflowBlock block, Exception exception)
     {
-        LogWarning("Faulting dataflow block", $"{exception}");
-        block.Fault(exception);
-        TokenSource?.Cancel();
+        if (exception is OperationCanceledException)
+        {
+            LogWarning($"[Thread {Environment.CurrentManagedThreadId}] Faulting dataflow block (operation was cancelled)");
+        }
+        else
+        {
+            LogException(exception, $"[Thread {Environment.CurrentManagedThreadId}] Faulting dataflow block");
+            block.Fault(exception);
+            TokenSource?.Cancel();
+        }
     }
 
-    protected void ThrowIfCancellationRequested() => TokenSource.Token.ThrowIfCancellationRequested();
+    protected void ThrowIfCancellationRequested()
+    {
+        try
+        {
+            TokenSource.Token.ThrowIfCancellationRequested();
+        }
+        catch (ObjectDisposedException)
+        {
+            //throw new TaskCanceledException("CancellationTokenSource is already disposed.");
+        }
+    }
 
     public void Dispose()
     {

@@ -129,7 +129,18 @@ public class PerformanceRecordAggregator
 
     public TimeSpan TotalElapsed(string name) => _totals[name];
 
-    public TimeSpan AverageElapsed(string name) => TotalElapsed(name) / Count(name);
+    public TimeSpan AverageElapsed(string name)
+    {
+        try
+        {
+            return TotalElapsed(name) / Count(name);
+        }
+        catch (OverflowException)
+        {
+            return TimeSpan.Zero;
+        }
+    }
+
     public TimeSpan MinElapsed(string name) => _items[name].Min();
     public TimeSpan MaxElapsed(string name) => _items[name].Max();
     public TimeSpan Median(string name)

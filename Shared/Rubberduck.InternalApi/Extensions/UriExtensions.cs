@@ -12,7 +12,10 @@ public static class UriExtensions
     /// </remarks>
     public static WorkspaceFileUri GetChildSymbolUri(this WorkspaceUri uri, string name)
     {
-        var parentUriString = uri.OriginalString;
+        var parentUriString = System.IO.Path.Combine(
+            System.IO.Path.GetDirectoryName(uri.OriginalString) ?? string.Empty,
+            System.IO.Path.GetFileNameWithoutExtension(uri.OriginalString));
+
         var fragmentIndex = parentUriString.IndexOf('#');
         if (fragmentIndex > 0)
         {
