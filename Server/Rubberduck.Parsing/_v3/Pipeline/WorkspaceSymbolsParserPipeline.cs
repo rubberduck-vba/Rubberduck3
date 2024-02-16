@@ -9,17 +9,15 @@ using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
-public class WorkspaceSymbolsParserPipeline : ParserPipeline<WorkspaceUri, ParserPipelineState> // really <WorkspaceUri, ParserPipelineState>, but simpler for DI/IoC that way
+public class WorkspaceSymbolsParserPipeline : ParserPipelineSection<WorkspaceUri, ParserPipelineState> // really <WorkspaceUri, ParserPipelineState>, but simpler for DI/IoC that way
 {
     private readonly DocumentContentStore _contentStore;
     private readonly IWorkspaceStateManager _workspaceManager;
     private readonly PipelineParseTreeSymbolsService _symbolsService;
 
-    public WorkspaceSymbolsParserPipeline(ILogger<WorkspaceParserPipeline> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance,
-        DocumentContentStore contentStore,
-        IWorkspaceStateManager workspaceManager,
-        PipelineParseTreeSymbolsService symbolsService) 
-        : base(logger, settingsProvider, performance)
+    public WorkspaceSymbolsParserPipeline(DataflowPipeline parent, DocumentContentStore contentStore, IWorkspaceStateManager workspaceManager, PipelineParseTreeSymbolsService symbolsService,
+        ILogger<WorkspaceParserPipeline> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
+        : base(parent, logger, settingsProvider, performance)
     {
         _contentStore = contentStore;
         _workspaceManager = workspaceManager;
@@ -69,17 +67,38 @@ public class WorkspaceSymbolsParserPipeline : ParserPipeline<WorkspaceUri, Parse
             State.Documents[e.Uri] = e.WithSymbol(resolved);
         });
 
-    protected override (ITargetBlock<WorkspaceUri> inputBlock, Task completion) DefinePipelineBlocks()
+    protected override (IEnumerable<IDataflowBlock>, Task) DefinePipelineBlocks(CancellationTokenSource? tokenSource)
     {
-        AcquireWorkspaceBlock = new(AcquireWorkspaceState, ConcurrentExecutionOptions);
-        PrioritizeFilesBlock = new(PrioritizeFiles, ConcurrentExecutionOptions);
-        AcquireWorkspaceDocumentsBlock = new(AcquireWorkspaceDocuments, ConcurrentExecutionOptions);
-        AcquireHierarchicalSymbolsBlock = new(AcquireHierarchicalSymbols, ConcurrentExecutionOptions);
+        var items = new List<IDataflowBlock>();
+        TokenSource = tokenSource ?? TokenSource;
+
+        AcquireWorkspaceBlock = new(AcquireWorkspaceState, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(AcquireWorkspaceBlock), AcquireWorkspaceBlock);
+        items.Add(AcquireWorkspaceBlock);
+
+        PrioritizeFilesBlock = new(PrioritizeFiles, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(PrioritizeFilesBlock), PrioritizeFilesBlock);
+        items.Add(PrioritizeFilesBlock);
+
+        AcquireWorkspaceDocumentsBlock = new(AcquireWorkspaceDocuments, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(AcquireWorkspaceDocumentsBlock), AcquireWorkspaceDocumentsBlock);
+        items.Add(AcquireWorkspaceDocumentsBlock);
+
+        AcquireHierarchicalSymbolsBlock = new(AcquireHierarchicalSymbols, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(AcquireHierarchicalSymbolsBlock), AcquireHierarchicalSymbolsBlock);
+        items.Add(AcquireHierarchicalSymbolsBlock);
 
         Link(AcquireWorkspaceBlock, PrioritizeFilesBlock, WithCompletionPropagation);
         Link(PrioritizeFilesBlock, AcquireWorkspaceDocumentsBlock, WithCompletionPropagation);
         Link(AcquireWorkspaceDocumentsBlock, AcquireHierarchicalSymbolsBlock, WithCompletionPropagation);
 
-        return (AcquireWorkspaceBlock, AcquireHierarchicalSymbolsBlock.Completion);
+        return (
+            [
+                AcquireWorkspaceBlock, 
+                PrioritizeFilesBlock, 
+                AcquireWorkspaceDocumentsBlock, 
+                AcquireHierarchicalSymbolsBlock
+            ], 
+            AcquireHierarchicalSymbolsBlock.Completion);
     }
 }

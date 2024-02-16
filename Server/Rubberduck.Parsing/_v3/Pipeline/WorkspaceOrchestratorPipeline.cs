@@ -8,21 +8,20 @@ using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
-public abstract class WorkspaceOrchestratorPipeline : ParserPipeline<Uri, ParserPipelineState>
+public abstract class WorkspaceOrchestratorPipeline : ParserPipelineSection<Uri, IWorkspaceState>
 {
     private readonly IWorkspaceStateManager _workspaceManager;
-    private readonly ConcurrentBag<WorkspaceDocumentPipeline> _filePipelines = [];
+    private readonly ConcurrentBag<WorkspaceDocumentSection> _filePipelines = [];
+    private readonly ConcurrentBag<Task> _completionTasks = [];
 
-    protected WorkspaceOrchestratorPipeline(ILogger<WorkspaceParserPipeline> logger, 
-        RubberduckSettingsProvider settingsProvider, 
-        PerformanceRecordAggregator performance,
-        IWorkspaceStateManager workspaceManager) 
-        : base(logger, settingsProvider, performance)
+    protected WorkspaceOrchestratorPipeline(DataflowPipeline parent, IWorkspaceStateManager workspaceManager,
+        ILogger<WorkspaceParserPipeline> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
+        : base(parent, logger, settingsProvider, performance)
     {
         _workspaceManager = workspaceManager;
     }
 
-    protected abstract WorkspaceDocumentPipeline StartDocumentPipeline(WorkspaceFileUri uri);
+    protected abstract WorkspaceDocumentSection StartDocumentPipeline(WorkspaceFileUri uri);
 
     private TransformBlock<Uri, IWorkspaceState> AcquireWorkspaceBlock { get; set; } = null!;
     private IWorkspaceState AcquireWorkspaceState(Uri uri) =>
@@ -46,28 +45,53 @@ public abstract class WorkspaceOrchestratorPipeline : ParserPipeline<Uri, Parser
             return result;
         });
 
-    private TransformBlock<WorkspaceFileUri, WorkspaceDocumentPipeline> CreateWorkspaceFilePipelineBlock { get; set; } = null!;
-    private WorkspaceDocumentPipeline CreateWorkspaceFilePipeline(WorkspaceFileUri uri) =>
+    private TransformBlock<WorkspaceFileUri, WorkspaceDocumentSection> CreateWorkspaceFilePipelineBlock { get; set; } = null!;
+    private WorkspaceDocumentSection CreateWorkspaceFilePipeline(WorkspaceFileUri uri) =>
         RunTransformBlock(CreateWorkspaceFilePipelineBlock, uri, e => StartDocumentPipeline(uri));
 
-    private ActionBlock<WorkspaceDocumentPipeline> AcquireWorkspaceFilePipelineBlock { get; set; } = null!;
-    private void AquireWorkspaceFilePipeline(WorkspaceDocumentPipeline pipeline) =>
-        RunActionBlock(AcquireWorkspaceFilePipelineBlock, pipeline, e => _filePipelines.Add(pipeline));
+    private TransformBlock<WorkspaceDocumentSection, Task> AcquireWorkspaceFilePipelineBlock { get; set; } = null!;
+    private async Task AquireWorkspaceFilePipelineAsync(WorkspaceDocumentSection pipeline) =>
+        await RunTransformBlock(AcquireWorkspaceFilePipelineBlock, pipeline, e =>
+        {
+            _filePipelines.Add(pipeline);
+            return pipeline.Completion!;
+        });
 
-    protected override (ITargetBlock<Uri> inputBlock, Task completion) DefinePipelineBlocks()
+    private BufferBlock<Task> CompletionTasksBufferBlock { get; set; } = null!;
+
+    protected override (IEnumerable<IDataflowBlock>, Task) DefinePipelineBlocks(CancellationTokenSource? tokenSource)
     {
-        AcquireWorkspaceBlock = new(AcquireWorkspaceState, ConcurrentExecutionOptions);
-        PrioritizeFilesBlock = new(PrioritizeFiles, ConcurrentExecutionOptions);
-        CreateWorkspaceFilePipelineBlock = new(CreateWorkspaceFilePipeline, ConcurrentExecutionOptions);
-        AcquireWorkspaceFilePipelineBlock = new(AquireWorkspaceFilePipeline, ConcurrentExecutionOptions);
+        TokenSource = tokenSource;
 
-        Link(AcquireWorkspaceBlock, PrioritizeFilesBlock, WithCompletionPropagation);
-        Link(PrioritizeFilesBlock, CreateWorkspaceFilePipelineBlock, WithCompletionPropagation);
-        Link(CreateWorkspaceFilePipelineBlock, AcquireWorkspaceFilePipelineBlock, WithCompletionPropagation);
+        AcquireWorkspaceBlock = new(AcquireWorkspaceState, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(AcquireWorkspaceBlock), AcquireWorkspaceFilePipelineBlock);
 
-        var completion = AcquireWorkspaceFilePipelineBlock.Completion
-            .ContinueWith(t => Task.WhenAll(_filePipelines.Select(pipeline => pipeline.Completion).ToArray()), Token, TaskContinuationOptions.None, TaskScheduler.Default);
+        PrioritizeFilesBlock = new(PrioritizeFiles, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(PrioritizeFilesBlock), PrioritizeFilesBlock);
 
-        return (AcquireWorkspaceBlock, completion);
+        CreateWorkspaceFilePipelineBlock = new(CreateWorkspaceFilePipeline, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(CreateWorkspaceFilePipelineBlock), CreateWorkspaceFilePipelineBlock);
+
+        AcquireWorkspaceFilePipelineBlock = new(AquireWorkspaceFilePipelineAsync, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(AcquireWorkspaceFilePipelineBlock), AcquireWorkspaceFilePipelineBlock);
+
+        CompletionTasksBufferBlock = new BufferBlock<Task>();
+        TraceBlockCompletion(nameof(CompletionTasksBufferBlock), CompletionTasksBufferBlock);
+
+        Link(AcquireWorkspaceBlock, PrioritizeFilesBlock);
+        Link(PrioritizeFilesBlock, CreateWorkspaceFilePipelineBlock);
+        Link(CreateWorkspaceFilePipelineBlock, AcquireWorkspaceFilePipelineBlock);
+        Link(AcquireWorkspaceFilePipelineBlock, CompletionTasksBufferBlock);
+
+        return (new IDataflowBlock[] 
+        { 
+            AcquireWorkspaceBlock,
+            PrioritizeFilesBlock,
+            CreateWorkspaceFilePipelineBlock,
+            AcquireWorkspaceFilePipelineBlock,
+            CompletionTasksBufferBlock
+        }, CompletionTasksBufferBlock.Completion);
     }
+
+    
 }

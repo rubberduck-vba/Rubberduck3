@@ -1,22 +1,21 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
+using Rubberduck.Parsing._v3.Pipeline.Abstract;
 using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
-public class DocumentMembersPipeline : WorkspaceDocumentPipeline
+public class DocumentMembersPipeline : WorkspaceDocumentSection
 {
     private readonly PipelineParseTreeSymbolsService _symbolsService;
 
-    public DocumentMembersPipeline(ILogger<WorkspaceParserPipeline> logger, 
-        RubberduckSettingsProvider settingsProvider, 
-        PerformanceRecordAggregator performance, 
-        IWorkspaceService workspaces,
-        PipelineParseTreeSymbolsService symbolsService)
-        : base(logger, settingsProvider, performance, workspaces)
+    public DocumentMembersPipeline(DataflowPipeline parent, IWorkspaceService workspaces, PipelineParseTreeSymbolsService symbolsService,
+        ILogger<WorkspaceParserPipeline> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
+        : base(parent, workspaces, logger, settingsProvider, performance)
     {
         _symbolsService = symbolsService;
     }
@@ -33,16 +32,25 @@ public class DocumentMembersPipeline : WorkspaceDocumentPipeline
     private void SetDocumentStateMemberSymbols(Symbol symbol) =>
         RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol, e => State = (DocumentParserState)State.WithSymbol(e));
 
-    protected override (ITargetBlock<DocumentParserState>, Task) DefinePipelineBlocks(ISourceBlock<DocumentParserState> source)
+    protected override (IEnumerable<IDataflowBlock>, Task) DefinePipelineBlocks(ISourceBlock<DocumentParserState> source)
     {
-        AcquireDocumentStateSymbolsBlock = new(AcquireDocumentStateSymbols, ConcurrentExecutionOptions);
-        ResolveMemberSymbolsBlock = new(ResolveMemberSymbols, ConcurrentExecutionOptions);
-        SetDocumentStateMemberSymbolsBlock = new(SetDocumentStateMemberSymbols, ConcurrentExecutionOptions);
+        AcquireDocumentStateSymbolsBlock = new(AcquireDocumentStateSymbols, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(AcquireDocumentStateSymbolsBlock), AcquireDocumentStateSymbolsBlock);
 
-        Link(source, AcquireDocumentStateSymbolsBlock, WithCompletionPropagation);
-        Link(AcquireDocumentStateSymbolsBlock, ResolveMemberSymbolsBlock, WithCompletionPropagation);
-        Link(ResolveMemberSymbolsBlock, SetDocumentStateMemberSymbolsBlock, WithCompletionPropagation);
+        ResolveMemberSymbolsBlock = new(ResolveMemberSymbols, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(ResolveMemberSymbols), ResolveMemberSymbolsBlock);
 
-        return (AcquireDocumentStateSymbolsBlock, SetDocumentStateMemberSymbolsBlock.Completion);
+        SetDocumentStateMemberSymbolsBlock = new(SetDocumentStateMemberSymbols, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
+
+        Link(source, AcquireDocumentStateSymbolsBlock);
+        Link(AcquireDocumentStateSymbolsBlock, ResolveMemberSymbolsBlock);
+        Link(ResolveMemberSymbolsBlock, SetDocumentStateMemberSymbolsBlock);
+
+        return (new IDataflowBlock[] {
+                AcquireDocumentStateSymbolsBlock,
+                ResolveMemberSymbolsBlock,
+                SetDocumentStateMemberSymbolsBlock
+            }, SetDocumentStateMemberSymbolsBlock.Completion);
     }
 }

@@ -56,20 +56,20 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
 
     private void LogStackState([CallerMemberName]string? name = null, bool isBefore = true)
     {
-        if (!_currentContextType.TryPeek(out var currentContextType))
-        {
-            currentContextType = null;
-        }
-        if (!_currentParentUri.TryPeek(out var currentParentUri))
-        {
-            currentParentUri = null;
-        }
-        if (!_currentSymbolChildren.TryPeek(out var currentSymbolChildren))
-        {
-            currentSymbolChildren = null;
-        }
+        //if (!_currentContextType.TryPeek(out var currentContextType))
+        //{
+        //    currentContextType = null;
+        //}
+        //if (!_currentParentUri.TryPeek(out var currentParentUri))
+        //{
+        //    currentParentUri = null;
+        //}
+        //if (!_currentSymbolChildren.TryPeek(out var currentSymbolChildren))
+        //{
+        //    currentSymbolChildren = null;
+        //}
 
-        _logger.LogTrace($"Thread {Environment.CurrentManagedThreadId} [{name}] ({(isBefore ? "before" : "after")}) | ContentType: {currentContextType?.Name ?? "(top of stack)"} (stack depth: {_currentContextType.Count}) | CurrentParentUri: {currentParentUri?.ToString() ?? "(top of stack)"} (stack depth: {_currentParentUri.Count}) | CurrentSymbolChildren: {currentSymbolChildren?.Count.ToString() ?? "(top of stack)"} (stack depth: {_currentSymbolChildren.Count})");
+        //_logger.LogTrace($"Thread {Environment.CurrentManagedThreadId} [{name}] ({(isBefore ? "before" : "after")}) | ContentType: {currentContextType?.Name ?? "(top of stack)"} (stack depth: {_currentContextType.Count}) | CurrentParentUri: {currentParentUri?.ToString() ?? "(top of stack)"} (stack depth: {_currentParentUri.Count}) | CurrentSymbolChildren: {currentSymbolChildren?.Count.ToString() ?? "(top of stack)"} (stack depth: {_currentSymbolChildren.Count})");
     }
 
     public MemberSymbolsListener(ILogger logger, WorkspaceFileUri uri, bool isVB6 = false)

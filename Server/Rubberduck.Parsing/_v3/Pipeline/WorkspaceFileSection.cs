@@ -1,25 +1,23 @@
 ﻿using Antlr4.Runtime.Tree;
 using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
+using Rubberduck.Parsing._v3.Pipeline.Abstract;
 using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
-public class WorkspaceFileParserPipeline : WorkspaceDocumentPipeline
+public class WorkspaceFileSection : WorkspaceDocumentSection
 {
     private readonly PipelineParserService _parser;
     private readonly PipelineParseTreeSymbolsService _symbolsService;
 
-    public WorkspaceFileParserPipeline(ILogger<WorkspaceParserPipeline> logger, 
-        RubberduckSettingsProvider settingsProvider, 
-        PerformanceRecordAggregator performance,
-        IWorkspaceService workspaces,
-        PipelineParserService parser,
-        PipelineParseTreeSymbolsService symbolsService)
-        : base(logger, settingsProvider, performance, workspaces)
+    public WorkspaceFileSection(DataflowPipeline parent, IWorkspaceService workspaces, PipelineParserService parser, PipelineParseTreeSymbolsService symbolsService,
+        ILogger<WorkspaceParserPipeline> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
+        : base(parent, workspaces, logger, settingsProvider, performance)
     {
         _parser = parser;
         _symbolsService = symbolsService;
@@ -58,25 +56,49 @@ public class WorkspaceFileParserPipeline : WorkspaceDocumentPipeline
     private void SetDocumentStateMemberSymbols(Symbol symbol) =>
         RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol, e => State = (DocumentParserState)State.WithSymbol(e));
 
-    protected override (ITargetBlock<DocumentParserState>, Task) DefinePipelineBlocks(ISourceBlock<DocumentParserState> source)
+    protected override (IEnumerable<IDataflowBlock>, Task) DefinePipelineBlocks(ISourceBlock<DocumentParserState> source)
     {
-        ParseDocumentTextBlock = new(ParseDocumentText, ConcurrentExecutionOptions);
-        BroadcastParseResultBlock = new(BroadcastParseResult, ConcurrentExecutionOptions);
-        SetDocumentStateFoldingsBlock = new(SetDocumentStateFoldings, ConcurrentExecutionOptions);
+        ParseDocumentTextBlock = new(ParseDocumentText, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(ParseDocumentTextBlock), ParseDocumentTextBlock);
 
-        AcquireSyntaxTreeBlock = new(AcquireSyntaxTree, ConcurrentExecutionOptions);
-        BroadcastSyntaxTreeBlock = new(BroadcastSyntaxTree, ConcurrentExecutionOptions);
-        SetDocumentStateSyntaxTreeBlock = new(SetDocumentStateSyntaxTree, ConcurrentExecutionOptions);
+        BroadcastParseResultBlock = new(BroadcastParseResult, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(BroadcastParseResultBlock), BroadcastSyntaxTreeBlock);
 
-        AcquireMemberSymbolsBlock = new(AcquireMemberSymbols, ConcurrentExecutionOptions);
-        SetDocumentStateMemberSymbolsBlock = new(SetDocumentStateMemberSymbols, ConcurrentExecutionOptions);
+        SetDocumentStateFoldingsBlock = new(SetDocumentStateFoldings, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(SetDocumentStateFoldingsBlock), SetDocumentStateFoldingsBlock);
+
+        AcquireSyntaxTreeBlock = new(AcquireSyntaxTree, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(AcquireSyntaxTreeBlock), AcquireSyntaxTreeBlock);
+
+        BroadcastSyntaxTreeBlock = new(BroadcastSyntaxTree, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(BroadcastSyntaxTreeBlock), BroadcastSyntaxTreeBlock);
+
+        SetDocumentStateSyntaxTreeBlock = new(SetDocumentStateSyntaxTree, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(SetDocumentStateSyntaxTreeBlock), SetDocumentStateSyntaxTreeBlock);
+
+        AcquireMemberSymbolsBlock = new(AcquireMemberSymbols, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(AcquireMemberSymbolsBlock), AcquireMemberSymbolsBlock);
+
+        SetDocumentStateMemberSymbolsBlock = new(SetDocumentStateMemberSymbols, ConcurrentExecutionOptions(Token));
+        TraceBlockCompletion(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
 
         Link(ParseDocumentTextBlock, BroadcastParseResultBlock, WithCompletionPropagation);
         Link(BroadcastParseResultBlock, SetDocumentStateFoldingsBlock, WithCompletionPropagation);
-        Link(BroadcastParseResultBlock, AcquireSyntaxTreeBlock, WithoutCompletionPropagation);
-        Link(AcquireSyntaxTreeBlock, AcquireMemberSymbolsBlock, WithCompletionPropagation);
+        Link(BroadcastParseResultBlock, AcquireSyntaxTreeBlock, WithCompletionPropagation);
+        Link(AcquireSyntaxTreeBlock, BroadcastSyntaxTreeBlock, WithCompletionPropagation);
+        Link(BroadcastSyntaxTreeBlock, AcquireMemberSymbolsBlock, WithCompletionPropagation);
+        Link(BroadcastSyntaxTreeBlock, SetDocumentStateSyntaxTreeBlock, WithCompletionPropagation);
         Link(AcquireMemberSymbolsBlock, SetDocumentStateMemberSymbolsBlock, WithCompletionPropagation);
 
-        return (ParseDocumentTextBlock, SetDocumentStateMemberSymbolsBlock.Completion);
+        return (new IDataflowBlock[]{
+            ParseDocumentTextBlock,
+            BroadcastParseResultBlock,
+            SetDocumentStateFoldingsBlock,
+            AcquireSyntaxTreeBlock,
+            BroadcastSyntaxTreeBlock,
+            SetDocumentStateMemberSymbolsBlock,
+            AcquireMemberSymbolsBlock,
+            SetDocumentStateSyntaxTreeBlock
+        }, SetDocumentStateMemberSymbolsBlock.Completion);
     }
 }

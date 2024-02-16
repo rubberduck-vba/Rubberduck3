@@ -8,7 +8,7 @@ namespace Rubberduck.Parsing._v3.Pipeline;
 public class ParserPipelineProvider
 {
     private readonly IParserPipelineFactory<WorkspaceParserPipeline> _workspacePipelineFactory;
-    private readonly IParserPipelineFactory<WorkspaceFileParserPipeline> _fileParserPipelineFactory;
+    private readonly IParserPipelineFactory<WorkspaceFileSection> _fileParserPipelineFactory;
     private readonly IParserPipelineFactory<DocumentMembersPipeline> _membersPipelineFactory;
     private readonly IParserPipelineFactory<HierarchicalSymbolsPipeline> _symbolsPipelineFactory;
 
@@ -17,7 +17,7 @@ public class ParserPipelineProvider
 
     public ParserPipelineProvider(
         IParserPipelineFactory<WorkspaceParserPipeline> workspacePipelineFactory,
-        IParserPipelineFactory<WorkspaceFileParserPipeline> fileParserPipelineFactory,
+        IParserPipelineFactory<WorkspaceFileSection> fileParserPipelineFactory,
         IParserPipelineFactory<DocumentMembersPipeline> membersPipelineFactory,
         IParserPipelineFactory<HierarchicalSymbolsPipeline> symbolsPipelineFactory)
     {
@@ -27,7 +27,7 @@ public class ParserPipelineProvider
         _symbolsPipelineFactory = symbolsPipelineFactory;
     }
 
-    public WorkspaceParserPipeline StartNew(WorkspaceUri uri, CancellationTokenSource tokenSource)
+    public WorkspaceParserPipeline StartNew(WorkspaceUri uri, CancellationTokenSource? tokenSource)
     {
         _ = uri ?? throw new ArgumentNullException(nameof(uri));
 
@@ -52,7 +52,7 @@ public class ParserPipelineProvider
         return newPipeline;
     }
 
-    public WorkspaceDocumentPipeline StartNew(WorkspaceFileUri uri, CancellationTokenSource tokenSource)
+    public WorkspaceDocumentSection StartNew(WorkspaceFileUri uri, CancellationTokenSource? tokenSource)
     {
         _ = uri ?? throw new ArgumentNullException(nameof(uri));
 
@@ -80,6 +80,6 @@ public class ParserPipelineProvider
     public WorkspaceParserPipeline? GetCurrent(WorkspaceUri uri) =>
         _pipelines.TryGetValue(uri, out var current) && current is WorkspaceParserPipeline result ? result : null;
 
-    public WorkspaceFileParserPipeline? GetCurrent(WorkspaceFileUri uri) =>
-        _pipelines.TryGetValue(uri, out var current) && current is WorkspaceFileParserPipeline result ? result : null;
+    public WorkspaceFileSection? GetCurrent(WorkspaceFileUri uri) =>
+        _pipelines.TryGetValue(uri, out var current) && current is WorkspaceFileSection result ? result : null;
 }

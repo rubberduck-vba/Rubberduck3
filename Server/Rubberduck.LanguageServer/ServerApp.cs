@@ -107,12 +107,12 @@ namespace Rubberduck.LanguageServer
 
             services.AddSingleton<ParserPipelineProvider>();
             services.AddTransient<WorkspaceParserPipeline>();
-            services.AddTransient<WorkspaceFileParserPipeline>();
+            services.AddTransient<WorkspaceFileSection>();
             services.AddTransient<DocumentMembersPipeline>();
             services.AddTransient<HierarchicalSymbolsPipeline>();
 
             services.AddSingleton<IParserPipelineFactory<WorkspaceParserPipeline>, ParserPipelineFactory<WorkspaceParserPipeline>>();
-            services.AddSingleton<IParserPipelineFactory<WorkspaceFileParserPipeline>, ParserPipelineFactory<WorkspaceFileParserPipeline>>();
+            services.AddSingleton<IParserPipelineFactory<WorkspaceFileSection>, ParserPipelineFactory<WorkspaceFileSection>>();
             services.AddSingleton<IParserPipelineFactory<DocumentMembersPipeline>, ParserPipelineFactory<DocumentMembersPipeline>>();
             services.AddSingleton<IParserPipelineFactory<HierarchicalSymbolsPipeline>, ParserPipelineFactory<HierarchicalSymbolsPipeline>>();
             services.AddSingleton<PipelineParseTreeSymbolsService>();
