@@ -14,7 +14,7 @@ public abstract class WorkspaceDocumentSection : ParserPipelineSection<Workspace
     private readonly IWorkspaceService _workspaceService;
     
     protected WorkspaceDocumentSection(DataflowPipeline parent, IWorkspaceService workspaceService, 
-        ILogger<WorkspaceParserPipeline> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
+        ILogger<WorkspaceParserSection> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
         : base(parent, logger, settingsProvider, performance)
     {
         _workspaceService = workspaceService;
@@ -33,16 +33,18 @@ public abstract class WorkspaceDocumentSection : ParserPipelineSection<Workspace
         throw new InvalidOperationException("Document state was not found in the content store.");
     }
 
-    protected sealed override (IEnumerable<IDataflowBlock>, Task) DefinePipelineBlocks(CancellationTokenSource? tokenSource)
+    protected sealed override (IEnumerable<IDataflowBlock> blocks, Task completion) DefinePipelineBlocks(CancellationTokenSource? tokenSource)
     {
         TokenSource = tokenSource;
 
         AcquireDocumentStateBlock = new TransformBlock<WorkspaceFileUri, DocumentParserState>(AcquireDocumentState, ConcurrentExecutionOptions(Token));
-        TraceBlockCompletion(nameof(AcquireDocumentStateBlock), AcquireDocumentStateBlock);
+        _ = TraceBlockCompletionAsync(nameof(AcquireDocumentStateBlock), AcquireDocumentStateBlock);
 
         var (blocks, completion) = DefinePipelineBlocks(AcquireDocumentStateBlock);
-        return (new[] { AcquireDocumentStateBlock }.Concat(blocks), completion);
+        Completion = completion;
+
+        return (new[] { AcquireDocumentStateBlock }.Concat(blocks), Completion);
     }
 
-    protected abstract (IEnumerable<IDataflowBlock>, Task) DefinePipelineBlocks(ISourceBlock<DocumentParserState> source);
+    protected abstract (IEnumerable<IDataflowBlock> blocks, Task completion) DefinePipelineBlocks(ISourceBlock<DocumentParserState> source);
 }

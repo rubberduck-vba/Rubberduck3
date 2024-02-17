@@ -2,14 +2,10 @@
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
-using System;
 using System.Collections.Immutable;
-using System.Reactive.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks.Dataflow;
-using System.Windows.Forms.Design;
-using System.Windows.Media.Animation;
 
 namespace Rubberduck.Parsing._v3.Pipeline.Abstract;
 
@@ -50,8 +46,9 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
     protected DataflowPipeline(ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
         : base(logger, settingsProvider, performance)
     {
-        DataflowBlocks = DefinePipelineSections().ToImmutableArray();
     }
+
+    public abstract Task RunPipelineAsync(WorkspaceUri uri, CancellationTokenSource? tokenSource);
 
     protected virtual CancellationTokenSource? TokenSource { get; set; }
     protected CancellationToken Token => TokenSource?.Token ?? CancellationToken.None;
@@ -59,18 +56,22 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
     public Exception? Exception { get; protected set; }
     public void FaultPipeline(Exception exception) => Exception = exception;
 
-    protected ImmutableArray<(string, IDataflowBlock)> DataflowBlocks { get; }
-    protected abstract IEnumerable<(string, IDataflowBlock)> DefinePipelineSections();
-
     protected void Link<T>(ISourceBlock<T> source, ITargetBlock<T> target, DataflowLinkOptions? options = null)
     {
+        if (source is BroadcastBlock<T>)
+        {
+            // propagating completion for a broadcast block would complete the first output branch, and leave all others dangling.
+            // broadcast block should be explicitly/manually completed upon the completion of all its linked outputs.
+            options = WithoutCompletionPropagation;
+        }
+
         options ??= WithCompletionPropagation;
         _links.Add(source.LinkTo(target, options));
     }
 
-    protected void TraceBlockCompletion(string name, IDataflowBlock block)
+    protected Task TraceBlockCompletionAsync<TBlock>(string name, TBlock block) where TBlock : IDataflowBlock
     {
-        _ = block.Completion.ContinueWith(t =>
+        return block.Completion.ContinueWith(t =>
         {
             var message = t.Status switch
             {
@@ -80,20 +81,11 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
                 _ => $"{GetType().Name}[{name}] task is in unexpected state '{t.Status}'.",
             };
             LogTrace(message, Exception?.Message);
+            LogPipelineCompletionState();
         }, Token, TaskContinuationOptions.None, TaskScheduler.Default);
     }
 
-    protected void LogPipelineBlockCompletionState()
-    {
-        var builder = new StringBuilder();
-        builder.AppendLine($"Pipeline completion status");
-
-        foreach (var (name, block) in DataflowBlocks)
-        {
-            builder.AppendLine($"[{name}] status: {block.Completion.Status}");
-        }
-        LogDebug(builder.ToString());
-    }
+    protected abstract void LogPipelineCompletionState();
 
     protected virtual void FaultDataflowBlock(string? name, IDataflowBlock block, Exception exception)
     {
@@ -109,7 +101,7 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
             TokenSource?.Cancel();
         }
 
-        LogPipelineBlockCompletionState();
+        LogPipelineCompletionState();
     }
 
     protected void ThrowIfCancellationRequested()
@@ -141,19 +133,19 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
 {
     private readonly DataflowPipeline _parent;
 
-    protected DataflowPipelineSection(DataflowPipeline parent, 
+    protected DataflowPipelineSection(DataflowPipeline parent,
         ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
         : base(logger, settingsProvider, performance)
     {
         _parent = parent;
     }
 
-    protected GroupingDataflowBlockOptions GreedyJoinExecutionOptions(CancellationToken token) => 
+    protected GroupingDataflowBlockOptions GreedyJoinExecutionOptions(CancellationToken token) =>
         new() { CancellationToken = token, Greedy = true };
-    
+
     protected ExecutionDataflowBlockOptions ConcurrentExecutionOptions(CancellationToken token) =>
         new() { CancellationToken = token, MaxDegreeOfParallelism = 4 };
-    
+
     protected ExecutionDataflowBlockOptions SingleMessageExecutionOptions(CancellationToken token) =>
         new() { CancellationToken = token, MaxDegreeOfParallelism = 1 };
 
@@ -165,14 +157,28 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
         FaultPipeline(exception);
     }
 
-    protected override IEnumerable<(string, IDataflowBlock)> DefinePipelineSections() => throw new NotSupportedException();
+    protected abstract ImmutableArray<(string Name, IDataflowBlock Block)> DataflowBlocks { get; }
+
+    protected override void LogPipelineCompletionState()
+    {
+        var builder = new StringBuilder();
+        builder.AppendLine($"Pipeline completion status");
+
+        foreach (var (name, block) in DataflowBlocks)
+        {
+            builder.AppendLine($"[{name}] status: {block.Completion.Status}");
+        }
+        LogDebug(builder.ToString());
+    }
+
+    public override Task RunPipelineAsync(WorkspaceUri uri, CancellationTokenSource? tokenSource) => throw new NotSupportedException();
 }
 
 
 public abstract class ParserPipelineSection<TInput, TState> : DataflowPipelineSection<TInput, TState>, IParserPipeline<TInput, TState>, IDisposable
 {
     protected ParserPipelineSection(DataflowPipeline parent, 
-        ILogger<WorkspaceParserPipeline> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
+        ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
         : base(parent, logger, settingsProvider, performance)
     {
     }
@@ -189,7 +195,7 @@ public abstract class ParserPipelineSection<TInput, TState> : DataflowPipelineSe
     /// <returns>
     /// Returns the input block at index 0, and the completion task of the section.
     /// </returns>
-    protected abstract (IEnumerable<IDataflowBlock>, Task) DefinePipelineBlocks(CancellationTokenSource? tokenSource);
+    protected abstract (IEnumerable<IDataflowBlock> blocks, Task completion) DefinePipelineBlocks(CancellationTokenSource? tokenSource);
 
     /// <summary>
     /// Gets the <c>IDataflowBlock</c> that receives the input when the pipeline is started.
@@ -201,7 +207,9 @@ public abstract class ParserPipelineSection<TInput, TState> : DataflowPipelineSe
     /// <summary>
     /// Gets a <c>Task</c> that completes when all the pipeline dataflow blocks have completed.
     /// </summary>
-    public Task Completion { get; private set; } = null!;
+    public virtual Task Completion { get; internal set; } = null!;
+
+    public virtual Task StartAsync(TInput input, CancellationTokenSource? tokenSource) => StartAsync(input!, null!, tokenSource);
 
     public virtual Task StartAsync(object input, object state, CancellationTokenSource? tokenSource)
     {
@@ -216,15 +224,28 @@ public abstract class ParserPipelineSection<TInput, TState> : DataflowPipelineSe
     /// </remarks>
     public virtual Task StartAsync(TInput input, TState? state, CancellationTokenSource? tokenSource)
     {
-        var (blocks, Completion) = DefinePipelineBlocks(tokenSource);
+        var (blocks, completion) = DefinePipelineBlocks(tokenSource);
+        Completion = completion;
+
+        if (Completion is null)
+        {
+            throw new InvalidOperationException($"{nameof(DefinePipelineBlocks)} unexpectedly did not return a completion task.");
+        }
+
+        if (blocks is null || !blocks.Any())
+        {
+            throw new InvalidOperationException($"{nameof(DefinePipelineBlocks)} unexpectedly did not return any dataflow blocks.");
+        }
 
         if (state != null)
         {
             SetInitialState(state);
         }
 
-        ((ITargetBlock<TInput>)blocks.ElementAt(0)).Post(input);
-        InputBlock?.Complete();
+        InputBlock = blocks.ElementAt(0);
+
+        ((ITargetBlock<TInput>)InputBlock).Post(input);
+        InputBlock.Complete();
 
         return Completion;
     }
@@ -232,7 +253,7 @@ public abstract class ParserPipelineSection<TInput, TState> : DataflowPipelineSe
     protected virtual TResult RunTransformBlock<T, TResult>(IDataflowBlock block, T param, Func<T, TResult> action, [CallerMemberName]string? actionName = null) where TResult : class
     {
         TResult? result = null;
-        if (State != null && !TryRunAction(() =>
+        if (!TryRunAction(() =>
         {
             ThrowIfCancellationRequested();
 
@@ -244,13 +265,14 @@ public abstract class ParserPipelineSection<TInput, TState> : DataflowPipelineSe
             FaultDataflowBlock(actionName, block, exception);
         }
 
+        LogPipelineCompletionState();
         return result ?? throw new InvalidOperationException("Result was unexpectedly null.");
     }
 
     protected virtual TResult RunTransformBlock<T, TResult>(IDataflowBlock block, T param, Func<T, CancellationToken, TResult> action, [CallerMemberName] string? actionName = null) where TResult : class
     {
         TResult? result = null;
-        if (State != null && !TryRunAction(() =>
+        if (!TryRunAction(() =>
         {
             ThrowIfCancellationRequested();
 
@@ -262,12 +284,13 @@ public abstract class ParserPipelineSection<TInput, TState> : DataflowPipelineSe
             FaultDataflowBlock(actionName, block, exception);
         }
 
+        LogPipelineCompletionState();
         return result ?? throw new InvalidOperationException("Result was unexpectedly null.");
     }
 
     protected virtual void RunActionBlock<T>(IDataflowBlock block, T param, Action<T> action, [CallerMemberName] string? actionName = null)
     {
-        if (State != null && !TryRunAction(() =>
+        if (!TryRunAction(() =>
         {
             ThrowIfCancellationRequested();
 
@@ -278,11 +301,13 @@ public abstract class ParserPipelineSection<TInput, TState> : DataflowPipelineSe
         {
             FaultDataflowBlock(actionName, block, exception);
         }
+
+        LogPipelineCompletionState();
     }
 
     protected virtual void RunActionBlock<T>(IDataflowBlock block, T param, Action<T, CancellationToken> action, [CallerMemberName] string? actionName = null)
     {
-        if (State != null && !TryRunAction(() =>
+        if (!TryRunAction(() =>
         {
             ThrowIfCancellationRequested();
             action.Invoke(param, Token);
@@ -292,5 +317,7 @@ public abstract class ParserPipelineSection<TInput, TState> : DataflowPipelineSe
         {
             FaultDataflowBlock(actionName, block, exception);
         }
+
+        LogPipelineCompletionState();
     }
 }

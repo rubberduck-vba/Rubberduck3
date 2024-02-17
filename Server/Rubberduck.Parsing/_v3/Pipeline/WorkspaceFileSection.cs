@@ -1,11 +1,11 @@
 ﻿using Antlr4.Runtime.Tree;
 using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Parsing._v3.Pipeline.Abstract;
+using System.Collections.Immutable;
 using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
@@ -16,7 +16,7 @@ public class WorkspaceFileSection : WorkspaceDocumentSection
     private readonly PipelineParseTreeSymbolsService _symbolsService;
 
     public WorkspaceFileSection(DataflowPipeline parent, IWorkspaceService workspaces, PipelineParserService parser, PipelineParseTreeSymbolsService symbolsService,
-        ILogger<WorkspaceParserPipeline> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
+        ILogger<WorkspaceParserSection> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
         : base(parent, workspaces, logger, settingsProvider, performance)
     {
         _parser = parser;
@@ -59,36 +59,48 @@ public class WorkspaceFileSection : WorkspaceDocumentSection
     protected override (IEnumerable<IDataflowBlock>, Task) DefinePipelineBlocks(ISourceBlock<DocumentParserState> source)
     {
         ParseDocumentTextBlock = new(ParseDocumentText, ConcurrentExecutionOptions(Token));
-        TraceBlockCompletion(nameof(ParseDocumentTextBlock), ParseDocumentTextBlock);
+        _ = TraceBlockCompletionAsync(nameof(ParseDocumentTextBlock), ParseDocumentTextBlock);
 
         BroadcastParseResultBlock = new(BroadcastParseResult, ConcurrentExecutionOptions(Token));
-        TraceBlockCompletion(nameof(BroadcastParseResultBlock), BroadcastSyntaxTreeBlock);
+        _ = TraceBlockCompletionAsync(nameof(BroadcastParseResultBlock), BroadcastParseResultBlock);
 
         SetDocumentStateFoldingsBlock = new(SetDocumentStateFoldings, ConcurrentExecutionOptions(Token));
-        TraceBlockCompletion(nameof(SetDocumentStateFoldingsBlock), SetDocumentStateFoldingsBlock);
+        _ = TraceBlockCompletionAsync(nameof(SetDocumentStateFoldingsBlock), SetDocumentStateFoldingsBlock);
 
         AcquireSyntaxTreeBlock = new(AcquireSyntaxTree, ConcurrentExecutionOptions(Token));
-        TraceBlockCompletion(nameof(AcquireSyntaxTreeBlock), AcquireSyntaxTreeBlock);
+        _ = TraceBlockCompletionAsync(nameof(AcquireSyntaxTreeBlock), AcquireSyntaxTreeBlock);
 
         BroadcastSyntaxTreeBlock = new(BroadcastSyntaxTree, ConcurrentExecutionOptions(Token));
-        TraceBlockCompletion(nameof(BroadcastSyntaxTreeBlock), BroadcastSyntaxTreeBlock);
+        _ = TraceBlockCompletionAsync(nameof(BroadcastSyntaxTreeBlock), BroadcastSyntaxTreeBlock);
 
         SetDocumentStateSyntaxTreeBlock = new(SetDocumentStateSyntaxTree, ConcurrentExecutionOptions(Token));
-        TraceBlockCompletion(nameof(SetDocumentStateSyntaxTreeBlock), SetDocumentStateSyntaxTreeBlock);
+        _ = TraceBlockCompletionAsync(nameof(SetDocumentStateSyntaxTreeBlock), SetDocumentStateSyntaxTreeBlock);
 
         AcquireMemberSymbolsBlock = new(AcquireMemberSymbols, ConcurrentExecutionOptions(Token));
-        TraceBlockCompletion(nameof(AcquireMemberSymbolsBlock), AcquireMemberSymbolsBlock);
+        _ = TraceBlockCompletionAsync(nameof(AcquireMemberSymbolsBlock), AcquireMemberSymbolsBlock);
 
         SetDocumentStateMemberSymbolsBlock = new(SetDocumentStateMemberSymbols, ConcurrentExecutionOptions(Token));
-        TraceBlockCompletion(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
+        _ = TraceBlockCompletionAsync(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
 
-        Link(ParseDocumentTextBlock, BroadcastParseResultBlock, WithCompletionPropagation);
-        Link(BroadcastParseResultBlock, SetDocumentStateFoldingsBlock, WithCompletionPropagation);
-        Link(BroadcastParseResultBlock, AcquireSyntaxTreeBlock, WithCompletionPropagation);
-        Link(AcquireSyntaxTreeBlock, BroadcastSyntaxTreeBlock, WithCompletionPropagation);
-        Link(BroadcastSyntaxTreeBlock, AcquireMemberSymbolsBlock, WithCompletionPropagation);
-        Link(BroadcastSyntaxTreeBlock, SetDocumentStateSyntaxTreeBlock, WithCompletionPropagation);
-        Link(AcquireMemberSymbolsBlock, SetDocumentStateMemberSymbolsBlock, WithCompletionPropagation);
+        Link(source, ParseDocumentTextBlock);
+        Link(ParseDocumentTextBlock, BroadcastParseResultBlock);
+
+        Link(BroadcastParseResultBlock, SetDocumentStateFoldingsBlock); // no completion propagation
+        Link(BroadcastParseResultBlock, AcquireSyntaxTreeBlock); // no completion propagation
+
+        _ = Task.WhenAll(AcquireSyntaxTreeBlock.Completion, SetDocumentStateFoldingsBlock.Completion)
+            .ContinueWith(t => BroadcastParseResultBlock.Complete(), Token, TaskContinuationOptions.None, TaskScheduler.Default);
+
+        Link(AcquireSyntaxTreeBlock, BroadcastSyntaxTreeBlock);
+        Link(BroadcastSyntaxTreeBlock, AcquireMemberSymbolsBlock); // no completion propagation
+        Link(BroadcastSyntaxTreeBlock, SetDocumentStateSyntaxTreeBlock); // no completion propagation
+
+        _ = Task.WhenAll(AcquireMemberSymbolsBlock.Completion, SetDocumentStateSyntaxTreeBlock.Completion)
+            .ContinueWith(t => BroadcastSyntaxTreeBlock.Complete(), Token, TaskContinuationOptions.None, TaskScheduler.Default);
+
+        Link(AcquireMemberSymbolsBlock, SetDocumentStateMemberSymbolsBlock);
+
+        var completion = Task.WhenAll(DataflowBlocks.Select(e => e.Block.Completion).ToArray());
 
         return (new IDataflowBlock[]{
             ParseDocumentTextBlock,
@@ -99,6 +111,18 @@ public class WorkspaceFileSection : WorkspaceDocumentSection
             SetDocumentStateMemberSymbolsBlock,
             AcquireMemberSymbolsBlock,
             SetDocumentStateSyntaxTreeBlock
-        }, SetDocumentStateMemberSymbolsBlock.Completion);
+        }, completion);
     }
+
+    protected override ImmutableArray<(string Name, IDataflowBlock Block)> DataflowBlocks => new (string, IDataflowBlock)[]
+    {
+        (nameof(ParseDocumentTextBlock), ParseDocumentTextBlock),
+        (nameof(BroadcastParseResultBlock), BroadcastParseResultBlock),
+        (nameof(SetDocumentStateFoldingsBlock), SetDocumentStateFoldingsBlock),
+        (nameof(AcquireSyntaxTreeBlock), AcquireSyntaxTreeBlock),
+        (nameof(BroadcastSyntaxTreeBlock), BroadcastSyntaxTreeBlock),
+        (nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock),
+        (nameof(AcquireMemberSymbolsBlock), AcquireMemberSymbolsBlock),
+        (nameof(SetDocumentStateSyntaxTreeBlock), SetDocumentStateSyntaxTreeBlock),
+    }.ToImmutableArray();
 }

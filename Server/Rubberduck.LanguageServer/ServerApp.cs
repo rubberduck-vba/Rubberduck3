@@ -48,12 +48,13 @@ namespace Rubberduck.LanguageServer
 
             if (!string.IsNullOrWhiteSpace(StartupOptions.WorkspaceRoot))
             {
-                var root = new Uri(StartupOptions.WorkspaceRoot);
-                await app.OpenProjectWorkspaceAsync(root);
+                var uri = new WorkspaceFolderUri(null, new Uri(StartupOptions.WorkspaceRoot));
+                await app.OpenProjectWorkspaceAsync(uri.WorkspaceRoot);
                 logger.LogInformation("Workspace was loaded successfully.");
 
                 var service = provider.GetRequiredService<WorkspaceParserPipeline>();
-                await service.StartAsync(root, new ParserPipelineState(), TokenSource);
+                await service.RunPipelineAsync(uri, TokenSource);
+                
                 logger.LogInformation("Workspace was processed successfully.");
             }
         }
@@ -105,16 +106,13 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<IWorkspaceService, WorkspaceService>();
             services.AddSingleton<IWorkspaceStateManager, WorkspaceStateManager>();
 
-            services.AddSingleton<ParserPipelineProvider>();
-            services.AddTransient<WorkspaceParserPipeline>();
+            services.AddSingleton<WorkspaceParserPipeline>();
+            services.AddSingleton<ParserPipelineSectionProvider>();
+            services.AddTransient<WorkspaceParserSection>();
             services.AddTransient<WorkspaceFileSection>();
-            services.AddTransient<DocumentMembersPipeline>();
-            services.AddTransient<HierarchicalSymbolsPipeline>();
+            services.AddTransient<DocumentMembersSection>();
+            services.AddTransient<HierarchicalSymbolsSection>();
 
-            services.AddSingleton<IParserPipelineFactory<WorkspaceParserPipeline>, ParserPipelineFactory<WorkspaceParserPipeline>>();
-            services.AddSingleton<IParserPipelineFactory<WorkspaceFileSection>, ParserPipelineFactory<WorkspaceFileSection>>();
-            services.AddSingleton<IParserPipelineFactory<DocumentMembersPipeline>, ParserPipelineFactory<DocumentMembersPipeline>>();
-            services.AddSingleton<IParserPipelineFactory<HierarchicalSymbolsPipeline>, ParserPipelineFactory<HierarchicalSymbolsPipeline>>();
             services.AddSingleton<PipelineParseTreeSymbolsService>();
             services.AddSingleton<IResolverService, ResolverService>();
             services.AddSingleton<PipelineParserService>();
@@ -211,7 +209,7 @@ namespace Rubberduck.LanguageServer
 
             if (await workspaces.OpenProjectWorkspaceAsync(rootUri))
             {
-                var pipeline = server.GetRequiredService<WorkspaceParserPipeline>();
+                var pipeline = server.GetRequiredService<WorkspaceParserSection>();
                 var parserState = new ParserPipelineState();
                 await pipeline.StartAsync(new WorkspaceFileUri(null!, state.RootUri.ToUri()), parserState, new CancellationTokenSource())
                     .ContinueWith(t =>

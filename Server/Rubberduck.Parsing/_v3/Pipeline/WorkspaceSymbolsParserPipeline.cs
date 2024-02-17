@@ -4,6 +4,7 @@ using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Parsing._v3.Pipeline.Abstract;
+using System.Collections.Immutable;
 using System.Threading.Tasks.Dataflow;
 
 
@@ -16,7 +17,7 @@ public class WorkspaceSymbolsParserPipeline : ParserPipelineSection<WorkspaceUri
     private readonly PipelineParseTreeSymbolsService _symbolsService;
 
     public WorkspaceSymbolsParserPipeline(DataflowPipeline parent, DocumentContentStore contentStore, IWorkspaceStateManager workspaceManager, PipelineParseTreeSymbolsService symbolsService,
-        ILogger<WorkspaceParserPipeline> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
+        ILogger<WorkspaceParserSection> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
         : base(parent, logger, settingsProvider, performance)
     {
         _contentStore = contentStore;
@@ -73,24 +74,24 @@ public class WorkspaceSymbolsParserPipeline : ParserPipelineSection<WorkspaceUri
         TokenSource = tokenSource ?? TokenSource;
 
         AcquireWorkspaceBlock = new(AcquireWorkspaceState, ConcurrentExecutionOptions(Token));
-        TraceBlockCompletion(nameof(AcquireWorkspaceBlock), AcquireWorkspaceBlock);
+        TraceBlockCompletionAsync(nameof(AcquireWorkspaceBlock), AcquireWorkspaceBlock);
         items.Add(AcquireWorkspaceBlock);
 
         PrioritizeFilesBlock = new(PrioritizeFiles, ConcurrentExecutionOptions(Token));
-        TraceBlockCompletion(nameof(PrioritizeFilesBlock), PrioritizeFilesBlock);
+        TraceBlockCompletionAsync(nameof(PrioritizeFilesBlock), PrioritizeFilesBlock);
         items.Add(PrioritizeFilesBlock);
 
         AcquireWorkspaceDocumentsBlock = new(AcquireWorkspaceDocuments, ConcurrentExecutionOptions(Token));
-        TraceBlockCompletion(nameof(AcquireWorkspaceDocumentsBlock), AcquireWorkspaceDocumentsBlock);
+        TraceBlockCompletionAsync(nameof(AcquireWorkspaceDocumentsBlock), AcquireWorkspaceDocumentsBlock);
         items.Add(AcquireWorkspaceDocumentsBlock);
 
         AcquireHierarchicalSymbolsBlock = new(AcquireHierarchicalSymbols, ConcurrentExecutionOptions(Token));
-        TraceBlockCompletion(nameof(AcquireHierarchicalSymbolsBlock), AcquireHierarchicalSymbolsBlock);
+        TraceBlockCompletionAsync(nameof(AcquireHierarchicalSymbolsBlock), AcquireHierarchicalSymbolsBlock);
         items.Add(AcquireHierarchicalSymbolsBlock);
 
-        Link(AcquireWorkspaceBlock, PrioritizeFilesBlock, WithCompletionPropagation);
-        Link(PrioritizeFilesBlock, AcquireWorkspaceDocumentsBlock, WithCompletionPropagation);
-        Link(AcquireWorkspaceDocumentsBlock, AcquireHierarchicalSymbolsBlock, WithCompletionPropagation);
+        Link(AcquireWorkspaceBlock, PrioritizeFilesBlock);
+        Link(PrioritizeFilesBlock, AcquireWorkspaceDocumentsBlock);
+        Link(AcquireWorkspaceDocumentsBlock, AcquireHierarchicalSymbolsBlock);
 
         return (
             [
@@ -101,4 +102,12 @@ public class WorkspaceSymbolsParserPipeline : ParserPipelineSection<WorkspaceUri
             ], 
             AcquireHierarchicalSymbolsBlock.Completion);
     }
+
+    protected override ImmutableArray<(string, IDataflowBlock)> DataflowBlocks => new (string, IDataflowBlock)[]
+    {
+        (nameof(AcquireWorkspaceBlock), AcquireWorkspaceBlock),
+        (nameof(PrioritizeFilesBlock), PrioritizeFilesBlock),
+        (nameof(AcquireWorkspaceDocumentsBlock), AcquireWorkspaceDocumentsBlock),
+        (nameof(AcquireHierarchicalSymbolsBlock), AcquireHierarchicalSymbolsBlock),
+    }.ToImmutableArray();
 }

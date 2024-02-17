@@ -4,18 +4,19 @@ using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Parsing._v3.Pipeline.Abstract;
 using System.Collections.Concurrent;
+using System.Collections.Immutable;
 using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
-public abstract class WorkspaceOrchestratorPipeline : ParserPipelineSection<Uri, IWorkspaceState>
+public abstract class WorkspaceOrchestratorSection : ParserPipelineSection<WorkspaceUri, IWorkspaceState>
 {
     private readonly IWorkspaceStateManager _workspaceManager;
     private readonly ConcurrentBag<WorkspaceDocumentSection> _filePipelines = [];
     private readonly ConcurrentBag<Task> _completionTasks = [];
 
-    protected WorkspaceOrchestratorPipeline(DataflowPipeline parent, IWorkspaceStateManager workspaceManager,
-        ILogger<WorkspaceParserPipeline> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
+    protected WorkspaceOrchestratorSection(DataflowPipeline parent, IWorkspaceStateManager workspaceManager,
+        ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
         : base(parent, logger, settingsProvider, performance)
     {
         _workspaceManager = workspaceManager;
@@ -23,9 +24,9 @@ public abstract class WorkspaceOrchestratorPipeline : ParserPipelineSection<Uri,
 
     protected abstract WorkspaceDocumentSection StartDocumentPipeline(WorkspaceFileUri uri);
 
-    private TransformBlock<Uri, IWorkspaceState> AcquireWorkspaceBlock { get; set; } = null!;
-    private IWorkspaceState AcquireWorkspaceState(Uri uri) =>
-        RunTransformBlock(AcquireWorkspaceBlock, uri, e => _workspaceManager.GetWorkspace(uri)
+    private TransformBlock<WorkspaceUri, IWorkspaceState> AcquireWorkspaceBlock { get; set; } = null!;
+    private IWorkspaceState AcquireWorkspaceState(WorkspaceUri uri) =>
+        RunTransformBlock(AcquireWorkspaceBlock, uri, e => _workspaceManager.GetWorkspace(uri.WorkspaceRoot)
             ?? throw new InvalidOperationException($"Could not find workspace state for URI '{uri}'."));
 
     private TransformManyBlock<IWorkspaceState, WorkspaceFileUri> PrioritizeFilesBlock { get; set; } = null!;
@@ -49,39 +50,39 @@ public abstract class WorkspaceOrchestratorPipeline : ParserPipelineSection<Uri,
     private WorkspaceDocumentSection CreateWorkspaceFilePipeline(WorkspaceFileUri uri) =>
         RunTransformBlock(CreateWorkspaceFilePipelineBlock, uri, e => StartDocumentPipeline(uri));
 
-    private TransformBlock<WorkspaceDocumentSection, Task> AcquireWorkspaceFilePipelineBlock { get; set; } = null!;
-    private async Task AquireWorkspaceFilePipelineAsync(WorkspaceDocumentSection pipeline) =>
-        await RunTransformBlock(AcquireWorkspaceFilePipelineBlock, pipeline, e =>
+    private ActionBlock<WorkspaceDocumentSection> AcquireWorkspaceFilePipelineBlock { get; set; } = null!;
+    private void AquireWorkspaceFilePipeline(WorkspaceDocumentSection pipeline) =>
+        RunActionBlock(AcquireWorkspaceFilePipelineBlock, pipeline, e =>
         {
+            if (pipeline.Completion is null)
+            {
+                throw new InvalidOperationException("Child pipeline completion task is unexpectely null.");
+            }
             _filePipelines.Add(pipeline);
-            return pipeline.Completion!;
         });
-
-    private BufferBlock<Task> CompletionTasksBufferBlock { get; set; } = null!;
 
     protected override (IEnumerable<IDataflowBlock>, Task) DefinePipelineBlocks(CancellationTokenSource? tokenSource)
     {
         TokenSource = tokenSource;
 
         AcquireWorkspaceBlock = new(AcquireWorkspaceState, ConcurrentExecutionOptions(Token));
-        TraceBlockCompletion(nameof(AcquireWorkspaceBlock), AcquireWorkspaceFilePipelineBlock);
+        _ = TraceBlockCompletionAsync(nameof(AcquireWorkspaceBlock), AcquireWorkspaceBlock);
 
         PrioritizeFilesBlock = new(PrioritizeFiles, ConcurrentExecutionOptions(Token));
-        TraceBlockCompletion(nameof(PrioritizeFilesBlock), PrioritizeFilesBlock);
+        _ = TraceBlockCompletionAsync(nameof(PrioritizeFilesBlock), PrioritizeFilesBlock);
 
         CreateWorkspaceFilePipelineBlock = new(CreateWorkspaceFilePipeline, ConcurrentExecutionOptions(Token));
-        TraceBlockCompletion(nameof(CreateWorkspaceFilePipelineBlock), CreateWorkspaceFilePipelineBlock);
+        _ = TraceBlockCompletionAsync(nameof(CreateWorkspaceFilePipelineBlock), CreateWorkspaceFilePipelineBlock);
 
-        AcquireWorkspaceFilePipelineBlock = new(AquireWorkspaceFilePipelineAsync, ConcurrentExecutionOptions(Token));
-        TraceBlockCompletion(nameof(AcquireWorkspaceFilePipelineBlock), AcquireWorkspaceFilePipelineBlock);
-
-        CompletionTasksBufferBlock = new BufferBlock<Task>();
-        TraceBlockCompletion(nameof(CompletionTasksBufferBlock), CompletionTasksBufferBlock);
+        AcquireWorkspaceFilePipelineBlock = new(AquireWorkspaceFilePipeline, ConcurrentExecutionOptions(Token));
+        var childCompletion = TraceBlockCompletionAsync(nameof(AcquireWorkspaceFilePipelineBlock), AcquireWorkspaceFilePipelineBlock);
 
         Link(AcquireWorkspaceBlock, PrioritizeFilesBlock);
         Link(PrioritizeFilesBlock, CreateWorkspaceFilePipelineBlock);
         Link(CreateWorkspaceFilePipelineBlock, AcquireWorkspaceFilePipelineBlock);
-        Link(AcquireWorkspaceFilePipelineBlock, CompletionTasksBufferBlock);
+
+        Completion = childCompletion
+            .ContinueWith(async t => await Task.WhenAll(_filePipelines.Select(e => e.Completion).ToArray()), Token, TaskContinuationOptions.None, TaskScheduler.Default);
 
         return (new IDataflowBlock[] 
         { 
@@ -89,9 +90,14 @@ public abstract class WorkspaceOrchestratorPipeline : ParserPipelineSection<Uri,
             PrioritizeFilesBlock,
             CreateWorkspaceFilePipelineBlock,
             AcquireWorkspaceFilePipelineBlock,
-            CompletionTasksBufferBlock
-        }, CompletionTasksBufferBlock.Completion);
+        }, Completion);
     }
 
-    
+    protected override ImmutableArray<(string, IDataflowBlock)> DataflowBlocks => new (string, IDataflowBlock)[]
+    {
+        (nameof(AcquireWorkspaceBlock), AcquireWorkspaceBlock),
+        (nameof(PrioritizeFilesBlock), PrioritizeFilesBlock),
+        (nameof(CreateWorkspaceFilePipelineBlock), CreateWorkspaceFilePipelineBlock),
+        (nameof(AcquireWorkspaceFilePipelineBlock), AcquireWorkspaceFilePipelineBlock),
+    }.ToImmutableArray();
 }

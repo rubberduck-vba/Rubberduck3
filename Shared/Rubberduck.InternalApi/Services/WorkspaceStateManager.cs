@@ -180,7 +180,7 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
 
     public IWorkspaceState AddWorkspace(Uri workspaceRoot)
     {
-        var state = new ProjectStateManager(_logger, SettingsProvider, _performance, _store)
+        var state = new ProjectStateManager(Logger, SettingsProvider, Performance, _store)
         {
             WorkspaceRoot = workspaceRoot
         };

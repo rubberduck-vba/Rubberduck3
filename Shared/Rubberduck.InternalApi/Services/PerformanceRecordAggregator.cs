@@ -31,9 +31,9 @@ public class PerformanceRecordAggregator
 {
     private readonly ILogger _logger;
     private readonly RubberduckSettingsProvider _settings;
-    private readonly ConcurrentDictionary<string, ConcurrentBag<TimeSpan>> _items = new();
-    private readonly ConcurrentDictionary<string, TimeSpan> _totals = new();
-    private readonly ConcurrentDictionary<string, DateTime> _firstWrites = new();
+    private readonly ConcurrentDictionary<string, ConcurrentBag<TimeSpan>> _items = [];
+    private readonly ConcurrentDictionary<string, TimeSpan> _totals = [];
+    private readonly ConcurrentDictionary<string, DateTime> _firstWrites = [];
 
     // TODO make these settings
     private static readonly int SmallSampleSize = 10;

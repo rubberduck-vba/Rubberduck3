@@ -11,17 +11,16 @@ namespace Rubberduck.InternalApi.Services;
 
 public abstract class ServiceBase
 {
-    protected readonly ILogger _logger;
-    protected readonly PerformanceRecordAggregator _performance;
-
-    protected RubberduckSettingsProvider SettingsProvider { get; init; }
-
     protected ServiceBase(ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
     {
-        _logger = logger;
-        _performance = performance;
+        Logger = logger;
+        Performance = performance;
         SettingsProvider = settingsProvider;
     }
+
+    protected ILogger Logger { get; init; }
+    protected PerformanceRecordAggregator Performance { get; init; }
+    protected RubberduckSettingsProvider SettingsProvider { get; init; }
 
     public RubberduckSettings Settings => SettingsProvider.Settings;
     public TraceLevel TraceLevel => SettingsProvider.Settings.LoggerSettings.TraceLevel.ToTraceLevel();
@@ -35,16 +34,16 @@ public abstract class ServiceBase
         }
 
         name ??= "(name:null)";
-        message = message is null ? $"{name} completed." : $"{name} completed; message: {message}";
+        message = message is null ? $"**PERF: {name} completed." : $"{name} completed; message: {message}";
 
-        if (_performance != null && Settings.LoggerSettings.AggregatePerformanceLogs)
+        if (Performance != null && Settings.LoggerSettings.AggregatePerformanceLogs)
         {
-            _performance.Add(new() { Name = name, Elapsed = elapsed });
+            Performance.Add(new() { Name = name, Elapsed = elapsed });
         }
 
         if (mode != PerformanceLoggerMode.AggregateOnly)
         {
-            _logger.LogPerformance(verbosity, message, elapsed);
+            Logger.LogPerformance(verbosity, message, elapsed);
         }
     }
 
@@ -58,12 +57,17 @@ public abstract class ServiceBase
 
         if (string.IsNullOrWhiteSpace(message))
         {
-            _logger.LogError(verbosity, exception);
+            Logger.LogError(verbosity, exception);
         }
         else
         {
-            _logger.LogError(verbosity, exception, message);
+            Logger.LogError(verbosity, exception, message);
         }
+    }
+
+    protected virtual void OnError(Exception exception, string? message)
+    {
+        LogException(exception, message);
     }
 
     public void LogWarning(string message, string? verbose = default)
@@ -74,7 +78,7 @@ public abstract class ServiceBase
             return;
         }
 
-        _logger.LogWarning(verbosity, message, verbose);
+        Logger.LogWarning(verbosity, message, verbose);
     }
 
     public void LogInformation(string message, string? verbose = default)
@@ -85,7 +89,7 @@ public abstract class ServiceBase
             return;
         }
 
-        _logger.LogInformation(verbosity, message, verbose);
+        Logger.LogInformation(verbosity, message, verbose);
     }
 
     public void LogDebug(string message, string? verbose = default)
@@ -96,7 +100,7 @@ public abstract class ServiceBase
             return;
         }
 
-        _logger.LogDebug(verbosity, message, verbose);
+        Logger.LogDebug(verbosity, message, verbose);
     }
 
     public void LogTrace(string message, string? verbose = default)
@@ -107,7 +111,7 @@ public abstract class ServiceBase
             return;
         }
 
-        _logger.LogTrace(verbosity, message, verbose);
+        Logger.LogTrace(verbosity, message, verbose);
     }
 
     /// <summary>
@@ -147,14 +151,9 @@ public abstract class ServiceBase
         }
         else if (exception is not null)
         {
-            OnError(exception, $"TryRunAction failed: [{name}]");
+            OnError(exception, $"{nameof(TryRunAction)} failed: [{name}]");
         }
 
         return false;
-    }
-
-    protected virtual void OnError(Exception exception, string? message)
-    {
-        LogException(exception, message);
     }
 }
