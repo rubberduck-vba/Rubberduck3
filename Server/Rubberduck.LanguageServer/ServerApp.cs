@@ -52,8 +52,8 @@ namespace Rubberduck.LanguageServer
                 await app.OpenProjectWorkspaceAsync(uri.WorkspaceRoot);
                 logger.LogInformation("Workspace was loaded successfully.");
 
-                var service = provider.GetRequiredService<WorkspaceParserPipeline>();
-                await service.RunPipelineAsync(uri, TokenSource);
+                var service = provider.GetRequiredService<WorkspacePipeline>();
+                await service.StartAsync(uri, null, TokenSource);
                 
                 logger.LogInformation("Workspace was processed successfully.");
             }
@@ -106,7 +106,7 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<IWorkspaceService, WorkspaceService>();
             services.AddSingleton<IWorkspaceStateManager, WorkspaceStateManager>();
 
-            services.AddSingleton<WorkspaceParserPipeline>();
+            services.AddSingleton<WorkspacePipeline>();
             services.AddSingleton<ParserPipelineSectionProvider>();
             services.AddTransient<WorkspaceParserSection>();
             services.AddTransient<WorkspaceFileSection>();

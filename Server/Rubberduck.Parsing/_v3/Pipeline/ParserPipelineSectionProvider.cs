@@ -5,14 +5,13 @@ using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Parsing._v3.Pipeline.Abstract;
 using System.Collections.Concurrent;
-using System.ComponentModel;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
 public class ParserPipelineSectionProvider
 {
     private readonly IServiceProvider _provider;
-    private readonly ConcurrentDictionary<Uri, IParserPipeline> _pipelines = [];
+    private readonly ConcurrentDictionary<Uri, DataflowPipeline> _pipelines = [];
     private readonly ConcurrentDictionary<Uri, Task> _tasks = [];
 
     public ParserPipelineSectionProvider(IServiceProvider provider)
@@ -74,7 +73,10 @@ public class ParserPipelineSectionProvider
         var performance = _provider.GetRequiredService<PerformanceRecordAggregator>();
 
         var newPipeline = new WorkspaceFileSection(parent, workspaces, parser, symbols, logger, settings, performance);
-        _ = newPipeline.StartAsync(uri, null, tokenSource);        
+        var completion = newPipeline.StartAsync(uri, null, tokenSource);
+
+        _tasks.TryAdd(uri, completion);
+        _pipelines[uri] = newPipeline;
 
         return newPipeline;
     }

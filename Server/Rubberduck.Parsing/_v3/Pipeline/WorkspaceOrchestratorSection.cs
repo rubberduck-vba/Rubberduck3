@@ -9,7 +9,7 @@ using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
-public abstract class WorkspaceOrchestratorSection : ParserPipelineSection<WorkspaceUri, IWorkspaceState>
+public abstract class WorkspaceOrchestratorSection : DataflowPipelineSection<WorkspaceUri, IWorkspaceState>
 {
     private readonly IWorkspaceStateManager _workspaceManager;
     private readonly ConcurrentBag<WorkspaceDocumentSection> _filePipelines = [];
@@ -61,7 +61,7 @@ public abstract class WorkspaceOrchestratorSection : ParserPipelineSection<Works
             _filePipelines.Add(pipeline);
         });
 
-    protected override (IEnumerable<IDataflowBlock>, Task) DefinePipelineBlocks(CancellationTokenSource? tokenSource)
+    protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(CancellationTokenSource? tokenSource)
     {
         TokenSource = tokenSource;
 

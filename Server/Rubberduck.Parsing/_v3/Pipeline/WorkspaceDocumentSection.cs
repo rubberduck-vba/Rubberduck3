@@ -9,7 +9,7 @@ using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
-public abstract class WorkspaceDocumentSection : ParserPipelineSection<WorkspaceFileUri, DocumentParserState>
+public abstract class WorkspaceDocumentSection : DataflowPipelineSection<WorkspaceFileUri, DocumentParserState>
 {
     private readonly IWorkspaceService _workspaceService;
     
@@ -33,7 +33,7 @@ public abstract class WorkspaceDocumentSection : ParserPipelineSection<Workspace
         throw new InvalidOperationException("Document state was not found in the content store.");
     }
 
-    protected sealed override (IEnumerable<IDataflowBlock> blocks, Task completion) DefinePipelineBlocks(CancellationTokenSource? tokenSource)
+    protected sealed override (IEnumerable<IDataflowBlock> blocks, Task completion) DefineSectionBlocks(CancellationTokenSource? tokenSource)
     {
         TokenSource = tokenSource;
 

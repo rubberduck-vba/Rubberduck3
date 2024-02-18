@@ -83,19 +83,24 @@ public class WorkspaceFileSection : WorkspaceDocumentSection
         _ = TraceBlockCompletionAsync(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
 
         Link(source, ParseDocumentTextBlock);
-        Link(ParseDocumentTextBlock, BroadcastParseResultBlock);
-
+        Link(ParseDocumentTextBlock, BroadcastParseResultBlock); // no completion propagation
         Link(BroadcastParseResultBlock, SetDocumentStateFoldingsBlock); // no completion propagation
         Link(BroadcastParseResultBlock, AcquireSyntaxTreeBlock); // no completion propagation
 
-        _ = Task.WhenAll(AcquireSyntaxTreeBlock.Completion, SetDocumentStateFoldingsBlock.Completion)
+        _ = Task.WhenAll(
+                ParseDocumentTextBlock.Completion, 
+                AcquireSyntaxTreeBlock.Completion, 
+                SetDocumentStateFoldingsBlock.Completion)
             .ContinueWith(t => BroadcastParseResultBlock.Complete(), Token, TaskContinuationOptions.None, TaskScheduler.Default);
 
-        Link(AcquireSyntaxTreeBlock, BroadcastSyntaxTreeBlock);
+        Link(AcquireSyntaxTreeBlock, BroadcastSyntaxTreeBlock); // no completion propagation
         Link(BroadcastSyntaxTreeBlock, AcquireMemberSymbolsBlock); // no completion propagation
         Link(BroadcastSyntaxTreeBlock, SetDocumentStateSyntaxTreeBlock); // no completion propagation
 
-        _ = Task.WhenAll(AcquireMemberSymbolsBlock.Completion, SetDocumentStateSyntaxTreeBlock.Completion)
+        _ = Task.WhenAll(
+                AcquireSyntaxTreeBlock.Completion,
+                AcquireMemberSymbolsBlock.Completion, 
+                SetDocumentStateSyntaxTreeBlock.Completion)
             .ContinueWith(t => BroadcastSyntaxTreeBlock.Complete(), Token, TaskContinuationOptions.None, TaskScheduler.Default);
 
         Link(AcquireMemberSymbolsBlock, SetDocumentStateMemberSymbolsBlock);

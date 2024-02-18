@@ -10,7 +10,7 @@ using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
-public class WorkspaceSymbolsParserPipeline : ParserPipelineSection<WorkspaceUri, ParserPipelineState> // really <WorkspaceUri, ParserPipelineState>, but simpler for DI/IoC that way
+public class WorkspaceSymbolsParserPipeline : DataflowPipelineSection<WorkspaceUri, ParserPipelineState>
 {
     private readonly DocumentContentStore _contentStore;
     private readonly IWorkspaceStateManager _workspaceManager;
@@ -68,7 +68,7 @@ public class WorkspaceSymbolsParserPipeline : ParserPipelineSection<WorkspaceUri
             State.Documents[e.Uri] = e.WithSymbol(resolved);
         });
 
-    protected override (IEnumerable<IDataflowBlock>, Task) DefinePipelineBlocks(CancellationTokenSource? tokenSource)
+    protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(CancellationTokenSource? tokenSource)
     {
         var items = new List<IDataflowBlock>();
         TokenSource = tokenSource ?? TokenSource;
