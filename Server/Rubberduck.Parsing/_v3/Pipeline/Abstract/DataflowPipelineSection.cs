@@ -62,7 +62,7 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
 
         ((ITargetBlock<TInput>)InputBlock).Post(input);
         InputBlock.Complete();
-
+        
         await Completion;
     }
 

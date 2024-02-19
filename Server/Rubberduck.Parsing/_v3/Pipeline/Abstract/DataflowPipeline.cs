@@ -31,13 +31,6 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
 
     protected void Link<T>(ISourceBlock<T> source, ITargetBlock<T> target, DataflowLinkOptions? options = null)
     {
-        if (target is BroadcastBlock<T>)
-        {
-            // propagating completion TO a broadcast block would complete the first output branch, and leave all others dangling.
-            // broadcast block should be explicitly/manually completed upon the completion of all its linked outputs.
-            options = WithoutCompletionPropagation;
-        }
-
         options ??= WithCompletionPropagation;
         _links.Add(source.LinkTo(target, options));
     }

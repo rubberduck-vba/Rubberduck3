@@ -51,18 +51,15 @@ public abstract class WorkspaceOrchestratorSection : DataflowPipelineSection<Wor
 
     private ActionBlock<WorkspaceDocumentSection> AcquireWorkspaceFilePipelineBlock { get; set; } = null!;
 
-#pragma warning disable VSTHRD101 // Avoid unsupported async delegates
-    // RunActionBlock captures and logs whatever exception the async delegate might throw.
-    private void AquireWorkspaceFilePipeline(WorkspaceDocumentSection pipeline) =>
-        RunActionBlock(AcquireWorkspaceFilePipelineBlock, pipeline, async e =>
+    private async Task AquireWorkspaceFilePipelineAsync(WorkspaceDocumentSection pipeline) => await
+        RunTransformBlock(AcquireWorkspaceFilePipelineBlock, pipeline, e =>
         {
             if (pipeline.Completion is null)
             {
                 throw new InvalidOperationException("Child pipeline completion task is unexpectely null.");
             }
-            await pipeline.Completion;
+            return pipeline.Completion;
         });
-#pragma warning restore VSTHRD101 // Avoid unsupported async delegates
 
     private TransformBlock<WorkspaceFileUri, WorkspaceDocumentSection> CreateWorkspaceFilePipelineBlock { get; set; } = null!;
     private WorkspaceDocumentSection CreateWorkspaceFilePipeline(WorkspaceFileUri uri) =>
@@ -75,18 +72,13 @@ public abstract class WorkspaceOrchestratorSection : DataflowPipelineSection<Wor
         AcquireWorkspaceBlock = new(AcquireWorkspaceState, ConcurrentExecutionOptions(Token));
         PrioritizeFilesBlock = new(PrioritizeFiles, ConcurrentExecutionOptions(Token));
         CreateWorkspaceFilePipelineBlock = new(CreateWorkspaceFilePipeline, ConcurrentExecutionOptions(Token));
-        AcquireWorkspaceFilePipelineBlock = new(AquireWorkspaceFilePipeline, ConcurrentExecutionOptions(Token));
+        AcquireWorkspaceFilePipelineBlock = new(AquireWorkspaceFilePipelineAsync, ConcurrentExecutionOptions(Token));
 
         Link(AcquireWorkspaceBlock, PrioritizeFilesBlock);
         Link(PrioritizeFilesBlock, CreateWorkspaceFilePipelineBlock);
         Link(CreateWorkspaceFilePipelineBlock, AcquireWorkspaceFilePipelineBlock);
 
-        Completion = Task.WhenAll(DataflowBlocks.Select(e => e.Block.Completion).ToArray())
-            .ContinueWith(async t =>
-            {
-                await _provider.AwaitCompletionAsync();
-                LogDebug("awaited pipeline provider completion tasks!");
-            }, Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default);
+        Completion = AcquireWorkspaceFilePipelineBlock.Completion;
 
         return (new IDataflowBlock[]
         {

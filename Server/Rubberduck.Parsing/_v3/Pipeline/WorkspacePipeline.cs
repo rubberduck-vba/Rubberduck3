@@ -40,16 +40,15 @@ public class WorkspacePipeline : DataflowPipeline
     public async override Task StartAsync(object input, CancellationTokenSource? tokenSource)
     {
         var uri = (WorkspaceUri)input;
-
         await SyntaxOrchestration.StartAsync(uri, null, tokenSource);
 
-            //.ContinueWith(t => MemberSymbolOrchestration.StartAsync(uri, null, tokenSource),
-            //    Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default)
+        //.ContinueWith(t => MemberSymbolOrchestration.StartAsync(uri, null, tokenSource),
+        //    Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default)
 
-            //.ContinueWith(t => HierarchicalSymbolOrchestration.StartAsync(uri, null, tokenSource),
-            //    Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default)
-            ;
+        //.ContinueWith(t => HierarchicalSymbolOrchestration.StartAsync(uri, null, tokenSource),
+        //    Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default)
+        ;
 
-        LogTrace($"{nameof(WorkspacePipeline)} completed."); // BUG: this is a lie.
+        LogTrace($"{nameof(WorkspacePipeline)} completed.");
     }
 }

@@ -84,24 +84,12 @@ public class DocumentParserSection : WorkspaceDocumentSection
 
         Link(source, ParseDocumentTextBlock);
         Link(ParseDocumentTextBlock, BroadcastParseResultBlock);
-        Link(BroadcastParseResultBlock, SetDocumentStateFoldingsBlock); // no completion propagation
-        Link(BroadcastParseResultBlock, AcquireSyntaxTreeBlock); // no completion propagation
-
-        _ = Task.WhenAll(
-                ParseDocumentTextBlock.Completion, 
-                AcquireSyntaxTreeBlock.Completion, 
-                SetDocumentStateFoldingsBlock.Completion)
-            .ContinueWith(t => BroadcastParseResultBlock.Complete(), Token, TaskContinuationOptions.None, TaskScheduler.Default);
+        Link(BroadcastParseResultBlock, SetDocumentStateFoldingsBlock);
+        Link(BroadcastParseResultBlock, AcquireSyntaxTreeBlock);
 
         Link(AcquireSyntaxTreeBlock, BroadcastSyntaxTreeBlock);
-        Link(BroadcastSyntaxTreeBlock, AcquireMemberSymbolsBlock); // no completion propagation
-        Link(BroadcastSyntaxTreeBlock, SetDocumentStateSyntaxTreeBlock); // no completion propagation
-
-        _ = Task.WhenAll(
-                AcquireSyntaxTreeBlock.Completion,
-                AcquireMemberSymbolsBlock.Completion, 
-                SetDocumentStateSyntaxTreeBlock.Completion)
-            .ContinueWith(t => BroadcastSyntaxTreeBlock.Complete(), Token, TaskContinuationOptions.None, TaskScheduler.Default);
+        Link(BroadcastSyntaxTreeBlock, AcquireMemberSymbolsBlock);
+        Link(BroadcastSyntaxTreeBlock, SetDocumentStateSyntaxTreeBlock);
 
         Link(AcquireMemberSymbolsBlock, SetDocumentStateMemberSymbolsBlock);
 
