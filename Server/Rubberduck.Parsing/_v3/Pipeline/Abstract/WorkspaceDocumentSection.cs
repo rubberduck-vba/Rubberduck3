@@ -3,18 +3,23 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
-using Rubberduck.Parsing._v3.Pipeline.Abstract;
-using System.Linq;
 using System.Threading.Tasks.Dataflow;
 
-namespace Rubberduck.Parsing._v3.Pipeline;
+namespace Rubberduck.Parsing._v3.Pipeline.Abstract;
 
+/// <summary>
+/// A pipeline section that works with a <c>WorkspaceFileUri</c> input to process a single file.
+/// </summary>
+/// <remarks>
+/// The class defines an <c>AcquireDocumentStateBlock</c> that is provided as a <c>source</c> for implementing/derived classes,
+/// so implementations work with a <c>DocumentParserState</c> input.
+/// </remarks>
 public abstract class WorkspaceDocumentSection : DataflowPipelineSection<WorkspaceFileUri, DocumentParserState>
 {
     private readonly IWorkspaceService _workspaceService;
-    
-    protected WorkspaceDocumentSection(DataflowPipeline parent, IWorkspaceService workspaceService, 
-        ILogger<WorkspaceParserSection> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
+
+    protected WorkspaceDocumentSection(DataflowPipeline parent, IWorkspaceService workspaceService,
+        ILogger<WorkspaceDocumentParserOrchestrator> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
         : base(parent, logger, settingsProvider, performance)
     {
         _workspaceService = workspaceService;
@@ -40,11 +45,11 @@ public abstract class WorkspaceDocumentSection : DataflowPipelineSection<Workspa
         AcquireDocumentStateBlock = new TransformBlock<WorkspaceFileUri, DocumentParserState>(AcquireDocumentState, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(AcquireDocumentStateBlock), AcquireDocumentStateBlock);
 
-        var (blocks, completion) = DefinePipelineBlocks(AcquireDocumentStateBlock);
+        var (blocks, completion) = DefineSectionBlocks(AcquireDocumentStateBlock);
         Completion = completion;
 
         return (new[] { AcquireDocumentStateBlock }.Concat(blocks), Completion);
     }
 
-    protected abstract (IEnumerable<IDataflowBlock> blocks, Task completion) DefinePipelineBlocks(ISourceBlock<DocumentParserState> source);
+    protected abstract (IEnumerable<IDataflowBlock> blocks, Task completion) DefineSectionBlocks(ISourceBlock<DocumentParserState> source);
 }

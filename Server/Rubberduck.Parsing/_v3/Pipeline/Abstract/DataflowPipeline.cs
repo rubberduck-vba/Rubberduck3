@@ -5,6 +5,9 @@ using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline.Abstract;
 
+/// <summary>
+/// Represents a series of linked, cancellable, asynchronous operations; starts with a given input and provides a <c>Task</c> to await completion.
+/// </summary>
 public abstract class DataflowPipeline : ServiceBase, IDisposable
 {
     private readonly List<IDisposable> _links = [];
@@ -17,7 +20,7 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
     {
     }
 
-    public abstract Task StartAsync(object input, object? state, CancellationTokenSource? tokenSource);
+    public abstract Task StartAsync(object input, CancellationTokenSource? tokenSource);
     public Task Completion { get; internal set; } = default!;
     public void Cancel() => TokenSource?.Cancel();
     protected virtual CancellationTokenSource? TokenSource { get; set; }
@@ -28,9 +31,9 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
 
     protected void Link<T>(ISourceBlock<T> source, ITargetBlock<T> target, DataflowLinkOptions? options = null)
     {
-        if (source is BroadcastBlock<T>)
+        if (target is BroadcastBlock<T>)
         {
-            // propagating completion for a broadcast block would complete the first output branch, and leave all others dangling.
+            // propagating completion TO a broadcast block would complete the first output branch, and leave all others dangling.
             // broadcast block should be explicitly/manually completed upon the completion of all its linked outputs.
             options = WithoutCompletionPropagation;
         }
@@ -51,11 +54,8 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
                 _ => $"{GetType().Name}[{name}] task is in unexpected state '{t.Status}'.",
             };
             LogTrace(message, Exception?.Message);
-            LogPipelineCompletionState();
         }, Token, TaskContinuationOptions.None, TaskScheduler.Default);
     }
-
-    protected abstract void LogPipelineCompletionState();
 
     protected virtual void FaultDataflowBlock(string? name, IDataflowBlock block, Exception exception)
     {
@@ -70,8 +70,6 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
             LogException(exception, $"Dataflow block '{name ?? typeof(IDataflowBlock).Name}' was faulted.");
             TokenSource?.Cancel();
         }
-
-        LogPipelineCompletionState();
     }
 
     protected void ThrowIfCancellationRequested()
@@ -82,7 +80,7 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
         }
         catch (ObjectDisposedException)
         {
-            throw new TaskCanceledException("CancellationTokenSource is already disposed.");
+            //throw new TaskCanceledException("CancellationTokenSource is already disposed.");
         }
     }
 

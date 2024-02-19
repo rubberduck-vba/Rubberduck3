@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using System.Collections.Immutable;
@@ -9,7 +8,7 @@ using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline.Abstract;
 
-public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
+public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline where TState : class
 {
     private readonly DataflowPipeline _parent;
 
@@ -30,8 +29,8 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
     /// </remarks>
     public IDataflowBlock? InputBlock { get; private set; }
 
-    public override Task StartAsync(object input, object state, CancellationTokenSource? tokenSource) => 
-        StartAsync((TInput)input, (TState)state, tokenSource);
+    public override Task StartAsync(object input, CancellationTokenSource? tokenSource) => 
+        StartAsync((TInput)input, null, tokenSource);
 
     /// <summary>
     /// Starts the pipeline by posting the specified input to the <c>InputBlock</c>.
@@ -39,7 +38,7 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
     /// <remarks>
     /// Returns immediately with the <c>Completion</c> task.
     /// </remarks>
-    public virtual Task StartAsync(TInput input, TState? state, CancellationTokenSource? tokenSource)
+    public virtual async Task StartAsync(TInput input, TState? state, CancellationTokenSource? tokenSource)
     {
         var (blocks, completion) = DefineSectionBlocks(tokenSource);
         Completion = completion;
@@ -64,7 +63,7 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
         ((ITargetBlock<TInput>)InputBlock).Post(input);
         InputBlock.Complete();
 
-        return Completion;
+        await Completion;
     }
 
     protected virtual void SetInitialState(TState state) => State = state;
@@ -96,7 +95,7 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
 
     protected abstract ImmutableArray<(string Name, IDataflowBlock Block)> DataflowBlocks { get; }
 
-    protected override void LogPipelineCompletionState()
+    public void LogPipelineCompletionState()
     {
         var builder = new StringBuilder();
         builder.AppendLine($"Pipeline completion status");
@@ -123,7 +122,6 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
             FaultDataflowBlock(actionName, block, exception);
         }
 
-        LogPipelineCompletionState();
         return result ?? throw new InvalidOperationException("Result was unexpectedly null.");
     }
 
@@ -142,7 +140,6 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
             FaultDataflowBlock(actionName, block, exception);
         }
 
-        LogPipelineCompletionState();
         return result ?? throw new InvalidOperationException("Result was unexpectedly null.");
     }
 
@@ -159,8 +156,6 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
         {
             FaultDataflowBlock(actionName, block, exception);
         }
-
-        LogPipelineCompletionState();
     }
 
     protected virtual void RunActionBlock<T>(IDataflowBlock block, T param, Action<T, CancellationToken> action, [CallerMemberName] string? actionName = null)
@@ -175,7 +170,5 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
         {
             FaultDataflowBlock(actionName, block, exception);
         }
-
-        LogPipelineCompletionState();
     }
 }

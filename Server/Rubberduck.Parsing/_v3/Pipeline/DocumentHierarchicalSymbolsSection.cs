@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
@@ -9,12 +8,12 @@ using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
-public class HierarchicalSymbolsSection : WorkspaceDocumentSection
+public class DocumentHierarchicalSymbolsSection : WorkspaceDocumentSection
 {
     private readonly PipelineParseTreeSymbolsService _symbolsService;
 
-    public HierarchicalSymbolsSection(DataflowPipeline parent, IWorkspaceService workspaces, PipelineParseTreeSymbolsService symbolsService,
-        ILogger<WorkspaceParserSection> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
+    public DocumentHierarchicalSymbolsSection(DataflowPipeline parent, IWorkspaceService workspaces, PipelineParseTreeSymbolsService symbolsService,
+        ILogger<WorkspaceDocumentParserOrchestrator> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
         : base(parent, workspaces, logger, settingsProvider, performance)
     {
         _symbolsService = symbolsService;
@@ -32,7 +31,7 @@ public class HierarchicalSymbolsSection : WorkspaceDocumentSection
     private void SetDocumentStateMemberSymbols(Symbol symbol) =>
         RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol, e => State = (DocumentParserState)State.WithSymbol(e));
 
-    protected override (IEnumerable<IDataflowBlock>, Task) DefinePipelineBlocks(ISourceBlock<DocumentParserState> source)
+    protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(ISourceBlock<DocumentParserState> source)
     {
         AcquireDocumentStateSymbolsBlock = new(AcquireDocumentStateSymbols, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(AcquireDocumentStateSymbolsBlock), AcquireDocumentStateSymbolsBlock);

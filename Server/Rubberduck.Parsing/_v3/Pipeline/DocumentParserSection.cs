@@ -10,13 +10,13 @@ using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
-public class WorkspaceFileSection : WorkspaceDocumentSection
+public class DocumentParserSection : WorkspaceDocumentSection
 {
     private readonly PipelineParserService _parser;
     private readonly PipelineParseTreeSymbolsService _symbolsService;
 
-    public WorkspaceFileSection(DataflowPipeline parent, IWorkspaceService workspaces, PipelineParserService parser, PipelineParseTreeSymbolsService symbolsService,
-        ILogger<WorkspaceParserSection> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
+    public DocumentParserSection(DataflowPipeline parent, IWorkspaceService workspaces, PipelineParserService parser, PipelineParseTreeSymbolsService symbolsService,
+        ILogger<WorkspaceDocumentParserOrchestrator> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
         : base(parent, workspaces, logger, settingsProvider, performance)
     {
         _parser = parser;
@@ -56,7 +56,7 @@ public class WorkspaceFileSection : WorkspaceDocumentSection
     private void SetDocumentStateMemberSymbols(Symbol symbol) =>
         RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol, e => State = (DocumentParserState)State.WithSymbol(e));
 
-    protected override (IEnumerable<IDataflowBlock>, Task) DefinePipelineBlocks(ISourceBlock<DocumentParserState> source)
+    protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(ISourceBlock<DocumentParserState> source)
     {
         ParseDocumentTextBlock = new(ParseDocumentText, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(ParseDocumentTextBlock), ParseDocumentTextBlock);
@@ -83,7 +83,7 @@ public class WorkspaceFileSection : WorkspaceDocumentSection
         _ = TraceBlockCompletionAsync(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
 
         Link(source, ParseDocumentTextBlock);
-        Link(ParseDocumentTextBlock, BroadcastParseResultBlock); // no completion propagation
+        Link(ParseDocumentTextBlock, BroadcastParseResultBlock);
         Link(BroadcastParseResultBlock, SetDocumentStateFoldingsBlock); // no completion propagation
         Link(BroadcastParseResultBlock, AcquireSyntaxTreeBlock); // no completion propagation
 
@@ -93,7 +93,7 @@ public class WorkspaceFileSection : WorkspaceDocumentSection
                 SetDocumentStateFoldingsBlock.Completion)
             .ContinueWith(t => BroadcastParseResultBlock.Complete(), Token, TaskContinuationOptions.None, TaskScheduler.Default);
 
-        Link(AcquireSyntaxTreeBlock, BroadcastSyntaxTreeBlock); // no completion propagation
+        Link(AcquireSyntaxTreeBlock, BroadcastSyntaxTreeBlock);
         Link(BroadcastSyntaxTreeBlock, AcquireMemberSymbolsBlock); // no completion propagation
         Link(BroadcastSyntaxTreeBlock, SetDocumentStateSyntaxTreeBlock); // no completion propagation
 

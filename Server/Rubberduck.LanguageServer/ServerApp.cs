@@ -15,6 +15,7 @@ using Rubberduck.LanguageServer.Handlers.Lifecycle;
 using Rubberduck.LanguageServer.Handlers.Workspace;
 using Rubberduck.Parsing._v3.Pipeline;
 using Rubberduck.Parsing._v3.Pipeline.Abstract;
+using Rubberduck.Parsing._v3.Pipeline.Services;
 using Rubberduck.Parsing.Abstract;
 using Rubberduck.Parsing.Parsers;
 using Rubberduck.Parsing.PreProcessing;
@@ -53,7 +54,7 @@ namespace Rubberduck.LanguageServer
                 logger.LogInformation("Workspace was loaded successfully.");
 
                 var service = provider.GetRequiredService<WorkspacePipeline>();
-                await service.StartAsync(uri, null, TokenSource);
+                await service.StartAsync(uri, TokenSource);
                 
                 logger.LogInformation("Workspace was processed successfully.");
             }
@@ -108,10 +109,10 @@ namespace Rubberduck.LanguageServer
 
             services.AddSingleton<WorkspacePipeline>();
             services.AddSingleton<ParserPipelineSectionProvider>();
-            services.AddTransient<WorkspaceParserSection>();
-            services.AddTransient<WorkspaceFileSection>();
-            services.AddTransient<DocumentMembersSection>();
-            services.AddTransient<HierarchicalSymbolsSection>();
+            services.AddTransient<WorkspaceDocumentParserOrchestrator>();
+            services.AddTransient<DocumentParserSection>();
+            services.AddTransient<DocumentMemberSymbolsSection>();
+            services.AddTransient<DocumentHierarchicalSymbolsSection>();
 
             services.AddSingleton<PipelineParseTreeSymbolsService>();
             services.AddSingleton<IResolverService, ResolverService>();
@@ -209,9 +210,8 @@ namespace Rubberduck.LanguageServer
 
             if (await workspaces.OpenProjectWorkspaceAsync(rootUri))
             {
-                var pipeline = server.GetRequiredService<WorkspaceParserSection>();
-                var parserState = new ParserPipelineState();
-                await pipeline.StartAsync(new WorkspaceFileUri(null!, state.RootUri.ToUri()), parserState, new CancellationTokenSource())
+                var pipeline = server.GetRequiredService<WorkspaceDocumentParserOrchestrator>();
+                await pipeline.StartAsync(new WorkspaceFileUri(null!, state.RootUri.ToUri()), new CancellationTokenSource())
                     .ContinueWith(t =>
                     {
                         progress?.OnCompleted();
