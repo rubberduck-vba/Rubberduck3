@@ -10,8 +10,8 @@ namespace Rubberduck.Parsing.Exceptions;
 [Serializable]
 public class SyntaxErrorException : Exception
 {
-    public SyntaxErrorException(SyntaxErrorInfo info)
-        : this(info.Message, info.Exception, info.OffendingSymbol, info.LineNumber, info.Position, info.CodeKind) { }
+    public SyntaxErrorException(AntlrSyntaxErrorInfo info)
+        : this(info.Uri, info.Message, info.Exception, info.OffendingSymbol, info.LineNumber, info.Position, info.CodeKind) { }
 
     public SyntaxErrorException(string message, RecognitionException innerException, IToken offendingSymbol, int line, int position, CodeKind codeKind)
         : base(message, innerException)
