@@ -6,6 +6,7 @@ using Rubberduck.InternalApi.Settings.Model;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace Rubberduck.InternalApi.Services;
 
@@ -24,6 +25,14 @@ public abstract class ServiceBase
 
     public RubberduckSettings Settings => SettingsProvider.Settings;
     public TraceLevel TraceLevel => SettingsProvider.Settings.LoggerSettings.TraceLevel.ToTraceLevel();
+
+    public void LogPerformanceIf(bool condition, TimeSpan elapsed, string? message = default, [CallerMemberName] string? name = default, PerformanceLoggerMode mode = PerformanceLoggerMode.LogAndAggregate)
+    {
+        if (condition)
+        {
+            LogPerformance(elapsed, message, name, mode);
+        }
+    }
 
     public void LogPerformance(TimeSpan elapsed, string? message = default, [CallerMemberName] string? name = default, PerformanceLoggerMode mode = PerformanceLoggerMode.LogAndAggregate)
     {
@@ -122,12 +131,12 @@ public abstract class ServiceBase
     /// <param name="name">A name for the action, defaults to the calling method's name.</param>
     /// <returns><c>true</c> if the action completes successfully without throwing.</returns>
     /// <remarks>the returned exception, if not null, has already been logged.</remarks>
-    public bool TryRunAction(Action action, out Exception? exception, [CallerMemberName] string? name = default)
+    public bool TryRunAction(Action action, out Exception? exception, [CallerMemberName] string? name = default, bool logPerformance = true)
     {
         var verbosity = TraceLevel;
         if (TimedAction.TryRun(action, out var elapsed, out exception))
         {
-            LogPerformance(elapsed, name: name);
+            LogPerformanceIf(logPerformance, elapsed, name: name);
             return true;
         }
 
@@ -141,12 +150,46 @@ public abstract class ServiceBase
     /// <param name="name">A name for the action, defaults to the calling method's name.</param>
     /// <returns><c>true</c> if the action completes successfully without throwing.</returns>
     /// <remarks>the returned exception, if not null, has already been logged.</remarks>
-    public bool TryRunAction(Action action, [CallerMemberName] string? name = default)
+    public bool TryRunAction(Action action, [CallerMemberName] string? name = default, bool logPerformance = true)
     {
         var verbosity = TraceLevel;
         if (TimedAction.TryRun(action, out var elapsed, out var exception))
         {
-            LogPerformance(elapsed, name: name);
+            LogPerformanceIf(logPerformance, elapsed, name: name);
+            return true;
+        }
+        else if (exception is not null)
+        {
+            OnError(exception, $"{nameof(TryRunAction)} failed: [{name}]");
+        }
+
+        return false;
+    }
+
+    public async Task<bool> TryRunActionAsync(Func<Task> action, [CallerMemberName] string? name = default, bool logPerformance = true)
+    {
+        var verbosity = TraceLevel;
+        var (success, elapsed, exception) = await TimedAction.TryRunAsync(action);
+        if (success)
+        {
+            LogPerformanceIf(logPerformance, elapsed, name: name);
+            return true;
+        }
+        else if (exception is not null)
+        {
+            OnError(exception, $"{nameof(TryRunAction)} failed: [{name}]");
+        }
+
+        return false;
+    }
+
+    public async Task<bool> TryRunActionAsync<T>(Func<Task<T>> action, [CallerMemberName] string? name = default, bool logPerformance = true)
+    {
+        var verbosity = TraceLevel;
+        var (success, result, elapsed, exception) = await TimedAction.TryRunAsync(action);
+        if (success)
+        {
+            LogPerformanceIf(logPerformance, elapsed, name: name);
             return true;
         }
         else if (exception is not null)

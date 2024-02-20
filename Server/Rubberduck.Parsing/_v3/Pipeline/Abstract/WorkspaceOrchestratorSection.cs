@@ -29,8 +29,9 @@ public abstract class WorkspaceOrchestratorSection : DataflowPipelineSection<Wor
 
     private TransformBlock<WorkspaceUri, IWorkspaceState> AcquireWorkspaceBlock { get; set; } = null!;
     private IWorkspaceState AcquireWorkspaceState(WorkspaceUri uri) =>
-        RunTransformBlock(AcquireWorkspaceBlock, uri, e => _workspaces.GetWorkspace(uri.WorkspaceRoot)
-            ?? throw new InvalidOperationException($"Could not find workspace state for URI '{uri}'."));
+        RunTransformBlock(AcquireWorkspaceBlock, uri, 
+            e => _workspaces.GetWorkspace(uri.WorkspaceRoot) ?? throw new InvalidOperationException($"Could not find workspace state for URI '{uri}'."),
+            nameof(AcquireWorkspaceState), logPerformance: false);
 
     private TransformManyBlock<IWorkspaceState, WorkspaceFileUri> PrioritizeFilesBlock { get; set; } = null!;
     private WorkspaceFileUri[] PrioritizeFiles(IWorkspaceState state) =>
@@ -47,11 +48,11 @@ public abstract class WorkspaceOrchestratorSection : DataflowPipelineSection<Wor
             }
 
             return result;
-        });
+        }, nameof(PrioritizeFiles), logPerformance: true);
 
     private ActionBlock<WorkspaceDocumentSection> AcquireWorkspaceFilePipelineBlock { get; set; } = null!;
 
-    private async Task AquireWorkspaceFilePipelineAsync(WorkspaceDocumentSection pipeline) => await
+    private async Task AcquireWorkspaceFilePipelineAsync(WorkspaceDocumentSection pipeline) => await
         RunTransformBlock(AcquireWorkspaceFilePipelineBlock, pipeline, e =>
         {
             if (pipeline.Completion is null)
@@ -59,11 +60,12 @@ public abstract class WorkspaceOrchestratorSection : DataflowPipelineSection<Wor
                 throw new InvalidOperationException("Child pipeline completion task is unexpectely null.");
             }
             return pipeline.Completion;
-        });
+        }, nameof(AcquireWorkspaceFilePipelineAsync), logPerformance: false);
 
     private TransformBlock<WorkspaceFileUri, WorkspaceDocumentSection> CreateWorkspaceFilePipelineBlock { get; set; } = null!;
     private WorkspaceDocumentSection CreateWorkspaceFilePipeline(WorkspaceFileUri uri) =>
-        RunTransformBlock(CreateWorkspaceFilePipelineBlock, uri, e => StartDocumentPipeline(_provider, uri));
+        RunTransformBlock(CreateWorkspaceFilePipelineBlock, uri, e => StartDocumentPipeline(_provider, uri), 
+            nameof(CreateWorkspaceFilePipeline), logPerformance: false);
 
     protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(CancellationTokenSource? tokenSource)
     {
@@ -72,7 +74,7 @@ public abstract class WorkspaceOrchestratorSection : DataflowPipelineSection<Wor
         AcquireWorkspaceBlock = new(AcquireWorkspaceState, ConcurrentExecutionOptions(Token));
         PrioritizeFilesBlock = new(PrioritizeFiles, ConcurrentExecutionOptions(Token));
         CreateWorkspaceFilePipelineBlock = new(CreateWorkspaceFilePipeline, ConcurrentExecutionOptions(Token));
-        AcquireWorkspaceFilePipelineBlock = new(AquireWorkspaceFilePipelineAsync, ConcurrentExecutionOptions(Token));
+        AcquireWorkspaceFilePipelineBlock = new(AcquireWorkspaceFilePipelineAsync, ConcurrentExecutionOptions(Token));
 
         Link(AcquireWorkspaceBlock, PrioritizeFilesBlock);
         Link(PrioritizeFilesBlock, CreateWorkspaceFilePipelineBlock);

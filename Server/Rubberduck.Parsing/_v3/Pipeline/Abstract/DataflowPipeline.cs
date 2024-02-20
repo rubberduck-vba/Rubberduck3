@@ -26,8 +26,12 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
     protected virtual CancellationTokenSource? TokenSource { get; set; }
     protected CancellationToken Token => TokenSource?.Token ?? CancellationToken.None;
 
-    public Exception? Exception { get; protected set; }
-    public void FaultPipeline(Exception exception) => Exception = exception;
+    public Exception? Exception { get; private set; }
+    public void FaultPipeline(Exception exception)
+    {
+        Exception = exception;
+        TokenSource?.Cancel();
+    }
 
     protected void Link<T>(ISourceBlock<T> source, ITargetBlock<T> target, DataflowLinkOptions? options = null)
     {
@@ -59,7 +63,7 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
         else
         {
             LogException(exception, $"Dataflow block '{name ?? typeof(IDataflowBlock).Name}' was faulted.");
-            TokenSource?.Cancel();
+            FaultPipeline(exception);
         }
     }
 

@@ -23,15 +23,21 @@ public class DocumentMemberSymbolsSection : WorkspaceDocumentSection
 
     private TransformBlock<SourceFileDocumentState, Symbol> AcquireDocumentStateSymbolsBlock { get; set; } = null!;
     private Symbol AcquireDocumentStateSymbols(SourceFileDocumentState state) =>
-        RunTransformBlock(AcquireDocumentStateSymbolsBlock, state, e => e.Symbol ?? throw new InvalidOperationException("Document.Symbol is unexpectedly null."));
+        RunTransformBlock(AcquireDocumentStateSymbolsBlock, state, 
+            e => e.Symbol ?? throw new InvalidOperationException("Document.Symbol is unexpectedly null."), 
+            nameof(AcquireDocumentStateSymbols), logPerformance: false);
 
     private TransformBlock<Symbol, Symbol> ResolveMemberSymbolsBlock { get; set; } = null!;
     private Symbol ResolveMemberSymbols(Symbol symbol) =>
-        RunTransformBlock(ResolveMemberSymbolsBlock, symbol, e => _symbolsService.RecursivelyResolveSymbols(e));
+        RunTransformBlock(ResolveMemberSymbolsBlock, symbol, 
+            e => _symbolsService.RecursivelyResolveSymbols(e), 
+            nameof(ResolveMemberSymbols), logPerformance: true);
 
     private ActionBlock<Symbol> SetDocumentStateMemberSymbolsBlock { get; set; } = null!;
     private void SetDocumentStateMemberSymbols(Symbol symbol) =>
-        RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol, e => State = (DocumentParserState)State.WithSymbol(e));
+        RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol, 
+            e => State = (DocumentParserState)State.WithSymbol(e),
+            nameof(SetDocumentStateMemberSymbols), logPerformance: false);
 
     protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(ISourceBlock<DocumentParserState> source)
     {

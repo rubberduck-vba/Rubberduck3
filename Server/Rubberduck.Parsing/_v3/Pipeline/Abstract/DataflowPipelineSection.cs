@@ -41,8 +41,8 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
     public virtual async Task StartAsync(TInput input, TState? state, CancellationTokenSource? tokenSource)
     {
         var (blocks, completion) = DefineSectionBlocks(tokenSource);
-        Completion = completion;
 
+        Completion = completion;
         if (Completion is null)
         {
             throw new InvalidOperationException($"{nameof(DefineSectionBlocks)} unexpectedly did not return a completion task.");
@@ -107,7 +107,7 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
         LogDebug(builder.ToString());
     }
 
-    protected virtual TResult RunTransformBlock<T, TResult>(IDataflowBlock block, T param, Func<T, TResult> action, [CallerMemberName] string? actionName = null) where TResult : class
+    protected virtual TResult RunTransformBlock<T, TResult>(IDataflowBlock block, T param, Func<T, TResult> action, [CallerMemberName] string? actionName = null, bool logPerformance = true) where TResult : class
     {
         TResult? result = null;
         if (!TryRunAction(() =>
@@ -117,7 +117,7 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
             result = action.Invoke(param);
             ThrowIfCancellationRequested();
 
-        }, out var exception, actionName) && exception != null)
+        }, out var exception, actionName, logPerformance) && exception != null)
         {
             FaultDataflowBlock(actionName, block, exception);
         }
@@ -125,7 +125,7 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
         return result ?? throw new InvalidOperationException("Result was unexpectedly null.");
     }
 
-    protected virtual TResult RunTransformBlock<T, TResult>(IDataflowBlock block, T param, Func<T, CancellationToken, TResult> action, [CallerMemberName] string? actionName = null) where TResult : class
+    protected virtual TResult RunTransformBlock<T, TResult>(IDataflowBlock block, T param, Func<T, CancellationToken, TResult> action, [CallerMemberName] string? actionName = null, bool logPerformance = true) where TResult : class
     {
         TResult? result = null;
         if (!TryRunAction(() =>
@@ -135,7 +135,7 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
             result = action.Invoke(param, Token);
             ThrowIfCancellationRequested();
 
-        }, out var exception, actionName) && exception != null)
+        }, out var exception, actionName, logPerformance) && exception != null)
         {
             FaultDataflowBlock(actionName, block, exception);
         }
@@ -143,7 +143,7 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
         return result ?? throw new InvalidOperationException("Result was unexpectedly null.");
     }
 
-    protected virtual void RunActionBlock<T>(IDataflowBlock block, T param, Action<T> action, [CallerMemberName] string? actionName = null)
+    protected virtual void RunActionBlock<T>(IDataflowBlock block, T param, Action<T> action, [CallerMemberName] string? actionName = null, bool logPerformance = true)
     {
         if (!TryRunAction(() =>
         {
@@ -152,13 +152,13 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
             action.Invoke(param);
             ThrowIfCancellationRequested();
 
-        }, out var exception, actionName) && exception != null)
+        }, out var exception, actionName, logPerformance) && exception != null)
         {
             FaultDataflowBlock(actionName, block, exception);
         }
     }
 
-    protected virtual void RunActionBlock<T>(IDataflowBlock block, T param, Action<T, CancellationToken> action, [CallerMemberName] string? actionName = null)
+    protected virtual void RunActionBlock<T>(IDataflowBlock block, T param, Action<T, CancellationToken> action, [CallerMemberName] string? actionName = null, bool logPerformance = true)
     {
         if (!TryRunAction(() =>
         {
@@ -166,7 +166,7 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
             action.Invoke(param, Token);
             ThrowIfCancellationRequested();
 
-        }, out var exception, actionName) && exception != null)
+        }, out var exception, actionName, logPerformance) && exception != null)
         {
             FaultDataflowBlock(actionName, block, exception);
         }

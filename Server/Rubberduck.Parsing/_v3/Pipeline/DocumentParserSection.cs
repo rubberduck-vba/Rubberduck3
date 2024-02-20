@@ -25,36 +25,47 @@ public class DocumentParserSection : WorkspaceDocumentSection
 
     private TransformBlock<DocumentState, PipelineParseResult> ParseDocumentTextBlock { get; set; } = null!;
     private PipelineParseResult ParseDocumentText(DocumentState documentState) =>
-        RunTransformBlock(ParseDocumentTextBlock, documentState, e => _parser.ParseDocument(e, Token));
+        RunTransformBlock(ParseDocumentTextBlock, documentState, 
+            e => _parser.ParseDocument(e, Token), nameof(ParseDocumentText), logPerformance: true);
 
     private BroadcastBlock<PipelineParseResult> BroadcastParseResultBlock { get; set; } = null!;
     private PipelineParseResult BroadcastParseResult(PipelineParseResult parseResult) =>
-        RunTransformBlock(BroadcastParseResultBlock, parseResult, e => e);
+        RunTransformBlock(BroadcastParseResultBlock, parseResult, 
+            e => e, nameof(BroadcastParseResult), logPerformance: false);
 
     private ActionBlock<PipelineParseResult> SetDocumentStateFoldingsBlock { get; set; } = null!;
     private void SetDocumentStateFoldings(PipelineParseResult parseResult) =>
-        RunActionBlock(SetDocumentStateFoldingsBlock, parseResult, e => State = (DocumentParserState)State.WithFoldings(e.Foldings) 
-            ?? throw new InvalidOperationException("Document state was unexpectedly null."));
+        RunActionBlock(SetDocumentStateFoldingsBlock, parseResult, 
+            e => State = (DocumentParserState)State.WithFoldings(e.Foldings) ?? throw new InvalidOperationException("Document state was unexpectedly null."),
+            nameof(SetDocumentStateFoldings), logPerformance: false);
 
     private TransformBlock<PipelineParseResult, IParseTree> AcquireSyntaxTreeBlock { get; set; } = null!;
     private IParseTree AcquireSyntaxTree(PipelineParseResult input) =>
-        RunTransformBlock(AcquireSyntaxTreeBlock, input, e => e.ParseResult.Tree);
+        RunTransformBlock(AcquireSyntaxTreeBlock, input, 
+            e => e.ParseResult.Tree, nameof(AcquireSyntaxTree), logPerformance: false);
 
     private BroadcastBlock<IParseTree> BroadcastSyntaxTreeBlock { get; set; } = null!;
     private IParseTree BroadcastSyntaxTree(IParseTree syntaxTree) =>
-        RunTransformBlock(BroadcastSyntaxTreeBlock, syntaxTree, e => e);
+        RunTransformBlock(BroadcastSyntaxTreeBlock, syntaxTree, 
+            e => e, nameof(BroadcastSyntaxTree), logPerformance: false);
 
     private ActionBlock<IParseTree> SetDocumentStateSyntaxTreeBlock { get; set; } = null!;
     private void SetDocumentStateSyntaxTree(IParseTree syntaxTree) =>
-        RunActionBlock(SetDocumentStateSyntaxTreeBlock, syntaxTree, e => State = State.WithSyntaxTree(e));
+        RunActionBlock(SetDocumentStateSyntaxTreeBlock, syntaxTree, 
+            e => State = State.WithSyntaxTree(e), 
+            nameof(SetDocumentStateSyntaxTree), logPerformance: false);
 
-    private TransformBlock<IParseTree, Symbol> AcquireMemberSymbolsBlock { get; set; } = null!;
-    private Symbol AcquireMemberSymbols(IParseTree syntaxTree) =>
-        RunTransformBlock(AcquireMemberSymbolsBlock, syntaxTree, e => _symbolsService.DiscoverMemberSymbols(syntaxTree, State.Uri));
+    private TransformBlock<IParseTree, Symbol> DiscoverMemberSymbolsBlock { get; set; } = null!;
+    private Symbol DiscoverMemberSymbols(IParseTree syntaxTree) =>
+        RunTransformBlock(DiscoverMemberSymbolsBlock, syntaxTree, 
+            e => _symbolsService.DiscoverMemberSymbols(syntaxTree, State.Uri),
+            nameof(DiscoverMemberSymbols), logPerformance: true);
 
     private ActionBlock<Symbol> SetDocumentStateMemberSymbolsBlock { get; set; } = null!;
     private void SetDocumentStateMemberSymbols(Symbol symbol) =>
-        RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol, e => State = (DocumentParserState)State.WithSymbol(e));
+        RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol, 
+            e => State = (DocumentParserState)State.WithSymbol(e),
+            nameof(SetDocumentStateMemberSymbols), logPerformance: false);
 
     protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(ISourceBlock<DocumentParserState> source)
     {
@@ -76,8 +87,8 @@ public class DocumentParserSection : WorkspaceDocumentSection
         SetDocumentStateSyntaxTreeBlock = new(SetDocumentStateSyntaxTree, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(SetDocumentStateSyntaxTreeBlock), SetDocumentStateSyntaxTreeBlock);
 
-        AcquireMemberSymbolsBlock = new(AcquireMemberSymbols, ConcurrentExecutionOptions(Token));
-        _ = TraceBlockCompletionAsync(nameof(AcquireMemberSymbolsBlock), AcquireMemberSymbolsBlock);
+        DiscoverMemberSymbolsBlock = new(DiscoverMemberSymbols, ConcurrentExecutionOptions(Token));
+        _ = TraceBlockCompletionAsync(nameof(DiscoverMemberSymbolsBlock), DiscoverMemberSymbolsBlock);
 
         SetDocumentStateMemberSymbolsBlock = new(SetDocumentStateMemberSymbols, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
@@ -88,10 +99,10 @@ public class DocumentParserSection : WorkspaceDocumentSection
         Link(BroadcastParseResultBlock, AcquireSyntaxTreeBlock);
 
         Link(AcquireSyntaxTreeBlock, BroadcastSyntaxTreeBlock);
-        Link(BroadcastSyntaxTreeBlock, AcquireMemberSymbolsBlock);
+        Link(BroadcastSyntaxTreeBlock, DiscoverMemberSymbolsBlock);
         Link(BroadcastSyntaxTreeBlock, SetDocumentStateSyntaxTreeBlock);
 
-        Link(AcquireMemberSymbolsBlock, SetDocumentStateMemberSymbolsBlock);
+        Link(DiscoverMemberSymbolsBlock, SetDocumentStateMemberSymbolsBlock);
 
         var completion = Task.WhenAll(DataflowBlocks.Select(e => e.Block.Completion).ToArray());
 
@@ -102,7 +113,7 @@ public class DocumentParserSection : WorkspaceDocumentSection
             AcquireSyntaxTreeBlock,
             BroadcastSyntaxTreeBlock,
             SetDocumentStateMemberSymbolsBlock,
-            AcquireMemberSymbolsBlock,
+            DiscoverMemberSymbolsBlock,
             SetDocumentStateSyntaxTreeBlock
         }, completion);
     }
@@ -115,7 +126,7 @@ public class DocumentParserSection : WorkspaceDocumentSection
         (nameof(AcquireSyntaxTreeBlock), AcquireSyntaxTreeBlock),
         (nameof(BroadcastSyntaxTreeBlock), BroadcastSyntaxTreeBlock),
         (nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock),
-        (nameof(AcquireMemberSymbolsBlock), AcquireMemberSymbolsBlock),
+        (nameof(DiscoverMemberSymbolsBlock), DiscoverMemberSymbolsBlock),
         (nameof(SetDocumentStateSyntaxTreeBlock), SetDocumentStateSyntaxTreeBlock),
     }.ToImmutableArray();
 }

@@ -37,18 +37,19 @@ public class WorkspacePipeline : DataflowPipeline
     /// </summary>
     private WorkspaceHierarchicalSymbolsOrchestrator HierarchicalSymbolOrchestration { get; set; } = default!;
 
-    public async override Task StartAsync(object input, CancellationTokenSource? tokenSource)
-    {
-        var uri = (WorkspaceUri)input;
-        await SyntaxOrchestration.StartAsync(uri, null, tokenSource);
+    public async override Task StartAsync(object input, CancellationTokenSource? tokenSource) =>
+        await TryRunActionAsync(async () =>
+        {
+            var uri = (WorkspaceUri)input;
+            await SyntaxOrchestration.StartAsync(uri, null, tokenSource)
 
-        //.ContinueWith(t => MemberSymbolOrchestration.StartAsync(uri, null, tokenSource),
-        //    Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default)
+            .ContinueWith(t => MemberSymbolOrchestration.StartAsync(uri, null, tokenSource),
+                Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default)
 
-        //.ContinueWith(t => HierarchicalSymbolOrchestration.StartAsync(uri, null, tokenSource),
-        //    Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default)
-        ;
+            //.ContinueWith(t => HierarchicalSymbolOrchestration.StartAsync(uri, null, tokenSource),
+            //    Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default)
+            ;
 
-        LogTrace($"{nameof(WorkspacePipeline)} completed.");
-    }
+            LogTrace($"{nameof(WorkspacePipeline)} completed.");
+        });
 }

@@ -21,15 +21,21 @@ public class DocumentHierarchicalSymbolsSection : WorkspaceDocumentSection
 
     private TransformBlock<DocumentParserState, Symbol> AcquireDocumentStateSymbolsBlock { get; set; } = null!;
     private Symbol AcquireDocumentStateSymbols(DocumentParserState state) =>
-        RunTransformBlock(AcquireDocumentStateSymbolsBlock, state, e => e.Symbol ?? throw new InvalidOperationException("Document.Symbol is unexpectedly null."));
+        RunTransformBlock(AcquireDocumentStateSymbolsBlock, state, 
+            e => e.Symbol ?? throw new InvalidOperationException("Document.Symbol is unexpectedly null."),
+            nameof(AcquireDocumentStateSymbols), logPerformance: false);
 
     private TransformBlock<Symbol, Symbol> DiscoverHierarchicalSymbolsBlock { get; set; } = null!;
     private Symbol ResolveMemberSymbols(Symbol symbol) =>
-        RunTransformBlock(DiscoverHierarchicalSymbolsBlock, symbol, e => _symbolsService.DiscoverHierarchicalSymbols(State.SyntaxTree!, State.Uri));
+        RunTransformBlock(DiscoverHierarchicalSymbolsBlock, symbol, 
+            e => _symbolsService.DiscoverHierarchicalSymbols(State.SyntaxTree!, State.Uri),
+            nameof(ResolveMemberSymbols), logPerformance: true);
 
     private ActionBlock<Symbol> SetDocumentStateMemberSymbolsBlock { get; set; } = null!;
     private void SetDocumentStateMemberSymbols(Symbol symbol) =>
-        RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol, e => State = (DocumentParserState)State.WithSymbol(e));
+        RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol, 
+            e => State = (DocumentParserState)State.WithSymbol(e), 
+            nameof(SetDocumentStateMemberSymbols), logPerformance: false);
 
     protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(ISourceBlock<DocumentParserState> source)
     {
