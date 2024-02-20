@@ -106,7 +106,7 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
 
     protected abstract ImmutableArray<(string Name, IDataflowBlock Block)> DataflowBlocks { get; }
 
-    public void LogPipelineCompletionState()
+    public virtual void LogPipelineCompletionState()
     {
         var builder = new StringBuilder();
         builder.AppendLine($"Pipeline ({GetType().Name}) completion status");

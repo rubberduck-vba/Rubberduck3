@@ -37,6 +37,7 @@ public class ParserPipelineSectionProvider
             {
                 pipeline.Cancel();
             }
+            catch(TaskCanceledException) { }
             finally
             {
                 _tasks.Remove(uri, out _);

@@ -44,10 +44,10 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
         {
             var message = t.Status switch
             {
-                TaskStatus.RanToCompletion => $"{GetType().Name}[{name}] task completed successfully.",
-                TaskStatus.Canceled => $"{GetType().Name}[{name}] task was cancelled.",
-                TaskStatus.Faulted => $"{GetType().Name}[{name}] task is faulted.",
-                _ => $"{GetType().Name}[{name}] task is in unexpected state '{t.Status}'.",
+                TaskStatus.RanToCompletion => $"{GetType().Name}[{name} block] task completed successfully.",
+                TaskStatus.Canceled => $"{GetType().Name}[{name} block] task was cancelled.",
+                TaskStatus.Faulted => $"{GetType().Name}[{name} block] task is faulted.",
+                _ => $"{GetType().Name}[{name} block] task is in unexpected state '{t.Status}'.",
             };
             LogTrace(message, Exception?.Message);
         }, Token, TaskContinuationOptions.None, TaskScheduler.Default);
