@@ -42,46 +42,15 @@ public class WorkspacePipeline : DataflowPipeline
         {
             var uri = (WorkspaceUri)input;
             
-            var pipelineCompletion = SyntaxOrchestration.StartAsync(uri, null, tokenSource);
-            await pipelineCompletion;
+            // first step is to collect the syntax trees.
+            await SyntaxOrchestration.StartAsync(uri, null, tokenSource);
 
-            if (pipelineCompletion.IsFaulted)
-            {
-                LogException(pipelineCompletion.Exception, "Workspace pipeline faulted at syntax orchestration.");
-                return;
-            }
-            else if (pipelineCompletion.IsCanceled)
-            {
-                LogWarning("Pipeline cancelled at syntax orchestration pass.");
-                return;
-            }
+            // then we can resolve member symbols...
+            //await MemberSymbolOrchestration.StartAsync(uri, null, tokenSource);
 
-            var memberSymbolsCompletion = MemberSymbolOrchestration.StartAsync(uri, null, tokenSource);
-            await memberSymbolsCompletion;
-
-            if (memberSymbolsCompletion.IsFaulted)
-            {
-                LogException(memberSymbolsCompletion.Exception, "Workspace pipeline faulted at member symbols orchestration.");
-                return;
-            }
-            else if (memberSymbolsCompletion.IsCanceled)
-            {
-                LogWarning("Pipeline cancelled at member symbol orchestration pass.");
-                return;
-            }
-
-            var hierarchicalSymbolsCompletion = HierarchicalSymbolOrchestration.StartAsync(uri, null, tokenSource);
-            if (hierarchicalSymbolsCompletion.IsFaulted)
-            {
-                LogException(hierarchicalSymbolsCompletion.Exception, "Workspace pipeline faulted at syntax orchestration.");
-                return;
-            }
-            else if (hierarchicalSymbolsCompletion.IsCanceled)
-            {
-                LogWarning("Pipeline cancelled at hierarchical symbol orchestration pass.");
-                return;
-            }
+            // ...and only then we know enough to collect and resolve the rest of the symbols.
+            //await HierarchicalSymbolOrchestration.StartAsync(uri, null, tokenSource);
 
             LogTrace($"{nameof(WorkspacePipeline)} completed.");
-        });
+        }, logPerformance: true);
 }

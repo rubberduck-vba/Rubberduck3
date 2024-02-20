@@ -67,6 +67,10 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
         {
             await Completion;
         }
+        catch (Exception exception)
+        {
+            LogException(exception);
+        }
         finally
         {
             LogPipelineCompletionState();
@@ -105,11 +109,11 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
     public void LogPipelineCompletionState()
     {
         var builder = new StringBuilder();
-        builder.AppendLine($"Pipeline completion status");
+        builder.AppendLine($"Pipeline ({GetType().Name}) completion status");
 
         foreach (var (name, block) in DataflowBlocks)
         {
-            builder.AppendLine($"[{name}] status: {block.Completion.Status}");
+            builder.AppendLine($"\t{(block.Completion.IsCompletedSuccessfully ? "✔️": "◼️")}[{name}] status: {block.Completion.Status}");
         }
         LogDebug(builder.ToString());
     }

@@ -174,34 +174,47 @@ public abstract class ServiceBase
     public async Task<bool> TryRunActionAsync(Func<Task> action, [CallerMemberName] string? name = default, bool logPerformance = true)
     {
         var verbosity = TraceLevel;
-        var (success, elapsed, exception) = await TimedAction.TryRunAsync(action);
-        if (success)
+        try
         {
-            LogPerformanceIf(logPerformance, elapsed, name: name);
-            return true;
+
+            var (success, elapsed, exception) = await TimedAction.TryRunAsync(action);
+            if (success)
+            {
+                LogPerformanceIf(logPerformance, elapsed, name: name);
+                return true;
+            }
+            else if (exception is not null)
+            {
+                OnError(exception, $"{nameof(TryRunAction)} failed: [{name}]");
+            }
         }
-        else if (exception is not null)
+        catch (Exception exception)
         {
             OnError(exception, $"{nameof(TryRunAction)} failed: [{name}]");
         }
-
         return false;
     }
 
     public async Task<bool> TryRunActionAsync<T>(Func<Task<T>> action, [CallerMemberName] string? name = default, bool logPerformance = true)
     {
         var verbosity = TraceLevel;
-        var (success, result, elapsed, exception) = await TimedAction.TryRunAsync(action);
-        if (success)
+        try
         {
-            LogPerformanceIf(logPerformance, elapsed, name: name);
-            return true;
+            var (success, result, elapsed, exception) = await TimedAction.TryRunAsync(action);
+            if (success)
+            {
+                LogPerformanceIf(logPerformance, elapsed, name: name);
+                return true;
+            }
+            else if (exception is not null)
+            {
+                OnError(exception, $"{nameof(TryRunAction)} failed: [{name}]");
+            }
         }
-        else if (exception is not null)
+        catch (Exception exception)
         {
             OnError(exception, $"{nameof(TryRunAction)} failed: [{name}]");
         }
-
         return false;
     }
 }
