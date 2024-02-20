@@ -35,9 +35,8 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
         _links.Add(source.LinkTo(target, options));
     }
 
-    protected Task TraceBlockCompletionAsync<TBlock>(string name, TBlock block) where TBlock : IDataflowBlock
-    {
-        return block.Completion.ContinueWith(t =>
+    protected Task TraceBlockCompletionAsync<TBlock>(string name, TBlock block) where TBlock : IDataflowBlock => 
+        block.Completion.ContinueWith(t =>
         {
             var message = t.Status switch
             {
@@ -48,7 +47,6 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
             };
             LogTrace(message, Exception?.Message);
         }, Token, TaskContinuationOptions.None, TaskScheduler.Default);
-    }
 
     protected virtual void FaultDataflowBlock(string? name, IDataflowBlock block, Exception exception)
     {
