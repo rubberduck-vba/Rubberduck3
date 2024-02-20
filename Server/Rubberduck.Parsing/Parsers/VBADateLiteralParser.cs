@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Exceptions;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Model;
@@ -19,7 +20,8 @@ public sealed class VBADateLiteralParser
         var lexer = new VBADateLexer(stream);
         var tokens = new CommonTokenStream(lexer);
         var parser = new VBADateParser(tokens);
-        parser.AddErrorListener(new ExceptionErrorListener(null, CodeKind.SnippetCode)); // notify?
+
+        parser.AddErrorListener(new ThrowingSyntaxErrorListener(null!, CodeKind.SnippetCode)); // report or throw?
         VBADateParser.CompilationUnitContext tree;
         try
         {

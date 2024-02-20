@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.Model.Declarations.Execution;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
@@ -8,7 +9,7 @@ namespace Rubberduck.InternalApi.Model.Declarations.Operators;
 
 public record class VBUBoundOperator : VBOperator
 {
-    public VBUBoundOperator(Uri parentUri, string arrayOperandExpression, string dimensionIndexExpression, TypedSymbol? resolvedArrayOperand = null, TypedSymbol? resolvedDimensionIndex = null)
+    public VBUBoundOperator(WorkspaceUri parentUri, string arrayOperandExpression, string dimensionIndexExpression, TypedSymbol? resolvedArrayOperand = null, TypedSymbol? resolvedDimensionIndex = null)
         : base(Tokens.UBound, parentUri, (resolvedArrayOperand is null || resolvedDimensionIndex is null) ? null : [resolvedArrayOperand, resolvedDimensionIndex!])
     {
         ArrayOperandExpression = arrayOperandExpression;

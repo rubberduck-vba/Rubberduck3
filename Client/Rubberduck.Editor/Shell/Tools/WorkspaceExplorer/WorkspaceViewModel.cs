@@ -1,7 +1,7 @@
 ﻿using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
+using Rubberduck.InternalApi.Services;
 using Rubberduck.UI;
-using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Shell.Tools.WorkspaceExplorer;
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
             {
                 Name = model.VBProject.Name,
                 Uri = new Uri(service.FileSystem.Path.Combine(model.Uri.LocalPath, ProjectFile.SourceRoot + "\\")),
-                IsFileSystemWatcherEnabled = service.IsFileSystemWatcherEnabled(model.Uri),
+                //IsFileSystemWatcherEnabled = service.IsFileSystemWatcherEnabled(model.Uri),
                 IsExpanded = true
             };
 

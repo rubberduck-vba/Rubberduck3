@@ -10,15 +10,18 @@ public static class UriExtensions
     /// <remarks>
     /// If the URI has a '#' fragment, it becomes a '/' segment and the provided <c>name</c> becomes the fragment segment.
     /// </remarks>
-    public static Uri GetChildSymbolUri(this Uri uri, string name)
+    public static WorkspaceFileUri GetChildSymbolUri(this WorkspaceUri uri, string name)
     {
-        var parentUriString = uri.OriginalString;
+        var parentUriString = System.IO.Path.Combine(
+            System.IO.Path.GetDirectoryName(uri.OriginalString) ?? string.Empty,
+            System.IO.Path.GetFileNameWithoutExtension(uri.OriginalString));
+
         var fragmentIndex = parentUriString.IndexOf('#');
         if (fragmentIndex > 0)
         {
             parentUriString = parentUriString.Replace('#', '/');
         }
-
-        return new(parentUriString + $"#{name}");
+        
+        return new WorkspaceFileUri(parentUriString + $"#{name}", uri.WorkspaceRoot);
     }
 }

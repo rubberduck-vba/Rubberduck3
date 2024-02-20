@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.Model.Declarations.Execution;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
@@ -8,7 +9,7 @@ namespace Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 
 public abstract record class VBBitwiseOperator : VBBinaryOperator
 {
-    protected VBBitwiseOperator(string token, Uri parentUri, string lhsExpression, string rhsExpression, TypedSymbol? lhs = null, TypedSymbol? rhs = null) 
+    protected VBBitwiseOperator(string token, WorkspaceUri parentUri, string lhsExpression, string rhsExpression, TypedSymbol? lhs = null, TypedSymbol? rhs = null) 
         : base(token, parentUri, lhsExpression, rhsExpression, lhs, rhs)
     {
         ResolvedType = VBLongType.TypeInfo;

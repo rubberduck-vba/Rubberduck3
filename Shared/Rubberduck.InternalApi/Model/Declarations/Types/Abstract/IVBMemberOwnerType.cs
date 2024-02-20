@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.Model.Declarations.Symbols;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using System;
 using System.Collections.Generic;
@@ -17,13 +18,13 @@ public abstract record class VBTypeMember
     /// <summary>
     /// Creates a new type member associated with a symbol.
     /// </summary>
-    protected VBTypeMember(Uri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, Symbol declaration, Symbol[]? definitions = null)
+    protected VBTypeMember(WorkspaceUri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, Symbol declaration, Symbol[]? definitions = null)
         : this(uri, name, kind, accessibility, declaration, definitions, isUserDefined: true) { }
 
     /// <summary>
     /// Creates a new type member without a symbol (non-user code).
     /// </summary>
-    protected VBTypeMember(Uri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, Symbol? declaration = null, Symbol[]? definitions = null, bool isUserDefined = false, bool isHidden = false)
+    protected VBTypeMember(WorkspaceUri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, Symbol? declaration = null, Symbol[]? definitions = null, bool isUserDefined = false, bool isHidden = false)
     {
         Uri = uri;
         IsUserDefined = isUserDefined;
@@ -35,7 +36,7 @@ public abstract record class VBTypeMember
         IsHidden = isHidden;
     }
 
-    public Uri Uri { get; init; }
+    public WorkspaceUri Uri { get; init; }
     public bool IsUserDefined { get; init; }
     public bool IsHidden { get; init; }
     public string Name { get; init; }
@@ -49,7 +50,7 @@ public abstract record class VBTypeMember
     public Symbol? Declaration { get; init; }
     public Symbol[] Definitions { get; init; }
     
-    public VBTypeMember WithUri(Uri uri) => this with { Uri = uri };
+    public VBTypeMember WithUri(WorkspaceUri uri) => this with { Uri = uri };
     public VBTypeMember WithName(string name) => this with { Name = name };
     public VBTypeMember WithSymbolKind(RubberduckSymbolKind kind) => this with { Kind = Kind };
     public VBTypeMember WithAccessibility(Accessibility accessibility) => this with { Accessibility = accessibility };

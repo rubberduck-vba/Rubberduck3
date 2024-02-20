@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Operators;
@@ -13,7 +14,7 @@ namespace Rubberduck.Tests.VBTypes;
 [TestClass]
 public class NegationOperatorTests : UnaryOperatorTests
 {
-    protected override VBUnaryOperator CreateOperator(Uri uri, TypedSymbol symbol) => new VBNegationOperator(expression: $"-{symbol.Name}", symbol, uri);
+    protected override VBUnaryOperator CreateOperator(WorkspaceUri uri, TypedSymbol symbol) => new VBNegationOperator(expression: $"-{symbol.Name}", symbol, uri);
 
     [TestMethod]
     [TestCategory("Operators")]

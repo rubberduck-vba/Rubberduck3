@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using Rubberduck.Unmanaged.Model;
 using Rubberduck.Unmanaged.Abstract.SafeComWrappers.VB;
 using System;
+using Rubberduck.InternalApi.Extensions;
 
 namespace Rubberduck.VBEditor.Extensions
 {
@@ -12,9 +13,9 @@ namespace Rubberduck.VBEditor.Extensions
         /// Gets the standard projectId for a <em>library reference</em>.
         /// <strong>Do not</strong> use this overload for <em>referenced user projects</em>.
         /// </summary>
-        public static Uri GetWorkspaceUri(this ReferenceInfo reference)
+        public static WorkspaceUri GetWorkspaceUri(this ReferenceInfo reference, WorkspaceUri root)
         {
-            return new QualifiedModuleName(reference).WorkspaceUri;
+            return new WorkspaceFolderUri(new QualifiedModuleName(reference).WorkspaceUri.LocalPath, root);
         }
     }
 

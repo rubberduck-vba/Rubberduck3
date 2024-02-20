@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.Model.Declarations.Execution;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
@@ -9,7 +10,7 @@ namespace Rubberduck.InternalApi.Model.Declarations.Operators;
 
 public record class VBCompareIsOperator : VBComparisonOperator
 {
-    public VBCompareIsOperator(Uri parentUri, string lhsExpression, string rhsExpression, TypedSymbol? lhs = null, TypedSymbol? rhs = null)
+    public VBCompareIsOperator(WorkspaceUri parentUri, string lhsExpression, string rhsExpression, TypedSymbol? lhs = null, TypedSymbol? rhs = null)
         : base(Tokens.CompareIsOp, parentUri, lhsExpression, rhsExpression, lhs, rhs)
     {
     }

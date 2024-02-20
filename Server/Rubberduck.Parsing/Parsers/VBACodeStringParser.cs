@@ -34,9 +34,9 @@ public static class VBACodeStringParser
         {
             return ParseInternal(ParserMode.SllOnly, parser, tokenStream, startRule);
         }
-        catch (ParsePassSyntaxErrorException exception)
+        catch (SyntaxErrorException exception)
         {
-            var actualMode = parser.Interpreter.PredictionMode.ToString().ToUpperInvariant();
+            var actualMode = parser.Interpreter.PredictionMode.ToString()!.ToUpperInvariant();
             System.Diagnostics.Debug.Assert(actualMode == "SLL");
 
             var message = $"{actualMode} mode failed while parsing the code at symbol {exception.OffendingSymbol.Text} at L{exception.LineNumber}C{exception.Position}. Retrying using LL.";
@@ -49,7 +49,7 @@ public static class VBACodeStringParser
         }
         catch (Exception exception)
         {
-            var actualMode = parser.Interpreter.PredictionMode.ToString().ToUpperInvariant();
+            var actualMode = parser.Interpreter.PredictionMode.ToString()!.ToUpperInvariant();
             System.Diagnostics.Debug.Assert(actualMode == "SLL");
 
             var message = $"{actualMode} mode threw an exception. Retrying LL mode.";
@@ -61,7 +61,7 @@ public static class VBACodeStringParser
             }
         }
 
-        return (null, null);
+        return (null!, null!);
     }
 
     private static (IParseTree parseTree, TokenStreamRewriter rewriter) ParseInternal(ParserMode mode, VBAParser parser, CommonTokenStream tokenStream, ParserStartRule startRule)

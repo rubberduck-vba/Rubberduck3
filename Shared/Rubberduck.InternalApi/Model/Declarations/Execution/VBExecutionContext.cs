@@ -24,6 +24,7 @@ public class VBExecutionContext : ServiceBase, IDiagnosticSource
     {
     }
 
+    public int LanguageVersion { get; set; } = 7;
     public bool Is64BitHost { get; set; }
 
     public void AddTypedSymbol(TypedSymbol symbol) => _symbols.TryAdd(symbol, null!);

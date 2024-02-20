@@ -70,9 +70,12 @@ public abstract class WorkspaceUri : Uri
         IsSrcRoot = relativeUriString is null;
 
         var localRoot = _srcRoot.LocalPath;
-        _relativeUri = (relativeUriString ??= ProjectFile.SourceRoot).StartsWith(localRoot)
+        relativeUriString = (relativeUriString ??= ProjectFile.SourceRoot).StartsWith(localRoot)
             ? relativeUriString.Substring(localRoot.Length, relativeUriString.Length - localRoot.Length)
             : relativeUriString;
+
+        _relativeUri = System.IO.Path.GetDirectoryName(relativeUriString) + System.IO.Path.DirectorySeparatorChar + System.IO.Path.GetFileNameWithoutExtension(relativeUriString);
+        Name = System.IO.Path.GetFileName(relativeUriString);
     }
 
     /// <summary>
@@ -80,6 +83,8 @@ public abstract class WorkspaceUri : Uri
     /// </summary>
     public bool IsSrcRoot { get; }
     public string? RelativeUriString => _relativeUri;
+
+    public string Name { get; }
 
     /// <summary>
     /// The absolute, base <c>Uri</c> for this workspace.
@@ -97,5 +102,7 @@ public abstract class WorkspaceUri : Uri
     /// <summary>
     /// The absolute <c>Uri</c> location this <c>WorkspaceUri</c> is pointing to.
     /// </summary>
-    public virtual Uri AbsoluteLocation => IsSrcRoot ? _srcRoot : new(_srcRoot.LocalPath + _relativeUri);
+    public virtual Uri AbsoluteLocation => IsSrcRoot ? _srcRoot : new($"{_srcRoot.LocalPath}{_relativeUri[..^System.IO.Path.GetFileNameWithoutExtension(Name).Length]}{Name}");
+
+    public override string ToString() => _relativeUri ?? _srcRoot.ToString();
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
@@ -14,7 +15,7 @@ public abstract class VBDoubleTypeArithmeticOpTests : OperatorTests
     protected abstract double ExpectResult(double lhs, double rhs);
     protected abstract DateTime ExpectResult(DateTime lhs, int rhs);
 
-    protected sealed override VBUnaryOperator CreateOperator(Uri uri, TypedSymbol symbol) => throw new NotSupportedException();
+    protected sealed override VBUnaryOperator CreateOperator(WorkspaceUri uri, TypedSymbol symbol) => throw new NotSupportedException();
 
     [TestMethod]
     [TestCategory("Operators")]

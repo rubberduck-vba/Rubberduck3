@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Threading.Tasks;
 
-namespace Rubberduck.UI.Services.Abstract
+namespace Rubberduck.InternalApi.Services
 {
     public class WorkspaceServiceEventArgs : EventArgs
     {
@@ -24,15 +24,17 @@ namespace Rubberduck.UI.Services.Abstract
 
         IFileSystem FileSystem { get; }
 
+        IWorkspaceStateManager State { get; }
         /// <summary>
         /// Gets the project file for all loaded workspaces.
         /// </summary>
         IEnumerable<ProjectFile> ProjectFiles { get; }
 
         Task<bool> OpenProjectWorkspaceAsync(Uri uri);
-        bool IsFileSystemWatcherEnabled(Uri root);
-        void EnableFileSystemWatcher(Uri root);
-        void DisableFileSystemWatcher(Uri root);
+
+        //bool IsFileSystemWatcherEnabled(Uri root);
+        //void EnableFileSystemWatcher(Uri root);
+        //void DisableFileSystemWatcher(Uri root);
 
         Task<bool> SaveWorkspaceFileAsync(WorkspaceFileUri uri);
         Task<bool> SaveWorkspaceFileAsAsync(WorkspaceFileUri uri, string path);

@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.Model.Declarations.Execution;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Operators.Abstract;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
@@ -17,7 +18,7 @@ public record class VBAssignmentOperator : VBBinaryOperator
 {
     private readonly AssignmentKind _kind;
 
-    public VBAssignmentOperator(AssignmentKind kind, Uri parentUri, string lhsExpression, string rhsExpression, TypedSymbol? lhs = null, TypedSymbol? rhs = null)
+    public VBAssignmentOperator(AssignmentKind kind, WorkspaceUri parentUri, string lhsExpression, string rhsExpression, TypedSymbol? lhs = null, TypedSymbol? rhs = null)
         : base(Tokens.CompareEqualOp, parentUri, lhsExpression, rhsExpression, lhs, rhs)
     {
         _kind = kind;

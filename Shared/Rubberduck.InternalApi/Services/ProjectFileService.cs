@@ -32,7 +32,6 @@ public class ProjectFileService : ServiceBase, IProjectFileService
         var content = _fileSystem.File.ReadAllText(path);
         var projectFile = JsonSerializer.Deserialize<ProjectFile>(content) ?? throw new InvalidOperationException();
 
-        projectFile.Uri = root;
-        return projectFile;
+        return projectFile.WithUri(root);
     }
 }

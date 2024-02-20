@@ -4,6 +4,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.Editor.Shell.Document;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
+using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Abstract;
@@ -48,21 +49,22 @@ namespace Rubberduck.Editor.Commands
 
         protected async override Task OnExecuteAsync(object? parameter)
         {
-            if (parameter is WorkspaceFileUri uri)
+            var workspace = _workspaces.ActiveWorkspace;
+            if (workspace != null && parameter is WorkspaceFileUri uri)
             {
-                var rootUri = _workspaces.ActiveWorkspace?.WorkspaceRoot;
+                var rootUri = workspace.WorkspaceRoot;
                 //var root = _workspaces.ActiveWorkspace?.WorkspaceRoot?.LocalPath ?? throw new InvalidOperationException();
                 //var srcRoot = System.IO.Path.Combine(root, ProjectFile.SourceRoot);
                 //var relativeUri = uri.OriginalString[1..][srcRoot.Length..];
 
-                if (rootUri != null && (_workspaces.ActiveWorkspace?.TryGetWorkspaceFile(uri, out var file) ?? false)
-                    && file != null && !file.IsMissing && !file.IsLoadError)
+                if (rootUri != null && workspace.TryGetWorkspaceFile(uri, out var file) && file != null && !file.IsMissing && !file.IsLoadError)
                 {
                     UserControl view;
                     IDocumentTabViewModel document;
-                    if (file.IsSourceFile)
+
+                    if (file is SourceFileDocumentState)
                     {
-                        document = new VBACodeDocumentTabViewModel(uri, file.Name, file.Content, false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus);
+                        document = new VBACodeDocumentTabViewModel(uri, file.Name, file.Text, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus);
                         view = new SourceCodeEditorControl() { DataContext = document };
                     }
                     else
@@ -70,21 +72,23 @@ namespace Rubberduck.Editor.Commands
                         switch (file.FileExtension)
                         {
                             case "md":
-                                document = new MarkdownDocumentTabViewModel(uri, file.Name, file.Content, false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus);
+                                document = new MarkdownDocumentTabViewModel(uri, file.Name, file.Text, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus);
                                 view = new MarkdownEditorControl() { DataContext = document };
                                 break;
                             case "rdproj":
-                                document = new RubberduckProjectDocumentTabViewModel(uri, ProjectFile.FileName /* TODO put the project name here */, file.Content, false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus);
+                                document = new RubberduckProjectDocumentTabViewModel(uri, workspace.ProjectName, file.Text, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus);
                                 view = new SourceCodeEditorControl() { DataContext = document }; // TODO understand json as a different "language"
                                 break;
                             default:
-                                document = new TextDocumentTabViewModel(uri, file.Name, file.Content, false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus);
+                                document = new TextDocumentTabViewModel(uri, file.Name, file.Text, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus);
                                 view = new TextEditorControl() { DataContext = document };
                                 break;
                         }
                     }
 
+                    file = file.WithOpened(true);
                     NotifyLanguageServer(file);
+
                     document.ContentControl = view;
                     _shell.ViewModel.DocumentWindows.Add(document);
                     _shell.ViewModel.ActiveDocumentTab = document;
@@ -94,7 +98,7 @@ namespace Rubberduck.Editor.Commands
             await Task.CompletedTask;
         }
 
-        private void NotifyLanguageServer(WorkspaceFileInfo file)
+        private void NotifyLanguageServer(DocumentState file)
         {
             var lsp = _lsp();
             if (lsp is null)
@@ -104,9 +108,9 @@ namespace Rubberduck.Editor.Commands
             }
 
             var absoluteUri = file.Uri.AbsoluteLocation;
-
-            var languageId = file.IsSourceFile
-                ? "vba"
+            
+            var languageId = file is SourceFileDocumentState 
+                ? SupportedLanguage.VBA.Id
                 : "none";
 
             var textDocumentItem = new TextDocumentItem
@@ -114,10 +118,9 @@ namespace Rubberduck.Editor.Commands
                 Uri = absoluteUri,
                 Version = 1,
                 LanguageId = languageId,
-                Text = file.OriginalContent
+                Text = file.Text,
             };
             lsp.TextDocument.DidOpenTextDocument(new() { TextDocument = textDocumentItem });
-            file.IsOpened = true;
         }
     }
 }

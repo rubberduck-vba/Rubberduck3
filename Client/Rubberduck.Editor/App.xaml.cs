@@ -264,7 +264,7 @@ namespace Rubberduck.Editor
             services.AddSingleton<ILanguageServerConnectionStatusProvider, LanguageClientService>(provider => (LanguageClientService)provider.GetRequiredService<ILanguageClientService>());
 
             services.AddSingleton<ServerStartupOptions>(provider => _options);
-            services.AddSingleton<Process>(provider => Process.GetProcessById((int)_options.ClientProcessId));
+            //services.AddSingleton<Process>(provider => Process.GetProcessById((int)_options.ClientProcessId));
 
             services.AddSingleton<IFileSystem, FileSystem>();
             services.AddSingleton<PerformanceRecordAggregator>();
@@ -323,10 +323,11 @@ namespace Rubberduck.Editor
             services.AddSingleton<IWindowFactory<SettingsWindow, SettingsWindowViewModel>, SettingsWindowFactory>();
             services.AddSingleton<ISettingViewModelFactory, SettingViewModelFactory>();
 
-            services.AddSingleton<IWorkspaceService, WorkspaceService>();
+            services.AddSingleton<IWorkspaceService, WorkspaceClientService>();
             services.AddSingleton<ILanguageServerTraceViewModel, LanguageServerTraceViewModel>();
             services.AddSingleton<IWorkspaceExplorerViewModel, WorkspaceExplorerViewModel>();
             services.AddSingleton<IWorkspaceStateManager, WorkspaceStateManager>();
+            services.AddSingleton<DocumentContentStore>();
             services.AddSingleton<OpenDocumentCommand>();
 
             services.AddSingleton<FileCommandHandlers>();

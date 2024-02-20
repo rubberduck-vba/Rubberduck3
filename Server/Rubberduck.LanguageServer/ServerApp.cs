@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server.WorkDone;
 using OmniSharp.Extensions.LanguageServer.Server;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
@@ -14,11 +14,16 @@ using Rubberduck.InternalApi.Settings.Model.LanguageServer;
 using Rubberduck.LanguageServer.Handlers.Lifecycle;
 using Rubberduck.LanguageServer.Handlers.Workspace;
 using Rubberduck.Parsing._v3.Pipeline;
+using Rubberduck.Parsing._v3.Pipeline.Services;
+using Rubberduck.Parsing.Abstract;
+using Rubberduck.Parsing.Parsers;
+using Rubberduck.Parsing.PreProcessing;
+using Rubberduck.Parsing.TokenStreamProviders;
 using Rubberduck.ServerPlatform;
 using System;
 using System.Diagnostics;
 using System.IO.Abstractions;
-using System.Text.Json;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,6 +34,31 @@ namespace Rubberduck.LanguageServer
         public ServerApp(ServerStartupOptions options, CancellationTokenSource tokenSource)
             : base(options, tokenSource, requireWorkspaceUri: true)
         {
+        }
+
+        public async override Task TestConfigAsync()
+        {
+            var services = new ServiceCollection();
+            services.AddLogging(ConfigureLogging);
+
+            ConfigureServices(StartupOptions, services);
+
+            var provider = services.BuildServiceProvider();
+            var logger = provider.GetRequiredService<ILogger<ServerApp>>();
+            var app = provider.GetRequiredService<IWorkspaceService>();
+
+            if (!string.IsNullOrWhiteSpace(StartupOptions.WorkspaceRoot))
+            {
+                var uri = new WorkspaceFolderUri(null, new Uri(StartupOptions.WorkspaceRoot));
+                await app.OpenProjectWorkspaceAsync(uri.WorkspaceRoot);
+                logger.LogInformation("Workspace was loaded successfully.");
+
+                var service = provider.GetRequiredService<WorkspacePipeline>();
+                var task = service.StartAsync(uri, TokenSource);
+
+                await task;
+                logger.LogInformation($"Workspace was processed: {task.Status}");
+            }
         }
 
         //private TextDocumentSelector GetSelector(SupportedLanguage language)
@@ -61,12 +91,39 @@ namespace Rubberduck.LanguageServer
         {
             //services.AddSingleton<ILanguageServerFacade>(provider => _languageServer);
             services.AddSingleton<ServerStartupOptions>(provider => options);
-            services.AddSingleton<Process>(provider => Process.GetProcessById(options.ClientProcessId));
-            
+
+            if (options.ClientProcessId > 0)
+            {
+                services.AddSingleton<Process>(provider => Process.GetProcessById(options.ClientProcessId));
+                services.AddSingleton<IHealthCheckService<LanguageServerStartupSettings>, ClientProcessHealthCheckService<LanguageServerStartupSettings>>();
+            }
+
             services.AddSingleton<SupportedLanguage>(provider => SupportedLanguage.VBA);
 
             services.AddSingleton<IFileSystem, FileSystem>();
             services.AddSingleton<PerformanceRecordAggregator>();
+
+            services.AddSingleton<IProjectFileService, ProjectFileService>();
+
+            services.AddSingleton<IWorkspaceService, WorkspaceService>();
+            services.AddSingleton<IWorkspaceStateManager, WorkspaceStateManager>();
+
+            services.AddSingleton<WorkspacePipeline>();
+            services.AddSingleton<ParserPipelineSectionProvider>();
+            services.AddTransient<WorkspaceDocumentParserOrchestrator>();
+            services.AddTransient<DocumentParserSection>();
+            services.AddTransient<DocumentMemberSymbolsSection>();
+            services.AddTransient<DocumentHierarchicalSymbolsSection>();
+
+            services.AddSingleton<PipelineParseTreeSymbolsService>();
+            services.AddSingleton<IResolverService, ResolverService>();
+            services.AddSingleton<PipelineParserService>();
+            services.AddSingleton<IParser<string>, TokenStreamParserAdapterWithPreprocessing<string>>();
+            services.AddSingleton<ICommonTokenStreamProvider<string>, StringTokenStreamProvider>();
+            services.AddSingleton<ITokenStreamParser, VBATokenStreamParser>();
+            services.AddSingleton<ITokenStreamPreprocessor, VBAPreprocessor>();
+            services.AddSingleton<VBAPreprocessorParser>();
+            services.AddSingleton<ICompilationArgumentsProvider, WorkspaceCompilationArgumentsProvider>();
 
             services.AddSingleton<ServerPlatformServiceHelper>();
             services.AddSingleton<LanguageServerState>();
@@ -82,7 +139,6 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<DocumentContentStore>();
 
             services.AddSingleton<IExitHandler, ExitHandler>();
-            services.AddSingleton<IHealthCheckService<LanguageServerStartupSettings>, ClientProcessHealthCheckService<LanguageServerStartupSettings>>();
 
             services.AddSingleton<IWorkDoneProgressStateService, WorkDoneProgressStateService>();
             services.AddSingleton<ISettingsChangedHandler<RubberduckSettings>>(provider => provider.GetRequiredService<RubberduckSettingsProvider>());
@@ -146,57 +202,27 @@ namespace Rubberduck.LanguageServer
 
         protected async override Task OnServerStartedAsync(ILanguageServer server, CancellationToken token, IWorkDoneObserver? progress, ServerPlatformServiceHelper service)
         {
-            var store = server.Services.GetRequiredService<DocumentContentStore>();
+            var workspaces = server.GetRequiredService<IWorkspaceService>();
+
             var state = (ILanguageServerState)ServerState;
             var rootUriString = state.RootUri!.GetFileSystemPath();
             service.LogTrace($"ServerState RootUri: {rootUriString}");
             var rootUri = new Uri(rootUriString);
 
-            var projectFilePath = System.IO.Path.Combine(rootUriString, ProjectFile.FileName);
-            var projectFileContent = System.IO.File.ReadAllText(projectFilePath);
-            var projectFile = JsonSerializer.Deserialize<ProjectFile>(projectFileContent) ?? throw new InvalidOperationException("Project file could not be deserialized.");
-
-            var srcRootPath = System.IO.Path.Combine(rootUriString, ProjectFile.SourceRoot);
-            service.LogTrace($"Workspace source root: {srcRootPath}");
-
-            progress?.OnNext(message: "Loading source files...", percentage: 10, cancellable: false);
-            foreach (var item in projectFile.VBProject.Modules)
+            if (await workspaces.OpenProjectWorkspaceAsync(rootUri))
             {
-                service.TryRunAction(() =>
-                {
-                    progress?.OnNext($"Loading file: {item.Name}", 10, false);
-
-                    var path = System.IO.Path.Combine(srcRootPath, item.Uri);
-                    var uri = new WorkspaceFileUri(item.Uri, rootUri);
-                    var document = new DocumentState(uri, System.IO.File.ReadAllText(path))
+                var pipeline = server.GetRequiredService<WorkspaceDocumentParserOrchestrator>();
+                await pipeline.StartAsync(new WorkspaceFileUri(null!, state.RootUri.ToUri()), new CancellationTokenSource())
+                    .ContinueWith(t =>
                     {
-                        IsOpened = item.IsAutoOpen
-                    };
+                        progress?.OnCompleted();
+                        if (progress != null)
+                        {
+                            service.LogTrace($"Progress token '{progress.WorkDoneToken}' has been completed.");
+                        }
+                    }, token, TaskContinuationOptions.None, TaskScheduler.Default);
 
-                    if (service.TraceLevel == TraceLevel.Verbose)
-                    {
-                        service.LogTrace($"Loaded: {uri}");
-                    }
-
-                    store.AddOrUpdate(uri, document);
-                }, "LoadWorkspaceFile");
-            }
-
-            progress?.OnNext($"Loading project references...", percentage: 20, cancellable: false);
-            foreach (var item in projectFile.VBProject.References)
-            {
-                progress?.OnNext($"Loading library: {item.Name}", 20, false);
-                service.LogTrace($"TODO: load definitions from '{item.Uri}'.");
-            }
-
-            progress?.OnNext(message: "Processing workspace documents", percentage: 25, cancellable: false);
-            var pipeline = server.GetRequiredService<WorkspaceParserPipeline>();
-            _ = pipeline.StartAsync(state.RootUri, default!, new CancellationTokenSource());
-
-            progress?.OnCompleted();
-            if (progress != null)
-            {
-                service.LogTrace($"Progress token '{progress.WorkDoneToken}' has been completed.");
+                service.LogInformation($"Project {pipeline.State.ProjectName} ({pipeline.State.WorkspaceFiles.Count()} files) is good to go!");
             }
         }
     }

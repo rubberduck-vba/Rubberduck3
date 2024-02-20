@@ -1,7 +1,8 @@
 {
   "profiles": {
     "Rubberduck.LanguageServer": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "-c -1 -w \"C:\\Users\\mathi\\AppData\\Local\\Rubberduck\\Workspaces\\Battleship\""
     }
   }
 }

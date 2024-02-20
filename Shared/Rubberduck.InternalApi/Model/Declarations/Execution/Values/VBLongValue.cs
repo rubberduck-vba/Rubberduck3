@@ -22,7 +22,7 @@ public record class VBLongValue : VBNumericTypedValue,
     public override int Size => sizeof(int);
     public override double NumericValue { get; init; }
 
-    public VBLongValue WithValue(double value)
+    public new VBLongValue WithValue(double value)
     {
         if (value > MaxValue.Value || value < MinValue.Value)
         {
@@ -31,5 +31,5 @@ public record class VBLongValue : VBNumericTypedValue,
         return this with { NumericValue = (int)value };
     }
 
-    public new VBLongValue WithValue(int value) => WithValue((double)value);
+    public VBLongValue WithValue(int value) => WithValue((double)value);
 }

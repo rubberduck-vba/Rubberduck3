@@ -12,7 +12,7 @@ namespace Rubberduck.ServerPlatform.Logging
     [Target("LSP")]
     public class LanguageServerClientLoggerTarget : TargetWithLayout
     {
-        private LanguageServerProvider _provider;
+        private LanguageServerProvider? _provider;
 
         private static readonly Dictionary<LogLevel, MessageType> _map = new()
         {

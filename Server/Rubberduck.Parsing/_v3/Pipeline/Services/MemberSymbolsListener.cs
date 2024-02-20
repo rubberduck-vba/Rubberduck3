@@ -1,9 +1,11 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.Parsing.Grammar;
+using System.Runtime.CompilerServices;
 
 namespace Rubberduck.Parsing._v3.Pipeline.Services;
 
@@ -29,6 +31,7 @@ public class HierarchicalSymbolsListener : VBAParserBaseListener, IVBListener<Sy
 
 public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
 {
+    private readonly ILogger _logger;
     private readonly WorkspaceFileUri _workspaceFileUri;
     private readonly bool _isVB6 = false;
 
@@ -48,39 +51,88 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
     /// Push an empty list when entering a new context; Pop the child symbols list when creating the current symbol when exiting the context.
     /// </remarks>
     private readonly Stack<List<(Type TContext, Symbol Symbol)>> _currentSymbolChildren = [];
-    private Type? _currentContextType;
+    private readonly Stack<WorkspaceFileUri> _currentParentUri = [];
+    private Stack<Type> _currentContextType = [];
 
-    public MemberSymbolsListener(WorkspaceFileUri uri, bool isVB6 = false)
+    private void LogStackState([CallerMemberName]string? name = null, bool isBefore = true)
     {
+        //if (!_currentContextType.TryPeek(out var currentContextType))
+        //{
+        //    currentContextType = null;
+        //}
+        //if (!_currentParentUri.TryPeek(out var currentParentUri))
+        //{
+        //    currentParentUri = null;
+        //}
+        //if (!_currentSymbolChildren.TryPeek(out var currentSymbolChildren))
+        //{
+        //    currentSymbolChildren = null;
+        //}
+
+        //_logger.LogTrace($"Thread {Environment.CurrentManagedThreadId} [{name}] ({(isBefore ? "before" : "after")}) | ContentType: {currentContextType?.Name ?? "(top of stack)"} (stack depth: {_currentContextType.Count}) | CurrentParentUri: {currentParentUri?.ToString() ?? "(top of stack)"} (stack depth: {_currentParentUri.Count}) | CurrentSymbolChildren: {currentSymbolChildren?.Count.ToString() ?? "(top of stack)"} (stack depth: {_currentSymbolChildren.Count})");
+    }
+
+    public MemberSymbolsListener(ILogger logger, WorkspaceFileUri uri, bool isVB6 = false)
+    {
+        _logger = logger;
         _workspaceFileUri = uri;
         _isVB6 = isVB6;
     }
 
     public Symbol Result { get; private set; } = null!;
 
-    private void OnChildSymbol<TContext>(Symbol symbol, TContext? _ = null) where TContext :ParserRuleContext
-        => _currentSymbolChildren.Peek().Add((typeof(TContext), symbol));
-
-
-    private void OnEnterNewCurrentSymbol<TContext>(TContext? _ = null) where TContext : ParserRuleContext
-        => _currentSymbolChildren.Push([]);
-
-    private Symbol CreateCurrentSymbol<TContext>(Func<IEnumerable<Symbol>, Symbol> create, TContext? _ = null) where TContext : ParserRuleContext
+    private void OnChildSymbol<TContext>(Symbol symbol, TContext _) where TContext : ParserRuleContext
     {
-        if (typeof(TContext) != _currentContextType)
-        {
-            throw new InvalidOperationException($"BUG: Expected current symbol under current context type {_currentContextType?.Name ?? "(null)"}, but context is {typeof(TContext).Name}.");
-        }
-
-        var children = _currentSymbolChildren.Pop().Select(node => node.Symbol).ToArray();
-        return create(children);
+        _currentSymbolChildren.Peek().Add((typeof(TContext), symbol));        
+        LogStackState(isBefore: false);
     }
 
-    public override void EnterModule([NotNull] VBAParser.ModuleContext context)
-        => OnEnterNewCurrentSymbol(context);
+    private void OnEnterNewCurrentSymbol<TContext>(TContext context) where TContext : ParserRuleContext
+    {
+        LogStackState(isBefore: true);
+
+        var newParentUri = _workspaceFileUri;
+        if (_currentParentUri.TryPeek(out var uri))
+        {
+            newParentUri = uri;
+        }
+        
+        newParentUri = newParentUri.GetChildSymbolUri($"{typeof(TContext).Name}@{context.Start.StartIndex}") ?? _workspaceFileUri;
+
+        _currentParentUri.Push(newParentUri);
+        _currentSymbolChildren.Push([]);
+        _currentContextType.Push(typeof(TContext));
+
+        LogStackState(isBefore: false);
+    }
+
+    private Symbol CreateCurrentSymbol<TContext>(Func<IEnumerable<Symbol>, Symbol> create, TContext context) where TContext : ParserRuleContext
+    {
+        LogStackState(isBefore: true);
+
+        var type = _currentContextType.Pop();
+        if (type != null && typeof(TContext) != type)
+        {
+            throw new InvalidOperationException($"***Thread {Environment.CurrentManagedThreadId} BUG: Expected current symbol under current context type {type.Name ?? "(null)"}, but context is {typeof(TContext).Name}.");
+        }
+
+        _currentParentUri.Pop();
+
+        var children = _currentSymbolChildren.Pop()
+            .Select(node => node.Symbol.WithParentUri(_currentParentUri.TryPeek(out var parentUri) ? parentUri : _workspaceFileUri))
+            .ToArray();
+
+        var symbol = create(children);
+
+        LogStackState(isBefore: false);
+        return symbol;
+    }
+
+    public override void EnterModule([NotNull] VBAParser.ModuleContext context) => OnEnterNewCurrentSymbol(context);
 
     public override void ExitModule([NotNull] VBAParser.ModuleContext context)
     {
+        LogStackState(isBefore: true);
         Symbol moduleSymbol;
         if (_hasModuleHeader)
         {
@@ -105,6 +157,7 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
         }
 
         Result = moduleSymbol;
+        LogStackState(isBefore: false);
     }
 
     public override void ExitModuleAttributes([NotNull] VBAParser.ModuleAttributesContext context)
@@ -202,8 +255,8 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
         {
             return ParameterModifier.ExplicitByVal;
         }
-        else if (_currentContextType == typeof(VBAParser.PropertyLetStmtContext)
-              || _currentContextType == typeof(VBAParser.PropertySetStmtContext))
+        else if (_currentContextType.Peek() == typeof(VBAParser.PropertyLetStmtContext)
+              || _currentContextType.Peek() == typeof(VBAParser.PropertySetStmtContext))
         {
             return ParameterModifier.ImplicitByVal;
         }
@@ -227,7 +280,7 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
     protected string GetIdentifierNameTokenText(VBAParser.UntypedIdentifierContext context)
         => GetIdentifierNameTokenText(context.identifierValue());
     protected string GetIdentifierNameTokenText(VBAParser.IdentifierValueContext context)
-        => context.IDENTIFIER().GetText();
+        => context.IDENTIFIER()?.GetText() ?? context.keyword().GetText();
 
     protected string? GetAsTypeExpressionText(VBAParser.AsTypeClauseContext? context)
         => context?.type().GetText();
@@ -243,7 +296,7 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
         Symbol symbol;
         if (context.OPTIONAL() != null)
         {
-            var valueExpression = context.argDefaultValue().expression().GetText();
+            var valueExpression = context.argDefaultValue()?.expression().GetText();
             symbol = new OptionalParameterSymbol(name, parentUri, modifier, asTypeExpression, valueExpression);
         }
         else if (context.PARAMARRAY() != null)
@@ -258,8 +311,7 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
         OnChildSymbol(symbol, context);
     }
 
-    public override void EnterDeclareStmt([NotNull] VBAParser.DeclareStmtContext context)
-        => OnEnterNewCurrentSymbol(context);
+    public override void EnterDeclareStmt([NotNull] VBAParser.DeclareStmtContext context) => OnEnterNewCurrentSymbol(context);
 
     public override void ExitDeclareStmt([NotNull] VBAParser.DeclareStmtContext context)
     {
@@ -288,8 +340,7 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
         }
     }
 
-    public override void EnterEventStmt([NotNull] VBAParser.EventStmtContext context)
-        => OnEnterNewCurrentSymbol(context);
+    public override void EnterEventStmt([NotNull] VBAParser.EventStmtContext context) => OnEnterNewCurrentSymbol(context);
     public override void ExitEventStmt([NotNull] VBAParser.EventStmtContext context)
     {
         var name = context.identifier().GetText();
@@ -298,8 +349,7 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
         OnChildSymbol(CreateCurrentSymbol(children => new EventMemberSymbol(name, _workspaceFileUri, accessibility, children.OfType<ParameterSymbol>()), context), context);
     }
 
-    public override void EnterEnumerationStmt([NotNull] VBAParser.EnumerationStmtContext context)
-        => OnEnterNewCurrentSymbol(context);
+    public override void EnterEnumerationStmt([NotNull] VBAParser.EnumerationStmtContext context) => OnEnterNewCurrentSymbol(context);
 
     public override void ExitEnumerationStmt([NotNull] VBAParser.EnumerationStmtContext context)
     {
@@ -308,23 +358,22 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
 
         OnChildSymbol(CreateCurrentSymbol(children => new EnumSymbol(name, _workspaceFileUri, accessibility, children.OfType<EnumMemberSymbol>()), context), context);
     }
-    public override void ExitEnumerationStmt_Constant([NotNull] VBAParser.EnumerationStmt_ConstantContext context)
-    {
-        var name = context.identifier().GetText();
-        var valueExpression = context.expression().GetText();
 
-        OnChildSymbol(new EnumMemberSymbol(name, _workspaceFileUri, valueExpression), context);
-    }
-
-    public override void EnterUdtDeclaration([NotNull] VBAParser.UdtDeclarationContext context)
-        => OnEnterNewCurrentSymbol(context);
-
+    public override void EnterUdtDeclaration([NotNull] VBAParser.UdtDeclarationContext context) => OnEnterNewCurrentSymbol(context);
     public override void ExitUdtDeclaration([NotNull] VBAParser.UdtDeclarationContext context)
     {
         var name = GetIdentifierNameTokenText(context.untypedIdentifier());
         var accessibility = GetAccessibility(context.visibility());
 
         OnChildSymbol(CreateCurrentSymbol(children => new UserDefinedTypeSymbol(name, _workspaceFileUri, accessibility, children.OfType<UserDefinedTypeMemberSymbol>()), context), context);
+    }
+
+    public override void ExitEnumerationStmt_Constant([NotNull] VBAParser.EnumerationStmt_ConstantContext context)
+    {
+        var name = context.identifier().GetText();
+        var valueExpression = context.expression()?.GetText();
+
+        OnChildSymbol(new EnumMemberSymbol(name, _workspaceFileUri, valueExpression), context);
     }
     public override void ExitUdtMember([NotNull] VBAParser.UdtMemberContext context)
     {
@@ -344,11 +393,10 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
             asTypeExpression = GetAsTypeExpressionText(declaration.optionalArrayClause()?.asTypeClause());
         }
 
-        OnChildSymbol(CreateCurrentSymbol(children => new UserDefinedTypeMemberSymbol(name, _workspaceFileUri, asTypeExpression), context), context);
+        OnChildSymbol(new UserDefinedTypeMemberSymbol(name, _workspaceFileUri, asTypeExpression), context);
     }
 
-    public override void EnterSubStmt([NotNull] VBAParser.SubStmtContext context)
-        => OnEnterNewCurrentSymbol(context);
+    public override void EnterSubStmt([NotNull] VBAParser.SubStmtContext context) => OnEnterNewCurrentSymbol(context);
 
     public override void ExitSubStmt([NotNull] VBAParser.SubStmtContext context)
     {
@@ -358,8 +406,7 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
         OnChildSymbol(CreateCurrentSymbol(children => new ProcedureSymbol(name, _workspaceFileUri, accessibility, children), context), context);
     }
 
-    public override void EnterFunctionStmt([NotNull] VBAParser.FunctionStmtContext context)
-        => OnEnterNewCurrentSymbol(context);
+    public override void EnterFunctionStmt([NotNull] VBAParser.FunctionStmtContext context) => OnEnterNewCurrentSymbol(context);
 
     public override void ExitFunctionStmt([NotNull] VBAParser.FunctionStmtContext context)
     {
@@ -370,8 +417,7 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
         OnChildSymbol(CreateCurrentSymbol(children => new FunctionSymbol(name, _workspaceFileUri, accessibility, children, typeName), context), context);
     }
 
-    public override void EnterPropertyGetStmt([NotNull] VBAParser.PropertyGetStmtContext context)
-        => OnEnterNewCurrentSymbol(context);
+    public override void EnterPropertyGetStmt([NotNull] VBAParser.PropertyGetStmtContext context) => OnEnterNewCurrentSymbol(context);
 
     public override void ExitPropertyGetStmt([NotNull] VBAParser.PropertyGetStmtContext context)
     {
@@ -382,8 +428,7 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
         OnChildSymbol(CreateCurrentSymbol(children => new PropertyGetSymbol(name, _workspaceFileUri, accessibility, children, typeName), context), context);
     }
 
-    public override void EnterPropertyLetStmt([NotNull] VBAParser.PropertyLetStmtContext context)
-        => OnEnterNewCurrentSymbol(context);
+    public override void EnterPropertyLetStmt([NotNull] VBAParser.PropertyLetStmtContext context) => OnEnterNewCurrentSymbol(context);
 
     public override void ExitPropertyLetStmt([NotNull] VBAParser.PropertyLetStmtContext context)
     {
@@ -393,8 +438,7 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
         OnChildSymbol(CreateCurrentSymbol(children => new PropertyLetSymbol(name, _workspaceFileUri, accessibility, children), context), context);
     }
 
-    public override void EnterPropertySetStmt([NotNull] VBAParser.PropertySetStmtContext context)
-        => OnEnterNewCurrentSymbol(context);
+    public override void EnterPropertySetStmt([NotNull] VBAParser.PropertySetStmtContext context) => OnEnterNewCurrentSymbol(context);
 
     public override void ExitPropertySetStmt([NotNull] VBAParser.PropertySetStmtContext context)
     {

@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Diagnostics;
 
 namespace Rubberduck.LanguageServer
 {
@@ -15,11 +16,20 @@ namespace Rubberduck.LanguageServer
 
             try
             {
-                await new ServerApp(options, tokenSource).RunAsync();
+                if (options.ClientProcessId <= 0)
+                {
+                    await new ServerApp(options, tokenSource).TestConfigAsync();
+                }
+                else
+                {
+                    await new ServerApp(options, tokenSource).RunAsync();
+                }
                 return 0;
             }
-            catch
+            catch (Exception exception)
             {
+                Console.WriteLine(exception);
+                Debug.WriteLine(exception);
                 return -1;
             }
         }

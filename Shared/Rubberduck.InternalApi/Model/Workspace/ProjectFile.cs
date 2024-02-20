@@ -13,21 +13,26 @@ public record class ProjectFile
     /// The name of the <em>source root</em> folder in workspaces.
     /// </summary>
     public const string SourceRoot = ".src";
+        
+    // TODO find a better home for this
+    public static readonly string RubberduckVersion = "3.0";
 
     /// <summary>
     /// The absolute workspace root location where the project file is.
     /// </summary>
     /// <remarks>This property is not serialized.</remarks>
     [JsonIgnore]
-    public Uri Uri { get; set; }
+    public Uri Uri { get; init; } = default!;
 
     /// <summary>
     /// The Rubberduck version that created the file.
     /// </summary>
-    public string Rubberduck { get; set; } = "3.0";
+    public string Rubberduck { get; init; } = RubberduckVersion;
 
     /// <summary>
     /// Information about the VBA project.
     /// </summary>
-    public Project VBProject { get; set; } = new();
+    public Project VBProject { get; init; } = new();
+
+    public ProjectFile WithUri(Uri uri) => this with { Uri = uri };
 }

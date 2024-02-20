@@ -31,9 +31,9 @@ public class PerformanceRecordAggregator
 {
     private readonly ILogger _logger;
     private readonly RubberduckSettingsProvider _settings;
-    private readonly ConcurrentDictionary<string, ConcurrentBag<TimeSpan>> _items = new();
-    private readonly ConcurrentDictionary<string, TimeSpan> _totals = new();
-    private readonly ConcurrentDictionary<string, DateTime> _firstWrites = new();
+    private readonly ConcurrentDictionary<string, ConcurrentBag<TimeSpan>> _items = [];
+    private readonly ConcurrentDictionary<string, TimeSpan> _totals = [];
+    private readonly ConcurrentDictionary<string, DateTime> _firstWrites = [];
 
     // TODO make these settings
     private static readonly int SmallSampleSize = 10;
@@ -129,7 +129,18 @@ public class PerformanceRecordAggregator
 
     public TimeSpan TotalElapsed(string name) => _totals[name];
 
-    public TimeSpan AverageElapsed(string name) => TotalElapsed(name) / Count(name);
+    public TimeSpan AverageElapsed(string name)
+    {
+        try
+        {
+            return TotalElapsed(name) / Count(name);
+        }
+        catch (OverflowException)
+        {
+            return TimeSpan.Zero;
+        }
+    }
+
     public TimeSpan MinElapsed(string name) => _items[name].Min();
     public TimeSpan MaxElapsed(string name) => _items[name].Max();
     public TimeSpan Median(string name)

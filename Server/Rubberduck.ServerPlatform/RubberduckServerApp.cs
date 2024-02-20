@@ -11,6 +11,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using OmniSharp.Extensions.LanguageServer.Server;
 using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.InternalApi.Settings.Model.ServerStartup;
@@ -56,6 +57,28 @@ namespace Rubberduck.ServerPlatform
             _startupOptions = options;
             _tokenSource = tokenSource;
             _requireWorkspaceUri = requireWorkspaceUri;
+        }
+
+        protected ServerStartupOptions StartupOptions => _startupOptions;
+        protected CancellationTokenSource TokenSource => _tokenSource;
+
+        public async virtual Task TestConfigAsync()
+        {
+            var services = new ServiceCollection();
+            services.AddLogging(ConfigureLogging);
+
+            ConfigureServices(_startupOptions, services);
+
+            var provider = services.BuildServiceProvider();
+            var app = provider.GetRequiredService<IWorkspaceService>();
+
+            if (!string.IsNullOrWhiteSpace(_startupOptions.WorkspaceRoot))
+            {
+                await app.OpenProjectWorkspaceAsync(new Uri(_startupOptions.WorkspaceRoot));
+                _logger?.LogInformation("Workspace was loaded successfully.");
+            }
+
+            _logger?.LogInformation("IWorkspaceService config OK");
         }
 
         public async Task RunAsync()
