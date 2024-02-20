@@ -76,7 +76,9 @@ public class DocumentParserSection : WorkspaceDocumentSection
         BroadcastParseResultBlock = new(BroadcastParseResult, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(BroadcastParseResultBlock), BroadcastParseResultBlock);
 
-        SetDocumentStateFoldingsBlock = new(SetDocumentStateFoldings, ConcurrentExecutionOptions(Token));
+        var parseResultBufferBlock = new BufferBlock<PipelineParseResult>(new DataflowBlockOptions { CancellationToken = Token });
+
+        SetDocumentStateFoldingsBlock = new(SetDocumentStateFoldings, SingleMessageExecutionOptions(Token)); // NOTE: not thread-safe, keep single-threaded
         _ = TraceBlockCompletionAsync(nameof(SetDocumentStateFoldingsBlock), SetDocumentStateFoldingsBlock);
 
         AcquireSyntaxTreeBlock = new(AcquireSyntaxTree, ConcurrentExecutionOptions(Token));
@@ -85,25 +87,34 @@ public class DocumentParserSection : WorkspaceDocumentSection
         BroadcastSyntaxTreeBlock = new(BroadcastSyntaxTree, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(BroadcastSyntaxTreeBlock), BroadcastSyntaxTreeBlock);
 
+        var syntaxTreeBufferBlock = new BufferBlock<IParseTree>(new DataflowBlockOptions { CancellationToken = Token });
+
         SetDocumentStateSyntaxTreeBlock = new(SetDocumentStateSyntaxTree, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(SetDocumentStateSyntaxTreeBlock), SetDocumentStateSyntaxTreeBlock);
 
         DiscoverMemberSymbolsBlock = new(DiscoverMemberSymbols, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(DiscoverMemberSymbolsBlock), DiscoverMemberSymbolsBlock);
 
-        SetDocumentStateMemberSymbolsBlock = new(SetDocumentStateMemberSymbols, ConcurrentExecutionOptions(Token));
+        var symbolsBufferBlock = new BufferBlock<Symbol>(new DataflowBlockOptions { CancellationToken = Token });
+
+        SetDocumentStateMemberSymbolsBlock = new(SetDocumentStateMemberSymbols, SingleMessageExecutionOptions(Token)); // NOTE: not thread-safe, keep single-threaded
         _ = TraceBlockCompletionAsync(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
 
         Link(source, ParseDocumentTextBlock);
         Link(ParseDocumentTextBlock, BroadcastParseResultBlock);
-        Link(BroadcastParseResultBlock, SetDocumentStateFoldingsBlock);
+        Link(BroadcastParseResultBlock, parseResultBufferBlock);
         Link(BroadcastParseResultBlock, AcquireSyntaxTreeBlock);
+
+        Link(parseResultBufferBlock, SetDocumentStateFoldingsBlock);
 
         Link(AcquireSyntaxTreeBlock, BroadcastSyntaxTreeBlock);
         Link(BroadcastSyntaxTreeBlock, DiscoverMemberSymbolsBlock);
-        Link(BroadcastSyntaxTreeBlock, SetDocumentStateSyntaxTreeBlock);
+        Link(BroadcastSyntaxTreeBlock, syntaxTreeBufferBlock);
 
-        Link(DiscoverMemberSymbolsBlock, SetDocumentStateMemberSymbolsBlock);
+        Link(syntaxTreeBufferBlock, SetDocumentStateSyntaxTreeBlock);
+
+        Link(DiscoverMemberSymbolsBlock, symbolsBufferBlock);
+        Link(symbolsBufferBlock, SetDocumentStateMemberSymbolsBlock);
 
         var completion = Task.WhenAll(DataflowBlocks.Select(e => e.Block.Completion).ToArray());
 

@@ -48,14 +48,17 @@ public class DocumentMemberSymbolsSection : WorkspaceDocumentSection
         ResolveMemberSymbolsBlock = new(ResolveMemberSymbols, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(ResolveMemberSymbols), ResolveMemberSymbolsBlock);
 
-        SetDocumentStateMemberSymbolsBlock = new(SetDocumentStateMemberSymbols, ConcurrentExecutionOptions(Token));
+        var symbolBuffer = new BufferBlock<Symbol>(new DataflowBlockOptions { CancellationToken = Token });
+
+        SetDocumentStateMemberSymbolsBlock = new(SetDocumentStateMemberSymbols, SingleMessageExecutionOptions(Token)); // NOTE: not thread-safe, keep single-threaded
         _ = TraceBlockCompletionAsync(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
 
         Completion = SetDocumentStateMemberSymbolsBlock.Completion;
 
         Link(source, AcquireDocumentStateSymbolsBlock);
         Link(AcquireDocumentStateSymbolsBlock, ResolveMemberSymbolsBlock);
-        Link(ResolveMemberSymbolsBlock, SetDocumentStateMemberSymbolsBlock);
+        Link(ResolveMemberSymbolsBlock, symbolBuffer);
+        Link(symbolBuffer, SetDocumentStateMemberSymbolsBlock);
 
         return (new IDataflowBlock[] {
                 AcquireDocumentStateSymbolsBlock,

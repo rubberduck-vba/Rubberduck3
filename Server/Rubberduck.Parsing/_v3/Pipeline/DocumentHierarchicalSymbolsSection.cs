@@ -46,12 +46,15 @@ public class DocumentHierarchicalSymbolsSection : WorkspaceDocumentSection
         DiscoverHierarchicalSymbolsBlock = new(ResolveMemberSymbols, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(DiscoverHierarchicalSymbolsBlock), DiscoverHierarchicalSymbolsBlock);
 
+        var symbolsBuffer = new BufferBlock<Symbol>(new DataflowBlockOptions { CancellationToken = Token });
+
         SetDocumentStateMemberSymbolsBlock = new(SetDocumentStateMemberSymbols, ConcurrentExecutionOptions(Token));
-        var completion = TraceBlockCompletionAsync(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
+        _ = TraceBlockCompletionAsync(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
 
         Link(source, AcquireDocumentStateSymbolsBlock);
         Link(AcquireDocumentStateSymbolsBlock, DiscoverHierarchicalSymbolsBlock);
-        Link(DiscoverHierarchicalSymbolsBlock, SetDocumentStateMemberSymbolsBlock);
+        Link(DiscoverHierarchicalSymbolsBlock, symbolsBuffer);
+        Link(symbolsBuffer, SetDocumentStateMemberSymbolsBlock);
 
         return (new IDataflowBlock[] 
         {
