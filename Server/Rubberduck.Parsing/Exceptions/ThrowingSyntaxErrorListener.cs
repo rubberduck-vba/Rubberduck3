@@ -11,7 +11,7 @@ public class ThrowingSyntaxErrorListener : RubberduckParseErrorListenerBase
     public override void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
     {
         throw new SyntaxErrorException(
-            new SyntaxErrorInfo
+            new AntlrSyntaxErrorInfo
             {
                 Uri = Uri,
                 CodeKind = CodeKind,

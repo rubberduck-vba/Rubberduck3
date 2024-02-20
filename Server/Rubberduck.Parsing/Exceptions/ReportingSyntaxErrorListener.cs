@@ -8,12 +8,12 @@ public class ReportingSyntaxErrorListener : RubberduckParseErrorListenerBase
 {
     public ReportingSyntaxErrorListener(WorkspaceFileUri uri, CodeKind codeKind) :base(uri, codeKind) { }
 
-    public List<SyntaxErrorInfo> SyntaxErrors { get; } = [];
+    public List<AntlrSyntaxErrorInfo> SyntaxErrors { get; } = [];
 
     public override void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
     {
         SyntaxErrors.Add(
-            new SyntaxErrorInfo
+            new AntlrSyntaxErrorInfo
             {
                 Uri = this.Uri,
                 CodeKind = this.CodeKind,

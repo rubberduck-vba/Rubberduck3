@@ -139,9 +139,8 @@ public class DocumentParserSection : WorkspaceDocumentSection
 
         foreach (var (name, block) in DataflowBlocks)
         {
-            builder.AppendLine($"\t{(block.Completion.IsCompletedSuccessfully ? "✔️" : "◼️")}[{name}] status: {block.Completion.Status}");
+            builder.AppendLine($"\t{(block.Completion.IsCompletedSuccessfully ? "✔️" : block.Completion.IsFaulted ? "💀" : block.Completion.IsCanceled ? "⚠️" : "◼️")}[{name}] status: {block.Completion.Status}");
         }
         LogDebug(builder.ToString());
     }
-
 }

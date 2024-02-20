@@ -5,7 +5,7 @@ using Rubberduck.Parsing.Model;
 
 namespace Rubberduck.Parsing.Exceptions;
 
-public record class SyntaxErrorInfo
+public record class AntlrSyntaxErrorInfo
 {
     public WorkspaceFileUri Uri { get; init; } = default!;
     public CodeKind CodeKind { get; init; }
@@ -21,4 +21,11 @@ public record class SyntaxErrorInfo
     public OmniSharp.Extensions.LanguageServer.Protocol.Models.Range Range() =>
         new(start: new Position(OffendingSymbol.Line, OffendingSymbol.Column), 
             end: new Position(OffendingSymbol.EndLine(), OffendingSymbol.EndColumn()));
+
+    public SyntaxErrorInfo ToSyntaxErrorInfo() => new() 
+    {
+        Uri = Uri,
+        Message = Message,
+        Range = Range(),
+    };
 }

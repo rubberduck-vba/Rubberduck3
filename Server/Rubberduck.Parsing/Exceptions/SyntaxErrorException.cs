@@ -11,7 +11,7 @@ namespace Rubberduck.Parsing.Exceptions;
 [Serializable]
 public class SyntaxErrorException : Exception
 {
-    public SyntaxErrorException(SyntaxErrorInfo info)
+    public SyntaxErrorException(AntlrSyntaxErrorInfo info)
         : this(info.Uri, info.Message, info.Exception, info.OffendingSymbol, info.LineNumber, info.Position, info.CodeKind) { }
 
     public SyntaxErrorException(WorkspaceFileUri uri, string message, RecognitionException innerException, IToken offendingSymbol, int line, int position, CodeKind codeKind)

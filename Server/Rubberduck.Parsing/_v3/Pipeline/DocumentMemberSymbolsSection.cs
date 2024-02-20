@@ -6,6 +6,7 @@ using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Parsing._v3.Pipeline.Abstract;
 using System.Collections.Immutable;
+using System.Text;
 using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
@@ -69,4 +70,17 @@ public class DocumentMemberSymbolsSection : WorkspaceDocumentSection
         (nameof(ResolveMemberSymbolsBlock), ResolveMemberSymbolsBlock),
         (nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock),
     }.ToImmutableArray();
+
+    public override void LogPipelineCompletionState()
+    {
+        var builder = new StringBuilder();
+        builder.AppendLine($"Pipeline ({GetType().Name}) completion status");
+        builder.AppendLine($"\tℹ️ {(State?.Uri.ToString() ?? ("(no info)"))}");
+
+        foreach (var (name, block) in DataflowBlocks)
+        {
+            builder.AppendLine($"\t{(block.Completion.IsCompletedSuccessfully ? "✔️" : block.Completion.IsFaulted ? "💀" : block.Completion.IsCanceled ? "⚠️" : "◼️")}[{name}] status: {block.Completion.Status}");
+        }
+        LogDebug(builder.ToString());
+    }
 }

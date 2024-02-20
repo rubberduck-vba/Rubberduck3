@@ -20,8 +20,12 @@ public class WorkspacePipeline : DataflowPipeline
         : base(logger, settingsProvider, performance)
     {
         _workspaces = workspaces;
-        SyntaxOrchestration = new WorkspaceDocumentParserOrchestrator(this, _workspaces, sectionProvider, Logger, SettingsProvider, Performance);
-        MemberSymbolOrchestration = new WorkspaceMemberSymbolsOrchestrator(this, _workspaces, sectionProvider, Logger, SettingsProvider, Performance);
+
+        SyntaxOrchestration = new WorkspaceDocumentParserOrchestrator(this, _workspaces, sectionProvider, logger, settingsProvider, performance); 
+        MemberSymbolOrchestration = new WorkspaceMemberSymbolsOrchestrator(this, _workspaces, sectionProvider, logger, settingsProvider, performance);
+        HierarchicalSymbolOrchestration = new WorkspaceHierarchicalSymbolsOrchestrator(this, _workspaces, sectionProvider, logger, settingsProvider, performance);
+
+        Completion = MemberSymbolOrchestration.Completion;
     }
 
     /// <summary>
@@ -46,10 +50,10 @@ public class WorkspacePipeline : DataflowPipeline
             await SyntaxOrchestration.StartAsync(uri, null, tokenSource);
 
             // then we can resolve member symbols...
-            //await MemberSymbolOrchestration.StartAsync(uri, null, tokenSource);
+            await MemberSymbolOrchestration.StartAsync(uri, null, tokenSource);
 
             // ...and only then we know enough to collect and resolve the rest of the symbols.
-            //await HierarchicalSymbolOrchestration.StartAsync(uri, null, tokenSource);
+            await HierarchicalSymbolOrchestration.StartAsync(uri, null, tokenSource);
 
             LogTrace($"{nameof(WorkspacePipeline)} completed.");
         }, logPerformance: true);

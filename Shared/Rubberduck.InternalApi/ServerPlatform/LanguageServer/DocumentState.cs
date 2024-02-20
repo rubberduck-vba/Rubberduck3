@@ -1,6 +1,7 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
+using Rubberduck.Parsing.Model;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
@@ -17,11 +18,13 @@ public record class SourceFileDocumentState : DocumentState
 
     public SupportedLanguage Language { get; init; }
 
+    public IImmutableSet<SyntaxErrorInfo> SyntaxErrors { get; init; } = [];
     public IImmutableSet<FoldingRange> Foldings { get; init; } = [];
     public IImmutableSet<Diagnostic> Diagnostics { get; init; } = [];
     public Symbol? Symbol { get; init; }
 
     public SourceFileDocumentState WithLanguage(SupportedLanguage language) => this with { Language = language };
+    public SourceFileDocumentState WithSyntaxErrors(IEnumerable<SyntaxErrorInfo> errors) => this with { SyntaxErrors = errors.ToImmutableHashSet() };
     public SourceFileDocumentState WithFoldings(IEnumerable<FoldingRange> foldings) => this with { Foldings = foldings.ToImmutableHashSet() };
     public SourceFileDocumentState WithDiagnostics(IEnumerable<Diagnostic> diagnostics) => this with { Diagnostics = diagnostics.ToImmutableHashSet() };
     public SourceFileDocumentState WithSymbol(Symbol module) => this with { Symbol = module };
@@ -52,7 +55,7 @@ public record class DocumentState
     public bool IsLoadError { get; init; }
     public bool IsOpened { get; init; }
 
-    public bool IsModified => Version != default;
+    public bool IsModified => Version != 1;
 
     public DocumentState WithUri(WorkspaceFileUri uri) => this with { Uri = uri };
     public DocumentState WithText(string text) => this with { Text = text, Version = Version + 1 };
