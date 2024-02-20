@@ -62,8 +62,15 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
 
         ((ITargetBlock<TInput>)InputBlock).Post(input);
         InputBlock.Complete();
-        
-        await Completion;
+
+        try
+        {
+            await Completion;
+        }
+        finally
+        {
+            LogPipelineCompletionState();
+        }
     }
 
     protected virtual void SetInitialState(TState state) => State = state;
@@ -113,9 +120,7 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
         if (!TryRunAction(() =>
         {
             ThrowIfCancellationRequested();
-
             result = action.Invoke(param);
-            ThrowIfCancellationRequested();
 
         }, out var exception, actionName, logPerformance) && exception != null)
         {
@@ -131,9 +136,7 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
         if (!TryRunAction(() =>
         {
             ThrowIfCancellationRequested();
-
             result = action.Invoke(param, Token);
-            ThrowIfCancellationRequested();
 
         }, out var exception, actionName, logPerformance) && exception != null)
         {
@@ -148,9 +151,7 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
         if (!TryRunAction(() =>
         {
             ThrowIfCancellationRequested();
-
             action.Invoke(param);
-            ThrowIfCancellationRequested();
 
         }, out var exception, actionName, logPerformance) && exception != null)
         {
@@ -164,7 +165,6 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
         {
             ThrowIfCancellationRequested();
             action.Invoke(param, Token);
-            ThrowIfCancellationRequested();
 
         }, out var exception, actionName, logPerformance) && exception != null)
         {

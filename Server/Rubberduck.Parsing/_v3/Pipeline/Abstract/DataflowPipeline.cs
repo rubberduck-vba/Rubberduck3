@@ -56,9 +56,9 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
     {
         block.Fault(exception);
 
-        if (exception is OperationCanceledException)
+        if (exception is OperationCanceledException || exception is TaskCanceledException)
         {
-            LogWarning($"Dataflow block '{name ?? typeof(IDataflowBlock).Name}' was faulted (operation was cancelled).");
+            LogWarning($"Dataflow block '{name ?? typeof(IDataflowBlock).Name}' was faulted (task or operation was cancelled).");
         }
         else
         {
@@ -73,10 +73,7 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
         {
             Token.ThrowIfCancellationRequested();
         }
-        catch (ObjectDisposedException)
-        {
-            //throw new TaskCanceledException("CancellationTokenSource is already disposed.");
-        }
+        catch (ObjectDisposedException) { }
     }
 
     public void Dispose()

@@ -48,7 +48,9 @@ public class DocumentMemberSymbolsSection : WorkspaceDocumentSection
         _ = TraceBlockCompletionAsync(nameof(ResolveMemberSymbols), ResolveMemberSymbolsBlock);
 
         SetDocumentStateMemberSymbolsBlock = new(SetDocumentStateMemberSymbols, ConcurrentExecutionOptions(Token));
-        var completion = TraceBlockCompletionAsync(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
+        _ = TraceBlockCompletionAsync(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
+
+        Completion = SetDocumentStateMemberSymbolsBlock.Completion;
 
         Link(source, AcquireDocumentStateSymbolsBlock);
         Link(AcquireDocumentStateSymbolsBlock, ResolveMemberSymbolsBlock);
@@ -58,7 +60,7 @@ public class DocumentMemberSymbolsSection : WorkspaceDocumentSection
                 AcquireDocumentStateSymbolsBlock,
                 ResolveMemberSymbolsBlock,
                 SetDocumentStateMemberSymbolsBlock
-            }, completion);
+            }, Completion);
     }
 
     protected override ImmutableArray<(string, IDataflowBlock)> DataflowBlocks => new (string, IDataflowBlock)[]

@@ -14,7 +14,6 @@ using Rubberduck.InternalApi.Settings.Model.LanguageServer;
 using Rubberduck.LanguageServer.Handlers.Lifecycle;
 using Rubberduck.LanguageServer.Handlers.Workspace;
 using Rubberduck.Parsing._v3.Pipeline;
-using Rubberduck.Parsing._v3.Pipeline.Abstract;
 using Rubberduck.Parsing._v3.Pipeline.Services;
 using Rubberduck.Parsing.Abstract;
 using Rubberduck.Parsing.Parsers;
@@ -24,6 +23,7 @@ using Rubberduck.ServerPlatform;
 using System;
 using System.Diagnostics;
 using System.IO.Abstractions;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -54,9 +54,10 @@ namespace Rubberduck.LanguageServer
                 logger.LogInformation("Workspace was loaded successfully.");
 
                 var service = provider.GetRequiredService<WorkspacePipeline>();
-                await service.StartAsync(uri, TokenSource);
-                
-                logger.LogInformation("Workspace was processed successfully.");
+                var task = service.StartAsync(uri, TokenSource);
+
+                await task;
+                logger.LogInformation($"Workspace was processed: {task.Status}");
             }
         }
 
@@ -220,6 +221,8 @@ namespace Rubberduck.LanguageServer
                             service.LogTrace($"Progress token '{progress.WorkDoneToken}' has been completed.");
                         }
                     }, token, TaskContinuationOptions.None, TaskScheduler.Default);
+
+                service.LogInformation($"Project {pipeline.State.ProjectName} ({pipeline.State.WorkspaceFiles.Count()} files) is good to go!");
             }
         }
     }

@@ -43,11 +43,16 @@ public abstract class ServiceBase
         }
 
         name ??= "(name:null)";
-        message = message is null ? $"**PERF: {name} completed." : $"{name} completed; message: {message}";
-
         if (Performance != null && Settings.LoggerSettings.AggregatePerformanceLogs)
         {
             Performance.Add(new() { Name = name, Elapsed = elapsed });
+
+            var hits = Performance.Count(name);
+            message = message is null ? $"**PERF: {name} completed ({hits} events)." : $"{name} completed; message: {message}";
+        }
+        else
+        {
+            message = message is null ? $"**PERF: {name} completed." : $"{name} completed; message: {message}";
         }
 
         if (mode != PerformanceLoggerMode.AggregateOnly)

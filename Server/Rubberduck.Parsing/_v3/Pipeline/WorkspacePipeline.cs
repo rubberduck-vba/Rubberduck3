@@ -41,14 +41,46 @@ public class WorkspacePipeline : DataflowPipeline
         await TryRunActionAsync(async () =>
         {
             var uri = (WorkspaceUri)input;
-            await SyntaxOrchestration.StartAsync(uri, null, tokenSource)
+            
+            var pipelineCompletion = SyntaxOrchestration.StartAsync(uri, null, tokenSource);
+            await pipelineCompletion;
 
-            .ContinueWith(t => MemberSymbolOrchestration.StartAsync(uri, null, tokenSource),
-                Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default)
+            if (pipelineCompletion.IsFaulted)
+            {
+                LogException(pipelineCompletion.Exception, "Workspace pipeline faulted at syntax orchestration.");
+                return;
+            }
+            else if (pipelineCompletion.IsCanceled)
+            {
+                LogWarning("Pipeline cancelled at syntax orchestration pass.");
+                return;
+            }
 
-            //.ContinueWith(t => HierarchicalSymbolOrchestration.StartAsync(uri, null, tokenSource),
-            //    Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default)
-            ;
+            var memberSymbolsCompletion = MemberSymbolOrchestration.StartAsync(uri, null, tokenSource);
+            await memberSymbolsCompletion;
+
+            if (memberSymbolsCompletion.IsFaulted)
+            {
+                LogException(memberSymbolsCompletion.Exception, "Workspace pipeline faulted at member symbols orchestration.");
+                return;
+            }
+            else if (memberSymbolsCompletion.IsCanceled)
+            {
+                LogWarning("Pipeline cancelled at member symbol orchestration pass.");
+                return;
+            }
+
+            var hierarchicalSymbolsCompletion = HierarchicalSymbolOrchestration.StartAsync(uri, null, tokenSource);
+            if (hierarchicalSymbolsCompletion.IsFaulted)
+            {
+                LogException(hierarchicalSymbolsCompletion.Exception, "Workspace pipeline faulted at syntax orchestration.");
+                return;
+            }
+            else if (hierarchicalSymbolsCompletion.IsCanceled)
+            {
+                LogWarning("Pipeline cancelled at hierarchical symbol orchestration pass.");
+                return;
+            }
 
             LogTrace($"{nameof(WorkspacePipeline)} completed.");
         });
