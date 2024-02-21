@@ -1,7 +1,9 @@
 ﻿using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
@@ -35,5 +37,11 @@ public class ComEnumeration : ComType
                 Members.Add(new ComEnumerationMember(this, info, desc));
             }
         }
+    }
+
+    public override Symbol ToSymbol(WorkspaceFileUri uri)
+    {
+        var children = Members.Select(e => new EnumMemberSymbol(e.Name, uri.GetChildSymbolUri(Name), e.Value.ToString()));
+        return new EnumSymbol(Name, uri, InternalApi.Model.Accessibility.Public, children, isUserDefined: false);
     }
 }
