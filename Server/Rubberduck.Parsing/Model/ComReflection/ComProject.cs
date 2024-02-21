@@ -9,7 +9,6 @@ using TYPELIBATTR = System.Runtime.InteropServices.ComTypes.TYPELIBATTR;
 using TYPEKIND = System.Runtime.InteropServices.ComTypes.TYPEKIND;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 
 namespace Rubberduck.Parsing.Model.ComReflection;
 
@@ -31,7 +30,7 @@ public class ComProject : ComBase
     [DataMember(IsRequired = true)]
     public long MinorVersion { get; set; }
 
-    // YGNI...
+    // [Y]ou **[A]RE** [G]oing to [N]eed [I]t...
     // ReSharper disable once NotAccessedField.Local
 #pragma warning disable IDE0052 // Remove unread private members
     private readonly TypeLibTypeFlags _flags;
@@ -106,18 +105,18 @@ public class ComProject : ComBase
                     switch (typeAttributes.typekind)
                     {
                         case TYPEKIND.TKIND_ENUM:
-                            var enumeration = type ?? new ComEnumeration(this, typeLibrary, info, typeAttributes, index);
+                            var enumeration = type as ComEnumeration ?? new ComEnumeration(this, typeLibrary, info, typeAttributes, index);
                             Debug.Assert(enumeration is ComEnumeration);
-                            _enumerations.Add(enumeration as ComEnumeration);
+                            _enumerations.Add(enumeration);
                             if (type == null && !enumeration.Guid.Equals(Guid.Empty))
                             {
                                 KnownTypes.TryAdd(typeAttributes.guid, enumeration);
                             }
                             break;
                         case TYPEKIND.TKIND_COCLASS:
-                            var coclass = type ?? new ComCoClass(this, typeLibrary, info, typeAttributes, index);
+                            var coclass = type as ComCoClass ?? new ComCoClass(this, typeLibrary, info, typeAttributes, index);
                             Debug.Assert(coclass is ComCoClass && !coclass.Guid.Equals(Guid.Empty));
-                            _classes.Add(coclass as ComCoClass);
+                            _classes.Add(coclass);
                             if (type == null)
                             {
                                 KnownTypes.TryAdd(typeAttributes.guid, coclass);
@@ -125,9 +124,9 @@ public class ComProject : ComBase
                             break;
                         case TYPEKIND.TKIND_DISPATCH:
                         case TYPEKIND.TKIND_INTERFACE:
-                            var intface = type ?? new ComInterface(this, typeLibrary, info, typeAttributes, index);
+                            var intface = type as ComInterface ?? new ComInterface(this, typeLibrary, info, typeAttributes, index);
                             Debug.Assert(intface is ComInterface && !intface.Guid.Equals(Guid.Empty));
-                            _interfaces.Add(intface as ComInterface);
+                            _interfaces.Add(intface);
                             if (type == null)
                             {
                                 KnownTypes.TryAdd(typeAttributes.guid, intface);
@@ -138,9 +137,9 @@ public class ComProject : ComBase
                             _structs.Add(structure);
                             break;
                         case TYPEKIND.TKIND_MODULE:
-                            var module = type ?? new ComModule(this, typeLibrary, info, typeAttributes, index);
+                            var module = type as ComModule ?? new ComModule(this, typeLibrary, info, typeAttributes, index);
                             Debug.Assert(module is ComModule);
-                            _modules.Add(module as ComModule);
+                            _modules.Add(module);
                             if (type == null && !module.Guid.Equals(Guid.Empty))
                             {
                                 KnownTypes.TryAdd(typeAttributes.guid, module);
@@ -181,10 +180,8 @@ public class ComProject : ComBase
     public Symbol ToSymbol()
     {
         var uri = new WorkspaceFileUri(Path, new Uri(Directory.GetParent(Path)!.FullName));
-
-        var children = Modules.Select(e => e.ToSymbol(uri))
-            .Concat(CoClasses.Select(e => e.ToSymbol(uri)));
-
+        
+        var children = Members.Select(e => e.ToSymbol(uri));
         return new ProjectSymbol(Name, uri, children)
         {
             Detail = Documentation?.DocString,
