@@ -340,7 +340,7 @@ public record class EnumMemberSymbol : ValuedTypedSymbol
 
 public record class EventMemberSymbol : ProcedureSymbol
 {
-    public EventMemberSymbol(string name, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters)
+    public EventMemberSymbol(string name, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters = default)
         : base(name, parentUri, accessibility, parameters, RubberduckSymbolKind.Event) { }
 }
 

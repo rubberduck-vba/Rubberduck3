@@ -7,6 +7,9 @@ using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using TYPELIBATTR = System.Runtime.InteropServices.ComTypes.TYPELIBATTR;
 using TYPEKIND = System.Runtime.InteropServices.ComTypes.TYPEKIND;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
+using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 
 namespace Rubberduck.Parsing.Model.ComReflection;
 
@@ -35,27 +38,27 @@ public class ComProject : ComBase
 #pragma warning restore IDE0052 // Remove unread private members
 
     [DataMember(IsRequired = true)]
-    private readonly List<ComAlias> _aliases = new();
+    private readonly List<ComAlias> _aliases = [];
     public IEnumerable<ComAlias> Aliases => _aliases;
 
     [DataMember(IsRequired = true)]
-    private readonly List<ComInterface> _interfaces = new();
+    private readonly List<ComInterface> _interfaces = [];
     public IEnumerable<ComInterface> Interfaces => _interfaces;
 
     [DataMember(IsRequired = true)]
-    private readonly List<ComEnumeration> _enumerations = new();
+    private readonly List<ComEnumeration> _enumerations = [];
     public IEnumerable<ComEnumeration> Enumerations => _enumerations;
 
     [DataMember(IsRequired = true)]
-    private readonly List<ComCoClass> _classes = new();
+    private readonly List<ComCoClass> _classes = [];
     public IEnumerable<ComCoClass> CoClasses => _classes;
 
     [DataMember(IsRequired = true)]
-    private readonly List<ComModule> _modules = new();
+    private readonly List<ComModule> _modules = [];
     public IEnumerable<ComModule> Modules => _modules;
 
     [DataMember(IsRequired = true)]
-    private readonly List<ComStruct> _structs = new();
+    private readonly List<ComStruct> _structs = [];
     public IEnumerable<ComStruct> Structs => _structs;
 
     //Note - Enums and Types should enumerate *last*. That will prevent a duplicate module in the unlikely(?)
@@ -66,7 +69,7 @@ public class ComProject : ComBase
         .Union(_enumerations)
         .Union(_structs);
 
-    public ComProject(ITypeLib typeLibrary, string path) : base(null, typeLibrary, -1)
+    public ComProject(ITypeLib typeLibrary, string path) : base(null!, typeLibrary, -1)
     {
         Path = path;
         try
@@ -173,5 +176,19 @@ public class ComProject : ComBase
         {
             application.AddInterface(worksheetFunction);
         }
+    }
+
+    public Symbol ToSymbol()
+    {
+        var uri = new WorkspaceFileUri(Path, new Uri(Directory.GetParent(Path)!.FullName));
+
+        var children = Modules.Select(e => e.ToSymbol(uri))
+            .Concat(CoClasses.Select(e => e.ToSymbol(uri)));
+
+        return new ProjectSymbol(Name, uri, children)
+        {
+            Detail = Documentation?.DocString,
+            IsUserDefined = false,
+        };
     }
 }

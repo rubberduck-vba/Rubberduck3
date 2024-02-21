@@ -7,6 +7,8 @@ using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using IMPLTYPEFLAGS = System.Runtime.InteropServices.ComTypes.IMPLTYPEFLAGS;
 using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 using Rubberduck.InternalApi.Model;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
+using Rubberduck.InternalApi.Extensions;
 
 namespace Rubberduck.Parsing.Model.ComReflection;
 
@@ -101,5 +103,12 @@ public class ComCoClass : ComType, IComTypeWithMembers
         {
             DefaultInterface = VisibleInterfaces.FirstOrDefault();
         }
+    }
+
+    public override Symbol ToSymbol(WorkspaceFileUri uri)
+    {
+        var instancing = Instancing.PublicNotCreatable; // TODO
+        var children = new List<Symbol>(); // TODO
+        return new ClassModuleSymbol(instancing, Name, uri, children, isUserDefined: false); 
     }
 }

@@ -2,7 +2,9 @@
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using TYPEDESC = System.Runtime.InteropServices.ComTypes.TYPEDESC;
@@ -133,5 +135,21 @@ public class ComField
                 _valueType = result;
             }
         }
+    }
+
+    public Symbol ToSymbol(WorkspaceFileUri workspaceFileUri)
+    {
+        if (Type == DeclarationType.Constant)
+        {
+            return new ConstantDeclarationSymbol(Name, workspaceFileUri, InternalApi.Model.Accessibility.Public, ValueType, DefaultValue.ToString())
+            {
+                IsUserDefined = false,
+            };
+        }
+
+        return new VariableDeclarationSymbol(Name, workspaceFileUri, InternalApi.Model.Accessibility.Public, ValueType)
+        {
+            IsUserDefined = false,
+        };
     }
 }

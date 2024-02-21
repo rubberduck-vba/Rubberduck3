@@ -61,7 +61,7 @@ public class DocumentHierarchicalSymbolsSection : WorkspaceDocumentSection
             AcquireDocumentStateSymbolsBlock, 
             DiscoverHierarchicalSymbolsBlock,
             SetDocumentStateMemberSymbolsBlock
-        }, completion);
+        }, Completion);
     }
 
     protected override ImmutableArray<(string, IDataflowBlock)> DataflowBlocks => new (string, IDataflowBlock)[]

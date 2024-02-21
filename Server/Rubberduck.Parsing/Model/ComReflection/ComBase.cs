@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 
 namespace Rubberduck.Parsing.Model.ComReflection;
@@ -37,7 +39,7 @@ public abstract class ComBase : IComBase
     [DataMember(IsRequired = true)]
     public IComBase Parent { get; protected set; }
 
-    public ComProject Project => Parent != null ? Parent.Project : this as ComProject;
+    public ComProject Project => Parent != null ? Parent.Project : (ComProject)this;
 
     protected ComBase(IComBase parent, ITypeLib typeLib, int index)
     {

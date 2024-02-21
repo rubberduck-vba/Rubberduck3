@@ -10,6 +10,8 @@ using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
 using Rubberduck.Unmanaged.TypeLibs.Abstract;
 using Rubberduck.Unmanaged.TypeLibs.Utility;
 using Rubberduck.InternalApi.Model;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
+using Rubberduck.InternalApi.Extensions;
 
 namespace Rubberduck.Parsing.Model.ComReflection;
 
@@ -87,5 +89,17 @@ public class ComModule : ComType, IComTypeWithMembers, IComTypeWithFields
                 _members.Add(new ComMember(this, info, member));
             }
         }
+    }
+
+    public override Symbol ToSymbol(WorkspaceFileUri uri)
+    {
+        var children = Members.Select(com => com.ToSymbol(uri.GetChildSymbolUri(com.Name)))
+            .Concat(Fields.Select(com => com.ToSymbol(uri.GetChildSymbolUri(com.Name)))
+        );
+
+        return new StandardModuleSymbol(Name, uri, [])
+        {
+            Detail = Documentation.DocString,
+        }.WithChildren(children);
     }
 }

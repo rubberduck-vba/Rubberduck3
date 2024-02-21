@@ -7,6 +7,8 @@ using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 using INVOKEKIND = System.Runtime.InteropServices.ComTypes.INVOKEKIND;
 using FUNCFLAGS = System.Runtime.InteropServices.ComTypes.FUNCFLAGS;
 using Rubberduck.InternalApi.Model;
+using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
 
 namespace Rubberduck.Parsing.Model.ComReflection;
 
@@ -137,6 +139,60 @@ public class ComMember : ComBase
         {
             Parameters.Last().IsParamArray = true;
         }
+    }
+
+    internal Symbol ToSymbol(WorkspaceFileUri parentUri)
+    {
+        var children = Parameters.Select(e => e.ToSymbol(parentUri.GetChildSymbolUri(Name)));
+        Symbol symbol;
+        switch (Type)
+        {
+            case DeclarationType.Function:
+                symbol = new FunctionSymbol(Name, parentUri, InternalApi.Model.Accessibility.Public, children.OfType<ParameterSymbol>(), AsTypeName?.TypeName)
+                {
+                    IsUserDefined = false,
+                    Detail = Documentation?.DocString ?? string.Empty,
+                };
+                break;
+            case DeclarationType.Procedure:
+                symbol = new ProcedureSymbol(Name, parentUri, InternalApi.Model.Accessibility.Public, children.OfType<ParameterSymbol>())
+                {
+                    IsUserDefined = false,
+                    Detail = Documentation?.DocString ?? string.Empty,
+                };
+                break;
+            case DeclarationType.PropertyGet:
+                symbol = new PropertyGetSymbol(Name, parentUri, InternalApi.Model.Accessibility.Public, children.OfType<ParameterSymbol>(), AsTypeName?.TypeName)
+                {
+                    IsUserDefined = false,
+                    Detail = Documentation?.DocString ?? string.Empty,
+                };
+                break;
+            case DeclarationType.PropertyLet:
+                symbol = new PropertyLetSymbol(Name, parentUri, InternalApi.Model.Accessibility.Public, children.OfType<ParameterSymbol>())
+                {
+                    IsUserDefined = false,
+                    Detail = Documentation?.DocString ?? string.Empty,
+                };
+                break;
+            case DeclarationType.PropertySet:
+                symbol = new PropertySetSymbol(Name, parentUri, InternalApi.Model.Accessibility.Public, children.OfType<ParameterSymbol>())
+                {
+                    IsUserDefined = false,
+                    Detail = Documentation?.DocString ?? string.Empty,
+                };
+                break;
+            case DeclarationType.Event:
+                symbol = new EventMemberSymbol(Name, parentUri, InternalApi.Model.Accessibility.Public, children.OfType<ParameterSymbol>())
+                {
+                    IsUserDefined = false,
+                    Detail = Documentation?.DocString ?? string.Empty,
+                };
+                break;
+            default:
+                throw new NotSupportedException();
+        }
+        return symbol;
     }
 
     private string MemberDeclaration

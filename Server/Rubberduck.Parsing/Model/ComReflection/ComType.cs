@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
+using System.Diagnostics;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization;
 
@@ -10,6 +12,8 @@ public interface IComType : IComBase
     bool IsPreDeclared { get; }
     bool IsHidden { get; }
     bool IsRestricted { get; }
+
+    Symbol ToSymbol(WorkspaceFileUri uri);
 }
 
 public interface IComTypeWithMembers : IComType
@@ -62,4 +66,6 @@ public abstract class ComType : ComBase, IComType
         IsHidden = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FHIDDEN);
         IsRestricted = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FRESTRICTED);
     }
+
+    public abstract Symbol ToSymbol(WorkspaceFileUri uri);
 }
