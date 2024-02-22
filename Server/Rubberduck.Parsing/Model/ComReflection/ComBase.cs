@@ -39,7 +39,7 @@ public abstract class ComBase : IComBase
     [DataMember(IsRequired = true)]
     public IComBase Parent { get; protected set; }
 
-    public ComProject Project => Parent != null ? Parent.Project : (ComProject)this;
+    public ComProject Project => Parent != null ? Parent.Project : this as ComProject;
 
     protected ComBase(IComBase parent, ITypeLib typeLib, int index)
     {

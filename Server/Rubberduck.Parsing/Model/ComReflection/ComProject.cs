@@ -60,8 +60,9 @@ public class ComProject : ComBase
     private readonly List<ComStruct> _structs = [];
     public IEnumerable<ComStruct> Structs => _structs;
 
-    //Note - Enums and Types should enumerate *last*. That will prevent a duplicate module in the unlikely(?)
-    //instance where the TypeLib defines a module named "Enums" or "Types".
+    //Note - Enums and Types should enumerate *last*.
+    //That will prevent a duplicate module in the unlikely(?) instance
+    //where the TypeLib defines a module named "Enums" or "Types".
     public IEnumerable<IComType> Members => _modules.Cast<IComType>()
         .Union(_interfaces)
         .Union(_classes)

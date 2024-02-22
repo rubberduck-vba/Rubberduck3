@@ -30,7 +30,7 @@ public sealed class VBAPreprocessor : ITokenStreamPreprocessor
         Dictionary<string, short> userCompilationArguments = [];
         try
         {
-            userCompilationArguments = _compilationArgumentsProvider.UserDefinedCompilationArguments(uri.WorkspaceRoot);
+            userCompilationArguments = _compilationArgumentsProvider.UserDefinedCompilationArguments(uri);
         }
         catch (Exception)
         {

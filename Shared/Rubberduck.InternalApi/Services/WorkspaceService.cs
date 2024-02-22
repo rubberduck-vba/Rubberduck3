@@ -72,6 +72,11 @@ namespace Rubberduck.InternalApi.Services
 
                     var state = _state.AddWorkspace(uri);
                     state.ProjectName = _fileSystem.Path.GetFileName(root);
+                    
+                    foreach (var reference in projectFile.VBProject.References)
+                    {
+                        state.AddReference(reference);
+                    }
 
                     LoadWorkspaceFiles(uri, projectFile);
                     _projectFiles.Add(projectFile);

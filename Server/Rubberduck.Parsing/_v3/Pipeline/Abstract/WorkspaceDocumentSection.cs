@@ -28,7 +28,7 @@ public abstract class WorkspaceDocumentSection : DataflowPipelineSection<Workspa
     private TransformBlock<WorkspaceFileUri, DocumentParserState> AcquireDocumentStateBlock { get; set; } = null!;
     private DocumentParserState AcquireDocumentState(WorkspaceFileUri uri)
     {
-        var workspace = _workspaceService.State.GetWorkspace(uri.WorkspaceRoot);
+        var workspace = _workspaceService.State.GetWorkspace(uri);
         if (workspace.TryGetWorkspaceFile(uri, out var state) && state != null)
         {
             State = new DocumentParserState((SourceFileDocumentState)state);

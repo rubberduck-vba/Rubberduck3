@@ -5,6 +5,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server.WorkDone;
 using OmniSharp.Extensions.LanguageServer.Server;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
@@ -16,6 +17,8 @@ using Rubberduck.LanguageServer.Handlers.Workspace;
 using Rubberduck.Parsing._v3.Pipeline;
 using Rubberduck.Parsing._v3.Pipeline.Services;
 using Rubberduck.Parsing.Abstract;
+using Rubberduck.Parsing.COM.Abstract;
+using Rubberduck.Parsing.Model.ComReflection;
 using Rubberduck.Parsing.Parsers;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.TokenStreamProviders;
@@ -109,6 +112,8 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<IWorkspaceStateManager, WorkspaceStateManager>();
 
             services.AddSingleton<WorkspacePipeline>();
+            services.AddSingleton<LibrarySymbolsService>();
+            services.AddSingleton<IComLibraryProvider, ComLibraryProvider>();
             services.AddSingleton<ParserPipelineSectionProvider>();
             services.AddTransient<WorkspaceDocumentParserOrchestrator>();
             services.AddTransient<DocumentParserSection>();

@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -15,6 +17,8 @@ namespace Rubberduck.InternalApi.Model.Declarations.Execution;
 public class VBExecutionContext : ServiceBase, IDiagnosticSource
 {
     private readonly Stack<VBExecutionScope> _callStack = new();
+
+    private readonly ConcurrentDictionary<Uri, ProjectSymbol> _referencedLibraries = new();
     private readonly ConcurrentDictionary<TypedSymbol, VBTypedValue> _symbols = new();
 
     public VBExecutionContext(ILogger logger, 
@@ -29,6 +33,9 @@ public class VBExecutionContext : ServiceBase, IDiagnosticSource
 
     public void AddTypedSymbol(TypedSymbol symbol) => _symbols.TryAdd(symbol, null!);
     public void AddDiagnostic(Diagnostic diagnostic) => Diagnostics.Add(diagnostic);
+
+    public void LoadReferencedLibrarySymbols(ProjectSymbol symbol) => _referencedLibraries[symbol.Uri] = symbol;
+    public void UnloadReferencedLibrarySymbols(WorkspaceUri uri) => _referencedLibraries.TryRemove(uri, out _);
 
     public VBExecutionScope EnterScope(VBTypeMember member)
     {

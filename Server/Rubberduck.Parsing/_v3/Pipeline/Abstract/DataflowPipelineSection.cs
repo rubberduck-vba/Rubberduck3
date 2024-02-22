@@ -12,7 +12,7 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
 {
     private readonly DataflowPipeline _parent;
 
-    protected DataflowPipelineSection(DataflowPipeline parent,
+    protected DataflowPipelineSection(DataflowPipeline parent, 
         ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
         : base(logger, settingsProvider, performance)
     {
@@ -53,18 +53,18 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
             throw new InvalidOperationException($"{nameof(DefineSectionBlocks)} unexpectedly did not return any dataflow blocks.");
         }
 
-        if (state != null)
-        {
-            SetInitialState(state);
-        }
-
-        InputBlock = blocks.ElementAt(0);
-
-        ((ITargetBlock<TInput>)InputBlock).Post(input);
-        InputBlock.Complete();
-
         try
         {
+            if (state != null)
+            {
+                SetInitialState(state);
+            }
+
+            InputBlock = blocks.ElementAt(0);
+
+            ((ITargetBlock<TInput>)InputBlock).Post(input);
+            InputBlock.Complete();
+
             await Completion;
         }
         catch (Exception exception)

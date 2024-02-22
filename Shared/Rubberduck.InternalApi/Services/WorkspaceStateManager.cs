@@ -159,16 +159,16 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
     }
 
     private Dictionary<Uri, IWorkspaceState> _workspaces = [];
-    public IWorkspaceState GetWorkspace(Uri workspaceRoot)
+    public IWorkspaceState GetWorkspace(WorkspaceUri workspaceRoot)
     {
         if (!_workspaces.Any())
         {
             throw new InvalidOperationException("Workspace data is empty.");
         }
 
-        if (!_workspaces.TryGetValue(workspaceRoot, out var value))
+        if (!_workspaces.TryGetValue(workspaceRoot.WorkspaceRoot, out var value))
         {
-            LogWarning("Workspace URI was not found.", $"{workspaceRoot}\n{string.Join("\n*", _workspaces.Keys.Select(key => key.ToString()))}");
+            LogWarning("Workspace URI was not found.", $"{workspaceRoot.WorkspaceRoot}\n{string.Join("\n*", _workspaces.Keys.Select(key => key.ToString()))}");
             throw new KeyNotFoundException("Workspace URI was not found.");
         }
 

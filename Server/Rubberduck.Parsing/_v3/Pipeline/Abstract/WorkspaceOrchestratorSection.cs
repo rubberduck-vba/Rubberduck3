@@ -31,7 +31,7 @@ public abstract class WorkspaceOrchestratorSection : DataflowPipelineSection<Wor
     private TransformBlock<WorkspaceUri, IWorkspaceState> AcquireWorkspaceBlock { get; set; } = null!;
     private IWorkspaceState AcquireWorkspaceState(WorkspaceUri uri) =>
         RunTransformBlock(AcquireWorkspaceBlock, uri, 
-            e => State = _workspaces.GetWorkspace(uri.WorkspaceRoot) ?? throw new InvalidOperationException($"Could not find workspace state for URI '{uri}'."),
+            e => State = _workspaces.GetWorkspace(uri) ?? throw new InvalidOperationException($"Could not find workspace state for URI '{uri}'."),
             nameof(AcquireWorkspaceState), logPerformance: false);
 
     private TransformManyBlock<IWorkspaceState, WorkspaceFileUri> PrioritizeFilesBlock { get; set; } = null!;
