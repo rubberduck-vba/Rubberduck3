@@ -15,7 +15,7 @@ public class ParseResult
 
 public interface IParser<TContent>
 {
-    ParseResult Parse(WorkspaceFileUri uri, TContent content, CancellationToken token, CodeKind codeKind = CodeKind.RubberduckEditorModule, ParserMode parserMode = ParserMode.FallBackSllToLl, IEnumerable<IParseTreeListener>? parseListeners = null);
+    ParseResult Parse(WorkspaceFileUri uri, TContent content, CancellationToken token, ParserMode parserMode = ParserMode.FallBackSllToLl, IEnumerable<IParseTreeListener>? parseListeners = null);
 }
 
 public interface IStringParser : IParser<string> { }

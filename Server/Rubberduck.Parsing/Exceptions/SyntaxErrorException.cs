@@ -12,9 +12,9 @@ namespace Rubberduck.Parsing.Exceptions;
 public class SyntaxErrorException : Exception
 {
     public SyntaxErrorException(AntlrSyntaxErrorInfo info)
-        : this(info.Uri, info.Message, info.Exception, info.OffendingSymbol, info.LineNumber, info.Position, info.CodeKind) { }
+        : this(info.Uri, info.Message, info.Exception, info.OffendingSymbol, info.LineNumber, info.Position) { }
 
-    public SyntaxErrorException(WorkspaceFileUri uri, string message, RecognitionException innerException, IToken offendingSymbol, int line, int position, CodeKind codeKind)
+    public SyntaxErrorException(WorkspaceFileUri uri, string message, RecognitionException innerException, IToken offendingSymbol, int line, int position)
         : base(message, innerException)
     {
         Uri = uri;
@@ -22,8 +22,6 @@ public class SyntaxErrorException : Exception
         OffendingSymbol = offendingSymbol;
         LineNumber = line;
         Position = position;
-
-        CodeKind = codeKind;
     }
 
     public WorkspaceFileUri Uri { get; init; }
@@ -31,8 +29,6 @@ public class SyntaxErrorException : Exception
     public IToken OffendingSymbol { get; init; }
     public int LineNumber { get; init; }
     public int Position { get; init; }
-
-    public CodeKind CodeKind { get; init; } // still needed?
 
     public override string ToString() => $"{base.ToString()}\nToken: {OffendingSymbol.Text} at L{LineNumber}C{Position}";
 }

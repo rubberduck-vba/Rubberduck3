@@ -18,6 +18,7 @@ using Rubberduck.Parsing._v3.Pipeline;
 using Rubberduck.Parsing._v3.Pipeline.Services;
 using Rubberduck.Parsing.Abstract;
 using Rubberduck.Parsing.COM.Abstract;
+using Rubberduck.Parsing.Exceptions;
 using Rubberduck.Parsing.Model.ComReflection;
 using Rubberduck.Parsing.Parsers;
 using Rubberduck.Parsing.PreProcessing;
@@ -110,7 +111,7 @@ namespace Rubberduck.LanguageServer
 
             services.AddSingleton<IWorkspaceService, WorkspaceService>();
             services.AddSingleton<IWorkspaceStateManager, WorkspaceStateManager>();
-
+            services.AddSingleton<ISyntaxErrorMessageService, SyntaxErrorMessageService>();
             services.AddSingleton<WorkspacePipeline>();
             services.AddSingleton<LibrarySymbolsService>();
             services.AddSingleton<IComLibraryProvider, ComLibraryProvider>();

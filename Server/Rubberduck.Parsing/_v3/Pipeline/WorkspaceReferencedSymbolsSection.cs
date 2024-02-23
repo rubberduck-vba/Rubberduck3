@@ -26,7 +26,7 @@ public class WorkspaceReferencedSymbolsSection : DataflowPipelineSection<Workspa
     private TransformBlock<WorkspaceUri, IWorkspaceState> AcquireWorkspaceStateBlock { get; set; } = default!;
     private IWorkspaceState AcquireWorkspaceState(WorkspaceUri uri) =>
         RunTransformBlock(AcquireWorkspaceStateBlock, uri,
-            e => _workspaces.GetWorkspace(uri),
+            e => State = _workspaces.GetWorkspace(uri),
             nameof(AcquireWorkspaceState), logPerformance: false);
 
     private TransformManyBlock<IWorkspaceState, Reference> AcquireLibraryReferencesBlock { get; set; } = default!;

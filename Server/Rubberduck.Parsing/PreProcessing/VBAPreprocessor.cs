@@ -18,11 +18,11 @@ public sealed class VBAPreprocessor : ITokenStreamPreprocessor
         _parser = preprocessorParser;
     }
 
-    public CommonTokenStream? PreprocessTokenStream(WorkspaceFileUri uri, CommonTokenStream tokenStream, CancellationToken token, CodeKind codeKind = CodeKind.SnippetCode)
+    public CommonTokenStream? PreprocessTokenStream(WorkspaceFileUri uri, CommonTokenStream tokenStream, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
 
-        var tree = _parser.Parse(uri, tokenStream, token, codeKind);
+        var tree = _parser.Parse(uri, tokenStream, token);
         token.ThrowIfCancellationRequested();
 
         var charStream = tokenStream.TokenSource.InputStream;

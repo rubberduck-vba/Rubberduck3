@@ -8,6 +8,7 @@
     <Nullable>disable</Nullable>
     <Platforms>AnyCPU</Platforms>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <EmbedManifest>True</EmbedManifest>
   </PropertyGroup>
 
   <ItemGroup>

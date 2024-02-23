@@ -6,5 +6,5 @@ namespace Rubberduck.Parsing.Abstract;
 
 public interface ITokenStreamPreprocessor
 {
-    CommonTokenStream? PreprocessTokenStream(WorkspaceFileUri uri, CommonTokenStream tokenStream, CancellationToken token, CodeKind codeKind = CodeKind.SnippetCode);
+    CommonTokenStream? PreprocessTokenStream(WorkspaceFileUri uri, CommonTokenStream tokenStream, CancellationToken token);
 }

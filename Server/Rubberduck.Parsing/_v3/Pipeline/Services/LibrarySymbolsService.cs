@@ -33,7 +33,7 @@ public class LibrarySymbolsService : ServiceBase
             throw new InvalidOperationException($"Could not load referenced type library '{reference.Name}' ({reference.Uri}).");
         }
 
-        var project = new ComProject(typeLib, uri);
-        return (ProjectSymbol)project.ToSymbol();
+        var project = new ComProject(typeLib, uri).ToSymbol();
+        return (ProjectSymbol)project;
     }
 }

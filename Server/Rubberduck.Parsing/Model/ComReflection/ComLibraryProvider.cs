@@ -38,7 +38,7 @@ public class ComLibraryProvider : IComLibraryProvider
 
     public ITypeLib LoadTypeLibrary(string libraryPath)
     {
-        LoadTypeLibEx(libraryPath, REGKIND.REGKIND_NONE, out var typeLibrary);
+        var hresult = LoadTypeLibEx(libraryPath, REGKIND.REGKIND_NONE, out var typeLibrary);
         return typeLibrary;
     }
 

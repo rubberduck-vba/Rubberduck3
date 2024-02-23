@@ -8,7 +8,6 @@ namespace Rubberduck.Parsing.Exceptions;
 public record class AntlrSyntaxErrorInfo
 {
     public WorkspaceFileUri Uri { get; init; } = default!;
-    public CodeKind CodeKind { get; init; }
 
     public string Message { get; init; } = default!;
 
