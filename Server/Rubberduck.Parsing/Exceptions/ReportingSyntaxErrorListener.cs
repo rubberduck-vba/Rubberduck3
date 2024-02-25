@@ -1,6 +1,5 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.Parsing.Model;
 
 namespace Rubberduck.Parsing.Exceptions;
 

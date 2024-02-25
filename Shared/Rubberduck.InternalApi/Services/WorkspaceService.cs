@@ -58,8 +58,10 @@ namespace Rubberduck.InternalApi.Services
                     }
 
                     var projectFile = _projectFile.ReadFile(uri);
-                    var version = new Version(projectFile.Rubberduck);
-                    if (version > new Version(ProjectFile.RubberduckVersion))
+                    var rdprojVersion = new Version(projectFile.Rubberduck);
+                    var rdVersion = new Version(ProjectFile.RubberduckVersion);
+
+                    if (rdprojVersion > new Version(ProjectFile.RubberduckVersion))
                     {
                         throw new NotSupportedException("This project was created with a version of Rubberduck greater than the one currently running.");
                     }
@@ -223,7 +225,7 @@ namespace Rubberduck.InternalApi.Services
                     {
                         LogWarning($"{(isSourceFile ? "Source file" : "File")} version {fileVersion} at {uri} was not loaded; a newer version is already cached.'.");
                     }
-                });
+                }, logPerformance: false);
             }
         }
 

@@ -183,7 +183,7 @@ public class ComMember : ComBase
                 };
                 break;
             case DeclarationType.Event:
-                symbol = new EventMemberSymbol(Name, parentUri, InternalApi.Model.Accessibility.Public, children.OfType<ParameterSymbol>())
+                symbol = new EventSymbol(Name, parentUri, InternalApi.Model.Accessibility.Public, children.OfType<ParameterSymbol>())
                 {
                     IsUserDefined = false,
                     Detail = Documentation?.DocString ?? string.Empty,

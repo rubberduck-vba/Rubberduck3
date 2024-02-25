@@ -59,7 +59,7 @@ public class WorkspacePipeline : DataflowPipeline
             await Task.WhenAll(referencedSymbols, syntaxOrchestration);
 
             //// then we can resolve member symbols...
-            //await MemberSymbolOrchestration.StartAsync(uri, null, tokenSource);
+            await MemberSymbolOrchestration.StartAsync(uri, null, tokenSource);
 
             //// ...and only then we know enough to collect and resolve the rest of the symbols.
             //await HierarchicalSymbolOrchestration.StartAsync(uri, null, tokenSource);

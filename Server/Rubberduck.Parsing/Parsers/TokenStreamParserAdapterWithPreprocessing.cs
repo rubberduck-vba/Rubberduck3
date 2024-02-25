@@ -34,13 +34,14 @@ public class TokenStreamParserAdapterWithPreprocessing<TContent> : IParser<TCont
         var tokenStream = _preprocessor.PreprocessTokenStream(uri, rawTokenStream, token);
         token.ThrowIfCancellationRequested();
 
-        var tree = _tokenStreamParser.Parse(uri, tokenStream ?? rawTokenStream, token, parserMode, parseListeners);
+        var tree = _tokenStreamParser.Parse(uri, tokenStream ?? rawTokenStream, token, out var errors, parserMode, parseListeners);
         return new ParseResult
         {
             Tree = tree,
             TokenStream = tokenStream ?? rawTokenStream,
             LogicalLines = null,
-            Listeners = parseListeners ?? []
+            Listeners = parseListeners ?? [],
+            SyntaxErrors = errors
         };
     }
 }

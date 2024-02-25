@@ -76,6 +76,11 @@ public class VBExecutionContext : ServiceBase, IDiagnosticSource
     public ImmutableHashSet<TypedSymbol> ResolvedSymbols => _symbols.Keys.Where(e => e.ResolvedType != null).ToImmutableHashSet();
 
     /// <summary>
+    /// Gets all unresolved symbols in the context.
+    /// </summary>
+    public ImmutableHashSet<TypedSymbol> UnresolvedSymbols => _symbols.Keys.Where(e => e.ResolvedType is null).ToImmutableHashSet();
+
+    /// <summary>
     /// Gets all <c>VBMemberOwnerType</c> data types in the context.
     /// </summary>
     public ImmutableHashSet<TypedSymbol> MemberOwnerTypes => _symbols.Keys.Where(e => e.ResolvedType is VBMemberOwnerType).ToImmutableHashSet();

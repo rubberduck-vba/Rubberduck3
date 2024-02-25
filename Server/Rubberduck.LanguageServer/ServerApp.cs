@@ -230,6 +230,10 @@ namespace Rubberduck.LanguageServer
 
                 service.LogInformation($"Project {pipeline.State.ProjectName} ({pipeline.State.WorkspaceFiles.Count()} files) is good to go!");
             }
+            else
+            {
+                service.LogWarning("Workspace was not loaded.", "IWorkspaceService.OpenProjectWorkspaceAsync(Uri) returned false.");
+            }
         }
     }
 }

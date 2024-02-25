@@ -11,6 +11,7 @@ public class ParseResult
     public ITokenStream TokenStream { get; init; } = null!;
     public LogicalLineStore? LogicalLines { get; init; } = null;
     public IEnumerable<IParseTreeListener> Listeners { get; init; } = [];
+    public IEnumerable<SyntaxErrorInfo> SyntaxErrors { get; init; } = [];
 }
 
 public interface IParser<TContent>

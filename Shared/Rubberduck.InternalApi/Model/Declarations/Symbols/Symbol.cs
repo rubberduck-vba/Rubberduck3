@@ -23,7 +23,7 @@ public interface IValuedExpression<TValue> where TValue : VBTypedValue
 public interface IExecutable : IValuedExpression<VBTypedValue>
 {
     /// <summary>
-    /// Executes the symbol in the given context.
+    /// Executes the symbol and its children, in the given context.
     /// </summary>
     /// <returns>
     /// Returns a <c>VBTypedValue</c> representing the result of the expression; <c>null</c> if the symbol is a non-returning executable member.
@@ -338,9 +338,9 @@ public record class EnumMemberSymbol : ValuedTypedSymbol
     public override VBTypedValue Evaluate(ref VBExecutionScope context, bool rethrow = false) => context.GetTypedValue(this);
 }
 
-public record class EventMemberSymbol : ProcedureSymbol
+public record class EventSymbol : ProcedureSymbol
 {
-    public EventMemberSymbol(string name, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters = default)
+    public EventSymbol(string name, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters = default)
         : base(name, parentUri, accessibility, parameters, RubberduckSymbolKind.Event) { }
 }
 

@@ -346,7 +346,7 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
         var name = context.identifier().GetText();
         var accessibility = GetAccessibility(context.visibility());
 
-        OnChildSymbol(CreateCurrentSymbol(children => new EventMemberSymbol(name, _workspaceFileUri, accessibility, children.OfType<ParameterSymbol>()), context), context);
+        OnChildSymbol(CreateCurrentSymbol(children => new EventSymbol(name, _workspaceFileUri, accessibility, children.OfType<ParameterSymbol>()), context), context);
     }
 
     public override void EnterEnumerationStmt([NotNull] VBAParser.EnumerationStmtContext context) => OnEnterNewCurrentSymbol(context);

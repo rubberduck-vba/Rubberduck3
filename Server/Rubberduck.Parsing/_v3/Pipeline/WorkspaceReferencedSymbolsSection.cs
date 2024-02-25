@@ -5,7 +5,7 @@ using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Parsing._v3.Pipeline.Abstract;
-using System.Collections.Immutable;
+using System.Collections.Concurrent;
 using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
@@ -27,34 +27,34 @@ public class WorkspaceReferencedSymbolsSection : DataflowPipelineSection<Workspa
     private IWorkspaceState AcquireWorkspaceState(WorkspaceUri uri) =>
         RunTransformBlock(AcquireWorkspaceStateBlock, uri,
             e => State = _workspaces.GetWorkspace(uri),
-            nameof(AcquireWorkspaceState), logPerformance: false);
+            nameof(AcquireWorkspaceStateBlock), logPerformance: false);
 
     private TransformManyBlock<IWorkspaceState, Reference> AcquireLibraryReferencesBlock { get; set; } = default!;
     private IEnumerable<Reference> AcquireLibraryReferences(IWorkspaceState state) =>
         RunTransformBlock(AcquireLibraryReferencesBlock, state,
             e => state.References, 
-            nameof(AcquireLibraryReferences), logPerformance: false);
+            nameof(AcquireLibraryReferencesBlock), logPerformance: false);
 
     private TransformBlock<Reference, ProjectSymbol> LoadLibrarySymbolsBlock { get; set; } = default!;
     private ProjectSymbol LoadLibrarySymbols(Reference reference) =>
         RunTransformBlock(LoadLibrarySymbolsBlock, reference,
             e => _librarySymbolsService.LoadSymbolsFromTypeLibrary(reference),
-            nameof(LoadLibrarySymbols), logPerformance: true);
+            nameof(LoadLibrarySymbolsBlock), logPerformance: true);
 
     private ActionBlock<ProjectSymbol> SetLibrarySymbolStateBlock { get; set; } = default!;
     private void SetLibrarySymbolState(ProjectSymbol symbol) =>
         RunActionBlock(SetLibrarySymbolStateBlock, symbol,
             e => State.ExecutionContext.LoadReferencedLibrarySymbols(symbol),
-            nameof(SetLibrarySymbolState), logPerformance: false);
+            nameof(SetLibrarySymbolStateBlock), logPerformance: false);
 
 
-    protected override ImmutableArray<(string Name, IDataflowBlock Block)> DataflowBlocks =>
-        [
-            (nameof(AcquireWorkspaceState), AcquireWorkspaceStateBlock),
-            (nameof(AcquireLibraryReferences), AcquireLibraryReferencesBlock),
-            (nameof(LoadLibrarySymbols), LoadLibrarySymbolsBlock),
-            (nameof(SetLibrarySymbolState), SetLibrarySymbolStateBlock),
-        ];
+    protected override Dictionary<string, IDataflowBlock> DataflowBlocks => new()
+    {
+        [nameof(AcquireWorkspaceStateBlock)] = AcquireWorkspaceStateBlock,
+        [nameof(AcquireLibraryReferencesBlock)] = AcquireLibraryReferencesBlock,
+        [nameof(LoadLibrarySymbolsBlock)] = LoadLibrarySymbolsBlock,
+        [nameof(SetLibrarySymbolStateBlock)] = SetLibrarySymbolStateBlock,
+    };
 
     protected override (IEnumerable<IDataflowBlock> blocks, Task completion) DefineSectionBlocks(CancellationTokenSource? tokenSource)
     {

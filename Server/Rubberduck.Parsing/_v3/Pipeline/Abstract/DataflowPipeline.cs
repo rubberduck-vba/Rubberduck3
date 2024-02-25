@@ -30,7 +30,11 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
     public void FaultPipeline(Exception exception)
     {
         Exception = exception;
-        TokenSource?.Cancel();
+        try
+        {
+            TokenSource?.Cancel();
+        }
+        catch (ObjectDisposedException) { }
     }
 
     protected void Link<T>(ISourceBlock<T> source, ITargetBlock<T> target, DataflowLinkOptions? options = null)

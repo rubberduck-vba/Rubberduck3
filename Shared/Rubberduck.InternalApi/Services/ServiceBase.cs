@@ -71,11 +71,25 @@ public abstract class ServiceBase
 
         if (string.IsNullOrWhiteSpace(message))
         {
-            Logger.LogError(verbosity, exception);
+            if (exception is TaskCanceledException)
+            {
+                Logger.LogWarning(verbosity, exception.Message);
+            }
+            else
+            {
+                Logger.LogError(verbosity, exception);
+            }
         }
         else
         {
-            Logger.LogError(verbosity, exception, message);
+            if (exception is TaskCanceledException)
+            {
+                Logger.LogWarning(verbosity, exception.Message);
+            }
+            else
+            {
+                Logger.LogError(verbosity, exception, message);
+            }
         }
     }
 
@@ -140,6 +154,18 @@ public abstract class ServiceBase
     {
         var verbosity = TraceLevel;
         if (TimedAction.TryRun(action, out var elapsed, out exception))
+        {
+            LogPerformanceIf(logPerformance, elapsed, name: name);
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool TryRunAction(Action action, out Exception? exception, out TimeSpan elapsed, [CallerMemberName] string? name = default, bool logPerformance = true)
+    {
+        var verbosity = TraceLevel;
+        if (TimedAction.TryRun(action, out elapsed, out exception))
         {
             LogPerformanceIf(logPerformance, elapsed, name: name);
             return true;

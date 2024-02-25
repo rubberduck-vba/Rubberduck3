@@ -41,18 +41,20 @@ public abstract class TokenStreamParserBase<TParser> : ServiceBase, ITokenStream
     }
     protected abstract TParser GetParser(ITokenStream tokenStream);
     protected abstract IParseTree Parse(TParser parser);
-    public IParseTree Parse(WorkspaceFileUri uri, CommonTokenStream tokenStream, CancellationToken token, ParserMode parserMode = ParserMode.FallBackSllToLl, IEnumerable<IParseTreeListener>? parseListeners = null)
+    public IParseTree Parse(WorkspaceFileUri uri, CommonTokenStream tokenStream, CancellationToken token, out IEnumerable<SyntaxErrorInfo> errors, ParserMode parserMode = ParserMode.FallBackSllToLl, IEnumerable<IParseTreeListener>? parseListeners = null)
     {
-        return parserMode switch
+        var (tree, syntaxErrors) = parserMode switch
         {
             ParserMode.FallBackSllToLl => ParseWithFallBack(uri, tokenStream, parseListeners),
             ParserMode.LlOnly => ParseLl(uri, tokenStream, parseListeners),
             ParserMode.SllOnly => ParseSll(uri, tokenStream, parseListeners),
             _ => throw new ArgumentException($"Value '{parserMode}' is not supported.", nameof(parserMode)),
         };
+        errors = syntaxErrors.SyntaxErrors.Select(e => e.ToSyntaxErrorInfo()).ToArray();
+        return tree;
     }
 
-    private IParseTree ParseWithFallBack(WorkspaceFileUri uri, CommonTokenStream tokenStream, IEnumerable<IParseTreeListener>? parseListeners = null)
+    private (IParseTree, RubberduckParseErrorListenerBase) ParseWithFallBack(WorkspaceFileUri uri, CommonTokenStream tokenStream, IEnumerable<IParseTreeListener>? parseListeners = null)
     {
         try
         {
@@ -76,21 +78,22 @@ public abstract class TokenStreamParserBase<TParser> : ServiceBase, ITokenStream
     //and there is no interface for it or a base class that has the Reset member.
     protected virtual void LogAndReset(CommonTokenStream tokenStream, string logWarnMessage, Exception exception)
     {
-        LogWarning(logWarnMessage, verbose: exception.ToString());
+        LogWarning(logWarnMessage, verbose: exception.Message);
         tokenStream.Reset();
     }
 
-    private IParseTree ParseLl(WorkspaceFileUri uri, ITokenStream tokenStream, IEnumerable<IParseTreeListener>? parseListeners = null)
+    private (IParseTree, RubberduckParseErrorListenerBase) ParseLl(WorkspaceFileUri uri, ITokenStream tokenStream, IEnumerable<IParseTreeListener>? parseListeners = null)
     {
         var errorListener = new ReportingSyntaxErrorListener(uri, _errorMessageService);
         var tree = Parse(tokenStream, PredictionMode.Ll, errorListener, parseListeners);
-        return tree;
+        return (tree, errorListener);
     }
 
-    private IParseTree ParseSll(WorkspaceFileUri uri, ITokenStream tokenStream, IEnumerable<IParseTreeListener>? parseListeners = null)
+    private (IParseTree, RubberduckParseErrorListenerBase) ParseSll(WorkspaceFileUri uri, ITokenStream tokenStream, IEnumerable<IParseTreeListener>? parseListeners = null)
     {
-        var errorListener = new ThrowingSyntaxErrorListener(uri, _errorMessageService);
+        //var errorListener = new ThrowingSyntaxErrorListener(uri, _errorMessageService);
+        var errorListener = new ReportingSyntaxErrorListener(uri, _errorMessageService);
         var tree = Parse(tokenStream, PredictionMode.Sll, errorListener, parseListeners);
-        return tree;
+        return (tree, errorListener);
     }
 }

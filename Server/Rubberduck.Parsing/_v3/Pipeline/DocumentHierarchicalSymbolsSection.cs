@@ -3,6 +3,8 @@ using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Parsing._v3.Pipeline.Abstract;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Text;
 using System.Threading.Tasks.Dataflow;
@@ -24,26 +26,26 @@ public class DocumentHierarchicalSymbolsSection : WorkspaceDocumentSection
     private Symbol AcquireDocumentStateSymbols(DocumentParserState state) =>
         RunTransformBlock(AcquireDocumentStateSymbolsBlock, state, 
             e => e.Symbol ?? throw new InvalidOperationException("Document.Symbol is unexpectedly null."),
-            nameof(AcquireDocumentStateSymbols), logPerformance: false);
+            nameof(AcquireDocumentStateSymbolsBlock), logPerformance: false);
 
     private TransformBlock<Symbol, Symbol> DiscoverHierarchicalSymbolsBlock { get; set; } = null!;
-    private Symbol ResolveMemberSymbols(Symbol symbol) =>
+    private Symbol DiscoverHierarchicalSymbols(Symbol symbol) =>
         RunTransformBlock(DiscoverHierarchicalSymbolsBlock, symbol, 
             e => _symbolsService.DiscoverHierarchicalSymbols(State.SyntaxTree!, State.Uri),
-            nameof(ResolveMemberSymbols), logPerformance: true);
+            nameof(DiscoverHierarchicalSymbolsBlock), logPerformance: true);
 
     private ActionBlock<Symbol> SetDocumentStateMemberSymbolsBlock { get; set; } = null!;
     private void SetDocumentStateMemberSymbols(Symbol symbol) =>
         RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol, 
             e => State = (DocumentParserState)State.WithSymbol(e), 
-            nameof(SetDocumentStateMemberSymbols), logPerformance: false);
+            nameof(SetDocumentStateMemberSymbolsBlock), logPerformance: false);
 
     protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(ISourceBlock<DocumentParserState> source)
     {
         AcquireDocumentStateSymbolsBlock = new(AcquireDocumentStateSymbols, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(AcquireDocumentStateSymbolsBlock), AcquireDocumentStateSymbolsBlock);
 
-        DiscoverHierarchicalSymbolsBlock = new(ResolveMemberSymbols, ConcurrentExecutionOptions(Token));
+        DiscoverHierarchicalSymbolsBlock = new(DiscoverHierarchicalSymbols, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(DiscoverHierarchicalSymbolsBlock), DiscoverHierarchicalSymbolsBlock);
 
         var symbolsBuffer = new BufferBlock<Symbol>(new DataflowBlockOptions { CancellationToken = Token });
@@ -64,23 +66,19 @@ public class DocumentHierarchicalSymbolsSection : WorkspaceDocumentSection
         }, Completion);
     }
 
-    protected override ImmutableArray<(string, IDataflowBlock)> DataflowBlocks => new (string, IDataflowBlock)[]
+    protected override Dictionary<string, IDataflowBlock> DataflowBlocks => new()
     {
-        (nameof(AcquireDocumentStateSymbolsBlock), AcquireDocumentStateSymbolsBlock),
-        (nameof(DiscoverHierarchicalSymbolsBlock), DiscoverHierarchicalSymbolsBlock),
-        (nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock),
-    }.ToImmutableArray();
+        [nameof(AcquireDocumentStateSymbolsBlock)] = AcquireDocumentStateSymbolsBlock,
+        [nameof(DiscoverHierarchicalSymbolsBlock)] = DiscoverHierarchicalSymbolsBlock,
+        [nameof(SetDocumentStateMemberSymbolsBlock)] = SetDocumentStateMemberSymbolsBlock,
+    };
 
-    public override void LogPipelineCompletionState()
+    protected override void LogAdditionalPipelineSectionCompletionInfo(StringBuilder builder, string name)
     {
-        var builder = new StringBuilder();
-        builder.AppendLine($"Pipeline ({GetType().Name}) completion status");
-        builder.AppendLine($"\tℹ️ {(State?.Uri.ToString() ?? ("(no info)"))}");
-
-        foreach (var (name, block) in DataflowBlocks)
+        var uri = State?.Uri?.ToString();
+        if (State != null && !string.IsNullOrWhiteSpace(uri))
         {
-            builder.AppendLine($"\t{(block.Completion.IsCompletedSuccessfully ? "✔️" : block.Completion.IsFaulted ? "💀" : block.Completion.IsCanceled ? "⚠️" : "◼️")}[{name}] status: {block.Completion.Status}");
+            builder.AppendLine($"\t📂 Uri: {uri} (⛔{State.SyntaxErrors.Count} errors; ⚠️{State.Diagnostics.Count} diagnostics; 🧩{State.Symbol?.Children?.Count() ?? 0} child symbols)");
         }
-        LogDebug(builder.ToString());
     }
 }

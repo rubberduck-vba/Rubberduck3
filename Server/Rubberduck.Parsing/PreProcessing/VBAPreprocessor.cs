@@ -22,7 +22,7 @@ public sealed class VBAPreprocessor : ITokenStreamPreprocessor
     {
         token.ThrowIfCancellationRequested();
 
-        var tree = _parser.Parse(uri, tokenStream, token);
+        var tree = _parser.Parse(uri, tokenStream, token, out _ /*out var errors*/);
         token.ThrowIfCancellationRequested();
 
         var charStream = tokenStream.TokenSource.InputStream;

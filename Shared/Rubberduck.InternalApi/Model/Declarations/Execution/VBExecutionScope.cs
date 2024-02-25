@@ -30,8 +30,11 @@ public record class VBExecutionScope : IDiagnosticSource, IExecutable
         MemberInfo = member;
         Error = error;
 
+        Diagnostics = diagnostics ?? [];
         Names = symbolTable.Select(e => e.Key.Name).ToImmutableHashSet();
     }
+
+    public ImmutableHashSet<string> Names { get; }
 
     public bool Is64BitHost { get; init; }
     public bool OptionStrict { get; init; }
@@ -41,7 +44,6 @@ public record class VBExecutionScope : IDiagnosticSource, IExecutable
     public VBTypedValue GetTypedValue(Symbol symbol) => _symbols[symbol];
     public void SetTypedValue(Symbol symbol, VBTypedValue value) => _symbols[symbol] = value;
 
-    public ImmutableHashSet<string> Names { get; }
     public VBTypeMember MemberInfo { get; init; }
 
     public VBRuntimeErrorException? Error { get; init; }
@@ -50,7 +52,7 @@ public record class VBExecutionScope : IDiagnosticSource, IExecutable
     public Symbol? ActiveGoSubReturnTo { get; init; }
     public bool ActiveErrorState => Error != null;
 
-    public IEnumerable<Diagnostic> Diagnostics { get; init; } = [];
+    public IEnumerable<Diagnostic> Diagnostics { get; init; }
 
     public VBExecutionScope WithError(VBRuntimeErrorException error) => WithDiagnostics(error.Diagnostics) with { Error = error };
     public VBExecutionScope WithDiagnostics(IEnumerable<Diagnostic> diagnostics) => this with { Diagnostics = Diagnostics.Concat(diagnostics).ToArray() };
