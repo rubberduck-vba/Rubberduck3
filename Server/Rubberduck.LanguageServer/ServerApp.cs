@@ -12,6 +12,7 @@ using Rubberduck.InternalApi.Settings;
 using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.InternalApi.Settings.Model.LanguageClient;
 using Rubberduck.InternalApi.Settings.Model.LanguageServer;
+using Rubberduck.LanguageServer.Handlers.Language;
 using Rubberduck.LanguageServer.Handlers.Lifecycle;
 using Rubberduck.LanguageServer.Handlers.Workspace;
 using Rubberduck.Parsing._v3.Pipeline;
@@ -66,6 +67,8 @@ namespace Rubberduck.LanguageServer
                 var workspace = app.State.ActiveWorkspace!;
                 logger.LogInformation($"{workspace.ExecutionContext.UnresolvedSymbols.Count} unresolved symbols.");
             }
+
+            await Task.Delay(100);
         }
 
         protected override ServerState<LanguageServerSettings, LanguageServerStartupSettings> GetServerState(IServiceProvider provider) 
@@ -167,8 +170,10 @@ namespace Rubberduck.LanguageServer
                 .WithHandler<DocumentHighlightHandler>()
                 .WithHandler<DocumentOnTypeFormattingHandler>()
                 .WithHandler<DocumentRangeFormattingHandler>()
+            */
                 .WithHandler<DocumentSymbolHandler>()
                 .WithHandler<FoldingRangeHandler>()
+            /*
                 .WithHandler<HoverHandler>()
                 .WithHandler<ImplementationHandler>()
                 .WithHandler<PrepareRenameHandler>()
