@@ -1,9 +1,11 @@
-﻿namespace Rubberduck.Parsing.Abstract;
+﻿using Rubberduck.InternalApi.Extensions;
+
+namespace Rubberduck.Parsing.Abstract;
 
 public interface ICompilationArgumentsCache : ICompilationArgumentsProvider
 {
-    void ReloadCompilationArguments(IEnumerable<Uri> workspaceUris);
-    IReadOnlyCollection<Uri> ProjectWhoseCompilationArgumentsChanged();
+    void ReloadCompilationArguments(IEnumerable<WorkspaceUri> workspaceUris);
+    IReadOnlyCollection<WorkspaceUri> ProjectWhoseCompilationArgumentsChanged();
     void ClearProjectWhoseCompilationArgumentsChanged();
-    void RemoveCompilationArgumentsFromCache(IEnumerable<Uri> workspaceUris);
+    void RemoveCompilationArgumentsFromCache(IEnumerable<WorkspaceUri> workspaceUris);
 }

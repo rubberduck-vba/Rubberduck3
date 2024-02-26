@@ -7,6 +7,8 @@ using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using TYPELIBATTR = System.Runtime.InteropServices.ComTypes.TYPELIBATTR;
 using TYPEKIND = System.Runtime.InteropServices.ComTypes.TYPEKIND;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
+using Rubberduck.InternalApi.Extensions;
 
 namespace Rubberduck.Parsing.Model.ComReflection;
 
@@ -28,45 +30,46 @@ public class ComProject : ComBase
     [DataMember(IsRequired = true)]
     public long MinorVersion { get; set; }
 
-    // YGNI...
+    // [Y]ou **[A]RE** [G]oing to [N]eed [I]t...
     // ReSharper disable once NotAccessedField.Local
 #pragma warning disable IDE0052 // Remove unread private members
     private readonly TypeLibTypeFlags _flags;
 #pragma warning restore IDE0052 // Remove unread private members
 
     [DataMember(IsRequired = true)]
-    private readonly List<ComAlias> _aliases = new();
+    private readonly List<ComAlias> _aliases = [];
     public IEnumerable<ComAlias> Aliases => _aliases;
 
     [DataMember(IsRequired = true)]
-    private readonly List<ComInterface> _interfaces = new();
+    private readonly List<ComInterface> _interfaces = [];
     public IEnumerable<ComInterface> Interfaces => _interfaces;
 
     [DataMember(IsRequired = true)]
-    private readonly List<ComEnumeration> _enumerations = new();
+    private readonly List<ComEnumeration> _enumerations = [];
     public IEnumerable<ComEnumeration> Enumerations => _enumerations;
 
     [DataMember(IsRequired = true)]
-    private readonly List<ComCoClass> _classes = new();
+    private readonly List<ComCoClass> _classes = [];
     public IEnumerable<ComCoClass> CoClasses => _classes;
 
     [DataMember(IsRequired = true)]
-    private readonly List<ComModule> _modules = new();
+    private readonly List<ComModule> _modules = [];
     public IEnumerable<ComModule> Modules => _modules;
 
     [DataMember(IsRequired = true)]
-    private readonly List<ComStruct> _structs = new();
+    private readonly List<ComStruct> _structs = [];
     public IEnumerable<ComStruct> Structs => _structs;
 
-    //Note - Enums and Types should enumerate *last*. That will prevent a duplicate module in the unlikely(?)
-    //instance where the TypeLib defines a module named "Enums" or "Types".
+    //Note - Enums and Types should enumerate *last*.
+    //That will prevent a duplicate module in the unlikely(?) instance
+    //where the TypeLib defines a module named "Enums" or "Types".
     public IEnumerable<IComType> Members => _modules.Cast<IComType>()
         .Union(_interfaces)
         .Union(_classes)
         .Union(_enumerations)
         .Union(_structs);
 
-    public ComProject(ITypeLib typeLibrary, string path) : base(null, typeLibrary, -1)
+    public ComProject(ITypeLib typeLibrary, string path) : base(null!, typeLibrary, -1)
     {
         Path = path;
         try
@@ -103,18 +106,18 @@ public class ComProject : ComBase
                     switch (typeAttributes.typekind)
                     {
                         case TYPEKIND.TKIND_ENUM:
-                            var enumeration = type ?? new ComEnumeration(this, typeLibrary, info, typeAttributes, index);
+                            var enumeration = type as ComEnumeration ?? new ComEnumeration(this, typeLibrary, info, typeAttributes, index);
                             Debug.Assert(enumeration is ComEnumeration);
-                            _enumerations.Add(enumeration as ComEnumeration);
+                            _enumerations.Add(enumeration);
                             if (type == null && !enumeration.Guid.Equals(Guid.Empty))
                             {
                                 KnownTypes.TryAdd(typeAttributes.guid, enumeration);
                             }
                             break;
                         case TYPEKIND.TKIND_COCLASS:
-                            var coclass = type ?? new ComCoClass(this, typeLibrary, info, typeAttributes, index);
+                            var coclass = type as ComCoClass ?? new ComCoClass(this, typeLibrary, info, typeAttributes, index);
                             Debug.Assert(coclass is ComCoClass && !coclass.Guid.Equals(Guid.Empty));
-                            _classes.Add(coclass as ComCoClass);
+                            _classes.Add(coclass);
                             if (type == null)
                             {
                                 KnownTypes.TryAdd(typeAttributes.guid, coclass);
@@ -122,9 +125,9 @@ public class ComProject : ComBase
                             break;
                         case TYPEKIND.TKIND_DISPATCH:
                         case TYPEKIND.TKIND_INTERFACE:
-                            var intface = type ?? new ComInterface(this, typeLibrary, info, typeAttributes, index);
+                            var intface = type as ComInterface ?? new ComInterface(this, typeLibrary, info, typeAttributes, index);
                             Debug.Assert(intface is ComInterface && !intface.Guid.Equals(Guid.Empty));
-                            _interfaces.Add(intface as ComInterface);
+                            _interfaces.Add(intface);
                             if (type == null)
                             {
                                 KnownTypes.TryAdd(typeAttributes.guid, intface);
@@ -135,9 +138,9 @@ public class ComProject : ComBase
                             _structs.Add(structure);
                             break;
                         case TYPEKIND.TKIND_MODULE:
-                            var module = type ?? new ComModule(this, typeLibrary, info, typeAttributes, index);
+                            var module = type as ComModule ?? new ComModule(this, typeLibrary, info, typeAttributes, index);
                             Debug.Assert(module is ComModule);
-                            _modules.Add(module as ComModule);
+                            _modules.Add(module);
                             if (type == null && !module.Guid.Equals(Guid.Empty))
                             {
                                 KnownTypes.TryAdd(typeAttributes.guid, module);
@@ -173,5 +176,17 @@ public class ComProject : ComBase
         {
             application.AddInterface(worksheetFunction);
         }
+    }
+
+    public Symbol ToSymbol()
+    {
+        var uri = new WorkspaceFileUri(Path, new Uri(Directory.GetParent(Path)!.FullName));
+        
+        var children = Members.Select(e => e.ToSymbol(uri));
+        return new ProjectSymbol(Name, uri, children)
+        {
+            Detail = Documentation?.DocString,
+            IsUserDefined = false,
+        };
     }
 }

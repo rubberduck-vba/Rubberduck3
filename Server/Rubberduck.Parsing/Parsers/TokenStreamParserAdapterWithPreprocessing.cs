@@ -23,7 +23,6 @@ public class TokenStreamParserAdapterWithPreprocessing<TContent> : IParser<TCont
         WorkspaceFileUri uri,
         TContent content,
         CancellationToken token,
-        CodeKind codeKind = CodeKind.SnippetCode,
         ParserMode parserMode = ParserMode.FallBackSllToLl,
         IEnumerable<IParseTreeListener>? parseListeners = null)
     {
@@ -32,16 +31,17 @@ public class TokenStreamParserAdapterWithPreprocessing<TContent> : IParser<TCont
         var rawTokenStream = _tokenStreamProvider.Tokens(content);
         token.ThrowIfCancellationRequested();
 
-        var tokenStream = _preprocessor.PreprocessTokenStream(uri, rawTokenStream, token, codeKind);
+        var tokenStream = _preprocessor.PreprocessTokenStream(uri, rawTokenStream, token);
         token.ThrowIfCancellationRequested();
 
-        var tree = _tokenStreamParser.Parse(uri, tokenStream ?? rawTokenStream, token, codeKind, parserMode, parseListeners);
+        var tree = _tokenStreamParser.Parse(uri, tokenStream ?? rawTokenStream, token, out var errors, parserMode, parseListeners);
         return new ParseResult
         {
             Tree = tree,
             TokenStream = tokenStream ?? rawTokenStream,
             LogicalLines = null,
-            Listeners = parseListeners ?? []
+            Listeners = parseListeners ?? [],
+            SyntaxErrors = errors
         };
     }
 }

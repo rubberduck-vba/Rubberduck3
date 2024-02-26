@@ -97,6 +97,6 @@ public abstract class OperatorTests : ServiceBaseTest
     protected TypedSymbol CreateClassType(VBExecutionContext context, string name, bool isUserDefined = true, bool isCreatable = true)
     {
         var type = new VBClassType(name, new Uri(ParentProjectUri.OriginalString + $"/{name}"), isUserDefined) { IsCreatable = isCreatable };
-        return new ClassTypeDefinitionSymbol(Visibility.Undefined, name, ParentProjectUri).WithResolvedType(type);
+        return new ClassTypeInstanceSymbol(Visibility.Undefined, name, ParentProjectUri).WithResolvedType(type);
     }
 }

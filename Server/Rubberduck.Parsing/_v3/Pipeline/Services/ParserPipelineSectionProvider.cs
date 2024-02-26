@@ -70,18 +70,6 @@ public class ParserPipelineSectionProvider
     {
         _ = uri ?? throw new ArgumentNullException(nameof(uri));
 
-        if (_pipelines.TryGetValue(uri, out var pipeline))
-        {
-            try
-            {
-                pipeline.Cancel();
-            }
-            finally
-            {
-                _tasks.Remove(uri, out _);
-            }
-        }
-
         var workspaces = _provider.GetRequiredService<IWorkspaceService>();
         var symbols = _provider.GetRequiredService<PipelineParseTreeSymbolsService>();
         var logger = _provider.GetRequiredService<ILogger<WorkspaceDocumentParserOrchestrator>>();

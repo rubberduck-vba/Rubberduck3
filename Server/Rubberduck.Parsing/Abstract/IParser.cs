@@ -11,11 +11,12 @@ public class ParseResult
     public ITokenStream TokenStream { get; init; } = null!;
     public LogicalLineStore? LogicalLines { get; init; } = null;
     public IEnumerable<IParseTreeListener> Listeners { get; init; } = [];
+    public IEnumerable<SyntaxErrorInfo> SyntaxErrors { get; init; } = [];
 }
 
 public interface IParser<TContent>
 {
-    ParseResult Parse(WorkspaceFileUri uri, TContent content, CancellationToken token, CodeKind codeKind = CodeKind.RubberduckEditorModule, ParserMode parserMode = ParserMode.FallBackSllToLl, IEnumerable<IParseTreeListener>? parseListeners = null);
+    ParseResult Parse(WorkspaceFileUri uri, TContent content, CancellationToken token, ParserMode parserMode = ParserMode.FallBackSllToLl, IEnumerable<IParseTreeListener>? parseListeners = null);
 }
 
 public interface IStringParser : IParser<string> { }

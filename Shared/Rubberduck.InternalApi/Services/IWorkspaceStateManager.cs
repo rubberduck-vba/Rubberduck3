@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rubberduck.InternalApi.Extensions;
+using System;
 using System.Collections.Generic;
 
 namespace Rubberduck.InternalApi.Services;

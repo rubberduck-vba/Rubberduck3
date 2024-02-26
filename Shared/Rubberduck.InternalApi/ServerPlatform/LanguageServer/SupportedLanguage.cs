@@ -1,4 +1,8 @@
-﻿namespace Rubberduck.InternalApi.ServerPlatform.LanguageServer;
+﻿using Microsoft.VisualBasic.FileIO;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using System.Linq;
+
+namespace Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 
 public class SupportedLanguage
 {
@@ -20,6 +24,13 @@ public class SupportedLanguage
 
     public string Id { get; }
     public string Name { get; }
-
     public string[] FileTypes { get; }
+
+    public string FilterString => string.Join(";", FileTypes.Select(fileType => $"**/{fileType}").ToArray());
+    public TextDocumentSelector ToTextDocumentSelector() => new(
+        new TextDocumentFilter
+        {
+            Language = Id,
+            Pattern = FilterString,
+        });
 }

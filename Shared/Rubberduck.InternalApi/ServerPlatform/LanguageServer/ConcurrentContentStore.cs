@@ -14,7 +14,7 @@ public class ConcurrentContentStore<TContent>
 
     public void AddOrUpdate(Uri documentUri, TContent content)
     {
-        Store.AddOrUpdate(documentUri, content, (uri, content) => content);
+        Store.AddOrUpdate(documentUri, content, (key, value) => content);
     }
 
     public bool TryRemove(Uri documentUri)

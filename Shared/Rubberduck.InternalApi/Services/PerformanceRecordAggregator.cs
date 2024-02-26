@@ -78,7 +78,7 @@ public class PerformanceRecordAggregator
         var elapsed = TimedAction.Run(() => { bag.Clear(); });
         var verbosity = _settings.TraceLevel;
 
-        _logger.LogTrace(verbosity, $"Performance data cleared for [{name}] ({count} items). Elapsed: {elapsed}");
+        _logger.LogTrace(verbosity, $"Performance data cleared for [{name}] ({count} items). ⏱️{elapsed}");
         return true;
     }
 
@@ -113,7 +113,7 @@ public class PerformanceRecordAggregator
         var elapsed = TimedAction.Run(() =>
         {
             sampleSize = Count(name);
-            total = TotalElapsed(name);
+            total = TotalElapsed(name) ?? TimeSpan.Zero;
             average = AverageElapsed(name);
             stdev = StandardDeviation(name);
             min = MinElapsed(name);
@@ -122,18 +122,29 @@ public class PerformanceRecordAggregator
         });
 
         var verbosity = _settings.TraceLevel;
-        _logger.LogTrace(verbosity, $"**PERF[{name}]:{sampleSize} events. Total: {total} Min: {min} Max {max} Average: {average} Median: {median} Std.Dev.: {stdev} (calculations: {elapsed})");
+        _logger.LogTrace(verbosity, @$"**PERF[{name}]: {sampleSize} events. Total: ⏱️{total}
+  >>> Avg.: ⏱️{average}   Min: {min}   Max: {max}   Median: {median}    Std.Dev.: {stdev} (Calc.: {elapsed})");
     }
 
     public int Count(string name) => _items[name].Count;
 
-    public TimeSpan TotalElapsed(string name) => _totals[name];
+    public TimeSpan? TotalElapsed(string name)
+    {
+        if (_totals.TryGetValue(name, out var total))
+        {
+            return total;
+        }
+
+        return null;
+    }
 
     public TimeSpan AverageElapsed(string name)
     {
         try
         {
-            return TotalElapsed(name) / Count(name);
+            var total = TotalElapsed(name)?.TotalMilliseconds ?? 0;
+            var count = (double)Count(name);
+            return TimeSpan.FromMilliseconds(total / count);
         }
         catch (OverflowException)
         {

@@ -28,11 +28,11 @@ public abstract class WorkspaceOrchestratorSection : DataflowPipelineSection<Wor
 
     protected abstract WorkspaceDocumentSection StartDocumentPipeline(ParserPipelineSectionProvider provider, WorkspaceFileUri uri);
 
-    private TransformBlock<WorkspaceUri, IWorkspaceState> AcquireWorkspaceBlock { get; set; } = null!;
+    private TransformBlock<WorkspaceUri, IWorkspaceState> AcquireWorkspaceStateBlock { get; set; } = null!;
     private IWorkspaceState AcquireWorkspaceState(WorkspaceUri uri) =>
-        RunTransformBlock(AcquireWorkspaceBlock, uri, 
+        RunTransformBlock(AcquireWorkspaceStateBlock, uri, 
             e => State = _workspaces.GetWorkspace(uri.WorkspaceRoot) ?? throw new InvalidOperationException($"Could not find workspace state for URI '{uri}'."),
-            nameof(AcquireWorkspaceState), logPerformance: false);
+            nameof(AcquireWorkspaceStateBlock), logPerformance: false);
 
     private TransformManyBlock<IWorkspaceState, WorkspaceFileUri> PrioritizeFilesBlock { get; set; } = null!;
     private WorkspaceFileUri[] PrioritizeFiles(IWorkspaceState state) =>
@@ -49,7 +49,7 @@ public abstract class WorkspaceOrchestratorSection : DataflowPipelineSection<Wor
             }
 
             return result;
-        }, nameof(PrioritizeFiles), logPerformance: true);
+        }, nameof(PrioritizeFilesBlock), logPerformance: true);
 
     private ActionBlock<WorkspaceDocumentSection> AcquireWorkspaceFilePipelineBlock { get; set; } = null!;
 
@@ -61,23 +61,23 @@ public abstract class WorkspaceOrchestratorSection : DataflowPipelineSection<Wor
                 throw new InvalidOperationException("Child pipeline completion task is unexpectely null.");
             }
             return pipeline.Completion;
-        }, nameof(AcquireWorkspaceFilePipelineAsync), logPerformance: false);
+        }, nameof(AcquireWorkspaceFilePipelineBlock), logPerformance: false);
 
     private TransformBlock<WorkspaceFileUri, WorkspaceDocumentSection> CreateWorkspaceFilePipelineBlock { get; set; } = null!;
     private WorkspaceDocumentSection CreateWorkspaceFilePipeline(WorkspaceFileUri uri) =>
         RunTransformBlock(CreateWorkspaceFilePipelineBlock, uri, e => StartDocumentPipeline(_provider, uri), 
-            nameof(CreateWorkspaceFilePipeline), logPerformance: false);
+            nameof(CreateWorkspaceFilePipelineBlock), logPerformance: false);
 
     protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(CancellationTokenSource? tokenSource)
     {
         TokenSource = tokenSource;
 
-        AcquireWorkspaceBlock = new(AcquireWorkspaceState, ConcurrentExecutionOptions(Token));
+        AcquireWorkspaceStateBlock = new(AcquireWorkspaceState, ConcurrentExecutionOptions(Token));
         PrioritizeFilesBlock = new(PrioritizeFiles, ConcurrentExecutionOptions(Token));
         CreateWorkspaceFilePipelineBlock = new(CreateWorkspaceFilePipeline, ConcurrentExecutionOptions(Token));
         AcquireWorkspaceFilePipelineBlock = new(AcquireWorkspaceFilePipelineAsync, ConcurrentExecutionOptions(Token));
 
-        Link(AcquireWorkspaceBlock, PrioritizeFilesBlock);
+        Link(AcquireWorkspaceStateBlock, PrioritizeFilesBlock);
         Link(PrioritizeFilesBlock, CreateWorkspaceFilePipelineBlock);
         Link(CreateWorkspaceFilePipelineBlock, AcquireWorkspaceFilePipelineBlock);
 
@@ -85,31 +85,27 @@ public abstract class WorkspaceOrchestratorSection : DataflowPipelineSection<Wor
 
         return (new IDataflowBlock[]
         {
-            AcquireWorkspaceBlock,
+            AcquireWorkspaceStateBlock,
             PrioritizeFilesBlock,
             CreateWorkspaceFilePipelineBlock,
             AcquireWorkspaceFilePipelineBlock,
         }, Completion);
     }
 
-    protected override ImmutableArray<(string Name, IDataflowBlock Block)> DataflowBlocks => new (string, IDataflowBlock)[]
+    protected override Dictionary<string, IDataflowBlock> DataflowBlocks => new()
     {
-        (nameof(AcquireWorkspaceBlock), AcquireWorkspaceBlock),
-        (nameof(PrioritizeFilesBlock), PrioritizeFilesBlock),
-        (nameof(CreateWorkspaceFilePipelineBlock), CreateWorkspaceFilePipelineBlock),
-        (nameof(AcquireWorkspaceFilePipelineBlock), AcquireWorkspaceFilePipelineBlock),
-    }.ToImmutableArray();
+        [nameof(AcquireWorkspaceStateBlock)] = AcquireWorkspaceStateBlock,
+        [nameof(PrioritizeFilesBlock)] = PrioritizeFilesBlock,
+        [nameof(CreateWorkspaceFilePipelineBlock)] = CreateWorkspaceFilePipelineBlock,
+        [nameof(AcquireWorkspaceFilePipelineBlock)] = AcquireWorkspaceFilePipelineBlock,
+    };
 
-    public override void LogPipelineCompletionState()
+    protected override void LogAdditionalPipelineSectionCompletionInfo(StringBuilder builder, string name)
     {
-        var builder = new StringBuilder();
-        builder.AppendLine($"Pipeline ({GetType().Name}) completion status");
-        builder.AppendLine($"\tℹ️ {(State?.WorkspaceRoot?.ToString() ?? ("(no info)"))}");
-
-        foreach (var (name, block) in DataflowBlocks)
+        var info = State?.WorkspaceRoot?.ToString();
+        if (!string.IsNullOrWhiteSpace(info))
         {
-            builder.AppendLine($"\t{(block.Completion.IsCompletedSuccessfully ? "✔️" : block.Completion.IsFaulted ? "💀" : block.Completion.IsCanceled ? "⚠️" : "◼️")}[{name}] status: {block.Completion.Status}");
+            builder.AppendLine($"\t📁 {info}");
         }
-        LogDebug(builder.ToString());
     }
 }

@@ -17,6 +17,7 @@ namespace Rubberduck.Parsing._v3.Pipeline.Abstract;
 public abstract class WorkspaceDocumentSection : DataflowPipelineSection<WorkspaceFileUri, DocumentParserState>
 {
     private readonly IWorkspaceService _workspaceService;
+    private IWorkspaceState _workspace = null!;
 
     protected WorkspaceDocumentSection(DataflowPipeline parent, IWorkspaceService workspaceService,
         ILogger<WorkspaceDocumentParserOrchestrator> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
@@ -25,13 +26,15 @@ public abstract class WorkspaceDocumentSection : DataflowPipelineSection<Workspa
         _workspaceService = workspaceService;
     }
 
+    protected void UpdateDocumentState(DocumentParserState state) => _workspace.LoadWorkspaceFile(state);
+
     private TransformBlock<WorkspaceFileUri, DocumentParserState> AcquireDocumentStateBlock { get; set; } = null!;
     private DocumentParserState AcquireDocumentState(WorkspaceFileUri uri)
     {
-        var workspace = _workspaceService.State.GetWorkspace(uri.WorkspaceRoot);
+        var workspace = _workspace = _workspaceService.State.GetWorkspace(uri);
         if (workspace.TryGetWorkspaceFile(uri, out var state) && state != null)
         {
-            State = new DocumentParserState((SourceFileDocumentState)state);
+            State = state is DocumentParserState parserState ? parserState : new DocumentParserState(state);
             return State;
         }
 

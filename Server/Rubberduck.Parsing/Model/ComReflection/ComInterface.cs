@@ -10,6 +10,8 @@ using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 using TYPELIBATTR = System.Runtime.InteropServices.ComTypes.TYPELIBATTR;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 using Rubberduck.InternalApi.Model;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
+using Rubberduck.InternalApi.Extensions;
 
 namespace Rubberduck.Parsing.Model.ComReflection;
 
@@ -127,5 +129,15 @@ public class ComInterface : ComType, IComTypeWithMembers
                 _properties.Add(new ComField(this, info, names[0], property, index, DeclarationType.Property));
             }
         }
+    }
+
+    public override Symbol ToSymbol(WorkspaceFileUri uri)
+    {
+        var children = Members.Select(e => e.ToSymbol(uri.GetChildSymbolUri(Name)));
+        return new ClassModuleSymbol(Instancing.PublicNotCreatable, Name, uri, children)
+        {
+            IsUserDefined = false,
+            Detail = Documentation.DocString,
+        };
     }
 }

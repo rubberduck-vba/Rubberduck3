@@ -15,18 +15,21 @@ public class WorkspacePipeline : DataflowPipeline
 {
     private readonly IWorkspaceStateManager _workspaces;
 
-    public WorkspacePipeline(IWorkspaceStateManager workspaces, ParserPipelineSectionProvider sectionProvider,
+    public WorkspacePipeline(IWorkspaceStateManager workspaces, ParserPipelineSectionProvider sectionProvider, LibrarySymbolsService librarySymbols,
         ILogger<WorkspacePipeline> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
         : base(logger, settingsProvider, performance)
     {
         _workspaces = workspaces;
 
+        ReferencedSymbolsSection = new WorkspaceReferencedSymbolsSection(this, _workspaces, librarySymbols, logger, settingsProvider, performance);
         SyntaxOrchestration = new WorkspaceDocumentParserOrchestrator(this, _workspaces, sectionProvider, logger, settingsProvider, performance); 
         MemberSymbolOrchestration = new WorkspaceMemberSymbolsOrchestrator(this, _workspaces, sectionProvider, logger, settingsProvider, performance);
         HierarchicalSymbolOrchestration = new WorkspaceHierarchicalSymbolsOrchestrator(this, _workspaces, sectionProvider, logger, settingsProvider, performance);
 
         Completion = MemberSymbolOrchestration.Completion;
     }
+
+    private WorkspaceReferencedSymbolsSection ReferencedSymbolsSection { get; set; } = default!;
 
     /// <summary>
     /// Creates a <c>DocumentParserSection</c> for each workspace file, to produce syntax trees and discover member symbols for each document in the workspace.
@@ -45,15 +48,21 @@ public class WorkspacePipeline : DataflowPipeline
         await TryRunActionAsync(async () =>
         {
             var uri = (WorkspaceUri)input;
-            
-            // first step is to collect the syntax trees.
-            await SyntaxOrchestration.StartAsync(uri, null, tokenSource);
 
-            // then we can resolve member symbols...
+            // first collect the symbols from referenced libraries
+            var referencedSymbols = ReferencedSymbolsSection.StartAsync(uri, tokenSource);
+
+            // we collect the syntax trees.
+            var syntaxOrchestration = SyntaxOrchestration.StartAsync(uri, null, tokenSource);
+
+            // must await completion of referenced symbols and syntax trees before we can resolve symbol types
+            await Task.WhenAll(referencedSymbols, syntaxOrchestration);
+
+            //// then we can resolve member symbols...
             await MemberSymbolOrchestration.StartAsync(uri, null, tokenSource);
 
-            // ...and only then we know enough to collect and resolve the rest of the symbols.
-            await HierarchicalSymbolOrchestration.StartAsync(uri, null, tokenSource);
+            //// ...and only then we know enough to collect and resolve the rest of the symbols.
+            //await HierarchicalSymbolOrchestration.StartAsync(uri, null, tokenSource);
 
             LogTrace($"{nameof(WorkspacePipeline)} completed.");
         }, logPerformance: true);

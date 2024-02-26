@@ -23,7 +23,7 @@ public interface IValuedExpression<TValue> where TValue : VBTypedValue
 public interface IExecutable : IValuedExpression<VBTypedValue>
 {
     /// <summary>
-    /// Executes the symbol in the given context.
+    /// Executes the symbol and its children, in the given context.
     /// </summary>
     /// <returns>
     /// Returns a <c>VBTypedValue</c> representing the result of the expression; <c>null</c> if the symbol is a non-returning executable member.
@@ -79,12 +79,15 @@ public abstract record class Symbol : DocumentSymbol
 /// </summary>
 public abstract record class TypedSymbol : Symbol, ITypedSymbol
 {
-    public TypedSymbol(RubberduckSymbolKind kind, Accessibility accessibility, string name, WorkspaceUri? parentUri = null, IEnumerable<Symbol>? children = null, VBType? type = null)
+    public TypedSymbol(RubberduckSymbolKind kind, Accessibility accessibility, string name, WorkspaceUri? parentUri = null, IEnumerable<Symbol>? children = null, VBType? type = null, string? asTypeName = null)
         : base(kind, name, parentUri, accessibility, children)
     {
         Accessibility = accessibility;
-        ResolvedType = type;
+        ResolvedType = type ?? ResolveIntrinsicType(asTypeName);
+        TypeName = type?.Name ?? asTypeName;
     }
+
+    private VBType? ResolveIntrinsicType(string? name) => VBIntrinsicType.IntrinsicTypes.SingleOrDefault(e => e.Name == name);
 
     /// <summary>
     /// Determines whether a symbol is accessible beyond its enclosing scope.
@@ -94,13 +97,15 @@ public abstract record class TypedSymbol : Symbol, ITypedSymbol
     /// </remarks>
     public Accessibility Accessibility { get; }
 
+    public string? TypeName { get; init; }
+
     public VBType? ResolvedType { get; init; }
     public TypedSymbol WithResolvedType(VBType? resolvedType) => this with { ResolvedType = resolvedType };
 }
 
-public record class ClassTypeDefinitionSymbol : TypedSymbol
+public record class ClassTypeInstanceSymbol : TypedSymbol
 {
-    public ClassTypeDefinitionSymbol(Accessibility accessibility, string name, WorkspaceUri parentUri) 
+    public ClassTypeInstanceSymbol(Accessibility accessibility, string name, WorkspaceUri parentUri) 
         : base(RubberduckSymbolKind.Class, accessibility, name, parentUri, [], null)
     {
     }
@@ -109,7 +114,7 @@ public record class ClassTypeDefinitionSymbol : TypedSymbol
 public abstract record class DeclarationExpressionSymbol : TypedSymbol, IDeclaredTypeSymbol
 {
     protected DeclarationExpressionSymbol(RubberduckSymbolKind kind, string name, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, IEnumerable<IParseTreeAnnotation>? annotations = null, string? asTypeExpression = null, VBType? type = null)
-        : base(kind, accessibility, name, parentUri, children, ResolveVariantIfUnspecified(type, asTypeExpression))
+        : base(kind, accessibility, name, parentUri, children, ResolveVariantIfUnspecified(type, asTypeExpression), asTypeExpression)
     {
     }
 
@@ -206,7 +211,9 @@ public record class UserDefinedTypeSymbol : TypedSymbol
 public record class UserDefinedTypeMemberSymbol : DeclarationExpressionSymbol
 {
     public UserDefinedTypeMemberSymbol(string name, WorkspaceUri parentUri, string? asTypeExpression)
-        : base(RubberduckSymbolKind.Field, name, parentUri, Accessibility.Public, asTypeExpression: asTypeExpression) { }
+        : base(RubberduckSymbolKind.Field, name, parentUri, Accessibility.Public, asTypeExpression: asTypeExpression) 
+    {
+    }
 }
 
 public record class LibraryFunctionImportSymbol : FunctionSymbol
@@ -246,7 +253,9 @@ public record class LibraryProcedureImportSymbol : ProcedureSymbol
 public record class FunctionSymbol : TypedSymbol, IExecutable
 {
     public FunctionSymbol(string name, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<Symbol>? children = null, string? typeName = null, RubberduckSymbolKind kind = RubberduckSymbolKind.Function)
-        : base(kind, accessibility, name, parentUri, (children ?? []).ToArray()) { }
+        : base(kind, accessibility, name, parentUri, (children ?? []).ToArray(), asTypeName: typeName) 
+    {
+    }
 
     public bool? IsReachable { get; init; }
 
@@ -333,14 +342,17 @@ public record class EnumSymbol : TypedSymbol
 public record class EnumMemberSymbol : ValuedTypedSymbol
 {
     public EnumMemberSymbol(string name, WorkspaceUri parentUri, string? value)
-        : base(RubberduckSymbolKind.EnumMember, Accessibility.Public, name, parentUri, null, value) { }
+        : base(RubberduckSymbolKind.EnumMember, Accessibility.Public, name, parentUri, null, value) 
+    {
+        ResolvedType = VBLongType.TypeInfo;
+    }
 
     public override VBTypedValue Evaluate(ref VBExecutionScope context, bool rethrow = false) => context.GetTypedValue(this);
 }
 
-public record class EventMemberSymbol : ProcedureSymbol
+public record class EventSymbol : ProcedureSymbol
 {
-    public EventMemberSymbol(string name, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters)
+    public EventSymbol(string name, WorkspaceUri parentUri, Accessibility accessibility, IEnumerable<ParameterSymbol>? parameters = default)
         : base(name, parentUri, accessibility, parameters, RubberduckSymbolKind.Event) { }
 }
 

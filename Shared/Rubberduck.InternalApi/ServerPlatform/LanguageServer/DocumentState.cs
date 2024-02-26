@@ -7,29 +7,6 @@ using System.Collections.Immutable;
 
 namespace Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 
-public record class SourceFileDocumentState : DocumentState
-{
-    public SourceFileDocumentState(SupportedLanguage language, 
-        WorkspaceFileUri uri, string text, int version = 1, bool isOpened = false) 
-        : base(uri, text, version, isOpened)
-    {
-        Language = language;
-    }
-
-    public SupportedLanguage Language { get; init; }
-
-    public IImmutableSet<SyntaxErrorInfo> SyntaxErrors { get; init; } = [];
-    public IImmutableSet<FoldingRange> Foldings { get; init; } = [];
-    public IImmutableSet<Diagnostic> Diagnostics { get; init; } = [];
-    public Symbol? Symbol { get; init; }
-
-    public SourceFileDocumentState WithLanguage(SupportedLanguage language) => this with { Language = language };
-    public SourceFileDocumentState WithSyntaxErrors(IEnumerable<SyntaxErrorInfo> errors) => this with { SyntaxErrors = errors.ToImmutableHashSet() };
-    public SourceFileDocumentState WithFoldings(IEnumerable<FoldingRange> foldings) => this with { Foldings = foldings.ToImmutableHashSet() };
-    public SourceFileDocumentState WithDiagnostics(IEnumerable<Diagnostic> diagnostics) => this with { Diagnostics = diagnostics.ToImmutableHashSet() };
-    public SourceFileDocumentState WithSymbol(Symbol module) => this with { Symbol = module };
-}
-
 public record class DocumentState
 {
     public static DocumentState MissingFile(WorkspaceFileUri uri) => 
@@ -37,12 +14,34 @@ public record class DocumentState
     public static DocumentState LoadError(WorkspaceFileUri uri) =>
         new(uri, string.Empty, -1, isOpened: false) { IsLoadError = true };
 
+    public DocumentState(DocumentState original)
+    {
+        Uri = original.Uri;
+        Text = original.Text;
+        Version = original.Version;
+        IsOpened = original.IsOpened;
+
+        Language = original.Language;
+        SyntaxErrors = original.SyntaxErrors;
+        Foldings = original.Foldings;
+        Diagnostics = original.Diagnostics;
+        Symbol = original.Symbol;
+    }
+
     public DocumentState(WorkspaceFileUri uri, string text, int version = 1, bool isOpened = false)
     {
         Uri = uri;
         Text = text;
         Version = version;
         IsOpened = isOpened;
+
+        Language = SupportedLanguage.VBA;
+    }
+
+    public void Deconstruct(out WorkspaceFileUri uri, out string text)
+    {
+        uri = Uri;
+        text = Text;
     }
 
     public WorkspaceFileUri Uri { get; init; }
@@ -57,9 +56,25 @@ public record class DocumentState
 
     public bool IsModified => Version != 1;
 
+
+    public SupportedLanguage Language { get; init; }
+    public IImmutableSet<SyntaxErrorInfo> SyntaxErrors { get; init; } = [];
+    public IImmutableSet<FoldingRange> Foldings { get; init; } = [];
+    public IImmutableSet<Diagnostic> Diagnostics { get; init; } = [];
+    public Symbol? Symbol { get; init; }
+
+
     public DocumentState WithUri(WorkspaceFileUri uri) => this with { Uri = uri };
     public DocumentState WithText(string text) => this with { Text = text, Version = Version + 1 };
     public DocumentState WithOpened(bool opened = true) => this with { IsOpened = opened };
+
+
+    public DocumentState WithLanguage(SupportedLanguage language) => this with { Language = language };
+    public DocumentState WithSyntaxErrors(IEnumerable<SyntaxErrorInfo> errors) => this with { SyntaxErrors = errors.ToImmutableHashSet() };
+    public DocumentState WithFoldings(IEnumerable<FoldingRange> foldings) => this with { Foldings = foldings.ToImmutableHashSet() };
+    public DocumentState WithDiagnostics(IEnumerable<Diagnostic> diagnostics) => this with { Diagnostics = diagnostics.ToImmutableHashSet() };
+    public DocumentState WithSymbol(Symbol module) => this with { Symbol = module };
+
 
     /// <summary>
     /// When a file is saved, resetting its version to 1 removes its 'dirty' marker.

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations.Execution;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Settings;
@@ -28,7 +29,7 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
 
         public VBExecutionContext ExecutionContext { get; }
 
-        public Uri? WorkspaceRoot { get; set; }
+        public WorkspaceUri? WorkspaceRoot { get; set; }
         public string ProjectName { get; set; } = "Project1";
 
         public IEnumerable<Folder> Folders => _folders;
@@ -82,6 +83,10 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
         public bool LoadWorkspaceFile(DocumentState file)
         {
             _store.AddOrUpdate(file.Uri, file);
+            if (file.Symbol is TypedSymbol typedSymbol)
+            {
+                ExecutionContext.AddToSymbolTable(typedSymbol);
+            }
             return true;
         }
 
@@ -166,6 +171,12 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
             throw new InvalidOperationException("Workspace data is empty.");
         }
 
+        if (workspaceRoot is WorkspaceUri workspaceUri)
+        {
+            workspaceRoot = workspaceUri.WorkspaceRoot;
+        }
+
+
         if (!_workspaces.TryGetValue(workspaceRoot, out var value))
         {
             LogWarning("Workspace URI was not found.", $"{workspaceRoot}\n{string.Join("\n*", _workspaces.Keys.Select(key => key.ToString()))}");
@@ -182,7 +193,7 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
     {
         var state = new ProjectStateManager(Logger, SettingsProvider, Performance, _store)
         {
-            WorkspaceRoot = workspaceRoot
+            WorkspaceRoot = new WorkspaceFolderUri(null, workspaceRoot)
         };
         _workspaces[workspaceRoot] = state;
         ActiveWorkspace = state;

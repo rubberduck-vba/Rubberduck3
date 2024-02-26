@@ -2,7 +2,9 @@
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.VBEditor.Utility;
 using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using PARAMFLAG = System.Runtime.InteropServices.ComTypes.PARAMFLAG;
@@ -153,5 +155,28 @@ public class ComParameter
         {
             _typeName = new ComTypeName(Project, ComVariant.TypeNames.TryGetValue(vt, out string? result) ? result : Tokens.Object);
         }
+    }
+
+    internal Symbol ToSymbol(WorkspaceUri parentUri)
+    {
+        ParameterSymbol symbol;
+        var modifier = IsByRef 
+            ? ParameterModifier.ExplicitByRef 
+            : ParameterModifier.ExplicitByVal;
+
+        if (IsParamArray)
+        {
+            symbol = new ParamArrayParameterSymbol(Name, parentUri, TypeName);
+        }
+        else if (IsOptional)
+        {
+            symbol = new OptionalParameterSymbol(Name, parentUri, modifier, TypeName, null);
+        }
+        else
+        {
+            symbol = new ParameterSymbol(Name, parentUri, modifier, TypeName);
+        }
+
+        return symbol;
     }
 }

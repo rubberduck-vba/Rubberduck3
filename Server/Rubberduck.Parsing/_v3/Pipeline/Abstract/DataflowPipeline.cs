@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
+using System.Collections.Concurrent;
 using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline.Abstract;
@@ -26,11 +27,24 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
     protected virtual CancellationTokenSource? TokenSource { get; set; }
     protected CancellationToken Token => TokenSource?.Token ?? CancellationToken.None;
 
-    public Exception? Exception { get; private set; }
+    private ConcurrentStack<Exception> _exceptions = [];
+    public Exception? Exception => _exceptions.TryPeek(out var exception) ? exception : null;
+
     public void FaultPipeline(Exception exception)
     {
-        Exception = exception;
-        TokenSource?.Cancel();
+        if (Exception is null)
+        {
+            _exceptions.Push(exception);
+            try
+            {
+                TokenSource?.Cancel();
+            }
+            catch (ObjectDisposedException) { }
+        }
+        else
+        {
+            LogWarning("Pipeline was already faulted", $"{exception.GetType().Name}: {exception.Message}");
+        }
     }
 
     protected void Link<T>(ISourceBlock<T> source, ITargetBlock<T> target, DataflowLinkOptions? options = null)
@@ -63,7 +77,10 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
         else
         {
             LogException(exception, $"Dataflow block '{name ?? typeof(IDataflowBlock).Name}' was faulted.");
-            FaultPipeline(exception);
+            if (Exception is null)
+            {
+                FaultPipeline(exception);
+            }
         }
     }
 

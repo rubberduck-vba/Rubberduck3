@@ -21,7 +21,7 @@ public sealed class VBADateLiteralParser
         var tokens = new CommonTokenStream(lexer);
         var parser = new VBADateParser(tokens);
 
-        parser.AddErrorListener(new ThrowingSyntaxErrorListener(null!, CodeKind.SnippetCode)); // report or throw?
+        parser.AddErrorListener(new ThrowingSyntaxErrorListener(null!, null)); // report or throw?
         VBADateParser.CompilationUnitContext tree;
         try
         {

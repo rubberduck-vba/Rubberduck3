@@ -2,7 +2,11 @@
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
+using Rubberduck.InternalApi.Services;
+using Rubberduck.ServerPlatform;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -12,32 +16,43 @@ namespace Rubberduck.LanguageServer.Handlers.Language
 {
     public class FoldingRangeHandler : FoldingRangeHandlerBase
     {
-        private readonly ILanguageServerFacade _server;
-        private readonly SupportedLanguage _language;
-        private readonly DocumentContentStore _contentStore;
-
+        private readonly ServerPlatformServiceHelper _service;
+        private readonly IWorkspaceStateManager _workspaces;
         private readonly TextDocumentSelector _selector;
 
-        public FoldingRangeHandler(ILanguageServerFacade server, SupportedLanguage language, DocumentContentStore contentStore)
+        public FoldingRangeHandler(ServerPlatformServiceHelper service, IWorkspaceStateManager workspaces, SupportedLanguage language)
         {
-            _language = language;
-            _server = server;
-            _contentStore = contentStore;
-
-            var filter = new TextDocumentFilter
-            {
-                Language = language.Id,
-                Pattern = string.Join(";", language.FileTypes.Select(fileType => $"**/{fileType}").ToArray())
-            };
-            _selector = new TextDocumentSelector(filter);
+            _service = service;
+            _workspaces = workspaces;
+            _selector = language.ToTextDocumentSelector();
         }
 
         public async override Task<Container<FoldingRange>?> Handle(FoldingRangeRequestParam request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-
             var items = new List<FoldingRange>();
-            // TODO
+
+            if (!_service.TryRunAction(() =>
+            {
+                var documentUri = request.TextDocument.Uri;
+                var workspace = _workspaces.ActiveWorkspace
+                    ?? throw new InvalidOperationException("Invalid WorkspaceStateManager state: there is no active workspace.");
+
+                var uri = new WorkspaceFileUri(documentUri.ToUri().OriginalString, workspace.WorkspaceRoot!.WorkspaceRoot);
+                if (workspace.TryGetWorkspaceFile(uri, out var document) && document != null)
+                {
+                    items.AddRange(document.Foldings);
+                    _service.LogInformation($"Found {document.Foldings.Count} foldings for document at uri '{uri}'.");
+                }
+                else
+                {
+                    _service.LogWarning($"Could not find workspace file at uri '{uri}'. An empty collection will be returned.");
+                }
+            }, out var exception, nameof(FoldingRangeHandler)) && exception != null)
+            {
+                // in case of failure, we throw here to return an error response:
+                throw exception;
+            }
 
             var result = new Container<FoldingRange>(items);
             return await Task.FromResult(result);

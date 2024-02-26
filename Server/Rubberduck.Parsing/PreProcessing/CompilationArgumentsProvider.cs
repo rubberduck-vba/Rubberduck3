@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.Model.Declarations.Execution;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Services;
@@ -24,7 +25,7 @@ public class CompilationArgumentsProvider : ICompilationArgumentsProvider
 
     public VBAPredefinedCompilationConstants PredefinedCompilationConstants { get; }
 
-    public Dictionary<string, short> UserDefinedCompilationArguments(Uri uri)
+    public Dictionary<string, short> UserDefinedCompilationArguments(WorkspaceUri uri)
     {
         return GetUserDefinedCompilationArguments(uri);
     }
@@ -53,7 +54,7 @@ public class WorkspaceCompilationArgumentsProvider : ICompilationArgumentsProvid
     public VBAPredefinedCompilationConstants PredefinedCompilationConstants => 
         new(_state.ActiveWorkspace?.ExecutionContext.LanguageVersion ?? throw new InvalidOperationException("Operation requires an active workspace"));
 
-    public Dictionary<string, short> UserDefinedCompilationArguments(Uri workspaceRoot)
+    public Dictionary<string, short> UserDefinedCompilationArguments(WorkspaceUri workspaceRoot)
     {
         var context = _state.GetWorkspace(workspaceRoot).ExecutionContext;
         return context.ResolvedSymbols.OfType<PrecompilerConstantSymbol>()

@@ -5,6 +5,8 @@ using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Parsing._v3.Pipeline.Abstract;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Text;
 using System.Threading.Tasks.Dataflow;
@@ -22,40 +24,44 @@ public class DocumentMemberSymbolsSection : WorkspaceDocumentSection
         _symbolsService = symbolsService;
     }
 
-    private TransformBlock<SourceFileDocumentState, Symbol> AcquireDocumentStateSymbolsBlock { get; set; } = null!;
-    private Symbol AcquireDocumentStateSymbols(SourceFileDocumentState state) =>
+    private TransformBlock<DocumentState, Symbol> AcquireDocumentStateSymbolsBlock { get; set; } = null!;
+    private Symbol AcquireDocumentStateSymbols(DocumentState state) =>
         RunTransformBlock(AcquireDocumentStateSymbolsBlock, state, 
             e => e.Symbol ?? throw new InvalidOperationException("Document.Symbol is unexpectedly null."), 
-            nameof(AcquireDocumentStateSymbols), logPerformance: false);
+            nameof(AcquireDocumentStateSymbolsBlock), logPerformance: false);
 
     private TransformBlock<Symbol, Symbol> ResolveMemberSymbolsBlock { get; set; } = null!;
     private Symbol ResolveMemberSymbols(Symbol symbol) =>
         RunTransformBlock(ResolveMemberSymbolsBlock, symbol, 
             e => _symbolsService.RecursivelyResolveSymbols(e), 
-            nameof(ResolveMemberSymbols), logPerformance: true);
+            nameof(ResolveMemberSymbolsBlock), logPerformance: true);
 
     private ActionBlock<Symbol> SetDocumentStateMemberSymbolsBlock { get; set; } = null!;
     private void SetDocumentStateMemberSymbols(Symbol symbol) =>
         RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol, 
             e => State = (DocumentParserState)State.WithSymbol(e),
-            nameof(SetDocumentStateMemberSymbols), logPerformance: false);
+            nameof(SetDocumentStateMemberSymbolsBlock), logPerformance: false);
 
     protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(ISourceBlock<DocumentParserState> source)
     {
+
         AcquireDocumentStateSymbolsBlock = new(AcquireDocumentStateSymbols, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(AcquireDocumentStateSymbolsBlock), AcquireDocumentStateSymbolsBlock);
 
         ResolveMemberSymbolsBlock = new(ResolveMemberSymbols, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(ResolveMemberSymbols), ResolveMemberSymbolsBlock);
 
-        SetDocumentStateMemberSymbolsBlock = new(SetDocumentStateMemberSymbols, ConcurrentExecutionOptions(Token));
-        _ = TraceBlockCompletionAsync(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
+        var symbolBuffer = new BufferBlock<Symbol>(new DataflowBlockOptions { CancellationToken = Token });
 
-        Completion = SetDocumentStateMemberSymbolsBlock.Completion;
+        SetDocumentStateMemberSymbolsBlock = new(SetDocumentStateMemberSymbols, SingleMessageExecutionOptions(Token)); // NOTE: not thread-safe, keep single-threaded
+        Completion = TraceBlockCompletionAsync(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
+
+        //Completion = SetDocumentStateMemberSymbolsBlock.Completion;
 
         Link(source, AcquireDocumentStateSymbolsBlock);
         Link(AcquireDocumentStateSymbolsBlock, ResolveMemberSymbolsBlock);
-        Link(ResolveMemberSymbolsBlock, SetDocumentStateMemberSymbolsBlock);
+        Link(ResolveMemberSymbolsBlock, symbolBuffer);
+        Link(symbolBuffer, SetDocumentStateMemberSymbolsBlock);
 
         return (new IDataflowBlock[] {
                 AcquireDocumentStateSymbolsBlock,
@@ -64,23 +70,19 @@ public class DocumentMemberSymbolsSection : WorkspaceDocumentSection
             }, Completion);
     }
 
-    protected override ImmutableArray<(string, IDataflowBlock)> DataflowBlocks => new (string, IDataflowBlock)[]
+    protected override Dictionary<string, IDataflowBlock> DataflowBlocks => new()
     {
-        (nameof(AcquireDocumentStateSymbolsBlock), AcquireDocumentStateSymbolsBlock),
-        (nameof(ResolveMemberSymbolsBlock), ResolveMemberSymbolsBlock),
-        (nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock),
-    }.ToImmutableArray();
+        [nameof(AcquireDocumentStateSymbolsBlock)] = AcquireDocumentStateSymbolsBlock,
+        [nameof(ResolveMemberSymbolsBlock)] = ResolveMemberSymbolsBlock,
+        [nameof(SetDocumentStateMemberSymbolsBlock)] = SetDocumentStateMemberSymbolsBlock,
+    };
 
-    public override void LogPipelineCompletionState()
+    protected override void LogAdditionalPipelineSectionCompletionInfo(StringBuilder builder, string name)
     {
-        var builder = new StringBuilder();
-        builder.AppendLine($"Pipeline ({GetType().Name}) completion status");
-        builder.AppendLine($"\tℹ️ {(State?.Uri.ToString() ?? ("(no info)"))}");
-
-        foreach (var (name, block) in DataflowBlocks)
+        var uri = State?.Uri?.ToString();
+        if (State != null && !string.IsNullOrWhiteSpace(uri))
         {
-            builder.AppendLine($"\t{(block.Completion.IsCompletedSuccessfully ? "✔️" : block.Completion.IsFaulted ? "💀" : block.Completion.IsCanceled ? "⚠️" : "◼️")}[{name}] status: {block.Completion.Status}");
+            builder.AppendLine($"\t📂 Uri: {uri} (⛔{State.SyntaxErrors.Count} errors; ⚠️{State.Diagnostics.Count} diagnostics; 🧩{State.Symbol?.Children?.Count() ?? 0} child symbols)");
         }
-        LogDebug(builder.ToString());
     }
 }

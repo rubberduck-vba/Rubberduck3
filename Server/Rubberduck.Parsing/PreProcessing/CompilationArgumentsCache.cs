@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Abstract;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.Parsing.Abstract;
 
 namespace Rubberduck.Parsing.PreProcessing;
 
@@ -6,7 +7,7 @@ public class CompilationArgumentsCache : ICompilationArgumentsCache
 {
     private readonly ICompilationArgumentsProvider _provider;
     private readonly Dictionary<Uri, Dictionary<string, short>> _compilationArguments = [];
-    private readonly HashSet<Uri> _projectsWhoseCompilationArgumentsChanged = [];
+    private readonly HashSet<WorkspaceUri> _projectsWhoseCompilationArgumentsChanged = [];
 
     public CompilationArgumentsCache(ICompilationArgumentsProvider compilationArgumentsProvider)
     {
@@ -15,12 +16,12 @@ public class CompilationArgumentsCache : ICompilationArgumentsCache
 
     public VBAPredefinedCompilationConstants PredefinedCompilationConstants => _provider.PredefinedCompilationConstants;
 
-    public Dictionary<string, short> UserDefinedCompilationArguments(Uri workspaceUri)
+    public Dictionary<string, short> UserDefinedCompilationArguments(WorkspaceUri workspaceUri)
     {
-        return _compilationArguments.TryGetValue(workspaceUri, out var args) ? args : [];
+        return _compilationArguments.TryGetValue(workspaceUri.WorkspaceRoot, out var args) ? args : [];
     }
 
-    public void ReloadCompilationArguments(IEnumerable<Uri> workspaceUris)
+    public void ReloadCompilationArguments(IEnumerable<WorkspaceUri> workspaceUris)
     {
         foreach (var uri in workspaceUris)
         {
@@ -35,12 +36,12 @@ public class CompilationArgumentsCache : ICompilationArgumentsCache
         }
     }
 
-    private void ReloadCompilationArguments(Uri workspaceUri)
+    private void ReloadCompilationArguments(WorkspaceUri workspaceUri)
     {
         _compilationArguments[workspaceUri] = _provider.UserDefinedCompilationArguments(workspaceUri);
     }
 
-    public IReadOnlyCollection<Uri> ProjectWhoseCompilationArgumentsChanged()
+    public IReadOnlyCollection<WorkspaceUri> ProjectWhoseCompilationArgumentsChanged()
     {
         return _projectsWhoseCompilationArgumentsChanged;
     }
@@ -50,7 +51,7 @@ public class CompilationArgumentsCache : ICompilationArgumentsCache
         _projectsWhoseCompilationArgumentsChanged.Clear();
     }
 
-    public void RemoveCompilationArgumentsFromCache(IEnumerable<Uri> workspaceUris)
+    public void RemoveCompilationArgumentsFromCache(IEnumerable<WorkspaceUri> workspaceUris)
     {
         foreach (var uri in workspaceUris)
         {

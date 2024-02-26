@@ -18,11 +18,11 @@ public sealed class VBAPreprocessor : ITokenStreamPreprocessor
         _parser = preprocessorParser;
     }
 
-    public CommonTokenStream? PreprocessTokenStream(WorkspaceFileUri uri, CommonTokenStream tokenStream, CancellationToken token, CodeKind codeKind = CodeKind.SnippetCode)
+    public CommonTokenStream? PreprocessTokenStream(WorkspaceFileUri uri, CommonTokenStream tokenStream, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
 
-        var tree = _parser.Parse(uri, tokenStream, token, codeKind);
+        var tree = _parser.Parse(uri, tokenStream, token, out _ /*out var errors*/);
         token.ThrowIfCancellationRequested();
 
         var charStream = tokenStream.TokenSource.InputStream;
@@ -30,7 +30,7 @@ public sealed class VBAPreprocessor : ITokenStreamPreprocessor
         Dictionary<string, short> userCompilationArguments = [];
         try
         {
-            userCompilationArguments = _compilationArgumentsProvider.UserDefinedCompilationArguments(uri.WorkspaceRoot);
+            userCompilationArguments = _compilationArgumentsProvider.UserDefinedCompilationArguments(uri);
         }
         catch (Exception)
         {

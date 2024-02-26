@@ -58,8 +58,10 @@ namespace Rubberduck.InternalApi.Services
                     }
 
                     var projectFile = _projectFile.ReadFile(uri);
-                    var version = new Version(projectFile.Rubberduck);
-                    if (version > new Version(ProjectFile.RubberduckVersion))
+                    var rdprojVersion = new Version(projectFile.Rubberduck);
+                    var rdVersion = new Version(ProjectFile.RubberduckVersion);
+
+                    if (rdprojVersion > new Version(ProjectFile.RubberduckVersion))
                     {
                         throw new NotSupportedException("This project was created with a version of Rubberduck greater than the one currently running.");
                     }
@@ -72,6 +74,11 @@ namespace Rubberduck.InternalApi.Services
 
                     var state = _state.AddWorkspace(uri);
                     state.ProjectName = _fileSystem.Path.GetFileName(root);
+                    
+                    foreach (var reference in projectFile.VBProject.References)
+                    {
+                        state.AddReference(reference);
+                    }
 
                     LoadWorkspaceFiles(uri, projectFile);
                     _projectFiles.Add(projectFile);
@@ -187,8 +194,9 @@ namespace Rubberduck.InternalApi.Services
                     {
                         // project source files are VB source code, always.
                         var language = projectType == ProjectType.VBA ? SupportedLanguage.VBA : SupportedLanguage.VB6;
-                        info = new SourceFileDocumentState(language, uri, content, isOpened: open && !isMissing)
+                        info = new DocumentState(uri, content, isOpened: open && !isMissing)
                         {
+                            Language = language,
                             IsMissing = isMissing,
                             IsLoadError = isLoadError
                         };
@@ -218,7 +226,7 @@ namespace Rubberduck.InternalApi.Services
                     {
                         LogWarning($"{(isSourceFile ? "Source file" : "File")} version {fileVersion} at {uri} was not loaded; a newer version is already cached.'.");
                     }
-                });
+                }, logPerformance: false);
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
+using Rubberduck.InternalApi.Model.Declarations.Types;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
@@ -8,9 +9,13 @@ namespace Rubberduck.Parsing._v3.Pipeline;
 
 public class ResolverService : ServiceBase, IResolverService
 {
-    public ResolverService(ILogger<ResolverService> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
+    private readonly IWorkspaceStateManager _workspaces;
+
+    public ResolverService(IWorkspaceStateManager workspaces,
+        ILogger<ResolverService> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
         : base(logger, settingsProvider, performance)
     {
+        _workspaces = workspaces;
     }
 
     public VBType? Resolve(TypedSymbol symbol)
@@ -20,16 +25,22 @@ public class ResolverService : ServiceBase, IResolverService
             return symbol.ResolvedType;
         }
 
-        //var types = _context.MemberOwnerTypes;
-        //// FIXME this is placeholder code right here
-        //var typeSymbol = types.SingleOrDefault(e => string.Equals(e.Name, symbol.Name, StringComparison.InvariantCultureIgnoreCase));
+        var workspace = _workspaces.GetWorkspace(symbol.Uri.WorkspaceRoot);
+        var root = workspace.WorkspaceRoot!;
 
-        //if (typeSymbol != null)
-        //{
-        //    var resolvedSymbol = (TypedSymbol)symbol.WithResolvedType(typeSymbol.ResolvedType);
-        //    _context.AddTypedSymbol(resolvedSymbol);
-        //}
-        //return typeSymbol?.ResolvedType;
-        throw new NotImplementedException();
+        var context = workspace.ExecutionContext;
+
+        if (symbol is DeclarationExpressionSymbol expression && !string.IsNullOrWhiteSpace(expression.TypeName))
+        {
+            var type = context.ResolveType(expression.TypeName, root);
+            return type;
+        }
+        else if (symbol is FunctionSymbol function && !string.IsNullOrWhiteSpace(function.TypeName))
+        {
+            var type = context.ResolveType(function.TypeName, root);
+            return type;
+        }
+
+        return VBVariantType.TypeInfo;
     }
 }

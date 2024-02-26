@@ -5,17 +5,22 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server.WorkDone;
 using OmniSharp.Extensions.LanguageServer.Server;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.InternalApi.Settings.Model.LanguageClient;
 using Rubberduck.InternalApi.Settings.Model.LanguageServer;
+using Rubberduck.LanguageServer.Handlers.Language;
 using Rubberduck.LanguageServer.Handlers.Lifecycle;
 using Rubberduck.LanguageServer.Handlers.Workspace;
 using Rubberduck.Parsing._v3.Pipeline;
 using Rubberduck.Parsing._v3.Pipeline.Services;
 using Rubberduck.Parsing.Abstract;
+using Rubberduck.Parsing.COM.Abstract;
+using Rubberduck.Parsing.Exceptions;
+using Rubberduck.Parsing.Model.ComReflection;
 using Rubberduck.Parsing.Parsers;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.TokenStreamProviders;
@@ -58,38 +63,19 @@ namespace Rubberduck.LanguageServer
 
                 await task;
                 logger.LogInformation($"Workspace was processed: {task.Status}");
+
+                var workspace = app.State.ActiveWorkspace!;
+                logger.LogInformation($"{workspace.ExecutionContext.UnresolvedSymbols.Count} unresolved symbols.");
             }
+
+            await Task.Delay(100);
         }
-
-        //private TextDocumentSelector GetSelector(SupportedLanguage language)
-        //{
-        //    var filter = new TextDocumentFilter
-        //    {
-        //        Language = language.Id,
-        //        Pattern = string.Join(";", language.FileTypes.Select(fileType => $"**/{fileType}").ToArray())
-        //    };
-        //    return new TextDocumentSelector(filter);
-        //}
-
-        //private void HandleDidOpenTextDocument(DidOpenTextDocumentParams request, TextSynchronizationCapability capability, CancellationToken token)
-        //{
-        //    _logger?.LogDebug("Received DidOpenTextDocument notification.");
-        //}
-
-        //private TextDocumentOpenRegistrationOptions GetTextDocumentOpenRegistrationOptions(TextSynchronizationCapability capability, ClientCapabilities clientCapabilities)
-        //{
-        //    return new TextDocumentOpenRegistrationOptions
-        //    {
-        //        DocumentSelector = GetSelector(new VisualBasicForApplicationsLanguage())
-        //    };
-        //}
 
         protected override ServerState<LanguageServerSettings, LanguageServerStartupSettings> GetServerState(IServiceProvider provider) 
             => provider.GetRequiredService<LanguageServerState>();
 
         protected override void ConfigureServices(ServerStartupOptions options, IServiceCollection services)
         {
-            //services.AddSingleton<ILanguageServerFacade>(provider => _languageServer);
             services.AddSingleton<ServerStartupOptions>(provider => options);
 
             if (options.ClientProcessId > 0)
@@ -107,8 +93,10 @@ namespace Rubberduck.LanguageServer
 
             services.AddSingleton<IWorkspaceService, WorkspaceService>();
             services.AddSingleton<IWorkspaceStateManager, WorkspaceStateManager>();
-
+            services.AddSingleton<ISyntaxErrorMessageService, SyntaxErrorMessageService>();
             services.AddSingleton<WorkspacePipeline>();
+            services.AddSingleton<LibrarySymbolsService>();
+            services.AddSingleton<IComLibraryProvider, ComLibraryProvider>();
             services.AddSingleton<ParserPipelineSectionProvider>();
             services.AddTransient<WorkspaceDocumentParserOrchestrator>();
             services.AddTransient<DocumentParserSection>();
@@ -182,8 +170,10 @@ namespace Rubberduck.LanguageServer
                 .WithHandler<DocumentHighlightHandler>()
                 .WithHandler<DocumentOnTypeFormattingHandler>()
                 .WithHandler<DocumentRangeFormattingHandler>()
+            */
                 .WithHandler<DocumentSymbolHandler>()
                 .WithHandler<FoldingRangeHandler>()
+            /*
                 .WithHandler<HoverHandler>()
                 .WithHandler<ImplementationHandler>()
                 .WithHandler<PrepareRenameHandler>()
@@ -223,6 +213,10 @@ namespace Rubberduck.LanguageServer
                     }, token, TaskContinuationOptions.None, TaskScheduler.Default);
 
                 service.LogInformation($"Project {pipeline.State.ProjectName} ({pipeline.State.WorkspaceFiles.Count()} files) is good to go!");
+            }
+            else
+            {
+                service.LogWarning("Workspace was not loaded.", "IWorkspaceService.OpenProjectWorkspaceAsync(Uri) returned false.");
             }
         }
     }

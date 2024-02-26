@@ -11,6 +11,8 @@ using System.Threading;
 
 namespace Rubberduck.LanguageServer
 {
+
+
     public interface ILanguageServerState : IServerStateWriter
     {
         DocumentUri? RootUri { get; set; }
