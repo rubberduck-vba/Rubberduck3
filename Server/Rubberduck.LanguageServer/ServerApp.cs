@@ -68,35 +68,11 @@ namespace Rubberduck.LanguageServer
             }
         }
 
-        //private TextDocumentSelector GetSelector(SupportedLanguage language)
-        //{
-        //    var filter = new TextDocumentFilter
-        //    {
-        //        Language = language.Id,
-        //        Pattern = string.Join(";", language.FileTypes.Select(fileType => $"**/{fileType}").ToArray())
-        //    };
-        //    return new TextDocumentSelector(filter);
-        //}
-
-        //private void HandleDidOpenTextDocument(DidOpenTextDocumentParams request, TextSynchronizationCapability capability, CancellationToken token)
-        //{
-        //    _logger?.LogDebug("Received DidOpenTextDocument notification.");
-        //}
-
-        //private TextDocumentOpenRegistrationOptions GetTextDocumentOpenRegistrationOptions(TextSynchronizationCapability capability, ClientCapabilities clientCapabilities)
-        //{
-        //    return new TextDocumentOpenRegistrationOptions
-        //    {
-        //        DocumentSelector = GetSelector(new VisualBasicForApplicationsLanguage())
-        //    };
-        //}
-
         protected override ServerState<LanguageServerSettings, LanguageServerStartupSettings> GetServerState(IServiceProvider provider) 
             => provider.GetRequiredService<LanguageServerState>();
 
         protected override void ConfigureServices(ServerStartupOptions options, IServiceCollection services)
         {
-            //services.AddSingleton<ILanguageServerFacade>(provider => _languageServer);
             services.AddSingleton<ServerStartupOptions>(provider => options);
 
             if (options.ClientProcessId > 0)
