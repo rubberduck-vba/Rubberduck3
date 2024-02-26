@@ -2,6 +2,7 @@
 using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
+using Rubberduck.InternalApi.Model.Declarations.Types;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
@@ -25,7 +26,16 @@ public class VBExecutionContextBuilder
     {
         foreach (var symbol in symbols)
         {
-            _context.AddTypedSymbol(symbol);
+            _context.AddToSymbolTable(symbol);
+        }
+        return this;
+    }
+
+    public VBExecutionContextBuilder WithClassTypes(params VBClassType[] vbTypes)
+    {
+        foreach (var vbType in vbTypes)
+        {
+            _context.AddVBType(vbType);
         }
         return this;
     }

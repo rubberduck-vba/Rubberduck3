@@ -24,8 +24,8 @@ public class DocumentMemberSymbolsSection : WorkspaceDocumentSection
         _symbolsService = symbolsService;
     }
 
-    private TransformBlock<SourceFileDocumentState, Symbol> AcquireDocumentStateSymbolsBlock { get; set; } = null!;
-    private Symbol AcquireDocumentStateSymbols(SourceFileDocumentState state) =>
+    private TransformBlock<DocumentState, Symbol> AcquireDocumentStateSymbolsBlock { get; set; } = null!;
+    private Symbol AcquireDocumentStateSymbols(DocumentState state) =>
         RunTransformBlock(AcquireDocumentStateSymbolsBlock, state, 
             e => e.Symbol ?? throw new InvalidOperationException("Document.Symbol is unexpectedly null."), 
             nameof(AcquireDocumentStateSymbolsBlock), logPerformance: false);

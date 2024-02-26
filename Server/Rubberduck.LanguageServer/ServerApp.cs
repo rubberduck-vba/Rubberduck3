@@ -62,6 +62,9 @@ namespace Rubberduck.LanguageServer
 
                 await task;
                 logger.LogInformation($"Workspace was processed: {task.Status}");
+
+                var workspace = app.State.ActiveWorkspace!;
+                logger.LogInformation($"{workspace.ExecutionContext.UnresolvedSymbols.Count} unresolved symbols.");
             }
         }
 

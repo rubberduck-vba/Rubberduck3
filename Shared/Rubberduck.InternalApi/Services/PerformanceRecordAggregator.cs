@@ -78,7 +78,7 @@ public class PerformanceRecordAggregator
         var elapsed = TimedAction.Run(() => { bag.Clear(); });
         var verbosity = _settings.TraceLevel;
 
-        _logger.LogTrace(verbosity, $"Performance data cleared for [{name}] ({count} items). Elapsed: {elapsed}");
+        _logger.LogTrace(verbosity, $"Performance data cleared for [{name}] ({count} items). ⏱️{elapsed}");
         return true;
     }
 
@@ -122,7 +122,8 @@ public class PerformanceRecordAggregator
         });
 
         var verbosity = _settings.TraceLevel;
-        _logger.LogTrace(verbosity, $"**PERF[{name}]:{sampleSize} events. ⏱️ Total: {total} Min: {min} Max {max} Average: {average} Median: {median} Std.Dev.: {stdev} (calculations: {elapsed})");
+        _logger.LogTrace(verbosity, @$"**PERF[{name}]: {sampleSize} events. Total: ⏱️{total}
+  >>> Avg.: ⏱️{average}   Min: {min}   Max: {max}   Median: {median}    Std.Dev.: {stdev} (Calc.: {elapsed})");
     }
 
     public int Count(string name) => _items[name].Count;
@@ -141,7 +142,9 @@ public class PerformanceRecordAggregator
     {
         try
         {
-            return TotalElapsed(name) ?? TimeSpan.Zero / Count(name);
+            var total = TotalElapsed(name)?.TotalMilliseconds ?? 0;
+            var count = (double)Count(name);
+            return TimeSpan.FromMilliseconds(total / count);
         }
         catch (OverflowException)
         {

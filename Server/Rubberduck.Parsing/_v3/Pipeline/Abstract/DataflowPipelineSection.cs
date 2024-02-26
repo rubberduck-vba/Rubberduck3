@@ -24,12 +24,7 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
         _parent = parent;
     }
 
-    private TState _state = null!;
-    public TState State
-    {
-        get => _state;
-        protected set => _state = value;
-    }
+    public virtual TState State { get; protected set; }
 
     /// <summary>
     /// Gets the <c>IDataflowBlock</c> that receives the input when the pipeline is started.
@@ -168,7 +163,7 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
     }
 
     protected void LogTaskCompletionState(StringBuilder builder, Task completion, string name, TimeSpan? elapsed) => 
-        builder.AppendLine($"\t{LogTaskCompletionIcon(completion)}[{name}] status: {completion.Status}" + (elapsed.HasValue ? $" ⏱️ total: {Performance.TotalElapsed(name)} | avg.:{Performance.AverageElapsed(name)}" : string.Empty));
+        builder.AppendLine($"\t{LogTaskCompletionIcon(completion)}[{name}] status: {completion.Status}" + (elapsed.HasValue ? $" ⏱️{Performance.TotalElapsed(name)}" : string.Empty));
 
     protected TResult RunTransformBlock<T, TResult>(IDataflowBlock block, T param, Func<T, TResult> action, [CallerMemberName] string? actionName = null, bool logPerformance = true) where TResult : class
     {

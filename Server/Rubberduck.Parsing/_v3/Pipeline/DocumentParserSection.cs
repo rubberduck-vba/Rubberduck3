@@ -7,6 +7,7 @@ using Rubberduck.InternalApi.Settings;
 using Rubberduck.Parsing._v3.Pipeline.Abstract;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks.Dataflow;
 
@@ -39,8 +40,12 @@ public class DocumentParserSection : WorkspaceDocumentSection
 
     private ActionBlock<PipelineParseResult> SetDocumentStateFoldingsBlock { get; set; } = null!;
     private void SetDocumentStateFoldings(PipelineParseResult parseResult) =>
-        RunActionBlock(SetDocumentStateFoldingsBlock, parseResult, 
-            e => State = (DocumentParserState)State.WithFoldings(e.Foldings) ?? throw new InvalidOperationException("Document state was unexpectedly null."),
+        RunActionBlock(SetDocumentStateFoldingsBlock, parseResult,
+            e =>
+            {
+                State = (DocumentParserState)State.WithFoldings(e.Foldings) ?? throw new InvalidOperationException("Document state was unexpectedly null.");
+                UpdateDocumentState(State);
+            },
             nameof(SetDocumentStateFoldingsBlock), logPerformance: false);
 
     private TransformBlock<PipelineParseResult, IParseTree> AcquireSyntaxTreeBlock { get; set; } = null!;
@@ -57,20 +62,28 @@ public class DocumentParserSection : WorkspaceDocumentSection
 
     private ActionBlock<IParseTree> SetDocumentStateSyntaxTreeBlock { get; set; } = null!;
     private void SetDocumentStateSyntaxTree(IParseTree syntaxTree) =>
-        RunActionBlock(SetDocumentStateSyntaxTreeBlock, syntaxTree, 
-            e => State = State.WithSyntaxTree(e), 
+        RunActionBlock(SetDocumentStateSyntaxTreeBlock, syntaxTree,
+            e =>
+            {
+                State = State.WithSyntaxTree(e);
+                UpdateDocumentState(State);
+            }, 
             nameof(SetDocumentStateSyntaxTreeBlock), logPerformance: false);
 
     private TransformBlock<IParseTree, Symbol> DiscoverMemberSymbolsBlock { get; set; } = null!;
     private Symbol DiscoverMemberSymbols(IParseTree syntaxTree) =>
-        RunTransformBlock(DiscoverMemberSymbolsBlock, syntaxTree, 
-            e => _symbolsService.DiscoverMemberSymbols(syntaxTree, State.Uri),
+        RunTransformBlock(DiscoverMemberSymbolsBlock, syntaxTree,
+            e =>  _symbolsService.DiscoverMemberSymbols(syntaxTree, State.Uri),
             nameof(DiscoverMemberSymbolsBlock), logPerformance: true);
 
     private ActionBlock<Symbol> SetDocumentStateMemberSymbolsBlock { get; set; } = null!;
     private void SetDocumentStateMemberSymbols(Symbol symbol) =>
-        RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol, 
-            e => State = (DocumentParserState)State.WithSymbol(e),
+        RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol,
+            e =>
+            {
+                State = (DocumentParserState)State.WithSymbol(e);
+                UpdateDocumentState(State);
+            },
             nameof(SetDocumentStateMemberSymbolsBlock), logPerformance: false);
 
     protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(ISourceBlock<DocumentParserState> source)

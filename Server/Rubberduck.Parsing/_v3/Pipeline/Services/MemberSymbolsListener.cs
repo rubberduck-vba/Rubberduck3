@@ -412,7 +412,7 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
     {
         var name = GetIdentifierNameTokenText(context.functionName().identifier());
         var accessibility = GetAccessibility(context.visibility());
-        var typeName = context.asTypeClause()?.GetText();
+        var typeName = GetAsTypeExpressionText(context.asTypeClause());
 
         OnChildSymbol(CreateCurrentSymbol(children => new FunctionSymbol(name, _workspaceFileUri, accessibility, children, typeName), context), context);
     }
@@ -423,7 +423,7 @@ public class MemberSymbolsListener : VBAParserBaseListener, IVBListener<Symbol>
     {
         var name = GetIdentifierNameTokenText(context.functionName().identifier());
         var accessibility = GetAccessibility(context.visibility());
-        var typeName = context.asTypeClause()?.GetText();
+        var typeName = GetAsTypeExpressionText(context.asTypeClause());
 
         OnChildSymbol(CreateCurrentSymbol(children => new PropertyGetSymbol(name, _workspaceFileUri, accessibility, children, typeName), context), context);
     }

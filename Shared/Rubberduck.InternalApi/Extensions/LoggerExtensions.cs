@@ -58,7 +58,7 @@ public static class LoggerExtensions
     public static void LogPerformance(this ILogger logger, TraceLevel level, string message, TimeSpan elapsed, LogPerformanceOptions options)
     {
         var logLevel = options.GetLogLevel(elapsed);
-        logger.Log(level, logLevel, message, $"⏱️ {elapsed}");
+        logger.Log(level, logLevel, message, $"⏱️{elapsed}");
     }
 
     /// <summary>

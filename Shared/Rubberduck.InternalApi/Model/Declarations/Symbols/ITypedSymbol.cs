@@ -7,6 +7,8 @@ namespace Rubberduck.InternalApi.Model.Declarations.Symbols;
 /// </summary>
 public interface ITypedSymbol
 {
+    string? TypeName { get; }
+
     /// <summary>
     /// Gets the symbol's resolved type.
     /// </summary>

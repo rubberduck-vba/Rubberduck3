@@ -6,7 +6,7 @@ namespace Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 
 public abstract record class VBIntrinsicType : VBType
 {
-    protected static ImmutableArray<VBType> IntrinsicTypes =>
+    public static ImmutableArray<VBType> IntrinsicTypes =>
         [
             VBBooleanType.TypeInfo,
             VBByteType.TypeInfo,

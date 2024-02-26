@@ -9,7 +9,7 @@ namespace Rubberduck.InternalApi.Services;
 
 public interface IWorkspaceState
 {
-    Uri? WorkspaceRoot { get; set; }
+    WorkspaceUri? WorkspaceRoot { get; set; }
     string ProjectName { get; set; }
     IEnumerable<DocumentState> WorkspaceFiles { get; }
     IEnumerable<Reference> References { get; }

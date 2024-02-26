@@ -44,7 +44,10 @@ public class WorkspaceReferencedSymbolsSection : DataflowPipelineSection<Workspa
     private ActionBlock<ProjectSymbol> SetLibrarySymbolStateBlock { get; set; } = default!;
     private void SetLibrarySymbolState(ProjectSymbol symbol) =>
         RunActionBlock(SetLibrarySymbolStateBlock, symbol,
-            e => State.ExecutionContext.LoadReferencedLibrarySymbols(symbol),
+            e =>
+            {
+                State.ExecutionContext.LoadReferencedLibrarySymbols(symbol);
+            },
             nameof(SetLibrarySymbolStateBlock), logPerformance: false);
 
 

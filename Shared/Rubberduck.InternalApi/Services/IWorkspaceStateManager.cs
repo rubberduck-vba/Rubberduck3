@@ -6,7 +6,7 @@ namespace Rubberduck.InternalApi.Services;
 
 public interface IWorkspaceStateManager
 {
-    IWorkspaceState GetWorkspace(WorkspaceUri workspaceRoot);
+    IWorkspaceState GetWorkspace(Uri workspaceRoot);
     IEnumerable<IWorkspaceState> Workspaces { get; }
     /// <summary>
     /// Gets the currently selected/active workspace/project.

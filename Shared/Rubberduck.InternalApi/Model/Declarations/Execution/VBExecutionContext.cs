@@ -3,6 +3,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
+using Rubberduck.InternalApi.Model.Declarations.Types;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
@@ -19,7 +20,12 @@ public class VBExecutionContext : ServiceBase, IDiagnosticSource
     private readonly Stack<VBExecutionScope> _callStack = new();
 
     private readonly ConcurrentDictionary<Uri, ProjectSymbol> _referencedLibraries = new();
-    private readonly ConcurrentDictionary<TypedSymbol, VBTypedValue> _symbols = new();
+    private readonly ConcurrentDictionary<TypedSymbol, VBTypedValue> _symbolTable = new();
+
+    /// <summary>
+    /// Last-in, first-out concurrent data structure mapping type names to possible <c>VBType</c> values to resolve class types.
+    /// </summary>
+    private readonly ConcurrentDictionary<string, ConcurrentStack<VBType>> _typeNames = new();
 
     public VBExecutionContext(ILogger logger, 
         RubberduckSettingsProvider settingsProvider, 
@@ -31,15 +37,65 @@ public class VBExecutionContext : ServiceBase, IDiagnosticSource
     public int LanguageVersion { get; set; } = 7;
     public bool Is64BitHost { get; set; }
 
-    public void AddTypedSymbol(TypedSymbol symbol) => _symbols.TryAdd(symbol, null!);
+    public void AddToSymbolTable(TypedSymbol symbol)
+    {
+        _symbolTable.TryAdd(symbol, symbol.ResolvedType!.DefaultValue);
+        if (symbol is ClassModuleSymbol classModule && classModule.ResolvedType is VBClassType vbClassType)
+        {
+            AddVBType(vbClassType);
+        }
+    }
+
+    public VBType ResolveType(string name, WorkspaceUri scopeUri)
+    {
+        var workspace = scopeUri.WorkspaceRoot;
+        if (_typeNames.TryGetValue(name, out var candidates))
+        {
+            if (candidates.Count == 1)
+            {
+                return candidates.Single();
+            }
+            else
+            {
+                // TODO not this
+                return candidates.First();
+            }
+        }
+        else
+        {
+            return VBObjectType.TypeInfo;
+        }
+    }
+
     public void AddDiagnostic(Diagnostic diagnostic) => Diagnostics.Add(diagnostic);
 
-    public void LoadReferencedLibrarySymbols(ProjectSymbol symbol) => _referencedLibraries[symbol.Uri] = symbol;
+    public void LoadReferencedLibrarySymbols(ProjectSymbol symbol)
+    {
+        _referencedLibraries[symbol.Uri] = symbol;
+        foreach (var vbType in symbol.Children?.OfType<ClassModuleSymbol>().Select(e => e.ResolvedType).OfType<VBClassType>() ?? [])
+        {
+            AddVBType(vbType);
+        }
+    }
+
     public void UnloadReferencedLibrarySymbols(WorkspaceUri uri) => _referencedLibraries.TryRemove(uri, out _);
+
+    public void AddVBType(VBType vbType)
+    {
+        var key = vbType.Name;
+        if (!_typeNames.ContainsKey(key))
+        {
+            _typeNames[key] = new ConcurrentStack<VBType>();
+        }
+
+        _typeNames[key].Push(vbType);
+    }
+
+
 
     public VBExecutionScope EnterScope(VBTypeMember member)
     {
-        var scope = new VBExecutionScope(_callStack, _symbols.Select(e => (e.Key, e.Value)).ToDictionary(e => (Symbol)e.Key, e => (VBTypedValue)e.Value), member)
+        var scope = new VBExecutionScope(_callStack, _symbolTable.Select(e => (e.Key, e.Value)).ToDictionary(e => (Symbol)e.Key, e => e.Value), member)
         {
             Is64BitHost = Is64BitHost,
         };
@@ -65,7 +121,7 @@ public class VBExecutionContext : ServiceBase, IDiagnosticSource
     }
 
     public VBTypeMember? GetModuleMember(Symbol symbol) => 
-        _symbols.Keys
+        _symbolTable.Keys
             .Where(e => e is ClassModuleSymbol || e is StandardModuleSymbol)
             .SelectMany(e => ((VBMemberOwnerType)e.ResolvedType!).Members)
             .SingleOrDefault(e => e.Declaration == symbol);
@@ -73,17 +129,17 @@ public class VBExecutionContext : ServiceBase, IDiagnosticSource
     /// <summary>
     /// Gets all resolved symbols in the context.
     /// </summary>
-    public ImmutableHashSet<TypedSymbol> ResolvedSymbols => _symbols.Keys.Where(e => e.ResolvedType != null).ToImmutableHashSet();
+    public ImmutableHashSet<TypedSymbol> ResolvedSymbols => _symbolTable.Keys.Where(e => e.ResolvedType != null).ToImmutableHashSet();
 
     /// <summary>
     /// Gets all unresolved symbols in the context.
     /// </summary>
-    public ImmutableHashSet<TypedSymbol> UnresolvedSymbols => _symbols.Keys.Where(e => e.ResolvedType is null).ToImmutableHashSet();
+    public ImmutableHashSet<TypedSymbol> UnresolvedSymbols => _symbolTable.Keys.Where(e => e.ResolvedType is null).ToImmutableHashSet();
 
     /// <summary>
     /// Gets all <c>VBMemberOwnerType</c> data types in the context.
     /// </summary>
-    public ImmutableHashSet<TypedSymbol> MemberOwnerTypes => _symbols.Keys.Where(e => e.ResolvedType is VBMemberOwnerType).ToImmutableHashSet();
+    public ImmutableHashSet<TypedSymbol> MemberOwnerTypes => _symbolTable.Keys.Where(e => e.ResolvedType is VBMemberOwnerType).ToImmutableHashSet();
 
     public ConcurrentBag<Diagnostic> Diagnostics { get; init; } = [];
 
@@ -107,9 +163,9 @@ public class VBExecutionContext : ServiceBase, IDiagnosticSource
     /// <summary>
     /// Gets the currently held value of the specified symbol.
     /// </summary>
-    public VBTypedValue GetSymbolValue(TypedSymbol symbol) => _symbols[symbol];
+    public VBTypedValue GetSymbolValue(TypedSymbol symbol) => _symbolTable[symbol];
     /// <summary>
     /// Sets the currently held value of the specified symbol.
     /// </summary>
-    public void SetSymbolValue(TypedSymbol symbol, VBTypedValue value) => _symbols[symbol] = value;
+    public void SetSymbolValue(TypedSymbol symbol, VBTypedValue value) => _symbolTable[symbol] = value;
 }

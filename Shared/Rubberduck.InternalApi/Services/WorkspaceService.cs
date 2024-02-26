@@ -194,8 +194,9 @@ namespace Rubberduck.InternalApi.Services
                     {
                         // project source files are VB source code, always.
                         var language = projectType == ProjectType.VBA ? SupportedLanguage.VBA : SupportedLanguage.VB6;
-                        info = new SourceFileDocumentState(language, uri, content, isOpened: open && !isMissing)
+                        info = new DocumentState(uri, content, isOpened: open && !isMissing)
                         {
+                            Language = language,
                             IsMissing = isMissing,
                             IsLoadError = isLoadError
                         };
