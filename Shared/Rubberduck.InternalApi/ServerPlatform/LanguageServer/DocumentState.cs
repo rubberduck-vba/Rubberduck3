@@ -16,6 +16,7 @@ public record class DocumentState
 
     public DocumentState(DocumentState original)
     {
+        Id = original.Id;
         Uri = original.Uri;
         Text = original.Text;
         Version = original.Version;
@@ -35,6 +36,7 @@ public record class DocumentState
         Version = version;
         IsOpened = isOpened;
 
+        Id = new TextDocumentIdentifier(uri.AbsoluteLocation);
         Language = SupportedLanguage.VBA;
     }
 
@@ -44,6 +46,7 @@ public record class DocumentState
         text = Text;
     }
 
+    public TextDocumentIdentifier Id { get; }
     public WorkspaceFileUri Uri { get; init; }
     public string FileExtension => System.IO.Path.GetExtension(Uri.FileName);
     public string Name => Uri.FileNameWithoutExtension;

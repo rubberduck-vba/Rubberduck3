@@ -3,6 +3,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.ServerPlatform;
@@ -38,7 +39,17 @@ namespace Rubberduck.LanguageServer.Handlers.Language
                 var workspace = _workspaces.ActiveWorkspace
                     ?? throw new InvalidOperationException("Invalid WorkspaceStateManager state: there is no active workspace.");
 
-                var uri = new WorkspaceFileUri(documentUri.ToUri().OriginalString, workspace.WorkspaceRoot!.WorkspaceRoot);
+
+                var relativeUri = documentUri.ToUri().OriginalString;
+                var marker = $"/{ProjectFile.SourceRoot}";
+                var srcRootIndex = relativeUri.IndexOf(marker);
+                if (srcRootIndex > 0)
+                {
+                    var fullPath = relativeUri.Substring(srcRootIndex + marker.Length);
+                    relativeUri = fullPath;
+                }
+
+                var uri = new WorkspaceFileUri(relativeUri, workspace.WorkspaceRoot!.WorkspaceRoot);
                 if (workspace.TryGetWorkspaceFile(uri, out var document) && document != null)
                 {
                     items.AddRange(document.Foldings);

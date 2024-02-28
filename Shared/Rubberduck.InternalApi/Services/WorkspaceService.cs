@@ -21,6 +21,8 @@ namespace Rubberduck.InternalApi.Services
         private readonly IProjectFileService _projectFile;
         private readonly List<Reference> _references = [];
 
+        private Task? _lspStartupTask = null;
+
         public event EventHandler<WorkspaceServiceEventArgs> WorkspaceOpened = delegate { };
         public event EventHandler<WorkspaceServiceEventArgs> WorkspaceClosed = delegate { };
 
@@ -94,13 +96,15 @@ namespace Rubberduck.InternalApi.Services
                 }
             });
 
-            if (result)
+            if (result && _lspStartupTask is null)
             {
-                await OnWorkspaceOpenedAsync(uri);
+                _lspStartupTask = OnWorkspaceOpenedAsync(uri);
             }
 
             return result;
         }
+
+        public bool IsReady => _lspStartupTask?.IsCompletedSuccessfully ?? false;
 
         public async Task<bool> SaveWorkspaceFileAsync(WorkspaceFileUri uri)
         {

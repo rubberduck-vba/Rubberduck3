@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.Settings.Model;
+using Rubberduck.InternalApi.Settings.Model.Editor.CodeFolding;
 using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
 using Rubberduck.InternalApi.Settings.Model.Logging;
 using Rubberduck.InternalApi.Settings.Model.ServerStartup;
@@ -94,6 +95,8 @@ namespace Rubberduck.UI.Services.Settings
                     return CreateViewModel(timeSpanSetting);
                 case TypedRubberduckSetting<string[]> listSetting:
                     return new ListSettingViewModel(_service, listSetting);
+                //case CodeFoldingSettings foldingSettings:
+                //    return CreateViewModel(foldingSettings);
                 case TypedSettingGroup subGroup:
                     return CreateViewModel(subGroup);
                 case TypedRubberduckSetting<BooleanRubberduckSetting[]> telemetrySettingGroup:

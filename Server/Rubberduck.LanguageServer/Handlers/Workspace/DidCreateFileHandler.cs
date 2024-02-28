@@ -47,6 +47,7 @@ namespace Rubberduck.LanguageServer.Handlers.Workspace
 
         public override Task<Unit> Handle(DidCreateFileParams request, CancellationToken cancellationToken)
         {
+            /*
             cancellationToken.ThrowIfCancellationRequested();
             var elapsed = TimedAction.Run(() =>
                 Task.WhenAll(request.Files.Select(file =>
@@ -65,7 +66,7 @@ namespace Rubberduck.LanguageServer.Handlers.Workspace
 
             var traceLevel = _settings.Settings.TraceLevel.ToTraceLevel();
             _logger.LogPerformance(traceLevel, "Finished reading content from created files.", elapsed);
-
+            */
             return Task.FromResult(Unit.Value);
         }
 

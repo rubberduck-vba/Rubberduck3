@@ -1,5 +1,6 @@
 ﻿using Rubberduck.InternalApi.Model.Workspace;
 using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
@@ -62,20 +63,37 @@ public abstract class WorkspaceUri : Uri
     private readonly Uri _root;
     private readonly Uri _srcRoot;
 
+    private static string SanitizedRelativeUriString(string? relativeUriString, Uri workspaceRoot)
+    {
+        // null -> root level
+        if (string.IsNullOrWhiteSpace(relativeUriString))
+        {
+            return ProjectFile.SourceRoot;
+        }
+
+        // ['/','\'] -> stdSlash
+        var stdSlashRoot = new Uri(workspaceRoot.AbsolutePath.Replace("\\", "/"));
+        var stdSlashRelativeUriString = relativeUriString.Replace("\\", "/");
+
+        // absolute -> relative
+        if (stdSlashRelativeUriString.StartsWith(stdSlashRoot.LocalPath))
+        {
+            var marker = $"/{ProjectFile.SourceRoot}";
+            return stdSlashRelativeUriString.Substring(stdSlashRelativeUriString.IndexOf(marker) + marker.Length);
+        }
+
+        return stdSlashRelativeUriString;
+    }
+
     public WorkspaceUri([StringSyntax("Uri")] string? relativeUriString, Uri workspaceRoot)
-        : base(relativeUriString ?? ProjectFile.SourceRoot, UriKind.Relative)
+        : base(SanitizedRelativeUriString(relativeUriString, workspaceRoot), UriKind.Relative)
     {
         _root = workspaceRoot;
         _srcRoot = new(System.IO.Path.Combine(workspaceRoot.LocalPath, ProjectFile.SourceRoot));
         IsSrcRoot = relativeUriString is null;
 
-        var localRoot = _srcRoot.LocalPath;
-        relativeUriString = (relativeUriString ??= ProjectFile.SourceRoot).StartsWith(localRoot)
-            ? relativeUriString.Substring(localRoot.Length, relativeUriString.Length - localRoot.Length)
-            : relativeUriString;
-
-        _relativeUri = System.IO.Path.GetDirectoryName(relativeUriString) + System.IO.Path.DirectorySeparatorChar + System.IO.Path.GetFileNameWithoutExtension(relativeUriString);
-        Name = System.IO.Path.GetFileName(relativeUriString);
+        _relativeUri = SanitizedRelativeUriString(relativeUriString, workspaceRoot);
+        Name = System.IO.Path.GetFileName(_relativeUri);
     }
 
     /// <summary>
@@ -102,7 +120,8 @@ public abstract class WorkspaceUri : Uri
     /// <summary>
     /// The absolute <c>Uri</c> location this <c>WorkspaceUri</c> is pointing to.
     /// </summary>
-    public virtual Uri AbsoluteLocation => IsSrcRoot ? _srcRoot : new($"{_srcRoot.LocalPath}{_relativeUri[..^System.IO.Path.GetFileNameWithoutExtension(Name).Length]}{Name}");
+    public virtual Uri AbsoluteLocation => IsSrcRoot ? _srcRoot 
+        : new($"{_srcRoot.LocalPath}{_relativeUri![..^System.IO.Path.GetFileName(Name).Length]}{Name}");
 
     public override string ToString() => _relativeUri ?? _srcRoot.ToString();
 }

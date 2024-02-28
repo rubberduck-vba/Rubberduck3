@@ -40,7 +40,7 @@ public class VBFoldingListener : VBAParserBaseListener
 
     public override void ExitModuleConfig([NotNull] VBAParser.ModuleConfigContext context)
     {
-        if ((_settings?.FoldModuleHeader ?? true) && context.ChildCount > 0 && context.Offset.Length > 0)
+        if (context.ChildCount > 0 && context.Offset.Length > 0)
         {
             var folding = Fold("[ModuleHeader]", HeaderFolding, context.Start, context.Stop);
             _foldings.Add(folding);
@@ -50,7 +50,7 @@ public class VBFoldingListener : VBAParserBaseListener
     private IToken? _topOfModuleCommentsStartToken;
     public override void ExitModuleAttributes([NotNull] VBAParser.ModuleAttributesContext context)
     {
-        if ((_settings?.FoldModuleAttributes ?? true) && context.ChildCount > 0 && context.Offset.Length > 0)
+        if (context.ChildCount > 0 && context.Offset.Length > 0)
         {
             var start = context.Start;
             var end = context.Stop;
@@ -133,7 +133,7 @@ public class VBFoldingListener : VBAParserBaseListener
     private IToken? _moduleDeclarationsEndToken;
     public override void ExitModuleDeclarations([NotNull] VBAParser.ModuleDeclarationsContext context)
     {
-        if ((_settings?.FoldModuleDeclarations ?? true) && context.ChildCount > 0 && context.Offset.Length > 0)
+        if (context.ChildCount > 0 && context.Offset.Length > 0)
         {
             _moduleDeclarationsEndToken = _topOfModuleCommentsStartToken != null
                 ? _topOfModuleCommentsStartToken
@@ -143,7 +143,7 @@ public class VBFoldingListener : VBAParserBaseListener
 
     public override void ExitModuleBodyElement([NotNull] VBAParser.ModuleBodyElementContext context)
     {
-        if (context.ChildCount > 0 && context.Offset.Length > 0 && _settings.FoldScopes)
+        if (context.ChildCount > 0 && context.Offset.Length > 0)
         {
             var kind = ScopeFolding;
 
@@ -184,7 +184,7 @@ public class VBFoldingListener : VBAParserBaseListener
 
     public override void ExitForNextStmt([NotNull] VBAParser.ForNextStmtContext context)
     {
-        if (context.ChildCount > 0 && _settings.FoldBlockStatements)
+        if (context.ChildCount > 0)
         {
             _foldings.Add(Fold($"For {context.expression(0).GetText()}... Next", BlockFolding, context.Start, context.Stop));
         }
@@ -192,7 +192,7 @@ public class VBFoldingListener : VBAParserBaseListener
 
     public override void ExitForEachStmt([NotNull] VBAParser.ForEachStmtContext context)
     {
-        if (context.ChildCount > 0 && _settings.FoldBlockStatements)
+        if (context.ChildCount > 0)
         {
             _foldings.Add(Fold($"For Each {context.expression(0).GetText()} In {context.expression(1).GetText()}... Next", BlockFolding, context.Start, context.Stop));
         }
@@ -200,7 +200,7 @@ public class VBFoldingListener : VBAParserBaseListener
 
     public override void ExitDoLoopStmt([NotNull] VBAParser.DoLoopStmtContext context)
     {
-        if (context.ChildCount > 0 && _settings.FoldBlockStatements)
+        if (context.ChildCount > 0)
         {
             _foldings.Add(Fold($"Do... Loop", BlockFolding, context.Start, context.Stop));
         }
@@ -208,7 +208,7 @@ public class VBFoldingListener : VBAParserBaseListener
 
     public override void ExitWhileWendStmt([NotNull] VBAParser.WhileWendStmtContext context)
     {
-        if (context.ChildCount > 0 && _settings.FoldBlockStatements)
+        if (context.ChildCount > 0)
         {
             _foldings.Add(Fold($"While {context.expression().GetText()}... Wend", BlockFolding, context.Start, context.Stop));
         }
@@ -216,7 +216,7 @@ public class VBFoldingListener : VBAParserBaseListener
 
     public override void ExitIfStmt([NotNull] VBAParser.IfStmtContext context)
     {
-        if (context.ChildCount > 0 && _settings.FoldBlockStatements)
+        if (context.ChildCount > 0)
         {
             _foldings.Add(Fold($"If {context.booleanExpression().GetText()}... End If", BlockFolding, context.Start, context.Stop));
         }
@@ -224,7 +224,7 @@ public class VBFoldingListener : VBAParserBaseListener
 
     public override void ExitSelectCaseStmt([NotNull] VBAParser.SelectCaseStmtContext context)
     {
-        if (context.ChildCount > 0 && _settings.FoldBlockStatements)
+        if (context.ChildCount > 0)
         {
             _foldings.Add(Fold($"Select Case {context.selectExpression().GetText()}... End Select", BlockFolding, context.Start, context.Stop));
         }
@@ -232,7 +232,7 @@ public class VBFoldingListener : VBAParserBaseListener
 
     public override void ExitWithStmt([NotNull] VBAParser.WithStmtContext context)
     {
-        if (context.ChildCount > 0 && _settings.FoldBlockStatements)
+        if (context.ChildCount > 0)
         {
             _foldings.Add(Fold($"With {context.expression().GetText()}... End With", BlockFolding, context.Start, context.Stop));
         }

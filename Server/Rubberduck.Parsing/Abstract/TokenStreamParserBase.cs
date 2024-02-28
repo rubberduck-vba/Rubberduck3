@@ -63,6 +63,7 @@ public abstract class TokenStreamParserBase<TParser> : ServiceBase, ITokenStream
         catch (SyntaxErrorException syntaxErrorException)
         {
             var message = $"SLL mode failed while parsing document (URI: {uri}) at symbol {syntaxErrorException.OffendingSymbol.Text} at L{syntaxErrorException.LineNumber}C{syntaxErrorException.Position}. Retrying using LL prediction mode.";
+
             LogAndReset(tokenStream, message, syntaxErrorException);
             return ParseLl(uri, tokenStream, parseListeners);
         }

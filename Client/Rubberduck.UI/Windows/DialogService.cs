@@ -23,9 +23,8 @@ namespace Rubberduck.UI.Windows
 
         protected abstract TViewModel CreateViewModel(RubberduckSettings settings, MessageActionsProvider actions);
 
-        public virtual bool ShowDialog(out TViewModel model)
+        public virtual bool ShowDialog(out TViewModel viewModel)
         {
-            TViewModel viewModel = model = default!;
             TView view = default!;
 
             var actions = _actionsProvider;
@@ -33,28 +32,25 @@ namespace Rubberduck.UI.Windows
 
             var result = false;
 
-            if (TryRunAction(() =>
-            {
-                viewModel = CreateViewModel(Settings, actions)
-                    ?? throw new ArgumentNullException(nameof(viewModel), $"CreateViewModel returned null.");
+            viewModel = CreateViewModel(Settings, actions)
+                ?? throw new ArgumentNullException(nameof(viewModel), $"CreateViewModel returned null.");
 
-                view = _factory.Create(viewModel)
-                    ?? throw new ArgumentNullException(nameof(view), $"ViewFactory.Create returned null.");
-            }))
+            view = _factory.Create(viewModel)
+                ?? throw new ArgumentNullException(nameof(view), $"ViewFactory.Create returned null.");
+
+            var vm = viewModel;
+            TryRunAction(() =>
             {
-                TryRunAction(() =>
+                if (view.ShowDialog() == true)
                 {
-                    if (view.ShowDialog() == true)
-                    {
-                        OnDialogAccept(viewModel);
-                        result = true;
-                    }
-                    else
-                    {
-                        OnDialogCancel();
-                    }
-                });
-            }
+                    OnDialogAccept(vm);
+                    result = true;
+                }
+                else
+                {
+                    OnDialogCancel();
+                }
+            });
 
             return result;
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rubberduck.InternalApi.Extensions;
+using System;
 using System.Collections.Concurrent;
 
 namespace Rubberduck.InternalApi.ServerPlatform.LanguageServer;
@@ -8,31 +9,31 @@ namespace Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 /// </summary>
 public class ConcurrentContentStore<TContent>
 {
-    protected ConcurrentDictionary<Uri, TContent> Store = new();
+    protected ConcurrentDictionary<string, TContent> Store = new();
 
-    public bool Exists(Uri documentUri) => Store.ContainsKey(documentUri);
+    public bool Exists(WorkspaceUri documentUri) => Store.ContainsKey(documentUri.AbsoluteLocation.LocalPath);
 
-    public void AddOrUpdate(Uri documentUri, TContent content)
+    public void AddOrUpdate(WorkspaceUri documentUri, TContent content)
     {
-        Store.AddOrUpdate(documentUri, content, (key, value) => content);
+        Store.AddOrUpdate(documentUri.AbsoluteLocation.LocalPath, content, (key, value) => content);
     }
 
-    public bool TryRemove(Uri documentUri)
+    public bool TryRemove(WorkspaceUri documentUri)
     {
-        return Store.TryRemove(documentUri, out _);
+        return Store.TryRemove(documentUri.AbsoluteLocation.LocalPath, out _);
     }
 
     /// <exception cref="UnknownUriException"></exception>
-    public TContent GetDocument(Uri uri)
+    public TContent GetDocument(WorkspaceUri uri)
     {
-        return Store.TryGetValue(uri, out var content)
+        return Store.TryGetValue(uri.AbsoluteLocation.LocalPath, out var content)
             ? content
             : throw new UnknownUriException(uri);
     }
 
-    public bool TryGetDocument(Uri uri, out TContent? content)
+    public bool TryGetDocument(WorkspaceUri uri, out TContent? content)
     {
-        return Store.TryGetValue(uri, out content);
+        return Store.TryGetValue(uri.AbsoluteLocation.LocalPath, out content);
     }
 }
 

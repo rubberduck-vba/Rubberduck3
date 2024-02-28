@@ -11,7 +11,9 @@ public enum RubberduckDiagnosticId
 
     PreferConcatOperatorForStringConcatenation = 10,
     PreferErrRaiseOverErrorStatement,
-    
+
+    SllFailure = 99,
+
     ImplicitStringCoercion = 101,
     ImplicitNumericCoercion,
     ImplicitLetCoercion,
@@ -23,6 +25,7 @@ public enum RubberduckDiagnosticId
     SuspiciousValueAssignment,
     TypeCastConversion,
     BitwiseOperator,
+
 }
 
 public record class RubberduckDiagnostic : Diagnostic
@@ -75,4 +78,7 @@ public record class RubberduckDiagnostic : Diagnostic
         CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.UnintendedConstantExpression, "Possibly unintended constant expression; this operation does not affect the value.");
     public static Diagnostic BitwiseOperator(Symbol symbol) =>
         CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.BitwiseOperator, "Bitwise operator; the result of this operation is resolved using bitwise arithmetics.");
+
+    public static Diagnostic SllFailure(Symbol symbol) =>
+        CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.SllFailure, "SLL parser prediction mode failed here; if possible, rephrasing this instruction could improve parsing performance.");
 }

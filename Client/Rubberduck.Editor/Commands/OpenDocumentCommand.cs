@@ -13,6 +13,7 @@ using Rubberduck.UI.Services;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
@@ -57,13 +58,17 @@ namespace Rubberduck.Editor.Commands
                 //var srcRoot = System.IO.Path.Combine(root, ProjectFile.SourceRoot);
                 //var relativeUri = uri.OriginalString[1..][srcRoot.Length..];
 
-                if (rootUri != null && workspace.TryGetWorkspaceFile(uri, out var file) && file != null && !file.IsMissing && !file.IsLoadError)
+                if (rootUri != null && workspace.TryGetWorkspaceFile(uri, out var file) && file != null)
                 {
+                    //&& file != null && !file.IsMissing && !file.IsLoadError
+
                     UserControl view;
                     IDocumentTabViewModel document;
-
-                    if (file is SourceFileDocumentState)
+                    
+                    if (file is DocumentState)
                     {
+                        await RequestFoldingsAsync(file, TimeSpan.Zero); // TODO configure timeout
+
                         document = new VBACodeDocumentTabViewModel(uri, file.Name, file.Text, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus);
                         view = new SourceCodeEditorControl() { DataContext = document };
                     }
@@ -98,6 +103,29 @@ namespace Rubberduck.Editor.Commands
             await Task.CompletedTask;
         }
 
+        private async Task<Container<FoldingRange>> RequestFoldingsAsync(DocumentState file, TimeSpan timeout)
+        {
+            var lsp = _lsp();
+            if (lsp is null)
+            {
+                throw new InvalidOperationException("LanguageServerClient is unexpectedly null.");
+            }
+
+            Service.LogInformation($"Requesting folding ranges for document '{file.Name}'...");
+
+            var request = new FoldingRangeRequestParam { TextDocument = file.Id };
+            var tokenSource = new CancellationTokenSource(timeout);
+
+            var response = await lsp.RequestFoldingRange(request, CancellationToken.None);
+            if (response is Container<FoldingRange> foldings)
+            {
+                Service.LogInformation($" Received folding ranges for document '{file.Name}'.");
+                return foldings;
+            }
+
+            return new Container<FoldingRange>();
+        }
+
         private void NotifyLanguageServer(DocumentState file)
         {
             var lsp = _lsp();
@@ -109,15 +137,11 @@ namespace Rubberduck.Editor.Commands
 
             var absoluteUri = file.Uri.AbsoluteLocation;
             
-            var languageId = file is SourceFileDocumentState 
-                ? SupportedLanguage.VBA.Id
-                : "none";
-
             var textDocumentItem = new TextDocumentItem
             {
                 Uri = absoluteUri,
                 Version = 1,
-                LanguageId = languageId,
+                LanguageId = SupportedLanguage.VBA.Id,
                 Text = file.Text,
             };
             lsp.TextDocument.DidOpenTextDocument(new() { TextDocument = textDocumentItem });

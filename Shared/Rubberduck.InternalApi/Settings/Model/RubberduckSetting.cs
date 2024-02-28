@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.Settings.Model.Editor;
+using Rubberduck.InternalApi.Settings.Model.Editor.CodeFolding;
 using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
 using Rubberduck.InternalApi.Settings.Model.General;
 using Rubberduck.InternalApi.Settings.Model.LanguageClient;
@@ -42,6 +43,14 @@ namespace Rubberduck.InternalApi.Settings.Model;
 [JsonDerivedType(typeof(EditorSettings), nameof(EditorSettings))] // ~ Editor
 [JsonDerivedType(typeof(ExtendWindowChromeSetting), nameof(ExtendWindowChromeSetting))]
 [JsonDerivedType(typeof(ShowWelcomeTabSetting), nameof(ShowWelcomeTabSetting))]
+
+[JsonDerivedType(typeof(CodeFoldingSettings), nameof(CodeFoldingSettings))] // ~ code folding
+[JsonDerivedType(typeof(FoldBlockStatementsSetting), nameof(FoldBlockStatementsSetting))]
+[JsonDerivedType(typeof(FoldModuleAttributesSetting), nameof(FoldModuleAttributesSetting))]
+[JsonDerivedType(typeof(FoldModuleDeclarationsSetting), nameof(FoldModuleDeclarationsSetting))]
+[JsonDerivedType(typeof(FoldModuleHeaderSetting), nameof(FoldModuleHeaderSetting))]
+[JsonDerivedType(typeof(FoldScopesSetting), nameof(FoldScopesSetting))]
+
 [JsonDerivedType(typeof(ToolsSettings), nameof(ToolsSettings))] // ~ Editor/Tool[windows]s
 [JsonDerivedType(typeof(AutoHideToolWindowSetting), nameof(AutoHideToolWindowSetting))]
 [JsonDerivedType(typeof(DefaultToolWindowLocationSetting), nameof(DefaultToolWindowLocationSetting))]

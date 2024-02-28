@@ -29,6 +29,8 @@ public class WorkspacePipeline : DataflowPipeline
         Completion = MemberSymbolOrchestration.Completion;
     }
 
+    public IWorkspaceState? State => _workspaces.ActiveWorkspace;
+
     private WorkspaceReferencedSymbolsSection ReferencedSymbolsSection { get; set; } = default!;
 
     /// <summary>

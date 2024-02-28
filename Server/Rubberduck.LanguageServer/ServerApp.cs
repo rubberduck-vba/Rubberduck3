@@ -98,7 +98,6 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<LibrarySymbolsService>();
             services.AddSingleton<IComLibraryProvider, ComLibraryProvider>();
             services.AddSingleton<ParserPipelineSectionProvider>();
-            services.AddTransient<WorkspaceDocumentParserOrchestrator>();
             services.AddTransient<DocumentParserSection>();
             services.AddTransient<DocumentMemberSymbolsSection>();
             services.AddTransient<DocumentHierarchicalSymbolsSection>();
@@ -201,7 +200,7 @@ namespace Rubberduck.LanguageServer
 
             if (await workspaces.OpenProjectWorkspaceAsync(rootUri))
             {
-                var pipeline = server.GetRequiredService<WorkspaceDocumentParserOrchestrator>();
+                var pipeline = server.GetRequiredService<WorkspacePipeline>();
                 await pipeline.StartAsync(new WorkspaceFileUri(null!, state.RootUri.ToUri()), new CancellationTokenSource())
                     .ContinueWith(t =>
                     {
@@ -212,7 +211,10 @@ namespace Rubberduck.LanguageServer
                         }
                     }, token, TaskContinuationOptions.None, TaskScheduler.Default);
 
-                service.LogInformation($"Project {pipeline.State.ProjectName} ({pipeline.State.WorkspaceFiles.Count()} files) is good to go!");
+                if (pipeline.State != null)
+                {
+                    service.LogInformation($"Project {pipeline.State.ProjectName} ({pipeline.State.WorkspaceFiles.Count()} files) is good to go!");
+                }
             }
             else
             {

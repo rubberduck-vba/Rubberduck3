@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
@@ -30,8 +31,17 @@ namespace Rubberduck.UI.Command.SharedHandlers
                     return;
                 }
             }
-            var model = (RubberduckSettings)vm.Settings.ToSetting();
-            Service.SettingsProvider.Write(model);
+
+            if (vm != null)
+            {
+                var model = (RubberduckSettings)vm.Settings.ToSetting();
+                Service.SettingsProvider.Write(model);
+            }
+            else
+            {
+                // how?
+                Debug.Assert(false);
+            }
         }
     }
 }

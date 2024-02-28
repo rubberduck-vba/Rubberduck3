@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.Settings.Model.Editor.Tools;
 
-public abstract record class ToolWindowSettings : TypedSettingGroup
+public record class ToolWindowSettings : TypedSettingGroup
 {
     protected static readonly RubberduckSetting[] DefaultSettings =
         new RubberduckSetting[]
