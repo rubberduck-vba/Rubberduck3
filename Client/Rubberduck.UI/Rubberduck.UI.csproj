@@ -201,6 +201,10 @@
     <None Remove="Resources\FontAwesome\pause-solid.png" />
     <None Remove="Resources\FontAwesome\power-off-solid.png" />
     <None Remove="Resources\FontAwesome\rectangle-xmark-solid.png" />
+    <None Remove="Resources\FontAwesome\square-minus-regular.png" />
+    <None Remove="Resources\FontAwesome\square-minus-solid.png" />
+    <None Remove="Resources\FontAwesome\square-plus-regular.png" />
+    <None Remove="Resources\FontAwesome\square-plus-solid.png" />
     <None Remove="Resources\FontAwesome\square-xmark-solid-red.png" />
     <None Remove="Resources\FontAwesome\square-xmark-solid.png" />
     <None Remove="Resources\FontAwesome\thumbtack-solid.png" />
@@ -455,6 +459,10 @@
     <Resource Include="Resources\FontAwesome\pause-solid.png" />
     <Resource Include="Resources\FontAwesome\power-off-solid.png" />
     <Resource Include="Resources\FontAwesome\rectangle-xmark-solid.png" />
+    <Resource Include="Resources\FontAwesome\square-minus-regular.png" />
+    <Resource Include="Resources\FontAwesome\square-minus-solid.png" />
+    <Resource Include="Resources\FontAwesome\square-plus-regular.png" />
+    <Resource Include="Resources\FontAwesome\square-plus-solid.png" />
     <Resource Include="Resources\FontAwesome\square-xmark-solid-red.png" />
     <Resource Include="Resources\FontAwesome\square-xmark-solid.png" />
     <Resource Include="Resources\FontAwesome\thumbtack-solid.png" />
