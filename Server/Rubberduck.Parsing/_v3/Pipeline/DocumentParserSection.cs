@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime.Tree;
 using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
@@ -13,13 +14,19 @@ namespace Rubberduck.Parsing._v3.Pipeline;
 public class DocumentParserSection : WorkspaceDocumentSection
 {
     private readonly PipelineParserService _parser;
+    private readonly FoldingRangesParseTreeService _foldingRangesService;
     private readonly PipelineParseTreeSymbolsService _symbolsService;
 
-    public DocumentParserSection(DataflowPipeline parent, IWorkspaceService workspaces, PipelineParserService parser, PipelineParseTreeSymbolsService symbolsService,
+    public DocumentParserSection(DataflowPipeline parent, 
+        IWorkspaceService workspaces, 
+        PipelineParserService parser,
+        FoldingRangesParseTreeService foldingRangesService,
+        PipelineParseTreeSymbolsService symbolsService,
         ILogger<WorkspaceDocumentParserOrchestrator> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
         : base(parent, workspaces, logger, settingsProvider, performance)
     {
         _parser = parser;
+        _foldingRangesService = foldingRangesService;
         _symbolsService = symbolsService;
     }
 
@@ -35,19 +42,10 @@ public class DocumentParserSection : WorkspaceDocumentSection
             e => e, 
             nameof(BroadcastParseResultBlock), logPerformance: false);
 
-    private ActionBlock<PipelineParseResult> SetDocumentStateFoldingsBlock { get; set; } = null!;
-    private void SetDocumentStateFoldings(PipelineParseResult parseResult) =>
-        RunActionBlock(SetDocumentStateFoldingsBlock, parseResult,
-            e => UpdateDocumentState(State, state => (DocumentParserState)State
-                    .WithSyntaxErrors(e.ParseResult.SyntaxErrors)
-                    .WithFoldings(e.Foldings) 
-                ?? throw new InvalidOperationException("Document state was unexpectedly null.")),
-            nameof(SetDocumentStateFoldingsBlock), logPerformance: false);
-
     private TransformBlock<PipelineParseResult, IParseTree> AcquireSyntaxTreeBlock { get; set; } = null!;
     private IParseTree AcquireSyntaxTree(PipelineParseResult input) =>
         RunTransformBlock(AcquireSyntaxTreeBlock, input, 
-            e => e.ParseResult.Tree, 
+            e => e.ParseResult.SyntaxTree, 
             nameof(AcquireSyntaxTreeBlock), logPerformance: false);
 
     private BroadcastBlock<IParseTree> BroadcastSyntaxTreeBlock { get; set; } = null!;
@@ -60,6 +58,19 @@ public class DocumentParserSection : WorkspaceDocumentSection
         RunActionBlock(SetDocumentStateSyntaxTreeBlock, syntaxTree,
             e => UpdateDocumentState(State, state => state.WithSyntaxTree(e)), 
             nameof(SetDocumentStateSyntaxTreeBlock), logPerformance: false);
+
+    private TransformBlock<IParseTree, IEnumerable<FoldingRange>> DiscoverFoldingRangesBlock { get; set; } = null!;
+    private IEnumerable<FoldingRange> DiscoverFoldingRanges(IParseTree syntaxTree) =>
+        RunTransformBlock(DiscoverFoldingRangesBlock, syntaxTree,
+            e => _foldingRangesService.DiscoverFoldingRanges(e, State.Uri),
+            nameof(DiscoverFoldingRangesBlock), logPerformance: true);
+
+    private ActionBlock<IEnumerable<FoldingRange>> SetDocumentStateFoldingsBlock { get; set; } = null!;
+    private void SetDocumentStateFoldings(IEnumerable<FoldingRange> parseResult) =>
+        RunActionBlock(SetDocumentStateFoldingsBlock, parseResult,
+            e => UpdateDocumentState(State, state => (DocumentParserState)State.WithFoldings(e)
+                ?? throw new InvalidOperationException("Document state was unexpectedly null.")),
+            nameof(SetDocumentStateFoldingsBlock), logPerformance: false);
 
     private TransformBlock<IParseTree, Symbol> DiscoverMemberSymbolsBlock { get; set; } = null!;
     private Symbol DiscoverMemberSymbols(IParseTree syntaxTree) =>
@@ -94,6 +105,9 @@ public class DocumentParserSection : WorkspaceDocumentSection
 
         var syntaxTreeBufferBlock = new BufferBlock<IParseTree>(new DataflowBlockOptions { CancellationToken = Token });
 
+        DiscoverFoldingRangesBlock = new(DiscoverFoldingRanges, ConcurrentExecutionOptions(Token));
+        _ = TraceBlockCompletionAsync(nameof(DiscoverFoldingRangesBlock), DiscoverFoldingRangesBlock);
+
         SetDocumentStateSyntaxTreeBlock = new(SetDocumentStateSyntaxTree, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(SetDocumentStateSyntaxTreeBlock), SetDocumentStateSyntaxTreeBlock);
 
@@ -111,14 +125,14 @@ public class DocumentParserSection : WorkspaceDocumentSection
         Link(BroadcastParseResultBlock, parseResultBufferBlock);
         Link(BroadcastParseResultBlock, AcquireSyntaxTreeBlock);
         
-        Link(parseResultBufferBlock, SetDocumentStateFoldingsBlock);
-
         Link(AcquireSyntaxTreeBlock, BroadcastSyntaxTreeBlock);
+        Link(BroadcastSyntaxTreeBlock, DiscoverFoldingRangesBlock);
         Link(BroadcastSyntaxTreeBlock, DiscoverMemberSymbolsBlock);
         Link(BroadcastSyntaxTreeBlock, syntaxTreeBufferBlock);
 
         Link(syntaxTreeBufferBlock, SetDocumentStateSyntaxTreeBlock);
 
+        Link(DiscoverFoldingRangesBlock, SetDocumentStateFoldingsBlock);
         Link(DiscoverMemberSymbolsBlock, SymbolsBufferBlock);
         Link(SymbolsBufferBlock, SetDocumentStateMemberSymbolsBlock);
 
@@ -130,8 +144,10 @@ public class DocumentParserSection : WorkspaceDocumentSection
             SetDocumentStateFoldingsBlock,
             AcquireSyntaxTreeBlock,
             BroadcastSyntaxTreeBlock,
-            SetDocumentStateMemberSymbolsBlock,
             DiscoverMemberSymbolsBlock,
+            DiscoverFoldingRangesBlock,
+            SetDocumentStateMemberSymbolsBlock,
+            SetDocumentStateFoldingsBlock,
             SetDocumentStateSyntaxTreeBlock
         }, completion);
     }

@@ -103,6 +103,7 @@ namespace Rubberduck.LanguageServer
             services.AddTransient<DocumentHierarchicalSymbolsSection>();
 
             services.AddSingleton<PipelineParseTreeSymbolsService>();
+            services.AddSingleton<FoldingRangesParseTreeService>();
             services.AddSingleton<IResolverService, ResolverService>();
             services.AddSingleton<PipelineParserService>();
             services.AddSingleton<IParser<string>, TokenStreamParserAdapterWithPreprocessing<string>>();

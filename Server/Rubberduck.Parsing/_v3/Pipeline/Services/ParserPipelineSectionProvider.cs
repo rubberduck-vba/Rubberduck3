@@ -46,12 +46,13 @@ public class ParserPipelineSectionProvider
 
         var workspaces = _provider.GetRequiredService<IWorkspaceService>();
         var parser = _provider.GetRequiredService<PipelineParserService>();
+        var foldings = _provider.GetRequiredService<FoldingRangesParseTreeService>();
         var symbols = _provider.GetRequiredService<PipelineParseTreeSymbolsService>();
         var logger = _provider.GetRequiredService<ILogger<WorkspaceDocumentParserOrchestrator>>();
         var settings = _provider.GetRequiredService<RubberduckSettingsProvider>();
         var performance = _provider.GetRequiredService<PerformanceRecordAggregator>();
 
-        var newPipeline = new DocumentParserSection(parent, workspaces, parser, symbols, logger, settings, performance);
+        var newPipeline = new DocumentParserSection(parent, workspaces, parser, foldings, symbols, logger, settings, performance);
         var completion = newPipeline.StartAsync(uri, null, tokenSource);
 
         _tasks.TryAdd(uri, completion);

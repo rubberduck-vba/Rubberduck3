@@ -4,15 +4,14 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.Settings.Model.Editor.CodeFolding;
 using Rubberduck.Parsing.Grammar;
-using System.Net.Mime;
 
 namespace Rubberduck.Parsing._v3.Pipeline.Services;
 
-public class VBFoldingListener : VBAParserBaseListener
+public class VBFoldingListener : VBAParserBaseListener, IVBListener<IEnumerable<FoldingRange>>
 {
     private readonly CodeFoldingSettings _settings;
     private readonly List<FoldingRange> _foldings = [];
-    public IEnumerable<FoldingRange> Foldings => _foldings.OrderBy(e => e.StartLine);
+    public IEnumerable<FoldingRange> Result => _foldings.OrderBy(e => e.StartLine);
 
     public VBFoldingListener(CodeFoldingSettings settings)
     {
@@ -54,7 +53,7 @@ public class VBFoldingListener : VBAParserBaseListener
         _foldings.Clear();
     }
 
-    private VBAParser.ModuleHeaderContext _headerContext;
+    private VBAParser.ModuleHeaderContext? _headerContext;
     public override void ExitModuleHeader([NotNull] VBAParser.ModuleHeaderContext context)
     {
         _headerContext = context;

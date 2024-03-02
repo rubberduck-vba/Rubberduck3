@@ -4,9 +4,13 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
-using Rubberduck.Parsing.Model;
 
 namespace Rubberduck.Parsing.Exceptions;
+
+public class SllPredictionFailException : SyntaxErrorException
+{
+    public SllPredictionFailException(AntlrSyntaxErrorInfo info) : base(info) { }
+}
 
 /// <summary>
 /// An exception that is thrown when the parser encounters a syntax error.

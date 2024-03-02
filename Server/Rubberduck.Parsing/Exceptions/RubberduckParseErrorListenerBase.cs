@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Atn;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Abstract;
 using System.Collections.Immutable;
@@ -13,22 +14,27 @@ public interface ISyntaxErrorMessageService
 public abstract class RubberduckParseErrorListenerBase : BaseErrorListener, IRubberduckParseErrorListener
 {
     private readonly ISyntaxErrorMessageService? _errorMessageService;
+    private readonly bool _throwSyntaxErrors;
+    private readonly PredictionMode _mode;
 
-    public RubberduckParseErrorListenerBase(WorkspaceFileUri uri, ISyntaxErrorMessageService? messageService)
+    public RubberduckParseErrorListenerBase(WorkspaceFileUri uri, ISyntaxErrorMessageService? messageService, PredictionMode mode, bool throwOnSyntaxError = false)
     {
         Uri = uri;
         _errorMessageService = messageService;
+        _throwSyntaxErrors = throwOnSyntaxError;
+        _mode = mode;
     }
 
     protected WorkspaceFileUri Uri { get; }
 
     public ImmutableArray<AntlrSyntaxErrorInfo> SyntaxErrors => Errors.ToImmutableArray();
 
-    protected abstract List<AntlrSyntaxErrorInfo> Errors { get; }
+    protected List<AntlrSyntaxErrorInfo> Errors { get; } = [];
 
     protected virtual AntlrSyntaxErrorInfo GetErrorInfo(IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e) => new()
     {
         Uri = this.Uri,
+        PredictionMode = _mode,
 
         Message = msg,
         Exception = e,
@@ -46,6 +52,19 @@ public abstract class RubberduckParseErrorListenerBase : BaseErrorListener, IRub
         {
             info = info with { Message = message };
         }
-        Errors.Add(info);
+
+        if (_throwSyntaxErrors)
+        {
+            if (_mode == PredictionMode.Sll)
+            {
+                Errors.Add(info);
+                throw new SllPredictionFailException(info);
+            }
+            else
+            {
+                Errors.Add(info);
+                throw new SyntaxErrorException(info);
+            }
+        }
     }
 }

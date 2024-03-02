@@ -7,7 +7,7 @@ namespace Rubberduck.Parsing.Abstract;
 
 public class ParseResult
 {
-    public IParseTree Tree { get; init; } = null!;
+    public IParseTree SyntaxTree { get; init; } = null!;
     public ITokenStream TokenStream { get; init; } = null!;
     public LogicalLineStore? LogicalLines { get; init; } = null;
     public IEnumerable<IParseTreeListener> Listeners { get; init; } = [];

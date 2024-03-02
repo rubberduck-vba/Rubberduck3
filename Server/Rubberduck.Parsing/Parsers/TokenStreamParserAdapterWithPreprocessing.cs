@@ -37,7 +37,7 @@ public class TokenStreamParserAdapterWithPreprocessing<TContent> : IParser<TCont
         var tree = _tokenStreamParser.Parse(uri, tokenStream ?? rawTokenStream, token, out var errors, parserMode, parseListeners);
         return new ParseResult
         {
-            Tree = tree,
+            SyntaxTree = tree,
             TokenStream = tokenStream ?? rawTokenStream,
             LogicalLines = null,
             Listeners = parseListeners ?? [],

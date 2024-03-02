@@ -25,6 +25,6 @@ public class TokenStreamParserStringParserAdapter : IStringParser
         token.ThrowIfCancellationRequested();
 
         var tree = _tokenStreamParser.Parse(uri, tokenStream, token, out var errors, parserMode, parseListeners);
-        return new ParseResult { Tree = tree, TokenStream = tokenStream, SyntaxErrors = errors };
+        return new ParseResult { SyntaxTree = tree, TokenStream = tokenStream, SyntaxErrors = errors };
     }
 }

@@ -1,4 +1,5 @@
 using Antlr4.Runtime;
+using Antlr4.Runtime.Atn;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Model;
@@ -10,6 +11,7 @@ public record class AntlrSyntaxErrorInfo
     public WorkspaceFileUri Uri { get; init; } = default!;
 
     public string Message { get; init; } = default!;
+    public PredictionMode PredictionMode { get; init; } = default!;
 
     public RecognitionException Exception { get; init; } = default!;
     public IToken OffendingSymbol { get; init; } = default!;
@@ -26,5 +28,6 @@ public record class AntlrSyntaxErrorInfo
         Uri = Uri,
         Message = Message,
         Range = Range(),
+        
     };
 }

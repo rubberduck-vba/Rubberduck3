@@ -5,18 +5,47 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.InternalApi.Model.Declarations.Types.Abstract;
 using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.InternalApi.Settings.Model;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
-
-public class PipelineParseTreeSymbolsService
+public abstract class SyntaxTreeTraversalService
 {
     private readonly RubberduckSettingsProvider _settingsProvider;
+
+    protected SyntaxTreeTraversalService(ILogger<SyntaxTreeTraversalService> logger, RubberduckSettingsProvider settingsProvider)
+    {
+        _settingsProvider = settingsProvider;
+        Logger = logger;
+    }
+
+    protected ILogger Logger { get; }
+    protected RubberduckSettings Settings => _settingsProvider.Settings;
+
+    protected T TraverseTree<T>(IParseTree tree, IVBListener<T> listener)
+    {
+        ParseTreeWalker.Default.Walk(listener, tree);
+        return listener.Result ?? throw new InvalidOperationException($"{listener.GetType().Name}.Result was unexpectedly null.");
+    }
+}
+
+public class FoldingRangesParseTreeService : SyntaxTreeTraversalService
+{
+    public FoldingRangesParseTreeService(ILogger<SyntaxTreeTraversalService> logger, RubberduckSettingsProvider settingsProvider)
+        : base(logger, settingsProvider)
+    {
+    }
+
+    public IEnumerable<FoldingRange> DiscoverFoldingRanges(IParseTree tree, WorkspaceFileUri uri) => TraverseTree(tree, new VBFoldingListener(Settings.EditorSettings.CodeFoldingSettings));
+}
+public class PipelineParseTreeSymbolsService : SyntaxTreeTraversalService
+{
     private readonly IResolverService _resolver;
     private readonly ILogger _logger;
 
     public PipelineParseTreeSymbolsService(ILogger<PipelineParseTreeSymbolsService> logger, RubberduckSettingsProvider settingsProvider, IResolverService resolver)
+        : base(logger, settingsProvider)
     {
-        _settingsProvider = settingsProvider;
         _resolver = resolver;
         _logger = logger;
     }
@@ -47,18 +76,6 @@ public class PipelineParseTreeSymbolsService
     /// Resolves a <c>VBType</c> for all symbols in the provided module.
     /// </summary>
     public Symbol RecursivelyResolveSymbols(Symbol module) => ResolveDataType(module);
-
-    private Symbol TraverseTree(IParseTree tree, IVBListener<Symbol> listener)
-    {
-        ParseTreeWalker.Default.Walk(listener, tree);
-        return listener.Result ?? throw new InvalidOperationException($"{listener.GetType().Name}.Result was unexpectedly null.");
-    }
-
-    private AbsoluteToken[] TraverseTree(IParseTree tree, IVBListener<AbsoluteToken[]> listener)
-    {
-        ParseTreeWalker.Default.Walk(listener, tree);
-        return listener.Result ?? throw new InvalidOperationException($"{listener.GetType().Name}.Result was unexpectedly null.");
-    }
 
     /// <summary>
     /// Resolves the data type of the provided <c>symbol</c>.

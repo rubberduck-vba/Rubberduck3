@@ -21,10 +21,10 @@ public sealed class VBADateLiteralParser
         var tokens = new CommonTokenStream(lexer);
         var parser = new VBADateParser(tokens);
 
-        parser.AddErrorListener(new ThrowingSyntaxErrorListener(null!, null)); // report or throw?
         VBADateParser.CompilationUnitContext tree;
         try
         {
+            parser.AddErrorListener(new ThrowingSyntaxErrorListener(null!, null!, PredictionMode.Sll)); // report or throw?
             parser.Interpreter.PredictionMode = PredictionMode.Sll;
             tree = parser.compilationUnit();
         }
@@ -33,6 +33,7 @@ public sealed class VBADateLiteralParser
             tokens.Reset();
             parser.Reset();
             parser.Interpreter.PredictionMode = PredictionMode.Ll;
+            parser.AddErrorListener(new ReportingSyntaxErrorListener(null!, null!, PredictionMode.Ll)); // report or throw?
             tree = parser.compilationUnit();
         }
         return tree.dateLiteral();
