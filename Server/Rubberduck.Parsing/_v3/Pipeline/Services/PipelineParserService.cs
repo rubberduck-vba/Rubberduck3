@@ -23,7 +23,7 @@ public class PipelineParserService : ServiceBase
     public PipelineParseResult ParseDocument(DocumentState state, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
-        var parseResult = _parser.Parse(state.Uri, state.Text, token)
+        var parseResult = _parser.Parse(state.Uri, state.Text, token, ParserMode.FallBackSllToLl)
                 ?? throw new InvalidOperationException("ParserResult was unexpectedly null.");
 
         return new()

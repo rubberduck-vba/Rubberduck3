@@ -4,12 +4,27 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
+using System.Windows.Shapes;
+using System;
 
 namespace Rubberduck.Parsing.Exceptions;
 
+/// <summary>
+/// An exception that is thrown when the parser fails in SLL prediction mode, which ultimately gets reported as a diagnostic.
+/// </summary>
 public class SllPredictionFailException : SyntaxErrorException
 {
     public SllPredictionFailException(AntlrSyntaxErrorInfo info) : base(info) { }
+    public Diagnostic ToDiagnostic()
+    {
+        var range = this.Range();
+        return RubberduckDiagnostic.SllFailure(new SyntaxErrorOffendingSymbol(OffendingSymbol.Text, Uri)
+        {
+            IsUserDefined = true,
+            SelectionRange = range,
+            Range = range,
+        });
+    }
 }
 
 /// <summary>
@@ -20,16 +35,13 @@ public class SllPredictionFailException : SyntaxErrorException
 public class SyntaxErrorException : Exception
 {
     public SyntaxErrorException(AntlrSyntaxErrorInfo info)
-        : this(info.Uri, info.Message, info.Exception, info.OffendingSymbol, info.LineNumber, info.Position) { }
-
-    public SyntaxErrorException(WorkspaceFileUri uri, string message, RecognitionException innerException, IToken offendingSymbol, int line, int position)
-        : base(message, innerException)
+        : base(info.Message, info.Exception)
     {
-        Uri = uri;
+        Uri = info.Uri;
 
-        OffendingSymbol = offendingSymbol;
-        LineNumber = line;
-        Position = position;
+        OffendingSymbol = info.OffendingSymbol;
+        LineNumber = info.LineNumber;
+        Position = info.Position;
     }
 
     public WorkspaceFileUri Uri { get; init; }
@@ -38,18 +50,13 @@ public class SyntaxErrorException : Exception
     public int LineNumber { get; init; }
     public int Position { get; init; }
 
+    public OmniSharp.Extensions.LanguageServer.Protocol.Models.Range Range() =>
+    new(start: new Position(OffendingSymbol.Line, OffendingSymbol.Column),
+        end: new Position(OffendingSymbol.EndLine(), OffendingSymbol.EndColumn()));
+
     public override string ToString() => $"{base.ToString()}\nToken: {OffendingSymbol.Text} at L{LineNumber}C{Position}";
-    public Diagnostic ToDiagnostic()
-    {
-        var range = new AntlrSyntaxErrorInfo { Position = Position, LineNumber = LineNumber }.Range();
-        return RubberduckDiagnostic.SllFailure(new SyntaxErrorOffendingSymbol(OffendingSymbol.Text, Uri)
-        {
-            IsUserDefined = true,
-            SelectionRange = range,
-            Range = range,
-        });
-    }
 }
+
 
 public record class SyntaxErrorOffendingSymbol : Symbol
 {

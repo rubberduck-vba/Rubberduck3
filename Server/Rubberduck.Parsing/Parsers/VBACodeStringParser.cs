@@ -34,7 +34,7 @@ public static class VBACodeStringParser
         {
             return ParseInternal(ParserMode.SllOnly, parser, tokenStream, startRule);
         }
-        catch (SyntaxErrorException exception)
+        catch (SllPredictionFailException exception)
         {
             var actualMode = parser.Interpreter.PredictionMode.ToString()!.ToUpperInvariant();
             System.Diagnostics.Debug.Assert(actualMode == "SLL");

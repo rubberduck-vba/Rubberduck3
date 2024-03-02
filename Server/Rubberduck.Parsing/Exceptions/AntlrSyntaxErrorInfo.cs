@@ -2,7 +2,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.Parsing.Model;
+using Rubberduck.InternalApi.Model;
 
 namespace Rubberduck.Parsing.Exceptions;
 
@@ -23,11 +23,12 @@ public record class AntlrSyntaxErrorInfo
         new(start: new Position(OffendingSymbol.Line, OffendingSymbol.Column), 
             end: new Position(OffendingSymbol.EndLine(), OffendingSymbol.EndColumn()));
 
-    public SyntaxErrorInfo ToSyntaxErrorInfo() => new() 
+    public SyntaxErrorInfo ToSyntaxErrorInfo() => ToSyntaxErrorInfo(this);
+
+    public static SyntaxErrorInfo ToSyntaxErrorInfo(AntlrSyntaxErrorInfo info) => new()
     {
-        Uri = Uri,
-        Message = Message,
-        Range = Range(),
-        
+        Uri = info.Uri,
+        Message = info.Message,
+        Range = info.Range()
     };
 }

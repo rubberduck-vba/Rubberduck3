@@ -21,6 +21,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -28,14 +29,18 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <ComboBox Grid.Row="0" Grid.Column="0" />
-            <ComboBox Grid.Row="0" Grid.Column="1" />
-            <shell:BindableTextEditor Grid.Row="1" Grid.ColumnSpan="2"
+            <WrapPanel Orientation="Horizontal" Grid.ColumnSpan="2">
+                <shell:FlatButton ToolTip="Collapse all folding ranges" Icon="{DynamicResource CollapseAllIcon}" />
+                <shell:FlatButton ToolTip="Expand all folding ranges" Icon="{DynamicResource ExpandAllIcon}" />
+            </WrapPanel>
+            
+            <ComboBox Grid.Row="1" Grid.Column="0" />
+            <ComboBox Grid.Row="1" Grid.Column="1" />
+            <shell:BindableTextEditor Grid.Row="2" Grid.ColumnSpan="2"
                                       Background="{DynamicResource ThemeBackgroundColorBrush}"
                                       Text="{Binding TextContent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                      FontFamily="Consolas"
-                                      ShowLineNumbers="True"
-                                       />
+                                      FontFamily="Consolas" FontSize="14"
+                                      ShowLineNumbers="True" />
         </Grid>
     </shell:ThunderFrame>
 </UserControl>

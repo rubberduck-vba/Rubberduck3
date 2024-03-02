@@ -1,7 +1,7 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
-using Rubberduck.Parsing.Model;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
