@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Types;
 
-public record class VBPropertySetMember : VBTypeMember, IVBProperty
+public record class VBPropertySetMember : VBProcedureMember, IVBProperty
 {
     public VBPropertySetMember(WorkspaceUri uri, string name, RubberduckSymbolKind kind, Accessibility accessibility, PropertySetSymbol declaration, PropertySetSymbol[]? definitions = null)
         : base(uri, name, kind, accessibility, declaration, definitions)
