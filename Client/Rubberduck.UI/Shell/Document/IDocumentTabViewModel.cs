@@ -1,6 +1,10 @@
-﻿using Rubberduck.UI.Shell.StatusBar;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.InternalApi.Extensions;
+using Rubberduck.UI.Shell.StatusBar;
 using Rubberduck.UI.Windows;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rubberduck.UI.Shell.Document
 {
@@ -26,11 +30,13 @@ namespace Rubberduck.UI.Shell.Document
 
     public interface IDocumentTabViewModel : ITabViewModel
     {
-        Uri DocumentUri { get; set; }
+        WorkspaceUri DocumentUri { get; set; }
         string Language { get; set; }
         bool IsReadOnly { get; set; }
 
         SupportedDocumentType DocumentType { get; }
         IDocumentStatusViewModel Status { get; }
+
+        Task<IEnumerable<FoldingRange>> RequestFoldingsAsync();
     }
 }

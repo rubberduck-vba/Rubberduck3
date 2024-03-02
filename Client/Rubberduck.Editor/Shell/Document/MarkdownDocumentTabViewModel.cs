@@ -1,4 +1,6 @@
-﻿using Rubberduck.InternalApi.Settings.Model.Editor;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Client;
+using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Settings.Model.Editor;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
@@ -11,11 +13,12 @@ namespace Rubberduck.Editor.Shell.Document
     /// </summary>
     public class MarkdownDocumentTabViewModel : DocumentTabViewModel
     {
-        public MarkdownDocumentTabViewModel(Uri documentUri, string title, string content, bool isReadOnly,
+        public MarkdownDocumentTabViewModel(WorkspaceUri documentUri, string title, string content, bool isReadOnly,
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindowCommand,
-            IDocumentStatusViewModel activeDocumentStatus)
-            : base(documentUri, "md/html", title, content, isReadOnly, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus)
+            IDocumentStatusViewModel activeDocumentStatus,
+            Func<ILanguageClient> lsp)
+            : base(documentUri, "md/html", title, content, isReadOnly, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus, lsp)
         {
             SettingKey = nameof(EditorSettings);
         }

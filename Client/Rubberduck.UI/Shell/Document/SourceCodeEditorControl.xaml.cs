@@ -1,5 +1,8 @@
-﻿using System;
+﻿using ICSharpCode.AvalonEdit.Folding;
+using Rubberduck.UI.Services;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +23,8 @@ namespace Rubberduck.UI.Shell.Document
     /// </summary>
     public partial class SourceCodeEditorControl : UserControl
     {
+        private FoldingManager _foldings;
+
         public SourceCodeEditorControl()
         {
             InitializeComponent();
@@ -29,25 +34,42 @@ namespace Rubberduck.UI.Shell.Document
             Editor.TextArea.SelectionChanged += OnSelectionChanged;
             Editor.TextArea.Caret.PositionChanged += OnCaretPositionChanged;
             Editor.TextChanged += OnTextChanged;
+
+            _foldings = FoldingManager.Install(Editor.TextArea);
         }
 
-        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private async void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            ViewModel = (IDocumentTabViewModel)e.NewValue;
-            UpdateStatusInfo();
+            await Task.Run(async () =>
+            {
+                ViewModel = (IDocumentTabViewModel)e.NewValue;
+                if (ViewModel.DocumentType == SupportedDocumentType.SourceFile)
+                {
+                    var foldings = await ViewModel.RequestFoldingsAsync();
+                    await Dispatcher.InvokeAsync(() =>
+                    {
+                        _foldings.Clear();
+                        _foldings.UpdateFoldings(foldings.Select(e => e.ToNewFolding(Editor.Document)).OrderBy(e => e.StartOffset), -1); // TODO account for syntax errors instead of passing -1?
+                    });
+                }
+                UpdateStatusInfo();
+            });
         }
 
         private BindableTextEditor Editor { get; }
-        private IDocumentTabViewModel ViewModel { get; set; }
+        private IDocumentTabViewModel ViewModel { get; set; } = default!;
 
         private void UpdateStatusInfo()
         {
-            ViewModel.Status.CaretOffset = Editor.TextArea.Caret.Offset;
-            ViewModel.Status.CaretLine = Editor.TextArea.Caret.Position.Line;
-            ViewModel.Status.CaretColumn = Editor.TextArea.Caret.Position.Column;
+            Dispatcher.Invoke(() =>
+            {
+                ViewModel.Status.CaretOffset = Editor.TextArea.Caret.Offset;
+                ViewModel.Status.CaretLine = Editor.TextArea.Caret.Position.Line;
+                ViewModel.Status.CaretColumn = Editor.TextArea.Caret.Position.Column;
 
-            ViewModel.Status.DocumentLength = Editor.TextArea.Document.TextLength;
-            ViewModel.Status.DocumentLines = Editor.TextArea.Document.LineCount;
+                ViewModel.Status.DocumentLength = Editor.TextArea.Document.TextLength;
+                ViewModel.Status.DocumentLines = Editor.TextArea.Document.LineCount;
+            });
         }
 
 

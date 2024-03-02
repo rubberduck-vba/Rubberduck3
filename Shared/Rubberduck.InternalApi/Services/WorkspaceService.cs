@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
+using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace Rubberduck.InternalApi.Services
@@ -38,7 +39,8 @@ namespace Rubberduck.InternalApi.Services
 
         public IWorkspaceStateManager State => _state;
 
-        public async virtual Task OnWorkspaceOpenedAsync(Uri uri) => await Task.Run(() => WorkspaceOpened?.Invoke(this, new(uri)));
+        public async virtual Task OnWorkspaceOpenedAsync(Uri uri) => OnWorkspaceOpened(uri);
+        protected void OnWorkspaceOpened(Uri uri) => WorkspaceOpened?.Invoke(this, new(uri));
 
         public void OnWorkspaceClosed(Uri uri) => WorkspaceClosed(this, new(uri));
 

@@ -67,9 +67,7 @@ namespace Rubberduck.Editor.Commands
                     
                     if (file is DocumentState)
                     {
-                        await RequestFoldingsAsync(file, TimeSpan.Zero); // TODO configure timeout
-
-                        document = new VBACodeDocumentTabViewModel(uri, file.Name, file.Text, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus);
+                        document = new VBACodeDocumentTabViewModel(uri, file.Name, file.Text, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp);
                         view = new SourceCodeEditorControl() { DataContext = document };
                     }
                     else
@@ -77,15 +75,15 @@ namespace Rubberduck.Editor.Commands
                         switch (file.FileExtension)
                         {
                             case "md":
-                                document = new MarkdownDocumentTabViewModel(uri, file.Name, file.Text, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus);
+                                document = new MarkdownDocumentTabViewModel(uri, file.Name, file.Text, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp);
                                 view = new MarkdownEditorControl() { DataContext = document };
                                 break;
                             case "rdproj":
-                                document = new RubberduckProjectDocumentTabViewModel(uri, workspace.ProjectName, file.Text, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus);
+                                document = new RubberduckProjectDocumentTabViewModel(uri, workspace.ProjectName, file.Text, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp);
                                 view = new SourceCodeEditorControl() { DataContext = document }; // TODO understand json as a different "language"
                                 break;
                             default:
-                                document = new TextDocumentTabViewModel(uri, file.Name, file.Text, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus);
+                                document = new TextDocumentTabViewModel(uri, file.Name, file.Text, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp);
                                 view = new TextEditorControl() { DataContext = document };
                                 break;
                         }

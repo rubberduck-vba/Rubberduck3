@@ -205,7 +205,7 @@ namespace Rubberduck.Editor
             var showSettingsCommand = _serviceProvider.GetRequiredService<ShowRubberduckSettingsCommand>();
             var closeToolWindowCommand = _serviceProvider.GetRequiredService<CloseToolWindowCommand>();
             var activeDocumentStatus = _serviceProvider.GetRequiredService<IDocumentStatusViewModel>();
-            var welcome = new MarkdownDocumentTabViewModel(new Uri(path), "Welcome", content, isReadOnly: true, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus);
+            var welcome = new MarkdownDocumentTabViewModel(new WorkspaceFileUri(null!, new Uri(path)), "Welcome", content, isReadOnly: true, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus, () => _languageClient.LanguageClient!);
 
             var welcomeTabContent = new MarkdownEditorControl() { DataContext = welcome };
             welcome.ContentControl = welcomeTabContent;

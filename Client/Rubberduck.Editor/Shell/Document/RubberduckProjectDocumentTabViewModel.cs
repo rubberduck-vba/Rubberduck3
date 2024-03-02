@@ -1,4 +1,6 @@
-﻿using Rubberduck.UI.Command.SharedHandlers;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Client;
+using Rubberduck.InternalApi.Extensions;
+using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
 using System;
@@ -10,12 +12,13 @@ namespace Rubberduck.Editor.Shell.Document
     /// </summary>
     public class RubberduckProjectDocumentTabViewModel : DocumentTabViewModel
     {
-        public RubberduckProjectDocumentTabViewModel(Uri documentUri, string title, string content, bool isReadOnly,
+        public RubberduckProjectDocumentTabViewModel(WorkspaceUri documentUri, string title, string content, bool isReadOnly,
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindowCommand,
-            IDocumentStatusViewModel activeDocumentStatus)
+            IDocumentStatusViewModel activeDocumentStatus,
+            Func<ILanguageClient> lsp)
             : base(documentUri, "json", title, content, isReadOnly,
-                  showSettingsCommand, closeToolWindowCommand, activeDocumentStatus)
+                  showSettingsCommand, closeToolWindowCommand, activeDocumentStatus, lsp)
         {
         }
 

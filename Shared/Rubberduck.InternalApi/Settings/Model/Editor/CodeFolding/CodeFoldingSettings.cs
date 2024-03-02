@@ -11,6 +11,7 @@ public record class CodeFoldingSettings : TypedSettingGroup, IDefaultSettingsPro
             new FoldModuleDeclarationsSetting(),
             new FoldScopesSetting(),
             new FoldBlockStatementsSetting(),
+            new FoldRegionsSetting(),
         ];
 
     public CodeFoldingSettings()
@@ -29,6 +30,8 @@ public record class CodeFoldingSettings : TypedSettingGroup, IDefaultSettingsPro
     public bool FoldScopes => GetSetting<FoldScopesSetting>()?.TypedValue ?? FoldScopesSetting.DefaultSettingValue;
     [JsonIgnore]
     public bool FoldBlockStatements => GetSetting<FoldBlockStatementsSetting>()?.TypedValue ?? FoldScopesSetting.DefaultSettingValue;
+    [JsonIgnore]
+    public bool FoldRegions => GetSetting<FoldRegionsSetting>()?.TypedValue ?? FoldRegionsSetting.DefaultSettingValue;
 
     public static CodeFoldingSettings Default { get; } = new() { Value = DefaultSettings, DefaultValue = DefaultSettings };
     CodeFoldingSettings IDefaultSettingsProvider<CodeFoldingSettings>.Default => Default;

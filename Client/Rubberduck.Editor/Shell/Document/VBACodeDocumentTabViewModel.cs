@@ -1,4 +1,6 @@
-﻿using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Client;
+using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shell.StatusBar;
 using System;
@@ -10,11 +12,12 @@ namespace Rubberduck.Editor.Shell.Document
     /// </summary>
     public class VBACodeDocumentTabViewModel : CodeDocumentTabViewModel
     {
-        public VBACodeDocumentTabViewModel(Uri documentUri, string title, string content, bool isReadOnly,
+        public VBACodeDocumentTabViewModel(WorkspaceUri documentUri, string title, string content, bool isReadOnly,
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindowCommand,
-            IDocumentStatusViewModel activeDocumentStatus)
-            : base(documentUri, SupportedLanguage.VBA.Id, title, content, isReadOnly, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus)
+            IDocumentStatusViewModel activeDocumentStatus,
+            Func<ILanguageClient> lsp)
+            : base(documentUri, SupportedLanguage.VBA.Id, title, content, isReadOnly, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus, lsp)
         {
         }
     }
