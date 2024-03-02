@@ -33,7 +33,7 @@ public class DocumentMemberSymbolsSection : WorkspaceDocumentSection
     private TransformBlock<Symbol, Symbol> ResolveMemberSymbolsBlock { get; set; } = null!;
     private Symbol ResolveMemberSymbols(Symbol symbol) =>
         RunTransformBlock(ResolveMemberSymbolsBlock, symbol, 
-            e => _symbolsService.RecursivelyResolveSymbols(e), 
+            _symbolsService.RecursivelyResolveSymbols, 
             nameof(ResolveMemberSymbolsBlock), logPerformance: true);
 
     private ActionBlock<Symbol> SetDocumentStateMemberSymbolsBlock { get; set; } = null!;
@@ -44,7 +44,6 @@ public class DocumentMemberSymbolsSection : WorkspaceDocumentSection
 
     protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(ISourceBlock<DocumentParserState> source)
     {
-
         AcquireDocumentStateSymbolsBlock = new(AcquireDocumentStateSymbols, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(AcquireDocumentStateSymbolsBlock), AcquireDocumentStateSymbolsBlock);
 

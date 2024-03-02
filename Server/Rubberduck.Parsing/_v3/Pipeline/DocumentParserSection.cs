@@ -42,6 +42,14 @@ public class DocumentParserSection : WorkspaceDocumentSection
             e => e, 
             nameof(BroadcastParseResultBlock), logPerformance: false);
 
+    private ActionBlock<PipelineParseResult> SetDocumentStateBlock { get; set; } = null!;
+    private void SetDocumentState(PipelineParseResult parseResult) =>
+        RunActionBlock(SetDocumentStateBlock, parseResult,
+            e => UpdateDocumentState(State, state => (DocumentParserState)state
+                .WithSyntaxErrors(parseResult.ParseResult.SyntaxErrors.Select(error => new InternalApi.Model.SyntaxErrorInfo { Message = error.Message, Uri = error.Uri, Range = error.Range() }))
+                .WithDiagnostics(parseResult.ParseResult.Diagnostics)),
+            nameof(SetDocumentStateBlock), logPerformance: false);
+
     private TransformBlock<PipelineParseResult, IParseTree> AcquireSyntaxTreeBlock { get; set; } = null!;
     private IParseTree AcquireSyntaxTree(PipelineParseResult input) =>
         RunTransformBlock(AcquireSyntaxTreeBlock, input, 
@@ -68,7 +76,7 @@ public class DocumentParserSection : WorkspaceDocumentSection
     private ActionBlock<IEnumerable<FoldingRange>> SetDocumentStateFoldingsBlock { get; set; } = null!;
     private void SetDocumentStateFoldings(IEnumerable<FoldingRange> parseResult) =>
         RunActionBlock(SetDocumentStateFoldingsBlock, parseResult,
-            e => UpdateDocumentState(State, state => (DocumentParserState)State.WithFoldings(e)
+            e => UpdateDocumentState(State, state => (DocumentParserState)state.WithFoldings(e)
                 ?? throw new InvalidOperationException("Document state was unexpectedly null.")),
             nameof(SetDocumentStateFoldingsBlock), logPerformance: false);
 
@@ -81,7 +89,7 @@ public class DocumentParserSection : WorkspaceDocumentSection
     private ActionBlock<Symbol> SetDocumentStateMemberSymbolsBlock { get; set; } = null!;
     private void SetDocumentStateMemberSymbols(Symbol symbol) =>
         RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol,
-            e => UpdateDocumentState(State, state => state.WithSymbol(e)),
+            e => UpdateDocumentState(State, state => (DocumentParserState)state.WithSymbol(e)),
             nameof(SetDocumentStateMemberSymbolsBlock), logPerformance: false);
 
     protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(ISourceBlock<DocumentParserState> source)
@@ -91,6 +99,9 @@ public class DocumentParserSection : WorkspaceDocumentSection
 
         BroadcastParseResultBlock = new(BroadcastParseResult, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(BroadcastParseResultBlock), BroadcastParseResultBlock);
+
+        SetDocumentStateBlock = new(SetDocumentState, ConcurrentExecutionOptions(Token));
+        _ = TraceBlockCompletionAsync(nameof(SetDocumentStateBlock), SetDocumentStateBlock);
 
         var parseResultBufferBlock = new BufferBlock<PipelineParseResult>(new DataflowBlockOptions { CancellationToken = Token });
 
@@ -126,6 +137,7 @@ public class DocumentParserSection : WorkspaceDocumentSection
         Link(BroadcastParseResultBlock, AcquireSyntaxTreeBlock);
         
         Link(AcquireSyntaxTreeBlock, BroadcastSyntaxTreeBlock);
+        Link(BroadcastParseResultBlock, SetDocumentStateBlock);
         Link(BroadcastSyntaxTreeBlock, DiscoverFoldingRangesBlock);
         Link(BroadcastSyntaxTreeBlock, DiscoverMemberSymbolsBlock);
         Link(BroadcastSyntaxTreeBlock, syntaxTreeBufferBlock);

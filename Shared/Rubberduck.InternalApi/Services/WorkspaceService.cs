@@ -217,7 +217,7 @@ namespace Rubberduck.InternalApi.Services
                         };
                     }
 
-                    if (state.LoadWorkspaceFile(info))
+                    if (state.LoadDocumentState(info))
                     {
                         if (!isMissing)
                         {

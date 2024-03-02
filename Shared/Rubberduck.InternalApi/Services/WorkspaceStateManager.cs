@@ -80,7 +80,7 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
             }
         }
 
-        public bool LoadWorkspaceFile(DocumentState file)
+        public bool LoadDocumentState(DocumentState file)
         {
             _store.AddOrUpdate(file.Uri, file);
             if (file.Symbol is TypedSymbol typedSymbol)

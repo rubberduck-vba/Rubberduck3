@@ -39,7 +39,7 @@ public interface IWorkspaceState
     /// <param name="file">The file (including its content) to be added.</param>
     /// <returns><c>true</c> if the file was successfully added (or overwritten) to the workspace.</returns>
     /// <remarks>This method will overwrite a cached URI if URI matches an existing file.</remarks>
-    bool LoadWorkspaceFile(DocumentState file);
+    bool LoadDocumentState(DocumentState file);
     /// <summary>
     /// Renames the specified workspace URI.
     /// </summary>

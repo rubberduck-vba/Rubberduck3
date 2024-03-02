@@ -29,7 +29,7 @@ public abstract class WorkspaceDocumentSection : DataflowPipelineSection<Workspa
     protected void UpdateDocumentState(DocumentParserState state, Func<DocumentParserState, DocumentParserState> update)
     {
         State = update(state);
-        _workspace.LoadWorkspaceFile(State);
+        _workspace.LoadDocumentState(State);
     }
 
     private TransformBlock<WorkspaceFileUri, DocumentParserState> AcquireDocumentStateBlock { get; set; } = null!;
