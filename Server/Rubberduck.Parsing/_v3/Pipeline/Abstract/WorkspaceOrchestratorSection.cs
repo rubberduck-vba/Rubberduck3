@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Parsing._v3.Pipeline.Services;
-using System.Collections.Concurrent;
-using System.Collections.Immutable;
 using System.Text;
 using System.Threading.Tasks.Dataflow;
 
@@ -15,15 +14,20 @@ namespace Rubberduck.Parsing._v3.Pipeline.Abstract;
 /// </summary>
 public abstract class WorkspaceOrchestratorSection : DataflowPipelineSection<WorkspaceUri, IWorkspaceState>
 {
+    private readonly ILanguageServer _server;
     private readonly IWorkspaceStateManager _workspaces;
     private readonly ParserPipelineSectionProvider _provider;
 
-    protected WorkspaceOrchestratorSection(DataflowPipeline parent, IWorkspaceStateManager workspaces, ParserPipelineSectionProvider pipelineProvider,
+    protected WorkspaceOrchestratorSection(DataflowPipeline parent, 
+        IWorkspaceStateManager workspaces, 
+        ParserPipelineSectionProvider pipelineProvider,
+        ILanguageServer server,
         ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
         : base(parent, logger, settingsProvider, performance)
     {
         _workspaces = workspaces;
         _provider = pipelineProvider;
+        _server = server;
     }
 
     protected abstract WorkspaceDocumentSection StartDocumentPipeline(ParserPipelineSectionProvider provider, WorkspaceFileUri uri);

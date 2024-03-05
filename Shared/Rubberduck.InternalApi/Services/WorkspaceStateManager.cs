@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
@@ -25,6 +27,16 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
         {
             _store = store;
             ExecutionContext = new VBExecutionContext(logger, settingsProvider, performance);
+        }
+
+        public void PublishDiagnostics(int? version, DocumentUri documentUri, IEnumerable<Diagnostic> diagnostics)
+        {
+            var root = WorkspaceRoot ?? throw new InvalidOperationException("Workspace root is not set");            
+            var uri = documentUri.AsWorkspaceUri(root);
+            if (_store.TryGetDocument(uri, out var document) && document != null && document.Version == (version ?? document.Version))
+            {
+                _store.AddOrUpdate(uri, document.WithDiagnostics(diagnostics));
+            }
         }
 
         public VBExecutionContext ExecutionContext { get; }

@@ -28,14 +28,14 @@ namespace Rubberduck.Editor.Commands
         private readonly CloseToolWindowCommand _closeToolWindowCommand;
         private readonly IDocumentStatusViewModel _activeDocumentStatus;
 
-        private readonly Func<ILanguageClient?> _lsp;
+        private readonly Func<ILanguageClient> _lsp;
 
         public OpenDocumentCommand(UIServiceHelper service,
             IWorkspaceStateManager workspaces,
             ShellProvider shell,
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindow,
-            IDocumentStatusViewModel activeDocumentStatus, Func<ILanguageClient?> lsp)
+            IDocumentStatusViewModel activeDocumentStatus, Func<ILanguageClient> lsp)
             : base(service)
         {
             _workspaces = workspaces;
@@ -51,7 +51,7 @@ namespace Rubberduck.Editor.Commands
         protected async override Task OnExecuteAsync(object? parameter)
         {
             var workspace = _workspaces.ActiveWorkspace;
-            if (workspace != null && parameter is WorkspaceFileUri uri)
+            if (_lsp != null && workspace != null && parameter is WorkspaceFileUri uri)
             {
                 var rootUri = workspace.WorkspaceRoot;
                 //var root = _workspaces.ActiveWorkspace?.WorkspaceRoot?.LocalPath ?? throw new InvalidOperationException();
@@ -64,29 +64,41 @@ namespace Rubberduck.Editor.Commands
 
                     UserControl view;
                     IDocumentTabViewModel document;
-                    
-                    if (file is DocumentState)
+
+                    if (file is DocumentState state)
                     {
-                        document = new VBACodeDocumentTabViewModel(uri, file.Name, file.Text, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp);
-                        view = new SourceCodeEditorControl() { DataContext = document };
+                        if (state.Language.Id == SupportedLanguage.VBA.Id)
+                        {
+                            document = new VBACodeDocumentTabViewModel(state, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp);
+                            view = new SourceCodeEditorControl() { DataContext = document };
+                        }
+                        else if (state.Language.Id == SupportedLanguage.VB6.Id)
+                        {
+                            document = new VB6CodeDocumentTabViewModel(state, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp);
+                            view = new SourceCodeEditorControl() { DataContext = document };
+                        }
+                        else
+                        {
+                            switch (file.FileExtension)
+                            {
+                                case "md":
+                                    document = new MarkdownDocumentTabViewModel(state, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp);
+                                    view = new MarkdownEditorControl() { DataContext = document };
+                                    break;
+                                case "rdproj":
+                                    document = new RubberduckProjectDocumentTabViewModel(state, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp);
+                                    view = new SourceCodeEditorControl() { DataContext = document }; // TODO understand json as a different "language"
+                                    break;
+                                default:
+                                    document = new TextDocumentTabViewModel(state, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp);
+                                    view = new TextEditorControl() { DataContext = document };
+                                    break;
+                            }
+                        }
                     }
                     else
                     {
-                        switch (file.FileExtension)
-                        {
-                            case "md":
-                                document = new MarkdownDocumentTabViewModel(uri, file.Name, file.Text, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp);
-                                view = new MarkdownEditorControl() { DataContext = document };
-                                break;
-                            case "rdproj":
-                                document = new RubberduckProjectDocumentTabViewModel(uri, workspace.ProjectName, file.Text, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp);
-                                view = new SourceCodeEditorControl() { DataContext = document }; // TODO understand json as a different "language"
-                                break;
-                            default:
-                                document = new TextDocumentTabViewModel(uri, file.Name, file.Text, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp);
-                                view = new TextEditorControl() { DataContext = document };
-                                break;
-                        }
+                        throw new InvalidOperationException("document state was unexpectedly null.");
                     }
 
                     file = file.WithOpened(true);
@@ -99,29 +111,6 @@ namespace Rubberduck.Editor.Commands
             }
 
             await Task.CompletedTask;
-        }
-
-        private async Task<Container<FoldingRange>> RequestFoldingsAsync(DocumentState file, TimeSpan timeout)
-        {
-            var lsp = _lsp();
-            if (lsp is null)
-            {
-                throw new InvalidOperationException("LanguageServerClient is unexpectedly null.");
-            }
-
-            Service.LogInformation($"Requesting folding ranges for document '{file.Name}'...");
-
-            var request = new FoldingRangeRequestParam { TextDocument = file.Id };
-            var tokenSource = new CancellationTokenSource(timeout);
-
-            var response = await lsp.RequestFoldingRange(request, CancellationToken.None);
-            if (response is Container<FoldingRange> foldings)
-            {
-                Service.LogInformation($" Received folding ranges for document '{file.Name}'.");
-                return foldings;
-            }
-
-            return new Container<FoldingRange>();
         }
 
         private void NotifyLanguageServer(DocumentState file)

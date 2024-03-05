@@ -198,21 +198,21 @@ namespace Rubberduck.Editor
 
         private async Task LoadWelcomeTabAsync(IShellWindowViewModel model)
         {
-            var fileSystem = _serviceProvider.GetRequiredService<IFileSystem>();
-            var path = fileSystem.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Rubberduck", "Templates", "Welcome.md");
-            var content = await fileSystem.File.ReadAllTextAsync(path);
+            //var fileSystem = _serviceProvider.GetRequiredService<IFileSystem>();
+            //var path = fileSystem.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Rubberduck", "Templates", "Welcome.md");
+            //var content = await fileSystem.File.ReadAllTextAsync(path);
 
-            var showSettingsCommand = _serviceProvider.GetRequiredService<ShowRubberduckSettingsCommand>();
-            var closeToolWindowCommand = _serviceProvider.GetRequiredService<CloseToolWindowCommand>();
-            var activeDocumentStatus = _serviceProvider.GetRequiredService<IDocumentStatusViewModel>();
-            var welcome = new MarkdownDocumentTabViewModel(new WorkspaceFileUri(null!, new Uri(path)), "Welcome", content, isReadOnly: true, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus, () => _languageClient.LanguageClient!);
+            //var showSettingsCommand = _serviceProvider.GetRequiredService<ShowRubberduckSettingsCommand>();
+            //var closeToolWindowCommand = _serviceProvider.GetRequiredService<CloseToolWindowCommand>();
+            //var activeDocumentStatus = _serviceProvider.GetRequiredService<IDocumentStatusViewModel>();
+            //var welcome = new MarkdownDocumentTabViewModel(new WorkspaceFileUri(null!, new Uri(path)), "Welcome", content, isReadOnly: true, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus, () => _languageClient.LanguageClient!);
 
-            var welcomeTabContent = new MarkdownEditorControl() { DataContext = welcome };
-            welcome.ContentControl = welcomeTabContent;
-            welcome.IsSelected = true;
+            //var welcomeTabContent = new MarkdownEditorControl() { DataContext = welcome };
+            //welcome.ContentControl = welcomeTabContent;
+            //welcome.IsSelected = true;
 
-            model.DocumentWindows.Add(welcome);
-            model.ActiveDocumentTab = welcome;
+            //model.DocumentWindows.Add(welcome);
+            //model.ActiveDocumentTab = welcome;
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -257,8 +257,8 @@ namespace Rubberduck.Editor
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<Func<ILanguageServer>>(provider => () => _editorServer.Server);
             services.AddSingleton<Func<ILanguageClient?>>(provider => () => _languageClient.LanguageClient);
+            services.AddSingleton<Func<ILanguageClient>>(provider => () => _languageClient.LanguageClient);
             services.AddSingleton<LanguageClientApp>(provider => _languageClient);
             services.AddSingleton<ILanguageClientService, LanguageClientService>();
             services.AddSingleton<ILanguageServerConnectionStatusProvider, LanguageClientService>(provider => (LanguageClientService)provider.GetRequiredService<ILanguageClientService>());

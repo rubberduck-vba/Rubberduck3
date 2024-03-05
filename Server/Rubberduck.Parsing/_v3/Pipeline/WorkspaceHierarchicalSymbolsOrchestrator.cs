@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
@@ -10,11 +11,11 @@ namespace Rubberduck.Parsing._v3.Pipeline;
 public class WorkspaceHierarchicalSymbolsOrchestrator : WorkspaceOrchestratorSection
 {
     public WorkspaceHierarchicalSymbolsOrchestrator(DataflowPipeline parent, IWorkspaceStateManager workspaces, ParserPipelineSectionProvider pipelineProvider,
-        ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
-        : base(parent, workspaces, pipelineProvider, logger, settingsProvider, performance)
+        ILanguageServer server, ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
+        : base(parent, workspaces, pipelineProvider, server, logger, settingsProvider, performance)
     {
     }
 
     protected override WorkspaceDocumentSection StartDocumentPipeline(ParserPipelineSectionProvider provider, WorkspaceFileUri uri) =>
-        provider.StartWorkspaceFileHierarchicalSymbolsSection(this, uri, TokenSource);
+        provider.StartWorkspaceFileHierarchicalSymbolsSection(LanguageServer, this, uri, TokenSource);
 }

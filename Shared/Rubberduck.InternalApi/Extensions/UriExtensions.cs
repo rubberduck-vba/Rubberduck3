@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol;
+using System;
 
 namespace Rubberduck.InternalApi.Extensions;
 
@@ -23,5 +24,10 @@ public static class UriExtensions
         }
         
         return new WorkspaceFileUri(parentUriString + $"#{name}", uri.WorkspaceRoot);
+    }
+
+    public static WorkspaceFileUri AsWorkspaceUri(this DocumentUri uri, WorkspaceUri root)
+    {
+        return new WorkspaceFileUri(uri.ToUri().OriginalString, root.WorkspaceRoot);
     }
 }

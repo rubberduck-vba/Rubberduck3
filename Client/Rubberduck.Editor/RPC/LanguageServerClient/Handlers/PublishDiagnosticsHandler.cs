@@ -3,16 +3,24 @@ using System.Threading.Tasks;
 using MediatR;
 using System.Threading;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
+using Rubberduck.InternalApi.Services;
+using System;
 
 namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
 {
     public class PublishDiagnosticsHandler : PublishDiagnosticsHandlerBase
     {
+        private readonly IWorkspaceStateManager _workspaces;
+
+        public PublishDiagnosticsHandler(IWorkspaceStateManager workspaces)
+        {
+            _workspaces = workspaces;
+        }
+
         public override async Task<Unit> Handle(PublishDiagnosticsParams request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            // TODO
             /*
              * Diagnostics notifications are sent from the server to the client to signal results of validation runs.
              * Diagnostics are “owned” by the server so it is the server’s responsibility to clear them if necessary. 
@@ -36,6 +44,8 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
             // if the versions don't match, diagnostics should be considered stale.
             // otherwise, spawn them squiggles!
 
+            var workspace = _workspaces.ActiveWorkspace ?? throw new InvalidOperationException("Invalid state: no workspace is active");
+            workspace.PublishDiagnostics(request.Version, request.Uri, request.Diagnostics);
             return await Task.FromResult(Unit.Value);
         }
     }

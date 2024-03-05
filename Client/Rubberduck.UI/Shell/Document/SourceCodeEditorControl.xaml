@@ -30,8 +30,8 @@
             </Grid.ColumnDefinitions>
 
             <WrapPanel Orientation="Horizontal" Grid.ColumnSpan="2">
-                <shell:FlatButton ToolTip="Collapse all folding ranges" Icon="{DynamicResource CollapseAllIcon}" />
-                <shell:FlatButton ToolTip="Expand all folding ranges" Icon="{DynamicResource ExpandAllIcon}" />
+                <shell:FlatButton ToolTip="Collapse all folding ranges" Icon="{DynamicResource CollapseAllIcon}" Command="{Binding CollapseAllCommand, RelativeSource={RelativeSource AncestorType=local:SourceCodeEditorControl, Mode=FindAncestor}}" />
+                <shell:FlatButton ToolTip="Expand all folding ranges" Icon="{DynamicResource ExpandAllIcon}" Command="{Binding ExpandAllCommand, RelativeSource={RelativeSource AncestorType=local:SourceCodeEditorControl, Mode=FindAncestor}}" />
             </WrapPanel>
             
             <ComboBox Grid.Row="1" Grid.Column="0" />

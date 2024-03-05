@@ -4,6 +4,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.Editor.Shell.StatusBar;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services;
@@ -24,28 +25,54 @@ namespace Rubberduck.Editor.Shell.Document
     public abstract class DocumentTabViewModel : WindowViewModel, IDocumentTabViewModel
     {
         private Func<ILanguageClient> _lsp;
+        private DocumentState _state;
 
-        public DocumentTabViewModel(WorkspaceUri documentUri, string language, string title, string content, bool isReadOnly,
+        public DocumentTabViewModel(DocumentState state, bool isReadOnly,
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindowCommand,
             IDocumentStatusViewModel activeDocumentStatus,
             Func<ILanguageClient> lsp)
             : base(showSettingsCommand, closeToolWindowCommand)
         {
-            _uri = documentUri;
-            _language = language;
-            _header = title;
+            _state = state;
+            _uri = state.Uri;
+            _language = state.Language.Id;
+            _header = state.Name;
             _isReadOnly = isReadOnly;
 
             _lsp = lsp;
 
-            Title = title;
-            TextContent = content;
+            Title = state.Name;
+            TextContent = state.Text;
 
             Status = activeDocumentStatus;
         }
 
+        public DocumentState DocumentState => _state;
+
         public abstract SupportedDocumentType DocumentType { get; }
+
+        public virtual async Task<IEnumerable<Diagnostic>> RequestDiagnosticsAsync()
+        {
+            var report = await _lsp.Invoke().RequestDocumentDiagnostic(new DocumentDiagnosticParams
+            {
+                Identifier = "RDE",
+                TextDocument = new TextDocumentIdentifier
+                {
+                    Uri = _uri.AbsoluteLocation.LocalPath,
+                }
+            });
+
+            if (report is IFullDocumentDiagnosticReport fullReport)
+            {
+                _state = _state.WithDiagnostics(fullReport.Items);
+                return fullReport.Items;
+            }
+            else
+            {
+                return _state.Diagnostics;
+            }
+        }
 
         public virtual async Task<IEnumerable<FoldingRange>> RequestFoldingsAsync()
         {

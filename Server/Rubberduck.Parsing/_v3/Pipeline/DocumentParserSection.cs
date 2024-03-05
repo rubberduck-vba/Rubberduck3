@@ -1,6 +1,8 @@
 ﻿using Antlr4.Runtime.Tree;
 using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
@@ -16,18 +18,21 @@ public class DocumentParserSection : WorkspaceDocumentSection
     private readonly PipelineParserService _parser;
     private readonly FoldingRangesParseTreeService _foldingRangesService;
     private readonly PipelineParseTreeSymbolsService _symbolsService;
+    private readonly ILanguageServer _server;
 
     public DocumentParserSection(DataflowPipeline parent, 
         IWorkspaceService workspaces, 
         PipelineParserService parser,
         FoldingRangesParseTreeService foldingRangesService,
         PipelineParseTreeSymbolsService symbolsService,
+        ILanguageServer server,
         ILogger<WorkspaceDocumentParserOrchestrator> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
         : base(parent, workspaces, logger, settingsProvider, performance)
     {
         _parser = parser;
         _foldingRangesService = foldingRangesService;
         _symbolsService = symbolsService;
+        _server = server;
     }
 
     private TransformBlock<DocumentState, PipelineParseResult> ParseDocumentTextBlock { get; set; } = null!;
@@ -45,10 +50,29 @@ public class DocumentParserSection : WorkspaceDocumentSection
     private ActionBlock<PipelineParseResult> SetDocumentStateBlock { get; set; } = null!;
     private void SetDocumentState(PipelineParseResult parseResult) =>
         RunActionBlock(SetDocumentStateBlock, parseResult,
-            e => UpdateDocumentState(State, state => (DocumentParserState)state
-                .WithSyntaxErrors(parseResult.ParseResult.SyntaxErrors.Select(error => new InternalApi.Model.SyntaxErrorInfo { Message = error.Message, Uri = error.Uri, Range = error.Range() }))
-                .WithDiagnostics(parseResult.ParseResult.Diagnostics)),
+            e =>
+            {
+                UpdateDocumentState(State, state => (DocumentParserState)state
+                                    .WithSyntaxErrors(parseResult.ParseResult.SyntaxErrors.Select(error => new InternalApi.Model.SyntaxErrorInfo { Message = error.Message, Uri = error.Uri, Range = error.Range() }))
+                                    .WithDiagnostics(parseResult.ParseResult.Diagnostics));
+                PublishDiagnostics(State);
+            },
             nameof(SetDocumentStateBlock), logPerformance: false);
+
+    private void PublishDiagnostics(DocumentParserState state)
+    {
+        if (state.Diagnostics.Count > 0)
+        {
+            LogInformation($"Publishing 💡{state.Diagnostics.Count} document diagnostics.", $"\n{string.Join("\n", state.Diagnostics.Select(e => $"\t[{e.Code!.Value.String}] {e.Message} ({e.Severity.ToString()!.ToUpperInvariant()})"))}");
+            _server?.TextDocument.PublishDiagnostics(
+                new()
+                {
+                    Uri = state.Uri.AbsoluteLocation.LocalPath,
+                    Version = state.Version,
+                    Diagnostics = new(state.Diagnostics)
+                });
+        }
+    }
 
     private TransformBlock<PipelineParseResult, IParseTree> AcquireSyntaxTreeBlock { get; set; } = null!;
     private IParseTree AcquireSyntaxTree(PipelineParseResult input) =>

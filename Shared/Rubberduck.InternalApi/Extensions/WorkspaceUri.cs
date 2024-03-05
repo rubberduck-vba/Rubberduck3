@@ -76,10 +76,11 @@ public abstract class WorkspaceUri : Uri
         var stdSlashRelativeUriString = relativeUriString.Replace("\\", "/");
 
         // absolute -> relative
-        if (stdSlashRelativeUriString.StartsWith(stdSlashRoot.LocalPath))
+        if (stdSlashRelativeUriString.ToLowerInvariant().StartsWith(stdSlashRoot.AbsoluteUri.ToLowerInvariant()))
         {
             var marker = $"/{ProjectFile.SourceRoot}";
-            return stdSlashRelativeUriString.Substring(stdSlashRelativeUriString.IndexOf(marker) + marker.Length);
+            var sane = stdSlashRelativeUriString.Substring(stdSlashRelativeUriString.IndexOf(marker) + marker.Length);
+            return sane;
         }
 
         return stdSlashRelativeUriString;

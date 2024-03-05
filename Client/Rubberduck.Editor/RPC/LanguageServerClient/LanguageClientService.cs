@@ -31,6 +31,8 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
         protected override LanguageClientOptions ConfigureLanguageClient(LanguageClientOptions options)
         {
             options
+                .WithHandler<PublishDiagnosticsHandler>()
+
                 .WithHandler<LogTraceHandler>()
                 .WithHandler<LogMessageHandler>();
 

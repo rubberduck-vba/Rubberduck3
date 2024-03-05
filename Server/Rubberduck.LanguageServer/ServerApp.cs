@@ -59,7 +59,7 @@ namespace Rubberduck.LanguageServer
                 logger.LogInformation("Workspace was loaded successfully.");
 
                 var service = provider.GetRequiredService<WorkspacePipeline>();
-                var task = service.StartAsync(uri, TokenSource);
+                var task = service.StartAsync(null, uri, TokenSource);
 
                 await task;
                 logger.LogInformation($"Workspace was processed: {task.Status}");
@@ -76,6 +76,7 @@ namespace Rubberduck.LanguageServer
 
         protected override void ConfigureServices(ServerStartupOptions options, IServiceCollection services)
         {
+            services.AddSingleton<Func<ILanguageServer>>(provider => () => Server);
             services.AddSingleton<ServerStartupOptions>(provider => options);
 
             if (options.ClientProcessId > 0)
@@ -141,36 +142,36 @@ namespace Rubberduck.LanguageServer
 
                 //.OnDidOpenTextDocument(HandleDidOpenTextDocument, GetTextDocumentOpenRegistrationOptions)
 
-            /*/ Workspace
-                .WithHandler<DidChangeConfigurationHandler>()
-                .WithHandler<DidChangeWatchedFileHandler>()
-                .WithHandler<DidChangeWorkspaceFoldersHandler>()
-                .WithHandler<DidCreateFileHandler>()
-                .WithHandler<DidDeleteFileHandler>()
-                .WithHandler<DidRenameFileHandler>()
-                .WithHandler<ExecuteCommandHandler>()
-                .WithHandler<SymbolInformationHandler>()
-                .WithHandler<WorkspaceDiagnosticHandler>()
-                .WithHandler<WorkspaceSymbolResolveHandler>()
-                .WithHandler<WorkspaceSymbolsHandler>()
-            */
+                /*/ Workspace
+                    .WithHandler<DidChangeConfigurationHandler>()
+                    .WithHandler<DidChangeWatchedFileHandler>()
+                    .WithHandler<DidChangeWorkspaceFoldersHandler>()
+                    .WithHandler<DidCreateFileHandler>()
+                    .WithHandler<DidDeleteFileHandler>()
+                    .WithHandler<DidRenameFileHandler>()
+                    .WithHandler<ExecuteCommandHandler>()
+                    .WithHandler<SymbolInformationHandler>()
+                    .WithHandler<WorkspaceDiagnosticHandler>()
+                    .WithHandler<WorkspaceSymbolResolveHandler>()
+                    .WithHandler<WorkspaceSymbolsHandler>()
+                */
 
-            /*/ TextDocument
-                .WithHandler<CallHierarchyHandler>()
-                .WithHandler<CodeActionHandler>()
-                .WithHandler<CodeActionResolveHandler>()
-                .WithHandler<CodeLensHandler>()
-                .WithHandler<ColorPresentationHandler>()
-                .WithHandler<CompletionHandler>()
-                .WithHandler<DeclarationHandler>()
-                .WithHandler<DefinitionHandler>()
-                .WithHandler<DocumentColorHandler>()
+                /*/ TextDocument
+                    .WithHandler<CallHierarchyHandler>()
+                    .WithHandler<CodeActionHandler>()
+                    .WithHandler<CodeActionResolveHandler>()
+                    .WithHandler<CodeLensHandler>()
+                    .WithHandler<ColorPresentationHandler>()
+                    .WithHandler<CompletionHandler>()
+                    .WithHandler<DeclarationHandler>()
+                    .WithHandler<DefinitionHandler>()
+                    .WithHandler<DocumentColorHandler>()
+                    .WithHandler<DocumentFormattingHandler>()
+                    .WithHandler<DocumentHighlightHandler>()
+                    .WithHandler<DocumentOnTypeFormattingHandler>()
+                    .WithHandler<DocumentRangeFormattingHandler>()
+                */
                 .WithHandler<DocumentDiagnosticHandler>()
-                .WithHandler<DocumentFormattingHandler>()
-                .WithHandler<DocumentHighlightHandler>()
-                .WithHandler<DocumentOnTypeFormattingHandler>()
-                .WithHandler<DocumentRangeFormattingHandler>()
-            */
                 .WithHandler<DocumentSymbolHandler>()
                 .WithHandler<FoldingRangeHandler>()
             /*
@@ -196,13 +197,15 @@ namespace Rubberduck.LanguageServer
 
             var state = (ILanguageServerState)ServerState;
             var rootUriString = state.RootUri!.GetFileSystemPath();
+
             service.LogTrace($"ServerState RootUri: {rootUriString}");
             var rootUri = new Uri(rootUriString);
 
             if (await workspaces.OpenProjectWorkspaceAsync(rootUri))
             {
                 var pipeline = server.GetRequiredService<WorkspacePipeline>();
-                await pipeline.StartAsync(new WorkspaceFileUri(null!, state.RootUri.ToUri()), new CancellationTokenSource())
+
+                await pipeline.StartAsync(server, new WorkspaceFileUri(null!, state.RootUri.ToUri()), new CancellationTokenSource())
                     .ContinueWith(t =>
                     {
                         progress?.OnCompleted();

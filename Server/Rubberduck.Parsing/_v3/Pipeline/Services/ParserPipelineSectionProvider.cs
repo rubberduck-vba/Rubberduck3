@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
@@ -27,7 +28,7 @@ public class ParserPipelineSectionProvider
     /// <remarks>
     /// This pipeline creates a syntax tree for a document, then traverses it to discover (but not resolve) all member definition symbols.
     /// </remarks>
-    public WorkspaceDocumentSection StartWorkspaceFileParserSection(DataflowPipeline parent, WorkspaceFileUri uri, CancellationTokenSource? tokenSource)
+    public WorkspaceDocumentSection StartWorkspaceFileParserSection(ILanguageServer server, DataflowPipeline parent, WorkspaceFileUri uri, CancellationTokenSource? tokenSource)
     {
         _ = uri ?? throw new ArgumentNullException(nameof(uri));
 
@@ -52,8 +53,8 @@ public class ParserPipelineSectionProvider
         var settings = _provider.GetRequiredService<RubberduckSettingsProvider>();
         var performance = _provider.GetRequiredService<PerformanceRecordAggregator>();
 
-        var newPipeline = new DocumentParserSection(parent, workspaces, parser, foldings, symbols, logger, settings, performance);
-        var completion = newPipeline.StartAsync(uri, null, tokenSource);
+        var newPipeline = new DocumentParserSection(parent, workspaces, parser, foldings, symbols, server, logger, settings, performance);
+        var completion = newPipeline.StartAsync(server, uri, null, tokenSource);
 
         _tasks.TryAdd(uri, completion);
         _pipelines[uri] = newPipeline;
@@ -67,7 +68,7 @@ public class ParserPipelineSectionProvider
     /// <remarks>
     /// This pipeline acquires the member symbols of a document and resolves a type for each one.
     /// </remarks>
-    public WorkspaceDocumentSection StartWorkspaceFileDocumentMemberResolverSection(DataflowPipeline parent, WorkspaceFileUri uri, CancellationTokenSource? tokenSource)
+    public WorkspaceDocumentSection StartWorkspaceFileDocumentMemberResolverSection(ILanguageServer server, DataflowPipeline parent, WorkspaceFileUri uri, CancellationTokenSource? tokenSource)
     {
         _ = uri ?? throw new ArgumentNullException(nameof(uri));
 
@@ -78,7 +79,7 @@ public class ParserPipelineSectionProvider
         var performance = _provider.GetRequiredService<PerformanceRecordAggregator>();
 
         var newPipeline = new DocumentMemberSymbolsSection(parent, workspaces, symbols, logger, settings, performance);
-        var completion = newPipeline.StartAsync(uri, null, tokenSource);
+        var completion = newPipeline.StartAsync(server, uri, null, tokenSource);
 
         _tasks.TryAdd(uri, completion);
         _pipelines[uri] = newPipeline;
@@ -92,7 +93,7 @@ public class ParserPipelineSectionProvider
     /// <remarks>
     /// This pipeline traverses the syntax tree of a document, discovers all symbols, and resolves a type for each one.
     /// </remarks>
-    public WorkspaceDocumentSection StartWorkspaceFileHierarchicalSymbolsSection(DataflowPipeline parent, WorkspaceFileUri uri, CancellationTokenSource? tokenSource)
+    public WorkspaceDocumentSection StartWorkspaceFileHierarchicalSymbolsSection(ILanguageServer server, DataflowPipeline parent, WorkspaceFileUri uri, CancellationTokenSource? tokenSource)
     {
         _ = uri ?? throw new ArgumentNullException(nameof(uri));
 
@@ -115,7 +116,7 @@ public class ParserPipelineSectionProvider
         var performance = _provider.GetRequiredService<PerformanceRecordAggregator>();
 
         var newPipeline = new DocumentHierarchicalSymbolsSection(parent, workspaces, symbols, logger, settings, performance);
-        var completion = newPipeline.StartAsync(uri, null, tokenSource);
+        var completion = newPipeline.StartAsync(server, uri, null, tokenSource);
 
         _tasks.TryAdd(uri, completion);
         _pipelines[uri] = newPipeline;

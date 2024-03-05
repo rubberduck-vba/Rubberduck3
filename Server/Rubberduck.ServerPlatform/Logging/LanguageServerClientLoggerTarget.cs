@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using NLog;
 using NLog.Targets;
 using Rubberduck.InternalApi.ServerPlatform;
+using Rubberduck.InternalApi.Services;
 
 namespace Rubberduck.ServerPlatform.Logging
 {

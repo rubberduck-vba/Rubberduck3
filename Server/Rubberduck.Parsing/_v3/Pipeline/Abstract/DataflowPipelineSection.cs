@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using System.Collections.Concurrent;
@@ -17,12 +18,14 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
     private readonly Stopwatch _stopwatch = new();
     private readonly DataflowPipeline _parent;
 
-    protected DataflowPipelineSection(DataflowPipeline parent, 
+    protected DataflowPipelineSection(DataflowPipeline parent,
         ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
         : base(logger, settingsProvider, performance)
     {
         _parent = parent;
     }
+
+    protected ILanguageServer LanguageServer { get; private set; }
 
     public virtual TState State { get; protected set; }
 
@@ -34,8 +37,8 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
     /// </remarks>
     public IDataflowBlock? InputBlock { get; private set; }
 
-    public override Task StartAsync(object input, CancellationTokenSource? tokenSource) => 
-        StartAsync((TInput)input, null, tokenSource);
+    public override Task StartAsync(ILanguageServer server, object input, CancellationTokenSource? tokenSource) => 
+        StartAsync(server, (TInput)input, null, tokenSource);
 
     /// <summary>
     /// Starts the pipeline by posting the specified input to the <c>InputBlock</c>.
@@ -43,8 +46,9 @@ public abstract class DataflowPipelineSection<TInput, TState> : DataflowPipeline
     /// <remarks>
     /// Returns immediately with the <c>Completion</c> task.
     /// </remarks>
-    public virtual async Task StartAsync(TInput input, TState? state, CancellationTokenSource? tokenSource)
+    public virtual async Task StartAsync(ILanguageServer server, TInput input, TState? state, CancellationTokenSource? tokenSource)
     {
+        LanguageServer = server;
         var (blocks, completion) = DefineSectionBlocks(tokenSource);
 
         Completion = completion;

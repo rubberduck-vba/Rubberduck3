@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using System.Collections.Concurrent;
@@ -21,7 +22,7 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
     {
     }
 
-    public abstract Task StartAsync(object input, CancellationTokenSource? tokenSource);
+    public abstract Task StartAsync(ILanguageServer server, object input, CancellationTokenSource? tokenSource);
     public Task Completion { get; internal set; } = default!;
     public void Cancel() => TokenSource?.Cancel();
     protected virtual CancellationTokenSource? TokenSource { get; set; }

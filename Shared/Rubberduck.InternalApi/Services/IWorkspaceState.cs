@@ -1,4 +1,6 @@
-﻿using Rubberduck.InternalApi.Extensions;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
@@ -11,6 +13,7 @@ public interface IWorkspaceState
 {
     WorkspaceUri? WorkspaceRoot { get; set; }
     string ProjectName { get; set; }
+    void PublishDiagnostics(int? version, DocumentUri uri, IEnumerable<Diagnostic> diagnostics);
     IEnumerable<DocumentState> WorkspaceFiles { get; }
     IEnumerable<Reference> References { get; }
     VBExecutionContext ExecutionContext { get; }
