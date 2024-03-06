@@ -2,9 +2,7 @@
 using Antlr4.Runtime.Atn;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.Parsing.Abstract;
-using System;
 using System.Collections.Immutable;
-using System.ComponentModel.DataAnnotations;
 
 namespace Rubberduck.Parsing.Exceptions;
 
@@ -57,22 +55,20 @@ public abstract class RubberduckParseErrorListenerBase : BaseErrorListener, IRub
             info = info with { Message = message };
         }
 
+        var exception = _mode == PredictionMode.Sll
+            ? new SllPredictionFailException(info)
+            : new SyntaxErrorException(info);
+
+        var existing = Errors.SingleOrDefault(err => err.OffendingSymbol.TokenIndex == offendingSymbol.TokenIndex);
+        if (existing is not null)
+        {
+            Errors.Remove(existing);
+        }
+
+        Errors.Add(exception);
         if (_throwSyntaxErrors)
         {
-            if (_mode == PredictionMode.Sll)
-            {
-                var exception = new SllPredictionFailException(info);
-                Errors.Add(exception);
-
-                throw exception;
-            }
-            else
-            {
-                var exception = new SyntaxErrorException(info);
-                Errors.Add(exception);
-
-                throw exception;
-            }
+            throw exception;
         }
     }
 }

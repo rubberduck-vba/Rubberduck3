@@ -8,8 +8,12 @@
              Padding="0" HasDropShadow="True" Background="Yellow"
              d:DesignHeight="24" d:DesignWidth="800">
     <ToolTip.Resources>
-        <BitmapImage x:Key="ErrorIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
-        <BitmapImage x:Key="InsightIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/light-bulb-code.png" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </ToolTip.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -25,11 +29,11 @@
                     <Style TargetType="Image">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsError}" Value="true">
-                                <Setter Property="Source" Value="{StaticResource ErrorIcon}" />
+                                <Setter Property="Source" Value="{DynamicResource ErrorLogIcon16}" />
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding IsInsight}" Value="true">
-                                <Setter Property="Source" Value="{StaticResource InsightIcon}" />
+                                <Setter Property="Source" Value="{DynamicResource InspectionIcon16}" />
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -41,6 +45,5 @@
         
         <TextBlock Grid.Row="1" Margin="5" Padding="1,0,1,1" FontSize="10" FontWeight="SemiBold" Text="{Binding TipText}" />
 
-        <TextBlock Grid.Row="2" Margin="5,2,5,5" Padding="1,0,1,1" FontSize="9" Text="{Binding LocationText}" />
     </Grid>
 </ToolTip>

@@ -246,6 +246,7 @@
     <None Remove="Resources\FugueIcons\folder-smiley.png" />
     <None Remove="Resources\FugueIcons\information-white.png" />
     <None Remove="Resources\FugueIcons\information.png" />
+    <None Remove="Resources\FugueIcons\light-bulb.png" />
     <None Remove="Resources\FugueIcons\magnifier-medium.png" />
     <None Remove="Resources\FugueIcons\selection-input.png" />
     <None Remove="Resources\FugueIcons\tick-circle.png" />
@@ -504,6 +505,7 @@
     <Resource Include="Resources\FugueIcons\folder-smiley.png" />
     <Resource Include="Resources\FugueIcons\information-white.png" />
     <Resource Include="Resources\FugueIcons\information.png" />
+    <Resource Include="Resources\FugueIcons\light-bulb.png" />
     <Resource Include="Resources\FugueIcons\magnifier-medium.png" />
     <Resource Include="Resources\FugueIcons\selection-input.png" />
     <Resource Include="Resources\FugueIcons\tick-circle.png" />

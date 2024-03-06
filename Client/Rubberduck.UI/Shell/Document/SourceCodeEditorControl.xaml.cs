@@ -1,13 +1,16 @@
 ﻿using ICSharpCode.AvalonEdit.Folding;
+using ICSharpCode.AvalonEdit.Rendering;
 using Microsoft.Xaml.Behaviors.Core;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,28 +29,104 @@ namespace Rubberduck.UI.Shell.Document;
 /// </summary>
 public partial class SourceCodeEditorControl : UserControl
 {
-    private FoldingManager _foldings;
-    private TextMarkerService _textMarkers;
+    private readonly int IdleMillisecondsSettingValue = 2500;
+    private readonly Timer _idleTimer;
+
+    private readonly FoldingManager _foldings;
+    private readonly TextMarkerService _markers;
 
     public SourceCodeEditorControl()
     {
         InitializeComponent();
-        DataContextChanged += OnDataContextChanged;
 
         Editor = (ThunderFrame.Content as DependencyObject)?.GetChildOfType<BindableTextEditor>() ?? throw new InvalidOperationException();
         Editor.TextArea.SelectionChanged += OnSelectionChanged;
         Editor.TextArea.Caret.PositionChanged += OnCaretPositionChanged;
         Editor.TextChanged += OnTextChanged;
 
+        Editor.MouseHover += OnMouseHover;
+
         _foldings = FoldingManager.Install(Editor.TextArea);
-        _textMarkers = new TextMarkerService(Editor.Document);
+        _markers = new TextMarkerService(Editor.Document);
+        Initialize(_markers);
+
+        _idleTimer = new Timer(OnIdle, null, Timeout.Infinite, Timeout.Infinite);
 
         ExpandAllCommand = new ActionCommand(ExpandAllFoldings);
         CollapseAllCommand = new ActionCommand(CollapseAllFoldings);
+
+        DataContextChanged += OnDataContextChanged;
+    }
+
+    private void OnMouseHover(object sender, MouseEventArgs e)
+    {
+        var textPosition = Editor.GetPositionFromPoint(e.GetPosition(Editor));
+        if (textPosition.HasValue)
+        {
+            var offset = Editor.Document.GetOffset(textPosition.Value.Location);
+            ShowMarkerToolTip(offset);
+            return;
+        }
+
+        HideMarkerToolTip();
+    }
+
+    private bool ShowMarkerToolTip(int offset)
+    {
+        var result = false;
+
+        var marker = _markers
+            .GetMarkersAtOffset(offset)
+            .OfType<TextMarker>()
+            .FirstOrDefault();
+
+        if (!(marker is null))
+        {
+            var tooltip = (ToolTip)marker.ToolTip!;
+
+            var markerRect = BackgroundGeometryBuilder.GetRectsForSegment(Editor.TextArea.TextView, marker).First();
+            markerRect.Offset(2d, 1d);
+
+            tooltip.PlacementRectangle = markerRect;
+
+            tooltip.IsOpen = true;
+            Editor.ToolTip = tooltip;
+
+            result = true;
+        }
+
+        return result;
+    }
+
+    private void HideMarkerToolTip()
+    {
+        if (Editor.ToolTip is ToolTip toolTip)
+        {
+            toolTip.IsOpen = false;
+            Editor.ToolTip = null;
+        }
+    }
+
+    private void Initialize(TextMarkerService service)
+    {
+        Editor.TextArea.TextView.BackgroundRenderers.Add(service);
+        Editor.TextArea.TextView.LineTransformers.Add(service);
+        var services = (IServiceContainer)Editor.Document.ServiceProvider.GetService(typeof(IServiceContainer));
+        if (services != null)
+        {
+            services.AddService(typeof(ITextMarkerService), service);
+        }
     }
 
     public ICommand ExpandAllCommand { get; }
     public ICommand CollapseAllCommand { get; }
+
+    private void OnIdle(object? obj)
+    {
+
+    }
+
+    private void ResetIdleTimer() => _idleTimer.Change(IdleMillisecondsSettingValue, Timeout.Infinite);
 
     private void ExpandAllFoldings()
     {
@@ -68,7 +147,7 @@ public partial class SourceCodeEditorControl : UserControl
     private async void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
         var document = Editor.Document;
-        var service = _textMarkers;
+        var service = _markers;
 
         await Task.Run(async () =>
         {
@@ -88,7 +167,7 @@ public partial class SourceCodeEditorControl : UserControl
 
                     foreach (var diagnostic in ViewModel.DocumentState.Diagnostics)
                     {
-                        diagnostic.AddTextMarker(document, service);
+                        diagnostic.AddTextMarker(Editor, service);
                     }
                 });
             }
@@ -113,19 +192,21 @@ public partial class SourceCodeEditorControl : UserControl
         });
     }
 
-
     private void OnCaretPositionChanged(object? sender, EventArgs e)
     {
+        ResetIdleTimer();
         UpdateStatusInfo();
     }
 
     private void OnTextChanged(object? sender, EventArgs e)
     {
+        ResetIdleTimer();
         UpdateStatusInfo();
     }
 
     private void OnSelectionChanged(object? sender, EventArgs e)
     {
+        ResetIdleTimer();
         UpdateStatusInfo();
     }
 }

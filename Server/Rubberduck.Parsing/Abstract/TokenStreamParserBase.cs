@@ -8,7 +8,6 @@ using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Parsing.Exceptions;
-using Rubberduck.Parsing.Model;
 
 namespace Rubberduck.Parsing.Abstract;
 
@@ -54,15 +53,20 @@ public abstract class TokenStreamParserBase<TParser> : ServiceBase, ITokenStream
             _ => throw new ArgumentException($"Value '{parserMode}' is not supported.", nameof(parserMode)),
         };
 
-        errors = errorListener.SyntaxErrors
-            .Where(e => e is not SllPredictionFailException)
-            .ToArray();
-        
-        diagnostics = errorListener.SyntaxErrors
-            .OfType<SllPredictionFailException>()
-            .Select(e => e.ToDiagnostic())
-            .ToArray();
-        
+        var offendingSymbolErrors = errorListener.SyntaxErrors
+            .GroupBy(e => e.OffendingSymbol.TokenIndex)
+            .ToLookup(group => group.Key);
+
+        var syntaxErrors = offendingSymbolErrors
+            .Where(group => group.Any(e => e.Any(a => a is not SllPredictionFailException))).ToArray();
+
+        var sllErrors = offendingSymbolErrors
+            .Where(group => group.Count() > 1 && group.Any(e => e.Any(a => a is SllPredictionFailException)))
+            .SelectMany(group => group.SelectMany(e => e.OfType<SllPredictionFailException>())).ToArray();
+
+        diagnostics = sllErrors.Select(e => e.ToDiagnostic()).ToArray();
+        errors = syntaxErrors.SelectMany(group => group.Select(e => e.First())).ToArray();
+                
         return tree;
     }
 
