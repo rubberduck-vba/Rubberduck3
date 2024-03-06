@@ -2,14 +2,10 @@
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
-using System.Collections.Concurrent;
-using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks.Dataflow;
-using System.Windows.Documents;
 
 namespace Rubberduck.Parsing._v3.Pipeline.Abstract;
 

@@ -20,7 +20,7 @@
     
     <StatusBar Background="{DynamicResource ThemeBackgroundDarkColorBrush}" 
                Foreground="{DynamicResource ThemeTextBackgroundDarkColorBrush}"
-               MinHeight="18"
+               MinHeight="18" FontSize="11" Margin="5,0"
                BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeTextInactiveColorBrush}">
         
         <!-- LanguageServer status -->
@@ -137,7 +137,7 @@
                         </Style>
                     </Image.Style>
                 </Image>
-                <Label FontSize="10" Foreground="{DynamicResource ThemeTextColorBrush}" 
+                <Label Foreground="{DynamicResource ThemeTextColorBrush}" 
                        Content="{Binding StatusBar.ActiveDocumentStatus.DocumentName}" 
                        Padding="0" VerticalContentAlignment="Center" />
             </StackPanel>
@@ -146,7 +146,7 @@
         <!-- selection info -->
         <StatusBarItem Visibility="{Binding StatusBar.ActiveDocumentStatus.IsReadOnly, Converter={StaticResource BoolToHiddenVisibility}}">
             <StackPanel Orientation="Horizontal">
-                <Label FontSize="10" Foreground="{DynamicResource ThemeTextColorBrush}">
+                <Label Foreground="{DynamicResource ThemeTextColorBrush}">
                 <TextBlock>
                     <TextBlock.Text>
                         <MultiBinding StringFormat="{}L{0}C{1}">

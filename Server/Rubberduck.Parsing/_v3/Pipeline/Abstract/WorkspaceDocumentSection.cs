@@ -3,6 +3,7 @@ using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
+using System.Diagnostics;
 using System.Threading.Tasks.Dataflow;
 
 namespace Rubberduck.Parsing._v3.Pipeline.Abstract;
@@ -38,7 +39,15 @@ public abstract class WorkspaceDocumentSection : DataflowPipelineSection<Workspa
         var workspace = _workspace = _workspaceService.State.GetWorkspace(uri);
         if (workspace.TryGetWorkspaceFile(uri, out var state) && state != null)
         {
-            State = state is DocumentParserState parserState ? parserState : new DocumentParserState(state);
+            if (state is DocumentParserState parserState)
+            {
+                State = parserState;
+            }
+            else
+            {
+                State = new DocumentParserState(state);
+            }
+            
             return State;
         }
 

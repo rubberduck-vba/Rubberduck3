@@ -1,4 +1,5 @@
-﻿using Rubberduck.UI;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.UI;
 using Rubberduck.UI.Shell.Tools.WorkspaceExplorer;
 using System;
 using System.Collections.ObjectModel;
@@ -22,8 +23,8 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
             }
         }
 
-        private Uri _uri = null!;
-        public Uri Uri
+        private WorkspaceUri _uri = null!;
+        public WorkspaceUri Uri
         {
             get => _uri;
             set
@@ -48,7 +49,7 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
                     _fileName = value;
                     OnPropertyChanged();
 
-                    Uri = new Uri(System.IO.Path.Combine(_uri.LocalPath[..^(oldValue?.Length ?? 0)], value));
+                    Uri = new WorkspaceFileUri(System.IO.Path.Combine(_uri.LocalPath[..^(oldValue?.Length ?? 0)], value), _uri.WorkspaceRoot);
                 }
             }
         }

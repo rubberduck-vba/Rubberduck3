@@ -44,6 +44,8 @@ public class DocumentMemberSymbolsSection : WorkspaceDocumentSection
 
     protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(ISourceBlock<DocumentParserState> source)
     {
+        _ = source ?? throw new ArgumentNullException(nameof(source));
+
         AcquireDocumentStateSymbolsBlock = new(AcquireDocumentStateSymbols, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(AcquireDocumentStateSymbolsBlock), AcquireDocumentStateSymbolsBlock);
 
@@ -54,8 +56,6 @@ public class DocumentMemberSymbolsSection : WorkspaceDocumentSection
 
         SetDocumentStateMemberSymbolsBlock = new(SetDocumentStateMemberSymbols, SingleMessageExecutionOptions(Token)); // NOTE: not thread-safe, keep single-threaded
         Completion = TraceBlockCompletionAsync(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
-
-        //Completion = SetDocumentStateMemberSymbolsBlock.Completion;
 
         Link(source, AcquireDocumentStateSymbolsBlock);
         Link(AcquireDocumentStateSymbolsBlock, ResolveMemberSymbolsBlock);

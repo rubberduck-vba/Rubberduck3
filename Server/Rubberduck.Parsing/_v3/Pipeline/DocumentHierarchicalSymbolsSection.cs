@@ -42,6 +42,8 @@ public class DocumentHierarchicalSymbolsSection : WorkspaceDocumentSection
 
     protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(ISourceBlock<DocumentParserState> source)
     {
+        _ = source ?? throw new ArgumentNullException(nameof(source));
+
         AcquireDocumentStateSymbolsBlock = new(AcquireDocumentStateSymbols, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(AcquireDocumentStateSymbolsBlock), AcquireDocumentStateSymbolsBlock);
 
