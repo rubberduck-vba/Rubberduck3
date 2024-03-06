@@ -71,9 +71,9 @@ namespace Rubberduck.UI.Command.Abstract
 
         public void Execute(object? parameter)
         {
-            _service.TryRunAction(async () =>
+            _service.TryRunAction(() =>
             {
-                await OnExecuteAsync(parameter);
+                _ = OnExecuteAsync(parameter);
             }, $"{GetType().Name}.Execute");
         }
 

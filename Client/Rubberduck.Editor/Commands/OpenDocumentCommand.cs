@@ -13,6 +13,7 @@ using Rubberduck.UI.Services;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -107,6 +108,10 @@ namespace Rubberduck.Editor.Commands
                     document.ContentControl = view;
                     _shell.ViewModel.DocumentWindows.Add(document);
                     _shell.ViewModel.ActiveDocumentTab = document;
+                }
+                else
+                {
+                    throw new FileNotFoundException($"File '{uri}' is present in the workspace folder, but not included in this workspace. Include it in the project?");
                 }
             }
 
