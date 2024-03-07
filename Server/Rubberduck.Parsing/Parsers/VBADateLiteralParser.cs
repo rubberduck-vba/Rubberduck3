@@ -24,7 +24,7 @@ public sealed class VBADateLiteralParser
         VBADateParser.CompilationUnitContext tree;
         try
         {
-            parser.AddErrorListener(new ThrowingSyntaxErrorListener(null!, null!, PredictionMode.Sll)); // report or throw?
+            parser.AddErrorListener(new RubberduckParseErrorListener(null!, null!, PredictionMode.Sll));
             parser.Interpreter.PredictionMode = PredictionMode.Sll;
             tree = parser.compilationUnit();
         }
@@ -33,7 +33,7 @@ public sealed class VBADateLiteralParser
             tokens.Reset();
             parser.Reset();
             parser.Interpreter.PredictionMode = PredictionMode.Ll;
-            parser.AddErrorListener(new ReportingSyntaxErrorListener(null!, null!, PredictionMode.Ll)); // report or throw?
+            parser.AddErrorListener(new RubberduckParseErrorListener(null!, null!, PredictionMode.Ll));
             tree = parser.compilationUnit();
         }
         return tree.dateLiteral();

@@ -44,7 +44,7 @@ public abstract class TokenStreamParserBase<TParser> : ServiceBase, ITokenStream
     protected abstract IParseTree Parse(TParser parser);
     public IParseTree Parse(WorkspaceFileUri uri, CommonTokenStream tokenStream, CancellationToken token, out IEnumerable<SyntaxErrorException> errors, out IEnumerable<Diagnostic> diagnostics, ParserMode parserMode = ParserMode.FallBackSllToLl, IEnumerable<IParseTreeListener>? parseListeners = null)
     {
-        RubberduckParseErrorListenerBase errorListener;
+        RubberduckParseErrorListener errorListener;
         var tree = parserMode switch
         {
             ParserMode.FallBackSllToLl => ParseWithFallBack(uri, tokenStream, out errorListener, parseListeners),
@@ -53,24 +53,18 @@ public abstract class TokenStreamParserBase<TParser> : ServiceBase, ITokenStream
             _ => throw new ArgumentException($"Value '{parserMode}' is not supported.", nameof(parserMode)),
         };
 
-        var offendingSymbolErrors = errorListener.SyntaxErrors
-            .GroupBy(e => e.OffendingSymbol.TokenIndex)
-            .ToLookup(group => group.Key);
+        var offendingSymbolErrors = errorListener.SyntaxErrors;
 
-        var syntaxErrors = offendingSymbolErrors
-            .Where(group => group.Any(e => e.Any(a => a is not SllPredictionFailException))).ToArray();
-
-        var sllErrors = offendingSymbolErrors
-            .Where(group => group.Count() > 1 && group.Any(e => e.Any(a => a is SllPredictionFailException)))
-            .SelectMany(group => group.SelectMany(e => e.OfType<SllPredictionFailException>())).ToArray();
+        var syntaxErrors = offendingSymbolErrors.Except(offendingSymbolErrors.OfType<SllPredictionFailException>());
+        var sllErrors = offendingSymbolErrors.OfType<SllPredictionFailException>();
 
         diagnostics = sllErrors.Select(e => e.ToDiagnostic()).ToArray();
-        errors = syntaxErrors.SelectMany(group => group.Select(e => e.First())).ToArray();
+        errors = syntaxErrors.ToArray();
                 
         return tree;
     }
 
-    private IParseTree ParseWithFallBack(WorkspaceFileUri uri, CommonTokenStream tokenStream, out RubberduckParseErrorListenerBase errorListener, IEnumerable<IParseTreeListener>? parseListeners = null)
+    private IParseTree ParseWithFallBack(WorkspaceFileUri uri, CommonTokenStream tokenStream, out RubberduckParseErrorListener errorListener, IEnumerable<IParseTreeListener>? parseListeners = null)
     {
         try
         {
@@ -88,7 +82,7 @@ public abstract class TokenStreamParserBase<TParser> : ServiceBase, ITokenStream
             var message = $"SLL mode failed while parsing document (URI {uri}). Retrying using LL prediction mode, but this would be a grammar bug, or a legitimate syntax error.";
 
             LogAndReset(tokenStream, message, exception);
-            return ParseLl(uri, tokenStream, out errorListener, parseListeners, exception);
+            return ParseLl(uri, tokenStream, out errorListener, parseListeners);
         }
     }
 
@@ -100,15 +94,15 @@ public abstract class TokenStreamParserBase<TParser> : ServiceBase, ITokenStream
         tokenStream.Reset();
     }
 
-    private IParseTree ParseLl(WorkspaceFileUri uri, ITokenStream tokenStream, out RubberduckParseErrorListenerBase errorListener, IEnumerable<IParseTreeListener>? parseListeners = null, Exception? sllFailException = null)
+    private IParseTree ParseLl(WorkspaceFileUri uri, ITokenStream tokenStream, out RubberduckParseErrorListener errorListener, IEnumerable<IParseTreeListener>? parseListeners = null, SllPredictionFailException? sllFailException = null)
     {
-        errorListener = new ReportingSyntaxErrorListener(uri, _errorMessageService, PredictionMode.Ll, sllFailException);
+        errorListener = new RubberduckParseErrorListener(uri, _errorMessageService, PredictionMode.Ll, throwOnSyntaxError: false, sllException: sllFailException);
         return Parse(tokenStream, PredictionMode.Ll, errorListener, parseListeners);
     }
 
-    private IParseTree ParseSll(WorkspaceFileUri uri, ITokenStream tokenStream, out RubberduckParseErrorListenerBase errorListener, IEnumerable<IParseTreeListener>? parseListeners = null)
+    private IParseTree ParseSll(WorkspaceFileUri uri, ITokenStream tokenStream, out RubberduckParseErrorListener errorListener, IEnumerable<IParseTreeListener>? parseListeners = null)
     {
-        errorListener = new ThrowingSyntaxErrorListener(uri, _errorMessageService, PredictionMode.Sll);
+        errorListener = new RubberduckParseErrorListener(uri, _errorMessageService, PredictionMode.Sll, throwOnSyntaxError: true);
         return Parse(tokenStream, PredictionMode.Sll, errorListener, parseListeners);
     }
 }
