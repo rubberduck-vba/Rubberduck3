@@ -80,10 +80,8 @@ public partial class SourceCodeEditorControl : UserControl
             .OfType<TextMarker>()
             .FirstOrDefault();
 
-        if (!(marker is null))
+        if (marker?.ToolTip is ToolTip tooltip)
         {
-            var tooltip = (ToolTip)marker.ToolTip!;
-
             var markerRect = BackgroundGeometryBuilder.GetRectsForSegment(Editor.TextArea.TextView, marker).First();
             markerRect.Offset(2d, 1d);
 
@@ -111,11 +109,9 @@ public partial class SourceCodeEditorControl : UserControl
     {
         Editor.TextArea.TextView.BackgroundRenderers.Add(service);
         Editor.TextArea.TextView.LineTransformers.Add(service);
-        var services = (IServiceContainer)Editor.Document.ServiceProvider.GetService(typeof(IServiceContainer));
-        if (services != null)
-        {
-            services.AddService(typeof(ITextMarkerService), service);
-        }
+
+        var services = (IServiceContainer)Editor.Document.ServiceProvider.GetService(typeof(IServiceContainer))!;
+        services?.AddService(typeof(ITextMarkerService), service);
     }
 
     public ICommand ExpandAllCommand { get; }
@@ -146,34 +142,42 @@ public partial class SourceCodeEditorControl : UserControl
 
     private async void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
+        ViewModel = (IDocumentTabViewModel)e.NewValue;
+        try
+        {
+            await HandleDataContextChangedAsync();
+        }
+        catch (Exception exception)
+        {
+            // TODO get a logger over here
+        }
+    }
+
+    private async Task HandleDataContextChangedAsync()
+    {
         var document = Editor.Document;
         var service = _markers;
 
-        await Task.Run(async () =>
+        if (ViewModel.DocumentType == SupportedDocumentType.SourceFile)
         {
-            ViewModel = (IDocumentTabViewModel)e.NewValue;
-
-            if (ViewModel.DocumentType == SupportedDocumentType.SourceFile)
+            await Dispatcher.InvokeAsync(async () =>
             {
-                await Dispatcher.InvokeAsync(async () =>
+                var foldings = (await ViewModel.RequestFoldingsAsync())
+                    .Select(e => e.ToNewFolding(document))
+                    .OrderBy(e => e.StartOffset)
+                    .ToArray();
+
+                _foldings.Clear();
+                _foldings.UpdateFoldings(foldings, -1); // TODO account for syntax errors instead of passing -1?
+
+                foreach (var diagnostic in ViewModel.DocumentState.Diagnostics)
                 {
-                    var foldings = (await ViewModel.RequestFoldingsAsync())
-                        .Select(e => e.ToNewFolding(document))
-                        .OrderBy(e => e.StartOffset)
-                        .ToArray();
+                    diagnostic.WithTextMarker(Editor, service);
+                }
+            });
+        }
 
-                    _foldings.Clear();
-                    _foldings.UpdateFoldings(foldings, -1); // TODO account for syntax errors instead of passing -1?
-
-                    foreach (var diagnostic in ViewModel.DocumentState.Diagnostics)
-                    {
-                        diagnostic.AddTextMarker(Editor, service);
-                    }
-                });
-            }
-
-            UpdateStatusInfo();
-        });
+        UpdateStatusInfo();
     }
 
     private BindableTextEditor Editor { get; }

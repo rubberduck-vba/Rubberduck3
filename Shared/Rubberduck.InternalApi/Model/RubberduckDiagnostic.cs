@@ -80,5 +80,5 @@ public record class RubberduckDiagnostic : Diagnostic
         CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.BitwiseOperator, "Bitwise operator; the result of this operation is resolved using bitwise arithmetics.");
 
     public static Diagnostic SllFailure(Symbol symbol) =>
-        CreateDiagnostic(symbol, DiagnosticSeverity.Error, RubberduckDiagnosticId.SllFailure, "SLL parser prediction mode failed here; if possible, rephrasing this instruction could improve parsing performance.");
+        CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.SllFailure, "SLL parser prediction mode failed here; if possible, rephrasing this instruction could improve parsing performance.");
 }
