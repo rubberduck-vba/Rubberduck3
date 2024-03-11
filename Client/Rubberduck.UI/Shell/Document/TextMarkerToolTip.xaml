@@ -22,7 +22,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <!-- TODO get colors & font sizes from config -->
         <Border Grid.Row="0" Background="{DynamicResource ThemeBackgroundColorBrush}" />
         <StackPanel Orientation="Horizontal" Margin="5,2">
             <Image Height="16" Width="16" Visibility="Visible">

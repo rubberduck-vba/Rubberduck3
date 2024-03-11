@@ -36,6 +36,8 @@ namespace Rubberduck.UI.Shell.Document
         string Language { get; set; }
         bool IsReadOnly { get; set; }
 
+        void NotifyDocumentChanged();
+
         SupportedDocumentType DocumentType { get; }
         IDocumentStatusViewModel Status { get; }
 

@@ -4,6 +4,7 @@ using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 
 namespace Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 
@@ -23,7 +24,6 @@ public record class DocumentState
         IsOpened = original.IsOpened;
 
         Language = original.Language;
-        SyntaxErrors = original.SyntaxErrors;
         Foldings = original.Foldings;
         Diagnostics = original.Diagnostics;
         Symbol = original.Symbol;
@@ -61,7 +61,6 @@ public record class DocumentState
 
 
     public SupportedLanguage Language { get; init; }
-    public IImmutableSet<SyntaxErrorInfo> SyntaxErrors { get; init; } = [];
     public IImmutableSet<FoldingRange> Foldings { get; init; } = [];
     public IImmutableSet<Diagnostic> Diagnostics { get; init; } = [];
     public Symbol? Symbol { get; init; }
@@ -73,7 +72,9 @@ public record class DocumentState
 
 
     public DocumentState WithLanguage(SupportedLanguage language) => this with { Language = language };
-    public DocumentState WithSyntaxErrors(IEnumerable<SyntaxErrorInfo> errors) => this with { SyntaxErrors = errors.ToImmutableHashSet() };
+    public DocumentState WithSyntaxErrors(IEnumerable<SyntaxErrorException> errors) => 
+        this with { Diagnostics = errors.Select(RubberduckDiagnostic.SyntaxError).Union(Diagnostics).ToImmutableHashSet() };
+
     public DocumentState WithFoldings(IEnumerable<FoldingRange> foldings) => this with { Foldings = foldings.ToImmutableHashSet() };
     public DocumentState WithDiagnostics(IEnumerable<Diagnostic> diagnostics) => this with { Diagnostics = diagnostics.ToImmutableHashSet() };
     public DocumentState WithSymbol(Symbol module) => this with { Symbol = module };

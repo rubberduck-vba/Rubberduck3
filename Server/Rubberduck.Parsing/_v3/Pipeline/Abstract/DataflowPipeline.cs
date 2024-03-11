@@ -23,6 +23,7 @@ public abstract class DataflowPipeline : ServiceBase, IDisposable
     }
 
     public abstract Task StartAsync(ILanguageServer server, object input, CancellationTokenSource? tokenSource);
+
     public Task Completion { get; internal set; } = default!;
     public void Cancel() => TokenSource?.Cancel();
     protected virtual CancellationTokenSource? TokenSource { get; set; }

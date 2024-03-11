@@ -99,7 +99,7 @@ public abstract class RubberduckServerApp<TSettings, TStartupSettings> : IDispos
         catch (Exception exception)
         {
             _logger?.LogError(exception, "An exception was thrown; server process will exit with an error code.");
-            _logger?.LogCritical(exception.ToString());
+            _logger?.LogError(exception.ToString());
             throw;
         }
     }

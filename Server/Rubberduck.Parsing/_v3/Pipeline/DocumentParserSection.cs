@@ -53,8 +53,7 @@ public class DocumentParserSection : WorkspaceDocumentSection
             e =>
             {
                 UpdateDocumentState(State, state => (DocumentParserState)state
-                                    .WithSyntaxErrors(parseResult.ParseResult.SyntaxErrors.Select(error => new InternalApi.Model.SyntaxErrorInfo { Message = error.Message, Uri = error.Uri, Range = error.Range() }))
-                                    .WithDiagnostics(parseResult.ParseResult.Diagnostics));
+                    .WithSyntaxErrors(parseResult.ParseResult.SyntaxErrors));
                 PublishDiagnostics(State);
             },
             nameof(SetDocumentStateBlock), logPerformance: false);
@@ -63,7 +62,7 @@ public class DocumentParserSection : WorkspaceDocumentSection
     {
         if (state.Diagnostics.Count > 0)
         {
-            LogInformation($"Publishing 💡{state.Diagnostics.Count} document diagnostics.", $"\n{string.Join("\n", state.Diagnostics.Select(e => $"\t[{e.Code!.Value.String}] {e.Message} ({e.Severity.ToString()!.ToUpperInvariant()})"))}");
+            LogInformation($"💡 Publishing {state.Diagnostics.Count} document diagnostics.", $"\n{string.Join("\n", state.Diagnostics.Select(e => $"\t[{e.Code!.Value.String}] {e.Message} ({e.Severity.ToString()!.ToUpperInvariant()})"))}");
             _server?.TextDocument.PublishDiagnostics(
                 new()
                 {
@@ -205,7 +204,7 @@ public class DocumentParserSection : WorkspaceDocumentSection
         var uri = State?.Uri;
         if (State != null && !string.IsNullOrWhiteSpace(uri?.ToString()))
         {
-            builder.AppendLine($"\t📂 Uri: {uri} (⛔{State.SyntaxErrors.Count} errors; ⚠️{State.Diagnostics.Count} diagnostics; 🧩{State.Symbol?.Children?.Count() ?? 0} child symbols, {State.Foldings.Count} foldings)");
+            builder.AppendLine($"\t📂 Uri: {uri} (⚠️{State.Diagnostics.Count} diagnostics; 🧩{State.Symbol?.Children?.Count() ?? 0} child symbols, {State.Foldings.Count} foldings)");
         }
     }
 }

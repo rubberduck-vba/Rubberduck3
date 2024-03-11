@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CommandLine;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server.WorkDone;
 using OmniSharp.Extensions.LanguageServer.Server;
@@ -12,6 +15,7 @@ using Rubberduck.InternalApi.Settings;
 using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.InternalApi.Settings.Model.LanguageClient;
 using Rubberduck.InternalApi.Settings.Model.LanguageServer;
+using Rubberduck.LanguageServer.Handlers.Document;
 using Rubberduck.LanguageServer.Handlers.Language;
 using Rubberduck.LanguageServer.Handlers.Lifecycle;
 using Rubberduck.LanguageServer.Handlers.Workspace;
@@ -86,6 +90,7 @@ namespace Rubberduck.LanguageServer
             }
 
             services.AddSingleton<SupportedLanguage>(provider => SupportedLanguage.VBA);
+            services.AddSingleton<TextDocumentSelector>(provider => provider.GetRequiredService<SupportedLanguage>().ToTextDocumentSelector());
 
             services.AddSingleton<IFileSystem, FileSystem>();
             services.AddSingleton<PerformanceRecordAggregator>();
@@ -95,7 +100,10 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<IWorkspaceService, WorkspaceService>();
             services.AddSingleton<IWorkspaceStateManager, WorkspaceStateManager>();
             services.AddSingleton<ISyntaxErrorMessageService, SyntaxErrorMessageService>();
+            
             services.AddSingleton<WorkspacePipeline>();
+            services.AddSingleton<DocumentPipeline>();
+
             services.AddSingleton<LibrarySymbolsService>();
             services.AddSingleton<IComLibraryProvider, ComLibraryProvider>();
             services.AddSingleton<ParserPipelineSectionProvider>();
@@ -128,6 +136,9 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<DocumentContentStore>();
 
             services.AddSingleton<IExitHandler, ExitHandler>();
+            services.AddSingleton<DidOpenTextDocumentHandler>();
+            services.AddSingleton<DidCloseTextDocumentHandler>();
+            services.AddSingleton<DidChangeTextDocumentHandler>();
 
             services.AddSingleton<IWorkDoneProgressStateService, WorkDoneProgressStateService>();
             services.AddSingleton<ISettingsChangedHandler<RubberduckSettings>>(provider => provider.GetRequiredService<RubberduckSettingsProvider>());
@@ -139,8 +150,6 @@ namespace Rubberduck.LanguageServer
             options
                 .WithHandler<ShutdownHandler>()
                 .WithHandler<ExitHandler>()
-
-                //.OnDidOpenTextDocument(HandleDidOpenTextDocument, GetTextDocumentOpenRegistrationOptions)
 
                 /*/ Workspace
                     .WithHandler<DidChangeConfigurationHandler>()
@@ -174,6 +183,9 @@ namespace Rubberduck.LanguageServer
                 .WithHandler<DocumentDiagnosticHandler>()
                 .WithHandler<DocumentSymbolHandler>()
                 .WithHandler<FoldingRangeHandler>()
+                .WithHandler<DidOpenTextDocumentHandler>()
+                .WithHandler<DidCloseTextDocumentHandler>()
+                .WithHandler<DidChangeTextDocumentHandler>()
             /*
                 .WithHandler<HoverHandler>()
                 .WithHandler<ImplementationHandler>()
@@ -184,7 +196,6 @@ namespace Rubberduck.LanguageServer
                 .WithHandler<SemanticTokensHandler>()
                 .WithHandler<SemanticTokensFullHandler>()
                 .WithHandler<SignatureHelpHandler>()
-                .WithHandler<TextDocumentSyncHandler>()
                 .WithHandler<TypeDefinitionHandler>()
                 .WithHandler<TypeHierarchyHandler>()
             */
@@ -204,7 +215,7 @@ namespace Rubberduck.LanguageServer
             if (await workspaces.OpenProjectWorkspaceAsync(rootUri))
             {
                 var pipeline = server.GetRequiredService<WorkspacePipeline>();
-
+                
                 await pipeline.StartAsync(server, new WorkspaceFileUri(null!, state.RootUri.ToUri()), new CancellationTokenSource())
                     .ContinueWith(t =>
                     {

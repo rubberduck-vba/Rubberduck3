@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.Parsing.Abstract;
 using System.Collections.Immutable;
 
@@ -61,16 +62,42 @@ public class RubberduckParseErrorListener : BaseErrorListener, IRubberduckParseE
 
     public override void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
     {
+        var message = msg;
         var info = GetErrorInfo(offendingSymbol, line, charPositionInLine, msg, e);
+        _ = _errorMessageService?.TryGetMeaningfulMessage(info, out message);
 
-        if (_errorMessageService != null && _errorMessageService.TryGetMeaningfulMessage(info, out var message))
+        var symbol = new SyntaxErrorOffendingSymbol(offendingSymbol.Text, Uri)
         {
-            info = info with { Message = message };
-        }
-
+            Range = new OmniSharp.Extensions.LanguageServer.Protocol.Models.Range
+            {
+                Start = new OmniSharp.Extensions.LanguageServer.Protocol.Models.Position
+                {
+                    Line = line,
+                    Character = charPositionInLine
+                },
+                End = new OmniSharp.Extensions.LanguageServer.Protocol.Models.Position
+                {
+                    Line = line,
+                    Character = charPositionInLine
+                }
+            },
+            SelectionRange = new OmniSharp.Extensions.LanguageServer.Protocol.Models.Range
+            {
+                Start = new OmniSharp.Extensions.LanguageServer.Protocol.Models.Position
+                {
+                    Line = offendingSymbol.Line,
+                    Character = offendingSymbol.Column
+                },
+                End = new OmniSharp.Extensions.LanguageServer.Protocol.Models.Position
+                {
+                    Line = offendingSymbol.EndLine(),
+                    Character = offendingSymbol.EndColumn()
+                }
+            }
+        };
         var exception = _mode == PredictionMode.Sll
-            ? new SllPredictionFailException(info)
-            : new SyntaxErrorException(info);
+            ? new SllPredictionFailException(Uri, symbol, message, e)
+            : new SyntaxErrorException(Uri, symbol, message, e);
 
         AddOrReplaceError(offendingSymbol, exception);
 

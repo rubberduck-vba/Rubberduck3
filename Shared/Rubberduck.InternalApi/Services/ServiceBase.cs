@@ -138,7 +138,7 @@ public abstract class ServiceBase
         {
             return;
         }
-
+        
         Logger.LogTrace(verbosity, message, verbose);
     }
 

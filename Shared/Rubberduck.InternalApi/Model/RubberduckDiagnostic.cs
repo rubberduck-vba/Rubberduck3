@@ -1,6 +1,7 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
+using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using System;
 
 namespace Rubberduck.InternalApi.Model;
@@ -12,7 +13,8 @@ public enum RubberduckDiagnosticId
     PreferConcatOperatorForStringConcatenation = 10,
     PreferErrRaiseOverErrorStatement,
 
-    SllFailure = 99,
+    SllFailure = 98,
+    SyntaxError = 99,
 
     ImplicitStringCoercion = 101,
     ImplicitNumericCoercion,
@@ -26,6 +28,11 @@ public enum RubberduckDiagnosticId
     TypeCastConversion,
     BitwiseOperator,
 
+}
+
+public static class RubberduckDiagnosticIdExtensions
+{
+    public static string Code(this RubberduckDiagnosticId id) => $"RD3{(int)id:00000}";
 }
 
 public record class RubberduckDiagnostic : Diagnostic
@@ -81,4 +88,9 @@ public record class RubberduckDiagnostic : Diagnostic
 
     public static Diagnostic SllFailure(Symbol symbol) =>
         CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.SllFailure, "SLL parser prediction mode failed here; if possible, rephrasing this instruction could improve parsing performance.");
+
+    public static Diagnostic SllFailure(SyntaxErrorException error) =>
+        CreateDiagnostic(error.OffendingSymbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.SllFailure, "SLL parser prediction mode failed here; if possible, rephrasing this instruction could improve parsing performance.");
+    public static Diagnostic SyntaxError(SyntaxErrorException error) =>
+        CreateDiagnostic(error.OffendingSymbol, DiagnosticSeverity.Error, RubberduckDiagnosticId.SyntaxError, error.Message, error.Uri.ToString());
 }

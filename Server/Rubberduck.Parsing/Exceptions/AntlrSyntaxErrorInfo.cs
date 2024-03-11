@@ -29,6 +29,6 @@ public record class AntlrSyntaxErrorInfo
     {
         Uri = info.Uri,
         Message = info.Message,
-        Range = info.Range()
+        Range = info.Range(),
     };
 }

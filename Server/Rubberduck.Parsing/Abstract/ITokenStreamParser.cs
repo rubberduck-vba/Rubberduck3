@@ -2,7 +2,7 @@
 using Antlr4.Runtime.Tree;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.Parsing.Exceptions;
+using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 
 namespace Rubberduck.Parsing.Abstract;
 

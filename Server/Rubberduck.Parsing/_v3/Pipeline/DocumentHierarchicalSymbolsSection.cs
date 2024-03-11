@@ -80,7 +80,7 @@ public class DocumentHierarchicalSymbolsSection : WorkspaceDocumentSection
         var uri = State?.Uri?.ToString();
         if (State != null && !string.IsNullOrWhiteSpace(uri))
         {
-            builder.AppendLine($"\t📂 Uri: {uri} (⛔{State.SyntaxErrors.Count} errors; ⚠️{State.Diagnostics.Count} diagnostics; 🧩{State.Symbol?.Children?.Count() ?? 0} child symbols, {State.Foldings.Count} foldings)");
+            builder.AppendLine($"\t📂 Uri: {uri} (⚠️{State.Diagnostics.Count} diagnostics; 🧩{State.Symbol?.Children?.Count() ?? 0} child symbols, {State.Foldings.Count} foldings)");
         }
     }
 }

@@ -1,6 +1,8 @@
-﻿using ICSharpCode.AvalonEdit.Folding;
+﻿using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Rendering;
 using Microsoft.Xaml.Behaviors.Core;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
@@ -34,28 +36,44 @@ public partial class SourceCodeEditorControl : UserControl
 
     private readonly FoldingManager _foldings;
     private readonly TextMarkerService _markers;
+    private readonly TextMarkersMargin _margin;
 
     public SourceCodeEditorControl()
     {
+        DataContextChanged += OnDataContextChanged;
         InitializeComponent();
 
         Editor = (ThunderFrame.Content as DependencyObject)?.GetChildOfType<BindableTextEditor>() ?? throw new InvalidOperationException();
-        Editor.TextArea.SelectionChanged += OnSelectionChanged;
-        Editor.TextArea.Caret.PositionChanged += OnCaretPositionChanged;
-        Editor.TextChanged += OnTextChanged;
-
-        Editor.MouseHover += OnMouseHover;
+        Editor.Loaded += OnEditorLoaded;
 
         _foldings = FoldingManager.Install(Editor.TextArea);
         _markers = new TextMarkerService(Editor.Document);
         Initialize(_markers);
 
+        _margin = new TextMarkersMargin(_markers);
+        Editor.TextArea.LeftMargins.Insert(0, _margin);
+
         _idleTimer = new Timer(OnIdle, null, Timeout.Infinite, Timeout.Infinite);
 
         ExpandAllCommand = new ActionCommand(ExpandAllFoldings);
         CollapseAllCommand = new ActionCommand(CollapseAllFoldings);
+    }
 
-        DataContextChanged += OnDataContextChanged;
+    private void OnEditorLoaded(object sender, RoutedEventArgs e)
+    {
+        Editor.TextChanged += OnTextChanged;
+        Editor.MouseHover += OnMouseHover;
+
+        Editor.TextArea.SelectionChanged += OnSelectionChanged;
+        Editor.TextArea.Caret.PositionChanged += OnCaretPositionChanged;
+
+        Editor.TextArea.TextView.ScrollOffsetChanged += OnTextViewScrollOffsetChanged;
+    }
+
+    private void OnTextViewScrollOffsetChanged(object? sender, EventArgs e)
+    {
+        HideMarkerToolTip();
+        _margin.UpdateLayout();
     }
 
     private void OnMouseHover(object sender, MouseEventArgs e)
@@ -117,9 +135,15 @@ public partial class SourceCodeEditorControl : UserControl
     public ICommand ExpandAllCommand { get; }
     public ICommand CollapseAllCommand { get; }
 
+    private bool _didChange = false;
     private void OnIdle(object? obj)
     {
-
+        if (_didChange)
+        {
+            _idleTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            ViewModel.NotifyDocumentChanged();
+            _didChange = false;
+        }
     }
 
     private void ResetIdleTimer() => _idleTimer.Change(IdleMillisecondsSettingValue, Timeout.Infinite);
@@ -155,29 +179,44 @@ public partial class SourceCodeEditorControl : UserControl
 
     private async Task HandleDataContextChangedAsync()
     {
-        var document = Editor.Document;
-        var service = _markers;
-
         if (ViewModel.DocumentType == SupportedDocumentType.SourceFile)
         {
-            await Dispatcher.InvokeAsync(async () =>
-            {
-                var foldings = (await ViewModel.RequestFoldingsAsync())
-                    .Select(e => e.ToNewFolding(document))
-                    .OrderBy(e => e.StartOffset)
-                    .ToArray();
-
-                _foldings.Clear();
-                _foldings.UpdateFoldings(foldings, -1); // TODO account for syntax errors instead of passing -1?
-
-                foreach (var diagnostic in ViewModel.DocumentState.Diagnostics)
-                {
-                    diagnostic.WithTextMarker(Editor, service);
-                }
-            });
+            await UpdateFoldingsAsync();
         }
 
         UpdateStatusInfo();
+    }
+
+    private async Task UpdateFoldingsAsync()
+    {
+        var foldings = await ViewModel.RequestFoldingsAsync();
+        var diagnostics = await ViewModel.RequestDiagnosticsAsync();
+
+        var firstErrorRange = diagnostics
+            .FirstOrDefault(e => e.Code?.String == RubberduckDiagnosticId.SyntaxError.Code())?.Range;
+
+        var firstErrorOffset = -1;
+
+        await Dispatcher.InvokeAsync(() =>
+        {
+            var newFoldings = foldings
+                .Select(e => e.ToNewFolding(Editor.Document))
+                .OrderBy(e => e.StartOffset)
+                .ToArray();
+            if (firstErrorRange != null)
+            {
+                firstErrorOffset = Editor.Document.GetOffset(firstErrorRange.Start.Line, firstErrorRange.Start.Character);
+            }
+
+            _foldings.Clear();
+            _foldings.UpdateFoldings(newFoldings, firstErrorOffset);
+
+            _markers.RemoveAll(e => true);
+            foreach (var diagnostic in ViewModel.DocumentState.Diagnostics)
+            {
+                diagnostic.WithTextMarker(Editor, _markers);
+            }
+        });
     }
 
     private BindableTextEditor Editor { get; }
@@ -199,18 +238,26 @@ public partial class SourceCodeEditorControl : UserControl
     private void OnCaretPositionChanged(object? sender, EventArgs e)
     {
         ResetIdleTimer();
+        
         UpdateStatusInfo();
+        HideMarkerToolTip();
     }
 
     private void OnTextChanged(object? sender, EventArgs e)
     {
+        _didChange = true;
+        ViewModel.TextContent = Editor.Text; // binding to source isn't working
         ResetIdleTimer();
+
         UpdateStatusInfo();
+        HideMarkerToolTip();
     }
 
     private void OnSelectionChanged(object? sender, EventArgs e)
     {
         ResetIdleTimer();
+        
         UpdateStatusInfo();
+        HideMarkerToolTip();
     }
 }

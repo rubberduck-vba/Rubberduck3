@@ -5,9 +5,6 @@ using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Parsing._v3.Pipeline.Abstract;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Immutable;
 using System.Text;
 using System.Threading.Tasks.Dataflow;
 
@@ -81,7 +78,7 @@ public class DocumentMemberSymbolsSection : WorkspaceDocumentSection
         var uri = State?.Uri?.ToString();
         if (State != null && !string.IsNullOrWhiteSpace(uri))
         {
-            builder.AppendLine($"\t📂 Uri: {uri} (⛔{State.SyntaxErrors.Count} errors; ⚠️{State.Diagnostics.Count} diagnostics; 🧩{State.Symbol?.Children?.Count() ?? 0} child symbols, {State.Foldings.Count} foldings)");
+            builder.AppendLine($"\t📂 Uri: {uri} (⚠️{State.Diagnostics.Count} diagnostics; 🧩{State.Symbol?.Children?.Count() ?? 0} child symbols, {State.Foldings.Count} foldings)");
         }
     }
 }

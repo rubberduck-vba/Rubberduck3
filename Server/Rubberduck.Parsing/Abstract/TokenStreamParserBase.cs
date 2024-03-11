@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model;
+using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Parsing.Exceptions;
@@ -60,7 +61,7 @@ public abstract class TokenStreamParserBase<TParser> : ServiceBase, ITokenStream
 
         diagnostics = sllErrors.Select(e => e.ToDiagnostic()).ToArray();
         errors = syntaxErrors.ToArray();
-                
+
         return tree;
     }
 
@@ -72,7 +73,7 @@ public abstract class TokenStreamParserBase<TParser> : ServiceBase, ITokenStream
         }
         catch (SllPredictionFailException syntaxErrorException)
         {
-            var message = $"SLL mode failed while parsing document (URI: {uri}) at symbol {syntaxErrorException.OffendingSymbol.Text} at L{syntaxErrorException.LineNumber}C{syntaxErrorException.Position}. Retrying using LL prediction mode.";
+            var message = $"SLL mode failed while parsing document (URI: {uri}) at symbol {syntaxErrorException.OffendingSymbol.Name} at L{syntaxErrorException.OffendingSymbol.Range.Start.Line}C{syntaxErrorException.OffendingSymbol.Range.Start.Character}. Retrying using LL prediction mode.";
 
             LogAndReset(tokenStream, message, syntaxErrorException);
             return ParseLl(uri, tokenStream, out errorListener, parseListeners, syntaxErrorException);

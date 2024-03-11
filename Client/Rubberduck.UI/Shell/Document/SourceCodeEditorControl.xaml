@@ -38,7 +38,7 @@
             <ComboBox Grid.Row="1" Grid.Column="1" />
             <shell:BindableTextEditor Grid.Row="2" Grid.ColumnSpan="2"
                                       Background="{DynamicResource ThemeBackgroundColorBrush}"
-                                      Text="{Binding TextContent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      Text="{Binding TextContent, Mode=OneTime}"
                                       FontFamily="Consolas" FontSize="14"
                                       ShowLineNumbers="True" />
         </Grid>

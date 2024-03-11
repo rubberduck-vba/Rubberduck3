@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.Extensions;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol;
+using Rubberduck.InternalApi.Extensions;
 using System;
 using System.Collections.Concurrent;
 
@@ -11,29 +12,33 @@ public class ConcurrentContentStore<TContent>
 {
     protected ConcurrentDictionary<string, TContent> Store = new();
 
-    public bool Exists(WorkspaceUri documentUri) => Store.ContainsKey(documentUri.AbsoluteLocation.LocalPath);
-
     public void AddOrUpdate(WorkspaceUri documentUri, TContent content)
     {
-        Store.AddOrUpdate(documentUri.AbsoluteLocation.LocalPath, content, (key, value) => content);
+        var uri = new WorkspaceFileUri(documentUri.AbsoluteLocation.AbsolutePath, documentUri.WorkspaceRoot);
+        Store.AddOrUpdate(uri.ToString().Replace("\\", "/"), content, (key, value) => content);
     }
 
     public bool TryRemove(WorkspaceUri documentUri)
     {
-        return Store.TryRemove(documentUri.AbsoluteLocation.LocalPath, out _);
+        var uri = new WorkspaceFileUri(documentUri.AbsoluteLocation.AbsolutePath, documentUri.WorkspaceRoot);
+        return Store.TryRemove(uri.ToString(), out _);
     }
 
     /// <exception cref="UnknownUriException"></exception>
-    public TContent GetDocument(WorkspaceUri uri)
+    public TContent GetDocument(WorkspaceUri documentUri)
     {
-        return Store.TryGetValue(uri.AbsoluteLocation.LocalPath, out var content)
+        var uri = new WorkspaceFileUri(documentUri.AbsoluteLocation.AbsolutePath, documentUri.WorkspaceRoot);
+        return Store.TryGetValue(uri.ToString(), out var content)
             ? content
             : throw new UnknownUriException(uri);
     }
 
-    public bool TryGetDocument(WorkspaceUri uri, out TContent? content)
+    public bool TryGetDocument(WorkspaceUri documentUri, out TContent? content)
     {
-        return Store.TryGetValue(uri.AbsoluteLocation.LocalPath, out content);
+        var uri = new WorkspaceFileUri(documentUri.AbsoluteLocation.AbsolutePath, documentUri.WorkspaceRoot);
+        var result = Store.TryGetValue(uri.ToString(), out content);
+
+        return result;
     }
 }
 

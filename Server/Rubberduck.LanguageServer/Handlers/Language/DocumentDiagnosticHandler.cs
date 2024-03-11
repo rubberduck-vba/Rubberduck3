@@ -32,7 +32,8 @@ public class DocumentDiagnosticHandler : DocumentDiagnosticHandlerBase
         cancellationToken.ThrowIfCancellationRequested();
 
         var workspace = _workspaces.State.ActiveWorkspace ?? throw new InvalidOperationException("No workspace is currently active.");
-        var uri = new WorkspaceFileUri(request.TextDocument.Uri.ToUri().OriginalString, workspace.WorkspaceRoot!);
+        var uri = workspace.WorkspaceRoot!.FileUriFromAbsolute(request.TextDocument.Uri.ToUri().LocalPath);
+        //var uri = new WorkspaceFileUri(request.TextDocument.Uri.ToUri().OriginalString, workspace.WorkspaceRoot!);
 
         if (workspace.TryGetWorkspaceFile(uri, out var state) && state != null)
         {

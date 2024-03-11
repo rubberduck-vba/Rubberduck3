@@ -1,13 +1,9 @@
-﻿using OmniSharp.Extensions.LanguageServer.Client;
-using OmniSharp.Extensions.LanguageServer.Protocol.Client;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using Rubberduck.Editor.Shell.StatusBar;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
-using Rubberduck.InternalApi.Services;
 using Rubberduck.UI.Command.SharedHandlers;
-using Rubberduck.UI.Services;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
 using Rubberduck.UI.Windows;
@@ -52,9 +48,35 @@ namespace Rubberduck.Editor.Shell.Document
 
         public abstract SupportedDocumentType DocumentType { get; }
 
+        public void NotifyDocumentChanged()
+        {
+            var client = _lsp.Invoke();
+
+            // increment local version first...
+            _state = _state with { Version = _state.Version + 1 };
+
+            var request = new DidChangeTextDocumentParams
+            {
+                TextDocument = new OptionalVersionedTextDocumentIdentifier
+                {
+                    Uri = DocumentState.Uri.AbsoluteLocation,
+                    Version = DocumentState.Version, // ...so that the server-side latest matches local version
+                },
+                ContentChanges = new Container<TextDocumentContentChangeEvent>(
+                new TextDocumentContentChangeEvent
+                {
+                    // if only Text is supplied, server considers it the document's entire content
+                    Text = TextContent
+                })
+            };
+
+            client.TextDocument.DidChangeTextDocument(request);
+        }
+
         public virtual async Task<IEnumerable<Diagnostic>> RequestDiagnosticsAsync()
         {
-            var report = await _lsp.Invoke().RequestDocumentDiagnostic(new DocumentDiagnosticParams
+            var client = _lsp.Invoke();
+            var report = await client.RequestDocumentDiagnostic(new DocumentDiagnosticParams
             {
                 Identifier = "RDE",
                 TextDocument = new TextDocumentIdentifier
@@ -123,10 +145,14 @@ namespace Rubberduck.Editor.Shell.Document
             get => _textContent;
             set
             {
+                var wasNull = _textContent is null;
                 if (_textContent != value)
                 {
                     _textContent = value;
-                    OnPropertyChanged();
+                    if (!wasNull)
+                    {
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -188,15 +214,15 @@ namespace Rubberduck.Editor.Shell.Document
             }
         }
 
-        private object _content;
+        private object? _contentControl;
         public object ContentControl
         {
-            get => _content;
+            get => _contentControl ?? throw new InvalidOperationException("Content control is not set");
             set
             {
-                if (_content != value)
+                if (_contentControl != value)
                 {
-                    _content = value;
+                    _contentControl = value ?? throw new ArgumentNullException(nameof(value));
                     OnPropertyChanged();
                 }
             }
