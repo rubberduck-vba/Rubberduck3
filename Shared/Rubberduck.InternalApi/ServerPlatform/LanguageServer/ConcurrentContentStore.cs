@@ -10,33 +10,33 @@ namespace Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 /// </summary>
 public class ConcurrentContentStore<TContent>
 {
-    protected ConcurrentDictionary<string, TContent> Store = new();
+    protected ConcurrentDictionary<WorkspaceUri, TContent> Store = new();
 
     public void AddOrUpdate(WorkspaceUri documentUri, TContent content)
     {
         var uri = new WorkspaceFileUri(documentUri.AbsoluteLocation.AbsolutePath, documentUri.WorkspaceRoot);
-        Store.AddOrUpdate(uri.ToString().Replace("\\", "/"), content, (key, value) => content);
+        Store.AddOrUpdate(uri, content, (key, value) => content);
     }
 
     public bool TryRemove(WorkspaceUri documentUri)
     {
         var uri = new WorkspaceFileUri(documentUri.AbsoluteLocation.AbsolutePath, documentUri.WorkspaceRoot);
-        return Store.TryRemove(uri.ToString(), out _);
+        return Store.TryRemove(uri, out _);
     }
 
     /// <exception cref="UnknownUriException"></exception>
     public TContent GetDocument(WorkspaceUri documentUri)
     {
         var uri = new WorkspaceFileUri(documentUri.AbsoluteLocation.AbsolutePath, documentUri.WorkspaceRoot);
-        return Store.TryGetValue(uri.ToString(), out var content)
+        return Store.TryGetValue(uri, out var content)
             ? content
             : throw new UnknownUriException(uri);
     }
 
     public bool TryGetDocument(WorkspaceUri documentUri, out TContent? content)
     {
-        var uri = new WorkspaceFileUri(documentUri.AbsoluteLocation.AbsolutePath, documentUri.WorkspaceRoot);
-        var result = Store.TryGetValue(uri.ToString(), out content);
+        var uri = new WorkspaceFileUri(documentUri.AbsoluteLocation.LocalPath, documentUri.WorkspaceRoot);
+        var result = Store.TryGetValue(uri, out content);
 
         return result;
     }

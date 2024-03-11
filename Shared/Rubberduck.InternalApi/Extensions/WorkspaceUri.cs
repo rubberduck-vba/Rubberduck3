@@ -132,10 +132,27 @@ public abstract class WorkspaceUri : Uri
     /// <summary>
     /// The absolute <c>Uri</c> location this <c>WorkspaceUri</c> is pointing to.
     /// </summary>
-    public virtual Uri AbsoluteLocation => IsSrcRoot ? _srcRoot 
-        : _relativeUri!.StartsWith(_srcRoot.LocalPath) 
-            ? new(_relativeUri)
-        : new($"{_srcRoot.LocalPath}{_relativeUri![..^System.IO.Path.GetFileName(Name).Length]}{Name}");
+    public virtual Uri AbsoluteLocation
+    {
+        get
+        {
+            if (IsSrcRoot)
+            {
+                return _srcRoot;
+            }
+            else
+            {
+                if (_relativeUri!.StartsWith(_srcRoot.LocalPath.Replace("\\", "/")))
+                {
+                    return new(_relativeUri);
+                }
+                else
+                {
+                    return new($"{_srcRoot.LocalPath.Replace("\\","/")}{_relativeUri![..^System.IO.Path.GetFileName(Name).Length]}{Name}");
+                }
+            }
+        }
+    }
 
     public override string ToString() => _relativeUri ?? _srcRoot.ToString();
 }

@@ -172,8 +172,9 @@ namespace Rubberduck.InternalApi.Services
             {
                 TryRunAction(() =>
                 {
+                    var localPath = uri.AbsoluteLocation.LocalPath;
                     var isLoadError = false;
-                    var isMissing = !_fileSystem.File.Exists(uri.AbsoluteLocation.LocalPath);
+                    var isMissing = !_fileSystem.File.Exists(localPath);
                     var fileVersion = isMissing ? -1 : 1;
                     var content = string.Empty;
 
@@ -185,7 +186,7 @@ namespace Rubberduck.InternalApi.Services
                     {
                         try
                         {
-                            content = _fileSystem.File.ReadAllText(uri.AbsoluteLocation.LocalPath);
+                            content = _fileSystem.File.ReadAllText(localPath);
                         }
                         catch (Exception exception)
                         {
