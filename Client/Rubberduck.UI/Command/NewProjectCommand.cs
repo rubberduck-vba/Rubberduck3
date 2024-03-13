@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.Model.Workspace;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
@@ -58,7 +59,7 @@ namespace Rubberduck.UI.Command
                     workspaceRootUri = new Uri(_fileSystem.Path.Combine(model.WorkspaceLocation, model.ProjectName));
                     var projectFile = CreateProjectFileModel(model);
 
-                    var workspaceSrcRoot = _fileSystem.Path.Combine(workspaceRootUri.LocalPath, ProjectFile.SourceRoot);
+                    var workspaceSrcRoot = _fileSystem.Path.Combine(workspaceRootUri.LocalPath, WorkspaceUri.SourceRootName);
                     _workspaceFolderService.CreateWorkspaceFolders(projectFile);
                     _projectFileService.CreateFile(projectFile);
 

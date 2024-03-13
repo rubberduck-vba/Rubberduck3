@@ -1,28 +1,17 @@
-﻿using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Folding;
+﻿using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Rendering;
 using Microsoft.Xaml.Behaviors.Core;
 using Rubberduck.InternalApi.Model;
-using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Rubberduck.UI.Shell.Document;
 
@@ -31,8 +20,7 @@ namespace Rubberduck.UI.Shell.Document;
 /// </summary>
 public partial class SourceCodeEditorControl : UserControl
 {
-    private readonly int IdleMillisecondsSettingValue = 2500;
-    private readonly Timer _idleTimer;
+    private static readonly int IdleMillisecondsSettingValue = 1500; // TODO make this a setting
 
     private readonly FoldingManager _foldings;
     private readonly TextMarkerService _markers;
@@ -53,11 +41,32 @@ public partial class SourceCodeEditorControl : UserControl
         _margin = new TextMarkersMargin(_markers);
         Editor.TextArea.LeftMargins.Insert(0, _margin);
 
-        _idleTimer = new Timer(OnIdle, null, Timeout.Infinite, Timeout.Infinite);
+        IdleTimer = new Timer(IdleTimerCallback, null, IdleMillisecondsSettingValue, Timeout.Infinite);
 
         ExpandAllCommand = new ActionCommand(ExpandAllFoldings);
         CollapseAllCommand = new ActionCommand(CollapseAllFoldings);
     }
+
+    private void Initialize(TextMarkerService service)
+    {
+        Editor.TextArea.TextView.BackgroundRenderers.Add(service);
+        Editor.TextArea.TextView.LineTransformers.Add(service);
+
+        var services = (IServiceContainer)Editor.Document.ServiceProvider.GetService(typeof(IServiceContainer))!;
+        services?.AddService(typeof(ITextMarkerService), service);
+    }
+
+    /// <summary>
+    /// A timer that runs between keypresses to evaluate idle time; 
+    /// callback is invoked if/when a configurable threshold is met, to notify the server of document changes.
+    /// </summary>
+    private Timer IdleTimer { get; }
+    private void IdleTimerCallback(object? state) => ViewModel.NotifyDocumentChanged();
+
+    /// <summary>
+    /// Resets the idle timer to fire a callback in <c>IdleMillisecondsSettingValue</c> milliseconds.
+    /// </summary>
+    private void ResetIdleTimer() => IdleTimer.Change(IdleMillisecondsSettingValue, Timeout.Infinite);
 
     private void OnEditorLoaded(object sender, RoutedEventArgs e)
     {
@@ -69,6 +78,7 @@ public partial class SourceCodeEditorControl : UserControl
 
         Editor.TextArea.TextView.ScrollOffsetChanged += OnTextViewScrollOffsetChanged;
     }
+
 
     private void OnTextViewScrollOffsetChanged(object? sender, EventArgs e)
     {
@@ -123,30 +133,9 @@ public partial class SourceCodeEditorControl : UserControl
         }
     }
 
-    private void Initialize(TextMarkerService service)
-    {
-        Editor.TextArea.TextView.BackgroundRenderers.Add(service);
-        Editor.TextArea.TextView.LineTransformers.Add(service);
-
-        var services = (IServiceContainer)Editor.Document.ServiceProvider.GetService(typeof(IServiceContainer))!;
-        services?.AddService(typeof(ITextMarkerService), service);
-    }
 
     public ICommand ExpandAllCommand { get; }
     public ICommand CollapseAllCommand { get; }
-
-    private bool _didChange = false;
-    private void OnIdle(object? obj)
-    {
-        if (_didChange)
-        {
-            _idleTimer.Change(Timeout.Infinite, Timeout.Infinite);
-            ViewModel.NotifyDocumentChanged();
-            _didChange = false;
-        }
-    }
-
-    private void ResetIdleTimer() => _idleTimer.Change(IdleMillisecondsSettingValue, Timeout.Infinite);
 
     private void ExpandAllFoldings()
     {
@@ -167,6 +156,7 @@ public partial class SourceCodeEditorControl : UserControl
     private async void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
         ViewModel = (IDocumentTabViewModel)e.NewValue;
+        ViewModel.DocumentStateChanged += OnServerDocumentStateChanged;
         try
         {
             await HandleDataContextChangedAsync();
@@ -176,6 +166,8 @@ public partial class SourceCodeEditorControl : UserControl
             // TODO get a logger over here
         }
     }
+
+    private async void OnServerDocumentStateChanged(object? sender, EventArgs e) => await UpdateFoldingsAsync();
 
     private async Task HandleDataContextChangedAsync()
     {
@@ -211,7 +203,6 @@ public partial class SourceCodeEditorControl : UserControl
             _foldings.Clear();
             _foldings.UpdateFoldings(newFoldings, firstErrorOffset);
 
-            _markers.RemoveAll(e => true);
             foreach (var diagnostic in ViewModel.DocumentState.Diagnostics)
             {
                 diagnostic.WithTextMarker(Editor, _markers);
@@ -237,15 +228,12 @@ public partial class SourceCodeEditorControl : UserControl
 
     private void OnCaretPositionChanged(object? sender, EventArgs e)
     {
-        ResetIdleTimer();
-        
         UpdateStatusInfo();
         HideMarkerToolTip();
     }
 
     private void OnTextChanged(object? sender, EventArgs e)
     {
-        _didChange = true;
         ViewModel.TextContent = Editor.Text; // binding to source isn't working
         ResetIdleTimer();
 
@@ -255,8 +243,6 @@ public partial class SourceCodeEditorControl : UserControl
 
     private void OnSelectionChanged(object? sender, EventArgs e)
     {
-        ResetIdleTimer();
-        
         UpdateStatusInfo();
         HideMarkerToolTip();
     }

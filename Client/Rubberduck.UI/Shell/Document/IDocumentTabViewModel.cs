@@ -33,6 +33,9 @@ namespace Rubberduck.UI.Shell.Document
     {
         WorkspaceUri DocumentUri { get; set; }
         DocumentState DocumentState { get; }
+        void WithDocumentState(DocumentState state);
+        event EventHandler<WorkspaceFileUriEventArgs> DocumentStateChanged;
+
         string Language { get; set; }
         bool IsReadOnly { get; set; }
 

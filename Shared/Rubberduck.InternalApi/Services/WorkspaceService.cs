@@ -70,7 +70,7 @@ namespace Rubberduck.InternalApi.Services
                         throw new NotSupportedException("This project was created with a version of Rubberduck greater than the one currently running.");
                     }
 
-                    var sourceRoot = _fileSystem.Path.Combine(root, ProjectFile.SourceRoot);
+                    var sourceRoot = _fileSystem.Path.Combine(root, WorkspaceUri.SourceRootName);
                     if (!_fileSystem.Directory.Exists(sourceRoot))
                     {
                         throw new DirectoryNotFoundException("Project source root folder ('.src') was not found under the secified workspace URI.");
@@ -113,7 +113,7 @@ namespace Rubberduck.InternalApi.Services
             var workspace = _state.ActiveWorkspace;
             if (workspace?.WorkspaceRoot != null && workspace.TryGetWorkspaceFile(uri, out var file) && file != null)
             {
-                var path = _fileSystem.Path.Combine(workspace.WorkspaceRoot.LocalPath, ProjectFile.SourceRoot, file.Uri.LocalPath);
+                var path = _fileSystem.Path.Combine(workspace.WorkspaceRoot.LocalPath, WorkspaceUri.SourceRootName, file.Uri.LocalPath);
                 await _fileSystem.File.WriteAllTextAsync(path, file.Text);
                 return true;
             }
@@ -140,7 +140,7 @@ namespace Rubberduck.InternalApi.Services
             var workspace = _state.ActiveWorkspace;
             if (workspace?.WorkspaceRoot != null)
             {
-                var srcRoot = _fileSystem.Path.Combine(workspace.WorkspaceRoot.LocalPath, ProjectFile.SourceRoot);
+                var srcRoot = _fileSystem.Path.Combine(workspace.WorkspaceRoot.LocalPath, WorkspaceUri.SourceRootName);
                 foreach (var file in workspace.WorkspaceFiles.Where(e => e.IsModified).ToArray())
                 {
                     var path = _fileSystem.Path.Combine(srcRoot, file.Uri.ToString());

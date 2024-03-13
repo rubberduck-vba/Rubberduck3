@@ -63,7 +63,7 @@ public class DocumentParserSection : WorkspaceDocumentSection
         if (state.Diagnostics.Count > 0)
         {
             LogInformation($"💡 Publishing {state.Diagnostics.Count} document diagnostics.", $"\n{string.Join("\n", state.Diagnostics.Select(e => $"\t[{e.Code!.Value.String}] {e.Message} ({e.Severity.ToString()!.ToUpperInvariant()})"))}");
-            _server?.TextDocument.PublishDiagnostics(
+            _server.TextDocument.PublishDiagnostics(
                 new()
                 {
                     Uri = state.Uri.AbsoluteLocation.LocalPath,

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
@@ -73,7 +74,7 @@ namespace Rubberduck.UI.Services.NewProject
                 {
                     if (!TryRunAction(() =>
                     {
-                        var originalPath = _fileSystem.Path.Combine(projectFile.Uri.LocalPath, ProjectFile.SourceRoot, indexedFile.File.Uri);
+                        var originalPath = _fileSystem.Path.Combine(projectFile.Uri.LocalPath, WorkspaceUri.SourceRootName, indexedFile.File.Uri);
                         var fileLength = _fileSystem.FileInfo.New(originalPath).Length;
 
                         var newPath = _fileSystem.Path.Combine(sourceRoot, indexedFile.File.Uri);

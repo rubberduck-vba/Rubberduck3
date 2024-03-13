@@ -17,7 +17,7 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
             var vm = new WorkspaceViewModel
             {
                 Name = model.VBProject.Name,
-                Uri = new WorkspaceFolderUri(null, new Uri(service.FileSystem.Path.Combine(model.Uri.LocalPath, ProjectFile.SourceRoot + "\\"))),
+                Uri = new WorkspaceFolderUri(null, new Uri(service.FileSystem.Path.Combine(model.Uri.LocalPath, WorkspaceUri.SourceRootName + "\\"))),
                 //IsFileSystemWatcherEnabled = service.IsFileSystemWatcherEnabled(model.Uri),
                 IsExpanded = true
             };
@@ -28,7 +28,7 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
             var rootFolders = projectFolders.Where(e => ((WorkspaceFolderUri)e.Uri).RelativeUriString!.Count(c => c == System.IO.Path.DirectorySeparatorChar) == 1);
 
             var projectFilesByFolder = sourceFiles.Concat(otherFiles)
-                .GroupBy(e => ((WorkspaceFileUri)e.Uri).WorkspaceFolder.RelativeUriString ?? ProjectFile.SourceRoot)
+                .GroupBy(e => ((WorkspaceFileUri)e.Uri).WorkspaceFolder.RelativeUriString ?? WorkspaceUri.SourceRootName)
                 .ToDictionary(e => System.IO.Path.TrimEndingDirectorySeparator(e.Key), e => e.AsEnumerable());
 
             foreach (var folder in rootFolders)
@@ -58,7 +58,7 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
         private static void AddFolderContent(IWorkspaceService service, WorkspaceFolderViewModel folder, IDictionary<string, IEnumerable<WorkspaceTreeNodeViewModel>> projectFilesByFolder, IEnumerable<WorkspaceFolderViewModel> projectFolders)
         {
             var workspaceFolderUri = (WorkspaceFolderUri)folder.Uri;
-            var key = System.IO.Path.TrimEndingDirectorySeparator(workspaceFolderUri.RelativeUriString ?? ProjectFile.SourceRoot);
+            var key = System.IO.Path.TrimEndingDirectorySeparator(workspaceFolderUri.RelativeUriString ?? WorkspaceUri.SourceRootName);
 
             var localPath = ((WorkspaceFolderUri)folder.Uri).AbsoluteLocation.LocalPath;
             foreach (var subFolder in projectFolders.Where(e => localPath == new System.IO.DirectoryInfo(new WorkspaceFolderUri(e.Uri.OriginalString, workspaceFolderUri.WorkspaceRoot).AbsoluteLocation.LocalPath).Parent!.FullName))

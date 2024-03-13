@@ -319,7 +319,7 @@ namespace Rubberduck.Main.Root
                 Key = "Workspace_ConfirmCreateWorkspace",
                 Title = "Create Workspace",
                 Message = $"This will create a new Rubberduck workspace under folder `{path}`.",
-                Verbose = $"The folder will contain a `{ProjectFile.FileName}` Rubberduck project file and a `{ProjectFile.SourceRoot}` folder where the source files will be exported. Consider using the same local root folder for all Rubberduck projects/workspaces.",
+                Verbose = $"The folder will contain a `{ProjectFile.FileName}` Rubberduck project file and a `{WorkspaceUri.SourceRootName}` folder where the source files will be exported. Consider using the same local root folder for all Rubberduck projects/workspaces.",
                 Level = LogLevel.Information,
                 MessageActions = [acceptAction, MessageAction.CancelAction],
             };

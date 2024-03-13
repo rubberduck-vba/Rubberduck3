@@ -35,7 +35,7 @@ public class WorkspaceFolderService : ServiceBase, IWorkspaceFolderService
         var workspaceRoot = projectFile.Uri;
         _fileSystem.Directory.CreateDirectory(workspaceRoot.LocalPath);
 
-        var sourceRoot = _fileSystem.Path.Combine(workspaceRoot.LocalPath, ProjectFile.SourceRoot);
+        var sourceRoot = _fileSystem.Path.Combine(workspaceRoot.LocalPath, WorkspaceUri.SourceRootName);
         _fileSystem.Directory.CreateDirectory(sourceRoot);
 
         var folders = projectFile.VBProject.Modules

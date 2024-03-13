@@ -11,6 +11,7 @@ namespace Rubberduck.InternalApi.Services;
 
 public interface IWorkspaceState
 {
+    event EventHandler<WorkspaceFileUriEventArgs> WorkspaceFileStateChanged;
     WorkspaceUri? WorkspaceRoot { get; set; }
     string ProjectName { get; set; }
     void PublishDiagnostics(int? version, DocumentUri uri, IEnumerable<Diagnostic> diagnostics);

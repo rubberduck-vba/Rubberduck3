@@ -115,8 +115,8 @@ namespace Rubberduck.UI.Services
             {
                 TryRunAction(() =>
                 {
-                    var oldUri = new WorkspaceFileUri(e.OldFullPath[(state.WorkspaceRoot.LocalPath + $"\\{ProjectFile.SourceRoot}").Length..], state.WorkspaceRoot);
-                    var newUri = new WorkspaceFileUri(e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{ProjectFile.SourceRoot}").Length..], state.WorkspaceRoot);
+                    var oldUri = new WorkspaceFileUri(e.OldFullPath[(state.WorkspaceRoot.LocalPath + $"\\{WorkspaceUri.SourceRootName}").Length..], state.WorkspaceRoot);
+                    var newUri = new WorkspaceFileUri(e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{WorkspaceUri.SourceRootName}").Length..], state.WorkspaceRoot);
 
                     if (state != null && state.TryGetWorkspaceFile(oldUri, out var workspaceFile) && workspaceFile is not null)
                     {
@@ -154,7 +154,7 @@ namespace Rubberduck.UI.Services
             var state = State.ActiveWorkspace;
             if (state != null && state.WorkspaceRoot != null)
             {
-                var uri = new WorkspaceFileUri(e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{ProjectFile.SourceRoot}").Length..], state.WorkspaceRoot);
+                var uri = new WorkspaceFileUri(e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{WorkspaceUri.SourceRootName}").Length..], state.WorkspaceRoot);
                 state.UnloadWorkspaceFile(uri);
 
                 var request = new DidChangeWatchedFilesParams
@@ -178,7 +178,7 @@ namespace Rubberduck.UI.Services
             var state = State.ActiveWorkspace;
             if (state != null && state.WorkspaceRoot != null)
             {
-                var uri = new WorkspaceFileUri(e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{ProjectFile.SourceRoot}").Length..], state.WorkspaceRoot);
+                var uri = new WorkspaceFileUri(e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{WorkspaceUri.SourceRootName}").Length..], state.WorkspaceRoot);
                 state.UnloadWorkspaceFile(uri);
 
                 var request = new DidChangeWatchedFilesParams
@@ -202,7 +202,7 @@ namespace Rubberduck.UI.Services
             var state = State.ActiveWorkspace;
             if (state != null && state.WorkspaceRoot != null)
             {
-                var relativePath = e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{ProjectFile.SourceRoot}").Length..];
+                var relativePath = e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{WorkspaceUri.SourceRootName}").Length..];
                 var uri = new Uri(relativePath);
 
                 var request = new DidChangeWatchedFilesParams

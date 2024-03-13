@@ -44,7 +44,7 @@ namespace Rubberduck.UI.Shell.Document
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
-            drawingContext.DrawRectangle(new SolidColorBrush(Color.FromRgb(192, 192, 192)), null, new Rect(0,0, ActualWidth, ActualHeight));
+            drawingContext.DrawRectangle(new SolidColorBrush(Color.FromRgb(224, 224, 224)), null, new Rect(0,0, ActualWidth, ActualHeight));
 
             var markersByLine = _service.TextMarkers
                 .GroupBy(e => Document.GetLineByOffset(e.StartOffset).LineNumber)
@@ -61,7 +61,8 @@ namespace Rubberduck.UI.Shell.Document
                     var visualPosition = line.GetVisualPosition(visualColumn, VisualYPosition.LineTop);
                     var rect = new Rect
                     {
-                        Width = 18,
+                        Width = 16,
+                        Height = 16,
                         X = 1,
                         Y = visualPosition.Y
                     };

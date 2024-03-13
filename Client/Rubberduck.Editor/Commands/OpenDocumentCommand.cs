@@ -54,14 +54,9 @@ namespace Rubberduck.Editor.Commands
             var workspace = _workspaces.ActiveWorkspace;
             if (_lsp != null && workspace != null && parameter is WorkspaceFileUri uri)
             {
-                var rootUri = workspace.WorkspaceRoot;
-                //var root = _workspaces.ActiveWorkspace?.WorkspaceRoot?.LocalPath ?? throw new InvalidOperationException();
-                //var srcRoot = System.IO.Path.Combine(root, ProjectFile.SourceRoot);
-                //var relativeUri = uri.OriginalString[1..][srcRoot.Length..];
-
-                if (rootUri != null && workspace.TryGetWorkspaceFile(uri, out var file) && file != null)
+                if (workspace.WorkspaceRoot != null && workspace.TryGetWorkspaceFile(uri, out var file) && file != null)
                 {
-                    //&& file != null && !file.IsMissing && !file.IsLoadError
+                    //&& !file.IsMissing && !file.IsLoadError
 
                     UserControl view;
                     IDocumentTabViewModel document;
@@ -96,6 +91,14 @@ namespace Rubberduck.Editor.Commands
                                     break;
                             }
                         }
+
+                        workspace.WorkspaceFileStateChanged += (sender, args) =>
+                        {
+                            if (args.Uri == state.Uri && workspace.TryGetWorkspaceFile(args.Uri, out var updated) && updated != null)
+                            {
+                                document.WithDocumentState(updated);
+                            }
+                        };
                     }
                     else
                     {

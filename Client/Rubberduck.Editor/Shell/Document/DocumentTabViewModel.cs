@@ -23,6 +23,8 @@ namespace Rubberduck.Editor.Shell.Document
         private Func<ILanguageClient> _lsp;
         private DocumentState _state;
 
+        public event EventHandler<WorkspaceFileUriEventArgs> DocumentStateChanged = delegate { };
+
         public DocumentTabViewModel(DocumentState state, bool isReadOnly,
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindowCommand,
@@ -45,15 +47,22 @@ namespace Rubberduck.Editor.Shell.Document
         }
 
         public DocumentState DocumentState => _state;
+        public void WithDocumentState(DocumentState state)
+        {
+            _state = state;
+            OnPropertyChanged(nameof(DocumentState));
+        }
 
         public abstract SupportedDocumentType DocumentType { get; }
 
-        public void NotifyDocumentChanged()
+        public void NotifyDocumentChanged() => NotifyDocumentChanged(null!, null!);
+
+        public void NotifyDocumentChanged(OmniSharp.Extensions.LanguageServer.Protocol.Models.Range? range, string? text)
         {
             var client = _lsp.Invoke();
 
             // increment local version first...
-            _state = _state with { Version = _state.Version + 1 };
+            WithDocumentState(_state with { Version = _state.Version + 1 });
 
             var request = new DidChangeTextDocumentParams
             {
@@ -66,7 +75,8 @@ namespace Rubberduck.Editor.Shell.Document
                 new TextDocumentContentChangeEvent
                 {
                     // if only Text is supplied, server considers it the document's entire content
-                    Text = TextContent
+                    Text = text ?? TextContent,
+                    Range = range
                 })
             };
 
@@ -81,13 +91,13 @@ namespace Rubberduck.Editor.Shell.Document
                 Identifier = "RDE",
                 TextDocument = new TextDocumentIdentifier
                 {
-                    Uri = _uri.AbsoluteLocation.LocalPath,
+                    Uri = _uri.AbsoluteLocation,
                 }
             });
 
             if (report is IFullDocumentDiagnosticReport fullReport)
             {
-                _state = _state.WithDiagnostics(fullReport.Items);
+                WithDocumentState(_state.WithDiagnostics(fullReport.Items));
                 return fullReport.Items;
             }
             else
@@ -102,7 +112,7 @@ namespace Rubberduck.Editor.Shell.Document
             {
                 TextDocument = new TextDocumentIdentifier
                 {
-                    Uri = _uri.AbsoluteLocation.LocalPath,
+                    Uri = _uri.AbsoluteLocation,
                 }
             });
 

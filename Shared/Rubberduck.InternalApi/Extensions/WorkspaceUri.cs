@@ -59,6 +59,11 @@ public class WorkspaceFolderUri : WorkspaceUri
 /// </summary>
 public abstract class WorkspaceUri : Uri
 {
+    /// <summary>
+    /// The name of the <em>source root</em> folder in workspaces.
+    /// </summary>
+    public const string SourceRootName = ".src";
+
     private readonly string? _relativeUri;
     private readonly Uri _root;
     private readonly Uri _srcRoot;
@@ -68,7 +73,12 @@ public abstract class WorkspaceUri : Uri
         // null -> root level
         if (string.IsNullOrWhiteSpace(relativeUriString))
         {
-            return ProjectFile.SourceRoot;
+            return '/' + WorkspaceUri.SourceRootName;
+        }
+
+        if (relativeUriString.StartsWith("file:///"))
+        {
+            relativeUriString = relativeUriString.Substring("file:///".Length);
         }
 
         if (workspaceRoot is WorkspaceUri wsUri)
@@ -77,18 +87,27 @@ public abstract class WorkspaceUri : Uri
         }
 
         // ['/','\'] -> stdSlash
-        var stdSlashRoot = new Uri(workspaceRoot.LocalPath.Replace("\\", "/"));
+        var stdSlashRoot = new Uri(workspaceRoot.AbsolutePath.Replace("\\", "/"));
         var stdSlashRelativeUriString = relativeUriString.Replace("\\", "/");
 
         // absolute -> relative
-        if (stdSlashRelativeUriString.ToLowerInvariant().StartsWith(stdSlashRoot.AbsoluteUri.ToLowerInvariant()))
+        if (stdSlashRelativeUriString.ToLowerInvariant().StartsWith(stdSlashRoot.AbsolutePath.ToLowerInvariant()))
         {
-            var marker = $"/{ProjectFile.SourceRoot}";
-            var sane = stdSlashRelativeUriString.Substring(stdSlashRelativeUriString.IndexOf(marker) + marker.Length);
-            return sane;
+            var marker = $"/{WorkspaceUri.SourceRootName}";
+            var sane = stdSlashRelativeUriString;
+            if (stdSlashRelativeUriString.Contains(marker))
+            {
+                sane = stdSlashRelativeUriString.Substring(stdSlashRelativeUriString.IndexOf(marker) + marker.Length);
+            }
+
+            if (sane.StartsWith(stdSlashRoot.AbsolutePath))
+            {
+                sane = stdSlashRelativeUriString.Substring(stdSlashRelativeUriString.IndexOf(stdSlashRoot.AbsolutePath) + stdSlashRoot.AbsolutePath.Length);
+            }
+            return sane.TrimStart('/');
         }
 
-        return stdSlashRelativeUriString;
+        return stdSlashRelativeUriString.TrimStart('/');
     }
 
     public WorkspaceFileUri FileUriFromAbsolute(string localPath)
@@ -98,10 +117,10 @@ public abstract class WorkspaceUri : Uri
     }
 
     public WorkspaceUri([StringSyntax("Uri")] string? relativeUriString, Uri workspaceRoot)
-        : base(SanitizedRelativeUriString(relativeUriString, workspaceRoot), UriKind.Relative)
+        : base('/' + SanitizedRelativeUriString(relativeUriString, workspaceRoot), UriKind.Relative)
     {
         _root = workspaceRoot;
-        _srcRoot = new(System.IO.Path.Combine(workspaceRoot.LocalPath, ProjectFile.SourceRoot));
+        _srcRoot = new(System.IO.Path.Combine(workspaceRoot.LocalPath, WorkspaceUri.SourceRootName));
         IsSrcRoot = relativeUriString is null;
 
         _relativeUri = SanitizedRelativeUriString(relativeUriString, workspaceRoot);
@@ -148,7 +167,8 @@ public abstract class WorkspaceUri : Uri
                 }
                 else
                 {
-                    return new($"{_srcRoot.LocalPath.Replace("\\","/")}{_relativeUri![..^System.IO.Path.GetFileName(Name).Length]}{Name}");
+                    var result = new Uri($"{_srcRoot.LocalPath.Replace("\\","/")}/{_relativeUri![..^System.IO.Path.GetFileName(Name).Length]}{Name}");
+                    return result;
                 }
             }
         }

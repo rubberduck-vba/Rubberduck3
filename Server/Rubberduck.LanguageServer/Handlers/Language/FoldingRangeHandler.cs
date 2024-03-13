@@ -41,7 +41,7 @@ namespace Rubberduck.LanguageServer.Handlers.Language
 
 
                 var relativeUri = documentUri.ToUri().OriginalString;
-                var marker = $"/{ProjectFile.SourceRoot}";
+                var marker = $"/{WorkspaceUri.SourceRootName}";
                 var srcRootIndex = relativeUri.IndexOf(marker);
                 if (srcRootIndex > 0)
                 {

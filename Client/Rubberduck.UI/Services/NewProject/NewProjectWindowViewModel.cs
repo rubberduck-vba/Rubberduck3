@@ -1,4 +1,5 @@
-﻿using Rubberduck.InternalApi.Model.Workspace;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.InternalApi.Settings.Model.LanguageClient;
 using Rubberduck.UI.Command;
@@ -121,7 +122,7 @@ namespace Rubberduck.UI.Services.NewProject
         }
 
         private void OnSourcePathChanged() => OnPropertyChanged(nameof(SourcePath));
-        public string SourcePath => Path.Combine(WorkspaceLocation, ProjectName, ProjectFile.SourceRoot);
+        public string SourcePath => Path.Combine(WorkspaceLocation, ProjectName, WorkspaceUri.SourceRootName);
 
         public bool HasVBProjects { get; init; }
 

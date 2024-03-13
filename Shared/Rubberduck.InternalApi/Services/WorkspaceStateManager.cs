@@ -15,17 +15,22 @@ namespace Rubberduck.InternalApi.Services;
 
 public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
 {
+    public event EventHandler<WorkspaceFileUriEventArgs> WorkspaceFileStateChanged = delegate { };
+
     private class ProjectStateManager : ServiceBase, IWorkspaceState
     {
         private readonly HashSet<Reference> _references = [];
         private readonly HashSet<Folder> _folders = [];
         private readonly DocumentContentStore _store;
 
+        public event EventHandler<WorkspaceFileUriEventArgs> WorkspaceFileStateChanged = delegate { };
+
         public ProjectStateManager(ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance,
             DocumentContentStore store)
             : base(logger, settingsProvider, performance)
         {
             _store = store;
+            _store.DocumentStateChanged += WorkspaceFileStateChanged.Invoke;
             ExecutionContext = new VBExecutionContext(logger, settingsProvider, performance);
         }
 
@@ -33,7 +38,7 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
         {
             var root = WorkspaceRoot ?? throw new InvalidOperationException("Workspace root is not set");            
             var uri = documentUri.AsWorkspaceUri(root);
-            if (_store.TryGetDocument(uri, out var document) && document != null && document.Version == (version ?? document.Version))
+            if (_store.TryGetDocument(uri, out var document) && document != null /*&& document.Version >= (version ?? document.Version)*/)
             {
                 _store.AddOrUpdate(uri, document.WithDiagnostics(diagnostics));
             }
@@ -173,6 +178,12 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
         : base(logger, settings, performance)
     {
         _store = store;
+        _store.DocumentStateChanged += WorkspaceFileStateChanged.Invoke;
+    }
+
+    private void OnWorkspaceDocumentStateChanged(object? sender, WorkspaceFileUriEventArgs e)
+    {
+        throw new NotImplementedException();
     }
 
     private Dictionary<Uri, IWorkspaceState> _workspaces = [];
