@@ -159,7 +159,7 @@ public partial class SourceCodeEditorControl : UserControl
         ViewModel.DocumentStateChanged += OnServerDocumentStateChanged;
         try
         {
-            await HandleDataContextChangedAsync();
+            await HandleDataContextChangedAsync().ConfigureAwait(false);
         }
         catch (Exception exception)
         {
@@ -167,13 +167,23 @@ public partial class SourceCodeEditorControl : UserControl
         }
     }
 
-    private async void OnServerDocumentStateChanged(object? sender, EventArgs e) => await UpdateFoldingsAsync();
+    private async void OnServerDocumentStateChanged(object? sender, EventArgs e)
+    {
+        try
+        {
+            await UpdateFoldingsAsync().ConfigureAwait(false);
+        }
+        catch (Exception exception)
+        {
+            //
+        }
+    }
 
     private async Task HandleDataContextChangedAsync()
     {
         if (ViewModel.DocumentType == SupportedDocumentType.SourceFile)
         {
-            await UpdateFoldingsAsync();
+            await UpdateFoldingsAsync().ConfigureAwait(false);
         }
 
         UpdateStatusInfo();
@@ -181,8 +191,8 @@ public partial class SourceCodeEditorControl : UserControl
 
     private async Task UpdateFoldingsAsync()
     {
-        var foldings = await ViewModel.RequestFoldingsAsync();
-        var diagnostics = await ViewModel.RequestDiagnosticsAsync();
+        var foldings = await ViewModel.RequestFoldingsAsync().ConfigureAwait(false);
+        var diagnostics = await ViewModel.RequestDiagnosticsAsync().ConfigureAwait(false);
 
         var firstErrorRange = diagnostics
             .FirstOrDefault(e => e.Code?.String == RubberduckDiagnosticId.SyntaxError.Code())?.Range;

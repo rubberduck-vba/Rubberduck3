@@ -46,11 +46,14 @@ namespace Rubberduck.Editor.Shell.Document
             Status = activeDocumentStatus;
         }
 
-        public DocumentState DocumentState => _state;
-        public void WithDocumentState(DocumentState state)
+        public DocumentState DocumentState
         {
-            _state = state;
-            OnPropertyChanged(nameof(DocumentState));
+            get => _state;
+            set
+            {
+                _state = value;
+                OnPropertyChanged();
+            }
         }
 
         public abstract SupportedDocumentType DocumentType { get; }
@@ -62,7 +65,7 @@ namespace Rubberduck.Editor.Shell.Document
             var client = _lsp.Invoke();
 
             // increment local version first...
-            WithDocumentState(_state with { Version = _state.Version + 1 });
+            DocumentState = _state with { Version = _state.Version + 1 };
 
             var request = new DidChangeTextDocumentParams
             {
@@ -97,7 +100,7 @@ namespace Rubberduck.Editor.Shell.Document
 
             if (report is IFullDocumentDiagnosticReport fullReport)
             {
-                WithDocumentState(_state.WithDiagnostics(fullReport.Items));
+                DocumentState = _state.WithDiagnostics(fullReport.Items);
                 return fullReport.Items;
             }
             else

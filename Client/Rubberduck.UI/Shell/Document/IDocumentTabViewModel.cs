@@ -32,8 +32,7 @@ namespace Rubberduck.UI.Shell.Document
     public interface IDocumentTabViewModel : ITabViewModel
     {
         WorkspaceUri DocumentUri { get; set; }
-        DocumentState DocumentState { get; }
-        void WithDocumentState(DocumentState state);
+        DocumentState DocumentState { get; set; }
         event EventHandler<WorkspaceFileUriEventArgs> DocumentStateChanged;
 
         string Language { get; set; }

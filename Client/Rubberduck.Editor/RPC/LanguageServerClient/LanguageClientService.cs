@@ -259,7 +259,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient
                     Hover = new() { Value = new() { ContentFormat = new Container<MarkupKind>(MarkupKind.Markdown) } },
                     Implementation = new() { Value = new() { LinkSupport = supported } },
                     OnTypeFormatting = new() { Value = new() },
-                    PublishDiagnostics = new() { Value = new() },
+                    PublishDiagnostics = new() { Value = new() { VersionSupport = true, CodeDescriptionSupport = true, DataSupport = true, RelatedInformation = true, TagSupport = new(true) } },
                     References = new() { Value = new() },
                     Rename = new()
                     {

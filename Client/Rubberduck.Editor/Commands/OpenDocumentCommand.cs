@@ -96,7 +96,7 @@ namespace Rubberduck.Editor.Commands
                         {
                             if (args.Uri == state.Uri && workspace.TryGetWorkspaceFile(args.Uri, out var updated) && updated != null)
                             {
-                                document.WithDocumentState(updated);
+                                document.DocumentState = updated;
                             }
                         };
                     }
