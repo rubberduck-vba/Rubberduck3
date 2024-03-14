@@ -12,6 +12,7 @@ public class ParseResult
     public ITokenStream TokenStream { get; init; } = null!;
     public LogicalLineStore? LogicalLines { get; init; } = null;
     public IEnumerable<IParseTreeListener> Listeners { get; init; } = [];
+
     public IEnumerable<SyntaxErrorException> SyntaxErrors { get; init; } = [];
     public IEnumerable<Diagnostic> Diagnostics { get; init; } = [];
 }

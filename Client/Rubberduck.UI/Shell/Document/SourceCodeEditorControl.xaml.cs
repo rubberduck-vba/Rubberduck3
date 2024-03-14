@@ -183,6 +183,7 @@ public partial class SourceCodeEditorControl : UserControl
     {
         if (ViewModel.DocumentType == SupportedDocumentType.SourceFile)
         {
+            Editor.Text = ViewModel.TextContent;
             await UpdateFoldingsAsync().ConfigureAwait(false);
         }
 
@@ -191,8 +192,8 @@ public partial class SourceCodeEditorControl : UserControl
 
     private async Task UpdateFoldingsAsync()
     {
-        var foldings = await ViewModel.RequestFoldingsAsync().ConfigureAwait(false);
-        var diagnostics = await ViewModel.RequestDiagnosticsAsync().ConfigureAwait(false);
+        var foldings = ViewModel.DocumentState.Foldings;
+        var diagnostics = ViewModel.DocumentState.Diagnostics;
 
         var firstErrorRange = diagnostics
             .FirstOrDefault(e => e.Code?.String == RubberduckDiagnosticId.SyntaxError.Code())?.Range;
@@ -207,10 +208,9 @@ public partial class SourceCodeEditorControl : UserControl
                 .ToArray();
             if (firstErrorRange != null)
             {
-                firstErrorOffset = Editor.Document.GetOffset(firstErrorRange.Start.Line, firstErrorRange.Start.Character);
+                firstErrorOffset = Editor.Document.GetOffset(firstErrorRange.Start.Line, 1);
             }
 
-            _foldings.Clear();
             _foldings.UpdateFoldings(newFoldings, firstErrorOffset);
 
             foreach (var diagnostic in ViewModel.DocumentState.Diagnostics)

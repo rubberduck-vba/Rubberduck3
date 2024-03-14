@@ -1,6 +1,10 @@
 ﻿using Antlr4.Runtime.Tree;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Declarations.Symbols;
+using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
+using System.Collections.Immutable;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
@@ -24,5 +28,5 @@ public record class DocumentParserState : DocumentState
 
     public IParseTree? SyntaxTree { get; init; }
 
-    public DocumentParserState WithSyntaxTree(IParseTree tree) => this with { SyntaxTree = tree };
+    public DocumentParserState WithSymbol(Symbol module) => this with { Symbol = module };
 }

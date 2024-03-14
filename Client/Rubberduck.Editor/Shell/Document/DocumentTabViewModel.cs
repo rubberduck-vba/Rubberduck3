@@ -32,7 +32,6 @@ namespace Rubberduck.Editor.Shell.Document
             Func<ILanguageClient> lsp)
             : base(showSettingsCommand, closeToolWindowCommand)
         {
-            _state = state;
             _uri = state.Uri;
             _language = state.Language.Id;
             _header = state.Name;
@@ -41,6 +40,8 @@ namespace Rubberduck.Editor.Shell.Document
             _lsp = lsp;
 
             Title = state.Name;
+
+            DocumentState = state;
             TextContent = state.Text;
 
             Status = activeDocumentStatus;

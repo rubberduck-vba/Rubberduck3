@@ -61,8 +61,8 @@ public record class DocumentState
 
 
     public SupportedLanguage Language { get; init; }
-    public IImmutableSet<FoldingRange> Foldings { get; init; } = [];
-    public IImmutableSet<Diagnostic> Diagnostics { get; init; } = [];
+    public IReadOnlyCollection<FoldingRange> Foldings { get; init; } = [];
+    public IReadOnlyCollection<Diagnostic> Diagnostics { get; init; } = [];
     public Symbol? Symbol { get; init; }
 
 
@@ -71,13 +71,8 @@ public record class DocumentState
     public DocumentState WithOpened(bool opened = true) => this with { IsOpened = opened };
 
 
-    public DocumentState WithLanguage(SupportedLanguage language) => this with { Language = language };
-    public DocumentState WithSyntaxErrors(IEnumerable<SyntaxErrorException> errors) => 
-        this with { Diagnostics = errors.Select(RubberduckDiagnostic.SyntaxError).Union(Diagnostics).ToImmutableHashSet() };
-
-    public DocumentState WithFoldings(IEnumerable<FoldingRange> foldings) => this with { Foldings = foldings.ToImmutableHashSet() };
     public DocumentState WithDiagnostics(IEnumerable<Diagnostic> diagnostics) => this with { Diagnostics = diagnostics.ToImmutableHashSet() };
-    public DocumentState WithSymbol(Symbol module) => this with { Symbol = module };
+    public DocumentState WithLanguage(SupportedLanguage language) => this with { Language = language };
 
 
     /// <summary>

@@ -8,6 +8,9 @@ using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Parsing._v3.Pipeline.Abstract;
+using Rubberduck.Parsing._v3.Pipeline.Services;
+using Rubberduck.Parsing.Abstract;
+using System.Collections.Immutable;
 using System.Text;
 using System.Threading.Tasks.Dataflow;
 
@@ -47,31 +50,32 @@ public class DocumentParserSection : WorkspaceDocumentSection
             e => e, 
             nameof(BroadcastParseResultBlock), logPerformance: false);
 
-    private ActionBlock<PipelineParseResult> SetDocumentStateBlock { get; set; } = null!;
-    private void SetDocumentState(PipelineParseResult parseResult) =>
-        RunActionBlock(SetDocumentStateBlock, parseResult,
-            e =>
-            {
-                UpdateDocumentState(State, state => (DocumentParserState)state
-                    .WithSyntaxErrors(parseResult.ParseResult.SyntaxErrors));
-                PublishDiagnostics(State);
-            },
-            nameof(SetDocumentStateBlock), logPerformance: false);
-
-    private void PublishDiagnostics(DocumentParserState state)
-    {
-        if (state.Diagnostics.Count > 0)
-        {
-            LogInformation($"💡 Publishing {state.Diagnostics.Count} document diagnostics.", $"\n{string.Join("\n", state.Diagnostics.Select(e => $"\t[{e.Code!.Value.String}] {e.Message} ({e.Severity.ToString()!.ToUpperInvariant()})"))}");
-            _server.TextDocument.PublishDiagnostics(
-                new()
+    private ActionBlock<DocumentParserState> PublishDiagnosticsBlock { get; set; } = null!;
+    private void PublishDiagnostics(DocumentParserState state) =>
+        RunActionBlock(PublishDiagnosticsBlock, state,
+            e => {
+                if (e.Diagnostics.Any())
                 {
-                    Uri = state.Uri.AbsoluteLocation.LocalPath,
-                    Version = state.Version,
-                    Diagnostics = new(state.Diagnostics)
-                });
-        }
-    }
+                    LogInformation($"💡 Publishing {e.Diagnostics.Count} document diagnostics.", $"\n{string.Join("\n", e.Diagnostics.Select(diagnostic => $"\t[{diagnostic.Code!.Value.String}] {diagnostic.Message} ({diagnostic.Severity.ToString()!.ToUpperInvariant()})"))}");
+                    _server.TextDocument.PublishDiagnostics(
+                        new()
+                        {
+                            Uri = e.Id.Uri,
+                            Version = e.Version,
+                            Diagnostics = new(e.Diagnostics)
+                        });
+                }
+            });
+
+    private TransformBlock<PipelineParseResult, IEnumerable<FoldingRange>> AcquireFoldingRangesBlock { get; set; } = null!;
+    private IEnumerable<FoldingRange> AcquireFoldingRanges(PipelineParseResult input) =>
+        RunTransformBlock(AcquireFoldingRangesBlock, input,
+            e => e.ParseResult.Listeners.OfType<VBFoldingListener>()
+                    .SelectMany(e => e.Result)
+                    .OrderBy(e => e.StartLine)
+                    .ThenBy(e => e.StartCharacter)
+                .ToImmutableSortedSet(),
+            nameof(AcquireSyntaxTreeBlock), logPerformance: false);
 
     private TransformBlock<PipelineParseResult, IParseTree> AcquireSyntaxTreeBlock { get; set; } = null!;
     private IParseTree AcquireSyntaxTree(PipelineParseResult input) =>
@@ -84,24 +88,11 @@ public class DocumentParserSection : WorkspaceDocumentSection
         RunTransformBlock(BroadcastSyntaxTreeBlock, syntaxTree, e => e, 
             nameof(BroadcastSyntaxTreeBlock), logPerformance: false);
 
-    private ActionBlock<IParseTree> SetDocumentStateSyntaxTreeBlock { get; set; } = null!;
-    private void SetDocumentStateSyntaxTree(IParseTree syntaxTree) =>
-        RunActionBlock(SetDocumentStateSyntaxTreeBlock, syntaxTree,
-            e => UpdateDocumentState(State, state => state.WithSyntaxTree(e)), 
-            nameof(SetDocumentStateSyntaxTreeBlock), logPerformance: false);
-
     private TransformBlock<IParseTree, IEnumerable<FoldingRange>> DiscoverFoldingRangesBlock { get; set; } = null!;
     private IEnumerable<FoldingRange> DiscoverFoldingRanges(IParseTree syntaxTree) =>
         RunTransformBlock(DiscoverFoldingRangesBlock, syntaxTree,
             e => _foldingRangesService.DiscoverFoldingRanges(e, State.Uri),
             nameof(DiscoverFoldingRangesBlock), logPerformance: true);
-
-    private ActionBlock<IEnumerable<FoldingRange>> SetDocumentStateFoldingsBlock { get; set; } = null!;
-    private void SetDocumentStateFoldings(IEnumerable<FoldingRange> parseResult) =>
-        RunActionBlock(SetDocumentStateFoldingsBlock, parseResult,
-            e => UpdateDocumentState(State, state => (DocumentParserState)state.WithFoldings(e)
-                ?? throw new InvalidOperationException("Document state was unexpectedly null.")),
-            nameof(SetDocumentStateFoldingsBlock), logPerformance: false);
 
     private TransformBlock<IParseTree, Symbol> DiscoverMemberSymbolsBlock { get; set; } = null!;
     private Symbol DiscoverMemberSymbols(IParseTree syntaxTree) =>
@@ -109,11 +100,28 @@ public class DocumentParserSection : WorkspaceDocumentSection
             e =>  _symbolsService.DiscoverMemberSymbols(syntaxTree, State.Uri),
             nameof(DiscoverMemberSymbolsBlock), logPerformance: true);
 
-    private ActionBlock<Symbol> SetDocumentStateMemberSymbolsBlock { get; set; } = null!;
-    private void SetDocumentStateMemberSymbols(Symbol symbol) =>
-        RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol,
-            e => UpdateDocumentState(State, state => (DocumentParserState)state.WithSymbol(e)),
-            nameof(SetDocumentStateMemberSymbolsBlock), logPerformance: false);
+    private JoinBlock<PipelineParseResult, IEnumerable<FoldingRange>, Symbol> JoinDocumentStateBlock { get; set; } = null!;
+
+    private TransformBlock<Tuple<PipelineParseResult, IEnumerable<FoldingRange>, Symbol>, DocumentParserState> SetDocumentStateBlock { get; set; } = null!;
+    private DocumentParserState SetDocumentState(Tuple<PipelineParseResult, IEnumerable<FoldingRange>, Symbol> joinedState) =>
+        RunTransformBlock(SetDocumentStateBlock, joinedState,
+            e =>
+            {
+                var (pipelineParseResult, foldings, symbol) = e;
+                var parseResult = pipelineParseResult.ParseResult;
+
+                UpdateDocumentState(State, state => state with
+                {
+                    SyntaxTree = parseResult.SyntaxTree,
+                    Diagnostics = parseResult.Diagnostics.ToArray(),
+                    Foldings = foldings.OrderBy(e => e.StartLine).ThenBy(e => e.StartCharacter).ToArray(),
+                    Symbol = symbol,
+                });
+
+                return State;
+            },
+            nameof(SetDocumentStateBlock), logPerformance: true);
+    
 
     protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(ISourceBlock<DocumentParserState> source)
     {
@@ -123,67 +131,53 @@ public class DocumentParserSection : WorkspaceDocumentSection
         BroadcastParseResultBlock = new(BroadcastParseResult, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(BroadcastParseResultBlock), BroadcastParseResultBlock);
 
-        SetDocumentStateBlock = new(SetDocumentState, ConcurrentExecutionOptions(Token));
-        _ = TraceBlockCompletionAsync(nameof(SetDocumentStateBlock), SetDocumentStateBlock);
-
-        var parseResultBufferBlock = new BufferBlock<PipelineParseResult>(new DataflowBlockOptions { CancellationToken = Token });
-
-        SetDocumentStateFoldingsBlock = new(SetDocumentStateFoldings, ConcurrentExecutionOptions(Token));
-        _ = TraceBlockCompletionAsync(nameof(SetDocumentStateFoldingsBlock), SetDocumentStateFoldingsBlock);
-
         AcquireSyntaxTreeBlock = new(AcquireSyntaxTree, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(AcquireSyntaxTreeBlock), AcquireSyntaxTreeBlock);
 
         BroadcastSyntaxTreeBlock = new(BroadcastSyntaxTree, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(BroadcastSyntaxTreeBlock), BroadcastSyntaxTreeBlock);
 
-        var syntaxTreeBufferBlock = new BufferBlock<IParseTree>(new DataflowBlockOptions { CancellationToken = Token });
-
         DiscoverFoldingRangesBlock = new(DiscoverFoldingRanges, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(DiscoverFoldingRangesBlock), DiscoverFoldingRangesBlock);
-
-        SetDocumentStateSyntaxTreeBlock = new(SetDocumentStateSyntaxTree, ConcurrentExecutionOptions(Token));
-        _ = TraceBlockCompletionAsync(nameof(SetDocumentStateSyntaxTreeBlock), SetDocumentStateSyntaxTreeBlock);
 
         DiscoverMemberSymbolsBlock = new(DiscoverMemberSymbols, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(DiscoverMemberSymbolsBlock), DiscoverMemberSymbolsBlock);
 
-        var SymbolsBufferBlock = new BufferBlock<Symbol>(new DataflowBlockOptions { CancellationToken = Token });
-        _ = TraceBlockCompletionAsync(nameof(SymbolsBufferBlock), SymbolsBufferBlock);
+        JoinDocumentStateBlock = new(new() { Greedy = true });
 
-        SetDocumentStateMemberSymbolsBlock = new(SetDocumentStateMemberSymbols, ConcurrentExecutionOptions(Token));
-        _ = TraceBlockCompletionAsync(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
+        SetDocumentStateBlock = new(SetDocumentState, ConcurrentExecutionOptions(Token));
+        _ = TraceBlockCompletionAsync(nameof(SetDocumentStateBlock), SetDocumentStateBlock);
+
+        PublishDiagnosticsBlock = new(PublishDiagnostics, ConcurrentExecutionOptions(Token));
+        _ = TraceBlockCompletionAsync(nameof(PublishDiagnosticsBlock), PublishDiagnosticsBlock);
 
         Link(source, ParseDocumentTextBlock);
         Link(ParseDocumentTextBlock, BroadcastParseResultBlock);
-        Link(BroadcastParseResultBlock, parseResultBufferBlock);
         Link(BroadcastParseResultBlock, AcquireSyntaxTreeBlock);
         
         Link(AcquireSyntaxTreeBlock, BroadcastSyntaxTreeBlock);
-        Link(BroadcastParseResultBlock, SetDocumentStateBlock);
         Link(BroadcastSyntaxTreeBlock, DiscoverFoldingRangesBlock);
         Link(BroadcastSyntaxTreeBlock, DiscoverMemberSymbolsBlock);
-        Link(BroadcastSyntaxTreeBlock, syntaxTreeBufferBlock);
 
-        Link(syntaxTreeBufferBlock, SetDocumentStateSyntaxTreeBlock);
+        Link(BroadcastParseResultBlock, JoinDocumentStateBlock.Target1);
+        Link(DiscoverFoldingRangesBlock, JoinDocumentStateBlock.Target2);
+        Link(DiscoverMemberSymbolsBlock, JoinDocumentStateBlock.Target3);
 
-        Link(DiscoverFoldingRangesBlock, SetDocumentStateFoldingsBlock);
-        Link(DiscoverMemberSymbolsBlock, SymbolsBufferBlock);
-        Link(SymbolsBufferBlock, SetDocumentStateMemberSymbolsBlock);
+        Link(JoinDocumentStateBlock, SetDocumentStateBlock);
+        Link(SetDocumentStateBlock, PublishDiagnosticsBlock);
 
-        var completion = Task.WhenAll(DataflowBlocks.Values.Select(e => e.Completion).ToArray());
+        var completion = PublishDiagnosticsBlock.Completion;
 
         return (new IDataflowBlock[]{
             ParseDocumentTextBlock,
             BroadcastParseResultBlock,
-            SetDocumentStateFoldingsBlock,
             AcquireSyntaxTreeBlock,
             BroadcastSyntaxTreeBlock,
-            DiscoverMemberSymbolsBlock,
             DiscoverFoldingRangesBlock,
-            SetDocumentStateMemberSymbolsBlock,
-            SetDocumentStateFoldingsBlock,
-            SetDocumentStateSyntaxTreeBlock
+            DiscoverMemberSymbolsBlock,
+            JoinDocumentStateBlock,
+            SetDocumentStateBlock,
+            PublishDiagnosticsBlock
         }, completion);
     }
 
@@ -191,12 +185,13 @@ public class DocumentParserSection : WorkspaceDocumentSection
     {
         [nameof(ParseDocumentTextBlock)] = ParseDocumentTextBlock,
         [nameof(BroadcastParseResultBlock)] = BroadcastParseResultBlock,
-        [nameof(SetDocumentStateFoldingsBlock)] = SetDocumentStateFoldingsBlock,
         [nameof(AcquireSyntaxTreeBlock)] = AcquireSyntaxTreeBlock,
         [nameof(BroadcastSyntaxTreeBlock)] = BroadcastSyntaxTreeBlock,
-        [nameof(SetDocumentStateMemberSymbolsBlock)] = SetDocumentStateMemberSymbolsBlock,
+        [nameof(DiscoverFoldingRangesBlock)] = DiscoverFoldingRangesBlock,
         [nameof(DiscoverMemberSymbolsBlock)] = DiscoverMemberSymbolsBlock,
-        [nameof(SetDocumentStateSyntaxTreeBlock)] = SetDocumentStateSyntaxTreeBlock,
+        [nameof(JoinDocumentStateBlock)] = JoinDocumentStateBlock,
+        [nameof(SetDocumentStateBlock)] = SetDocumentStateBlock,
+        [nameof(PublishDiagnosticsBlock)] = PublishDiagnosticsBlock,
     };
 
     protected override void LogAdditionalPipelineSectionCompletionInfo(StringBuilder builder, string name)

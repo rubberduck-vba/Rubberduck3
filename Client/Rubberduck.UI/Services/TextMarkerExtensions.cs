@@ -6,7 +6,6 @@ using Rubberduck.UI.Shell.Document;
 using System;
 using System.Windows.Controls;
 using System.Windows.Media;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Rubberduck.UI.Services;
 
@@ -15,7 +14,7 @@ public static class TextMarkerExtensions
     public static void WithTextMarker(this Diagnostic diagnostic, BindableTextEditor editor, TextMarkerService service)
     {
         var document = editor.Document;
-        var start = document.GetOffset(diagnostic.Range.Start.Line, diagnostic.Range.Start.Character);
+        var start = document.GetOffset(diagnostic.Range.Start.Line, 1);
         var end = document.GetOffset(diagnostic.Range.End.Line, diagnostic.Range.End.Character);
  
         if (start == end)
