@@ -14,8 +14,8 @@ public static class TextMarkerExtensions
     public static void WithTextMarker(this Diagnostic diagnostic, BindableTextEditor editor, TextMarkerService service)
     {
         var document = editor.Document;
-        var start = document.GetOffset(diagnostic.Range.Start.Line, 1);
-        var end = document.GetOffset(diagnostic.Range.End.Line, diagnostic.Range.End.Character);
+        var start = document.GetOffset(diagnostic.Range.Start.Line, diagnostic.Range.Start.Character + 1);
+        var end = document.GetOffset(diagnostic.Range.End.Line, diagnostic.Range.End.Character + 1);
  
         if (start == end)
         {
@@ -63,16 +63,5 @@ public static class TextMarkerExtensions
             IsError = isError,
             IsDiagnostic = !isError
         };
-    }
-
-    private static ToolTip CreateToolTip(BindableTextEditor editor, SyntaxErrorInfo error)
-    {
-        var vm = new { TipTitle = error.Uri, TipText = error.Message, IsError = true, IsDiagnostic = false };
-        var tooltip = new TextMarkerToolTip
-        {
-            DataContext = vm,
-            PlacementTarget = editor
-        };
-        return tooltip;
     }
 }

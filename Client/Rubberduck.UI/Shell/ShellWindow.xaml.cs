@@ -1,7 +1,9 @@
 ﻿using Dragablz;
 using Rubberduck.UI.Command.SharedHandlers;
+using Rubberduck.UI.Shell.Document;
 using System;
 using System.Linq;
+using System.Runtime.Intrinsics.X86;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;

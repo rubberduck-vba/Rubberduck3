@@ -286,7 +286,8 @@
                                              ItemTemplate="{DynamicResource DocumentTabItemTemplate}"
                                              ItemContainerStyle="{DynamicResource TrapezoidTabItemStyle}"
                                              HeaderMemberPath="Title"
-                                             ShowDefaultCloseButton="True"/>
+                                             ShowDefaultCloseButton="True" 
+                                             ClosingItemCallback="{Binding ClosingTabItemHandler}" />
                 </DataTemplate>
             </dockablz:Layout.BranchTemplate>
             <dragablz:TabablzControl x:Name="DocumentPaneTabs"
@@ -295,7 +296,8 @@
                                      SelectedItem="{Binding ActiveDocumentTab}"
                                      ItemContainerStyle="{DynamicResource TrapezoidTabItemStyle}"
                                      HeaderMemberPath="Title"
-                                     ShowDefaultCloseButton="True">
+                                     ShowDefaultCloseButton="True"
+                                     ClosingItemCallback="{Binding ClosingTabItemHandler}">
                 <dragablz:TabablzControl.ContentTemplate>
                     <DataTemplate>
                         <ContentControl Content="{Binding ContentControl}" />

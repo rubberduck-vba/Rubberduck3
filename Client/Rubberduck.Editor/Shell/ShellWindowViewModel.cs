@@ -3,6 +3,7 @@ using Rubberduck.Editor.Commands;
 using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
 using Rubberduck.UI;
 using Rubberduck.UI.Chrome;
+using Rubberduck.UI.Command;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Shell;
 using Rubberduck.UI.Shell.Document;
@@ -14,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Input;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Rubberduck.Editor.Shell
 {
@@ -164,8 +166,16 @@ namespace Rubberduck.Editor.Shell
 
         private void OnTabClosed(ItemActionCallbackArgs<TabablzControl> args)
         {
-            /* TODO prompt to save changes, offer to cancel, etc.*/
-            var vm = args.DragablzItem.DataContext as ITabViewModel;
+            if (args.DragablzItem.DataContext is IDocumentTabViewModel tab)
+            {
+                var uri = tab.DocumentUri;
+                if (tab.DocumentState.IsModified)
+                {
+                    /* TODO prompt to save changes, offer to cancel, etc.*/
+                }
+                FileCommands.CloseActiveDocumentCommand.Execute(uri, args.DragablzItem);
+            }
+
             //args.Cancel();
         }
     }
