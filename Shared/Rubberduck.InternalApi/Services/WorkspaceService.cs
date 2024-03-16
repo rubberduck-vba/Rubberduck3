@@ -140,7 +140,7 @@ namespace Rubberduck.InternalApi.Services
             var workspace = _state.ActiveWorkspace;
             if (workspace?.WorkspaceRoot != null)
             {
-                var srcRoot = _fileSystem.Path.Combine(workspace.WorkspaceRoot.LocalPath, WorkspaceUri.SourceRootName);
+                var srcRoot = _fileSystem.Path.Combine(workspace.WorkspaceRoot.AbsoluteLocation.LocalPath, WorkspaceUri.SourceRootName);
                 foreach (var file in workspace.WorkspaceFiles.Where(e => e.IsModified).ToArray())
                 {
                     var path = _fileSystem.Path.Combine(srcRoot, file.Uri.ToString());

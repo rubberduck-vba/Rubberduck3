@@ -117,44 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="MessageActionButton_Accept" xml:space="preserve">
-    <value>Accept</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="black_vector_ducky" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\black-vector-ducky.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="MessageActionButton_Cancel" xml:space="preserve">
-    <value>Cancel</value>
+  <data name="ducky" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ducky.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="MessageActionButton_Close" xml:space="preserve">
-    <value>Close</value>
+  <data name="white_vector_ducky" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\white-vector-ducky.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="MessageActionButton_No" xml:space="preserve">
-    <value>Wait, no</value>
-  </data>
-  <data name="MessageActionButton_Yes" xml:space="preserve">
-    <value>Yes, proceed</value>
-  </data>
-  <data name="MessageActionButton_Confirm" xml:space="preserve">
-    <value>Confirm</value>
-  </data>
-  <data name="MessageTitle_ConfirmOverwriteExistingWorkspace" xml:space="preserve">
-    <value>Confirm overwrite existing workspace</value>
-  </data>
-  <data name="Message_ConfirmOverwriteExistingWorkspace" xml:space="preserve">
-    <value>The specified workspace folder is not empty.  
-Are you sure you want to **overwrite an existing project**?</value>
-  </data>
-  <data name="UnsavedChanges_Discard" xml:space="preserve">
-    <value>Discard changes</value>
-  </data>
-  <data name="UnsavedChanges_LeaveOpen" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="UnsavedChanges_SaveAndClose" xml:space="preserve">
-    <value>Save first</value>
-  </data>
-  <data name="DoNotShowAgain" xml:space="preserve">
-    <value>Do not show this message again</value>
-  </data>
-  <data name="OnDocumentTabClosed" xml:space="preserve">
-    <value>This document has unsaved changes! What should we do?</value>
+  <data name="yellow_vector_ducky" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\yellow-vector-ducky.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

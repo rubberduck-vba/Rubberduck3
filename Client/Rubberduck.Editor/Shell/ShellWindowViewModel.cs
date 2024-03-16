@@ -1,10 +1,12 @@
 ﻿using Dragablz;
+using Microsoft.Extensions.Logging;
 using Rubberduck.Editor.Commands;
 using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
 using Rubberduck.UI;
 using Rubberduck.UI.Chrome;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Services;
+using Rubberduck.UI.Shared.Message;
 using Rubberduck.UI.Shell;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
@@ -15,15 +17,14 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Input;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Rubberduck.Editor.Shell
 {
     public class ShellWindowViewModel : ViewModelBase, IShellWindowViewModel
     {
-        private readonly UIServiceHelper _service;
+        private readonly IMessageService _service;
 
-        public ShellWindowViewModel(UIServiceHelper service, 
+        public ShellWindowViewModel(IMessageService service, 
             InterTabClient interTabClient, 
             InterToolTabClient interToolTabClient,
             IShellStatusBarViewModel statusBar,
@@ -156,7 +157,7 @@ namespace Rubberduck.Editor.Shell
         public IInterTabClient InterTabClient { get; init; }
         public IInterTabClient InterToolTabClient { get; init; }
 
-        public ItemActionCallback ClosingTabItemHandler => OnTabClosed;
+        public ItemActionCallback ClosingTabItemHandler => OnDocumentTabClosed;
 
         public IToolPanelViewModel LeftToolPanel { get; }
 
@@ -164,19 +165,36 @@ namespace Rubberduck.Editor.Shell
 
         public IToolPanelViewModel BottomToolPanel { get; }
 
-        private void OnTabClosed(ItemActionCallbackArgs<TabablzControl> args)
+        private static MessageAction _discardChangesAction = new("UnsavedChanges_Discard", "UnsavedChanges_DiscardTooltip");
+        private static MessageAction _saveAndCloseAction = new("UnsavedChanges_SaveAndClose", "UnsavedChanges_SaveAndCloseTooltip", isDefaultAction: true);
+        private static MessageAction _leaveOpenAction = new("UnsavedChanges_LeaveOpen", "UnsavedChanges_LeaveOpenTooltip");
+
+        private void OnDocumentTabClosed(ItemActionCallbackArgs<TabablzControl> args)
         {
             if (args.DragablzItem.DataContext is IDocumentTabViewModel tab)
             {
                 var uri = tab.DocumentUri;
                 if (tab.DocumentState.IsModified)
                 {
-                    /* TODO prompt to save changes, offer to cancel, etc.*/
+                    var verbose = $"DocumentId: {uri}";
+                    var prompt = _service.ShowMessageRequest(MessageRequestModel.For(
+                        level: LogLevel.Warning,
+                        key: nameof(OnDocumentTabClosed),
+                        verbose: verbose,
+                        actions: [_discardChangesAction, _saveAndCloseAction, _leaveOpenAction]));
+
+                    if (!prompt.IsEnabled || prompt.MessageAction == _saveAndCloseAction)
+                    {
+                        // TODO write to file system, notify server
+                    }
+                    else if (prompt.MessageAction == _leaveOpenAction || prompt.MessageAction == MessageAction.CancelAction)
+                    {
+                        args.Cancel();
+                        return;
+                    }
                 }
                 FileCommands.CloseActiveDocumentCommand.Execute(uri, args.DragablzItem);
             }
-
-            //args.Cancel();
         }
     }
 

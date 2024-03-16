@@ -61,6 +61,15 @@ namespace Rubberduck.Resources.v3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do not show this message again.
+        /// </summary>
+        public static string DoNotShowAgain {
+            get {
+                return ResourceManager.GetString("DoNotShowAgain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified workspace folder is not empty.  
         ///Are you sure you want to **overwrite an existing project**?.
         /// </summary>
@@ -130,6 +139,42 @@ namespace Rubberduck.Resources.v3 {
         public static string MessageTitle_ConfirmOverwriteExistingWorkspace {
             get {
                 return ResourceManager.GetString("MessageTitle_ConfirmOverwriteExistingWorkspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This document has unsaved changes! What should we do?.
+        /// </summary>
+        public static string OnDocumentTabClosed {
+            get {
+                return ResourceManager.GetString("OnDocumentTabClosed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discard changes.
+        /// </summary>
+        public static string UnsavedChanges_Discard {
+            get {
+                return ResourceManager.GetString("UnsavedChanges_Discard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string UnsavedChanges_LeaveOpen {
+            get {
+                return ResourceManager.GetString("UnsavedChanges_LeaveOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save first.
+        /// </summary>
+        public static string UnsavedChanges_SaveAndClose {
+            get {
+                return ResourceManager.GetString("UnsavedChanges_SaveAndClose", resourceCulture);
             }
         }
     }

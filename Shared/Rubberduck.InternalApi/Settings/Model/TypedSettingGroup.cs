@@ -30,7 +30,7 @@ public abstract record class TypedSettingGroup : TypedRubberduckSetting<Rubberdu
     {
         var values = Values ?? throw new InvalidOperationException();
         values[typeof(TSetting)] = setting;
-        return this with { Value = values.Values };
+        return this with { Value = values.Values.ToArray() };
     }
 
     public IEnumerable<RubberduckSetting> Flatten(TypedSettingGroup? root = default)

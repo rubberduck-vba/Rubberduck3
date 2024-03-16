@@ -43,7 +43,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
                     if (actions is null)
                     {
                         _service.LogWarning("ShowMessageRequestParams did not include any message actions; using default Accept/Cancel actions. This is likely a bug.");
-                        actions = new[] { MessageAction.AcceptAction, MessageAction.CancelAction };
+                        actions = [MessageAction.AcceptAction, MessageAction.CancelAction];
                     }
 
                     var model = MessageRequestModel.For(level, request.Message, actions);

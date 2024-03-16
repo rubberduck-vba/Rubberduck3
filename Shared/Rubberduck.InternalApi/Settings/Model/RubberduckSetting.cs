@@ -50,6 +50,7 @@ namespace Rubberduck.InternalApi.Settings.Model;
 [JsonDerivedType(typeof(FoldModuleDeclarationsSetting), nameof(FoldModuleDeclarationsSetting))]
 [JsonDerivedType(typeof(FoldModuleHeaderSetting), nameof(FoldModuleHeaderSetting))]
 [JsonDerivedType(typeof(FoldScopesSetting), nameof(FoldScopesSetting))]
+[JsonDerivedType(typeof(FoldRegionsSetting), nameof(FoldRegionsSetting))]
 
 [JsonDerivedType(typeof(ToolsSettings), nameof(ToolsSettings))] // ~ Editor/Tool[windows]s
 [JsonDerivedType(typeof(AutoHideToolWindowSetting), nameof(AutoHideToolWindowSetting))]

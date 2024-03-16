@@ -311,7 +311,7 @@ namespace Rubberduck.Editor
 
             services.AddSingleton<MessageActionsProvider>();
             services.AddSingleton<IMessageWindowFactory, MessageWindowFactory>();
-            services.AddSingleton<IMessageService, MessageService>();
+            services.AddSingleton<IMessageService, OokiiMessageService>();
             services.AddSingleton<ShowMessageHandler>();
             services.AddSingleton<ShowMessageRequestHandler>();
 
