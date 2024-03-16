@@ -17,6 +17,17 @@ namespace Rubberduck.UI.Shared.Settings
             set => Value = value;
         }
         public string Title { get; set; }
-        public string Selection { get; set; }
+        public string Selection 
+        {
+            get => Value.LocalPath;
+            set
+            {
+                if (Value.OriginalString != value)
+                {
+                    Value = new Uri(value);
+                    OnPropertyChanged();
+                }
+            }
+        }
     }
 }
