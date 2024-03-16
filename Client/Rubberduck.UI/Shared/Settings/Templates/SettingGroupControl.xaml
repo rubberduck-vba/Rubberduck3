@@ -42,8 +42,7 @@
                 </Label>
             </ScrollViewer>
             <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
-                <ListBox HorizontalContentAlignment="Stretch"
-                         Background="Transparent" BorderThickness="0"
+                <ListBox HorizontalContentAlignment="Stretch" BorderThickness="0"
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                          ScrollViewer.VerticalScrollBarVisibility="Auto"
                          VerticalContentAlignment="Stretch"
@@ -58,7 +57,9 @@
                     </ListBox.ItemContainerStyle>
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel ItemWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollViewer, Mode=FindAncestor}, Converter={StaticResource WrapPanelItemWidthConverter}, ConverterParameter={StaticResource ItemsViewSource}}" />
+                            <WrapPanel ItemWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollViewer, Mode=FindAncestor}, 
+                                Converter={StaticResource WrapPanelItemWidthConverter}, 
+                                ConverterParameter={StaticResource ItemsViewSource}}" />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                 </ListBox>

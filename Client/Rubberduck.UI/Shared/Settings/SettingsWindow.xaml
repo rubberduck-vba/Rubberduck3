@@ -34,10 +34,11 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <Border Background="{DynamicResource ThemeWhiteLightColorBrush50}">
+                <Border>
                     <ListView MinWidth="160" Margin="4"
-                              Background="Transparent" 
-                              BorderThickness="0"
+                              Background="{DynamicResource ThemeBackgroundColorBrush}" 
+                              BorderThickness="1"
+                              BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}"
                               VerticalAlignment="Stretch"
                               ScrollViewer.VerticalScrollBarVisibility="Auto"
                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -62,7 +63,12 @@
                     </ListView>
                 </Border>
 
-                <templates:SettingGroupControl Grid.Column="1" DataContext="{Binding Selection}" />
+                
+                <templates:SettingGroupControl Grid.Column="1" 
+                                               DataContext="{Binding Selection}"
+                                               Background="{DynamicResource ThemeWhiteLightColorBrush75}" 
+                                               BorderThickness="1" BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}"
+                                               Margin="5"/>
             </Grid>
         </shell:ThunderFrame>
         <Thumb Grid.Row="1" HorizontalAlignment="Right" IsEnabled="True" IsHitTestVisible="True" WindowChrome.IsHitTestVisibleInChrome="True"

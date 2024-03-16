@@ -28,6 +28,14 @@ namespace Rubberduck.UI.Services.Settings
             ShowSettingsCommand = new DelegateCommand(service, parameter => ResetToDefaults());
             service.RunOnMainThread(() => Settings = _factory.CreateViewModel(_service.Settings));
 
+            ExpandSettingGroupCommand = new DelegateCommand(service, parameter =>
+            {
+                if (parameter is ISettingGroupViewModel model)
+                {
+                    ExecuteExpandSettingGroupCommand(model);
+                }
+            });
+
             CommandBindings = new CommandBinding[]
             {
                 new(NavigationCommands.Search, DialogCommandHandlers.BrowseLocationCommandBinding_Executed, DialogCommandHandlers.BrowseLocationCommandBinding_CanExecute),
@@ -38,7 +46,26 @@ namespace Rubberduck.UI.Services.Settings
 
         public bool ShowPinButton => false;
         
-        public ISettingGroupViewModel Settings { get; private set; }
+        public ICommand ExpandSettingGroupCommand { get; }
+
+        private void ExecuteExpandSettingGroupCommand(ISettingGroupViewModel model)
+        {
+            Selection = model;
+        }
+
+        private ISettingGroupViewModel _settings;
+        public ISettingGroupViewModel Settings 
+        {
+            get => _settings;
+            private set
+            {
+                if (_settings != value)
+                {
+                    _settings = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         private ISettingViewModel _selection;
         public ISettingViewModel Selection

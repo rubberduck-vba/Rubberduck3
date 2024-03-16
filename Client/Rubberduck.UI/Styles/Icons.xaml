@@ -19,6 +19,8 @@
     <BitmapImage x:Key="CircleCheckIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/circle-check-solid.png" />
     <BitmapImage x:Key="CircleWarnIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/circle-exclamation-solid.png" />
 
+    <BitmapImage x:Key="ExpandSectionIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/arrows-left-right-to-line-solid.png" />
+
     <BitmapImage x:Key="CollapseAllIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/square-minus-regular.png" />
     <BitmapImage x:Key="ExpandAllIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/square-plus-regular.png" />
 

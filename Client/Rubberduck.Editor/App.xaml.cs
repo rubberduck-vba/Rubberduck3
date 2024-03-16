@@ -198,21 +198,26 @@ namespace Rubberduck.Editor
 
         private async Task LoadWelcomeTabAsync(IShellWindowViewModel model)
         {
-            //var fileSystem = _serviceProvider.GetRequiredService<IFileSystem>();
-            //var path = fileSystem.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Rubberduck", "Templates", "Welcome.md");
-            //var content = await fileSystem.File.ReadAllTextAsync(path);
+            var fileSystem = _serviceProvider.GetRequiredService<IFileSystem>();
+            var folder = fileSystem.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Rubberduck", "Templates");
+            var filename = "Welcome.md";
+            var path = fileSystem.Path.Combine(folder, filename);
+            var content = await fileSystem.File.ReadAllTextAsync(path);
 
-            //var showSettingsCommand = _serviceProvider.GetRequiredService<ShowRubberduckSettingsCommand>();
-            //var closeToolWindowCommand = _serviceProvider.GetRequiredService<CloseToolWindowCommand>();
-            //var activeDocumentStatus = _serviceProvider.GetRequiredService<IDocumentStatusViewModel>();
-            //var welcome = new MarkdownDocumentTabViewModel(new WorkspaceFileUri(null!, new Uri(path)), "Welcome", content, isReadOnly: true, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus, () => _languageClient.LanguageClient!);
+            var rootUri = new Uri(folder);
+            var fileUri = new WorkspaceFileUri(filename, rootUri);
 
-            //var welcomeTabContent = new MarkdownEditorControl() { DataContext = welcome };
-            //welcome.ContentControl = welcomeTabContent;
-            //welcome.IsSelected = true;
+            var showSettingsCommand = _serviceProvider.GetRequiredService<ShowRubberduckSettingsCommand>();
+            var closeToolWindowCommand = _serviceProvider.GetRequiredService<CloseToolWindowCommand>();
+            var activeDocumentStatus = _serviceProvider.GetRequiredService<IDocumentStatusViewModel>();
+            var documentState = new DocumentState(fileUri, content, isOpened: true);
+            var welcome = new MarkdownDocumentTabViewModel(documentState, isReadOnly: true, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus, () => _languageClient.LanguageClient!);
+            var welcomeTabContent = new MarkdownEditorControl() { DataContext = welcome };
+            welcome.ContentControl = welcomeTabContent;
+            welcome.IsSelected = true;
 
-            //model.DocumentWindows.Add(welcome);
-            //model.ActiveDocumentTab = welcome;
+            model.DocumentWindows.Add(welcome);
+            model.ActiveDocumentTab = welcome;
         }
 
         protected override void OnExit(ExitEventArgs e)

@@ -14,7 +14,7 @@ namespace Rubberduck.UI.Converters
     public class WrapPanelItemWidthConverter : IValueConverter
     {
         public double MinItemWidth { get; set; } = 300;
-        public double MaxItemWidth { get; set; } = 512;
+        public double MaxItemWidth { get; set; } = 720;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

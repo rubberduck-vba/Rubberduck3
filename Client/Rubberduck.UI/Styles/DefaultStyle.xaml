@@ -502,9 +502,9 @@
 
     <Style x:Key="SectionBorderStyle" TargetType="Border">
         <Style.Setters>
-            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundMediumColorBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
-            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="8" />
             <Setter Property="Padding" Value="10,10,10,10" />
         </Style.Setters>

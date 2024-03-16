@@ -27,6 +27,13 @@
                                     CheckedIcon="{DynamicResource UnlockedIcon}"
                                     IsChecked="{Binding IsEnabled}"
                                     Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
+                <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Height="16"
+                                        Icon="{DynamicResource ExpandSectionIcon}"
+                                        ToolTip="Expand this setting group"
+                                        Command="{Binding DataContext.ExpandSettingGroupCommand, RelativeSource={RelativeSource AncestorType=viewmodels:SettingsWindow, Mode=FindAncestor}}"
+                                        CommandParameter="{Binding}"
+                                        IsChecked="{Binding IsExpanded}">
+                </shell:FlatToggleButton>
                 <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0" IsEnabled="{Binding IsEnabled}">
                     <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
                 </Label>
