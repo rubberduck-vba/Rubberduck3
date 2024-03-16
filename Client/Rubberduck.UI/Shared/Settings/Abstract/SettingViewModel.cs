@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.Settings.Model;
+using Rubberduck.Resources.v3;
 using System;
 
 namespace Rubberduck.UI.Shared.Settings.Abstract
@@ -17,8 +18,8 @@ namespace Rubberduck.UI.Shared.Settings.Abstract
 
         public SettingDataType SettingDataType => _setting.SettingDataType;
         public string Key => _setting.Key;
-        public string Name => _setting.Key; // TODO fetch from resources
-        public string Description => _setting.Key; // TODO fetch from resources
+        public string Name => SettingsUI.ResourceManager.GetString($"{_setting.Key}_Title") ?? $"[missing key:{_setting.Key}_Title]";
+        public string Description => SettingsUI.ResourceManager.GetString($"{_setting.Key}_Description") ?? $"[missing key:{_setting.Key}_Description]";
 
         public SettingTags Tags => _setting.Tags;
         public bool IsReadOnlyRecommended => Tags.HasFlag(SettingTags.ReadOnlyRecommended);

@@ -335,6 +335,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>RubberduckUICommands.resx</DependentUpon>
     </Compile>
+    <Compile Update="v3\SettingsUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingsUI.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Icons\RubberduckIcons.resx">
@@ -364,6 +369,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUICommands.Designer.cs</LastGenOutput>
       <CustomToolNamespace>Rubberduck.Resources.v3</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Update="v3\SettingsUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>SettingsUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
