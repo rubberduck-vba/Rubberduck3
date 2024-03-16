@@ -135,6 +135,12 @@
   <data name="ClientHealthCheckIntervalSetting_Title" xml:space="preserve">
     <value>Client Healthcheck Interval</value>
   </data>
+  <data name="CodeFoldingSettings_Description" xml:space="preserve">
+    <value>Configuration options for folding ranges in the editor, making document lines collapsible in various situations.</value>
+  </data>
+  <data name="CodeFoldingSettings_Title" xml:space="preserve">
+    <value>Code Foldings</value>
+  </data>
   <data name="DefaultToolWindowLocationSetting_Description" xml:space="preserve">
     <value>The default docking location for this tooltab.</value>
   </data>
@@ -195,11 +201,65 @@
   <data name="ExtendWindowChromeSetting_Title" xml:space="preserve">
     <value>Extend Window Chrome</value>
   </data>
+  <data name="FoldBlockStatementsSetting_Description" xml:space="preserve">
+    <value>Whether folding ranges should be created for block statements, e.g. If...End If, Do...Loop, With...End With, etc.</value>
+  </data>
+  <data name="FoldBlockStatementsSetting_Title" xml:space="preserve">
+    <value>Fold block statements</value>
+  </data>
+  <data name="FoldModuleAttributesSetting_Description" xml:space="preserve">
+    <value>Whether folding ranges should be created to make module attributes a collapsible section at the top of a module.</value>
+  </data>
+  <data name="FoldModuleAttributesSetting_Title" xml:space="preserve">
+    <value>Fold module attributes</value>
+  </data>
+  <data name="FoldModuleDeclarationsSetting_Description" xml:space="preserve">
+    <value>If enabled, creates a folding range encompassing the entire declarations section of a module.</value>
+  </data>
+  <data name="FoldModuleDeclarationsSetting_Title" xml:space="preserve">
+    <value>Fold module declarations</value>
+  </data>
+  <data name="FoldModuleHeaderSetting_Description" xml:space="preserve">
+    <value>If enabled, creates a folding range to hide the header section of a module.</value>
+  </data>
+  <data name="FoldModuleHeaderSetting_Title" xml:space="preserve">
+    <value>Fold module header</value>
+  </data>
+  <data name="FoldRegionsSetting_Description" xml:space="preserve">
+    <value>If enabled, custom folding ranges can be created using @Region/@EndRegion annotation comments.</value>
+  </data>
+  <data name="FoldRegionsSetting_Title" xml:space="preserve">
+    <value>Fold regions</value>
+  </data>
+  <data name="FoldScopesSetting_Description" xml:space="preserve">
+    <value>Whether folding ranges should be created for scopes, e.g. Sub, Function, Property members of a module.</value>
+  </data>
+  <data name="FoldScopesSetting_Title" xml:space="preserve">
+    <value>Fold scopes</value>
+  </data>
   <data name="GeneralSettings_Description" xml:space="preserve">
-    <value>Not just everything we couldn't neatly categorize elsewhere: general settings generally (see what we did happly to the entire application.</value>
+    <value>Not just everything we couldn't neatly categorize elsewhere: general settings generally apply to the entire application.</value>
   </data>
   <data name="GeneralSettings_Title" xml:space="preserve">
     <value>General Settings</value>
+  </data>
+  <data name="IncludePreReleasesSetting_Description" xml:space="preserve">
+    <value>If enabled, the update server considers pre-release builds when evaluating if a newer version is available.</value>
+  </data>
+  <data name="IncludePreReleasesSetting_Title" xml:space="preserve">
+    <value>Include pre-releases</value>
+  </data>
+  <data name="IsTelemetryEnabledSetting_Description" xml:space="preserve">
+    <value>Determines whether telemetry is enabled at all. Disabled by default, making telemetry explicitly opt-in.</value>
+  </data>
+  <data name="IsTelemetryEnabledSetting_Title" xml:space="preserve">
+    <value>Enable telemetry</value>
+  </data>
+  <data name="IsUpdateServerEnabledSetting_Description" xml:space="preserve">
+    <value>Determines whether the update server is allowed to run as a background process.</value>
+  </data>
+  <data name="IsUpdateServerEnabledSetting_Title" xml:space="preserve">
+    <value>Enable Update Server</value>
   </data>
   <data name="LanguageClientSettings_Description" xml:space="preserve">
     <value>These settings control the behavior of the language server client in the Rubberduck Editor.</value>
@@ -211,6 +271,18 @@
     <value>For a normal install these should never need to be changed. Proceed carefully!</value>
   </data>
   <data name="LanguageClientStartupSettings_Title" xml:space="preserve">
+    <value>Startup Settings</value>
+  </data>
+  <data name="LanguageServerSettings_Description" xml:space="preserve">
+    <value>Configuration specific to the language server application.</value>
+  </data>
+  <data name="LanguageServerSettings_Title" xml:space="preserve">
+    <value>Language Server Settings</value>
+  </data>
+  <data name="LanguageServerStartupSettings_Description" xml:space="preserve">
+    <value>For a normal install these should never need to be changed. Proceed carefully!</value>
+  </data>
+  <data name="LanguageServerStartupSettings_Title" xml:space="preserve">
     <value>Startup Settings</value>
   </data>
   <data name="LocaleSetting_Description" xml:space="preserve">
@@ -254,6 +326,30 @@
   </data>
   <data name="RequireSavedHostSetting_Title" xml:space="preserve">
     <value>Require Saved Host</value>
+  </data>
+  <data name="SendEventTelemetrySetting_Description" xml:space="preserve">
+    <value>If enabled, the telemetry server is allowed to transmit event data.</value>
+  </data>
+  <data name="SendEventTelemetrySetting_Title" xml:space="preserve">
+    <value>Send 'Event' telemetry</value>
+  </data>
+  <data name="SendExceptionTelemetrySetting_Description" xml:space="preserve">
+    <value>If enabled (recommended), the telemetry server is allowed to transmit exception (error) details.</value>
+  </data>
+  <data name="SendExceptionTelemetrySetting_Title" xml:space="preserve">
+    <value>Send 'Exception' telemetry</value>
+  </data>
+  <data name="SendMetricTelemetrySetting_Description" xml:space="preserve">
+    <value>Allows the telemetry server to transmit various aggregated metrics.</value>
+  </data>
+  <data name="SendMetricTelemetrySetting_Title" xml:space="preserve">
+    <value>Send 'Metric' telemetry</value>
+  </data>
+  <data name="SendTraceTelemetrySetting_Description" xml:space="preserve">
+    <value>If enabled, the telemetry server is allowed to transmit trace logs.</value>
+  </data>
+  <data name="SendTraceTelemetrySetting_Title" xml:space="preserve">
+    <value>Send 'Trace' telemetry</value>
   </data>
   <data name="ServerExecutablePathSetting_Description" xml:space="preserve">
     <value>The location of the server executable.</value>
@@ -303,6 +399,30 @@
   <data name="ShowWorkspaceExplorerOnProjectOpenSetting_Title" xml:space="preserve">
     <value>Show Workspace Explorer on Project Open</value>
   </data>
+  <data name="StreamTransmissionSetting_Description" xml:space="preserve">
+    <value>Determines whether telemetry data is transmitted automatically in periodic batches. If disabled, telemetry data must be manually transmitted.</value>
+  </data>
+  <data name="StreamTransmissionSetting_Title" xml:space="preserve">
+    <value>Stream transmission</value>
+  </data>
+  <data name="TelemetryEventQueueSizeSetting_Description" xml:space="preserve">
+    <value>The maximum number of telemetry events transmitted in a payload.</value>
+  </data>
+  <data name="TelemetryEventQueueSizeSetting_Title" xml:space="preserve">
+    <value>Event queue size</value>
+  </data>
+  <data name="TelemetryServerSettings_Description" xml:space="preserve">
+    <value>Regroups telemetry settings and configuration specific to the telemetry server application.</value>
+  </data>
+  <data name="TelemetryServerSettings_Title" xml:space="preserve">
+    <value>Telemetry Server Settings</value>
+  </data>
+  <data name="TelemetryServerStartupSettings_Description" xml:space="preserve">
+    <value>For a normal install these should never need to be changed. Proceed carefully!</value>
+  </data>
+  <data name="TelemetryServerStartupSettings_Title" xml:space="preserve">
+    <value>Startup Settings</value>
+  </data>
   <data name="TemplatesLocationSetting_Description" xml:space="preserve">
     <value>The folder location where the Rubberduck Editor expects to find project templates. This would normally be a 'Templates' folder under the Rubberduck installation directory.</value>
   </data>
@@ -321,10 +441,34 @@
   <data name="TraceLevelSetting_Title" xml:space="preserve">
     <value>Trace Level</value>
   </data>
+  <data name="UpdateServerSettings_Description" xml:space="preserve">
+    <value>The configuration for the update server / Rubberduck Installer app.</value>
+  </data>
+  <data name="UpdateServerSettings_Title" xml:space="preserve">
+    <value>Update Server Settings</value>
+  </data>
+  <data name="UpdateServerStartupSettings_Description" xml:space="preserve">
+    <value>For a normal install these should never need to be changed. Proceed carefully!</value>
+  </data>
+  <data name="UpdateServerStartupSettings_Title" xml:space="preserve">
+    <value>Startup Settings</value>
+  </data>
+  <data name="WebApiBaseUrlSetting_Description" xml:space="preserve">
+    <value>URL pointing to the Rubberduck3 web API. Probably doesn't need to change... unless you're trying to hit a dev or test version of the API.</value>
+  </data>
+  <data name="WebApiBaseUrlSetting_Title" xml:space="preserve">
+    <value>WebApi URL</value>
+  </data>
   <data name="WorkspaceExplorerSettings_Description" xml:space="preserve">
     <value>Settings used by the Workspace Explorer tooltab.</value>
   </data>
   <data name="WorkspaceExplorerSettings_Title" xml:space="preserve">
     <value>Workspace Explorer</value>
+  </data>
+  <data name="WorkspaceSettings_Description" xml:space="preserve">
+    <value>Settings relative to workspaces/projects.</value>
+  </data>
+  <data name="WorkspaceSettings_Title" xml:space="preserve">
+    <value>Workspace Settings</value>
   </data>
 </root>

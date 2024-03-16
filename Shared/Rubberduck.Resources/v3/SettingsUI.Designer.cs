@@ -115,6 +115,24 @@ namespace Rubberduck.Resources.v3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configuration options for folding ranges in the editor, making document lines collapsible in various situations..
+        /// </summary>
+        public static string CodeFoldingSettings_Description {
+            get {
+                return ResourceManager.GetString("CodeFoldingSettings_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code Foldings.
+        /// </summary>
+        public static string CodeFoldingSettings_Title {
+            get {
+                return ResourceManager.GetString("CodeFoldingSettings_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The default docking location for this tooltab..
         /// </summary>
         public static string DefaultToolWindowLocationSetting_Description {
@@ -295,7 +313,115 @@ namespace Rubberduck.Resources.v3 {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not just everything we couldn&apos;t neatly categorize elsewhere: general settings generally (see what we did happly to the entire application..
+        ///   Looks up a localized string similar to Whether folding ranges should be created for block statements, e.g. If...End If, Do...Loop, With...End With, etc..
+        /// </summary>
+        public static string FoldBlockStatementsSetting_Description {
+            get {
+                return ResourceManager.GetString("FoldBlockStatementsSetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fold block statements.
+        /// </summary>
+        public static string FoldBlockStatementsSetting_Title {
+            get {
+                return ResourceManager.GetString("FoldBlockStatementsSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Whether folding ranges should be created to make module attributes a collapsible section at the top of a module..
+        /// </summary>
+        public static string FoldModuleAttributesSetting_Description {
+            get {
+                return ResourceManager.GetString("FoldModuleAttributesSetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fold module attributes.
+        /// </summary>
+        public static string FoldModuleAttributesSetting_Title {
+            get {
+                return ResourceManager.GetString("FoldModuleAttributesSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If enabled, creates a folding range encompassing the entire declarations section of a module..
+        /// </summary>
+        public static string FoldModuleDeclarationsSetting_Description {
+            get {
+                return ResourceManager.GetString("FoldModuleDeclarationsSetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fold module declarations.
+        /// </summary>
+        public static string FoldModuleDeclarationsSetting_Title {
+            get {
+                return ResourceManager.GetString("FoldModuleDeclarationsSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If enabled, creates a folding range to hide the header section of a module..
+        /// </summary>
+        public static string FoldModuleHeaderSetting_Description {
+            get {
+                return ResourceManager.GetString("FoldModuleHeaderSetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fold module header.
+        /// </summary>
+        public static string FoldModuleHeaderSetting_Title {
+            get {
+                return ResourceManager.GetString("FoldModuleHeaderSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If enabled, custom folding ranges can be created using @Region/@EndRegion annotation comments..
+        /// </summary>
+        public static string FoldRegionsSetting_Description {
+            get {
+                return ResourceManager.GetString("FoldRegionsSetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fold regions.
+        /// </summary>
+        public static string FoldRegionsSetting_Title {
+            get {
+                return ResourceManager.GetString("FoldRegionsSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Whether folding ranges should be created for scopes, e.g. Sub, Function, Property members of a module..
+        /// </summary>
+        public static string FoldScopesSetting_Description {
+            get {
+                return ResourceManager.GetString("FoldScopesSetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fold scopes.
+        /// </summary>
+        public static string FoldScopesSetting_Title {
+            get {
+                return ResourceManager.GetString("FoldScopesSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not just everything we couldn&apos;t neatly categorize elsewhere: general settings generally apply to the entire application..
         /// </summary>
         public static string GeneralSettings_Description {
             get {
@@ -309,6 +435,60 @@ namespace Rubberduck.Resources.v3 {
         public static string GeneralSettings_Title {
             get {
                 return ResourceManager.GetString("GeneralSettings_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If enabled, the update server considers pre-release builds when evaluating if a newer version is available..
+        /// </summary>
+        public static string IncludePreReleasesSetting_Description {
+            get {
+                return ResourceManager.GetString("IncludePreReleasesSetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include pre-releases.
+        /// </summary>
+        public static string IncludePreReleasesSetting_Title {
+            get {
+                return ResourceManager.GetString("IncludePreReleasesSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Determines whether telemetry is enabled at all. Disabled by default, making telemetry explicitly opt-in..
+        /// </summary>
+        public static string IsTelemetryEnabledSetting_Description {
+            get {
+                return ResourceManager.GetString("IsTelemetryEnabledSetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable telemetry.
+        /// </summary>
+        public static string IsTelemetryEnabledSetting_Title {
+            get {
+                return ResourceManager.GetString("IsTelemetryEnabledSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Determines whether the update server is allowed to run as a background process..
+        /// </summary>
+        public static string IsUpdateServerEnabledSetting_Description {
+            get {
+                return ResourceManager.GetString("IsUpdateServerEnabledSetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Update Server.
+        /// </summary>
+        public static string IsUpdateServerEnabledSetting_Title {
+            get {
+                return ResourceManager.GetString("IsUpdateServerEnabledSetting_Title", resourceCulture);
             }
         }
         
@@ -345,6 +525,42 @@ namespace Rubberduck.Resources.v3 {
         public static string LanguageClientStartupSettings_Title {
             get {
                 return ResourceManager.GetString("LanguageClientStartupSettings_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configuration specific to the language server application..
+        /// </summary>
+        public static string LanguageServerSettings_Description {
+            get {
+                return ResourceManager.GetString("LanguageServerSettings_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language Server Settings.
+        /// </summary>
+        public static string LanguageServerSettings_Title {
+            get {
+                return ResourceManager.GetString("LanguageServerSettings_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For a normal install these should never need to be changed. Proceed carefully!.
+        /// </summary>
+        public static string LanguageServerStartupSettings_Description {
+            get {
+                return ResourceManager.GetString("LanguageServerStartupSettings_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Startup Settings.
+        /// </summary>
+        public static string LanguageServerStartupSettings_Title {
+            get {
+                return ResourceManager.GetString("LanguageServerStartupSettings_Title", resourceCulture);
             }
         }
         
@@ -471,6 +687,78 @@ namespace Rubberduck.Resources.v3 {
         public static string RequireSavedHostSetting_Title {
             get {
                 return ResourceManager.GetString("RequireSavedHostSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If enabled, the telemetry server is allowed to transmit event data..
+        /// </summary>
+        public static string SendEventTelemetrySetting_Description {
+            get {
+                return ResourceManager.GetString("SendEventTelemetrySetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send &apos;Event&apos; telemetry.
+        /// </summary>
+        public static string SendEventTelemetrySetting_Title {
+            get {
+                return ResourceManager.GetString("SendEventTelemetrySetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If enabled (recommended), the telemetry server is allowed to transmit exception (error) details..
+        /// </summary>
+        public static string SendExceptionTelemetrySetting_Description {
+            get {
+                return ResourceManager.GetString("SendExceptionTelemetrySetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send &apos;Exception&apos; telemetry.
+        /// </summary>
+        public static string SendExceptionTelemetrySetting_Title {
+            get {
+                return ResourceManager.GetString("SendExceptionTelemetrySetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allows the telemetry server to transmit various aggregated metrics..
+        /// </summary>
+        public static string SendMetricTelemetrySetting_Description {
+            get {
+                return ResourceManager.GetString("SendMetricTelemetrySetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send &apos;Metric&apos; telemetry.
+        /// </summary>
+        public static string SendMetricTelemetrySetting_Title {
+            get {
+                return ResourceManager.GetString("SendMetricTelemetrySetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If enabled, the telemetry server is allowed to transmit trace logs..
+        /// </summary>
+        public static string SendTraceTelemetrySetting_Description {
+            get {
+                return ResourceManager.GetString("SendTraceTelemetrySetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send &apos;Trace&apos; telemetry.
+        /// </summary>
+        public static string SendTraceTelemetrySetting_Title {
+            get {
+                return ResourceManager.GetString("SendTraceTelemetrySetting_Title", resourceCulture);
             }
         }
         
@@ -619,6 +907,78 @@ namespace Rubberduck.Resources.v3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Determines whether telemetry data is transmitted automatically in periodic batches. If disabled, telemetry data must be manually transmitted..
+        /// </summary>
+        public static string StreamTransmissionSetting_Description {
+            get {
+                return ResourceManager.GetString("StreamTransmissionSetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stream transmission.
+        /// </summary>
+        public static string StreamTransmissionSetting_Title {
+            get {
+                return ResourceManager.GetString("StreamTransmissionSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The maximum number of telemetry events transmitted in a payload..
+        /// </summary>
+        public static string TelemetryEventQueueSizeSetting_Description {
+            get {
+                return ResourceManager.GetString("TelemetryEventQueueSizeSetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event queue size.
+        /// </summary>
+        public static string TelemetryEventQueueSizeSetting_Title {
+            get {
+                return ResourceManager.GetString("TelemetryEventQueueSizeSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regroups telemetry settings and configuration specific to the telemetry server application..
+        /// </summary>
+        public static string TelemetryServerSettings_Description {
+            get {
+                return ResourceManager.GetString("TelemetryServerSettings_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Telemetry Server Settings.
+        /// </summary>
+        public static string TelemetryServerSettings_Title {
+            get {
+                return ResourceManager.GetString("TelemetryServerSettings_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For a normal install these should never need to be changed. Proceed carefully!.
+        /// </summary>
+        public static string TelemetryServerStartupSettings_Description {
+            get {
+                return ResourceManager.GetString("TelemetryServerStartupSettings_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Startup Settings.
+        /// </summary>
+        public static string TelemetryServerStartupSettings_Title {
+            get {
+                return ResourceManager.GetString("TelemetryServerStartupSettings_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The folder location where the Rubberduck Editor expects to find project templates. This would normally be a &apos;Templates&apos; folder under the Rubberduck installation directory..
         /// </summary>
         public static string TemplatesLocationSetting_Description {
@@ -673,6 +1033,60 @@ namespace Rubberduck.Resources.v3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The configuration for the update server / Rubberduck Installer app..
+        /// </summary>
+        public static string UpdateServerSettings_Description {
+            get {
+                return ResourceManager.GetString("UpdateServerSettings_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Server Settings.
+        /// </summary>
+        public static string UpdateServerSettings_Title {
+            get {
+                return ResourceManager.GetString("UpdateServerSettings_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For a normal install these should never need to be changed. Proceed carefully!.
+        /// </summary>
+        public static string UpdateServerStartupSettings_Description {
+            get {
+                return ResourceManager.GetString("UpdateServerStartupSettings_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Startup Settings.
+        /// </summary>
+        public static string UpdateServerStartupSettings_Title {
+            get {
+                return ResourceManager.GetString("UpdateServerStartupSettings_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URL pointing to the Rubberduck3 web API. Probably doesn&apos;t need to change... unless you&apos;re trying to hit a dev or test version of the API..
+        /// </summary>
+        public static string WebApiBaseUrlSetting_Description {
+            get {
+                return ResourceManager.GetString("WebApiBaseUrlSetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WebApi URL.
+        /// </summary>
+        public static string WebApiBaseUrlSetting_Title {
+            get {
+                return ResourceManager.GetString("WebApiBaseUrlSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings used by the Workspace Explorer tooltab..
         /// </summary>
         public static string WorkspaceExplorerSettings_Description {
@@ -687,6 +1101,24 @@ namespace Rubberduck.Resources.v3 {
         public static string WorkspaceExplorerSettings_Title {
             get {
                 return ResourceManager.GetString("WorkspaceExplorerSettings_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings relative to workspaces/projects..
+        /// </summary>
+        public static string WorkspaceSettings_Description {
+            get {
+                return ResourceManager.GetString("WorkspaceSettings_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Workspace Settings.
+        /// </summary>
+        public static string WorkspaceSettings_Title {
+            get {
+                return ResourceManager.GetString("WorkspaceSettings_Title", resourceCulture);
             }
         }
     }
