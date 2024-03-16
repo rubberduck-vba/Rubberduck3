@@ -26,7 +26,7 @@ namespace Rubberduck.UI.Services.Settings
             _factory = factory;
             _service = service;
             ShowSettingsCommand = new DelegateCommand(service, parameter => ResetToDefaults());
-            Settings = _factory.CreateViewModel(_service.Settings);
+            service.RunOnMainThread(() => Settings = _factory.CreateViewModel(_service.Settings));
 
             CommandBindings = new CommandBinding[]
             {
@@ -38,7 +38,7 @@ namespace Rubberduck.UI.Services.Settings
 
         public bool ShowPinButton => false;
         
-        public ISettingGroupViewModel Settings { get; }
+        public ISettingGroupViewModel Settings { get; private set; }
 
         private ISettingViewModel _selection;
         public ISettingViewModel Selection
@@ -79,12 +79,7 @@ namespace Rubberduck.UI.Services.Settings
             };
 
             var result = _message.ShowMessageRequest(model, provider => provider.OkCancel());
-            if (!result.IsEnabled && result.MessageAction.IsDefaultAction)
-            {
-                DisabledMessageKeysSetting.DisableMessageKey(model.Key, _service.SettingsProvider);
-            }
-
-            return !result.IsEnabled && result.MessageAction == MessageAction.Undefined
+            return (!result.IsEnabled && result.MessageAction == MessageAction.Undefined)
                 || result.MessageAction == MessageAction.AcceptAction;
         }
     }

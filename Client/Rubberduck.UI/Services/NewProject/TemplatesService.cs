@@ -179,17 +179,7 @@ namespace Rubberduck.UI.Services.NewProject
                 MessageActions = [MessageAction.AcceptConfirmAction, MessageAction.CancelAction]
             };
 
-            var result = _messages.ShowMessageRequest(model);
-            if (result.MessageAction.IsDefaultAction)
-            {
-                if (!result.IsEnabled)
-                {
-                    DisabledMessageKeysSetting.DisableMessageKey(model.Key, SettingsProvider);
-                }
-                return true;
-            }
-
-            return false;
+            return _messages.ShowMessageRequest(model)?.MessageAction.IsDefaultAction ?? false;
         }
 
         public IEnumerable<ProjectTemplate> GetProjectTemplates()

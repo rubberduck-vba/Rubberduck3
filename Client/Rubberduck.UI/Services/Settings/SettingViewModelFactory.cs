@@ -94,9 +94,7 @@ namespace Rubberduck.UI.Services.Settings
                 case TypedRubberduckSetting<TimeSpan> timeSpanSetting:
                     return CreateViewModel(timeSpanSetting);
                 case TypedRubberduckSetting<string[]> listSetting:
-                    return new ListSettingViewModel(_service, listSetting);
-                //case CodeFoldingSettings foldingSettings:
-                //    return CreateViewModel(foldingSettings);
+                    return new StringListSettingViewModel(_service, listSetting);
                 case TypedSettingGroup subGroup:
                     return CreateViewModel(subGroup);
                 case TypedRubberduckSetting<BooleanRubberduckSetting[]> telemetrySettingGroup:

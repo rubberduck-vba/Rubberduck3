@@ -48,10 +48,6 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
 
                     var model = MessageRequestModel.For(level, request.Message, actions);
                     var generalSettings = _service.Settings.GeneralSettings;
-                    if (result.MessageAction.IsDefaultAction && !result.IsEnabled)
-                    {
-                        DisabledMessageKeysSetting.DisableMessageKey(model.Key, _service.SettingsProvider);
-                    }
                 }, nameof(ShowMessageRequestHandler));
             }
             else
