@@ -50,7 +50,7 @@ namespace Rubberduck.UI.Services.Settings
         {
             if (settingGroup is RubberduckSettings root)
             {
-                var items = root.TypedValue.OfType<TypedSettingGroup>().Select(e => CreateViewModel(e)).ToList();
+                var items = root.TypedValue.OfType<TypedSettingGroup>().Select(CreateViewModel).ToList();
                 return new SettingGroupViewModel(root, items);
             }
             else

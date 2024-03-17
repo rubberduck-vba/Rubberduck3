@@ -209,6 +209,8 @@
     <None Remove="Resources\FontAwesome\square-xmark-solid-red.png" />
     <None Remove="Resources\FontAwesome\square-xmark-solid.png" />
     <None Remove="Resources\FontAwesome\thumbtack-solid.png" />
+    <None Remove="Resources\FontAwesome\toggle-off-solid.png" />
+    <None Remove="Resources\FontAwesome\toggle-on-solid.png" />
     <None Remove="Resources\FontAwesome\window-maximize-regular.png" />
     <None Remove="Resources\FontAwesome\window-minimize-regular.png" />
     <None Remove="Resources\FontAwesome\window-restore-regular.png" />
@@ -258,6 +260,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AsyncAwaitBestPractices" Version="7.0.0" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
     <PackageReference Include="Dragablz" Version="0.0.3.234" />
     <PackageReference Include="MdXaml" Version="1.21.0" />
@@ -469,6 +472,8 @@
     <Resource Include="Resources\FontAwesome\square-xmark-solid-red.png" />
     <Resource Include="Resources\FontAwesome\square-xmark-solid.png" />
     <Resource Include="Resources\FontAwesome\thumbtack-solid.png" />
+    <Resource Include="Resources\FontAwesome\toggle-off-solid.png" />
+    <Resource Include="Resources\FontAwesome\toggle-on-solid.png" />
     <Resource Include="Resources\FontAwesome\window-maximize-regular.png" />
     <Resource Include="Resources\FontAwesome\window-minimize-regular.png" />
     <Resource Include="Resources\FontAwesome\window-restore-regular.png" />

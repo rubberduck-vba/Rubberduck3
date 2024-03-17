@@ -4,6 +4,7 @@ namespace Rubberduck.UI.Shared.Settings.Abstract
 {
     public interface ISettingGroupViewModel : ISettingViewModel
     {
-        public ObservableCollection<ISettingViewModel> Items { get; }
+        ObservableCollection<ISettingViewModel> Items { get; }
+        bool IsExpanded { get; }
     }
 }

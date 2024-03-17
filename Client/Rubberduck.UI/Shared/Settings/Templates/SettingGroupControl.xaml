@@ -5,8 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.UI.Shared.Settings.Templates"
              xmlns:viewmodels="clr-namespace:Rubberduck.UI.Shared.Settings" 
+             xmlns:abstract="clr-namespace:Rubberduck.UI.Shared.Settings.Abstract" 
              xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
              xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase" 
+             xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz" xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
+             d:DataContext="{d:DesignInstance Type=viewmodels:SettingGroupViewModel}"
              Padding="4" MinHeight="128" MinWidth="300"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -26,42 +29,74 @@
         <DockPanel>
             <DockPanel DockPanel.Dock="Top">
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
-                                        Height="16" Width="20" OffsetX="2"
+                                        Height="20" Width="24" OffsetX="2"
                     Icon="{StaticResource LockedIcon}" 
                     CheckedIcon="{StaticResource UnlockedIcon}"
                     IsChecked="{Binding IsEnabled}"
                     ToolTip="Locked (read-only recommended). Click to edit."
                     Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
+                
+                <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
+                                        Height="20" Width="20" OffsetX="0"
+                                        Icon="{StaticResource ExpandSectionIcon}" 
+                                        Command="{Binding DataContext.ExpandSettingGroupCommand, RelativeSource={RelativeSource AncestorType=viewmodels:SettingsWindow, Mode=FindAncestor}}"
+                                        CommandParameter="{Binding}"
+                                        IsChecked="{Binding IsExpanded}"
+                                        Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVisibilityConverter}}" />
+
                 <Label DockPanel.Dock="Top" Style="{DynamicResource SectionTitleLabelStyle}" Margin="0">
                     <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
                 </Label>
             </DockPanel>
-            <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
-                <Label Style="{DynamicResource FormFieldValueLabelStyle}" Margin="4,0">
+            
+            <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto" MinHeight="48">
+                <Label Style="{DynamicResource FormFieldValueLabelStyle}" Margin="4,0" VerticalAlignment="Top" Height="Auto">
                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
                 </Label>
             </ScrollViewer>
+            
             <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
-                <ListBox HorizontalContentAlignment="Stretch" BorderThickness="0"
+                <ListBox HorizontalContentAlignment="Stretch"
+                         BorderThickness="0" Padding="2" Background="Transparent"
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         VirtualizingPanel.IsVirtualizing="True"
                          VerticalContentAlignment="Stretch"
                          ItemsSource="{Binding Items}"
                          ItemTemplateSelector="{DynamicResource SettingTemplateSelector}">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="MaxHeight" Value="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Grid, Mode=FindAncestor,AncestorLevel=2}}" />
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            <Setter Property="HorizontalAlignment" Value="Stretch" />
-                        </Style>
-                    </ListBox.ItemContainerStyle>
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel ItemWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollViewer, Mode=FindAncestor}, 
-                                Converter={StaticResource WrapPanelItemWidthConverter}, 
-                                ConverterParameter={StaticResource ItemsViewSource}}" />
+                            <WrapPanel />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Width">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource WrapPanelItemWidthMultiConverter}">
+                                        <Binding Path="ActualWidth" RelativeSource="{RelativeSource AncestorType=ListBox, Mode=FindAncestor,AncestorLevel=1}" />
+                                        <Binding Path="ItemsSource" RelativeSource="{RelativeSource AncestorType=ListBox, Mode=FindAncestor,AncestorLevel=1}" />
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="MaxHeight" Value="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=ListBox, Mode=FindAncestor,AncestorLevel=1}}" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSettingGroup}" Value="True">
+                                    <Setter Property="Width">
+                                        <Setter.Value>
+                                            <MultiBinding Converter="{StaticResource WrapPanelItemWidthMultiConverter}">
+                                                <Binding Path="ActualWidth" RelativeSource="{RelativeSource AncestorType=ListBox, Mode=FindAncestor,AncestorLevel=1}" />
+                                                <Binding Path="ItemsSource" RelativeSource="{RelativeSource AncestorType=ListBox, Mode=FindAncestor,AncestorLevel=1}" />
+                                                <Binding Path="Width" RelativeSource="{RelativeSource AncestorType=ListBox, Mode=FindAncestor,AncestorLevel=1}" />
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                 </ListBox>
             </ScrollViewer>
         </DockPanel>

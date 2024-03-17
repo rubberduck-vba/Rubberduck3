@@ -63,12 +63,12 @@
                     </ListView>
                 </Border>
 
-                
-                <templates:SettingGroupControl Grid.Column="1" 
-                                               DataContext="{Binding Selection}"
-                                               Background="{DynamicResource ThemeWhiteLightColorBrush75}" 
-                                               BorderThickness="1" BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}"
-                                               Margin="5"/>
+                <Border Grid.Column="1" 
+                        BorderThickness="1" BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}" 
+                        Background="{DynamicResource ThemeWhiteLightColorBrush65}"
+                        CornerRadius="4" Margin="5" Padding="10">
+                    <templates:SettingGroupControl DataContext="{Binding Selection}" />
+                </Border>
             </Grid>
         </shell:ThunderFrame>
         <Thumb Grid.Row="1" HorizontalAlignment="Right" IsEnabled="True" IsHitTestVisible="True" WindowChrome.IsHitTestVisibleInChrome="True"

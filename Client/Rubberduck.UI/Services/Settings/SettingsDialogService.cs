@@ -7,6 +7,7 @@ using System.Linq;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.InternalApi.Services;
+using Rubberduck.UI.Shared.Settings.Abstract;
 
 namespace Rubberduck.UI.Services.Settings
 {
@@ -46,6 +47,29 @@ namespace Rubberduck.UI.Services.Settings
             return vm;
         }
 
+        private ISettingGroupViewModel GetSettingGroup(string key)
+        {
+            var flattened = Settings.Flatten();
+            
+            // if the key is a top-level setting group, we return it immediately
+            // because there is no need to figure out the parent.
+            var groups = Settings.TypedValue.OfType<TypedSettingGroup>().ToDictionary(e => e.Key, e => e);
+            if (groups.TryGetValue(key, out var settingGroup))
+            {
+                return _vmFactory.CreateViewModel(settingGroup);
+            }
+
+            // first find the key we're looking for
+            var item = flattened.Single(e => e.Key == key);
+
+            // now find its parent
+            var parent = flattened.OfType<TypedSettingGroup>().SingleOrDefault(e => e.TypedValue.Any(e => e.Key == key));
+            var parentViewModel = (ISettingGroupViewModel)CreateViewModel(Settings, _actionsProvider);
+
+            // push parent to nav stack, then push vm
+            return parentViewModel;
+        }
+
         public SettingsWindowViewModel ShowDialog(string key)
         {
             SettingsWindowViewModel viewModel = default!;
@@ -60,7 +84,7 @@ namespace Rubberduck.UI.Services.Settings
                     ?? throw new InvalidOperationException($"CreateViewModel returned null.");
 
                 var settingGroup = viewModel.Settings.Items.Select(e => (VM: e, e.Key)).SingleOrDefault(e => e.Key == key).VM;
-                viewModel.Selection = settingGroup;
+                viewModel.Selection = settingGroup ?? viewModel.Settings;                
 
                 view = _factory.Create(viewModel)
                     ?? throw new InvalidOperationException($"ViewFactory.Create returned null.");

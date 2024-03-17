@@ -871,6 +871,24 @@ namespace Rubberduck.Resources.v3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable this option to open this tooltab on startup..
+        /// </summary>
+        public static string ShowToolWindowOnStartupSetting_Description {
+            get {
+                return ResourceManager.GetString("ShowToolWindowOnStartupSetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show tooltab on startup.
+        /// </summary>
+        public static string ShowToolWindowOnStartupSetting_Title {
+            get {
+                return ResourceManager.GetString("ShowToolWindowOnStartupSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to If enabled, the editor will automatically load and open a &quot;welcome&quot; document on startup. This document contains release notes and other information about the current version..
         /// </summary>
         public static string ShowWelcomeTabSetting_Description {

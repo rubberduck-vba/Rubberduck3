@@ -52,7 +52,8 @@
                           BorderThickness="0" BorderBrush="Transparent"
                           Margin="8"
                           HorizontalContentAlignment="Stretch"
-                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         VirtualizingPanel.IsVirtualizing="True"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
                           ItemTemplateSelector="{DynamicResource SettingTemplateSelector}">
                     <ListBox.ItemContainerStyle>

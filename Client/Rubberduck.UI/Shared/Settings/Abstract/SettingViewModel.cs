@@ -22,6 +22,7 @@ namespace Rubberduck.UI.Shared.Settings.Abstract
         public string Description => SettingsUI.ResourceManager.GetString($"{_setting.Key}_Description") ?? $"[missing key:{_setting.Key}_Description]";
 
         public SettingTags Tags => _setting.Tags;
+        public bool IsSettingGroup => false;
         public bool IsReadOnlyRecommended => Tags.HasFlag(SettingTags.ReadOnlyRecommended);
         public bool IsAdvancedSetting => Tags.HasFlag(SettingTags.Advanced);
         public bool IsExperimental => Tags.HasFlag(SettingTags.Experimental);

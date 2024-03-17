@@ -8,6 +8,7 @@ using Rubberduck.UI.Shared.Settings;
 using Rubberduck.UI.Shared.Settings.Abstract;
 using Rubberduck.UI.Windows;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -36,10 +37,10 @@ namespace Rubberduck.UI.Services.Settings
                 }
             });
 
-            CommandBindings = new CommandBinding[]
-            {
+            CommandBindings =
+            [
                 new(NavigationCommands.Search, DialogCommandHandlers.BrowseLocationCommandBinding_Executed, DialogCommandHandlers.BrowseLocationCommandBinding_CanExecute),
-            };
+            ];
         }
 
         public override IEnumerable<CommandBinding> CommandBindings { get; }
@@ -48,9 +49,25 @@ namespace Rubberduck.UI.Services.Settings
         
         public ICommand ExpandSettingGroupCommand { get; }
 
+        private Stack<ISettingViewModel> _previous = [];
         private void ExecuteExpandSettingGroupCommand(ISettingGroupViewModel model)
         {
-            Selection = model;
+            if (model.IsExpanded)
+            {
+                _previous.Push(Selection);
+                Selection = model;
+            }
+            else
+            {
+                if (_previous.TryPop(out var previous))
+                {
+                    Selection = previous;
+                }
+                else
+                {
+                    Selection = _settings.Items.FirstOrDefault()!;
+                }
+            }
         }
 
         private ISettingGroupViewModel _settings;

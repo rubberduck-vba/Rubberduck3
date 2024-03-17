@@ -19,7 +19,7 @@ namespace Rubberduck.UI.Shared.Settings
         public SettingGroupViewModel(TypedSettingGroup settingGroup, IEnumerable<ISettingViewModel> items)
         {
             _settingGroup = settingGroup;
-            Items = new ObservableCollection<ISettingViewModel>(items);
+            Items = new ObservableCollection<ISettingViewModel>(items.OrderBy(e => e.IsSettingGroup));
             IsEnabled = !_settingGroup.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
         }
 
@@ -32,6 +32,8 @@ namespace Rubberduck.UI.Shared.Settings
 
         public ObservableCollection<ISettingViewModel> Items { get; init; }
 
+        public bool IsSettingGroup => true;
+
         public SettingDataType SettingDataType => _settingGroup.SettingDataType;
         public string Key => _settingGroup.Key;
         public string Name => SettingsUI.ResourceManager.GetString($"{_settingGroup.Key}_Title") ?? $"[missing key:{_settingGroup.Key}_Title]";
@@ -39,7 +41,7 @@ namespace Rubberduck.UI.Shared.Settings
         public string Description => SettingsUI.ResourceManager.GetString($"{_settingGroup.Key}_Description") ?? $"[missing key:{_settingGroup.Key}_Description]";
 
         public SettingTags Tags => _settingGroup.Tags;
-        public bool IsReadOnlyRecommended => Tags.HasFlag(SettingTags.ReadOnlyRecommended);
+        public bool IsReadOnlyRecommended => !IsExpanded && Tags.HasFlag(SettingTags.ReadOnlyRecommended);
         public bool IsAdvancedSetting => Tags.HasFlag(SettingTags.Advanced);
         public bool IsExperimental => Tags.HasFlag(SettingTags.Experimental);
 

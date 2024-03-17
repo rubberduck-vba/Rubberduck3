@@ -13,22 +13,26 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <SolidColorBrush x:Key="ScrollBar.Static.Background" Color="{DynamicResource ThemeBackgroundDarkColor}"/>
-    <SolidColorBrush x:Key="ScrollBar.Static.Border" Color="{DynamicResource ThemeBackgroundMediumColor}"/>
-    <SolidColorBrush x:Key="ScrollBar.Static.Glyph" Color="{DynamicResource ThemeTextColor}"/>
-    <SolidColorBrush x:Key="ScrollBar.Static.Thumb" Color="{DynamicResource ThemeBackgroundMediumColor}"/>
-    <SolidColorBrush x:Key="ScrollBar.MouseOver.Background" Color="{DynamicResource ThemeBackgroundDarkColor}"/>
-    <SolidColorBrush x:Key="ScrollBar.MouseOver.Border" Color="{DynamicResource ThemeBackgroundLightColor}"/>
-    <SolidColorBrush x:Key="ScrollBar.MouseOver.Glyph" Color="{DynamicResource ThemeTextColor}"/>
-    <SolidColorBrush x:Key="ScrollBar.MouseOver.Thumb" Color="{DynamicResource ThemeBackgroundLightColor}"/>
+    <SolidColorBrush x:Key="ScrollBar.Static.Background" Color="{DynamicResource ThemeBackgroundColor}"/>
+    <SolidColorBrush x:Key="ScrollBar.MouseOver.Background" Color="{DynamicResource ThemeBackgroundColor}"/>
     <SolidColorBrush x:Key="ScrollBar.Pressed.Background" Color="{DynamicResource ThemeAccent1DarkColor}"/>
-    <SolidColorBrush x:Key="ScrollBar.Pressed.Border" Color="{DynamicResource ThemeAccent1DarkColor}"/>
-    <SolidColorBrush x:Key="ScrollBar.Pressed.Thumb" Color="{DynamicResource ThemeAccent1DarkColor}"/>
-    <SolidColorBrush x:Key="ScrollBar.Pressed.Glyph" Color="{DynamicResource ThemeAccent1TextColor}"/>
     <SolidColorBrush x:Key="ScrollBar.Disabled.Background" Color="{DynamicResource ThemeBackgroundDarkColor}"/>
+
+    <SolidColorBrush x:Key="ScrollBar.Static.Border" Color="{DynamicResource ThemeBackgroundDarkColor}"/>
+    <SolidColorBrush x:Key="ScrollBar.MouseOver.Border" Color="{DynamicResource ThemeBackgroundDarkColor}"/>
+    <SolidColorBrush x:Key="ScrollBar.Pressed.Border" Color="{DynamicResource ThemeAccent1DarkColor}"/>
     <SolidColorBrush x:Key="ScrollBar.Disabled.Border" Color="{DynamicResource ThemeBackgroundDarkColor}"/>
-    <SolidColorBrush x:Key="ScrollBar.Disabled.Glyph" Color="{DynamicResource ThemeTextInactiveColor}"/>
-    
+
+    <SolidColorBrush x:Key="ScrollBar.Static.Glyph" Color="{DynamicResource ThemeTextColor}"/>
+    <SolidColorBrush x:Key="ScrollBar.MouseOver.Glyph" Color="{DynamicResource ThemeTextColor}"/>
+    <SolidColorBrush x:Key="ScrollBar.Pressed.Glyph" Color="{DynamicResource ThemeBackgroundColor}"/> 
+    <SolidColorBrush x:Key="ScrollBar.Disabled.Glyph" Color="{DynamicResource ThemeBlackLightColor}"/>
+
+    <SolidColorBrush x:Key="ScrollBar.Static.Thumb" Color="{DynamicResource ThemeBackgroundDarkColor}"/>
+    <SolidColorBrush x:Key="ScrollBar.MouseOver.Thumb" Color="{DynamicResource ThemeBackgroundDarkColor}"/>
+    <SolidColorBrush x:Key="ScrollBar.Pressed.Thumb" Color="{DynamicResource ThemeBackgroundMediumColor}"/>
+    <SolidColorBrush x:Key="ScrollBar.Disabled.Thumb" Color="{DynamicResource ThemeTextInactiveColor}"/>
+
     <Style x:Key="RepeatButtonTransparent" TargetType="{x:Type RepeatButton}">
         <Setter Property="OverridesDefaultStyle" Value="true"/>
         <Setter Property="Background" Value="Transparent"/>

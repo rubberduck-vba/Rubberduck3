@@ -19,7 +19,10 @@
     <BitmapImage x:Key="CircleCheckIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/circle-check-solid.png" />
     <BitmapImage x:Key="CircleWarnIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/circle-exclamation-solid.png" />
 
+    <BitmapImage x:Key="CollapseSectionIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/arrows-left-right-to-line-solid.png" />
     <BitmapImage x:Key="ExpandSectionIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/arrows-left-right-to-line-solid.png" />
+    <BitmapImage x:Key="ToggleOffIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/toggle-off-solid.png" />
+    <BitmapImage x:Key="ToggleOnIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/toggle-on-solid.png" />
 
     <BitmapImage x:Key="CollapseAllIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/square-minus-regular.png" />
     <BitmapImage x:Key="ExpandAllIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/square-plus-regular.png" />
@@ -33,6 +36,7 @@
     <BitmapImage x:Key="ShowIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/eye-solid.png" />
     <BitmapImage x:Key="HideIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/eye-slash-solid.png" />
 
+    <BitmapImage x:Key="WaitIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/hourglass-half-solid.png" />
     <BitmapImage x:Key="CancelIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/ban-solid.png" />
 
     <BitmapImage x:Key="SynchronizeIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/arrows-spin-solid.png" />

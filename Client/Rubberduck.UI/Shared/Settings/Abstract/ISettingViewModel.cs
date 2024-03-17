@@ -5,6 +5,7 @@ namespace Rubberduck.UI.Shared.Settings.Abstract
 {
     public interface ISettingViewModel : INotifyPropertyChanged
     {
+        bool IsSettingGroup { get; }
         string Key { get; }
         SettingDataType SettingDataType { get; }
         string Name { get; }
