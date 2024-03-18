@@ -1,12 +1,11 @@
-﻿using Rubberduck.InternalApi.Settings.Model;
+﻿using AsyncAwaitBestPractices;
+using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Shared.Settings.Abstract;
 using System;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using AsyncAwaitBestPractices;
 
 namespace Rubberduck.UI.Shared.Settings
 {

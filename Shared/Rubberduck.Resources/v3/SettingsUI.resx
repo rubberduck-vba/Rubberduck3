@@ -189,6 +189,18 @@
   <data name="EnableUncWorkspacesSetting_Title" xml:space="preserve">
     <value>Enable UNC Workspaces</value>
   </data>
+  <data name="EventTelemetrySettings_Description" xml:space="preserve">
+    <value>Event telemetry provides insight about application events, which is notably useful for identifying how and whether features are discovered.</value>
+  </data>
+  <data name="EventTelemetrySettings_Title" xml:space="preserve">
+    <value>Event Telemetry Settings</value>
+  </data>
+  <data name="ExceptionTelemetrySettings_Description" xml:space="preserve">
+    <value>Exception telemetry provides information about errors and their context, which can be useful for identifying bugs and problems.</value>
+  </data>
+  <data name="ExceptionTelemetrySettings_Title" xml:space="preserve">
+    <value>Exception Telemetry Settings</value>
+  </data>
   <data name="ExitNotificationDelaySetting_Description" xml:space="preserve">
     <value>The duration of the delay afforded to the language server between 'shutdown' and 'exit' notifications.</value>
   </data>
@@ -309,6 +321,12 @@
   <data name="MaximumMessagesSetting_Title" xml:space="preserve">
     <value>Maximum Messages</value>
   </data>
+  <data name="MetricTelemetrySettings_Description" xml:space="preserve">
+    <value>Metric telemetry collects and aggregates various metrics, including performance and counters.</value>
+  </data>
+  <data name="MetricTelemetrySettings_Title" xml:space="preserve">
+    <value>Metric Telemetry Settings</value>
+  </data>
   <data name="RequireAddInHostSetting_Description" xml:space="preserve">
     <value>If enabled, the Rubberduck Editor cannot be executed standalone, it must be started from within the VBIDE by the Rubberduck add-in.</value>
   </data>
@@ -326,6 +344,12 @@
   </data>
   <data name="RequireSavedHostSetting_Title" xml:space="preserve">
     <value>Require Saved Host</value>
+  </data>
+  <data name="RubberduckSettings_Description" xml:space="preserve">
+    <value>The top-level settings group that encompasses all other Rubberduck settings.</value>
+  </data>
+  <data name="RubberduckSettings_Title" xml:space="preserve">
+    <value>Rubberduck Settings</value>
   </data>
   <data name="SendEventTelemetrySetting_Description" xml:space="preserve">
     <value>If enabled, the telemetry server is allowed to transmit event data.</value>
@@ -446,6 +470,12 @@
   </data>
   <data name="TraceLevelSetting_Title" xml:space="preserve">
     <value>Trace Level</value>
+  </data>
+  <data name="TraceTelemetrySettings_Description" xml:space="preserve">
+    <value>Trace telemetry collects trace logs that can be used for troubleshooting.</value>
+  </data>
+  <data name="TraceTelemetrySettings_Title" xml:space="preserve">
+    <value>Trace Telemetry Settings</value>
   </data>
   <data name="UpdateServerSettings_Description" xml:space="preserve">
     <value>The configuration for the update server / Rubberduck Installer app.</value>

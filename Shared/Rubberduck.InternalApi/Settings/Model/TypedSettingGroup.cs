@@ -60,13 +60,16 @@ public abstract record class TypedSettingGroup : TypedRubberduckSetting<Rubberdu
     }
 }
 
-public abstract record class EnumSettingGroup<TEnum> : TypedRubberduckSetting<BooleanRubberduckSetting[]>
-    where TEnum : struct, Enum
+public abstract record class MappedBoolSettingGroup : TypedRubberduckSetting<BooleanRubberduckSetting[]>
 {
-    public BooleanRubberduckSetting GetSetting(TEnum key) => ((BooleanRubberduckSetting[])Value).Single(e => e.Key == key.ToString());
-
-    protected EnumSettingGroup()
+    protected MappedBoolSettingGroup()
     {
         SettingDataType = SettingDataType.SettingGroup;
     }
+}
+
+public abstract record class EnumSettingGroup<TEnum> : MappedBoolSettingGroup
+    where TEnum : struct, Enum
+{
+    public BooleanRubberduckSetting GetSetting(TEnum key) => ((BooleanRubberduckSetting[])Value).Single(e => e.Key == key.ToString());
 }

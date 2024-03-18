@@ -277,6 +277,42 @@ namespace Rubberduck.Resources.v3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Event telemetry provides insight about application events, which is notably useful for identifying how and whether features are discovered..
+        /// </summary>
+        public static string EventTelemetrySettings_Description {
+            get {
+                return ResourceManager.GetString("EventTelemetrySettings_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event Telemetry Settings.
+        /// </summary>
+        public static string EventTelemetrySettings_Title {
+            get {
+                return ResourceManager.GetString("EventTelemetrySettings_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exception telemetry provides information about errors and their context, which can be useful for identifying bugs and problems..
+        /// </summary>
+        public static string ExceptionTelemetrySettings_Description {
+            get {
+                return ResourceManager.GetString("ExceptionTelemetrySettings_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exception Telemetry Settings.
+        /// </summary>
+        public static string ExceptionTelemetrySettings_Title {
+            get {
+                return ResourceManager.GetString("ExceptionTelemetrySettings_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The duration of the delay afforded to the language server between &apos;shutdown&apos; and &apos;exit&apos; notifications..
         /// </summary>
         public static string ExitNotificationDelaySetting_Description {
@@ -637,6 +673,24 @@ namespace Rubberduck.Resources.v3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Metric telemetry collects and aggregates various metrics, including performance and counters..
+        /// </summary>
+        public static string MetricTelemetrySettings_Description {
+            get {
+                return ResourceManager.GetString("MetricTelemetrySettings_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metric Telemetry Settings.
+        /// </summary>
+        public static string MetricTelemetrySettings_Title {
+            get {
+                return ResourceManager.GetString("MetricTelemetrySettings_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to If enabled, the Rubberduck Editor cannot be executed standalone, it must be started from within the VBIDE by the Rubberduck add-in..
         /// </summary>
         public static string RequireAddInHostSetting_Description {
@@ -687,6 +741,24 @@ namespace Rubberduck.Resources.v3 {
         public static string RequireSavedHostSetting_Title {
             get {
                 return ResourceManager.GetString("RequireSavedHostSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The top-level settings group that encompasses all other Rubberduck settings..
+        /// </summary>
+        public static string RubberduckSettings_Description {
+            get {
+                return ResourceManager.GetString("RubberduckSettings_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck Settings.
+        /// </summary>
+        public static string RubberduckSettings_Title {
+            get {
+                return ResourceManager.GetString("RubberduckSettings_Title", resourceCulture);
             }
         }
         
@@ -1047,6 +1119,24 @@ namespace Rubberduck.Resources.v3 {
         public static string TraceLevelSetting_Title {
             get {
                 return ResourceManager.GetString("TraceLevelSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trace telemetry collects trace logs that can be used for troubleshooting..
+        /// </summary>
+        public static string TraceTelemetrySettings_Description {
+            get {
+                return ResourceManager.GetString("TraceTelemetrySettings_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trace Telemetry Settings.
+        /// </summary>
+        public static string TraceTelemetrySettings_Title {
+            get {
+                return ResourceManager.GetString("TraceTelemetrySettings_Title", resourceCulture);
             }
         }
         

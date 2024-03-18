@@ -9,6 +9,6 @@ public record class IsTelemetryEnabledSetting : BooleanRubberduckSetting
 
     public IsTelemetryEnabledSetting()
     {
-        DefaultValue = DefaultSettingValue;
+        Value = DefaultValue = DefaultSettingValue;
     }
 }

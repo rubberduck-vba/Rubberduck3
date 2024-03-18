@@ -30,6 +30,13 @@ namespace Rubberduck.UI.Shared.Settings
             IsEnabled = !_settingGroup.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
         }
 
+        public SettingGroupViewModel(TypedRubberduckSetting<RubberduckSetting[]> settingGroup, IEnumerable<ISettingViewModel> items)
+        {
+            _settingGroup = settingGroup;
+            Items = new ObservableCollection<ISettingViewModel>(items);
+            IsEnabled = !_settingGroup.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
+        }
+
         public ObservableCollection<ISettingViewModel> Items { get; init; }
 
         public bool IsSettingGroup => true;

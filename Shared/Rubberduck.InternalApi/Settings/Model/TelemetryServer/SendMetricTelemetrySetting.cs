@@ -9,6 +9,6 @@ public record class SendMetricTelemetrySetting : BooleanRubberduckSetting
 
     public SendMetricTelemetrySetting()
     {
-        DefaultValue = DefaultSettingValue;
+        Value = DefaultValue = DefaultSettingValue;
     }
 }

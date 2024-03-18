@@ -440,7 +440,7 @@
             <Setter Property="Height" Value="24" />
             <Setter Property="MaxLines" Value="1" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
         </Style.Setters>
         <Style.Triggers>

@@ -74,6 +74,7 @@ namespace Rubberduck.InternalApi.Settings.Model;
 [JsonDerivedType(typeof(ExceptionTelemetrySettings), nameof(ExceptionTelemetrySettings))]
 [JsonDerivedType(typeof(TraceTelemetrySettings), nameof(TraceTelemetrySettings))]
 [JsonDerivedType(typeof(MetricTelemetrySettings), nameof(MetricTelemetrySettings))]
+[JsonDerivedType(typeof(TelemetrySetting), nameof(TelemetrySetting))]
 
 [JsonDerivedType(typeof(UpdateServerSettings), nameof(UpdateServerSettings))] // ~ Update server
 [JsonDerivedType(typeof(IncludePreReleasesSetting), nameof(IncludePreReleasesSetting))]

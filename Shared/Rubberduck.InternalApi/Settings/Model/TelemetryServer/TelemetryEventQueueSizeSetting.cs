@@ -10,7 +10,7 @@ public record class TelemetryEventQueueSizeSetting : NumericRubberduckSetting
     public TelemetryEventQueueSizeSetting()
     {
         SettingDataType = SettingDataType.NumericSetting;
-        DefaultValue = DefaultSettingValue;
+        Value = DefaultValue = DefaultSettingValue;
         AllowDecimals = false;
         AllowNegative = false;
         MinValue = 0;
