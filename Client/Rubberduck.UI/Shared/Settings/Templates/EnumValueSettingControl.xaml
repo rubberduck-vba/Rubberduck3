@@ -31,17 +31,18 @@
                     <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
                 </Label>
             </DockPanel>
+            <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldDescriptionLabelStyle}" Margin="4,0,4,4">
+                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+            </Label>
+            
             <ComboBox Template="{DynamicResource ComboBoxTemplate}" 
-                      Width="180" Height="24"
-                      DockPanel.Dock="Left" HorizontalAlignment="Stretch"
+                      Width="180" Height="24" Margin="10"
+                      DockPanel.Dock="Top" HorizontalAlignment="Left"
                       HorizontalContentAlignment="Left"
                       Style="{DynamicResource FormFieldComboBoxStyle}" 
                       IsEnabled="{Binding IsEnabled}" 
                       ItemsSource="{Binding Values}"
                       SelectedValue="{Binding Selection}" />
-            <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldDescriptionLabelStyle}" Margin="4,0,4,4">
-                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
-            </Label>
         </DockPanel>
     </Border>
 </UserControl>

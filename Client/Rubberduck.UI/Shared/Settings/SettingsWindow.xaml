@@ -34,7 +34,19 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <Border>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5">
+                    <shell:FlatButton ToolTip="Navigate backward" Height="16" Width="16" Icon="{DynamicResource NavPreviousIcon}" />
+                    <shell:FlatButton ToolTip="Navigate forward" Height="16" Width="16" Icon="{DynamicResource NavNextIcon}" />
+                    <shell:FlatToggleButton ToolTip="Unlock/lock readonly-recommended" Height="16" Width="16" Icon="{DynamicResource LockedIcon}" CheckedIcon="{DynamicResource UnlockedIcon}" />
+                    <shell:FlatToggleButton ToolTip="Enable/disable all on/off settings in the active group" Height="16" Width="16" Icon="{DynamicResource ToggleOnIcon}" CheckedIcon="{DynamicResource ToggleOffIcon}" />
+                </StackPanel>
+
+                <Border Grid.RowSpan="2">
                     <ListView MinWidth="160" Margin="4"
                               Background="{DynamicResource ThemeBackgroundColorBrush}" 
                               BorderThickness="1"
@@ -63,7 +75,7 @@
                     </ListView>
                 </Border>
 
-                <Border Grid.Column="1" 
+                <Border Grid.Row="1" Grid.Column="1" 
                         BorderThickness="1" BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}" 
                         Background="{DynamicResource ThemeWhiteLightColorBrush65}"
                         CornerRadius="4" Margin="5" Padding="10">

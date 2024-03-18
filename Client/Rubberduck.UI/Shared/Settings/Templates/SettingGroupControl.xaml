@@ -39,6 +39,7 @@
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
                                         Height="20" Width="20" OffsetX="0"
                                         Icon="{StaticResource ExpandSectionIcon}" 
+                                        CheckedIcon="{DynamicResource CollapseSectionIcon}"
                                         Command="{Binding DataContext.ExpandSettingGroupCommand, RelativeSource={RelativeSource AncestorType=viewmodels:SettingsWindow, Mode=FindAncestor}}"
                                         CommandParameter="{Binding}"
                                         IsChecked="{Binding IsExpanded}"

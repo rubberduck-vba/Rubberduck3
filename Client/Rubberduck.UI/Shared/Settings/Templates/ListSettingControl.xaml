@@ -38,7 +38,8 @@
                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
                 </Label>
 
-                <ListView DockPanel.Dock="Top" Background="{StaticResource ThemeBackgroundDarkColorBrush}" 
+                <ListView DockPanel.Dock="Top" Background="{StaticResource ThemeBackgroundMediumColorBrush}" 
+                          MinHeight="72" Margin="10"
                           HorizontalContentAlignment="Stretch"
                           VerticalAlignment="Stretch"
                           SelectionMode="Single"

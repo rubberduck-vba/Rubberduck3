@@ -23,13 +23,14 @@
             <DockPanel DockPanel.Dock="Top">
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
                                         Height="16" Width="20" OffsetX="2"
-                                    Icon="{DynamicResource LockedIcon}" 
-                                    CheckedIcon="{DynamicResource UnlockedIcon}"
-                                    IsChecked="{Binding IsEnabled}"
-                                    Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
-                <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Height="16"
+                                        Icon="{DynamicResource LockedIcon}" 
+                                        CheckedIcon="{DynamicResource UnlockedIcon}"
+                                        IsChecked="{Binding IsEnabled}"
+                                        Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
+                <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" 
+                                        Height="16" Width="20" OffsetX="2"
                                         Icon="{DynamicResource ExpandSectionIcon}"
-                                        ToolTip="Expand this setting group"
+                                        CheckedIcon="{DynamicResource CollapseSectionIcon}"
                                         Command="{Binding DataContext.ExpandSettingGroupCommand, RelativeSource={RelativeSource AncestorType=viewmodels:SettingsWindow, Mode=FindAncestor}}"
                                         CommandParameter="{Binding}"
                                         IsChecked="{Binding IsExpanded}">

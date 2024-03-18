@@ -20,13 +20,12 @@
     <Border Style="{DynamicResource SectionBorderStyle}">
         <DockPanel LastChildFill="True">
             <DockPanel DockPanel.Dock="Top">
-                <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8"
+                <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
                                         Height="16" Width="20" OffsetX="2"
-                                        Style="{DynamicResource FlatToggleButtonStyle}"
-                                    Icon="{DynamicResource LockedIcon}" 
-                                    CheckedIcon="{DynamicResource UnlockedIcon}"
-                                    IsChecked="{Binding IsEnabled}"
-                                    Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                        Icon="{DynamicResource LockedIcon}" 
+                                        CheckedIcon="{DynamicResource UnlockedIcon}"
+                                        IsChecked="{Binding IsEnabled}"
+                                        Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
                 <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0" IsEnabled="{Binding IsEnabled}">
                     <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
                 </Label>
@@ -54,6 +53,7 @@
                         Style="{DynamicResource FlatButtonStyle}" 
                         IsEnabled="{Binding IsEnabled}"
                         Width="28" Height="24" 
+                                   Foreground="{DynamicResource ThemeTextColorBrush}"
                         Content="…" IsTabStop="True" />
             </DockPanel>
 

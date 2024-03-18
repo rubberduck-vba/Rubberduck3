@@ -30,13 +30,13 @@
                     <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
                 </Label>
             </DockPanel>
-            <TextBox DockPanel.Dock="Left" HorizontalContentAlignment="Center"
-                     Style="{DynamicResource FormFieldTextBoxStyle}"
-                     Width="180" Margin="5"
-                     Text="{Binding Value}" IsEnabled="{Binding IsEnabled}" />
             <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldDescriptionLabelStyle}" Margin="4,0,4,4">
                 <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
             </Label>
+            <TextBox DockPanel.Dock="Left" HorizontalAlignment="Left" HorizontalContentAlignment="Center"
+                     Style="{DynamicResource FormFieldTextBoxStyle}"
+                     MinWidth="180" Width="Auto" Margin="10"
+                     Text="{Binding Value}" IsEnabled="{Binding IsEnabled}" />
         </DockPanel>
     </Border>
 </UserControl>

@@ -158,6 +158,8 @@
     <None Remove="Resources\Custom\vector-ducky-blur-1480.png" />
     <None Remove="Resources\Custom\vector-ducky-color.png" />
     <None Remove="Resources\Custom\vector-ducky-shadow-1480.png" />
+    <None Remove="Resources\FontAwesome\arrow-left-solid.png" />
+    <None Remove="Resources\FontAwesome\arrow-right-solid.png" />
     <None Remove="Resources\FontAwesome\arrows-left-right-to-line-solid.png" />
     <None Remove="Resources\FontAwesome\arrows-spin-solid.png" />
     <None Remove="Resources\FontAwesome\ban-solid.png" />
@@ -166,6 +168,7 @@
     <None Remove="Resources\FontAwesome\circle-exclamation-solid.png" />
     <None Remove="Resources\FontAwesome\copy-solid.png" />
     <None Remove="Resources\FontAwesome\cubes-solid.png" />
+    <None Remove="Resources\FontAwesome\down-left-and-up-right-to-center-solid.png" />
     <None Remove="Resources\FontAwesome\eraser-solid.png" />
     <None Remove="Resources\FontAwesome\eye-slash-solid.png" />
     <None Remove="Resources\FontAwesome\eye-solid.png" />
@@ -211,6 +214,7 @@
     <None Remove="Resources\FontAwesome\thumbtack-solid.png" />
     <None Remove="Resources\FontAwesome\toggle-off-solid.png" />
     <None Remove="Resources\FontAwesome\toggle-on-solid.png" />
+    <None Remove="Resources\FontAwesome\up-right-and-down-left-from-center-solid.png" />
     <None Remove="Resources\FontAwesome\window-maximize-regular.png" />
     <None Remove="Resources\FontAwesome\window-minimize-regular.png" />
     <None Remove="Resources\FontAwesome\window-restore-regular.png" />
@@ -252,6 +256,7 @@
     <None Remove="Resources\FugueIcons\light-bulb.png" />
     <None Remove="Resources\FugueIcons\magnifier-medium.png" />
     <None Remove="Resources\FugueIcons\selection-input.png" />
+    <None Remove="Resources\FugueIcons\stopwatch-solid.png" />
     <None Remove="Resources\FugueIcons\tick-circle.png" />
     <None Remove="Resources\splash.png" />
     <None Remove="Resources\vector-ducky-blur-1480.png" />
@@ -421,6 +426,8 @@
     <Resource Include="Resources\Custom\vector-ducky-blur-1480.png" />
     <Resource Include="Resources\Custom\vector-ducky-color.png" />
     <Resource Include="Resources\Custom\vector-ducky-shadow-1480.png" />
+    <Resource Include="Resources\FontAwesome\arrow-left-solid.png" />
+    <Resource Include="Resources\FontAwesome\arrow-right-solid.png" />
     <Resource Include="Resources\FontAwesome\arrows-left-right-to-line-solid.png" />
     <Resource Include="Resources\FontAwesome\arrows-spin-solid.png" />
     <Resource Include="Resources\FontAwesome\ban-solid.png" />
@@ -429,6 +436,7 @@
     <Resource Include="Resources\FontAwesome\circle-exclamation-solid.png" />
     <Resource Include="Resources\FontAwesome\copy-solid.png" />
     <Resource Include="Resources\FontAwesome\cubes-solid.png" />
+    <Resource Include="Resources\FontAwesome\down-left-and-up-right-to-center-solid.png" />
     <Resource Include="Resources\FontAwesome\eraser-solid.png" />
     <Resource Include="Resources\FontAwesome\eye-slash-solid.png" />
     <Resource Include="Resources\FontAwesome\eye-solid.png" />
@@ -474,6 +482,7 @@
     <Resource Include="Resources\FontAwesome\thumbtack-solid.png" />
     <Resource Include="Resources\FontAwesome\toggle-off-solid.png" />
     <Resource Include="Resources\FontAwesome\toggle-on-solid.png" />
+    <Resource Include="Resources\FontAwesome\up-right-and-down-left-from-center-solid.png" />
     <Resource Include="Resources\FontAwesome\window-maximize-regular.png" />
     <Resource Include="Resources\FontAwesome\window-minimize-regular.png" />
     <Resource Include="Resources\FontAwesome\window-restore-regular.png" />
@@ -515,6 +524,7 @@
     <Resource Include="Resources\FugueIcons\light-bulb.png" />
     <Resource Include="Resources\FugueIcons\magnifier-medium.png" />
     <Resource Include="Resources\FugueIcons\selection-input.png" />
+    <Resource Include="Resources\FontAwesome\stopwatch-solid.png" />
     <Resource Include="Resources\FugueIcons\tick-circle.png" />
     <Resource Include="Resources\splash.png" />
     <Resource Include="Resources\vector-ducky-blur-1480.png" />

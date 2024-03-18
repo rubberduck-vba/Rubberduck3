@@ -18,23 +18,30 @@ namespace Rubberduck.UI.Shared.Settings
 
         public SettingGroupViewModel(TypedSettingGroup settingGroup, IEnumerable<ISettingViewModel> items)
         {
-            _settingGroup = settingGroup;
+            // readonly-recommended padlock makes weird UX on setting groups
+            _settingGroup = settingGroup with { Tags = settingGroup.Tags & ~SettingTags.ReadOnlyRecommended };
+
             Items = new ObservableCollection<ISettingViewModel>(items.OrderBy(e => e.IsSettingGroup));
-            IsEnabled = !_settingGroup.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
+
+            IsEnabled = true; // !_settingGroup.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
         }
 
         public SettingGroupViewModel(TypedRubberduckSetting<BooleanRubberduckSetting[]> settingGroup, IEnumerable<ISettingViewModel> items)
         {
-            _settingGroup = settingGroup;
+            // readonly-recommended padlock makes weird UX on setting groups
+            _settingGroup = settingGroup with { Tags = settingGroup.Tags & ~SettingTags.ReadOnlyRecommended };
+
             Items = new ObservableCollection<ISettingViewModel>(items);
-            IsEnabled = !_settingGroup.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
+            IsEnabled = true; // !_settingGroup.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
         }
 
         public SettingGroupViewModel(TypedRubberduckSetting<RubberduckSetting[]> settingGroup, IEnumerable<ISettingViewModel> items)
         {
-            _settingGroup = settingGroup;
+            // readonly-recommended padlock makes weird UX on setting groups
+            _settingGroup = settingGroup with { Tags = settingGroup.Tags & ~SettingTags.ReadOnlyRecommended };
+
             Items = new ObservableCollection<ISettingViewModel>(items);
-            IsEnabled = !_settingGroup.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
+            IsEnabled = true; // !_settingGroup.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
         }
 
         public ObservableCollection<ISettingViewModel> Items { get; init; }

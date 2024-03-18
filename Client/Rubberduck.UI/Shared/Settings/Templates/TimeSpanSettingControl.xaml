@@ -37,6 +37,7 @@
                 </Label>
             </ScrollViewer>
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="4">
+                <Image Source="{DynamicResource StopwatchIcon}" Height="16" Width="24" />
                 <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Hours}" HorizontalContentAlignment="Center" ToolTip="Hours" IsEnabled="{Binding IsEnabled}" />
                 <TextBlock Text=":" VerticalAlignment="Center" Margin="2" />
                 <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Minutes}" HorizontalContentAlignment="Center" ToolTip="Minutes" IsEnabled="{Binding IsEnabled}" />

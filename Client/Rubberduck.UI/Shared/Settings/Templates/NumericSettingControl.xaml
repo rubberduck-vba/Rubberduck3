@@ -32,16 +32,16 @@
                     <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
                 </Label>
             </DockPanel>
-            <TextBox b:Masking.Mask="\d" MaxLength="5" DockPanel.Dock="Left" 
-                     Width="180" Margin="5" Height="24" HorizontalContentAlignment="Center" 
-                     Style="{DynamicResource FormFieldTextBoxStyle}" 
-                     Text="{Binding Value}" 
-                     IsEnabled="{Binding IsEnabled}" />
             <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
                 <Label Style="{DynamicResource FormFieldDescriptionLabelStyle}" Margin="4,0">
                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
                 </Label>
             </ScrollViewer>
+            <TextBox b:Masking.Mask="\d" MaxLength="5" DockPanel.Dock="Left" 
+                     Width="180" Margin="10" Height="24" HorizontalContentAlignment="Center" HorizontalAlignment="Left"
+                     Style="{DynamicResource FormFieldTextBoxStyle}" 
+                     Text="{Binding Value}" 
+                     IsEnabled="{Binding IsEnabled}" />
         </DockPanel>
     </Border>
 </UserControl>
