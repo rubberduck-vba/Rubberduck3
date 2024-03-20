@@ -28,6 +28,24 @@ namespace Rubberduck.UI.Shell
             IconSource = IsChecked == true ? CheckedIcon : Icon;
         }
 
+        public static readonly DependencyProperty HighlightBrushProperty =
+            DependencyProperty.Register(nameof(HighlightBrush), typeof(Brush), typeof(FlatToggleButton));
+
+        public Brush HighlightBrush
+        {
+            get => (Brush)GetValue(HighlightBrushProperty);
+            set => SetValue(HighlightBrushProperty, value);
+        }
+
+        public static readonly DependencyProperty HoverBrushProperty =
+            DependencyProperty.Register(nameof(HoverBrush), typeof(Brush), typeof(FlatToggleButton));
+
+        public Brush HoverBrush
+        {
+            get => (Brush)GetValue(HoverBrushProperty);
+            set => SetValue(HoverBrushProperty, value);
+        }
+
         public ImageSource? IconSource 
         {
             get => (ImageSource?)GetValue(IconSourceProperty);

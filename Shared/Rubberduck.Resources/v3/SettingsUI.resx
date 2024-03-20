@@ -195,6 +195,42 @@
   <data name="EventTelemetrySettings_Title" xml:space="preserve">
     <value>Event Telemetry Settings</value>
   </data>
+  <data name="ExceptionTelemetrySettings.Critical_Description" xml:space="preserve">
+    <value>Critical-level exception logs would typically be for unrecoverable showstopper startup exceptions, or "uncaught" (but still loggable) exceptions that end up being rethrown to crash the application because that's all that's left to do.</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Critical_Title" xml:space="preserve">
+    <value>Critical</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Debug_Description" xml:space="preserve">
+    <value>Debug-level exceptions might be exceptions developers would probably be interested in.</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Debug_Title" xml:space="preserve">
+    <value>Debug</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Error_Description" xml:space="preserve">
+    <value>Exceptions would normally be logged at this level.</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Error_Title" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Information_Description" xml:space="preserve">
+    <value>Information-level exceptions would also be for routine unexceptional exceptions, which makes no sense.</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Information_Title" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Trace_Description" xml:space="preserve">
+    <value>Trace-level exception logs would be for unexceptional exceptions, which... hopefully doesn't happen.</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Trace_Title" xml:space="preserve">
+    <value>Trace</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Warning_Description" xml:space="preserve">
+    <value>Warning-level exceptions might be logging suppressed exceptions, validation errors or otherwise inconsistent state, which may or may not precede an error-level exception log.</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Warning_Title" xml:space="preserve">
+    <value>Warning</value>
+  </data>
   <data name="ExceptionTelemetrySettings_Description" xml:space="preserve">
     <value>Exception telemetry provides information about errors and their context, which can be useful for identifying bugs and problems.</value>
   </data>

@@ -157,4 +157,7 @@ Are you sure you want to **overwrite an existing project**?</value>
   <data name="OnDocumentTabClosed" xml:space="preserve">
     <value>This document has unsaved changes! What should we do?</value>
   </data>
+  <data name="ConfirmResetSettings" xml:space="preserve">
+    <value>This will reset all settings to their default values. Proceed?</value>
+  </data>
 </root>

@@ -7,6 +7,7 @@
         mc:Ignorable="d" 
         x:Name="FlatButtonRoot"
         Height="16" Width="16"
+        Margin="4,2" BorderThickness="1"
         d:DesignHeight="16" d:DesignWidth="16">
     <Button.Resources>
         <ResourceDictionary>
@@ -14,32 +15,83 @@
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <ControlTemplate x:Key="FlatButtonTemplate" TargetType="Button">
+                <ControlTemplate.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+                        <Setter Property="local:FlatButton.HighlightBrush" Value="{DynamicResource ThemeAccent1MediumColorBrush}" />
+                        <Setter Property="local:FlatButton.HoverBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+                    </Style>
+                </ControlTemplate.Resources>
                 <DockPanel>
-                    <Canvas DockPanel.Dock="Left">
+                    <Canvas Background="Transparent" DockPanel.Dock="Left">
                         <Image x:Name="CanvasIcon" 
-                           Source="{TemplateBinding local:FlatButton.Icon}"
-                           Height="{TemplateBinding Height}" 
-                           Width="{TemplateBinding Width}" 
-                           Stretch="Uniform" 
-                           Canvas.Left="0"
-                           Canvas.Top="0"
-                           HorizontalAlignment="Stretch" 
-                           VerticalAlignment="Stretch" />
+                           Source="{Binding Icon, RelativeSource={RelativeSource AncestorType=local:FlatButton, Mode=FindAncestor}}"
+                           Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Stretch="Uniform" 
+                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    
                         <Rectangle Fill="{TemplateBinding Foreground}"
-                               Height="{TemplateBinding Height}" 
-                               Width="{TemplateBinding Width}" 
-                               Canvas.Left="{TemplateBinding local:FlatButton.OffsetX}"
-                               Canvas.Top="{TemplateBinding local:FlatButton.OffsetY}"
-                               Stretch="Uniform"
-                               HorizontalAlignment="Stretch" 
-                               VerticalAlignment="Stretch">
+                               Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Stretch="Uniform"
+                               HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Rectangle.Style>
+                                <Style TargetType="Rectangle">
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=local:FlatButton, Mode=FindAncestor}}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="Fill" Value="{Binding HoverBrush, RelativeSource={RelativeSource AncestorType=local:FlatButton, Mode=FindAncestor}}" />
+                                                <Setter Property="Cursor" Value="Hand" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType=local:FlatButton, Mode=FindAncestor}}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="Fill" Value="{Binding HighlightBrush, RelativeSource={RelativeSource AncestorType=local:FlatButton, Mode=FindAncestor}}" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Rectangle.Style>
                             <Rectangle.OpacityMask>
-                                <ImageBrush Stretch="Uniform" ImageSource="{Binding Source, ElementName=CanvasIcon}" />
+                                <ImageBrush Stretch="Uniform" ImageSource="{TemplateBinding local:FlatButton.Icon}" />
                             </Rectangle.OpacityMask>
                         </Rectangle>
                     </Canvas>
-                    <ContentControl Content="{TemplateBinding Content}" />
+                    <ContentControl Content="{TemplateBinding Content}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
                 </DockPanel>
+                <ControlTemplate.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                            <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="Background" Value="{DynamicResource ThemeWhiteMediumColorBrush}" />
+                            <Setter Property="Foreground" Value="{Binding HoverBrush, RelativeSource={RelativeSource Mode=Self}}" />
+                            <Setter Property="Cursor" Value="Hand" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="Foreground" Value="{Binding HighlightBrush, RelativeSource={RelativeSource Mode=Self}}" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="False" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundInactiveColorBrush}" />
+                            <Setter Property="Foreground" Value="{DynamicResource ThemeTextInactiveColorBrush}" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </ControlTemplate.Triggers>
             </ControlTemplate>
         </ResourceDictionary>
     </Button.Resources>
@@ -47,39 +99,15 @@
         <Style TargetType="Button">
             <Style.Setters>
                 <Setter Property="Template" Value="{DynamicResource FlatButtonTemplate}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource ThemeBlackLightColorBrush}" />
                 <Setter Property="BorderThickness" Value="1" />
-                <Setter Property="local:FlatButton.OffsetX" Value="0" />
-                <Setter Property="local:FlatButton.OffsetY" Value="0" />
-                <Setter Property="Margin" Value="4,2" />
+                <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
                 <Setter Property="Height" Value="16" />
                 <Setter Property="Width" Value="16" />
-                <Setter Property="Foreground" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
-                <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}"/>
                 <Setter Property="local:FlatButton.HighlightBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+                <Setter Property="local:FlatButton.HoverBrush" Value="{DynamicResource ThemeAccent1LightColorBrush}" />
             </Style.Setters>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
-                        <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="Background" Value="{DynamicResource ThemeWhiteMediumColorBrush}" />
-                        <Setter Property="Foreground" Value="{Binding HighlightBrush, RelativeSource={RelativeSource Mode=Self}}" />
-                        <Setter Property="Cursor" Value="Hand" />
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-                <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="True">
-                    <DataTrigger.Setters>
-                        <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1MediumColorBrush}" />
-                    </DataTrigger.Setters>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="False">
-                    <DataTrigger.Setters>
-                        <Setter Property="Foreground" Value="{DynamicResource ThemeTextInactiveColorBrush}" />
-                    </DataTrigger.Setters>
-                </DataTrigger>
-            </Style.Triggers>
         </Style>
     </Button.Style>
 </Button>

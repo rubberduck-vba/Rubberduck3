@@ -295,6 +295,42 @@ namespace Rubberduck.Resources.v3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Critical-level exception logs would typically be for unrecoverable showstopper startup exceptions, or &quot;uncaught&quot; (but still loggable) exceptions that end up being rethrown to crash the application because that&apos;s all that&apos;s left to do..
+        /// </summary>
+        public static string ExceptionTelemetrySettings_Critical_Description {
+            get {
+                return ResourceManager.GetString("ExceptionTelemetrySettings.Critical_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Critical.
+        /// </summary>
+        public static string ExceptionTelemetrySettings_Critical_Title {
+            get {
+                return ResourceManager.GetString("ExceptionTelemetrySettings.Critical_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debug-level exceptions might be exceptions developers would probably be interested in..
+        /// </summary>
+        public static string ExceptionTelemetrySettings_Debug_Description {
+            get {
+                return ResourceManager.GetString("ExceptionTelemetrySettings.Debug_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debug.
+        /// </summary>
+        public static string ExceptionTelemetrySettings_Debug_Title {
+            get {
+                return ResourceManager.GetString("ExceptionTelemetrySettings.Debug_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exception telemetry provides information about errors and their context, which can be useful for identifying bugs and problems..
         /// </summary>
         public static string ExceptionTelemetrySettings_Description {
@@ -304,11 +340,83 @@ namespace Rubberduck.Resources.v3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Exceptions would normally be logged at this level..
+        /// </summary>
+        public static string ExceptionTelemetrySettings_Error_Description {
+            get {
+                return ResourceManager.GetString("ExceptionTelemetrySettings.Error_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string ExceptionTelemetrySettings_Error_Title {
+            get {
+                return ResourceManager.GetString("ExceptionTelemetrySettings.Error_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Information-level exceptions would also be for routine unexceptional exceptions, which makes no sense..
+        /// </summary>
+        public static string ExceptionTelemetrySettings_Information_Description {
+            get {
+                return ResourceManager.GetString("ExceptionTelemetrySettings.Information_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Information.
+        /// </summary>
+        public static string ExceptionTelemetrySettings_Information_Title {
+            get {
+                return ResourceManager.GetString("ExceptionTelemetrySettings.Information_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exception Telemetry Settings.
         /// </summary>
         public static string ExceptionTelemetrySettings_Title {
             get {
                 return ResourceManager.GetString("ExceptionTelemetrySettings_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trace-level exception logs would be for unexceptional exceptions, which... hopefully doesn&apos;t happen..
+        /// </summary>
+        public static string ExceptionTelemetrySettings_Trace_Description {
+            get {
+                return ResourceManager.GetString("ExceptionTelemetrySettings.Trace_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trace.
+        /// </summary>
+        public static string ExceptionTelemetrySettings_Trace_Title {
+            get {
+                return ResourceManager.GetString("ExceptionTelemetrySettings.Trace_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning-level exceptions might be logging suppressed exceptions, validation errors or otherwise inconsistent state, which may or may not precede an error-level exception log..
+        /// </summary>
+        public static string ExceptionTelemetrySettings_Warning_Description {
+            get {
+                return ResourceManager.GetString("ExceptionTelemetrySettings.Warning_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string ExceptionTelemetrySettings_Warning_Title {
+            get {
+                return ResourceManager.GetString("ExceptionTelemetrySettings.Warning_Title", resourceCulture);
             }
         }
         

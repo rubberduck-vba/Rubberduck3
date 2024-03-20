@@ -64,10 +64,12 @@
 
     <!-- Theme Foreground/Background -->
 
+    <Color x:Key="ThemeBackgroundInactiveColor">#FF999999</Color>
     <Color x:Key="ThemeTextColor">#FF000000</Color>
-    <Color x:Key="ThemeTextInactiveColor">#FF999999</Color>
+    <Color x:Key="ThemeTextInactiveColor">#FFCACACA</Color>
     <SolidColorBrush x:Key="ThemeTextColorBrush" Color="{DynamicResource ThemeTextColor}" />
     <SolidColorBrush x:Key="ThemeTextInactiveColorBrush" Color="{DynamicResource ThemeTextInactiveColor}" />
+    <SolidColorBrush x:Key="ThemeBackgroundInactiveColorBrush" Color="{DynamicResource ThemeBackgroundInactiveColor}" />
 
     <Color x:Key="ThemeBackgroundDarkColor">#FFEEEEF2</Color>
     <Color x:Key="ThemeBackgroundMediumColor">#FFF5F5F5</Color>

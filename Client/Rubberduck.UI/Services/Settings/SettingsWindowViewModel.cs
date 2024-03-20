@@ -1,16 +1,22 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Settings.Model.LanguageClient;
+using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.Resources;
+using Rubberduck.Resources.v3;
+using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shared.Message;
 using Rubberduck.UI.Shared.Settings;
 using Rubberduck.UI.Shared.Settings.Abstract;
 using Rubberduck.UI.Windows;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Rubberduck.UI.Services.Settings
 {
@@ -20,12 +26,18 @@ namespace Rubberduck.UI.Services.Settings
         private readonly ISettingViewModelFactory _factory;
         private readonly UIServiceHelper _service;
 
+        private readonly Stack<ISettingGroupViewModel> _backwardNavStack = [];
+        private readonly Stack<ISettingGroupViewModel> _forwardNavStack = [];
+
         public SettingsWindowViewModel(UIServiceHelper service, MessageActionCommand[] actions, IMessageService message, ISettingViewModelFactory factory)
             : base(service, RubberduckUI.Settings, actions)
         {
             _message = message;
             _factory = factory;
             _service = service;
+
+            SettingGroups = factory.CreateViewModel(service.Settings).Items.OfType<ISettingGroupViewModel>().ToList();
+
             ShowSettingsCommand = new DelegateCommand(service, parameter => ResetToDefaults());
             service.RunOnMainThread(() => Settings = _factory.CreateViewModel(_service.Settings));
 
@@ -36,39 +48,160 @@ namespace Rubberduck.UI.Services.Settings
                     ExecuteExpandSettingGroupCommand(model);
                 }
             });
+            ResetSettingsCommand = new DelegateCommand(service, parameter =>
+            {
+                var model = MessageRequestModel.For(LogLevel.Warning, "ConfirmResetSettings", null!, [MessageAction.AcceptConfirmAction, MessageAction.CancelAction]);
+                var result = _message.ShowMessageRequest(model);
+                if (result?.MessageAction.IsDefaultAction ?? false)
+                {
+                    _service.SettingsProvider.Write(RubberduckSettings.Default);
 
+                }
+            });
+            var searchCommand = new DelegateCommand(service, parameter =>
+            {
+                if (parameter is string text)
+                {
+                    var results = Flatten(_settings!).ToList();
+                    var filteredResults = results.Where(e => e.IsSearchResult(text)).ToList();
+                    var vm = new SettingGroupViewModel(service.Settings.WithKey("SearchResults"), filteredResults);
+                    vm.SearchString = text;
+                    Selection = vm;
+                }
+            }, parameter => (parameter is string text) && !string.IsNullOrWhiteSpace(text));
             CommandBindings =
             [
-                new(NavigationCommands.Search, DialogCommandHandlers.BrowseLocationCommandBinding_Executed, DialogCommandHandlers.BrowseLocationCommandBinding_CanExecute),
+                new CommandBinding(DialogCommands.BrowseLocationCommand, DialogCommandHandlers.BrowseLocationCommandBinding_Executed, DialogCommandHandlers.BrowseLocationCommandBinding_CanExecute),
+                new CommandBinding(NavigationCommands.BrowseBack, ExecuteNavigateBackward, CanExecuteNavigateBackward),
+                new CommandBinding(NavigationCommands.BrowseForward, ExecuteNavigateForward, CanExecuteNavigateForward),
+                new CommandBinding(NavigationCommands.Search, searchCommand.ExecutedRouted(), searchCommand.CanExecuteRouted())
             ];
+        }
+
+        private static IEnumerable<ISettingViewModel> Flatten(ISettingGroupViewModel group)
+        {
+            var results = new HashSet<ISettingViewModel>();
+            foreach (var item in group.Items.Where(e => e is not ISettingGroupViewModel))
+            {
+                results.Add(item);
+            }
+            foreach (var subgroup in group.Items.OfType<ISettingGroupViewModel>())
+            {
+                results.Add(subgroup);
+
+                var flattenedSubgroup = Flatten(subgroup); // recursive
+                foreach (var item in flattenedSubgroup)
+                {
+                    results.Add(item);
+                }
+            }
+            return results;
         }
 
         public override IEnumerable<CommandBinding> CommandBindings { get; }
 
         public bool ShowPinButton => false;
         
+        public ICommand ResetSettingsCommand { get; }
         public ICommand ExpandSettingGroupCommand { get; }
+        public ICommand SearchCommand { get; }
 
-        private Stack<ISettingViewModel> _previous = [];
-        private void ExecuteExpandSettingGroupCommand(ISettingGroupViewModel model)
+        private void CanExecuteNavigateBackward(object sender, CanExecuteRoutedEventArgs parameter) => parameter.CanExecute = _backwardNavStack.Count > 0;
+        private void ExecuteNavigateBackward(object sender, ExecutedRoutedEventArgs parameter)
         {
-            if (model.IsExpanded)
+            if (!_backwardNavStack.TryPeek(out _))
             {
-                _previous.Push(Selection);
-                Selection = model;
+                return;
+            }
+
+            _isManualSelection = false;
+            if (_forwardNavStack.Count == 0 || _forwardNavStack.TryPeek(out var next) && next.Key != Selection.Key)
+            {
+                _forwardNavStack.Push(Selection);
+            }
+
+            NextNavKey = Localized(Selection.Key);
+            var selection = _backwardNavStack.Pop();
+            Selection = selection;
+
+            if (_backwardNavStack.TryPeek(out var previous))
+            {
+                PreviousNavKey = Localized(previous.Key);
             }
             else
             {
-                if (_previous.TryPop(out var previous))
+                PreviousNavKey = null!;
+            }
+
+            _isManualSelection = true;
+        }
+
+        private void CanExecuteNavigateForward(object sender, CanExecuteRoutedEventArgs parameter) => parameter.CanExecute = _forwardNavStack.Count > 0;
+        private void ExecuteNavigateForward(object sender, ExecutedRoutedEventArgs parameter)
+        {
+            if (!_forwardNavStack.TryPeek(out _))
+            {
+                return;
+            }
+
+            _isManualSelection = false;
+            if (_backwardNavStack.Count == 0 || _backwardNavStack.TryPeek(out var previous) && previous.Key != Selection.Key)
+            {
+                _backwardNavStack.Push(Selection);
+            }
+
+            PreviousNavKey = Localized(Selection.Key);
+            var selection = _forwardNavStack.Pop();
+            Selection = selection;
+
+            if (_forwardNavStack.TryPeek(out var next))
+            {
+                NextNavKey = Localized(next.Key);
+            }
+            else
+            {
+                NextNavKey = null!;
+            }
+
+            _isManualSelection = true;
+        }
+
+        private void ExecuteExpandSettingGroupCommand(ISettingGroupViewModel model)
+        {
+            _isManualSelection = false;
+            if (model.IsExpanded)
+            {
+                _backwardNavStack.Push(Selection);
+                PreviousNavKey = Localized(Selection.Key);
+                Selection = model;
+                model.IsExpanded = false;
+            }
+            else
+            {
+                if (_backwardNavStack.TryPop(out var previous))
                 {
+                    if (_backwardNavStack.TryPeek(out var previousNav))
+                    {
+                        PreviousNavKey = Localized(previousNav.Key);
+                    }
+                    else
+                    {
+                        PreviousNavKey = null!;
+                    }
                     Selection = previous;
                 }
                 else
                 {
-                    Selection = _settings.Items.FirstOrDefault()!;
+                    // initial state
+                    Selection = _settings.Items.OfType<ISettingGroupViewModel>().FirstOrDefault()!;
                 }
             }
+
+            _forwardNavStack.Clear();
+            _isManualSelection = true;
         }
+
+        public IEnumerable<ISettingGroupViewModel> SettingGroups { get; }
 
         private ISettingGroupViewModel _settings;
         public ISettingGroupViewModel Settings 
@@ -84,15 +217,53 @@ namespace Rubberduck.UI.Services.Settings
             }
         }
 
-        private ISettingViewModel _selection;
-        public ISettingViewModel Selection
+        private bool _isManualSelection = true;
+        private ISettingGroupViewModel _selection;
+        public ISettingGroupViewModel Selection
         {
             get => _selection;
             set
             {
                 if (_selection != value)
                 {
+                    if (_isManualSelection && _selection != null)
+                    {
+                        _backwardNavStack.Push(_selection);
+                        _forwardNavStack.Clear();
+                        PreviousNavKey = Localized(_selection.Key);
+                    }
+
                     _selection = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string Localized(string key) => SettingsUI.ResourceManager.GetString($"{key}_Title") ?? $"[missing key:{key}_Title]";
+
+        private string _previousKey;
+        public string PreviousNavKey
+        {
+            get => _previousKey;
+            set
+            {
+                if (_previousKey != value)
+                {
+                    _previousKey = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _nextKey;
+        public string NextNavKey
+        {
+            get => _nextKey;
+            set
+            {
+                if (_nextKey != value)
+                {
+                    _nextKey = value;
                     OnPropertyChanged();
                 }
             }

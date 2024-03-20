@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Input;
 using Messages = Rubberduck.Resources.v3.RubberduckMessages;
 namespace Rubberduck.UI.Shared.Message;
 

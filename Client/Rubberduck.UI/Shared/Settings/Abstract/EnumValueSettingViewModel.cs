@@ -36,6 +36,10 @@ namespace Rubberduck.UI.Shared.Settings.Abstract
             }
         }
 
+        public bool IsSearchResult(string search) =>
+            Name.Contains(search, System.StringComparison.InvariantCultureIgnoreCase)
+            || Description.Contains(search, System.StringComparison.InvariantCultureIgnoreCase);
+
         public abstract RubberduckSetting ToSetting();
 
         public abstract IEnumerable<string> Values { get; }

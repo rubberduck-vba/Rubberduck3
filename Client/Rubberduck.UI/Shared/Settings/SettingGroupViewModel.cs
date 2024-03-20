@@ -1,27 +1,39 @@
 ﻿using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.Resources.v3;
 using Rubberduck.UI.Shared.Settings.Abstract;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Threading;
+using System.Windows;
+using System.Windows.Data;
+using System.Windows.Input;
 
 namespace Rubberduck.UI.Shared.Settings
 {
     public class SettingGroupViewModel : ViewModelBase, ISettingGroupViewModel
     {
         private readonly RubberduckSetting _settingGroup;
+        private readonly Timer _idleTimer;
+        private readonly TimeSpan _idleDelay = TimeSpan.FromMilliseconds(1200);
 
-        internal SettingGroupViewModel()
+        internal SettingGroupViewModel(/* designer */)
         {
-            /* designer */
         }
 
         public SettingGroupViewModel(TypedSettingGroup settingGroup, IEnumerable<ISettingViewModel> items)
         {
             // readonly-recommended padlock makes weird UX on setting groups
             _settingGroup = settingGroup with { Tags = settingGroup.Tags & ~SettingTags.ReadOnlyRecommended };
+            _idleTimer = new Timer(OnIdleTimerTick, null, _idleDelay, Timeout.InfiniteTimeSpan);
 
             Items = new ObservableCollection<ISettingViewModel>(items.OrderBy(e => e.IsSettingGroup));
+
+            ItemsView = CollectionViewSource.GetDefaultView(Items);
+            ItemsView.SortDescriptions.Add(new SortDescription(nameof(ISettingViewModel.IsSettingGroup), ListSortDirection.Ascending));
+            ItemsView.Filter = value => string.IsNullOrWhiteSpace(_searchString) || ((ISettingViewModel)value).IsSearchResult(_searchString);
 
             IsEnabled = true; // !_settingGroup.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
         }
@@ -30,6 +42,7 @@ namespace Rubberduck.UI.Shared.Settings
         {
             // readonly-recommended padlock makes weird UX on setting groups
             _settingGroup = settingGroup with { Tags = settingGroup.Tags & ~SettingTags.ReadOnlyRecommended };
+            _idleTimer = new Timer(OnIdleTimerTick, null, _idleDelay, Timeout.InfiniteTimeSpan);
 
             Items = new ObservableCollection<ISettingViewModel>(items);
             IsEnabled = true; // !_settingGroup.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
@@ -39,20 +52,46 @@ namespace Rubberduck.UI.Shared.Settings
         {
             // readonly-recommended padlock makes weird UX on setting groups
             _settingGroup = settingGroup with { Tags = settingGroup.Tags & ~SettingTags.ReadOnlyRecommended };
+            _idleTimer = new Timer(OnIdleTimerTick, null, _idleDelay, Timeout.InfiniteTimeSpan);
 
             Items = new ObservableCollection<ISettingViewModel>(items);
             IsEnabled = true; // !_settingGroup.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
         }
 
+        public ICollectionView ItemsView { get; init; }
         public ObservableCollection<ISettingViewModel> Items { get; init; }
 
+        private void OnIdleTimerTick(object? state) => Application.Current.Dispatcher.Invoke(() => ItemsView?.Refresh());
+        private void ResetIdleTimer() => _idleTimer.Change(_idleDelay, Timeout.InfiniteTimeSpan);
+
         public bool IsSettingGroup => true;
+        public bool IsSearchResult(string search) => 
+            Name.Contains(search, System.StringComparison.InvariantCultureIgnoreCase)
+            || Description.Contains(search, System.StringComparison.InvariantCultureIgnoreCase);
+
+        private string _searchString;
+        public string SearchString 
+        {
+            get => _searchString;
+            set
+            {
+                if (_searchString != value)
+                {
+                    _searchString = value;
+                    OnPropertyChanged();
+                }
+                ResetIdleTimer();
+            }
+        }
 
         public SettingDataType SettingDataType => _settingGroup.SettingDataType;
         public string Key => _settingGroup.Key;
         public string Name => SettingsUI.ResourceManager.GetString($"{_settingGroup.Key}_Title") ?? $"[missing key:{_settingGroup.Key}_Title]";
 
         public string Description => SettingsUI.ResourceManager.GetString($"{_settingGroup.Key}_Description") ?? $"[missing key:{_settingGroup.Key}_Description]";
+        public bool AllowToggleAllBooleans => Items.All(e => e is BooleanSettingViewModel);
+
+        public ICommand EnableAllItemsCommand { get; }
 
         public SettingTags Tags => _settingGroup.Tags;
         public bool IsReadOnlyRecommended => !IsExpanded && Tags.HasFlag(SettingTags.ReadOnlyRecommended);

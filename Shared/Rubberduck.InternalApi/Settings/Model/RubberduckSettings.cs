@@ -49,4 +49,6 @@ public record class RubberduckSettings : TypedSettingGroup, IDefaultSettingsProv
 
     public static RubberduckSettings Default { get; } = new() { Value = DefaultSettings };
     RubberduckSettings IDefaultSettingsProvider<RubberduckSettings>.Default => Default;
+
+    public RubberduckSettings WithKey(string key) => this with { Key = key };
 }

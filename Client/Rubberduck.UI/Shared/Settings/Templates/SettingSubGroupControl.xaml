@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:Rubberduck.UI.Shared.Settings.Templates"
              xmlns:viewmodels="clr-namespace:Rubberduck.UI.Shared.Settings" 
              xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
-             Background="{DynamicResource ThemeBackgroundColorBrush}"
              Padding="4" MinHeight="96" 
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="255">

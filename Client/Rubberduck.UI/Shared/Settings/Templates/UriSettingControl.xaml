@@ -4,9 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.UI.Shared.Settings.Templates"
+             xmlns:cmd="clr-namespace:Rubberduck.UI.Command"
              xmlns:vm="clr-namespace:Rubberduck.UI.Shared.Settings"
              xmlns:shell="clr-namespace:Rubberduck.UI.Shell" d:DataContext="{d:DesignInstance Type=vm:UriSettingViewModel}"
-             Background="{DynamicResource ThemeBackgroundColorBrush}"
              Padding="4" MinHeight="96" MinWidth="128"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -47,14 +47,17 @@
                          Width="Auto" MaxWidth="250" MinWidth="180"
                          Text="{Binding Selection}" Margin="5,5,-1,5" IsReadOnly="False" IsEnabled="{Binding IsEnabled}" />
                 <shell:FlatButton  DockPanel.Dock="Left"
-                        Command="{x:Static NavigationCommands.Search}"
+                        Command="{x:Static cmd:DialogCommands.BrowseLocationCommand}"
                         CommandParameter="{Binding}"
                         Visibility="{Binding RootUri.IsFile, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Style="{DynamicResource FlatButtonStyle}" 
                         IsEnabled="{Binding IsEnabled}"
                         Width="28" Height="24" 
-                                   Foreground="{DynamicResource ThemeTextColorBrush}"
-                        Content="…" IsTabStop="True" />
+                        Foreground="{DynamicResource ThemeTextColorBrush}"
+                        HorizontalContentAlignment="Center"
+                        IsTabStop="True">
+                    <TextBlock Text="…" HorizontalAlignment="Center" />
+                </shell:FlatButton>
             </DockPanel>
 
         </DockPanel>

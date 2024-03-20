@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:Rubberduck.UI.Shared.Settings.Templates" 
              xmlns:viewmodels="clr-namespace:Rubberduck.UI.Shared.Settings" 
              xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
-             Background="{DynamicResource ThemeBackgroundColorBrush}"
              Padding="4" MinHeight="84" 
              mc:Ignorable="d" 
              d:DesignHeight="84" d:DesignWidth="255">
@@ -31,7 +30,7 @@
                     <shell:FlatToggleButton DockPanel.Dock="Left" VerticalAlignment="Top" Margin="0,10,0,0"
                                             IsChecked="{Binding Value, Mode=TwoWay}"
                                             VerticalContentAlignment="Center" Cursor="Hand"
-                                            Height="20" Width="24" OffsetX="2" OffsetY="0"
+                                            Height="20" Width="24" OffsetX="2"
                                             Icon="{DynamicResource ToggleOffIcon}"
                                             CheckedIcon="{DynamicResource ToggleOnIcon}"/>
                     <Label Style="{DynamicResource FormTitleLabelStyle}" Margin="0,0" IsEnabled="{Binding IsEnabled}">

@@ -61,6 +61,15 @@ namespace Rubberduck.Resources.v3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This will reset all settings to their default values. Proceed?.
+        /// </summary>
+        public static string ConfirmResetSettings {
+            get {
+                return ResourceManager.GetString("ConfirmResetSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do not show this message again.
         /// </summary>
         public static string DoNotShowAgain {

@@ -83,8 +83,10 @@ namespace Rubberduck.UI.Services.Settings
                 viewModel = CreateViewModel(Settings, actions)
                     ?? throw new InvalidOperationException($"CreateViewModel returned null.");
 
-                var settingGroup = viewModel.Settings.Items.Select(e => (VM: e, e.Key)).SingleOrDefault(e => e.Key == key).VM;
-                viewModel.Selection = settingGroup ?? viewModel.Settings;                
+                var settingGroup = viewModel.Settings.Items.OfType<ISettingGroupViewModel>()
+                    .Select(e => (VM: e, e.Key)).SingleOrDefault(e => e.Key == key).VM;
+
+                viewModel.Selection = settingGroup ?? viewModel.Settings;
 
                 view = _factory.Create(viewModel)
                     ?? throw new InvalidOperationException($"ViewFactory.Create returned null.");

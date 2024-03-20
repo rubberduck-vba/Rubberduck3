@@ -26,6 +26,9 @@ namespace Rubberduck.UI.Shared.Settings.Abstract
         public bool IsReadOnlyRecommended => Tags.HasFlag(SettingTags.ReadOnlyRecommended);
         public bool IsAdvancedSetting => Tags.HasFlag(SettingTags.Advanced);
         public bool IsExperimental => Tags.HasFlag(SettingTags.Experimental);
+        public bool IsSearchResult(string search) =>
+            Name.Contains(search, System.StringComparison.InvariantCultureIgnoreCase)
+            || Description.Contains(search, System.StringComparison.InvariantCultureIgnoreCase);
 
         public bool IsHidden => Tags.HasFlag(SettingTags.Hidden);
 

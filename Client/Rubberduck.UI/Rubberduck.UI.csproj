@@ -163,6 +163,7 @@
     <None Remove="Resources\FontAwesome\arrows-left-right-to-line-solid.png" />
     <None Remove="Resources\FontAwesome\arrows-spin-solid.png" />
     <None Remove="Resources\FontAwesome\ban-solid.png" />
+    <None Remove="Resources\FontAwesome\binoculars-solid.png" />
     <None Remove="Resources\FontAwesome\bomb-solid.png" />
     <None Remove="Resources\FontAwesome\circle-check-solid.png" />
     <None Remove="Resources\FontAwesome\circle-exclamation-solid.png" />
@@ -205,6 +206,7 @@
     <None Remove="Resources\FontAwesome\pause-solid.png" />
     <None Remove="Resources\FontAwesome\power-off-solid.png" />
     <None Remove="Resources\FontAwesome\rectangle-xmark-solid.png" />
+    <None Remove="Resources\FontAwesome\rotate-left-solid.png" />
     <None Remove="Resources\FontAwesome\square-minus-regular.png" />
     <None Remove="Resources\FontAwesome\square-minus-solid.png" />
     <None Remove="Resources\FontAwesome\square-plus-regular.png" />
@@ -431,6 +433,7 @@
     <Resource Include="Resources\FontAwesome\arrows-left-right-to-line-solid.png" />
     <Resource Include="Resources\FontAwesome\arrows-spin-solid.png" />
     <Resource Include="Resources\FontAwesome\ban-solid.png" />
+    <Resource Include="Resources\FontAwesome\binoculars-solid.png" />
     <Resource Include="Resources\FontAwesome\bomb-solid.png" />
     <Resource Include="Resources\FontAwesome\circle-check-solid.png" />
     <Resource Include="Resources\FontAwesome\circle-exclamation-solid.png" />
@@ -473,6 +476,7 @@
     <Resource Include="Resources\FontAwesome\pause-solid.png" />
     <Resource Include="Resources\FontAwesome\power-off-solid.png" />
     <Resource Include="Resources\FontAwesome\rectangle-xmark-solid.png" />
+    <Resource Include="Resources\FontAwesome\rotate-left-solid.png" />
     <Resource Include="Resources\FontAwesome\square-minus-regular.png" />
     <Resource Include="Resources\FontAwesome\square-minus-solid.png" />
     <Resource Include="Resources\FontAwesome\square-plus-regular.png" />

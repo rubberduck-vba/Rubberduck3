@@ -8,6 +8,7 @@
 
     <BitmapImage x:Key="NavPreviousIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/arrow-left-solid.png" />
     <BitmapImage x:Key="NavNextIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/arrow-right-solid.png" />
+    <BitmapImage x:Key="ResetDefaultsIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/rotate-left-solid.png" />
 
     <BitmapImage x:Key="WindowCloseIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/square-xmark-solid-red.png" />
     <BitmapImage x:Key="WindowMaximizeIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/window-maximize-regular.png" />
@@ -42,6 +43,7 @@
     <BitmapImage x:Key="StopwatchIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/stopwatch-solid.png" />
     <BitmapImage x:Key="WaitIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/hourglass-half-solid.png" />
 
+    <BitmapImage x:Key="SearchIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/binoculars-solid.png" />
     <BitmapImage x:Key="CancelIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/ban-solid.png" />
 
     <BitmapImage x:Key="SynchronizeIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/arrows-spin-solid.png" />
