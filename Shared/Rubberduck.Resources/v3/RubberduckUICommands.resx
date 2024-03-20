@@ -156,6 +156,9 @@
   <data name="FileCommands_SynchronizeProjectCommandText" xml:space="preserve">
     <value>Synchronize project/workspace</value>
   </data>
+  <data name="SearchBox_DefaultHint" xml:space="preserve">
+    <value>Search</value>
+  </data>
   <data name="ServerTraceCommands_ClearContentCommandText" xml:space="preserve">
     <value>Clear content</value>
   </data>

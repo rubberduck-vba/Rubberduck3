@@ -315,10 +315,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>RubberduckUI.resx</DependentUpon>
     </Compile>
-    <Compile Update="v3\Ico.Designer.cs">
+    <Compile Update="v3\Icons.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Ico.resx</DependentUpon>
+      <DependentUpon>Icons.resx</DependentUpon>
     </Compile>
     <Compile Update="v3\LogLevelIcons.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -350,9 +350,9 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="v3\Ico.resx">
+    <EmbeddedResource Update="v3\Icons.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Ico.Designer.cs</LastGenOutput>
+      <LastGenOutput>Icons.Designer.cs</LastGenOutput>
       <CustomToolNamespace>Rubberduck.Resources.v3</CustomToolNamespace>
     </EmbeddedResource>
     <EmbeddedResource Update="v3\LogLevelIcons.resx">

@@ -1,6 +1,4 @@
-﻿using Rubberduck.InternalApi.Settings.Model;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace Rubberduck.UI.Shared.Settings.Abstract
@@ -16,5 +14,6 @@ namespace Rubberduck.UI.Shared.Settings.Abstract
         ICollectionView ItemsView { get; }
         ObservableCollection<ISettingViewModel> Items { get; }
         bool IsExpanded { get; set; }
+        string SearchString { get; set; }
     }
 }

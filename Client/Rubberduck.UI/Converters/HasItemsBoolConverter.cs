@@ -26,6 +26,10 @@ namespace Rubberduck.UI.Converters
             {
                 count = toolTabs.Count(e => e.IsPinned);
             }
+            else if (value is string s)
+            {
+                count = s.Length;
+            }
             else if (value is IEnumerable<object> enumerable)
             {
                 count = enumerable.Count();

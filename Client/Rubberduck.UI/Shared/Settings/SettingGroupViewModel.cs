@@ -62,7 +62,7 @@ namespace Rubberduck.UI.Shared.Settings
         public ObservableCollection<ISettingViewModel> Items { get; init; }
 
         private void OnIdleTimerTick(object? state) => Application.Current.Dispatcher.Invoke(() => ItemsView?.Refresh());
-        private void ResetIdleTimer() => _idleTimer.Change(_idleDelay, Timeout.InfiniteTimeSpan);
+        private void ResetIdleTimer(bool immediate = false) => _idleTimer.Change(immediate ? TimeSpan.Zero : _idleDelay, Timeout.InfiniteTimeSpan);
 
         public bool IsSettingGroup => true;
         public bool IsSearchResult(string search) => 
@@ -80,7 +80,7 @@ namespace Rubberduck.UI.Shared.Settings
                     _searchString = value;
                     OnPropertyChanged();
                 }
-                ResetIdleTimer();
+                ResetIdleTimer(immediate: value is null);
             }
         }
 

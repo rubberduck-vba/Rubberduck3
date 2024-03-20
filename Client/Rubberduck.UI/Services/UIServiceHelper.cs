@@ -25,6 +25,8 @@ namespace Rubberduck.UI.Services
     {
         public event EventHandler<UserFacingExceptionEventArgs> UserFacingException = delegate { };
 
+        public static UIServiceHelper? Instance { get; private set; }
+
         public UIServiceHelper(
             ILogger<UIServiceHelper> logger, 
             RubberduckSettingsProvider settingsProvider, 
@@ -32,6 +34,7 @@ namespace Rubberduck.UI.Services
             : base(logger, settingsProvider, performance)
         {
             SettingsProvider = settingsProvider;
+            Instance = this;
         }
 
         public void RunOnMainThread(Action action)

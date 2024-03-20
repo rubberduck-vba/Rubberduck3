@@ -52,10 +52,19 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Margin="5" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBox MinWidth="180" Height="22" 
-                             HorizontalContentAlignment="Center"
-                             Text="{Binding Selection.SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             Foreground="{DynamicResource ThemeTextColorBrush}" />
+                    <Grid>
+                        <TextBox MinWidth="180" Height="22" Padding="22,2"
+                                 HorizontalContentAlignment="Center"
+                                 Text="{Binding Selection.SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Foreground="{DynamicResource ThemeTextColorBrush}">
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Esc" Command="{Binding ClearSearchTextCommand}" />
+                            </TextBox.InputBindings>
+                        </TextBox>
+                        <shell:FlatButton HorizontalAlignment="Right" Icon="{DynamicResource XMarkIcon}" 
+                                          Visibility="{Binding Selection.SearchString, Converter={StaticResource HasItemsVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"
+                                          Command="{Binding ClearSearchTextCommand}" />
+                    </Grid>
                     <shell:FlatButton Icon="{DynamicResource SearchIcon}" 
                                       Command="{x:Static NavigationCommands.Search}"
                                       CommandParameter="{Binding Selection.SearchString, UpdateSourceTrigger=PropertyChanged}" />

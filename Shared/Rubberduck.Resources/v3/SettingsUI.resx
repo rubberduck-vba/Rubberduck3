@@ -387,6 +387,12 @@
   <data name="RubberduckSettings_Title" xml:space="preserve">
     <value>Rubberduck Settings</value>
   </data>
+  <data name="SearchResults_Description" xml:space="preserve">
+    <value>Shows all settings across all setting groups that have a match for the search term in either their name or description.</value>
+  </data>
+  <data name="SearchResults_Title" xml:space="preserve">
+    <value>Search Results</value>
+  </data>
   <data name="SendEventTelemetrySetting_Description" xml:space="preserve">
     <value>If enabled, the telemetry server is allowed to transmit event data.</value>
   </data>

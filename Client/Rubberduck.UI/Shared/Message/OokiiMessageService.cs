@@ -31,8 +31,8 @@ public class OokiiMessageService : UIServiceHelper, IMessageService
         [LogLevel.Critical] = TaskDialogIcon.Error,
     };
 
-    private static readonly Icon _rubberduckIcon = Resources.v3.Ico.ducky;
-    private static readonly Icon _rubberduckLogo = Resources.v3.Ico.black_vector_ducky;
+    private static readonly Icon _rubberduckIcon = Resources.v3.Icons.ducky;
+    private static readonly Icon _rubberduckLogo = Resources.v3.Icons.black_vector_ducky;
 
     public OokiiMessageService(MessageActionsProvider provider,
         ILogger<UIServiceHelper> logger, 

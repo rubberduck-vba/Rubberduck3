@@ -58,6 +58,10 @@ namespace Rubberduck.UI.Services.Settings
 
                 }
             });
+            ClearSearchTextCommand = new DelegateCommand(service, parameter =>
+            {
+                Selection.SearchString = null!;
+            });
             var searchCommand = new DelegateCommand(service, parameter =>
             {
                 if (parameter is string text)
@@ -69,6 +73,7 @@ namespace Rubberduck.UI.Services.Settings
                     Selection = vm;
                 }
             }, parameter => (parameter is string text) && !string.IsNullOrWhiteSpace(text));
+
             CommandBindings =
             [
                 new CommandBinding(DialogCommands.BrowseLocationCommand, DialogCommandHandlers.BrowseLocationCommandBinding_Executed, DialogCommandHandlers.BrowseLocationCommandBinding_CanExecute),
@@ -104,7 +109,7 @@ namespace Rubberduck.UI.Services.Settings
         
         public ICommand ResetSettingsCommand { get; }
         public ICommand ExpandSettingGroupCommand { get; }
-        public ICommand SearchCommand { get; }
+        public ICommand ClearSearchTextCommand { get; }
 
         private void CanExecuteNavigateBackward(object sender, CanExecuteRoutedEventArgs parameter) => parameter.CanExecute = _backwardNavStack.Count > 0;
         private void ExecuteNavigateBackward(object sender, ExecutedRoutedEventArgs parameter)

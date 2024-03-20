@@ -121,11 +121,17 @@
   <data name="black_vector_ducky" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\black-vector-ducky.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="circle_arrow_right_solid" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\circle-arrow-right-solid.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ducky" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\ducky.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="white_vector_ducky" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\white-vector-ducky.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="xmark_solid" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\xmark-solid.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="yellow_vector_ducky" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\yellow-vector-ducky.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

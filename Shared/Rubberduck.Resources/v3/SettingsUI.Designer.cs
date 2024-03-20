@@ -871,6 +871,24 @@ namespace Rubberduck.Resources.v3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Shows all settings across all setting groups that have a match for the search term in either their name or description..
+        /// </summary>
+        public static string SearchResults_Description {
+            get {
+                return ResourceManager.GetString("SearchResults_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search Results.
+        /// </summary>
+        public static string SearchResults_Title {
+            get {
+                return ResourceManager.GetString("SearchResults_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to If enabled, the telemetry server is allowed to transmit event data..
         /// </summary>
         public static string SendEventTelemetrySetting_Description {

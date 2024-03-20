@@ -178,6 +178,15 @@ namespace Rubberduck.Resources.v3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string SearchBox_DefaultHint {
+            get {
+                return ResourceManager.GetString("SearchBox_DefaultHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clear content.
         /// </summary>
         public static string ServerTraceCommands_ClearContentCommandText {
