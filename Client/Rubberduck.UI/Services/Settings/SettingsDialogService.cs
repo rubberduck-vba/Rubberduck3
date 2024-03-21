@@ -43,7 +43,7 @@ namespace Rubberduck.UI.Services.Settings
 
         protected override SettingsWindowViewModel CreateViewModel(RubberduckSettings settings, MessageActionsProvider actions)
         {
-            var vm = new SettingsWindowViewModel(_service, actions.Close(), _messageService, _vmFactory);
+            var vm = new SettingsWindowViewModel(_service, actions.OkCancel(), _messageService, _vmFactory);
             return vm;
         }
 
