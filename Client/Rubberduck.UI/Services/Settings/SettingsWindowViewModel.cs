@@ -9,14 +9,9 @@ using Rubberduck.UI.Shared.Message;
 using Rubberduck.UI.Shared.Settings;
 using Rubberduck.UI.Shared.Settings.Abstract;
 using Rubberduck.UI.Windows;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
-using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 
 namespace Rubberduck.UI.Services.Settings
 {
@@ -106,7 +101,8 @@ namespace Rubberduck.UI.Services.Settings
         public override IEnumerable<CommandBinding> CommandBindings { get; }
 
         public bool ShowPinButton => false;
-        
+        public bool IsPinned { get; set; }
+
         public ICommand ResetSettingsCommand { get; }
         public ICommand ExpandSettingGroupCommand { get; }
         public ICommand ClearSearchTextCommand { get; }
@@ -208,7 +204,7 @@ namespace Rubberduck.UI.Services.Settings
 
         public IEnumerable<ISettingGroupViewModel> SettingGroups { get; }
 
-        private ISettingGroupViewModel _settings;
+        private ISettingGroupViewModel _settings = null!;
         public ISettingGroupViewModel Settings 
         {
             get => _settings;
@@ -223,7 +219,7 @@ namespace Rubberduck.UI.Services.Settings
         }
 
         private bool _isManualSelection = true;
-        private ISettingGroupViewModel _selection;
+        private ISettingGroupViewModel _selection = null!;
         public ISettingGroupViewModel Selection
         {
             get => _selection;
@@ -246,8 +242,8 @@ namespace Rubberduck.UI.Services.Settings
 
         private string Localized(string key) => SettingsUI.ResourceManager.GetString($"{key}_Title") ?? $"[missing key:{key}_Title]";
 
-        private string _previousKey;
-        public string PreviousNavKey
+        private string? _previousKey;
+        public string? PreviousNavKey
         {
             get => _previousKey;
             set
@@ -260,8 +256,8 @@ namespace Rubberduck.UI.Services.Settings
             }
         }
 
-        private string _nextKey;
-        public string NextNavKey
+        private string? _nextKey;
+        public string? NextNavKey
         {
             get => _nextKey;
             set
