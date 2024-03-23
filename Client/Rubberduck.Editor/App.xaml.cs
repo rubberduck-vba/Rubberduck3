@@ -1,4 +1,5 @@
-﻿using Dragablz;
+﻿using AsyncAwaitBestPractices;
+using Dragablz;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog;
@@ -98,8 +99,6 @@ namespace Rubberduck.Editor
             _ = UiContextProvider.Instance(); // we MUST do this while we KNOW we're on the main thread.
             try
             {
-                ShutdownMode = ShutdownMode.OnLastWindowClose;
-
                 var args = e.Args;
                 _options = await ServerArgs.ParseAsync(args);
                 _tokenSource = new CancellationTokenSource();
@@ -119,7 +118,10 @@ namespace Rubberduck.Editor
                 _settings = _serviceProvider.GetRequiredService<RubberduckSettingsProvider>();
 
                 var splash = _serviceProvider.GetRequiredService<SplashService>();
-                splash.Show(WindowSize.Splash);
+                if (_settings.Settings.GeneralSettings.ShowSplash)
+                {
+                    splash.Show(WindowSize.Splash);
+                }
 
                 splash.UpdateStatus("Loading configuration...");
                 _settings.ClearCache();
@@ -161,6 +163,10 @@ namespace Rubberduck.Editor
             var model = _serviceProvider.GetRequiredService<IShellWindowViewModel>();
 
             var view = _shell ??= new ShellWindow() { DataContext = model };
+
+            ShutdownMode = ShutdownMode.OnMainWindowClose;
+            MainWindow = view;
+
             view.Show();
 
             ShowStartupToolwindows(settings);
@@ -224,11 +230,11 @@ namespace Rubberduck.Editor
         {
             var level = _settings.Settings.LoggerSettings.TraceLevel.ToTraceLevel();
             var delay = _settings.Settings.LanguageClientSettings.ExitNotificationDelay;
+            e.ApplicationExitCode = 0;
 
             if (TimedAction.TryRun(() =>
             {
-                _languageClient?.ExitAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-                base.OnExit(e);
+                _languageClient?.ExitAsync().SafeFireAndForget();
             }, out var elapsed, out var exception))
             {
                 _logger.LogPerformance(level, $"Notified language server to shutdown and exit (delay: {delay.TotalMilliseconds}ms).", elapsed);
@@ -237,6 +243,16 @@ namespace Rubberduck.Editor
             {
                 _logger.LogError(level, exception, "Error sending shutdown/exit notifications.");
             }
+
+            if (_editorServer != null)
+            {
+                if (!_editorServer.ServerState.IsCleanExit)
+                {
+                    e.ApplicationExitCode = 1;
+                }
+            }
+
+            base.OnExit(e);
         }
 
         private void ConfigureLogging(ILoggingBuilder builder)
@@ -306,7 +322,7 @@ namespace Rubberduck.Editor
             services.AddSingleton<ShellProvider>();
             services.AddSingleton<IShellWindowViewModel, ShellWindowViewModel>();
             services.AddSingleton<IShellStatusBarViewModel, ShellStatusBarViewModel>();
-            services.AddSingleton<IWindowChromeViewModel, WindowChromeViewModel>();
+            services.AddTransient<IWindowChromeViewModel, WindowChromeViewModel>();
 
             services.AddSingleton<InterTabClient>();
             services.AddSingleton<InterToolTabClient>();

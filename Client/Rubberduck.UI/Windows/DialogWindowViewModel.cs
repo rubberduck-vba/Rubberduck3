@@ -1,4 +1,5 @@
-﻿using Rubberduck.UI.Command.SharedHandlers;
+﻿using Rubberduck.UI.Chrome;
+using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Shared.Message;
 using System.Linq;
@@ -10,10 +11,11 @@ namespace Rubberduck.UI.Windows
     {
         private readonly UIServiceHelper _service;
 
-        protected DialogWindowViewModel(UIServiceHelper service, string title, MessageActionCommand[] actions, ICommand? showSettingsCommand = null, object? showSettingsCommandParameter = null)
+        protected DialogWindowViewModel(UIServiceHelper service, string title, MessageActionCommand[] actions, IWindowChromeViewModel chrome, ICommand? showSettingsCommand = null, object? showSettingsCommandParameter = null)
         {
             _service = service;
 
+            Chrome = chrome;
             Title = title;
             Actions = actions;
             IsEnabled = true;
@@ -23,6 +25,8 @@ namespace Rubberduck.UI.Windows
 
         public bool ExtendWindowChrome => _service.Settings.EditorSettings.ExtendWindowChrome;
         protected abstract void ResetToDefaults();
+
+        public IWindowChromeViewModel Chrome { get; init; }
 
         public ICommand? CloseToolWindowCommand { get; init; }
         public ICommand? ShowSettingsCommand { get; init; }

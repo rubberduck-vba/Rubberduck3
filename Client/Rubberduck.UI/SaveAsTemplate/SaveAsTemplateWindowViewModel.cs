@@ -1,15 +1,11 @@
-﻿using Rubberduck.Resources.Menus;
+﻿using Rubberduck.UI.Chrome;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Shell.Tools.WorkspaceExplorer;
 using Rubberduck.UI.Windows;
-using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace Rubberduck.UI.SaveAsTemplate
 {
@@ -18,10 +14,10 @@ namespace Rubberduck.UI.SaveAsTemplate
         private readonly UIServiceHelper _service;
         private readonly IFileSystem _fileSystem;
 
-        public SaveAsTemplateWindowViewModel(UIServiceHelper service, MessageActionCommand[] actions,
+        public SaveAsTemplateWindowViewModel(UIServiceHelper service, MessageActionCommand[] actions, IWindowChromeViewModel chrome,
             IEnumerable<IWorkspaceFileViewModel> files,
             IFileSystem fileSystem)
-            : base(service, "Export Project Template", actions)
+            : base(service, "Export Project Template", actions, chrome)
         {
             _service = service;
             _fileSystem = fileSystem;

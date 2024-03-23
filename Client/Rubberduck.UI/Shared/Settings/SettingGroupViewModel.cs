@@ -1,5 +1,6 @@
 ﻿using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.Resources.v3;
+using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Shared.Settings.Abstract;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,16 @@ namespace Rubberduck.UI.Shared.Settings
             ItemsView.SortDescriptions.Add(new SortDescription(nameof(ISettingViewModel.IsSettingGroup), ListSortDirection.Ascending));
             ItemsView.Filter = value => string.IsNullOrWhiteSpace(_searchString) || ((ISettingViewModel)value).IsSearchResult(_searchString);
 
-            IsEnabled = true; // !_settingGroup.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
+            IsEnabled = true;
+            EnableAllItemsCommand = new DelegateCommand(Services.UIServiceHelper.Instance,
+                parameter =>
+                {
+                    var isEnabled = (bool)parameter;
+                    foreach (var item in Items.OfType<BooleanSettingViewModel>())
+                    {
+                        item.Value = isEnabled;
+                    }
+                });
         }
 
         public SettingGroupViewModel(TypedRubberduckSetting<BooleanRubberduckSetting[]> settingGroup, IEnumerable<ISettingViewModel> items)
@@ -45,7 +55,16 @@ namespace Rubberduck.UI.Shared.Settings
             _idleTimer = new Timer(OnIdleTimerTick, null, _idleDelay, Timeout.InfiniteTimeSpan);
 
             Items = new ObservableCollection<ISettingViewModel>(items);
-            IsEnabled = true; // !_settingGroup.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
+            IsEnabled = true;
+            EnableAllItemsCommand = new DelegateCommand(Services.UIServiceHelper.Instance,
+                parameter =>
+                {
+                    var isEnabled = (bool)parameter;
+                    foreach (var item in Items.OfType<BooleanSettingViewModel>())
+                    {
+                        item.Value = isEnabled;
+                    }
+                });
         }
 
         public SettingGroupViewModel(TypedRubberduckSetting<RubberduckSetting[]> settingGroup, IEnumerable<ISettingViewModel> items)
@@ -55,7 +74,16 @@ namespace Rubberduck.UI.Shared.Settings
             _idleTimer = new Timer(OnIdleTimerTick, null, _idleDelay, Timeout.InfiniteTimeSpan);
 
             Items = new ObservableCollection<ISettingViewModel>(items);
-            IsEnabled = true; // !_settingGroup.Tags.HasFlag(SettingTags.ReadOnlyRecommended);
+            IsEnabled = true;
+            EnableAllItemsCommand = new DelegateCommand(Services.UIServiceHelper.Instance,
+                parameter =>
+                {
+                    var isEnabled = (bool)parameter;
+                    foreach (var item in Items.OfType<BooleanSettingViewModel>())
+                    {
+                        item.Value = isEnabled;
+                    }
+                });
         }
 
         public ICollectionView ItemsView { get; init; }

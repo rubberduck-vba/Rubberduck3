@@ -12,8 +12,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-
-            
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.ContentTemplate>
@@ -44,7 +42,7 @@
                                             <GradientStop Offset="1" Color="{DynamicResource ThemeBackgroundDarkColor}" />
                                         </LinearGradientBrush>
                                     </Border.Background>
-                                    <Border.ContextMenu>
+                                    <!--<Border.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Undock" Command="{Binding UndockToolTabCommand}" CommandParameter="{Binding}" />
                                             <MenuItem Header="Auto hide" 
@@ -58,7 +56,7 @@
                                                       Command="{Binding ShowSettingsCommand}" CommandParameter="{Binding ShowSettingsCommandParameter}" 
                                                       Visibility="{Binding ShowGearButton, Converter={StaticResource BoolToVisibilityConverter}}" />
                                         </ContextMenu>
-                                    </Border.ContextMenu>
+                                    </Border.ContextMenu>-->
                                 </Border>
 
                                 <DockPanel Grid.Row="0"

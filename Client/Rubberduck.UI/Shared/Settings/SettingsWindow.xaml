@@ -27,8 +27,9 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <shell:ThunderFrame Grid.RowSpan="2" Title="{Binding Title}" ShowTitle="True"
-                            ShowAcceptButton="True"
-                            AcceptCommand="{Binding Actions[0]}">
+                            ShowAcceptButton="True" ShowCancelButton="True"
+                            AcceptCommand="{Binding Actions[0]}"
+                            CancelCommand="{Binding Actions[1]}">
             <Grid ClipToBounds="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />

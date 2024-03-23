@@ -25,8 +25,6 @@ namespace Rubberduck.UI.Windows
 
         public virtual bool ShowDialog(out TViewModel viewModel)
         {
-            TView view = default!;
-
             var actions = _actionsProvider;
             var verbosity = TraceLevel;
 
@@ -35,9 +33,7 @@ namespace Rubberduck.UI.Windows
             viewModel = CreateViewModel(Settings, actions)
                 ?? throw new ArgumentNullException(nameof(viewModel), $"CreateViewModel returned null.");
 
-            view = _factory.Create(viewModel)
-                ?? throw new ArgumentNullException(nameof(view), $"ViewFactory.Create returned null.");
-
+            var view = _factory.Create(viewModel);
             var vm = viewModel;
             TryRunAction(() =>
             {

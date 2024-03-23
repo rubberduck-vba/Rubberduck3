@@ -3,10 +3,11 @@ using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.UI;
 using Rubberduck.UI.Chrome;
 using Rubberduck.UI.Services;
+using System;
 
 namespace Rubberduck.Editor.Shell
 {
-    public class WindowChromeViewModel : ViewModelBase, IWindowChromeViewModel
+    public class WindowChromeViewModel : ViewModelBase, IWindowChromeViewModel, IDisposable
     {
         public WindowChromeViewModel(UIServiceHelper service)
         {
@@ -40,6 +41,11 @@ namespace Rubberduck.Editor.Shell
             {
                 ExtendWindowChrome = newValue;
             }
+        }
+
+        public void Dispose()
+        {
+            UIServiceHelper.Instance!.SettingsProvider.SettingsChanged -= OnSettingsChanged;
         }
     }
 }

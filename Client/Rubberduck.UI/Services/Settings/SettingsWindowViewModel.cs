@@ -2,6 +2,7 @@
 using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.Resources;
 using Rubberduck.Resources.v3;
+using Rubberduck.UI.Chrome;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Command.SharedHandlers;
@@ -24,8 +25,9 @@ namespace Rubberduck.UI.Services.Settings
         private readonly Stack<ISettingGroupViewModel> _backwardNavStack = [];
         private readonly Stack<ISettingGroupViewModel> _forwardNavStack = [];
 
-        public SettingsWindowViewModel(UIServiceHelper service, MessageActionCommand[] actions, IMessageService message, ISettingViewModelFactory factory)
-            : base(service, RubberduckUI.Settings, actions)
+        public SettingsWindowViewModel(UIServiceHelper service, MessageActionCommand[] actions, 
+            IWindowChromeViewModel chrome, IMessageService message, ISettingViewModelFactory factory)
+            : base(service, RubberduckUI.Settings, actions, chrome)
         {
             _message = message;
             _factory = factory;
@@ -61,7 +63,7 @@ namespace Rubberduck.UI.Services.Settings
             {
                 if (parameter is string text)
                 {
-                    var results = Flatten(_settings!).ToList();
+                    var results = _flattenedSettings ??= Flatten(_settings!).ToList();
                     var filteredResults = results.Where(e => e.IsSearchResult(text)).ToList();
                     var vm = new SettingGroupViewModel(service.Settings.WithKey("SearchResults"), filteredResults);
                     vm.SearchString = text;
@@ -78,6 +80,7 @@ namespace Rubberduck.UI.Services.Settings
             ];
         }
 
+        private IEnumerable<ISettingViewModel>? _flattenedSettings;
         private static IEnumerable<ISettingViewModel> Flatten(ISettingGroupViewModel group)
         {
             var results = new HashSet<ISettingViewModel>();
@@ -284,7 +287,7 @@ namespace Rubberduck.UI.Services.Settings
         {
             var settingsRoot = _service.Settings;
             var generalSettings = settingsRoot.GeneralSettings;
-            var messageKey = $"{nameof(SettingsWindowViewModel)}.{nameof(ConfirmReset)}";
+            var messageKey = "SettingsWindow_ConfirmReset";
 
             var model = new MessageRequestModel
             {

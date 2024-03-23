@@ -52,10 +52,13 @@
             </ScrollViewer>
 
             <Border DockPanel.Dock="Top" Margin="5,0" Visibility="{Binding AllowToggleAllBooleans, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <shell:FlatButton Icon="{DynamicResource ToggleOnIcon}" 
-                                  Command="{Binding EnableAllItemsCommand}" CommandParameter="True"
-                                  ToolTip="Enable/disable all"
-                                  HorizontalAlignment="Left" />
+                <shell:FlatToggleButton Icon="{DynamicResource ToggleOnIcon}" 
+                                        CheckedIcon="{DynamicResource ToggleOffIcon}"
+                                        d:IconSource="{DynamicResource ToggleOnIcon}"
+                                        Command="{Binding EnableAllItemsCommand}" 
+                                        CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Mode=Self}}"
+                                        ToolTip="Enable/disable all"
+                                        HorizontalAlignment="Left" />
             </Border>
             
             <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">

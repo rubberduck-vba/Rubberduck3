@@ -8,6 +8,7 @@ using Rubberduck.InternalApi.Settings;
 using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.UI.Shared.Settings.Abstract;
+using Rubberduck.UI.Chrome;
 
 namespace Rubberduck.UI.Services.Settings
 {
@@ -19,6 +20,7 @@ namespace Rubberduck.UI.Services.Settings
     public class SettingsDialogService : DialogService<SettingsWindow, SettingsWindowViewModel>, ISettingsDialogService
     {
         private readonly UIServiceHelper _service;
+        private readonly IWindowChromeViewModel _chrome;
         private readonly IMessageService _messageService;
         private readonly ISettingViewModelFactory _vmFactory;
         private readonly MessageActionsProvider _actionsProvider;
@@ -29,12 +31,14 @@ namespace Rubberduck.UI.Services.Settings
             UIServiceHelper service,
             IWindowFactory<SettingsWindow, SettingsWindowViewModel> factory,
             IMessageService messageService,
+            IWindowChromeViewModel chrome,
             ISettingViewModelFactory vmFactory,
             MessageActionsProvider actionsProvider,
             PerformanceRecordAggregator performance)
             : base(logger, factory, settings, actionsProvider, performance)
         {
             _service = service;
+            _chrome = chrome;
             _messageService = messageService;
             _vmFactory = vmFactory;
             _actionsProvider = actionsProvider;
@@ -43,7 +47,7 @@ namespace Rubberduck.UI.Services.Settings
 
         protected override SettingsWindowViewModel CreateViewModel(RubberduckSettings settings, MessageActionsProvider actions)
         {
-            var vm = new SettingsWindowViewModel(_service, actions.OkCancel(), _messageService, _vmFactory);
+            var vm = new SettingsWindowViewModel(_service, actions.OkCancel(), _chrome, _messageService, _vmFactory);
             return vm;
         }
 

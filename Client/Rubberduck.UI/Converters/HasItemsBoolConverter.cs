@@ -38,6 +38,10 @@ namespace Rubberduck.UI.Converters
             {
                 count = n;
             }
+            else if (value is object)
+            {
+                count = 1;
+            }
 
             return count > VisibleWhenGreaterThan
                 ? Visibility.Visible

@@ -17,6 +17,10 @@ namespace Rubberduck.UI.Converters
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             var fullPanelWidth = (double)values[0] - Margin;
+            if (values[1] is null)
+            {
+                return fullPanelWidth;
+            }
             var items = (IEnumerable<ISettingViewModel>)((ListCollectionView)values[1]).SourceCollection;
             if (values.Length > 2)
             {

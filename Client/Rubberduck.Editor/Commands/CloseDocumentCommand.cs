@@ -28,9 +28,12 @@ namespace Rubberduck.Editor.Commands
         {
             if (parameter is WorkspaceFileUri uri)
             {
-                var server = _lsp();
-                _workspace.CloseFile(uri);
-                server.TextDocument.DidCloseTextDocument(new() { TextDocument = new() { Uri = uri.AbsoluteLocation.AbsoluteUri } });
+                if (_workspace.State.ActiveWorkspace?.TryGetWorkspaceFile(uri, out var document) ?? false)
+                {
+                    var server = _lsp();
+                    _workspace.CloseFile(uri);
+                    server?.TextDocument.DidCloseTextDocument(new() { TextDocument = new() { Uri = uri.AbsoluteLocation.AbsoluteUri } });
+                }
             }
         }
     }
