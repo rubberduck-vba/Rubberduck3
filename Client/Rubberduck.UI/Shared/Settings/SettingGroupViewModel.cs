@@ -66,7 +66,7 @@ namespace Rubberduck.UI.Shared.Settings
             EnableAllItemsCommand = new DelegateCommand(Services.UIServiceHelper.Instance,
                 parameter =>
                 {
-                    var isEnabled = (bool)parameter;
+                    var isEnabled = Items.OfType<BooleanSettingViewModel>().Any(e => !e.Value);
                     foreach (var item in Items.OfType<BooleanSettingViewModel>())
                     {
                         item.Value = isEnabled;
