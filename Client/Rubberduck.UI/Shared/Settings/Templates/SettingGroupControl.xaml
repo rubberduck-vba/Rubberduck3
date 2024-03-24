@@ -68,6 +68,7 @@
                          ScrollViewer.VerticalScrollBarVisibility="Auto"
                          VirtualizingPanel.IsVirtualizing="True"
                          VerticalContentAlignment="Stretch"
+                         SelectedItem="{Binding Selection}"
                          ItemsSource="{Binding ItemsView}"
                          ItemTemplateSelector="{DynamicResource SettingTemplateSelector}">
                     <ListBox.ItemsPanel>

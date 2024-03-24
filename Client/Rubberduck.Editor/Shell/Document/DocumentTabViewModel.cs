@@ -3,6 +3,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
+using Rubberduck.InternalApi.Settings.Model.Editor;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
@@ -40,6 +41,7 @@ namespace Rubberduck.Editor.Shell.Document
             _lsp = lsp;
 
             Title = state.Name;
+            SettingKey = nameof(EditorSettings);
 
             DocumentState = state;
             TextContent = state.Text;

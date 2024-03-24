@@ -71,6 +71,7 @@ namespace Rubberduck.UI.Command.Abstract
 
         public void Execute(object? parameter)
         {
+            _service.LogDebug($"Executing command: {GetType().Name}");
             _service.TryRunAction(() =>
             {
                 _ = OnExecuteAsync(parameter);

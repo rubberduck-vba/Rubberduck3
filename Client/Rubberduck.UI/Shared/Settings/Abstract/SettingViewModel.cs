@@ -4,7 +4,7 @@ using System;
 
 namespace Rubberduck.UI.Shared.Settings.Abstract
 {
-    public abstract class SettingViewModel<TValue> : ViewModelBase, ISettingViewModel<TValue>
+    public abstract class SettingViewModel<TValue> : ViewModelBase, ISettingViewModel<TValue>, IEquatable<ISettingViewModel<TValue>>
     {
         private readonly TypedRubberduckSetting<TValue> _setting;
 
@@ -18,6 +18,7 @@ namespace Rubberduck.UI.Shared.Settings.Abstract
 
         public SettingDataType SettingDataType => _setting.SettingDataType;
         public string Key => _setting.Key;
+        public string SettingGroupKey { get; set; }
         public string Name => SettingsUI.ResourceManager.GetString($"{_setting.Key}_Title") ?? $"[missing key:{_setting.Key}_Title]";
         public string Description => SettingsUI.ResourceManager.GetString($"{_setting.Key}_Description") ?? $"[missing key:{_setting.Key}_Description]";
 
@@ -62,5 +63,35 @@ namespace Rubberduck.UI.Shared.Settings.Abstract
         }
 
         public RubberduckSetting ToSetting() => _setting with { Value = Value ?? throw new InvalidOperationException("Value is unexpectedly null.") };
+
+        public override int GetHashCode() => HashCode.Combine(SettingGroupKey, Key);
+        public override bool Equals(object? obj)
+        {
+            if (obj is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != this.GetType())
+            {
+                return false;
+            }
+
+            return base.Equals(obj as ISettingViewModel<TValue>);
+        }
+
+        public bool Equals(ISettingViewModel<TValue>? other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+            return other.SettingGroupKey == SettingGroupKey && other.Key == Key;
+        }
     }
 }

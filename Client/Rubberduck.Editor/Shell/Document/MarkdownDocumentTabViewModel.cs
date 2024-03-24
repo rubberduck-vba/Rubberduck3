@@ -1,5 +1,4 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Client;
-using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Settings.Model.Editor;
 using Rubberduck.UI.Command.SharedHandlers;
@@ -21,7 +20,7 @@ namespace Rubberduck.Editor.Shell.Document
             Func<ILanguageClient> lsp)
             : base(state, isReadOnly, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus, lsp)
         {
-            SettingKey = nameof(EditorSettings);
+            SettingKey = nameof(ShowWelcomeTabSetting);
         }
 
         public override SupportedDocumentType DocumentType => SupportedDocumentType.MarkdownDocument;

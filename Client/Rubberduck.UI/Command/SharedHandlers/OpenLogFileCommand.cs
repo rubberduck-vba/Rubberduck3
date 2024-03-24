@@ -29,6 +29,10 @@ namespace Rubberduck.UI.Command.SharedHandlers
             if (parameter is ILanguageServerTraceViewModel)
             {
                 path = Service.Settings.LanguageServerSettings.StartupSettings.ServerExecutablePath;
+                if (!_fileSystem.Directory.Exists(path))
+                {
+                    path = null;
+                }
             }
             // TODO parameter is IUpdateServerTraceViewModel, ITelemetryServerTraceViewModel
 
@@ -39,7 +43,7 @@ namespace Rubberduck.UI.Command.SharedHandlers
                     Key = nameof(OpenLogFileCommand) + "_NoServerPath",
                     Level = LogLevel.Error,
                     Title = "Invalid Configuration",
-                    Message = "**ServerExecutablePath** configuration is unexpectedly null; could not locate log directory.",
+                    Message = "ServerExecutablePath configuration is invalid; could not locate log directory.",
                 });
                 return;
             }

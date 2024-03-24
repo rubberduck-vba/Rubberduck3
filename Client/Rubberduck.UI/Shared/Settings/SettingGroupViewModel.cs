@@ -30,10 +30,11 @@ namespace Rubberduck.UI.Shared.Settings
             _settingGroup = settingGroup with { Tags = settingGroup.Tags & ~SettingTags.ReadOnlyRecommended };
             _idleTimer = new Timer(OnIdleTimerTick, null, _idleDelay, Timeout.InfiniteTimeSpan);
 
-            Items = new ObservableCollection<ISettingViewModel>(items.OrderBy(e => e.IsSettingGroup));
+            Items = new ObservableCollection<ISettingViewModel>(items);
 
             ItemsView = CollectionViewSource.GetDefaultView(Items);
             ItemsView.SortDescriptions.Add(new SortDescription(nameof(ISettingViewModel.IsSettingGroup), ListSortDirection.Ascending));
+            ItemsView.SortDescriptions.Add(new SortDescription(nameof(ISettingViewModel.Name), ListSortDirection.Ascending));
             ItemsView.Filter = value => string.IsNullOrWhiteSpace(_searchString) || ((ISettingViewModel)value).IsSearchResult(_searchString);
 
             IsEnabled = true;
@@ -55,6 +56,12 @@ namespace Rubberduck.UI.Shared.Settings
             _idleTimer = new Timer(OnIdleTimerTick, null, _idleDelay, Timeout.InfiniteTimeSpan);
 
             Items = new ObservableCollection<ISettingViewModel>(items);
+
+            ItemsView = CollectionViewSource.GetDefaultView(Items);
+            ItemsView.SortDescriptions.Add(new SortDescription(nameof(ISettingViewModel.IsSettingGroup), ListSortDirection.Ascending));
+            ItemsView.SortDescriptions.Add(new SortDescription(nameof(ISettingViewModel.Name), ListSortDirection.Ascending));
+            ItemsView.Filter = value => string.IsNullOrWhiteSpace(_searchString) || ((ISettingViewModel)value).IsSearchResult(_searchString);
+
             IsEnabled = true;
             EnableAllItemsCommand = new DelegateCommand(Services.UIServiceHelper.Instance,
                 parameter =>
@@ -74,6 +81,12 @@ namespace Rubberduck.UI.Shared.Settings
             _idleTimer = new Timer(OnIdleTimerTick, null, _idleDelay, Timeout.InfiniteTimeSpan);
 
             Items = new ObservableCollection<ISettingViewModel>(items);
+
+            ItemsView = CollectionViewSource.GetDefaultView(Items);
+            ItemsView.SortDescriptions.Add(new SortDescription(nameof(ISettingViewModel.IsSettingGroup), ListSortDirection.Ascending));
+            ItemsView.SortDescriptions.Add(new SortDescription(nameof(ISettingViewModel.Name), ListSortDirection.Ascending));
+            ItemsView.Filter = value => string.IsNullOrWhiteSpace(_searchString) || ((ISettingViewModel)value).IsSearchResult(_searchString);
+
             IsEnabled = true;
             EnableAllItemsCommand = new DelegateCommand(Services.UIServiceHelper.Instance,
                 parameter =>
@@ -112,8 +125,24 @@ namespace Rubberduck.UI.Shared.Settings
             }
         }
 
+        private ISettingViewModel _selection;
+        public ISettingViewModel Selection 
+        {
+            get => _selection;
+            set
+            {
+                if (_selection != value)
+                {
+                    _selection = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public SettingDataType SettingDataType => _settingGroup.SettingDataType;
         public string Key => _settingGroup.Key;
+        
+        public string SettingGroupKey { get; set; }
         public string Name => SettingsUI.ResourceManager.GetString($"{_settingGroup.Key}_Title") ?? $"[missing key:{_settingGroup.Key}_Title]";
 
         public string Description => SettingsUI.ResourceManager.GetString($"{_settingGroup.Key}_Description") ?? $"[missing key:{_settingGroup.Key}_Description]";

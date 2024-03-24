@@ -6,6 +6,9 @@ using Rubberduck.InternalApi.Settings.Model.LanguageServer;
 using Rubberduck.InternalApi.Settings.Model.Logging;
 using Rubberduck.InternalApi.Settings.Model.TelemetryServer;
 using Rubberduck.InternalApi.Settings.Model.UpdateServer;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.Settings.Model;
@@ -51,4 +54,29 @@ public record class RubberduckSettings : TypedSettingGroup, IDefaultSettingsProv
     RubberduckSettings IDefaultSettingsProvider<RubberduckSettings>.Default => Default;
 
     public RubberduckSettings WithKey(string key) => this with { Key = key };
+
+    public IEnumerable<RubberduckSettingDiff> Diff(RubberduckSettings other)
+    {
+        var debugFlatSettings = Flatten(this);
+
+        var reference = Flatten(this).ToDictionary(e => e.UniqueKey);
+        var comparable = Flatten(other).ToDictionary(e => e.UniqueKey);
+
+        var addedKeys = comparable.Keys.Except(reference.Keys);
+        var deletedKeys = reference.Keys.Except(comparable.Keys);
+        var modifiedSettings = reference.Where(kvp => reference[kvp.Key].SettingDataType != SettingDataType.EnumSettingGroup && reference[kvp.Key].SettingDataType != SettingDataType.SettingGroup && !Equals(kvp.Value.Value, comparable[kvp.Key].Value));
+
+        return addedKeys.Select(e => new RubberduckSettingDiff { ComparableValue = comparable[e] })
+            .Concat(deletedKeys.Select(e => new RubberduckSettingDiff { ReferenceValue = reference[e] }))
+            .Concat(modifiedSettings.Select(e => new RubberduckSettingDiff { ReferenceValue = reference[e.Key], ComparableValue = comparable[e.Key] }));
+    }
+}
+
+public record class RubberduckSettingDiff
+{
+    public string Key => (ReferenceValue ?? ComparableValue)!.Key;
+    public SettingDataType SettingDataType => (ReferenceValue ?? ComparableValue)!.SettingDataType;
+
+    public RubberduckSetting? ReferenceValue { get; init; }
+    public RubberduckSetting? ComparableValue { get; init; }
 }

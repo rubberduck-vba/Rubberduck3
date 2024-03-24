@@ -18,6 +18,7 @@ namespace Rubberduck.UI.Shared.Settings.Abstract
         public SettingDataType SettingDataType => _setting.SettingDataType;
         public bool IsSettingGroup => false;
         public string Key => _setting.Key;
+        public string SettingGroupKey { get; set; }
         public string Name => SettingsUI.ResourceManager.GetString($"{_setting.Key}_Title")!;
         public string Description => SettingsUI.ResourceManager.GetString($"{_setting.Key}_Description")!;
         public SettingTags Tags => _setting.Tags;

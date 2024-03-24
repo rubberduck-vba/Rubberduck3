@@ -33,30 +33,35 @@ public abstract record class TypedSettingGroup : TypedRubberduckSetting<Rubberdu
         return this with { Value = values.Values.ToArray() };
     }
 
-    public IEnumerable<RubberduckSetting> Flatten(TypedSettingGroup? root = default)
+    public IEnumerable<RubberduckSettingNode> Flatten(TypedSettingGroup? root = default)
     {
+        var result = new HashSet<RubberduckSettingNode>();
         foreach (var setting in root?.TypedValue ?? TypedValue)
         {
-            foreach (var item in Flatten(setting))
+            var baseKey = root?.Key;
+            foreach (var item in Flatten(setting, baseKey))
             {
-                yield return item;
+                result.Add(new(item, $"{baseKey}.{setting.Key}"));
             }
         }
+        return result;
     }
 
-    private IEnumerable<RubberduckSetting> Flatten(RubberduckSetting setting)
+    private IEnumerable<RubberduckSettingNode> Flatten(RubberduckSetting setting, string? root = default)
     {
+        var result = new HashSet<RubberduckSettingNode>();
         if (setting is TypedSettingGroup group)
         {
             foreach (var item in Flatten(group))
             {
-                yield return item;
+                result.Add(item);
             }
         }
         else
         {
-            yield return setting;
+            result.Add(new(setting, root!));
         }
+        return result;
     }
 }
 

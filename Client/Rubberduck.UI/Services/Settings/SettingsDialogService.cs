@@ -1,14 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.UI.Shared.Settings;
-using Rubberduck.UI.Shared.Message;
-using Rubberduck.UI.Windows;
-using System;
-using System.Linq;
+using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.InternalApi.Settings.Model;
-using Rubberduck.InternalApi.Services;
-using Rubberduck.UI.Shared.Settings.Abstract;
 using Rubberduck.UI.Chrome;
+using Rubberduck.UI.Shared.Message;
+using Rubberduck.UI.Shared.Settings;
+using Rubberduck.UI.Shared.Settings.Abstract;
+using Rubberduck.UI.Windows;
+using System.Linq;
 
 namespace Rubberduck.UI.Services.Settings
 {
@@ -45,62 +44,67 @@ namespace Rubberduck.UI.Services.Settings
             _factory = factory;
         }
 
-        protected override SettingsWindowViewModel CreateViewModel(RubberduckSettings settings, MessageActionsProvider actions)
-        {
-            var vm = new SettingsWindowViewModel(_service, actions.OkCancel(), _chrome, _messageService, _vmFactory);
-            return vm;
-        }
+        protected override SettingsWindowViewModel CreateViewModel(RubberduckSettings settings, MessageActionsProvider actions) =>
+            new(_service, actions.OkCancel(), _chrome, _messageService, _vmFactory);
 
-        private ISettingGroupViewModel GetSettingGroup(string key)
+        private SettingsWindowViewModel SetViewModelState(SettingsWindowViewModel vm, string key)
         {
-            var flattened = Settings.Flatten();
-            
-            // if the key is a top-level setting group, we return it immediately
-            // because there is no need to figure out the parent.
-            var groups = Settings.TypedValue.OfType<TypedSettingGroup>().ToDictionary(e => e.Key, e => e);
-            if (groups.TryGetValue(key, out var settingGroup))
+            var keyItem = vm.FlattenedSettings?.SingleOrDefault(e => e.Key == key);
+
+            if (keyItem is ISettingGroupViewModel keySettingGroup)
             {
-                return _vmFactory.CreateViewModel(settingGroup);
+                var parent = vm.FlattenedSettings?.OfType<ISettingGroupViewModel>()
+                    .SingleOrDefault(e => e.Key == keyItem.SettingGroupKey);
+                vm.Selection = parent!;
+
+                keySettingGroup.IsExpanded = true;
+                vm.Selection = keySettingGroup;
+            }
+            else
+            {
+                var settingGroup = vm.FlattenedSettings?
+                        .OfType<ISettingGroupViewModel>()
+                        .SingleOrDefault(e => e.Key == keyItem?.SettingGroupKey);
+                vm.Selection = settingGroup ?? vm.Settings;
             }
 
-            // first find the key we're looking for
-            var item = flattened.Single(e => e.Key == key);
-
-            // now find its parent
-            var parent = flattened.OfType<TypedSettingGroup>().SingleOrDefault(e => e.TypedValue.Any(e => e.Key == key));
-            var parentViewModel = (ISettingGroupViewModel)CreateViewModel(Settings, _actionsProvider);
-
-            // push parent to nav stack, then push vm
-            return parentViewModel;
+            return vm;
         }
 
         public SettingsWindowViewModel ShowDialog(string key)
         {
-            SettingsWindowViewModel viewModel = default!;
-            SettingsWindow view = default!;
+            var viewModel = CreateViewModel(Settings, _actionsProvider);
+            SetViewModelState(viewModel, key);
 
-            var actions = _actionsProvider;
-            var verbosity = TraceLevel;
+            var view = CreateDialog(viewModel);
+            return ShowDialog(view, viewModel);
+        }
 
-            if (TryRunAction(() =>
+        private SettingsWindow CreateDialog(SettingsWindowViewModel viewModel) => _factory.Create(viewModel);
+
+        private SettingsWindowViewModel ShowDialog(SettingsWindow view, SettingsWindowViewModel viewModel)
+        {
+            if (!TryRunAction(() => view.ShowDialog(), out var exception) && exception != null)
             {
-                viewModel = CreateViewModel(Settings, actions)
-                    ?? throw new InvalidOperationException($"CreateViewModel returned null.");
-
-                var settingGroup = viewModel.Settings.Items.OfType<ISettingGroupViewModel>()
-                    .Select(e => (VM: e, e.Key)).SingleOrDefault(e => e.Key == key).VM;
-
-                viewModel.Selection = settingGroup ?? viewModel.Settings;
-
-                view = _factory.Create(viewModel)
-                    ?? throw new InvalidOperationException($"ViewFactory.Create returned null.");
-            }))
+                _messageService.ShowError($"{GetType().Name}.{nameof(ShowDialog)}", exception);
+            }
+            else
             {
-                TryRunAction(() => view.ShowDialog());
-                return viewModel;
+                LogDebug($"Dialog was closed. Selected action: {viewModel.SelectedAction?.ResourceKey ?? "(none)"}");
             }
 
-            throw new InvalidOperationException();
+            return viewModel;
+        }
+
+        protected override void OnDialogAccept(SettingsWindowViewModel model)
+        {
+            LogInformation($"{GetType().Name}: User accepts dialog action.");
+        }
+
+        protected override void OnDialogCancel(SettingsWindowViewModel model)
+        {
+            LogInformation($"{GetType().Name}: User cancels dialog action.");
+            model.SelectedAction = MessageAction.CancelAction;
         }
     }
 }

@@ -33,10 +33,9 @@ namespace Rubberduck.UI.Services.Settings
             _factory = factory;
             _service = service;
 
-            SettingGroups = factory.CreateViewModel(service.Settings).Items.OfType<ISettingGroupViewModel>().ToList();
-
-            ShowSettingsCommand = new DelegateCommand(service, parameter => ResetToDefaults());
-            service.RunOnMainThread(() => Settings = _factory.CreateViewModel(_service.Settings));
+            service.RunOnMainThread(() => Settings = factory.CreateViewModel(service.Settings));
+            SettingGroups = Settings.Items.OfType<ISettingGroupViewModel>().ToList();
+            Selection = SettingGroups.FirstOrDefault()!;
 
             ExpandSettingGroupCommand = new DelegateCommand(service, parameter =>
             {
@@ -57,13 +56,20 @@ namespace Rubberduck.UI.Services.Settings
             });
             ClearSearchTextCommand = new DelegateCommand(service, parameter =>
             {
-                Selection.SearchString = null!;
+                if (Selection != null)
+                {
+                    Selection.SearchString = null!;
+                }
             });
             var searchCommand = new DelegateCommand(service, parameter =>
             {
                 if (parameter is string text)
                 {
-                    var results = _flattenedSettings ??= Flatten(_settings!).ToList();
+                    if (_flattenedSettings is null)
+                    {
+                        _flattenedSettings = Flatten(_settings!).ToList();
+                    }
+                    var results = _flattenedSettings;
                     var filteredResults = results.Where(e => e.IsSearchResult(text)).ToList();
                     var vm = new SettingGroupViewModel(service.Settings.WithKey("SearchResults"), filteredResults);
                     vm.SearchString = text;
@@ -83,23 +89,29 @@ namespace Rubberduck.UI.Services.Settings
         private IEnumerable<ISettingViewModel>? _flattenedSettings;
         private static IEnumerable<ISettingViewModel> Flatten(ISettingGroupViewModel group)
         {
+            group.SettingGroupKey = group.Key;
             var results = new HashSet<ISettingViewModel>();
             foreach (var item in group.Items.Where(e => e is not ISettingGroupViewModel))
             {
+                item.SettingGroupKey = group.Key;
                 results.Add(item);
             }
             foreach (var subgroup in group.Items.OfType<ISettingGroupViewModel>())
             {
+                subgroup.SettingGroupKey = group.Key;
                 results.Add(subgroup);
 
                 var flattenedSubgroup = Flatten(subgroup); // recursive
                 foreach (var item in flattenedSubgroup)
                 {
+                    item.SettingGroupKey = subgroup.Key;
                     results.Add(item);
                 }
             }
             return results;
         }
+
+        public IEnumerable<ISettingViewModel> FlattenedSettings => _flattenedSettings ??= Flatten(_settings!).ToList();
 
         public override IEnumerable<CommandBinding> CommandBindings { get; }
 

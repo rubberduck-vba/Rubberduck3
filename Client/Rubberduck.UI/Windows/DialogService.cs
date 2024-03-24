@@ -35,16 +35,25 @@ namespace Rubberduck.UI.Windows
 
             var view = _factory.Create(viewModel);
             var vm = viewModel;
+            
             TryRunAction(() =>
             {
                 if (view.ShowDialog() == true)
                 {
-                    OnDialogAccept(vm);
-                    result = true;
+                    if (vm.SelectedAction?.IsDefaultAction == true)
+                    {
+                        OnDialogAccept(vm);
+                        result = true;
+                    }
+                    else
+                    {
+                        OnDialogCancel(vm);
+                    }
                 }
                 else
                 {
-                    OnDialogCancel();
+                    LogDebug($"{typeof(TView).Name}.ShowDialog() did not return true.");
+                    OnDialogCancel(vm);
                 }
             });
 
@@ -56,7 +65,7 @@ namespace Rubberduck.UI.Windows
 
         }
 
-        protected virtual void OnDialogCancel()
+        protected virtual void OnDialogCancel(TViewModel model)
         {
 
         }

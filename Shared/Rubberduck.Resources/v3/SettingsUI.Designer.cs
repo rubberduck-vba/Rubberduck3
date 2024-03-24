@@ -1051,6 +1051,24 @@ namespace Rubberduck.Resources.v3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Settings were updated successfully..
+        /// </summary>
+        public static string SettingsSaved_Message {
+            get {
+                return ResourceManager.GetString("SettingsSaved_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings Saved.
+        /// </summary>
+        public static string SettingsSaved_Title {
+            get {
+                return ResourceManager.GetString("SettingsSaved_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Determines whether the Rubberduck Editor application should display a title &quot;splash&quot; screen on startup, during the split-second it initializes..
         /// </summary>
         public static string ShowSplashSetting_Description {

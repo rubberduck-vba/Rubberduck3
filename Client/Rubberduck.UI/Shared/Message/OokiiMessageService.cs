@@ -75,6 +75,8 @@ public class OokiiMessageService : UIServiceHelper, IMessageService
         };
 
         dialog.Buttons.Add(new TaskDialogButton(ButtonType.Ok));
+
+        Logger.LogInformation("Showing error message key {key}", key);
         dialog.ShowDialog();
 
         if (dialog.IsVerificationChecked)
@@ -151,6 +153,7 @@ public class OokiiMessageService : UIServiceHelper, IMessageService
             }
         }
 
+        Logger.LogInformation("Showing message key {key}", model.Key);
         var result = dialog.ShowDialog();
         if (result != null)
         {
@@ -224,6 +227,7 @@ public class OokiiMessageService : UIServiceHelper, IMessageService
             }
         }
 
+        Logger.LogInformation("Showing message prompt key {key}", model.Key);
         var result = dialog.ShowDialog();
         if (result != null)
         {

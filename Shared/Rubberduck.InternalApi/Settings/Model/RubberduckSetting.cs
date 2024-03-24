@@ -9,6 +9,7 @@ using Rubberduck.InternalApi.Settings.Model.ServerStartup;
 using Rubberduck.InternalApi.Settings.Model.TelemetryServer;
 using Rubberduck.InternalApi.Settings.Model.UpdateServer;
 using Rubberduck.Resources;
+using System;
 using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.Settings.Model;
@@ -128,4 +129,30 @@ public record class RubberduckSetting
     public SettingTags Tags { get; init; }
 
     public RubberduckSetting WithValue(object value) => this with { Value = value };
+}
+
+public record class RubberduckSettingNode : RubberduckSetting, IEquatable<RubberduckSettingNode>
+{
+    public RubberduckSettingNode(RubberduckSetting setting, string parentKey)
+        :base(setting)
+    {
+        ParentKey = parentKey;
+        Value = setting.Value;
+    }
+
+    public string ParentKey { get; init; }
+
+    public string UniqueKey => $"{ParentKey}.{Key}";
+
+    public virtual bool Equals(RubberduckSettingNode? other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        return other.UniqueKey == UniqueKey;
+    }
+
+    public override int GetHashCode() => UniqueKey.GetHashCode();
 }
