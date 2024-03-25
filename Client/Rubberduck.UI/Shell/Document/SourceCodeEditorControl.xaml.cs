@@ -20,7 +20,7 @@ namespace Rubberduck.UI.Shell.Document;
 /// </summary>
 public partial class SourceCodeEditorControl : UserControl
 {
-    private static readonly int IdleMillisecondsSettingValue = 1500; // TODO make this a setting
+    private TimeSpan IdleDelay => UIServiceHelper.Instance!.Settings.EditorSettings.IdleTimerDuration;
 
     private readonly FoldingManager _foldings;
     private readonly TextMarkerService _markers;
@@ -41,7 +41,7 @@ public partial class SourceCodeEditorControl : UserControl
         _margin = new TextMarkersMargin(_markers);
         Editor.TextArea.LeftMargins.Insert(0, _margin);
 
-        IdleTimer = new Timer(IdleTimerCallback, null, IdleMillisecondsSettingValue, Timeout.Infinite);
+        IdleTimer = new Timer(IdleTimerCallback, null, Convert.ToInt32(IdleDelay.TotalMicroseconds), Timeout.Infinite);
 
         ExpandAllCommand = new ActionCommand(ExpandAllFoldings);
         CollapseAllCommand = new ActionCommand(CollapseAllFoldings);
@@ -64,9 +64,9 @@ public partial class SourceCodeEditorControl : UserControl
     private void IdleTimerCallback(object? state) => ViewModel.NotifyDocumentChanged();
 
     /// <summary>
-    /// Resets the idle timer to fire a callback in <c>IdleMillisecondsSettingValue</c> milliseconds.
+    /// Resets the idle timer to fire a callback in <c>IdleDelay</c> milliseconds.
     /// </summary>
-    private void ResetIdleTimer() => IdleTimer.Change(IdleMillisecondsSettingValue, Timeout.Infinite);
+    private void ResetIdleTimer() => IdleTimer.Change(Convert.ToInt32(IdleDelay.TotalMilliseconds), Timeout.Infinite);
 
     private void OnEditorLoaded(object sender, RoutedEventArgs e)
     {

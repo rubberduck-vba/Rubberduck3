@@ -45,7 +45,11 @@ namespace Rubberduck.UI.Services.Settings
                 {
                     ExecuteExpandSettingGroupCommand(model);
                 }
-            });
+            })
+            { 
+                Name = nameof(ExpandSettingGroupCommand) 
+            };
+
             ResetSettingsCommand = new DelegateCommand(service, parameter =>
             {
                 var model = MessageRequestModel.For(LogLevel.Warning, "ConfirmResetSettings", null!, [MessageAction.AcceptConfirmAction, MessageAction.CancelAction]);
@@ -55,14 +59,22 @@ namespace Rubberduck.UI.Services.Settings
                     _service.SettingsProvider.Write(RubberduckSettings.Default);
 
                 }
-            });
+            })
+            { 
+                Name = nameof(ResetSettingsCommand) 
+            };
+
             ClearSearchTextCommand = new DelegateCommand(service, parameter =>
             {
                 if (Selection != null)
                 {
                     Selection.SearchString = null!;
                 }
-            });
+            })
+            {
+                Name = nameof(ClearSearchTextCommand)
+            };
+
             var searchCommand = new DelegateCommand(service, parameter =>
             {
                 if (parameter is string text)
@@ -77,7 +89,10 @@ namespace Rubberduck.UI.Services.Settings
                     vm.SearchString = text;
                     Selection = vm;
                 }
-            }, parameter => (parameter is string text) && !string.IsNullOrWhiteSpace(text));
+            }, parameter => (parameter is string text) && !string.IsNullOrWhiteSpace(text))
+            {
+                Name = nameof(NavigationCommands.Search)
+            };
 
             CommandBindings =
             [

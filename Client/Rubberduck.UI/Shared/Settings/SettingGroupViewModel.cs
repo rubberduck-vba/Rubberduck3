@@ -1,6 +1,7 @@
 ﻿using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.Resources.v3;
 using Rubberduck.UI.Command.Abstract;
+using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Settings;
 using Rubberduck.UI.Shared.Settings.Abstract;
 using System;
@@ -19,7 +20,7 @@ namespace Rubberduck.UI.Shared.Settings
     {
         private readonly RubberduckSetting _settingGroup;
         private readonly Timer _idleTimer;
-        private readonly TimeSpan _idleDelay = TimeSpan.FromMilliseconds(1200);
+        private TimeSpan IdleDelay => UIServiceHelper.Instance!.Settings.EditorSettings.IdleTimerDuration;
 
         internal SettingGroupViewModel(/* designer */)
         {
@@ -29,7 +30,7 @@ namespace Rubberduck.UI.Shared.Settings
         {
             // readonly-recommended padlock makes weird UX on setting groups
             _settingGroup = settingGroup with { Tags = settingGroup.Tags & ~SettingTags.ReadOnlyRecommended };
-            _idleTimer = new Timer(OnIdleTimerTick, null, _idleDelay, Timeout.InfiniteTimeSpan);
+            _idleTimer = new Timer(OnIdleTimerTick, null, IdleDelay, Timeout.InfiniteTimeSpan);
 
             foreach (var item in items)
             {
@@ -59,7 +60,7 @@ namespace Rubberduck.UI.Shared.Settings
         {
             // readonly-recommended padlock makes weird UX on setting groups
             _settingGroup = settingGroup with { Tags = settingGroup.Tags & ~SettingTags.ReadOnlyRecommended };
-            _idleTimer = new Timer(OnIdleTimerTick, null, _idleDelay, Timeout.InfiniteTimeSpan);
+            _idleTimer = new Timer(OnIdleTimerTick, null, IdleDelay, Timeout.InfiniteTimeSpan);
 
             Items = new ObservableCollection<ISettingViewModel>(items);
 
@@ -84,7 +85,7 @@ namespace Rubberduck.UI.Shared.Settings
         {
             // readonly-recommended padlock makes weird UX on setting groups
             _settingGroup = settingGroup with { Tags = settingGroup.Tags & ~SettingTags.ReadOnlyRecommended };
-            _idleTimer = new Timer(OnIdleTimerTick, null, _idleDelay, Timeout.InfiniteTimeSpan);
+            _idleTimer = new Timer(OnIdleTimerTick, null, IdleDelay, Timeout.InfiniteTimeSpan);
 
             Items = new ObservableCollection<ISettingViewModel>(items);
 
@@ -109,7 +110,7 @@ namespace Rubberduck.UI.Shared.Settings
         public ObservableCollection<ISettingViewModel> Items { get; init; }
 
         private void OnIdleTimerTick(object? state) => Application.Current.Dispatcher.Invoke(() => ItemsView?.Refresh());
-        private void ResetIdleTimer(bool immediate = false) => _idleTimer.Change(immediate ? TimeSpan.Zero : _idleDelay, Timeout.InfiniteTimeSpan);
+        private void ResetIdleTimer(bool immediate = false) => _idleTimer.Change(immediate ? TimeSpan.Zero : IdleDelay, Timeout.InfiniteTimeSpan);
 
         public bool ShowSettingGroup { get; set; }
         public bool IsSettingGroup => true;

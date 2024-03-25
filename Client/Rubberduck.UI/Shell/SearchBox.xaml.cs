@@ -66,7 +66,7 @@ namespace Rubberduck.UI.Shell
 
         public event EventHandler TextChanged = delegate { };
 
-        public ICommand ClearSearchCommand => new DelegateCommand(UIServiceHelper.Instance!, (arg) => Text = string.Empty);
+        public ICommand ClearSearchCommand => new DelegateCommand(UIServiceHelper.Instance!, (arg) => Text = string.Empty) { Name = nameof(ClearSearchCommand) };
 
         public TextBox ValueContainerInput { get; }
     }
