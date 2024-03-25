@@ -469,7 +469,7 @@
     <value>Enable this option to open this tooltab on startup.</value>
   </data>
   <data name="ShowToolWindowOnStartupSetting_Title" xml:space="preserve">
-    <value>Show tooltab on startup</value>
+    <value>Show on startup</value>
   </data>
   <data name="ShowWelcomeTabSetting_Description" xml:space="preserve">
     <value>If enabled, the editor will automatically load and open a "welcome" document on startup. This document contains release notes and other information about the current version.</value>

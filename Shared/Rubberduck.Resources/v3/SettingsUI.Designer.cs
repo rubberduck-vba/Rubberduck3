@@ -1114,7 +1114,7 @@ namespace Rubberduck.Resources.v3 {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show tooltab on startup.
+        ///   Looks up a localized string similar to Show on startup.
         /// </summary>
         public static string ShowToolWindowOnStartupSetting_Title {
             get {
