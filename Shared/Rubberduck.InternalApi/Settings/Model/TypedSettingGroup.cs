@@ -20,11 +20,13 @@ public abstract record class TypedSettingGroup : TypedRubberduckSetting<Rubberdu
         SettingDataType = SettingDataType.SettingGroup;
     }
 
-    public TypedSettingGroup WithSetting(RubberduckSetting setting)
+    public TypedSettingGroup WithSetting(RubberduckSetting? setting)
     {
+        ArgumentNullException.ThrowIfNull(setting, nameof(setting));
+
         var values = Values ?? throw new InvalidOperationException();
         values[setting.GetType()] = setting;
-        return this with { Value = values.Values };
+        return this with { Value = values.Values.ToArray() };
     }
     public TypedSettingGroup WithSetting<TSetting>(TSetting setting) where TSetting : RubberduckSetting
     {

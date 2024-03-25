@@ -3,7 +3,9 @@ using Rubberduck.InternalApi.Common;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings.Model;
 using System;
+using System.Diagnostics;
 using System.IO.Abstractions;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -17,6 +19,39 @@ public class RubberduckSettingsProvider : SettingsService<RubberduckSettings>
         : base(logger, null!, fileSystem, defaultSettings, null!)
     {
         SettingsProvider = this;
+    }
+
+    protected override RubberduckSettings MergeDefaults(RubberduckSettings value)
+    {
+        var result = value;
+        var diff = RubberduckSettings.Default.Diff(value);
+        foreach (var item in diff)
+        {
+            if (item.ReferenceValue is null)
+            {
+                // could be a deprecated setting that was un-shipped; remove this setting key.
+                var newValue = value.TypedValue.Where(e => e.Key != item.Key).ToArray() ?? throw new InvalidOperationException();
+                result = (RubberduckSettings)value.WithValue(newValue);
+                LogInformation($"Setting key '{item.Key}' was removed.");
+            }
+            else if (item.ComparableValue is null)
+            {
+                // could be a new setting that wasn't in the version settings were created with; add this setting key.
+                var newValue = value.WithSetting(item.ReferenceValue);
+                result = (RubberduckSettings)value.WithValue(newValue);
+                LogInformation($"Setting key '{item.Key}' was created with default value '{item.ReferenceValue.Value}'.");
+            }
+            else
+            {
+                // otherwise just take the value from the settings file (comparable).
+                // ...and since we've initialized result with the incoming value, we've already done that. right?
+                var newValue = value.WithSetting(item.ComparableValue);
+                result = (RubberduckSettings)value.WithSetting(newValue);
+                LogInformation($"Setting key '{item.Key}' has a non-default configuration.", $"Value: {item.ComparableValue.Value} | Default: {item.ReferenceValue.Value}");
+            }
+        }
+
+        return result;
     }
 }
 
@@ -65,11 +100,9 @@ public class SettingsService<TSettings> : ServiceBase, ISettingsService<TSetting
 
     private bool TrySetValue(TSettings value)
     {
-        /*TODO merge defaults*/
         _cached = value;
         return true;
     }
-
 
     public TSettings Read()
     {
@@ -89,7 +122,9 @@ public class SettingsService<TSettings> : ServiceBase, ISettingsService<TSetting
                     {
                         var newValue = JsonSerializer.Deserialize<TSettings>(content, _options) ?? new();
                         LogTrace("File content successfully deserialized.");
-                        TrySetValue(newValue);
+
+                        var mergedValue = MergeDefaults(newValue);
+                        TrySetValue(mergedValue);
                     }
                     else
                     {
@@ -119,6 +154,8 @@ public class SettingsService<TSettings> : ServiceBase, ISettingsService<TSetting
 
         return Settings;
     }
+
+    protected virtual TSettings MergeDefaults(TSettings value) => throw new NotImplementedException();
 
     public void Write(TSettings settings)
     {

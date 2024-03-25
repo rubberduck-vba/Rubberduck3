@@ -23,10 +23,8 @@ namespace Rubberduck.InternalApi.Settings.Model;
 
 [JsonDerivedType(typeof(GeneralSettings), nameof(GeneralSettings))] // ~ General
 [JsonDerivedType(typeof(DisableInitialLegacyIndenterCheckSetting), nameof(DisableInitialLegacyIndenterCheckSetting))]
-[JsonDerivedType(typeof(DisableInitialLogLevelResetSetting), nameof(DisableInitialLogLevelResetSetting))]
 [JsonDerivedType(typeof(DisabledMessageKeysSetting), nameof(DisabledMessageKeysSetting))]
 [JsonDerivedType(typeof(LocaleSetting), nameof(LocaleSetting))]
-[JsonDerivedType(typeof(LogLevelSetting), nameof(LogLevelSetting))]
 [JsonDerivedType(typeof(ShowSplashSetting), nameof(ShowSplashSetting))]
 [JsonDerivedType(typeof(ExitNotificationDelaySetting), nameof(ExitNotificationDelaySetting))]
 [JsonDerivedType(typeof(TemplatesLocationSetting), nameof(TemplatesLocationSetting))]
@@ -40,6 +38,16 @@ namespace Rubberduck.InternalApi.Settings.Model;
 [JsonDerivedType(typeof(RequireDefaultWorkspaceRootHostSetting), nameof(RequireDefaultWorkspaceRootHostSetting))]
 [JsonDerivedType(typeof(EnableUncWorkspacesSetting), nameof(EnableUncWorkspacesSetting))]
 [JsonDerivedType(typeof(EnableFileSystemWatchersSetting), nameof(EnableFileSystemWatchersSetting))]
+
+[JsonDerivedType(typeof(LoggingSettings), nameof(LoggingSettings))] // ~ Logging
+[JsonDerivedType(typeof(AggregatePerformanceLogsSetting), nameof(AggregatePerformanceLogsSetting))]
+[JsonDerivedType(typeof(SmallAggregateSampleSizeSetting), nameof(SmallAggregateSampleSizeSetting))]
+[JsonDerivedType(typeof(LargeAggregateSampleSizeSetting), nameof(LargeAggregateSampleSizeSetting))]
+[JsonDerivedType(typeof(MaxAggregateSampleSizeSetting), nameof(MaxAggregateSampleSizeSetting))]
+[JsonDerivedType(typeof(LowVolumeEventsPerMinuteSetting), nameof(LowVolumeEventsPerMinuteSetting))]
+[JsonDerivedType(typeof(HighVolumeEventsPerMinuteSetting), nameof(HighVolumeEventsPerMinuteSetting))]
+[JsonDerivedType(typeof(DisableInitialLogLevelResetSetting), nameof(DisableInitialLogLevelResetSetting))]
+[JsonDerivedType(typeof(LogLevelSetting), nameof(LogLevelSetting))]
 
 [JsonDerivedType(typeof(EditorSettings), nameof(EditorSettings))] // ~ Editor
 [JsonDerivedType(typeof(ExtendWindowChromeSetting), nameof(ExtendWindowChromeSetting))]
@@ -136,7 +144,9 @@ public record class RubberduckSettingNode : RubberduckSetting, IEquatable<Rubber
     public RubberduckSettingNode(RubberduckSetting setting, string parentKey)
         :base(setting)
     {
+        Key = setting.Key;
         ParentKey = parentKey;
+        SettingDataType = setting.SettingDataType;
         Value = setting.Value;
     }
 

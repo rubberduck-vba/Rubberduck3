@@ -49,7 +49,7 @@ namespace Rubberduck.UI.Services.Settings
 
         private SettingsWindowViewModel SetViewModelState(SettingsWindowViewModel vm, string key)
         {
-            var keyItem = vm.FlattenedSettings?.SingleOrDefault(e => e.Key == key);
+            var keyItem = vm.FlattenedSettings?.FirstOrDefault(e => e.Key == key);
 
             if (keyItem is ISettingGroupViewModel keySettingGroup)
             {
@@ -64,7 +64,7 @@ namespace Rubberduck.UI.Services.Settings
             {
                 var settingGroup = vm.FlattenedSettings?
                         .OfType<ISettingGroupViewModel>()
-                        .SingleOrDefault(e => e.Key == keyItem?.SettingGroupKey);
+                        .FirstOrDefault(e => e.Key == keyItem?.SettingGroupKey);
                 vm.Selection = settingGroup ?? vm.Settings;
             }
 

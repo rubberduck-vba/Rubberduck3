@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -34,7 +35,7 @@ public record class TypedRubberduckSetting<TValue> : RubberduckSetting
                 }
                 else
                 {
-                    _typedValue = (TValue)value;
+                    _typedValue = (TValue)value; //(TValue)((IEnumerable<RubberduckSetting>)value).ToArray();
                 }
             }
             else if (SettingDataType == SettingDataType.EnumSettingGroup)

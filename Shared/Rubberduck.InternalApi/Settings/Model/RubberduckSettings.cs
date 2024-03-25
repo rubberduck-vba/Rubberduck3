@@ -9,6 +9,7 @@ using Rubberduck.InternalApi.Settings.Model.UpdateServer;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.Settings.Model;
@@ -64,11 +65,22 @@ public record class RubberduckSettings : TypedSettingGroup, IDefaultSettingsProv
 
         var addedKeys = comparable.Keys.Except(reference.Keys);
         var deletedKeys = reference.Keys.Except(comparable.Keys);
-        var modifiedSettings = reference.Where(kvp => reference[kvp.Key].SettingDataType != SettingDataType.EnumSettingGroup && reference[kvp.Key].SettingDataType != SettingDataType.SettingGroup && !Equals(kvp.Value.Value, comparable[kvp.Key].Value));
+        var modifiedSettings = reference.Where(kvp => 
+            reference[kvp.Key].SettingDataType != SettingDataType.EnumSettingGroup 
+            && reference[kvp.Key].SettingDataType != SettingDataType.SettingGroup
+            && reference[kvp.Key].SettingDataType != SettingDataType.ListSetting
+            && IsModified(reference[kvp.Key], comparable[kvp.Key]));
 
         return addedKeys.Select(e => new RubberduckSettingDiff { ComparableValue = comparable[e] })
             .Concat(deletedKeys.Select(e => new RubberduckSettingDiff { ReferenceValue = reference[e] }))
             .Concat(modifiedSettings.Select(e => new RubberduckSettingDiff { ReferenceValue = reference[e.Key], ComparableValue = comparable[e.Key] }));
+    }
+
+    private bool IsModified(RubberduckSetting reference, RubberduckSetting comparable)
+    {
+        var referenceValue = reference.Value;
+        var comparableValue = comparable.Value;
+        return !Equals(referenceValue, comparableValue);
     }
 }
 
