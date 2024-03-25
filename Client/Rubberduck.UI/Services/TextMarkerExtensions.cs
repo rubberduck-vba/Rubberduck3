@@ -11,6 +11,21 @@ namespace Rubberduck.UI.Services;
 
 public static class TextMarkerExtensions
 {
+    // TODO make these configurable (theming)
+    public static readonly Color HintMarkerColor = Color.FromRgb(72, 72, 72);
+    public static readonly Color InformationMarkerColor = Color.FromRgb(18, 36, 168);
+    public static readonly Color WarningMarkerColor = Color.FromRgb(18, 168, 18);
+    public static readonly Color ErrorMarkerColor = Color.FromRgb(168, 18, 18);
+    public static readonly Color UndefinedMarkerColor = Color.FromRgb(0, 0, 0);
+
+    /// <summary>
+    /// From AvalonEdit.Utils extensions.
+    /// </summary>
+    public static double CoerceValue(this double value, double minimum, double maximum)
+    {
+        return Math.Max(Math.Min(value, maximum), minimum);
+    }
+
     public static void WithTextMarker(this Diagnostic diagnostic, BindableTextEditor editor, TextMarkerService service)
     {
         var document = editor.Document;
@@ -28,11 +43,11 @@ public static class TextMarkerExtensions
         {
             (marker.MarkerTypes, marker.MarkerColor) = diagnostic.Severity switch
             {
-                DiagnosticSeverity.Hint => (TextMarkerTypes.DottedUnderline, Color.FromRgb(72, 72, 72)),
-                DiagnosticSeverity.Information => (TextMarkerTypes.SquigglyUnderline, Color.FromRgb(18, 36, 168)),
-                DiagnosticSeverity.Warning => (TextMarkerTypes.SquigglyUnderline, Color.FromRgb(18, 168, 18)),
-                DiagnosticSeverity.Error => (TextMarkerTypes.SquigglyUnderline, Color.FromRgb(168, 18, 18)),
-                _ => (TextMarkerTypes.NormalUnderline, Color.FromRgb(0, 0, 0)),
+                DiagnosticSeverity.Hint => (TextMarkerTypes.DottedUnderline, HintMarkerColor),
+                DiagnosticSeverity.Information => (TextMarkerTypes.SquigglyUnderline, InformationMarkerColor),
+                DiagnosticSeverity.Warning => (TextMarkerTypes.SquigglyUnderline, WarningMarkerColor),
+                DiagnosticSeverity.Error => (TextMarkerTypes.SquigglyUnderline, ErrorMarkerColor),
+                _ => (TextMarkerTypes.NormalUnderline, UndefinedMarkerColor),
             };
 
             marker.ToolTip = CreateToolTip(editor, diagnostic);

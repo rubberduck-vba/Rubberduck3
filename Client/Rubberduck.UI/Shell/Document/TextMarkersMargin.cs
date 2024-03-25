@@ -1,12 +1,16 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Rendering;
+using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
+using Rubberduck.Unmanaged.Model;
 using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.TextFormatting;
 
 namespace Rubberduck.UI.Shell.Document
 {
@@ -43,32 +47,101 @@ namespace Rubberduck.UI.Shell.Document
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            base.OnRender(drawingContext);
+            TextView textView = base.TextView;
+            Size renderSize = base.RenderSize;
+            if (textView == null || !textView.VisualLinesValid)
+            {
+                return;
+            }
+
             drawingContext.DrawRectangle(new SolidColorBrush(Color.FromRgb(224, 224, 224)), null, new Rect(0,0, ActualWidth, ActualHeight));
 
             var markersByLine = _service.TextMarkers
                 .GroupBy(e => Document.GetLineByOffset(e.StartOffset).LineNumber)
                 .ToDictionary(e => e.Key, e => e.AsEnumerable());
 
-            foreach (var line in TextView.VisualLines)
+            foreach (var visualLine in TextView.VisualLines)
             {
-                var documentLine = line.FirstDocumentLine;
+                var documentLine = visualLine.FirstDocumentLine;
                 if (markersByLine.TryGetValue(documentLine.LineNumber, out var markers))
                 {
                     var marker = markers.First();
-                    var visualColumn = line.GetVisualColumn(marker.StartOffset);
-
-                    var visualPosition = line.GetVisualPosition(visualColumn, VisualYPosition.LineTop);
+                    var visualYPosition = visualLine.GetTextLineVisualYPosition(visualLine.TextLines[0], VisualYPosition.TextTop);
                     var rect = new Rect
                     {
                         Width = 16,
                         Height = 16,
-                        X = 1,
-                        Y = visualPosition.Y
+                        X = 2,
+                        Y = visualYPosition - textView.VerticalOffset
                     };
-                    
-                    drawingContext.DrawImage(WarningIcon, rect);
+
+                    var icon = WarningIcon;
+                    if (marker.MarkerTypes.HasFlag(TextMarkerTypes.DottedUnderline))
+                    {
+                        icon = HintIcon;
+                    }
+                    else if (marker.MarkerTypes.HasFlag(TextMarkerTypes.SquigglyUnderline))
+                    {
+                        if (marker.MarkerColor == TextMarkerExtensions.InformationMarkerColor)
+                        {
+                            icon = InfoIcon;
+                        }
+                        else if (marker.MarkerColor == TextMarkerExtensions.WarningMarkerColor)
+                        {
+                            icon = WarningIcon;
+                        }
+                        else if (marker.MarkerColor == TextMarkerExtensions.ErrorMarkerColor)
+                        {
+                            icon = ErrorIcon;
+                        }
+                    }
+                    drawingContext.DrawImage(icon, rect);
                 }
+            }
+        }
+
+        private TextArea? _textArea;
+
+        protected override void OnTextViewChanged(TextView oldTextView, TextView newTextView)
+        {
+            if (oldTextView != null)
+            {
+                oldTextView.VisualLinesChanged -= TextViewVisualLinesChanged;
+            }
+
+            base.OnTextViewChanged(oldTextView, newTextView);
+            if (newTextView != null)
+            {
+                newTextView.VisualLinesChanged += TextViewVisualLinesChanged;
+                _textArea = newTextView.GetService(typeof(TextArea)) as TextArea;
+            }
+            else
+            {
+                _textArea = null;
+            }
+
+            InvalidateVisual();
+        }
+
+        private void TextViewVisualLinesChanged(object? sender, EventArgs e)
+        {
+            InvalidateVisual();
+        }
+
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+            if (e.Handled || base.TextView == null || _textArea == null)
+            {
+                return;
+            }
+
+            e.Handled = true;
+            _textArea.Focus();
+
+            if (CaptureMouse())
+            {
+                // TODO
             }
         }
     }
