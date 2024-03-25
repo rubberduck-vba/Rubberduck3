@@ -291,6 +291,12 @@
   <data name="GeneralSettings_Title" xml:space="preserve">
     <value>General Settings</value>
   </data>
+  <data name="IdleTimerDurationSetting_Description" xml:space="preserve">
+    <value>Resets at each keypress; document changes only begin to be processed after the specified amount of time elapses without there being further changes.</value>
+  </data>
+  <data name="IdleTimerDurationSetting_Title" xml:space="preserve">
+    <value>Idle Timer Duration</value>
+  </data>
   <data name="IncludePreReleasesSetting_Description" xml:space="preserve">
     <value>If enabled, the update server considers pre-release builds when evaluating if a newer version is available.</value>
   </data>

@@ -52,6 +52,7 @@ namespace Rubberduck.InternalApi.Settings.Model;
 [JsonDerivedType(typeof(EditorSettings), nameof(EditorSettings))] // ~ Editor
 [JsonDerivedType(typeof(ExtendWindowChromeSetting), nameof(ExtendWindowChromeSetting))]
 [JsonDerivedType(typeof(ShowWelcomeTabSetting), nameof(ShowWelcomeTabSetting))]
+[JsonDerivedType(typeof(IdleTimerDurationSetting), nameof(IdleTimerDurationSetting))]
 
 [JsonDerivedType(typeof(CodeFoldingSettings), nameof(CodeFoldingSettings))] // ~ code folding
 [JsonDerivedType(typeof(FoldBlockStatementsSetting), nameof(FoldBlockStatementsSetting))]

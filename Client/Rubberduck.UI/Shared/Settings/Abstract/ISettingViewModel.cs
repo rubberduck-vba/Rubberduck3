@@ -8,6 +8,7 @@ namespace Rubberduck.UI.Shared.Settings.Abstract
         bool IsSettingGroup { get; }
         string Key { get; }
         string SettingGroupKey { get; set; }
+        bool ShowSettingGroup { get; set; }
         SettingDataType SettingDataType { get; }
         string Name { get; }
         string Description { get; }

@@ -18,6 +18,8 @@ namespace Rubberduck.UI.Services.Settings
 {
     public class SettingsWindowViewModel : DialogWindowViewModel, ISettingsWindowViewModel
     {
+        public static readonly string SearchResultsSettingGroupName = "SearchResults";
+
         private readonly IMessageService _message;
         private readonly ISettingViewModelFactory _factory;
         private readonly UIServiceHelper _service;
@@ -71,7 +73,7 @@ namespace Rubberduck.UI.Services.Settings
                     }
                     var results = _flattenedSettings;
                     var filteredResults = results.Where(e => e.IsSearchResult(text)).ToList();
-                    var vm = new SettingGroupViewModel(service.Settings.WithKey("SearchResults"), filteredResults);
+                    var vm = new SettingGroupViewModel(service.Settings.WithKey(SearchResultsSettingGroupName), filteredResults);
                     vm.SearchString = text;
                     Selection = vm;
                 }

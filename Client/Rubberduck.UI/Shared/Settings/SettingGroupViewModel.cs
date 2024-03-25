@@ -1,6 +1,7 @@
 ﻿using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.Resources.v3;
 using Rubberduck.UI.Command.Abstract;
+using Rubberduck.UI.Services.Settings;
 using Rubberduck.UI.Shared.Settings.Abstract;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,11 @@ namespace Rubberduck.UI.Shared.Settings
             // readonly-recommended padlock makes weird UX on setting groups
             _settingGroup = settingGroup with { Tags = settingGroup.Tags & ~SettingTags.ReadOnlyRecommended };
             _idleTimer = new Timer(OnIdleTimerTick, null, _idleDelay, Timeout.InfiniteTimeSpan);
+
+            foreach (var item in items)
+            {
+                item.ShowSettingGroup = settingGroup.Key == SettingsWindowViewModel.SearchResultsSettingGroupName;
+            }
 
             Items = new ObservableCollection<ISettingViewModel>(items);
 
@@ -105,6 +111,7 @@ namespace Rubberduck.UI.Shared.Settings
         private void OnIdleTimerTick(object? state) => Application.Current.Dispatcher.Invoke(() => ItemsView?.Refresh());
         private void ResetIdleTimer(bool immediate = false) => _idleTimer.Change(immediate ? TimeSpan.Zero : _idleDelay, Timeout.InfiniteTimeSpan);
 
+        public bool ShowSettingGroup { get; set; }
         public bool IsSettingGroup => true;
         public bool IsSearchResult(string search) => 
             Name.Contains(search, System.StringComparison.InvariantCultureIgnoreCase)

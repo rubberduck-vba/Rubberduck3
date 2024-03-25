@@ -583,6 +583,24 @@ namespace Rubberduck.Resources.v3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Resets at each keypress; document changes only begin to be processed after the specified amount of time elapses without there being further changes..
+        /// </summary>
+        public static string IdleTimerDurationSetting_Description {
+            get {
+                return ResourceManager.GetString("IdleTimerDurationSetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Idle Timer Duration.
+        /// </summary>
+        public static string IdleTimerDurationSetting_Title {
+            get {
+                return ResourceManager.GetString("IdleTimerDurationSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to If enabled, the update server considers pre-release builds when evaluating if a newer version is available..
         /// </summary>
         public static string IncludePreReleasesSetting_Description {

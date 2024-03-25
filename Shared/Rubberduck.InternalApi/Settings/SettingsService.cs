@@ -38,16 +38,8 @@ public class RubberduckSettingsProvider : SettingsService<RubberduckSettings>
             {
                 // could be a new setting that wasn't in the version settings were created with; add this setting key.
                 var newValue = value.WithSetting(item.ReferenceValue);
-                result = (RubberduckSettings)value.WithValue(newValue);
-                LogInformation($"Setting key '{item.Key}' was created with default value '{item.ReferenceValue.Value}'.");
-            }
-            else
-            {
-                // otherwise just take the value from the settings file (comparable).
-                // ...and since we've initialized result with the incoming value, we've already done that. right?
-                var newValue = value.WithSetting(item.ComparableValue);
                 result = (RubberduckSettings)value.WithSetting(newValue);
-                LogInformation($"Setting key '{item.Key}' has a non-default configuration.", $"Value: {item.ComparableValue.Value} | Default: {item.ReferenceValue.Value}");
+                LogInformation($"Setting key '{item.Key}' was created with default value '{item.ReferenceValue.Value}'.");
             }
         }
 
