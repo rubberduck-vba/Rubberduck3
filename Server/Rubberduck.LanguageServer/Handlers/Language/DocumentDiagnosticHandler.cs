@@ -3,6 +3,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
+using Rubberduck.ServerPlatform;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,11 +12,13 @@ namespace Rubberduck.LanguageServer.Handlers.Language;
 
 public class DocumentDiagnosticHandler : DocumentDiagnosticHandlerBase
 {
+    private readonly ServerPlatformServiceHelper _service;
     private readonly IAppWorkspacesService _workspaces;
     private readonly TextDocumentSelector _selector;
 
-    public DocumentDiagnosticHandler(IAppWorkspacesService workspaces, SupportedLanguage language)
+    public DocumentDiagnosticHandler(ServerPlatformServiceHelper service, IAppWorkspacesService workspaces, SupportedLanguage language)
     {
+        _service = service;
         _workspaces = workspaces;
         _selector = language.ToTextDocumentSelector();
     }
@@ -29,6 +32,7 @@ public class DocumentDiagnosticHandler : DocumentDiagnosticHandlerBase
 
         if (workspace.TryGetWorkspaceFile(uri, out var state) && state is CodeDocumentState document)
         {
+            _service.LogInformation($"Found {document.Diagnostics.Count} diagnostics for document at uri '{uri}'.");
             return new RelatedFullDocumentDiagnosticReport
             {
                 Items = new Container<Diagnostic>(document.Diagnostics)

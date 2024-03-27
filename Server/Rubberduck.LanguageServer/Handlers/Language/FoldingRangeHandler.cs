@@ -61,12 +61,12 @@ namespace Rubberduck.LanguageServer.Handlers.Language
                 }
             }, out var exception, nameof(FoldingRangeHandler)) && exception != null)
             {
-                // in case of failure, we throw here to return an error response:
+                // in case of failure, we throw here to return an error response (exception was already logged):
                 throw exception;
             }
 
             var result = new Container<FoldingRange>(items);
-            return await Task.FromResult(result);
+            return result;
         }
 
         protected override FoldingRangeRegistrationOptions CreateRegistrationOptions(FoldingRangeCapability capability, ClientCapabilities clientCapabilities)

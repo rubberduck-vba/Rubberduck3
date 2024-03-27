@@ -12,8 +12,6 @@ namespace Rubberduck.Editor.Shell.Document
     /// </summary>
     public abstract class DocumentTabViewModel : WindowViewModel, IDocumentTabViewModel
     {
-        public event EventHandler<WorkspaceFileUriEventArgs> DocumentStateChanged = delegate { };
-
         public DocumentTabViewModel(DocumentState state, bool isReadOnly,
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindowCommand,
@@ -31,7 +29,7 @@ namespace Rubberduck.Editor.Shell.Document
         }
 
         private DocumentState _state;
-        public DocumentState DocumentState
+        public virtual DocumentState DocumentState
         {
             get => _state;
             set
@@ -47,7 +45,7 @@ namespace Rubberduck.Editor.Shell.Document
         public IDocumentStatusViewModel Status { get; }
 
         private Uri _uri;
-        public Uri DocumentUri
+        public virtual Uri DocumentUri
         {
             get => _uri;
             set
@@ -79,10 +77,7 @@ namespace Rubberduck.Editor.Shell.Document
             }
         }
 
-        protected virtual void OnTextChanged()
-        {
-
-        }
+        protected virtual void OnTextChanged() { }
 
         private bool _isReadOnly;
         public bool IsReadOnly

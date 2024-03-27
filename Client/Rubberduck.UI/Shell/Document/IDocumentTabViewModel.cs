@@ -30,7 +30,6 @@ namespace Rubberduck.UI.Shell.Document
     {
         Uri DocumentUri { get; set; }
         DocumentState DocumentState { get; set; }
-        event EventHandler<WorkspaceFileUriEventArgs> DocumentStateChanged;
 
         bool IsReadOnly { get; set; }
 
@@ -40,6 +39,7 @@ namespace Rubberduck.UI.Shell.Document
 
     public interface ICodeDocumentTabViewModel : IDocumentTabViewModel
     {
+        event EventHandler CodeDocumentStateChanged;
         string LanguageId { get; }
 
         WorkspaceFileUri CodeDocumentUri { get; set; }

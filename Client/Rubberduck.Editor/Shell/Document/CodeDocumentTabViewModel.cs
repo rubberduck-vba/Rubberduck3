@@ -1,18 +1,18 @@
-﻿using OmniSharp.Extensions.LanguageServer.Protocol.Client;
+﻿using AsyncAwaitBestPractices;
+using OmniSharp.Extensions.LanguageServer.Protocol.Client;
+using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Settings.Model.Editor;
 using Rubberduck.UI.Command.SharedHandlers;
+using Rubberduck.UI.Services;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using OmniSharp.Extensions.LanguageServer.Protocol.Document;
-using Rubberduck.InternalApi.Extensions;
 using System.Linq;
 using System.Threading;
-using Rubberduck.UI.Services;
+using System.Threading.Tasks;
 
 namespace Rubberduck.Editor.Shell.Document
 {
@@ -21,6 +21,8 @@ namespace Rubberduck.Editor.Shell.Document
     /// </summary>
     public abstract class CodeDocumentTabViewModel : DocumentTabViewModel, ICodeDocumentTabViewModel
     {
+        public event EventHandler CodeDocumentStateChanged = delegate { };
+
         private readonly Lazy<ILanguageClient> _languageClient;
         private readonly UIServiceHelper _service;
 
@@ -33,6 +35,7 @@ namespace Rubberduck.Editor.Shell.Document
         {
             _languageClient = new Lazy<ILanguageClient>(() => lsp.Invoke(), isThreadSafe: true);
             _service = service;
+            _uri = state.Uri;
 
             Title = state.Name;
             SettingKey = nameof(EditorSettings);
@@ -46,12 +49,13 @@ namespace Rubberduck.Editor.Shell.Document
         /// </summary>
         private Timer IdleTimer { get; }
         private TimeSpan IdleDelay => UIServiceHelper.Instance!.Settings.EditorSettings.IdleTimerDuration;
-        private void IdleTimerCallback(object? _) => NotifyDocumentChanged();
+        private void IdleTimerCallback(object? _) => NotifyDocumentChangedAsync().SafeFireAndForget();
 
         /// <summary>
         /// Resets the idle timer to fire a callback in <c>IdleDelay</c> milliseconds.
         /// </summary>
         private void ResetIdleTimer() => IdleTimer.Change(Convert.ToInt32(IdleDelay.TotalMilliseconds), Timeout.Infinite);
+        private void DisableIdleTimer() => IdleTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
         private ILanguageClient LanguageClient => _languageClient.Value;
 
@@ -62,14 +66,27 @@ namespace Rubberduck.Editor.Shell.Document
             set
             {
                 _state = value;
-                DocumentState = value;
                 OnPropertyChanged();
+                CodeDocumentStateChanged?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        public override DocumentState DocumentState 
+        { 
+            get => _state; 
+            set => CodeDocumentState = value as CodeDocumentState ?? throw new InvalidOperationException(); 
+        }
+
+        public override Uri DocumentUri 
+        {
+            get => _uri;
+            set => CodeDocumentUri = value as WorkspaceFileUri ?? throw new InvalidOperationException();
         }
 
         protected override void OnTextChanged()
         {
-            // todo notify server, etc.
+            DisableIdleTimer();
+            NotifyDocumentChangedAsync().SafeFireAndForget(e => _service.LogException(e));
         }
 
         public string LanguageId => _state.Language.Id;
@@ -91,9 +108,9 @@ namespace Rubberduck.Editor.Shell.Document
 
         public override SupportedDocumentType DocumentType => SupportedDocumentType.SourceFile;
 
-        private void NotifyDocumentChanged() => NotifyDocumentChanged(null!, null!);
+        private async Task NotifyDocumentChangedAsync() => await NotifyDocumentChangedAsync(null!, null!);
 
-        private void NotifyDocumentChanged(OmniSharp.Extensions.LanguageServer.Protocol.Models.Range? range, string? text)
+        private async Task NotifyDocumentChangedAsync(OmniSharp.Extensions.LanguageServer.Protocol.Models.Range? range, string? text)
         {
             // increment local version first...
             DocumentState = _state with { Version = _state.Version + 1 };
@@ -114,43 +131,58 @@ namespace Rubberduck.Editor.Shell.Document
                 })
             };
 
+            _service.LogDebug($"Notifying server of document changes.", $"DocumentId: {DocumentState.Id} Version: {DocumentState.Version}");
             LanguageClient.DidChangeTextDocument(request);
+            
+            await Task.WhenAll(RequestFoldingsAsync(), RequestDiagnosticsAsync()).ConfigureAwait(false);
         }
 
-        private async Task<IEnumerable<Diagnostic>> RequestDiagnosticsAsync()
+        private async Task RequestDiagnosticsAsync()
         {
-            var report = await LanguageClient.RequestDocumentDiagnostic(new DocumentDiagnosticParams
+            var request = new DocumentDiagnosticParams
             {
                 Identifier = "RDE",
                 TextDocument = new TextDocumentIdentifier
                 {
                     Uri = _uri.AbsoluteLocation,
                 }
-            });
+            };
+
+            _service.LogDebug($"Requesting document diagnostics.");
+            var report = await LanguageClient.RequestDocumentDiagnostic(request);
 
             if (report is IFullDocumentDiagnosticReport fullReport)
             {
+                _service.LogDebug($"Received {fullReport.Items.Count()} diagnostics.");
                 CodeDocumentState = _state.WithDiagnostics(fullReport.Items);
-                return fullReport.Items;
             }
             else
             {
-                return _state.Diagnostics;
+                _service.LogDebug($"Received a diagnostic report that was not a IFullDocumentDiagnosticReport.", $"Report type : {report?.GetType().Name ?? "(null)"}");
             }
         }
 
-        private async Task<IEnumerable<FoldingRange>> RequestFoldingsAsync()
+        private async Task RequestFoldingsAsync()
         {
-            var foldings = await LanguageClient.RequestFoldingRange(new FoldingRangeRequestParam
+            var request = new FoldingRangeRequestParam
             {
                 TextDocument = new TextDocumentIdentifier
                 {
                     Uri = _uri.AbsoluteLocation,
                 }
-            });
+            };
 
-            return foldings?.ToList() ?? [];
+            _service.LogDebug($"Requesting document folding ranges.");
+            var foldings = await LanguageClient.RequestFoldingRange(request);
+            if (foldings is not null)
+            {
+                _service.LogDebug($"Received {foldings.Count()} document folding ranges.");
+                CodeDocumentState = _state.WithFoldings(foldings);
+            }
+            else
+            {
+                _service.LogDebug($"Received a null response for folding ranges.");
+            }
         }
-
     }
 }

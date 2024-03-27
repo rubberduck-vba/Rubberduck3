@@ -125,44 +125,43 @@ public partial class SourceCodeEditorControl : UserControl
 
     private void ExpandAllFoldings()
     {
-        foreach (var folding in _foldings.AllFoldings)
+        Dispatcher.Invoke(() =>
         {
-            folding.IsFolded = false;
-        }
+            foreach (var folding in _foldings.AllFoldings)
+            {
+                folding.IsFolded = false;
+            }
+        });
     }
 
     private void CollapseAllFoldings()
     {
-        foreach (var folding in _foldings.AllFoldings)
+        Dispatcher.Invoke(() =>
         {
-            folding.IsFolded = true;
-        }
+            foreach (var folding in _foldings.AllFoldings)
+            {
+                folding.IsFolded = true;
+            }
+        });
     }
 
     private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
         ViewModel = (ICodeDocumentTabViewModel)e.NewValue;
-        ViewModel.DocumentStateChanged += OnServerDocumentStateChanged;
-        HandleDataContextChangedAsync().SafeFireAndForget();
-    }
+        ViewModel.CodeDocumentStateChanged += ViewModelDocumentStateChanged;
+        DataContextChanged -= OnDataContextChanged;
 
-    private void OnServerDocumentStateChanged(object? sender, EventArgs e)
-    {
+        Editor.Text = ViewModel.TextContent;
         UpdateFoldingsAsync().SafeFireAndForget();
         UpdateDiagnostics();
+        UpdateStatusInfo();
     }
 
-    private async Task HandleDataContextChangedAsync()
+    private void ViewModelDocumentStateChanged(object? sender, EventArgs e)
     {
-        if (ViewModel.DocumentType == SupportedDocumentType.SourceFile)
-        {
-            Editor.Text = ViewModel.TextContent;
-            var foldingsTask = UpdateFoldingsAsync();
-
-            await Task.WhenAll([foldingsTask]).ConfigureAwait(false);
-        }
-
         UpdateStatusInfo();
+        UpdateDiagnostics();
+        UpdateFoldingsAsync().SafeFireAndForget();
     }
 
     private async Task UpdateFoldingsAsync()
@@ -179,6 +178,7 @@ public partial class SourceCodeEditorControl : UserControl
         {
             var newFoldings = foldings
                 .Select(e => e.ToNewFolding(Editor.Document))
+                .Where(e => e.EndOffset < Editor.Document.TextLength)
                 .OrderBy(e => e.StartOffset)
                 .ToArray();
             if (firstErrorRange != null)
@@ -193,6 +193,7 @@ public partial class SourceCodeEditorControl : UserControl
     private void UpdateDiagnostics()
     {
         _markers.RemoveAll(e => true);
+        _margin.InvalidateVisual();
         foreach (var diagnostic in ViewModel.CodeDocumentState.Diagnostics)
         {
             diagnostic.WithTextMarker(Editor, _markers);
