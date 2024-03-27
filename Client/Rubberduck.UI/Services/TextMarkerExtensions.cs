@@ -4,6 +4,7 @@ using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Shell;
 using Rubberduck.UI.Shell.Document;
 using System;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
 

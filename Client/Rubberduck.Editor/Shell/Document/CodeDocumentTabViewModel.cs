@@ -10,6 +10,7 @@ using Rubberduck.UI.Services;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,12 +50,30 @@ namespace Rubberduck.Editor.Shell.Document
         /// </summary>
         private Timer IdleTimer { get; }
         private TimeSpan IdleDelay => UIServiceHelper.Instance!.Settings.EditorSettings.IdleTimerDuration;
-        private void IdleTimerCallback(object? _) => NotifyDocumentChangedAsync().SafeFireAndForget();
+        private void IdleTimerCallback(object? _)
+        {
+            Status.IsWriting = false;
+            DisableIdleTimer();
+            NotifyDocumentChangedAsync()
+                .ContinueWith(t => Task.Delay(IdleDelay))
+                .ContinueWith(t =>
+                {
+                    RequestDiagnosticsAsync().SafeFireAndForget();
+                    RequestFoldingsAsync().SafeFireAndForget();
+                }).SafeFireAndForget();
+        }
 
         /// <summary>
         /// Resets the idle timer to fire a callback in <c>IdleDelay</c> milliseconds.
         /// </summary>
-        private void ResetIdleTimer() => IdleTimer.Change(Convert.ToInt32(IdleDelay.TotalMilliseconds), Timeout.Infinite);
+        /// <remarks>
+        /// Invoked at every keypress.
+        /// </remarks>
+        private void ResetIdleTimer()
+        {
+            IdleTimer.Change(Convert.ToInt32(IdleDelay.TotalMilliseconds), Timeout.Infinite);
+        }
+
         private void DisableIdleTimer() => IdleTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
         private ILanguageClient LanguageClient => _languageClient.Value;
@@ -85,8 +104,8 @@ namespace Rubberduck.Editor.Shell.Document
 
         protected override void OnTextChanged()
         {
-            DisableIdleTimer();
-            NotifyDocumentChangedAsync().SafeFireAndForget(e => _service.LogException(e));
+            Status.IsWriting = true;
+            ResetIdleTimer();
         }
 
         public string LanguageId => _state.Language.Id;
@@ -112,6 +131,7 @@ namespace Rubberduck.Editor.Shell.Document
 
         private async Task NotifyDocumentChangedAsync(OmniSharp.Extensions.LanguageServer.Protocol.Models.Range? range, string? text)
         {
+            Status.ProgressMessage = "Processing changes...";
             // increment local version first...
             DocumentState = _state with { Version = _state.Version + 1 };
 
@@ -133,8 +153,10 @@ namespace Rubberduck.Editor.Shell.Document
 
             _service.LogDebug($"Notifying server of document changes.", $"DocumentId: {DocumentState.Id} Version: {DocumentState.Version}");
             LanguageClient.DidChangeTextDocument(request);
-            
-            await Task.WhenAll(RequestFoldingsAsync(), RequestDiagnosticsAsync()).ConfigureAwait(false);
+
+            await RequestFoldingsAsync();
+            await RequestDiagnosticsAsync();
+            Status.ProgressMessage = null;
         }
 
         private async Task RequestDiagnosticsAsync()

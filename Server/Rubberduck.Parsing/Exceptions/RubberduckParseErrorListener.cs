@@ -32,7 +32,8 @@ public class RubberduckParseErrorListener : BaseErrorListener, IRubberduckParseE
 
     protected WorkspaceFileUri Uri { get; }
 
-    public ImmutableArray<SyntaxErrorException> SyntaxErrors => _errors.Values.ToImmutableArray();
+    public ImmutableArray<SyntaxErrorException> SyntaxErrors => _errors.Values.OfType<SyntaxErrorException>().ToImmutableArray();
+    public ImmutableArray<PredictionFailException> PredictionModeFailures => _errors.Values.Except(_errors.Values.OfType<SyntaxErrorException>()).ToImmutableArray();
 
     /// <summary>
     /// Errors by token; LL syntax errors overwrite SLL failures.
@@ -40,9 +41,9 @@ public class RubberduckParseErrorListener : BaseErrorListener, IRubberduckParseE
     /// <remarks>
     /// Key is <c>IToken.TokenIndex</c> from the <c>offendingSymbol</c>.
     /// </remarks>
-    private readonly Dictionary<int, SyntaxErrorException> _errors;
+    private readonly Dictionary<int, PredictionFailException> _errors;
 
-    protected void AddOrReplaceError(IToken offendingSymbol, SyntaxErrorException error) => 
+    protected void AddOrReplaceError(IToken offendingSymbol, PredictionFailException error) => 
         _errors[offendingSymbol.TokenIndex] = error;
 
     protected virtual AntlrSyntaxErrorInfo GetErrorInfo(IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e) => 
@@ -96,8 +97,8 @@ public class RubberduckParseErrorListener : BaseErrorListener, IRubberduckParseE
             }
         };
         var exception = _mode == PredictionMode.Sll
-            ? new SllPredictionFailException(Uri, symbol, message, e)
-            : new SyntaxErrorException(Uri, symbol, message, e);
+            ? (PredictionFailException)new SllPredictionFailException(Uri, symbol, message, e)
+            : (PredictionFailException)new SyntaxErrorException(Uri, symbol, message, e);
 
         AddOrReplaceError(offendingSymbol, exception);
 

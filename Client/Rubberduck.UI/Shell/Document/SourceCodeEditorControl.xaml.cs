@@ -152,16 +152,14 @@ public partial class SourceCodeEditorControl : UserControl
         DataContextChanged -= OnDataContextChanged;
 
         Editor.Text = ViewModel.TextContent;
-        UpdateFoldingsAsync().SafeFireAndForget();
-        UpdateDiagnostics();
-        UpdateStatusInfo();
+        ViewModelDocumentStateChanged(null, EventArgs.Empty);
     }
 
     private void ViewModelDocumentStateChanged(object? sender, EventArgs e)
     {
-        UpdateStatusInfo();
-        UpdateDiagnostics();
         UpdateFoldingsAsync().SafeFireAndForget();
+        UpdateDiagnostics();
+        UpdateStatusInfo();
     }
 
     private async Task UpdateFoldingsAsync()
@@ -192,12 +190,15 @@ public partial class SourceCodeEditorControl : UserControl
 
     private void UpdateDiagnostics()
     {
-        _markers.RemoveAll(e => true);
-        _margin.InvalidateVisual();
-        foreach (var diagnostic in ViewModel.CodeDocumentState.Diagnostics)
+        Dispatcher.Invoke(() =>
         {
-            diagnostic.WithTextMarker(Editor, _markers);
-        }
+            _markers.RemoveAll(e => true);
+            foreach (var diagnostic in ViewModel.CodeDocumentState.Diagnostics)
+            {
+                diagnostic.WithTextMarker(Editor, _markers);
+            }
+            _margin.InvalidateVisual();
+        });
     }
 
     private BindableTextEditor Editor { get; }

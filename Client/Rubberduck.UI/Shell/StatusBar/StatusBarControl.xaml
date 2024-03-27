@@ -40,7 +40,7 @@
                    Visibility="{Binding StatusBar.ProgressMaxValue, Converter={StaticResource HasItemsVisibilityConverter}}"/>
 
         <!-- WorkDoneProgress reporting -->
-
+        
         <StatusBarItem Padding="0" Visibility="{Binding StatusBar.ProgressMaxValue, Converter={StaticResource HasItemsVisibilityConverter}}" >
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -133,18 +133,25 @@
         </StatusBarItem>
 
         <!-- selection info -->
-        <StatusBarItem Visibility="{Binding StatusBar.ActiveDocumentStatus.IsReadOnly, Converter={StaticResource BoolToHiddenVisibility}}">
+        <StatusBarItem Margin="5,0" Padding="0" Visibility="{Binding StatusBar.ActiveDocumentStatus.IsReadOnly, Converter={StaticResource BoolToHiddenVisibility}}">
             <StackPanel Orientation="Horizontal">
                 <Label Foreground="{DynamicResource ThemeTextColorBrush}">
-                <TextBlock>
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="{}L{0}C{1}">
-                            <Binding Path="StatusBar.ActiveDocumentStatus.CaretLine" />
-                            <Binding Path="StatusBar.ActiveDocumentStatus.CaretColumn" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}L{0}C{1}">
+                                <Binding Path="StatusBar.ActiveDocumentStatus.CaretLine" />
+                                <Binding Path="StatusBar.ActiveDocumentStatus.CaretColumn" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
                 </Label>
+            </StackPanel>
+        </StatusBarItem>
+
+        <!-- IsWriting indicator -->
+        <StatusBarItem Padding="0" Margin="5,0" Visibility="{Binding StatusBar.IsWriting, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Image Source="{DynamicResource DuckyIcon}" Height="16" />
             </StackPanel>
         </StatusBarItem>
 

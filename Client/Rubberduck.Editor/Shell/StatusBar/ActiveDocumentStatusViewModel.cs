@@ -89,6 +89,21 @@ namespace Rubberduck.Editor.Shell.StatusBar
                 }
             }
         }
+
+        private bool _isWriting;
+        public bool IsWriting
+        {
+            get => _isWriting;
+            set
+            {
+                if (_isWriting != value)
+                {
+                    _isWriting = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public ICommand CancelWorkDoneProgressCommand { get; set; }
 
         private SupportedDocumentType _documentType;

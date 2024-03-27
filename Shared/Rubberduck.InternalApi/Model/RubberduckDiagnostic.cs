@@ -89,7 +89,7 @@ public record class RubberduckDiagnostic : Diagnostic
     public static Diagnostic SllFailure(Symbol symbol) =>
         CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.SllFailure, "SLL parser prediction mode failed here; if possible, rephrasing this instruction could improve parsing performance.");
 
-    public static Diagnostic SllFailure(SyntaxErrorException error) =>
+    public static Diagnostic SllFailure(PredictionFailException error) =>
         CreateDiagnostic(error.OffendingSymbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.SllFailure, "SLL parser prediction mode failed here; if possible, rephrasing this instruction could improve parsing performance.");
     public static Diagnostic SyntaxError(SyntaxErrorException error) =>
         CreateDiagnostic(error.OffendingSymbol, DiagnosticSeverity.Error, RubberduckDiagnosticId.SyntaxError, error.Message, error.Uri.ToString());

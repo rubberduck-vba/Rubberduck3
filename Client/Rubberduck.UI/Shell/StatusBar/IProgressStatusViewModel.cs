@@ -8,6 +8,11 @@ namespace Rubberduck.UI.Shell.StatusBar
     public interface IProgressStatusViewModel : IStatusBarViewModel
     {
         /// <summary>
+        /// An indicator, <c>true</c> whenever the document's idle timer is ticking, indicating the user is typing in the editor.
+        /// </summary>
+        bool IsWriting { get; set; }
+
+        /// <summary>
         /// Gets or sets the current progress indicator value.
         /// </summary>
         int ProgressValue { get; set; }
