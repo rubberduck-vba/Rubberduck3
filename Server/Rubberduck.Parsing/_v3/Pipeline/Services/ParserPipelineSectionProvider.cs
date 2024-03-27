@@ -45,7 +45,7 @@ public class ParserPipelineSectionProvider
             }
         }
 
-        var workspaces = _provider.GetRequiredService<IWorkspaceService>();
+        var workspaces = _provider.GetRequiredService<IAppWorkspacesService>();
         var parser = _provider.GetRequiredService<PipelineParserService>();
         var foldings = _provider.GetRequiredService<FoldingRangesParseTreeService>();
         var symbols = _provider.GetRequiredService<PipelineParseTreeSymbolsService>();
@@ -72,7 +72,7 @@ public class ParserPipelineSectionProvider
     {
         _ = uri ?? throw new ArgumentNullException(nameof(uri));
 
-        var workspaces = _provider.GetRequiredService<IWorkspaceService>();
+        var workspaces = _provider.GetRequiredService<IAppWorkspacesService>();
         var symbols = _provider.GetRequiredService<PipelineParseTreeSymbolsService>();
         var logger = _provider.GetRequiredService<ILogger<WorkspaceDocumentParserOrchestrator>>();
         var settings = _provider.GetRequiredService<RubberduckSettingsProvider>();
@@ -109,7 +109,7 @@ public class ParserPipelineSectionProvider
             }
         }
 
-        var workspaces = _provider.GetRequiredService<IWorkspaceService>();
+        var workspaces = _provider.GetRequiredService<IAppWorkspacesService>();
         var symbols = _provider.GetRequiredService<PipelineParseTreeSymbolsService>();
         var logger = _provider.GetRequiredService<ILogger<WorkspaceDocumentParserOrchestrator>>();
         var settings = _provider.GetRequiredService<RubberduckSettingsProvider>();

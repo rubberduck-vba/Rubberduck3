@@ -14,11 +14,11 @@ namespace Rubberduck.Parsing._v3.Pipeline;
 public class WorkspacePipeline : DataflowPipeline
 {
     private readonly ILogger _logger;
-    private readonly IWorkspaceStateManager _workspaces;
+    private readonly IAppWorkspacesStateManager _workspaces;
     private readonly ParserPipelineSectionProvider _sectionProvider;
     private readonly LibrarySymbolsService _librarySymbols;
 
-    public WorkspacePipeline(IWorkspaceStateManager workspaces, ParserPipelineSectionProvider sectionProvider, LibrarySymbolsService librarySymbols,
+    public WorkspacePipeline(IAppWorkspacesStateManager workspaces, ParserPipelineSectionProvider sectionProvider, LibrarySymbolsService librarySymbols,
         ILogger<WorkspacePipeline> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
         : base(logger, settingsProvider, performance)
     {

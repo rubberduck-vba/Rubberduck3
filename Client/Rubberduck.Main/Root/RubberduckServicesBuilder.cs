@@ -179,7 +179,7 @@ namespace Rubberduck.Main.Root
             _services.AddSingleton<IDialogService<NewProjectWindowViewModel>, NewProjectDialogService>();
             _services.AddSingleton<IWindowFactory<NewProjectWindow, NewProjectWindowViewModel>, NewProjectWindowFactory>();
             _services.AddSingleton<IVBProjectInfoProvider, ProjectInfoProvider>();
-            _services.AddSingleton<IWorkspaceService>(provider => null!); // add-in doesn't open workspaces
+            _services.AddSingleton<IAppWorkspacesService>(provider => null!); // add-in doesn't open workspaces
 
             _services.AddSingleton<ShowRubberduckSettingsCommand>();
             _services.AddSingleton<ISettingsCommand, SettingsCommand>();

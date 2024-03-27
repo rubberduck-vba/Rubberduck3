@@ -16,13 +16,13 @@ namespace Rubberduck.UI.Command
         private readonly INewProjectDialogService _dialog;
 
         private readonly IProjectFileService _projectFileService;
-        private readonly IWorkspaceService? _workspace; // null if invoked from add-in
+        private readonly IAppWorkspacesService? _workspace; // null if invoked from add-in
         private readonly IWorkspaceFolderService _workspaceFolderService;
         private readonly IWorkspaceSyncService? _workspaceModulesService; // null if invoked from add-in
 
         public NewProjectCommand(UIServiceHelper service,
             INewProjectDialogService dialogService,
-            IWorkspaceService? workspace,
+            IAppWorkspacesService? workspace,
             IFileSystem fileSystem,
             IWorkspaceFolderService workspaceFolderService,
             IProjectFileService projectFileService,

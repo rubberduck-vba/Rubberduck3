@@ -23,5 +23,5 @@ public record class VBDecimalValue : VBNumericTypedValue,
     public override int Size => 14;
     public override double NumericValue { get; init; }
 
-    public VBDecimalValue WithValue(double value) => this with { NumericValue = (double)value };
+    public new VBDecimalValue WithValue(double value) => this with { NumericValue = (double)value };
 }

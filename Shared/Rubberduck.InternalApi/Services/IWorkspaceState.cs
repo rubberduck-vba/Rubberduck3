@@ -16,6 +16,7 @@ public interface IWorkspaceState
     string ProjectName { get; set; }
     void PublishDiagnostics(int? version, DocumentUri uri, IEnumerable<Diagnostic> diagnostics);
     IEnumerable<DocumentState> WorkspaceFiles { get; }
+    IEnumerable<CodeDocumentState> SourceFiles { get; }
     IEnumerable<Reference> References { get; }
     VBExecutionContext ExecutionContext { get; }
 
@@ -31,6 +32,13 @@ public interface IWorkspaceState
     /// <returns><c>true</c> if the specified version was found.</returns>
     bool TryGetWorkspaceFile(WorkspaceFileUri uri, out DocumentState? fileInfo);
     /// <summary>
+    /// Attempts to retrieve the specified file.
+    /// </summary>
+    /// <param name="uri">The URI referring to the file to retrieve.</param>
+    /// <param name="fileInfo">The retrieved <c>WorkspaceFileInfo</c>, if found.</param>
+    /// <returns><c>true</c> if the specified version was found.</returns>
+    bool TryGetSourceFile(WorkspaceFileUri uri, out CodeDocumentState? fileInfo);
+    /// <summary>
     /// Marks the file at the specified URI as closed in the editor.
     /// </summary>
     /// <param name="uri">The URI referring to the file to mark as closed.</param>
@@ -44,6 +52,13 @@ public interface IWorkspaceState
     /// <returns><c>true</c> if the file was successfully added (or overwritten) to the workspace.</returns>
     /// <remarks>This method will overwrite a cached URI if URI matches an existing file.</remarks>
     bool LoadDocumentState(DocumentState file);
+    /// <summary>
+    /// Loads the specified file into the workspace.
+    /// </summary>
+    /// <param name="file">The file (including its content) to be added.</param>
+    /// <returns><c>true</c> if the file was successfully added (or overwritten) to the workspace.</returns>
+    /// <remarks>This method will overwrite a cached URI if URI matches an existing file.</remarks>
+    bool LoadDocumentState(CodeDocumentState file);
     /// <summary>
     /// Renames the specified workspace URI.
     /// </summary>

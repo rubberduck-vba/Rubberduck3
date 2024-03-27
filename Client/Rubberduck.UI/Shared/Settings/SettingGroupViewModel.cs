@@ -31,6 +31,7 @@ namespace Rubberduck.UI.Shared.Settings
             // readonly-recommended padlock makes weird UX on setting groups
             _settingGroup = settingGroup with { Tags = settingGroup.Tags & ~SettingTags.ReadOnlyRecommended };
             _idleTimer = new Timer(OnIdleTimerTick, null, IdleDelay, Timeout.InfiniteTimeSpan);
+            _selection = items.First();
 
             foreach (var item in items)
             {
@@ -45,10 +46,10 @@ namespace Rubberduck.UI.Shared.Settings
             ItemsView.Filter = value => string.IsNullOrWhiteSpace(_searchString) || ((ISettingViewModel)value).IsSearchResult(_searchString);
 
             IsEnabled = true;
-            EnableAllItemsCommand = new DelegateCommand(Services.UIServiceHelper.Instance,
+            EnableAllItemsCommand = new DelegateCommand(UIServiceHelper.Instance!,
                 parameter =>
                 {
-                    var isEnabled = (bool)parameter;
+                    var isEnabled = (bool)parameter!;
                     foreach (var item in Items.OfType<BooleanSettingViewModel>())
                     {
                         item.Value = isEnabled;
@@ -61,6 +62,7 @@ namespace Rubberduck.UI.Shared.Settings
             // readonly-recommended padlock makes weird UX on setting groups
             _settingGroup = settingGroup with { Tags = settingGroup.Tags & ~SettingTags.ReadOnlyRecommended };
             _idleTimer = new Timer(OnIdleTimerTick, null, IdleDelay, Timeout.InfiniteTimeSpan);
+            _selection = items.First();
 
             Items = new ObservableCollection<ISettingViewModel>(items);
 
@@ -70,7 +72,7 @@ namespace Rubberduck.UI.Shared.Settings
             ItemsView.Filter = value => string.IsNullOrWhiteSpace(_searchString) || ((ISettingViewModel)value).IsSearchResult(_searchString);
 
             IsEnabled = true;
-            EnableAllItemsCommand = new DelegateCommand(Services.UIServiceHelper.Instance,
+            EnableAllItemsCommand = new DelegateCommand(UIServiceHelper.Instance!,
                 parameter =>
                 {
                     var isEnabled = Items.OfType<BooleanSettingViewModel>().Any(e => !e.Value);
@@ -86,6 +88,7 @@ namespace Rubberduck.UI.Shared.Settings
             // readonly-recommended padlock makes weird UX on setting groups
             _settingGroup = settingGroup with { Tags = settingGroup.Tags & ~SettingTags.ReadOnlyRecommended };
             _idleTimer = new Timer(OnIdleTimerTick, null, IdleDelay, Timeout.InfiniteTimeSpan);
+            _selection = items.First();
 
             Items = new ObservableCollection<ISettingViewModel>(items);
 
@@ -95,10 +98,10 @@ namespace Rubberduck.UI.Shared.Settings
             ItemsView.Filter = value => string.IsNullOrWhiteSpace(_searchString) || ((ISettingViewModel)value).IsSearchResult(_searchString);
 
             IsEnabled = true;
-            EnableAllItemsCommand = new DelegateCommand(Services.UIServiceHelper.Instance,
+            EnableAllItemsCommand = new DelegateCommand(UIServiceHelper.Instance!,
                 parameter =>
                 {
-                    var isEnabled = (bool)parameter;
+                    var isEnabled = (bool)parameter!;
                     foreach (var item in Items.OfType<BooleanSettingViewModel>())
                     {
                         item.Value = isEnabled;
@@ -115,11 +118,11 @@ namespace Rubberduck.UI.Shared.Settings
         public bool ShowSettingGroup { get; set; }
         public bool IsSettingGroup => true;
         public bool IsSearchResult(string search) => 
-            Name.Contains(search, System.StringComparison.InvariantCultureIgnoreCase)
-            || Description.Contains(search, System.StringComparison.InvariantCultureIgnoreCase);
+            Name.Contains(search, StringComparison.InvariantCultureIgnoreCase)
+            || Description.Contains(search, StringComparison.InvariantCultureIgnoreCase);
 
-        private string _searchString;
-        public string SearchString 
+        private string? _searchString;
+        public string? SearchString 
         {
             get => _searchString;
             set

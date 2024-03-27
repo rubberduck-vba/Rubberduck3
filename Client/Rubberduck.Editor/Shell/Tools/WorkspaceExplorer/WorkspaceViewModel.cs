@@ -12,7 +12,7 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
 {
     public class WorkspaceViewModel : ViewModelBase, IWorkspaceTreeNode, IWorkspaceViewModel
     {
-        public static WorkspaceViewModel FromModel(ProjectFile model, IWorkspaceService service)
+        public static WorkspaceViewModel FromModel(ProjectFile model, IAppWorkspacesService service)
         {
             var vm = new WorkspaceViewModel
             {
@@ -55,7 +55,7 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
             return vm;
         }
 
-        private static void AddFolderContent(IWorkspaceService service, WorkspaceFolderViewModel folder, IDictionary<string, IEnumerable<WorkspaceTreeNodeViewModel>> projectFilesByFolder, IEnumerable<WorkspaceFolderViewModel> projectFolders)
+        private static void AddFolderContent(IAppWorkspacesService service, WorkspaceFolderViewModel folder, IDictionary<string, IEnumerable<WorkspaceTreeNodeViewModel>> projectFilesByFolder, IEnumerable<WorkspaceFolderViewModel> projectFolders)
         {
             var workspaceFolderUri = (WorkspaceFolderUri)folder.Uri;
             var key = System.IO.Path.TrimEndingDirectorySeparator(workspaceFolderUri.RelativeUriString ?? WorkspaceUri.SourceRootName);
@@ -80,7 +80,7 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
             }
         }
 
-        private static WorkspaceFolderViewModel CreateWorkspaceFolderNode(IWorkspaceService service, IEnumerable<IWorkspaceTreeNode> projectFiles, WorkspaceFolderUri uri)
+        private static WorkspaceFolderViewModel CreateWorkspaceFolderNode(IAppWorkspacesService service, IEnumerable<IWorkspaceTreeNode> projectFiles, WorkspaceFolderUri uri)
         {
             var folder = new WorkspaceFolderViewModel
             {
@@ -94,7 +94,7 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
             return folder;
         }
 
-        private static void AddFolderFileNodes(IWorkspaceService service, IWorkspaceTreeNode folder, IEnumerable<IWorkspaceTreeNode> projectFiles, HashSet<string> projectFilePaths)
+        private static void AddFolderFileNodes(IAppWorkspacesService service, IWorkspaceTreeNode folder, IEnumerable<IWorkspaceTreeNode> projectFiles, HashSet<string> projectFilePaths)
         {
             var workspaceFiles = GetWorkspaceFilesNotInProject(service, folder, projectFilePaths);
             foreach (var file in projectFiles.Concat(workspaceFiles))
@@ -103,7 +103,7 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
             }
         }
 
-        private static IEnumerable<WorkspaceFileViewModel> GetWorkspaceFilesNotInProject(IWorkspaceService service, IWorkspaceTreeNode folder, HashSet<string> projectFilePaths)
+        private static IEnumerable<WorkspaceFileViewModel> GetWorkspaceFilesNotInProject(IAppWorkspacesService service, IWorkspaceTreeNode folder, HashSet<string> projectFilePaths)
         {
             var workspaceRoot = ((WorkspaceFolderUri)folder.Uri).WorkspaceRoot;
             var results = service.FileSystem.Directory.GetFiles(((WorkspaceFolderUri)folder.Uri).AbsoluteLocation.LocalPath).Except(projectFilePaths)

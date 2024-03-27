@@ -20,7 +20,7 @@ public class PipelineParserService : ServiceBase
         _parser = parser;
     }
 
-    public PipelineParseResult ParseDocument(DocumentState state, CancellationToken token)
+    public PipelineParseResult ParseDocument(CodeDocumentState state, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         var parseResult = _parser.Parse(state.Uri, state.Text, token, ParserMode.FallBackSllToLl)

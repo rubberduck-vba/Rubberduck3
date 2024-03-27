@@ -1,10 +1,8 @@
-﻿using OmniSharp.Extensions.LanguageServer.Protocol.Client;
-using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
+﻿using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Settings.Model.Editor;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
-using System;
 
 namespace Rubberduck.Editor.Shell.Document
 {
@@ -16,9 +14,8 @@ namespace Rubberduck.Editor.Shell.Document
         public MarkdownDocumentTabViewModel(DocumentState state, bool isReadOnly,
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindowCommand,
-            IDocumentStatusViewModel activeDocumentStatus,
-            Func<ILanguageClient> lsp)
-            : base(state, isReadOnly, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus, lsp)
+            IDocumentStatusViewModel activeDocumentStatus)
+            : base(state, isReadOnly, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus)
         {
             SettingKey = nameof(ShowWelcomeTabSetting);
         }

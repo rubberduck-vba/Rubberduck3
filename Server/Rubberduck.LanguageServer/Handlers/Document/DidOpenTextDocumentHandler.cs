@@ -13,10 +13,10 @@ namespace Rubberduck.LanguageServer.Handlers.Document
     public class DidOpenTextDocumentHandler : DidOpenTextDocumentHandlerBase
     {
         private readonly ServerPlatformServiceHelper _service;
-        private readonly IWorkspaceStateManager _workspaces;
+        private readonly IAppWorkspacesStateManager _workspaces;
         private readonly TextDocumentSelector _selector;
 
-        public DidOpenTextDocumentHandler(ServerPlatformServiceHelper service, IWorkspaceStateManager workspaces, TextDocumentSelector selector)
+        public DidOpenTextDocumentHandler(ServerPlatformServiceHelper service, IAppWorkspacesStateManager workspaces, TextDocumentSelector selector)
         {
             _service = service;
             _workspaces = workspaces;

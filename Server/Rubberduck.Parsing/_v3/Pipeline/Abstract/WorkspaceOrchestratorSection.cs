@@ -15,11 +15,11 @@ namespace Rubberduck.Parsing._v3.Pipeline.Abstract;
 public abstract class WorkspaceOrchestratorSection : DataflowPipelineSection<WorkspaceUri, IWorkspaceState>
 {
     private readonly ILanguageServer _server;
-    private readonly IWorkspaceStateManager _workspaces;
+    private readonly IAppWorkspacesStateManager _workspaces;
     private readonly ParserPipelineSectionProvider _provider;
 
     protected WorkspaceOrchestratorSection(DataflowPipeline parent, 
-        IWorkspaceStateManager workspaces, 
+        IAppWorkspacesStateManager workspaces, 
         ParserPipelineSectionProvider pipelineProvider,
         ILanguageServer server,
         ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)

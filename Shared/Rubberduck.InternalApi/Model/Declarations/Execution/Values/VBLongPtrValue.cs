@@ -26,7 +26,7 @@ public record class VBLongPtrValue : VBNumericTypedValue,
     public override int Size => Is64Bit ? sizeof(long) : sizeof(int);
     public override double NumericValue { get; init; }
 
-    public VBLongPtrValue WithValue(double value) => WithValue(value, Is64Bit ? VBLongLongType.TypeInfo : VBLongType.TypeInfo);
+    public new VBLongPtrValue WithValue(double value) => WithValue(value, Is64Bit ? VBLongLongType.TypeInfo : VBLongType.TypeInfo);
     public VBLongPtrValue WithValue(double value, VBType ptrType)
     {
         if (ptrType is VBLongType)

@@ -7,10 +7,10 @@ namespace Rubberduck.Editor.Commands
 {
     public class CloseAllDocumentsCommand : CommandBase
     {
-        private readonly IWorkspaceService _workspace;
+        private readonly IAppWorkspacesService _workspace;
 
         public CloseAllDocumentsCommand(UIServiceHelper service,
-            IWorkspaceService workspace)
+            IAppWorkspacesService workspace)
             : base(service)
         {
             _workspace = workspace;

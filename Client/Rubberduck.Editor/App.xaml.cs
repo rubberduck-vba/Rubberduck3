@@ -217,7 +217,7 @@ namespace Rubberduck.Editor
             var closeToolWindowCommand = _serviceProvider.GetRequiredService<CloseToolWindowCommand>();
             var activeDocumentStatus = _serviceProvider.GetRequiredService<IDocumentStatusViewModel>();
             var documentState = new DocumentState(fileUri, content, isOpened: true);
-            var welcome = new MarkdownDocumentTabViewModel(documentState, isReadOnly: true, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus, () => _languageClient.LanguageClient!);
+            var welcome = new MarkdownDocumentTabViewModel(documentState, isReadOnly: true, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus);
             var welcomeTabContent = new MarkdownEditorControl() { DataContext = welcome };
             welcome.ContentControl = welcomeTabContent;
             welcome.IsSelected = true;
@@ -278,8 +278,7 @@ namespace Rubberduck.Editor
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<Func<ILanguageClient?>>(provider => () => _languageClient.LanguageClient);
-            services.AddSingleton<Func<ILanguageClient>>(provider => () => _languageClient.LanguageClient);
+            services.AddSingleton<Func<ILanguageClient>>(provider => () => _languageClient.LanguageClient!);
             services.AddSingleton<LanguageClientApp>(provider => _languageClient);
             services.AddSingleton<ILanguageClientService, LanguageClientService>();
             services.AddSingleton<ILanguageServerConnectionStatusProvider, LanguageClientService>(provider => (LanguageClientService)provider.GetRequiredService<ILanguageClientService>());
@@ -344,10 +343,10 @@ namespace Rubberduck.Editor
             services.AddSingleton<IWindowFactory<SettingsWindow, SettingsWindowViewModel>, SettingsWindowFactory>();
             services.AddSingleton<ISettingViewModelFactory, SettingViewModelFactory>();
 
-            services.AddSingleton<IWorkspaceService, WorkspaceClientService>();
+            services.AddSingleton<IAppWorkspacesService, WorkspaceClientService>();
             services.AddSingleton<ILanguageServerTraceViewModel, LanguageServerTraceViewModel>();
             services.AddSingleton<IWorkspaceExplorerViewModel, WorkspaceExplorerViewModel>();
-            services.AddSingleton<IWorkspaceStateManager, WorkspaceStateManager>();
+            services.AddSingleton<IAppWorkspacesStateManager, WorkspaceStateManager>();
             services.AddSingleton<DocumentContentStore>();
             services.AddSingleton<OpenDocumentCommand>();
 

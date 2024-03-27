@@ -14,7 +14,7 @@ namespace Rubberduck.UI.Shared.Settings.Abstract
         ICollectionView ItemsView { get; }
         ObservableCollection<ISettingViewModel> Items { get; }
         bool IsExpanded { get; set; }
-        string SearchString { get; set; }
+        string? SearchString { get; set; }
 
         ISettingViewModel Selection { get; set; }
     }

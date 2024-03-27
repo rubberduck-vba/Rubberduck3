@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace Rubberduck.InternalApi.Services;
 
-public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
+public class WorkspaceStateManager : ServiceBase, IAppWorkspacesStateManager
 {
     public event EventHandler<WorkspaceFileUriEventArgs> WorkspaceFileStateChanged = delegate { };
 
@@ -38,9 +38,9 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
         {
             var root = WorkspaceRoot ?? throw new InvalidOperationException("Workspace root is not set");            
             var uri = documentUri.AsWorkspaceUri(root);
-            if (_store.TryGetDocument(uri, out var document) && document != null /*&& document.Version >= (version ?? document.Version)*/)
+            if (_store.TryGetDocument(uri, out var document) && document is CodeDocumentState state /*&& document.Version >= (version ?? document.Version)*/)
             {
-                _store.AddOrUpdate(uri, document.WithDiagnostics(diagnostics));
+                _store.AddOrUpdate(uri, state.WithDiagnostics(diagnostics));
             }
         }
 
@@ -97,7 +97,24 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
             }
         }
 
+        public IEnumerable<CodeDocumentState> SourceFiles
+        {
+            get
+            {
+                foreach (var file in _store.Enumerate().OfType<CodeDocumentState>())
+                {
+                    yield return file;
+                }
+            }
+        }
+
         public bool LoadDocumentState(DocumentState file)
+        {
+            _store.AddOrUpdate(file.Uri, file);
+            return true;
+        }
+
+        public bool LoadDocumentState(CodeDocumentState file)
         {
             _store.AddOrUpdate(file.Uri, file);
             if (file.Symbol is TypedSymbol typedSymbol)
@@ -117,6 +134,21 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
         }
 
         public bool TryGetWorkspaceFile(WorkspaceFileUri uri, out DocumentState? state) => _store.TryGetDocument(uri, out state);
+        public bool TryGetSourceFile(WorkspaceFileUri uri, out CodeDocumentState? state)
+        {
+            var result = false;
+            state = null;
+
+            if (_store.TryGetDocument(uri, out var file))
+            {
+                if (file is CodeDocumentState sourceFile)
+                {
+                    state = sourceFile;
+                    result = true;
+                }
+            }
+            return result;
+        }
 
         public bool CloseWorkspaceFile(WorkspaceFileUri uri, out DocumentState? state)
         {
@@ -124,7 +156,7 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
             {
                 if (state!.IsOpened)
                 {
-                    state = state.WithOpened(false);
+                    state = state with { IsOpened = false };
                     _store.AddOrUpdate(uri, state);
                     return true;
                 }
@@ -162,9 +194,9 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
 
         public bool SaveWorkspaceFile(WorkspaceFileUri uri)
         {
-            if (_store.TryGetDocument(uri, out var file))
+            if (_store.TryGetDocument(uri, out var file) && file != null)
             {
-                _store.AddOrUpdate(uri, file!.WithResetVersion());
+                _store.AddOrUpdate(uri, file with { Version = 1 });
                 return true;
             }
             return false;
@@ -186,10 +218,10 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
         throw new NotImplementedException();
     }
 
-    private Dictionary<Uri, IWorkspaceState> _workspaces = [];
+    private readonly Dictionary<Uri, IWorkspaceState> _workspaces = [];
     public IWorkspaceState GetWorkspace(Uri workspaceRoot)
     {
-        if (!_workspaces.Any())
+        if (_workspaces.Count == 0)
         {
             throw new InvalidOperationException("Workspace data is empty.");
         }

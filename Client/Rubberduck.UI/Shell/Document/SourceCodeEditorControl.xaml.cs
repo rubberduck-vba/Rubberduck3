@@ -1,13 +1,15 @@
-﻿using ICSharpCode.AvalonEdit.Folding;
+﻿using AsyncAwaitBestPractices;
+using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Rendering;
 using Microsoft.Xaml.Behaviors.Core;
+using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model;
+using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
 using System;
 using System.ComponentModel.Design;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,8 +22,6 @@ namespace Rubberduck.UI.Shell.Document;
 /// </summary>
 public partial class SourceCodeEditorControl : UserControl
 {
-    private TimeSpan IdleDelay => UIServiceHelper.Instance!.Settings.EditorSettings.IdleTimerDuration;
-
     private readonly FoldingManager _foldings;
     private readonly TextMarkerService _markers;
     private readonly TextMarkersMargin _margin;
@@ -41,10 +41,9 @@ public partial class SourceCodeEditorControl : UserControl
         _margin = new TextMarkersMargin(_markers);
         Editor.TextArea.LeftMargins.Insert(0, _margin);
 
-        IdleTimer = new Timer(IdleTimerCallback, null, Convert.ToInt32(IdleDelay.TotalMicroseconds), Timeout.Infinite);
-
-        ExpandAllCommand = new ActionCommand(ExpandAllFoldings);
-        CollapseAllCommand = new ActionCommand(CollapseAllFoldings);
+        var service = UIServiceHelper.Instance ?? throw new InvalidOperationException();
+        ExpandAllCommand = new DelegateCommand(service, parameter => ExpandAllFoldings(), parameter => _foldings.AllFoldings.Any(folding => folding.IsFolded)) { Name = nameof(ExpandAllCommand) };
+        CollapseAllCommand = new DelegateCommand(service, parameter => CollapseAllFoldings(), parameter => _foldings.AllFoldings.Any(folding => !folding.IsFolded)) { Name = nameof(CollapseAllCommand) };
     }
 
     private void Initialize(TextMarkerService service)
@@ -56,18 +55,6 @@ public partial class SourceCodeEditorControl : UserControl
         services?.AddService(typeof(ITextMarkerService), service);
     }
 
-    /// <summary>
-    /// A timer that runs between keypresses to evaluate idle time; 
-    /// callback is invoked if/when a configurable threshold is met, to notify the server of document changes.
-    /// </summary>
-    private Timer IdleTimer { get; }
-    private void IdleTimerCallback(object? state) => ViewModel.NotifyDocumentChanged();
-
-    /// <summary>
-    /// Resets the idle timer to fire a callback in <c>IdleDelay</c> milliseconds.
-    /// </summary>
-    private void ResetIdleTimer() => IdleTimer.Change(Convert.ToInt32(IdleDelay.TotalMilliseconds), Timeout.Infinite);
-
     private void OnEditorLoaded(object sender, RoutedEventArgs e)
     {
         Editor.TextChanged += OnTextChanged;
@@ -78,7 +65,6 @@ public partial class SourceCodeEditorControl : UserControl
 
         Editor.TextArea.TextView.ScrollOffsetChanged += OnTextViewScrollOffsetChanged;
     }
-
 
     private void OnTextViewScrollOffsetChanged(object? sender, EventArgs e)
     {
@@ -153,30 +139,17 @@ public partial class SourceCodeEditorControl : UserControl
         }
     }
 
-    private async void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+    private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-        ViewModel = (IDocumentTabViewModel)e.NewValue;
+        ViewModel = (ICodeDocumentTabViewModel)e.NewValue;
         ViewModel.DocumentStateChanged += OnServerDocumentStateChanged;
-        try
-        {
-            await HandleDataContextChangedAsync().ConfigureAwait(false);
-        }
-        catch (Exception exception)
-        {
-            // TODO get a logger over here
-        }
+        HandleDataContextChangedAsync().SafeFireAndForget();
     }
 
-    private async void OnServerDocumentStateChanged(object? sender, EventArgs e)
+    private void OnServerDocumentStateChanged(object? sender, EventArgs e)
     {
-        try
-        {
-            await UpdateFoldingsAsync().ConfigureAwait(false);
-        }
-        catch (Exception exception)
-        {
-            //
-        }
+        UpdateFoldingsAsync().SafeFireAndForget();
+        UpdateDiagnostics();
     }
 
     private async Task HandleDataContextChangedAsync()
@@ -184,7 +157,9 @@ public partial class SourceCodeEditorControl : UserControl
         if (ViewModel.DocumentType == SupportedDocumentType.SourceFile)
         {
             Editor.Text = ViewModel.TextContent;
-            await UpdateFoldingsAsync().ConfigureAwait(false);
+            var foldingsTask = UpdateFoldingsAsync();
+
+            await Task.WhenAll([foldingsTask]).ConfigureAwait(false);
         }
 
         UpdateStatusInfo();
@@ -192,8 +167,8 @@ public partial class SourceCodeEditorControl : UserControl
 
     private async Task UpdateFoldingsAsync()
     {
-        var foldings = ViewModel.DocumentState.Foldings;
-        var diagnostics = ViewModel.DocumentState.Diagnostics;
+        var foldings = ViewModel.CodeDocumentState.Foldings;
+        var diagnostics = ViewModel.CodeDocumentState.Diagnostics;
 
         var firstErrorRange = diagnostics
             .FirstOrDefault(e => e.Code?.String == RubberduckDiagnosticId.SyntaxError.Code())?.Range;
@@ -212,16 +187,20 @@ public partial class SourceCodeEditorControl : UserControl
             }
 
             _foldings.UpdateFoldings(newFoldings, firstErrorOffset);
-
-            foreach (var diagnostic in ViewModel.DocumentState.Diagnostics)
-            {
-                diagnostic.WithTextMarker(Editor, _markers);
-            }
         });
     }
 
+    private void UpdateDiagnostics()
+    {
+        _markers.RemoveAll(e => true);
+        foreach (var diagnostic in ViewModel.CodeDocumentState.Diagnostics)
+        {
+            diagnostic.WithTextMarker(Editor, _markers);
+        }
+    }
+
     private BindableTextEditor Editor { get; }
-    private IDocumentTabViewModel ViewModel { get; set; } = default!;
+    private ICodeDocumentTabViewModel ViewModel { get; set; } = default!;
 
     private void UpdateStatusInfo()
     {
@@ -245,8 +224,6 @@ public partial class SourceCodeEditorControl : UserControl
     private void OnTextChanged(object? sender, EventArgs e)
     {
         ViewModel.TextContent = Editor.Text; // binding to source isn't working
-        ResetIdleTimer();
-
         UpdateStatusInfo();
         HideMarkerToolTip();
     }

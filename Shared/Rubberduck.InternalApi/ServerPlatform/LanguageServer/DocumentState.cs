@@ -1,12 +1,38 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.InternalApi.Model;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 
 namespace Rubberduck.InternalApi.ServerPlatform.LanguageServer;
+
+public record class CodeDocumentState : DocumentState
+{
+    public CodeDocumentState(CodeDocumentState original) 
+        : base(original)
+    {
+        Language = original.Language;
+        Foldings = original.Foldings;
+        Diagnostics = original.Diagnostics;
+        Symbol = original.Symbol;
+    }
+
+    public CodeDocumentState(WorkspaceFileUri uri, SupportedLanguage language, string text, int version = 1, bool isOpened = false) 
+        : base(uri, text, version, isOpened)
+    {
+        Language = language;
+    }
+
+    public SupportedLanguage Language { get; init; }
+    public IReadOnlyCollection<FoldingRange> Foldings { get; init; } = [];
+    public IReadOnlyCollection<Diagnostic> Diagnostics { get; init; } = [];
+    public Symbol? Symbol { get; init; }
+
+    public CodeDocumentState WithLanguage(SupportedLanguage language) => this with { Language = language };
+    public CodeDocumentState WithFoldings(IEnumerable<FoldingRange> foldings) => this with { Foldings = foldings.ToImmutableHashSet() };
+    public CodeDocumentState WithDiagnostics(IEnumerable<Diagnostic> diagnostics) => this with { Diagnostics = diagnostics.ToImmutableHashSet() };
+    public CodeDocumentState WithSymbol(Symbol symbol) => this with { Symbol = symbol };
+}
 
 public record class DocumentState
 {
@@ -22,11 +48,6 @@ public record class DocumentState
         Text = original.Text;
         Version = original.Version;
         IsOpened = original.IsOpened;
-
-        Language = original.Language;
-        Foldings = original.Foldings;
-        Diagnostics = original.Diagnostics;
-        Symbol = original.Symbol;
     }
 
     public DocumentState(WorkspaceFileUri uri, string text, int version = 1, bool isOpened = false)
@@ -37,7 +58,6 @@ public record class DocumentState
         IsOpened = isOpened;
 
         Id = new TextDocumentIdentifier(uri.AbsoluteLocation);
-        Language = SupportedLanguage.VBA;
     }
 
     public void Deconstruct(out WorkspaceFileUri uri, out string text)
@@ -59,20 +79,18 @@ public record class DocumentState
 
     public bool IsModified => Version != 1;
 
-
-    public SupportedLanguage Language { get; init; }
-    public IReadOnlyCollection<FoldingRange> Foldings { get; init; } = [];
-    public IReadOnlyCollection<Diagnostic> Diagnostics { get; init; } = [];
-    public Symbol? Symbol { get; init; }
-
-
+    /// <summary>
+    /// Gets a copy of this record with the specified <c>Uri</c>.
+    /// </summary>
     public DocumentState WithUri(WorkspaceFileUri uri) => this with { Uri = uri };
+    /// <summary>
+    /// Gets a copy of this record with the specified <c>Text</c> and an incremented <c>Version</c> number.
+    /// </summary>
     public DocumentState WithText(string text) => this with { Text = text, Version = Version + 1 };
+    /// <summary>
+    /// Gets a copy of this record with the <c>IsOpened</c> property as specified.
+    /// </summary>
     public DocumentState WithOpened(bool opened = true) => this with { IsOpened = opened };
-
-
-    public DocumentState WithDiagnostics(IEnumerable<Diagnostic> diagnostics) => this with { Diagnostics = diagnostics.ToImmutableHashSet() };
-    public DocumentState WithLanguage(SupportedLanguage language) => this with { Language = language };
 
 
     /// <summary>

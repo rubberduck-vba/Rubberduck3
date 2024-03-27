@@ -63,7 +63,7 @@ public abstract class RubberduckServerApp<TSettings, TStartupSettings> : IDispos
         ConfigureServices(_startupOptions, services);
 
         var provider = services.BuildServiceProvider();
-        var app = provider.GetRequiredService<IWorkspaceService>();
+        var app = provider.GetRequiredService<IAppWorkspacesService>();
 
         if (!string.IsNullOrWhiteSpace(_startupOptions.WorkspaceRoot))
         {

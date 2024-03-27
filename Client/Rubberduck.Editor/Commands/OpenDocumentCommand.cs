@@ -3,7 +3,6 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.Editor.Shell.Document;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.UI.Command;
@@ -14,7 +13,6 @@ using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
 using System;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
@@ -22,7 +20,7 @@ namespace Rubberduck.Editor.Commands
 {
     public class OpenDocumentCommand : CommandBase
     {
-        private readonly IWorkspaceStateManager _workspaces;
+        private readonly IAppWorkspacesStateManager _workspaces;
         private readonly ShellProvider _shell;
 
         private readonly ShowRubberduckSettingsCommand _showSettingsCommand;
@@ -30,9 +28,11 @@ namespace Rubberduck.Editor.Commands
         private readonly IDocumentStatusViewModel _activeDocumentStatus;
 
         private readonly Func<ILanguageClient> _lsp;
+        private readonly Lazy<ILanguageClient> _languageClient;
+        private ILanguageClient LanguageClient => _languageClient.Value;
 
         public OpenDocumentCommand(UIServiceHelper service,
-            IWorkspaceStateManager workspaces,
+            IAppWorkspacesStateManager workspaces,
             ShellProvider shell,
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindow,
@@ -47,12 +47,13 @@ namespace Rubberduck.Editor.Commands
             AddToCanExecuteEvaluation(e => true);
 
             _lsp = lsp;
+            _languageClient = new Lazy<ILanguageClient>(() => lsp.Invoke(), isThreadSafe: true);
         }
 
         protected async override Task OnExecuteAsync(object? parameter)
         {
             var workspace = _workspaces.ActiveWorkspace;
-            if (_lsp != null && workspace != null && parameter is WorkspaceFileUri uri)
+            if (LanguageClient != null && workspace != null && parameter is WorkspaceFileUri uri)
             {
                 if (workspace.WorkspaceRoot != null && workspace.TryGetWorkspaceFile(uri, out var file) && file != null)
                 {
@@ -63,30 +64,37 @@ namespace Rubberduck.Editor.Commands
 
                     if (file is DocumentState state)
                     {
-                        if (state.Language.Id == SupportedLanguage.VBA.Id)
+                        if (state is CodeDocumentState codeDocumentState)
                         {
-                            document = new VBACodeDocumentTabViewModel(state, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp);
-                            view = new SourceCodeEditorControl() { DataContext = document };
-                        }
-                        else if (state.Language.Id == SupportedLanguage.VB6.Id)
-                        {
-                            document = new VB6CodeDocumentTabViewModel(state, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp);
-                            view = new SourceCodeEditorControl() { DataContext = document };
+                            if (codeDocumentState.Language.Id == SupportedLanguage.VBA.Id)
+                            {
+                                document = new VBACodeDocumentTabViewModel(codeDocumentState, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp, Service);
+                                view = new SourceCodeEditorControl() { DataContext = document };
+                            }
+                            else if (codeDocumentState.Language.Id == SupportedLanguage.VB6.Id)
+                            {
+                                document = new VB6CodeDocumentTabViewModel(codeDocumentState, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp, Service);
+                                view = new SourceCodeEditorControl() { DataContext = document };
+                            }
+                            else
+                            {
+                                throw new NotSupportedException();
+                            }
                         }
                         else
                         {
                             switch (file.FileExtension)
                             {
                                 case "md":
-                                    document = new MarkdownDocumentTabViewModel(state, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp);
+                                    document = new MarkdownDocumentTabViewModel(state, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus);
                                     view = new MarkdownEditorControl() { DataContext = document };
                                     break;
                                 case "rdproj":
-                                    document = new RubberduckProjectDocumentTabViewModel(state, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp);
-                                    view = new SourceCodeEditorControl() { DataContext = document }; // TODO understand json as a different "language"
+                                    document = new RubberduckProjectDocumentTabViewModel(state, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus);
+                                    view = new SourceCodeEditorControl() { DataContext = document }; // TODO understand json as a different "language" / make a json language server
                                     break;
                                 default:
-                                    document = new TextDocumentTabViewModel(state, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus, _lsp);
+                                    document = new TextDocumentTabViewModel(state, isReadOnly: false, _showSettingsCommand, _closeToolWindowCommand, _activeDocumentStatus);
                                     view = new TextEditorControl() { DataContext = document };
                                     break;
                             }
@@ -105,7 +113,7 @@ namespace Rubberduck.Editor.Commands
                         throw new InvalidOperationException("document state was unexpectedly null.");
                     }
 
-                    file = file.WithOpened(true);
+                    file = file with { IsOpened = true };
                     NotifyLanguageServer(file);
 
                     document.ContentControl = view;

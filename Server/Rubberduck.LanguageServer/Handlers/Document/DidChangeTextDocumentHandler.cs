@@ -16,14 +16,14 @@ namespace Rubberduck.LanguageServer.Handlers.Document
     public class DidChangeTextDocumentHandler : DidChangeTextDocumentHandlerBase
     {
         private readonly ServerPlatformServiceHelper _service;
-        private readonly IWorkspaceStateManager _workspaces;
+        private readonly IAppWorkspacesStateManager _workspaces;
         private readonly TextDocumentSelector _selector;
 
         private readonly DocumentPipeline _pipeline;
         private readonly WorkspacePipeline _workspacePipeline;
 
         public DidChangeTextDocumentHandler(ServerPlatformServiceHelper service, 
-            IWorkspaceStateManager workspaces, 
+            IAppWorkspacesStateManager workspaces, 
             TextDocumentSelector selector, 
             DocumentPipeline pipeline, 
             WorkspacePipeline workspacePipeline)

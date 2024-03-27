@@ -22,5 +22,5 @@ public record class VBSingleValue : VBNumericTypedValue,
     public override int Size => sizeof(float);
     public override double NumericValue { get; init; }
 
-    public VBSingleValue WithValue(double value) => this with { NumericValue = (float)value };
+    public new VBSingleValue WithValue(double value) => this with { NumericValue = (float)value };
 }

@@ -54,7 +54,7 @@ namespace Rubberduck.LanguageServer
 
             var provider = services.BuildServiceProvider();
             var logger = provider.GetRequiredService<ILogger<ServerApp>>();
-            var app = provider.GetRequiredService<IWorkspaceService>();
+            var app = provider.GetRequiredService<IAppWorkspacesService>();
 
             if (!string.IsNullOrWhiteSpace(StartupOptions.WorkspaceRoot))
             {
@@ -68,7 +68,7 @@ namespace Rubberduck.LanguageServer
                 await task;
                 logger.LogInformation($"Workspace was processed: {task.Status}");
 
-                var workspace = app.State.ActiveWorkspace!;
+                var workspace = app.Workspaces.ActiveWorkspace!;
                 logger.LogInformation($"{workspace.ExecutionContext.UnresolvedSymbols.Count} unresolved symbols.");
             }
 
@@ -97,8 +97,8 @@ namespace Rubberduck.LanguageServer
 
             services.AddSingleton<IProjectFileService, ProjectFileService>();
 
-            services.AddSingleton<IWorkspaceService, WorkspaceService>();
-            services.AddSingleton<IWorkspaceStateManager, WorkspaceStateManager>();
+            services.AddSingleton<IAppWorkspacesService, AppWorkspacesService>();
+            services.AddSingleton<IAppWorkspacesStateManager, WorkspaceStateManager>();
             services.AddSingleton<ISyntaxErrorMessageService, SyntaxErrorMessageService>();
             
             services.AddSingleton<WorkspacePipeline>();
@@ -204,7 +204,7 @@ namespace Rubberduck.LanguageServer
 
         protected async override Task OnServerStartedAsync(ILanguageServer server, CancellationToken token, IWorkDoneObserver? progress, ServerPlatformServiceHelper service)
         {
-            var workspaces = server.GetRequiredService<IWorkspaceService>();
+            var workspaces = server.GetRequiredService<IAppWorkspacesService>();
 
             var state = (ILanguageServerState)ServerState;
             var rootUriString = state.RootUri!.GetFileSystemPath();

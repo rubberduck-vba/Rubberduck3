@@ -10,9 +10,9 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
 {
     public class PublishDiagnosticsHandler : PublishDiagnosticsHandlerBase
     {
-        private readonly IWorkspaceStateManager _workspaces;
+        private readonly IAppWorkspacesStateManager _workspaces;
 
-        public PublishDiagnosticsHandler(IWorkspaceStateManager workspaces)
+        public PublishDiagnosticsHandler(IAppWorkspacesStateManager workspaces)
         {
             _workspaces = workspaces;
         }

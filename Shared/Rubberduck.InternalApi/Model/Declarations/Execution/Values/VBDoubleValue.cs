@@ -23,5 +23,5 @@ public record class VBDoubleValue : VBNumericTypedValue,
     public override int Size => 8;
     public override double NumericValue { get; init; }
 
-    public VBDoubleValue WithValue(double value) => this with { NumericValue = value };
+    public new VBDoubleValue WithValue(double value) => this with { NumericValue = value };
 }

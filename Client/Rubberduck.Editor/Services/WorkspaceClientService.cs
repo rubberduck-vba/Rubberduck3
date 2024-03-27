@@ -29,12 +29,12 @@ namespace Rubberduck.UI.Services
 
     }
 
-    public class WorkspaceClientService : WorkspaceService
+    public class WorkspaceClientService : AppWorkspacesService
     {
         private readonly LanguageClientApp _app;
         private readonly Dictionary<Uri, IFileSystemWatcher> _watchers = [];
 
-        public WorkspaceClientService(ILogger<WorkspaceService> logger, RubberduckSettingsProvider settingsProvider, IWorkspaceStateManager state, IFileSystem fileSystem, PerformanceRecordAggregator performance, IProjectFileService projectFile, LanguageClientApp app) 
+        public WorkspaceClientService(ILogger<AppWorkspacesService> logger, RubberduckSettingsProvider settingsProvider, IAppWorkspacesStateManager state, IFileSystem fileSystem, PerformanceRecordAggregator performance, IProjectFileService projectFile, LanguageClientApp app) 
             : base(logger, settingsProvider, state, fileSystem, performance, projectFile)
         {
             _app = app;
@@ -110,7 +110,7 @@ namespace Rubberduck.UI.Services
 
         private void OnWatcherRenamed(object sender, RenamedEventArgs e)
         {
-            var state = State.ActiveWorkspace;
+            var state = Workspaces.ActiveWorkspace;
             if (state != null && state.WorkspaceRoot != null)
             {
                 TryRunAction(() =>
@@ -151,7 +151,7 @@ namespace Rubberduck.UI.Services
 
         private void OnWatcherDeleted(object sender, FileSystemEventArgs e)
         {
-            var state = State.ActiveWorkspace;
+            var state = Workspaces.ActiveWorkspace;
             if (state != null && state.WorkspaceRoot != null)
             {
                 var uri = new WorkspaceFileUri(e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{WorkspaceUri.SourceRootName}").Length..], state.WorkspaceRoot);
@@ -175,7 +175,7 @@ namespace Rubberduck.UI.Services
 
         private void OnWatcherChanged(object sender, FileSystemEventArgs e)
         {
-            var state = State.ActiveWorkspace;
+            var state = Workspaces.ActiveWorkspace;
             if (state != null && state.WorkspaceRoot != null)
             {
                 var uri = new WorkspaceFileUri(e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{WorkspaceUri.SourceRootName}").Length..], state.WorkspaceRoot);
@@ -199,7 +199,7 @@ namespace Rubberduck.UI.Services
 
         private void OnWatcherCreated(object sender, FileSystemEventArgs e)
         {
-            var state = State.ActiveWorkspace;
+            var state = Workspaces.ActiveWorkspace;
             if (state != null && state.WorkspaceRoot != null)
             {
                 var relativePath = e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{WorkspaceUri.SourceRootName}").Length..];

@@ -13,11 +13,11 @@ namespace Rubberduck.Parsing._v3.Pipeline;
 
 public class WorkspaceReferencedSymbolsSection : DataflowPipelineSection<WorkspaceUri, IWorkspaceState>
 {
-    private IWorkspaceStateManager _workspaces;
+    private IAppWorkspacesStateManager _workspaces;
     private readonly LibrarySymbolsService _librarySymbolsService;
     private readonly ILanguageServer _server;
 
-    public WorkspaceReferencedSymbolsSection(DataflowPipeline parent, IWorkspaceStateManager workspaces, LibrarySymbolsService librarySymbolsService,
+    public WorkspaceReferencedSymbolsSection(DataflowPipeline parent, IAppWorkspacesStateManager workspaces, LibrarySymbolsService librarySymbolsService,
         ILanguageServer server, ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
         : base(parent, logger, settingsProvider, performance)
     {

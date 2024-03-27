@@ -8,38 +8,36 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
-using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace Rubberduck.InternalApi.Services
 {
-    public class WorkspaceService : ServiceBase, IWorkspaceService, IDisposable
+    public class AppWorkspacesService : ServiceBase, IAppWorkspacesService, IDisposable
     {
-        private readonly IWorkspaceStateManager _state;
-        private readonly HashSet<ProjectFile> _projectFiles = new();
+        private readonly IAppWorkspacesStateManager _workspaces;
+        private readonly HashSet<ProjectFile> _projectFiles = [];
 
         private readonly IFileSystem _fileSystem;
-        private readonly IProjectFileService _projectFile;
-        private readonly List<Reference> _references = [];
+        private readonly IProjectFileService _projectFileService;
 
         private Task? _lspStartupTask = null;
 
         public event EventHandler<WorkspaceServiceEventArgs> WorkspaceOpened = delegate { };
         public event EventHandler<WorkspaceServiceEventArgs> WorkspaceClosed = delegate { };
 
-        public WorkspaceService(ILogger<WorkspaceService> logger, RubberduckSettingsProvider settingsProvider,
-            IWorkspaceStateManager state, IFileSystem fileSystem, PerformanceRecordAggregator performance,
-            IProjectFileService projectFile)
+        public AppWorkspacesService(ILogger<AppWorkspacesService> logger, RubberduckSettingsProvider settingsProvider,
+            IAppWorkspacesStateManager workspaces, IFileSystem fileSystem, PerformanceRecordAggregator performance,
+            IProjectFileService projectFileService)
             : base(logger, settingsProvider, performance)
         {
-            _state = state;
+            _workspaces = workspaces;
             _fileSystem = fileSystem;
-            _projectFile = projectFile;
+            _projectFileService = projectFileService;
         }
 
-        public IWorkspaceStateManager State => _state;
+        public IAppWorkspacesStateManager Workspaces => _workspaces;
 
-        public async virtual Task OnWorkspaceOpenedAsync(Uri uri) => OnWorkspaceOpened(uri);
+        public async virtual Task OnWorkspaceOpenedAsync(Uri uri) => await Task.Run(() => OnWorkspaceOpened(uri));
         protected void OnWorkspaceOpened(Uri uri) => WorkspaceOpened?.Invoke(this, new(uri));
 
         public void OnWorkspaceClosed(Uri uri) => WorkspaceClosed(this, new(uri));
@@ -61,7 +59,7 @@ namespace Rubberduck.InternalApi.Services
                         throw new FileNotFoundException("No project file ('.rdproj') was found under the specified workspace URI.");
                     }
 
-                    var projectFile = _projectFile.ReadFile(uri);
+                    var projectFile = _projectFileService.ReadFile(uri);
                     var rdprojVersion = new Version(projectFile.Rubberduck);
                     var rdVersion = new Version(ProjectFile.RubberduckVersion);
 
@@ -76,7 +74,7 @@ namespace Rubberduck.InternalApi.Services
                         throw new DirectoryNotFoundException("Project source root folder ('.src') was not found under the secified workspace URI.");
                     }
 
-                    var state = _state.AddWorkspace(uri);
+                    var state = _workspaces.AddWorkspace(uri);
                     state.ProjectName = _fileSystem.Path.GetFileName(root);
                     
                     foreach (var reference in projectFile.VBProject.References)
@@ -110,7 +108,7 @@ namespace Rubberduck.InternalApi.Services
 
         public async Task<bool> SaveWorkspaceFileAsync(WorkspaceFileUri uri)
         {
-            var workspace = _state.ActiveWorkspace;
+            var workspace = _workspaces.ActiveWorkspace;
             if (workspace?.WorkspaceRoot != null && workspace.TryGetWorkspaceFile(uri, out var file) && file != null)
             {
                 var path = _fileSystem.Path.Combine(workspace.WorkspaceRoot.LocalPath, WorkspaceUri.SourceRootName, file.Uri.LocalPath);
@@ -123,7 +121,7 @@ namespace Rubberduck.InternalApi.Services
 
         public async Task<bool> SaveWorkspaceFileAsAsync(WorkspaceFileUri uri, string path)
         {
-            var workspace = _state.ActiveWorkspace;
+            var workspace = _workspaces.ActiveWorkspace;
             if (workspace?.WorkspaceRoot != null && workspace.TryGetWorkspaceFile(uri, out var file) && file != null)
             {
                 // note: saves a copy but only keeps the original URI in the workspace
@@ -137,7 +135,7 @@ namespace Rubberduck.InternalApi.Services
         public async Task<bool> SaveAllAsync()
         {
             var tasks = new List<Task>();
-            var workspace = _state.ActiveWorkspace;
+            var workspace = _workspaces.ActiveWorkspace;
             if (workspace?.WorkspaceRoot != null)
             {
                 var srcRoot = _fileSystem.Path.Combine(workspace.WorkspaceRoot.AbsoluteLocation.LocalPath, WorkspaceUri.SourceRootName);
@@ -167,7 +165,7 @@ namespace Rubberduck.InternalApi.Services
 
         private void LoadWorkspaceFile(WorkspaceFileUri uri, bool isSourceFile, bool open = false, ProjectType projectType = ProjectType.VBA)
         {
-            var state = _state.ActiveWorkspace!;
+            var state = _workspaces.ActiveWorkspace!;
             if (state != null && state.WorkspaceRoot != null)
             {
                 TryRunAction(() =>
@@ -201,9 +199,8 @@ namespace Rubberduck.InternalApi.Services
                     {
                         // project source files are VB source code, always.
                         var language = projectType == ProjectType.VBA ? SupportedLanguage.VBA : SupportedLanguage.VB6;
-                        info = new DocumentState(uri, content, isOpened: open && !isMissing)
+                        info = new CodeDocumentState(uri, language, content, isOpened: open && !isMissing)
                         {
-                            Language = language,
                             IsMissing = isMissing,
                             IsLoadError = isLoadError
                         };
@@ -239,29 +236,26 @@ namespace Rubberduck.InternalApi.Services
 
         public void CloseFile(WorkspaceFileUri uri)
         {
-            if (_state.ActiveWorkspace != null)
-            {
-                _state.ActiveWorkspace.CloseWorkspaceFile(uri, out _);
-            }
+            _workspaces.ActiveWorkspace?.CloseWorkspaceFile(uri, out _);
         }
 
         public void CloseAllFiles()
         {
-            if (_state.ActiveWorkspace != null)
+            if (_workspaces.ActiveWorkspace != null)
             {
-                foreach (var file in _state.ActiveWorkspace.WorkspaceFiles)
+                foreach (var file in _workspaces.ActiveWorkspace.WorkspaceFiles)
                 {
-                    _state.ActiveWorkspace.CloseWorkspaceFile(file.Uri, out _);
+                    _workspaces.ActiveWorkspace.CloseWorkspaceFile(file.Uri, out _);
                 }
             }
         }
 
         public void CloseWorkspace()
         {
-            var uri = _state.ActiveWorkspace?.WorkspaceRoot ?? throw new InvalidOperationException("WorkspaceStateManager.WorkspaceRoot is unexpectedly null.");
+            var uri = _workspaces.ActiveWorkspace?.WorkspaceRoot ?? throw new InvalidOperationException("WorkspaceStateManager.WorkspaceRoot is unexpectedly null.");
 
             CloseAllFiles();
-            _state.Unload(uri);
+            _workspaces.Unload(uri);
 
             OnWorkspaceClosed(uri);
         }
@@ -272,6 +266,7 @@ namespace Rubberduck.InternalApi.Services
         {
             CloseWorkspace();
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

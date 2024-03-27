@@ -1,8 +1,6 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using Rubberduck.InternalApi.Extensions;
 using Rubberduck.ServerPlatform;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +10,6 @@ namespace Rubberduck.Editor.RPC.EditorServer.Handlers.Lifecycle
     public class ShutdownHandler : ShutdownHandlerBase
     {
         private readonly ServerPlatformServiceHelper _service;
-        private readonly ILogger _logger;
         private readonly IServerStateWriter _serverState;
 
         public ShutdownHandler(ServerPlatformServiceHelper service, IServerStateWriter serverState)
@@ -29,7 +26,7 @@ namespace Rubberduck.Editor.RPC.EditorServer.Handlers.Lifecycle
 
             _service.RunAction(() =>
             {
-                _logger.LogInformation("Shutting down...");
+                _service.LogInformation("Shutting down...");
                 _serverState.Shutdown(request);
             }, nameof(ShutdownHandler));
 

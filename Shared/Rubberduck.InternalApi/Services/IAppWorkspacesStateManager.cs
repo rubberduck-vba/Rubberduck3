@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Rubberduck.InternalApi.Services;
 
-public interface IWorkspaceStateManager
+public interface IAppWorkspacesStateManager
 {
     event EventHandler<WorkspaceFileUriEventArgs> WorkspaceFileStateChanged;
     IWorkspaceState GetWorkspace(Uri workspaceRoot);

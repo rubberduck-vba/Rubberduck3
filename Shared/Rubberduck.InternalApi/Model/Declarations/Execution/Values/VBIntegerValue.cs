@@ -1,6 +1,5 @@
 ﻿using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Declarations.Types;
-using System;
 
 namespace Rubberduck.InternalApi.Model.Declarations.Execution.Values;
 
@@ -23,7 +22,7 @@ public record class VBIntegerValue : VBNumericTypedValue,
     public override int Size { get; } = sizeof(short);
     public override double NumericValue { get; init; }
 
-    public VBIntegerValue WithValue(double value)
+    public new VBIntegerValue WithValue(double value)
     {
         if (value > MaxValue.Value || value < MinValue.Value)
         {
@@ -32,5 +31,5 @@ public record class VBIntegerValue : VBNumericTypedValue,
         return this with { NumericValue = (short)value };
     }
 
-    public new VBIntegerValue WithValue(int value) => WithValue((double)value);
+    public VBIntegerValue WithValue(int value) => WithValue((double)value);
 }

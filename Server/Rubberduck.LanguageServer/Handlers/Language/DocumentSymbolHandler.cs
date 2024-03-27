@@ -1,7 +1,6 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
@@ -17,10 +16,10 @@ namespace Rubberduck.LanguageServer.Handlers.Language
     public class DocumentSymbolHandler : DocumentSymbolHandlerBase
     {
         private readonly ServerPlatformServiceHelper _service;
-        private readonly IWorkspaceStateManager _workspaces;
+        private readonly IAppWorkspacesStateManager _workspaces;
         private readonly TextDocumentSelector _selector;
 
-        public DocumentSymbolHandler(ServerPlatformServiceHelper service, IWorkspaceStateManager workspaces, SupportedLanguage language)
+        public DocumentSymbolHandler(ServerPlatformServiceHelper service, IAppWorkspacesStateManager workspaces, SupportedLanguage language)
         {
             _service = service;
             _workspaces = workspaces;
@@ -40,7 +39,7 @@ namespace Rubberduck.LanguageServer.Handlers.Language
                     ?? throw new InvalidOperationException("Invalid WorkspaceStateManager state: there is no active workspace.");
 
                 var uri = new WorkspaceFileUri(documentUri.ToUri().OriginalString, workspace.WorkspaceRoot!.WorkspaceRoot);
-                if (workspace.TryGetWorkspaceFile(uri, out var document) && document?.Symbol != null)
+                if (workspace.TryGetSourceFile(uri, out var document) && document?.Symbol != null)
                 {
                     items.Add(new SymbolInformationOrDocumentSymbol(document.Symbol));
                     _service.LogInformation($"Found symbol ({document.Symbol.GetType().Name}: {document.Symbol.Children!.Count()} children) for document at uri '{uri}'.");

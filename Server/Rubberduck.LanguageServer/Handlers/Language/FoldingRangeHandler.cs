@@ -18,10 +18,10 @@ namespace Rubberduck.LanguageServer.Handlers.Language
     public class FoldingRangeHandler : FoldingRangeHandlerBase
     {
         private readonly ServerPlatformServiceHelper _service;
-        private readonly IWorkspaceStateManager _workspaces;
+        private readonly IAppWorkspacesStateManager _workspaces;
         private readonly TextDocumentSelector _selector;
 
-        public FoldingRangeHandler(ServerPlatformServiceHelper service, IWorkspaceStateManager workspaces, SupportedLanguage language)
+        public FoldingRangeHandler(ServerPlatformServiceHelper service, IAppWorkspacesStateManager workspaces, SupportedLanguage language)
         {
             _service = service;
             _workspaces = workspaces;
@@ -50,7 +50,7 @@ namespace Rubberduck.LanguageServer.Handlers.Language
                 }
 
                 var uri = new WorkspaceFileUri(relativeUri, workspace.WorkspaceRoot!.WorkspaceRoot);
-                if (workspace.TryGetWorkspaceFile(uri, out var document) && document != null)
+                if (workspace.TryGetSourceFile(uri, out var document) && document != null)
                 {
                     items.AddRange(document.Foldings);
                     _service.LogInformation($"Found {document.Foldings.Count} foldings for document at uri '{uri}'.");

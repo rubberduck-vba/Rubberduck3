@@ -10,7 +10,7 @@ namespace Rubberduck.Parsing._v3.Pipeline;
 
 public class WorkspaceHierarchicalSymbolsOrchestrator : WorkspaceOrchestratorSection
 {
-    public WorkspaceHierarchicalSymbolsOrchestrator(DataflowPipeline parent, IWorkspaceStateManager workspaces, ParserPipelineSectionProvider pipelineProvider,
+    public WorkspaceHierarchicalSymbolsOrchestrator(DataflowPipeline parent, IAppWorkspacesStateManager workspaces, ParserPipelineSectionProvider pipelineProvider,
         ILanguageServer server, ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
         : base(parent, workspaces, pipelineProvider, server, logger, settingsProvider, performance)
     {

@@ -14,10 +14,10 @@ namespace Rubberduck.Parsing._v3.Pipeline;
 public class DocumentPipeline : DataflowPipeline
 {
     private readonly ILogger _logger;
-    private readonly IWorkspaceStateManager _workspaces;
+    private readonly IAppWorkspacesStateManager _workspaces;
     private readonly ParserPipelineSectionProvider _sectionProvider;
 
-    public DocumentPipeline(IWorkspaceStateManager workspaces, ParserPipelineSectionProvider sectionProvider,
+    public DocumentPipeline(IAppWorkspacesStateManager workspaces, ParserPipelineSectionProvider sectionProvider,
         ILogger<WorkspacePipeline> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
         : base(logger, settingsProvider, performance)
     {

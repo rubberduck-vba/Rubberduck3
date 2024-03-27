@@ -1,11 +1,8 @@
-﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using Rubberduck.InternalApi.Extensions;
+﻿using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.UI.Shell.StatusBar;
 using Rubberduck.UI.Windows;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Rubberduck.UI.Shell.Document
 {
@@ -31,19 +28,21 @@ namespace Rubberduck.UI.Shell.Document
 
     public interface IDocumentTabViewModel : ITabViewModel
     {
-        WorkspaceUri DocumentUri { get; set; }
+        Uri DocumentUri { get; set; }
         DocumentState DocumentState { get; set; }
         event EventHandler<WorkspaceFileUriEventArgs> DocumentStateChanged;
 
-        string Language { get; set; }
         bool IsReadOnly { get; set; }
-
-        void NotifyDocumentChanged();
 
         SupportedDocumentType DocumentType { get; }
         IDocumentStatusViewModel Status { get; }
+    }
 
-        Task<IEnumerable<FoldingRange>> RequestFoldingsAsync();
-        Task<IEnumerable<Diagnostic>> RequestDiagnosticsAsync();
+    public interface ICodeDocumentTabViewModel : IDocumentTabViewModel
+    {
+        string LanguageId { get; }
+
+        WorkspaceFileUri CodeDocumentUri { get; set; }
+        CodeDocumentState CodeDocumentState { get; set; }
     }
 }

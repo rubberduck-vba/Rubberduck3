@@ -11,12 +11,12 @@ namespace Rubberduck.Editor.Commands
 {
     public class CloseDocumentCommand : CommandBase
     {
-        private readonly IWorkspaceService _workspace;
+        private readonly IAppWorkspacesService _workspace;
         private readonly Func<ILanguageClient> _lsp;
 
 
         public CloseDocumentCommand(UIServiceHelper service,
-            IWorkspaceService workspace,
+            IAppWorkspacesService workspace,
             Func<ILanguageClient> lsp)
             : base(service)
         {
@@ -28,7 +28,7 @@ namespace Rubberduck.Editor.Commands
         {
             if (parameter is WorkspaceFileUri uri)
             {
-                if (_workspace.State.ActiveWorkspace?.TryGetWorkspaceFile(uri, out var document) ?? false)
+                if (_workspace.Workspaces.ActiveWorkspace?.TryGetWorkspaceFile(uri, out var document) ?? false)
                 {
                     var server = _lsp();
                     _workspace.CloseFile(uri);

@@ -1,18 +1,9 @@
-﻿using OmniSharp.Extensions.LanguageServer.Protocol.Client;
-using OmniSharp.Extensions.LanguageServer.Protocol.Document;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using Rubberduck.InternalApi.Extensions;
-using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
-using Rubberduck.InternalApi.Settings.Model.Editor;
+﻿using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
 using Rubberduck.UI.Windows;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Editor.Shell.Document
 {
@@ -21,27 +12,17 @@ namespace Rubberduck.Editor.Shell.Document
     /// </summary>
     public abstract class DocumentTabViewModel : WindowViewModel, IDocumentTabViewModel
     {
-        private Func<ILanguageClient> _lsp;
-        private DocumentState _state;
-
         public event EventHandler<WorkspaceFileUriEventArgs> DocumentStateChanged = delegate { };
 
         public DocumentTabViewModel(DocumentState state, bool isReadOnly,
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindowCommand,
-            IDocumentStatusViewModel activeDocumentStatus,
-            Func<ILanguageClient> lsp)
+            IDocumentStatusViewModel activeDocumentStatus)
             : base(showSettingsCommand, closeToolWindowCommand)
         {
             _uri = state.Uri;
-            _language = state.Language.Id;
             _header = state.Name;
             _isReadOnly = isReadOnly;
-
-            _lsp = lsp;
-
-            Title = state.Name;
-            SettingKey = nameof(EditorSettings);
 
             DocumentState = state;
             TextContent = state.Text;
@@ -49,6 +30,7 @@ namespace Rubberduck.Editor.Shell.Document
             Status = activeDocumentStatus;
         }
 
+        private DocumentState _state;
         public DocumentState DocumentState
         {
             get => _state;
@@ -59,76 +41,13 @@ namespace Rubberduck.Editor.Shell.Document
             }
         }
 
+
         public abstract SupportedDocumentType DocumentType { get; }
-
-        public void NotifyDocumentChanged() => NotifyDocumentChanged(null!, null!);
-
-        public void NotifyDocumentChanged(OmniSharp.Extensions.LanguageServer.Protocol.Models.Range? range, string? text)
-        {
-            var client = _lsp.Invoke();
-
-            // increment local version first...
-            DocumentState = _state with { Version = _state.Version + 1 };
-
-            var request = new DidChangeTextDocumentParams
-            {
-                TextDocument = new OptionalVersionedTextDocumentIdentifier
-                {
-                    Uri = DocumentState.Uri.AbsoluteLocation,
-                    Version = DocumentState.Version, // ...so that the server-side latest matches local version
-                },
-                ContentChanges = new Container<TextDocumentContentChangeEvent>(
-                new TextDocumentContentChangeEvent
-                {
-                    // if only Text is supplied, server considers it the document's entire content
-                    Text = text ?? TextContent,
-                    Range = range
-                })
-            };
-
-            client.TextDocument.DidChangeTextDocument(request);
-        }
-
-        public virtual async Task<IEnumerable<Diagnostic>> RequestDiagnosticsAsync()
-        {
-            var client = _lsp.Invoke();
-            var report = await client.RequestDocumentDiagnostic(new DocumentDiagnosticParams
-            {
-                Identifier = "RDE",
-                TextDocument = new TextDocumentIdentifier
-                {
-                    Uri = _uri.AbsoluteLocation,
-                }
-            });
-
-            if (report is IFullDocumentDiagnosticReport fullReport)
-            {
-                DocumentState = _state.WithDiagnostics(fullReport.Items);
-                return fullReport.Items;
-            }
-            else
-            {
-                return _state.Diagnostics;
-            }
-        }
-
-        public virtual async Task<IEnumerable<FoldingRange>> RequestFoldingsAsync()
-        {
-            var foldings = await _lsp.Invoke().RequestFoldingRange(new FoldingRangeRequestParam
-            {
-                TextDocument = new TextDocumentIdentifier
-                {
-                    Uri = _uri.AbsoluteLocation,
-                }
-            });
-
-            return foldings?.ToList() ?? [];
-        }
 
         public IDocumentStatusViewModel Status { get; }
 
-        private WorkspaceUri _uri;
-        public WorkspaceUri DocumentUri
+        private Uri _uri;
+        public Uri DocumentUri
         {
             get => _uri;
             set
@@ -136,20 +55,6 @@ namespace Rubberduck.Editor.Shell.Document
                 if (_uri != value)
                 {
                     _uri = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private string _language;
-        public string Language
-        {
-            get => _language;
-            set
-            {
-                if (_language != value)
-                {
-                    _language = value;
                     OnPropertyChanged();
                 }
             }
@@ -168,9 +73,15 @@ namespace Rubberduck.Editor.Shell.Document
                     if (!wasNull)
                     {
                         OnPropertyChanged();
+                        OnTextChanged();
                     }
                 }
             }
+        }
+
+        protected virtual void OnTextChanged()
+        {
+
         }
 
         private bool _isReadOnly;

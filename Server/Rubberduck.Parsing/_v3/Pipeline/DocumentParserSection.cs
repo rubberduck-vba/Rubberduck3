@@ -24,7 +24,7 @@ public class DocumentParserSection : WorkspaceDocumentSection
     private readonly ILanguageServer _server;
 
     public DocumentParserSection(DataflowPipeline parent, 
-        IWorkspaceService workspaces, 
+        IAppWorkspacesService workspaces, 
         PipelineParserService parser,
         FoldingRangesParseTreeService foldingRangesService,
         PipelineParseTreeSymbolsService symbolsService,
@@ -38,9 +38,9 @@ public class DocumentParserSection : WorkspaceDocumentSection
         _server = server;
     }
 
-    private TransformBlock<DocumentState, PipelineParseResult> ParseDocumentTextBlock { get; set; } = null!;
-    private PipelineParseResult ParseDocumentText(DocumentState documentState) =>
-        RunTransformBlock(ParseDocumentTextBlock, documentState, 
+    private TransformBlock<CodeDocumentState, PipelineParseResult> ParseDocumentTextBlock { get; set; } = null!;
+    private PipelineParseResult ParseDocumentText(CodeDocumentState CodeDocumentState) =>
+        RunTransformBlock(ParseDocumentTextBlock, CodeDocumentState, 
             e => _parser.ParseDocument(e, Token), 
             nameof(ParseDocumentTextBlock), logPerformance: true);
 
@@ -100,17 +100,17 @@ public class DocumentParserSection : WorkspaceDocumentSection
             e =>  _symbolsService.DiscoverMemberSymbols(syntaxTree, State.Uri),
             nameof(DiscoverMemberSymbolsBlock), logPerformance: true);
 
-    private JoinBlock<PipelineParseResult, IEnumerable<FoldingRange>, Symbol> JoinDocumentStateBlock { get; set; } = null!;
+    private JoinBlock<PipelineParseResult, IEnumerable<FoldingRange>, Symbol> JoinCodeDocumentStateBlock { get; set; } = null!;
 
-    private TransformBlock<Tuple<PipelineParseResult, IEnumerable<FoldingRange>, Symbol>, DocumentParserState> SetDocumentStateBlock { get; set; } = null!;
-    private DocumentParserState SetDocumentState(Tuple<PipelineParseResult, IEnumerable<FoldingRange>, Symbol> joinedState) =>
-        RunTransformBlock(SetDocumentStateBlock, joinedState,
+    private TransformBlock<Tuple<PipelineParseResult, IEnumerable<FoldingRange>, Symbol>, DocumentParserState> SetCodeDocumentStateBlock { get; set; } = null!;
+    private DocumentParserState SetCodeDocumentState(Tuple<PipelineParseResult, IEnumerable<FoldingRange>, Symbol> joinedState) =>
+        RunTransformBlock(SetCodeDocumentStateBlock, joinedState,
             e =>
             {
                 var (pipelineParseResult, foldings, symbol) = e;
                 var parseResult = pipelineParseResult.ParseResult;
 
-                UpdateDocumentState(State, state => state with
+                UpdateCodeDocumentState(State, state => state with
                 {
                     SyntaxTree = parseResult.SyntaxTree,
                     Diagnostics = parseResult.Diagnostics.ToArray(),
@@ -120,7 +120,7 @@ public class DocumentParserSection : WorkspaceDocumentSection
 
                 return State;
             },
-            nameof(SetDocumentStateBlock), logPerformance: true);
+            nameof(SetCodeDocumentStateBlock), logPerformance: true);
     
 
     protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(ISourceBlock<DocumentParserState> source)
@@ -143,10 +143,10 @@ public class DocumentParserSection : WorkspaceDocumentSection
         DiscoverMemberSymbolsBlock = new(DiscoverMemberSymbols, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(DiscoverMemberSymbolsBlock), DiscoverMemberSymbolsBlock);
 
-        JoinDocumentStateBlock = new(new() { Greedy = true });
+        JoinCodeDocumentStateBlock = new(new() { Greedy = true });
 
-        SetDocumentStateBlock = new(SetDocumentState, ConcurrentExecutionOptions(Token));
-        _ = TraceBlockCompletionAsync(nameof(SetDocumentStateBlock), SetDocumentStateBlock);
+        SetCodeDocumentStateBlock = new(SetCodeDocumentState, ConcurrentExecutionOptions(Token));
+        _ = TraceBlockCompletionAsync(nameof(SetCodeDocumentStateBlock), SetCodeDocumentStateBlock);
 
         PublishDiagnosticsBlock = new(PublishDiagnostics, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(PublishDiagnosticsBlock), PublishDiagnosticsBlock);
@@ -159,12 +159,12 @@ public class DocumentParserSection : WorkspaceDocumentSection
         Link(BroadcastSyntaxTreeBlock, DiscoverFoldingRangesBlock);
         Link(BroadcastSyntaxTreeBlock, DiscoverMemberSymbolsBlock);
 
-        Link(BroadcastParseResultBlock, JoinDocumentStateBlock.Target1);
-        Link(DiscoverFoldingRangesBlock, JoinDocumentStateBlock.Target2);
-        Link(DiscoverMemberSymbolsBlock, JoinDocumentStateBlock.Target3);
+        Link(BroadcastParseResultBlock, JoinCodeDocumentStateBlock.Target1);
+        Link(DiscoverFoldingRangesBlock, JoinCodeDocumentStateBlock.Target2);
+        Link(DiscoverMemberSymbolsBlock, JoinCodeDocumentStateBlock.Target3);
 
-        Link(JoinDocumentStateBlock, SetDocumentStateBlock);
-        Link(SetDocumentStateBlock, PublishDiagnosticsBlock);
+        Link(JoinCodeDocumentStateBlock, SetCodeDocumentStateBlock);
+        Link(SetCodeDocumentStateBlock, PublishDiagnosticsBlock);
 
         var completion = PublishDiagnosticsBlock.Completion;
 
@@ -175,8 +175,8 @@ public class DocumentParserSection : WorkspaceDocumentSection
             BroadcastSyntaxTreeBlock,
             DiscoverFoldingRangesBlock,
             DiscoverMemberSymbolsBlock,
-            JoinDocumentStateBlock,
-            SetDocumentStateBlock,
+            JoinCodeDocumentStateBlock,
+            SetCodeDocumentStateBlock,
             PublishDiagnosticsBlock
         }, completion);
     }
@@ -189,8 +189,8 @@ public class DocumentParserSection : WorkspaceDocumentSection
         [nameof(BroadcastSyntaxTreeBlock)] = BroadcastSyntaxTreeBlock,
         [nameof(DiscoverFoldingRangesBlock)] = DiscoverFoldingRangesBlock,
         [nameof(DiscoverMemberSymbolsBlock)] = DiscoverMemberSymbolsBlock,
-        [nameof(JoinDocumentStateBlock)] = JoinDocumentStateBlock,
-        [nameof(SetDocumentStateBlock)] = SetDocumentStateBlock,
+        [nameof(JoinCodeDocumentStateBlock)] = JoinCodeDocumentStateBlock,
+        [nameof(SetCodeDocumentStateBlock)] = SetCodeDocumentStateBlock,
         [nameof(PublishDiagnosticsBlock)] = PublishDiagnosticsBlock,
     };
 

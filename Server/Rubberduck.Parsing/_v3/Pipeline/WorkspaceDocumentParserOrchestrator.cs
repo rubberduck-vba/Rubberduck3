@@ -11,7 +11,7 @@ namespace Rubberduck.Parsing._v3.Pipeline;
 public class WorkspaceDocumentParserOrchestrator : WorkspaceOrchestratorSection
 {
     public WorkspaceDocumentParserOrchestrator(DataflowPipeline parent, 
-        IWorkspaceStateManager workspaces, ParserPipelineSectionProvider pipelineProvider,
+        IAppWorkspacesStateManager workspaces, ParserPipelineSectionProvider pipelineProvider,
         ILanguageServer server, ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
         : base(parent, workspaces, pipelineProvider, server, logger, settingsProvider, performance)
     {
