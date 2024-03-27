@@ -28,21 +28,9 @@
         <StatusBarItem Padding="0">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <shell:FlatButton ToolTip="Show language server trace toolwindow" VerticalAlignment="Center"
-                                  Height="12" Width="12"
-                                  Background="{DynamicResource ThemeBackgroundMediumColorBrush}"
-                                  Command="{Binding StatusBar.ShowLanguageServerTraceCommand}">
-                    <shell:FlatButton.Style>
-                        <Style TargetType="shell:FlatButton">
-                            <Setter Property="Icon">
-                                <Setter.Value>
-                                    <MultiBinding Converter="{StaticResource ServerConnectionStateToIconConverter}">
-                                        <Binding Path="StatusBar.ServerConnectionState" />
-                                    </MultiBinding>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </shell:FlatButton.Style>
-                </shell:FlatButton>
+                                  Icon="{Binding StatusBar.ServerConnectionState, Converter={StaticResource ServerConnectionStateToIconConverter}}"
+                                  Command="{Binding StatusBar.ShowLanguageServerTraceCommand}"/>
+
                 <Label Content="{Binding StatusBar.StatusText}" Foreground="{DynamicResource ThemeTextColorBrush}" />
             </StackPanel>
         </StatusBarItem>
