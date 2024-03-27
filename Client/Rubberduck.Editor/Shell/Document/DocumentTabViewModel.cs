@@ -24,6 +24,7 @@ namespace Rubberduck.Editor.Shell.Document
 
             DocumentState = state;
             TextContent = state.Text;
+            Title = state.Name;
 
             Status = activeDocumentStatus;
         }
