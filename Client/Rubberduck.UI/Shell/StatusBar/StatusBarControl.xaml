@@ -29,6 +29,7 @@
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <shell:FlatButton ToolTip="Show language server trace toolwindow" VerticalAlignment="Center"
                                   Icon="{Binding StatusBar.ServerConnectionState, Converter={StaticResource ServerConnectionStateToIconConverter}}"
+                                  Height="14" Width="14"
                                   Command="{Binding StatusBar.ShowLanguageServerTraceCommand}"/>
 
                 <Label Content="{Binding StatusBar.StatusText}" Foreground="{DynamicResource ThemeTextColorBrush}" />
