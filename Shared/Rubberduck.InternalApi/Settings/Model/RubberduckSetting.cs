@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.Settings.Model.Editor;
+using Rubberduck.InternalApi.Settings.Model.Editor.CodeFolding;
 using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
 using Rubberduck.InternalApi.Settings.Model.General;
 using Rubberduck.InternalApi.Settings.Model.LanguageClient;
@@ -8,6 +9,7 @@ using Rubberduck.InternalApi.Settings.Model.ServerStartup;
 using Rubberduck.InternalApi.Settings.Model.TelemetryServer;
 using Rubberduck.InternalApi.Settings.Model.UpdateServer;
 using Rubberduck.Resources;
+using System;
 using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.Settings.Model;
@@ -21,10 +23,8 @@ namespace Rubberduck.InternalApi.Settings.Model;
 
 [JsonDerivedType(typeof(GeneralSettings), nameof(GeneralSettings))] // ~ General
 [JsonDerivedType(typeof(DisableInitialLegacyIndenterCheckSetting), nameof(DisableInitialLegacyIndenterCheckSetting))]
-[JsonDerivedType(typeof(DisableInitialLogLevelResetSetting), nameof(DisableInitialLogLevelResetSetting))]
 [JsonDerivedType(typeof(DisabledMessageKeysSetting), nameof(DisabledMessageKeysSetting))]
 [JsonDerivedType(typeof(LocaleSetting), nameof(LocaleSetting))]
-[JsonDerivedType(typeof(LogLevelSetting), nameof(LogLevelSetting))]
 [JsonDerivedType(typeof(ShowSplashSetting), nameof(ShowSplashSetting))]
 [JsonDerivedType(typeof(ExitNotificationDelaySetting), nameof(ExitNotificationDelaySetting))]
 [JsonDerivedType(typeof(TemplatesLocationSetting), nameof(TemplatesLocationSetting))]
@@ -39,9 +39,29 @@ namespace Rubberduck.InternalApi.Settings.Model;
 [JsonDerivedType(typeof(EnableUncWorkspacesSetting), nameof(EnableUncWorkspacesSetting))]
 [JsonDerivedType(typeof(EnableFileSystemWatchersSetting), nameof(EnableFileSystemWatchersSetting))]
 
+[JsonDerivedType(typeof(LoggingSettings), nameof(LoggingSettings))] // ~ Logging
+[JsonDerivedType(typeof(AggregatePerformanceLogsSetting), nameof(AggregatePerformanceLogsSetting))]
+[JsonDerivedType(typeof(SmallAggregateSampleSizeSetting), nameof(SmallAggregateSampleSizeSetting))]
+[JsonDerivedType(typeof(LargeAggregateSampleSizeSetting), nameof(LargeAggregateSampleSizeSetting))]
+[JsonDerivedType(typeof(MaxAggregateSampleSizeSetting), nameof(MaxAggregateSampleSizeSetting))]
+[JsonDerivedType(typeof(LowVolumeEventsPerMinuteSetting), nameof(LowVolumeEventsPerMinuteSetting))]
+[JsonDerivedType(typeof(HighVolumeEventsPerMinuteSetting), nameof(HighVolumeEventsPerMinuteSetting))]
+[JsonDerivedType(typeof(DisableInitialLogLevelResetSetting), nameof(DisableInitialLogLevelResetSetting))]
+[JsonDerivedType(typeof(LogLevelSetting), nameof(LogLevelSetting))]
+
 [JsonDerivedType(typeof(EditorSettings), nameof(EditorSettings))] // ~ Editor
 [JsonDerivedType(typeof(ExtendWindowChromeSetting), nameof(ExtendWindowChromeSetting))]
 [JsonDerivedType(typeof(ShowWelcomeTabSetting), nameof(ShowWelcomeTabSetting))]
+[JsonDerivedType(typeof(IdleTimerDurationSetting), nameof(IdleTimerDurationSetting))]
+
+[JsonDerivedType(typeof(CodeFoldingSettings), nameof(CodeFoldingSettings))] // ~ code folding
+[JsonDerivedType(typeof(FoldBlockStatementsSetting), nameof(FoldBlockStatementsSetting))]
+[JsonDerivedType(typeof(FoldModuleAttributesSetting), nameof(FoldModuleAttributesSetting))]
+[JsonDerivedType(typeof(FoldModuleDeclarationsSetting), nameof(FoldModuleDeclarationsSetting))]
+[JsonDerivedType(typeof(FoldModuleHeaderSetting), nameof(FoldModuleHeaderSetting))]
+[JsonDerivedType(typeof(FoldScopesSetting), nameof(FoldScopesSetting))]
+[JsonDerivedType(typeof(FoldRegionsSetting), nameof(FoldRegionsSetting))]
+
 [JsonDerivedType(typeof(ToolsSettings), nameof(ToolsSettings))] // ~ Editor/Tool[windows]s
 [JsonDerivedType(typeof(AutoHideToolWindowSetting), nameof(AutoHideToolWindowSetting))]
 [JsonDerivedType(typeof(DefaultToolWindowLocationSetting), nameof(DefaultToolWindowLocationSetting))]
@@ -64,6 +84,7 @@ namespace Rubberduck.InternalApi.Settings.Model;
 [JsonDerivedType(typeof(ExceptionTelemetrySettings), nameof(ExceptionTelemetrySettings))]
 [JsonDerivedType(typeof(TraceTelemetrySettings), nameof(TraceTelemetrySettings))]
 [JsonDerivedType(typeof(MetricTelemetrySettings), nameof(MetricTelemetrySettings))]
+[JsonDerivedType(typeof(TelemetrySetting), nameof(TelemetrySetting))]
 
 [JsonDerivedType(typeof(UpdateServerSettings), nameof(UpdateServerSettings))] // ~ Update server
 [JsonDerivedType(typeof(IncludePreReleasesSetting), nameof(IncludePreReleasesSetting))]
@@ -117,4 +138,32 @@ public record class RubberduckSetting
     public SettingTags Tags { get; init; }
 
     public RubberduckSetting WithValue(object value) => this with { Value = value };
+}
+
+public record class RubberduckSettingNode : RubberduckSetting, IEquatable<RubberduckSettingNode>
+{
+    public RubberduckSettingNode(RubberduckSetting setting, string parentKey)
+        :base(setting)
+    {
+        Key = setting.Key;
+        ParentKey = parentKey;
+        SettingDataType = setting.SettingDataType;
+        Value = setting.Value;
+    }
+
+    public string ParentKey { get; init; }
+
+    public string UniqueKey => $"{ParentKey}.{Key}";
+
+    public virtual bool Equals(RubberduckSettingNode? other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        return other.UniqueKey == UniqueKey;
+    }
+
+    public override int GetHashCode() => UniqueKey.GetHashCode();
 }

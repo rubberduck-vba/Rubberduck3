@@ -11,30 +11,42 @@ namespace Rubberduck.Parsing._v3.Pipeline.Abstract;
 /// A pipeline section that works with a <c>WorkspaceFileUri</c> input to process a single file.
 /// </summary>
 /// <remarks>
-/// The class defines an <c>AcquireDocumentStateBlock</c> that is provided as a <c>source</c> for implementing/derived classes,
+/// The class defines an <c>AcquireCodeDocumentStateBlock</c> that is provided as a <c>source</c> for implementing/derived classes,
 /// so implementations work with a <c>DocumentParserState</c> input.
 /// </remarks>
 public abstract class WorkspaceDocumentSection : DataflowPipelineSection<WorkspaceFileUri, DocumentParserState>
 {
-    private readonly IWorkspaceService _workspaceService;
+    private readonly IAppWorkspacesService _workspaceService;
     private IWorkspaceState _workspace = null!;
 
-    protected WorkspaceDocumentSection(DataflowPipeline parent, IWorkspaceService workspaceService,
+    protected WorkspaceDocumentSection(DataflowPipeline parent, IAppWorkspacesService workspaceService,
         ILogger<WorkspaceDocumentParserOrchestrator> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
         : base(parent, logger, settingsProvider, performance)
     {
         _workspaceService = workspaceService;
     }
 
-    protected void UpdateDocumentState(DocumentParserState state) => _workspace.LoadWorkspaceFile(state);
-
-    private TransformBlock<WorkspaceFileUri, DocumentParserState> AcquireDocumentStateBlock { get; set; } = null!;
-    private DocumentParserState AcquireDocumentState(WorkspaceFileUri uri)
+    protected void UpdateCodeDocumentState(DocumentParserState state, Func<DocumentParserState, DocumentParserState> update)
     {
-        var workspace = _workspace = _workspaceService.State.GetWorkspace(uri);
-        if (workspace.TryGetWorkspaceFile(uri, out var state) && state != null)
+        State = update(state);
+        _workspace.LoadDocumentState(State);
+    }
+
+    private TransformBlock<WorkspaceFileUri, DocumentParserState> AcquireCodeDocumentStateBlock { get; set; } = null!;
+    private DocumentParserState AcquireCodeDocumentState(WorkspaceFileUri uri)
+    {
+        var workspace = _workspace = _workspaceService.Workspaces.GetWorkspace(uri);
+        if (workspace.TryGetSourceFile(uri, out var state) && state is CodeDocumentState document)
         {
-            State = state is DocumentParserState parserState ? parserState : new DocumentParserState(state);
+            if (document is DocumentParserState parserState)
+            {
+                State = parserState;
+            }
+            else
+            {
+                State = new DocumentParserState(state);
+            }
+            
             return State;
         }
 
@@ -45,13 +57,13 @@ public abstract class WorkspaceDocumentSection : DataflowPipelineSection<Workspa
     {
         TokenSource = tokenSource;
 
-        AcquireDocumentStateBlock = new TransformBlock<WorkspaceFileUri, DocumentParserState>(AcquireDocumentState, ConcurrentExecutionOptions(Token));
-        _ = TraceBlockCompletionAsync(nameof(AcquireDocumentStateBlock), AcquireDocumentStateBlock);
+        AcquireCodeDocumentStateBlock = new TransformBlock<WorkspaceFileUri, DocumentParserState>(AcquireCodeDocumentState, ConcurrentExecutionOptions(Token));
+        _ = TraceBlockCompletionAsync(nameof(AcquireCodeDocumentStateBlock), AcquireCodeDocumentStateBlock);
 
-        var (blocks, completion) = DefineSectionBlocks(AcquireDocumentStateBlock);
+        var (blocks, completion) = DefineSectionBlocks(AcquireCodeDocumentStateBlock);
         Completion = completion;
 
-        return (new[] { AcquireDocumentStateBlock }.Concat(blocks), Completion);
+        return (new[] { AcquireCodeDocumentStateBlock }.Concat(blocks), Completion);
     }
 
     protected abstract (IEnumerable<IDataflowBlock> blocks, Task completion) DefineSectionBlocks(ISourceBlock<DocumentParserState> source);

@@ -44,9 +44,9 @@ public class CompilationArgumentsProvider : ICompilationArgumentsProvider
 
 public class WorkspaceCompilationArgumentsProvider : ICompilationArgumentsProvider
 {
-    private readonly IWorkspaceStateManager _state;
+    private readonly IAppWorkspacesStateManager _state;
 
-    public WorkspaceCompilationArgumentsProvider(IWorkspaceStateManager state)
+    public WorkspaceCompilationArgumentsProvider(IAppWorkspacesStateManager state)
     {
         _state = state;
     }

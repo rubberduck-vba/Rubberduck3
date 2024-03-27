@@ -35,6 +35,6 @@ public record class UpdateServerSettings : TypedSettingGroup, IDefaultSettingsPr
     [JsonIgnore]
     public Uri RubberduckWebApiBaseUrl => GetSetting<WebApiBaseUrlSetting>()?.TypedValue ?? WebApiBaseUrlSetting.DefaultSettingValue;
 
-    public static UpdateServerSettings Default { get; } = new() { Value = DefaultSettings };
+    public static UpdateServerSettings Default { get; } = new() { Value = DefaultSettings, DefaultValue = DefaultSettings };
     UpdateServerSettings IDefaultSettingsProvider<UpdateServerSettings>.Default => Default;
 }

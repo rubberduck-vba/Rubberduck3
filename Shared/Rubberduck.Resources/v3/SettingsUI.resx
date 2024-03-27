@@ -1,0 +1,564 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AggregatePerformanceLogsSetting_Description" xml:space="preserve">
+    <value>Determines how and how often aggregate logs are generated.</value>
+  </data>
+  <data name="AggregatePerformanceLogsSetting_Title" xml:space="preserve">
+    <value>Aggregate Performance Logs</value>
+  </data>
+  <data name="AutoHideToolWindowSetting_Description" xml:space="preserve">
+    <value>If enabled, the tooltab will automatically be hidden when the mouse cursor leaves it. Otherwise, the tooltab is "pinned" and remains opened all the time.</value>
+  </data>
+  <data name="AutoHideToolWindowSetting_Title" xml:space="preserve">
+    <value>Auto Hide</value>
+  </data>
+  <data name="ClientHealthCheckIntervalSetting_Description" xml:space="preserve">
+    <value>The amount of time between 'pings' sent from the server to the client to ensure a client is connected. Determines how long a server process remains dangling without a client before shutting down if something goes wrong.</value>
+  </data>
+  <data name="ClientHealthCheckIntervalSetting_Title" xml:space="preserve">
+    <value>Client Healthcheck Interval</value>
+  </data>
+  <data name="CodeFoldingSettings_Description" xml:space="preserve">
+    <value>Configuration options for folding ranges in the editor, making document lines collapsible in various situations.</value>
+  </data>
+  <data name="CodeFoldingSettings_Title" xml:space="preserve">
+    <value>Code Foldings</value>
+  </data>
+  <data name="DefaultToolWindowLocationSetting_Description" xml:space="preserve">
+    <value>The default docking location for this tooltab.</value>
+  </data>
+  <data name="DefaultToolWindowLocationSetting_Title" xml:space="preserve">
+    <value>Default Location</value>
+  </data>
+  <data name="DefaultWorkspaceRootSetting_Description" xml:space="preserve">
+    <value>Path to the default workspace root folder. By default, a new workspace would get created under this location.</value>
+  </data>
+  <data name="DefaultWorkspaceRootSetting_Title" xml:space="preserve">
+    <value>Default Workspace Root</value>
+  </data>
+  <data name="DisabledMessageKeysSetting_Description" xml:space="preserve">
+    <value>Lists all the message keys that were opted to "do not show this message again". Removing items from this list will re-enable the corresponding messages.</value>
+  </data>
+  <data name="DisabledMessageKeysSetting_Title" xml:space="preserve">
+    <value>Disabled Message Keys</value>
+  </data>
+  <data name="DisableInitialLegacyIndenterCheckSetting_Description" xml:space="preserve">
+    <value>If checked, Rubberduck will not check for legacy indenter settings on startup. If you never had the 32-bit legacy Smart Indenter installed, you probably don't need to care about this.</value>
+  </data>
+  <data name="DisableInitialLegacyIndenterCheckSetting_Title" xml:space="preserve">
+    <value>Disable Initial Legacy Indenter Check</value>
+  </data>
+  <data name="DisableInitialLogLevelResetSetting_Description" xml:space="preserve">
+    <value>The first run normally uses TRACE level and then turns off logging. This setting determines whether the log level remains at TRACE after a successful initial startup.</value>
+  </data>
+  <data name="DisableInitialLogLevelResetSetting_Title" xml:space="preserve">
+    <value>Disable Initial Level Reset</value>
+  </data>
+  <data name="EditorSettings_Description" xml:space="preserve">
+    <value>This section is all about the Rubberduck Editor.</value>
+  </data>
+  <data name="EditorSettings_Title" xml:space="preserve">
+    <value>Editor Settings</value>
+  </data>
+  <data name="EnableFileSystemWatchersSetting_Description" xml:space="preserve">
+    <value>If enabled, the Rubberduck Editor process will run a file watcher on opened workspace folders, allowing it to detect changes made to files outside the editor.</value>
+  </data>
+  <data name="EnableFileSystemWatchersSetting_Title" xml:space="preserve">
+    <value>Enable FileWatcher</value>
+  </data>
+  <data name="EnableUncWorkspacesSetting_Description" xml:space="preserve">
+    <value>In theory there's nothing wrong with it. In practice, it's probably better to work off local files though.</value>
+  </data>
+  <data name="EnableUncWorkspacesSetting_Title" xml:space="preserve">
+    <value>Enable UNC Workspaces</value>
+  </data>
+  <data name="EventTelemetrySettings_Description" xml:space="preserve">
+    <value>Event telemetry provides insight about application events, which is notably useful for identifying how and whether features are discovered.</value>
+  </data>
+  <data name="EventTelemetrySettings_Title" xml:space="preserve">
+    <value>Event Telemetry Settings</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Critical_Description" xml:space="preserve">
+    <value>Critical-level exception logs would typically be for unrecoverable showstopper startup exceptions, or "uncaught" (but still loggable) exceptions that end up being rethrown to crash the application because that's all that's left to do.</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Critical_Title" xml:space="preserve">
+    <value>Critical</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Debug_Description" xml:space="preserve">
+    <value>Debug-level exceptions might be exceptions developers would probably be interested in.</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Debug_Title" xml:space="preserve">
+    <value>Debug</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Error_Description" xml:space="preserve">
+    <value>Exceptions would normally be logged at this level.</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Error_Title" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Information_Description" xml:space="preserve">
+    <value>Information-level exceptions would also be for routine unexceptional exceptions, which makes no sense.</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Information_Title" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Trace_Description" xml:space="preserve">
+    <value>Trace-level exception logs would be for unexceptional exceptions, which... hopefully doesn't happen.</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Trace_Title" xml:space="preserve">
+    <value>Trace</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Warning_Description" xml:space="preserve">
+    <value>Warning-level exceptions might be logging suppressed exceptions, validation errors or otherwise inconsistent state, which may or may not precede an error-level exception log.</value>
+  </data>
+  <data name="ExceptionTelemetrySettings.Warning_Title" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="ExceptionTelemetrySettings_Description" xml:space="preserve">
+    <value>Exception telemetry provides information about errors and their context, which can be useful for identifying bugs and problems.</value>
+  </data>
+  <data name="ExceptionTelemetrySettings_Title" xml:space="preserve">
+    <value>Exception Telemetry Settings</value>
+  </data>
+  <data name="ExitNotificationDelaySetting_Description" xml:space="preserve">
+    <value>The duration of the delay afforded to the language server between 'shutdown' and 'exit' notifications.</value>
+  </data>
+  <data name="ExitNotificationDelaySetting_Title" xml:space="preserve">
+    <value>Exit Notification Delay</value>
+  </data>
+  <data name="ExtendWindowChromeSetting_Description" xml:space="preserve">
+    <value>Determines whether theming should extend to the window chrome and take over the rendering of windows' caption bar and minimize/restore/maximize buttons.</value>
+  </data>
+  <data name="ExtendWindowChromeSetting_Title" xml:space="preserve">
+    <value>Extend Window Chrome</value>
+  </data>
+  <data name="FoldBlockStatementsSetting_Description" xml:space="preserve">
+    <value>Whether folding ranges should be created for block statements, e.g. If...End If, Do...Loop, With...End With, etc.</value>
+  </data>
+  <data name="FoldBlockStatementsSetting_Title" xml:space="preserve">
+    <value>Fold block statements</value>
+  </data>
+  <data name="FoldModuleAttributesSetting_Description" xml:space="preserve">
+    <value>Whether folding ranges should be created to make module attributes a collapsible section at the top of a module.</value>
+  </data>
+  <data name="FoldModuleAttributesSetting_Title" xml:space="preserve">
+    <value>Fold module attributes</value>
+  </data>
+  <data name="FoldModuleDeclarationsSetting_Description" xml:space="preserve">
+    <value>If enabled, creates a folding range encompassing the entire declarations section of a module.</value>
+  </data>
+  <data name="FoldModuleDeclarationsSetting_Title" xml:space="preserve">
+    <value>Fold module declarations</value>
+  </data>
+  <data name="FoldModuleHeaderSetting_Description" xml:space="preserve">
+    <value>If enabled, creates a folding range to hide the header section of a module.</value>
+  </data>
+  <data name="FoldModuleHeaderSetting_Title" xml:space="preserve">
+    <value>Fold module header</value>
+  </data>
+  <data name="FoldRegionsSetting_Description" xml:space="preserve">
+    <value>If enabled, custom folding ranges can be created using @Region/@EndRegion annotation comments.</value>
+  </data>
+  <data name="FoldRegionsSetting_Title" xml:space="preserve">
+    <value>Fold regions</value>
+  </data>
+  <data name="FoldScopesSetting_Description" xml:space="preserve">
+    <value>Whether folding ranges should be created for scopes, e.g. Sub, Function, Property members of a module.</value>
+  </data>
+  <data name="FoldScopesSetting_Title" xml:space="preserve">
+    <value>Fold scopes</value>
+  </data>
+  <data name="GeneralSettings_Description" xml:space="preserve">
+    <value>Not just everything we couldn't neatly categorize elsewhere: general settings generally apply to the entire application.</value>
+  </data>
+  <data name="GeneralSettings_Title" xml:space="preserve">
+    <value>General Settings</value>
+  </data>
+  <data name="IdleTimerDurationSetting_Description" xml:space="preserve">
+    <value>Resets at each keypress; document changes only begin to be processed after the specified amount of time elapses without there being further changes.</value>
+  </data>
+  <data name="IdleTimerDurationSetting_Title" xml:space="preserve">
+    <value>Idle Timer Duration</value>
+  </data>
+  <data name="IncludePreReleasesSetting_Description" xml:space="preserve">
+    <value>If enabled, the update server considers pre-release builds when evaluating if a newer version is available.</value>
+  </data>
+  <data name="IncludePreReleasesSetting_Title" xml:space="preserve">
+    <value>Include pre-releases</value>
+  </data>
+  <data name="IsTelemetryEnabledSetting_Description" xml:space="preserve">
+    <value>Determines whether telemetry is enabled at all. Disabled by default, making telemetry explicitly opt-in.</value>
+  </data>
+  <data name="IsTelemetryEnabledSetting_Title" xml:space="preserve">
+    <value>Enable telemetry</value>
+  </data>
+  <data name="IsUpdateServerEnabledSetting_Description" xml:space="preserve">
+    <value>Determines whether the update server is allowed to run as a background process.</value>
+  </data>
+  <data name="IsUpdateServerEnabledSetting_Title" xml:space="preserve">
+    <value>Enable Update Server</value>
+  </data>
+  <data name="LanguageClientSettings_Description" xml:space="preserve">
+    <value>These settings control the behavior of the language server client in the Rubberduck Editor.</value>
+  </data>
+  <data name="LanguageClientSettings_Title" xml:space="preserve">
+    <value>LSP Client</value>
+  </data>
+  <data name="LanguageClientStartupSettings_Description" xml:space="preserve">
+    <value>For a normal install these should never need to be changed. Proceed carefully!</value>
+  </data>
+  <data name="LanguageClientStartupSettings_Title" xml:space="preserve">
+    <value>Startup Settings</value>
+  </data>
+  <data name="LanguageServerSettings_Description" xml:space="preserve">
+    <value>Configuration specific to the language server application.</value>
+  </data>
+  <data name="LanguageServerSettings_Title" xml:space="preserve">
+    <value>Language Server Settings</value>
+  </data>
+  <data name="LanguageServerStartupSettings_Description" xml:space="preserve">
+    <value>For a normal install these should never need to be changed. Proceed carefully!</value>
+  </data>
+  <data name="LanguageServerStartupSettings_Title" xml:space="preserve">
+    <value>Startup Settings</value>
+  </data>
+  <data name="LocaleSetting_Description" xml:space="preserve">
+    <value>Determines the set of localized resources to use in the UI.</value>
+  </data>
+  <data name="LocaleSetting_Title" xml:space="preserve">
+    <value>Locale</value>
+  </data>
+  <data name="LoggingSettings_Description" xml:space="preserve">
+    <value>Determines whether and how Rubberduck generates log files.</value>
+  </data>
+  <data name="LoggingSettings_Title" xml:space="preserve">
+    <value>Logging</value>
+  </data>
+  <data name="LogLevelSetting_Description" xml:space="preserve">
+    <value>The minimum level a message must be logged at, in order to be actually written.</value>
+  </data>
+  <data name="LogLevelSetting_Title" xml:space="preserve">
+    <value>Log Level</value>
+  </data>
+  <data name="MaximumMessagesSetting_Description" xml:space="preserve">
+    <value>The maximum number of messages rendered in the window. New incoming messages remove older messages once the limit is reached.</value>
+  </data>
+  <data name="MaximumMessagesSetting_Title" xml:space="preserve">
+    <value>Maximum Messages</value>
+  </data>
+  <data name="MetricTelemetrySettings_Description" xml:space="preserve">
+    <value>Metric telemetry collects and aggregates various metrics, including performance and counters.</value>
+  </data>
+  <data name="MetricTelemetrySettings_Title" xml:space="preserve">
+    <value>Metric Telemetry Settings</value>
+  </data>
+  <data name="RequireAddInHostSetting_Description" xml:space="preserve">
+    <value>If enabled, the Rubberduck Editor cannot be executed standalone, it must be started from within the VBIDE by the Rubberduck add-in.</value>
+  </data>
+  <data name="RequireAddInHostSetting_Title" xml:space="preserve">
+    <value>Require AddIn Host</value>
+  </data>
+  <data name="RequireDefaultWorkspaceRootHostSetting_Description" xml:space="preserve">
+    <value>If enabled, creating a new workspace/project requires saving the host document under the default workspace root folder.</value>
+  </data>
+  <data name="RequireDefaultWorkspaceRootHostSetting_Title" xml:space="preserve">
+    <value>Require Host in Default Workspace Root</value>
+  </data>
+  <data name="RequireSavedHostSetting_Description" xml:space="preserve">
+    <value>If enabled, creating a new workspace/project from an existing host document requires first saving that host document.</value>
+  </data>
+  <data name="RequireSavedHostSetting_Title" xml:space="preserve">
+    <value>Require Saved Host</value>
+  </data>
+  <data name="RubberduckSettings_Description" xml:space="preserve">
+    <value>The top-level settings group that encompasses all other Rubberduck settings.</value>
+  </data>
+  <data name="RubberduckSettings_Title" xml:space="preserve">
+    <value>Rubberduck Settings</value>
+  </data>
+  <data name="SearchResults_Description" xml:space="preserve">
+    <value>Shows all settings across all setting groups that have a match for the search term in either their name or description.</value>
+  </data>
+  <data name="SearchResults_Title" xml:space="preserve">
+    <value>Search Results</value>
+  </data>
+  <data name="SendEventTelemetrySetting_Description" xml:space="preserve">
+    <value>If enabled, the telemetry server is allowed to transmit event data.</value>
+  </data>
+  <data name="SendEventTelemetrySetting_Title" xml:space="preserve">
+    <value>Send 'Event' telemetry</value>
+  </data>
+  <data name="SendExceptionTelemetrySetting_Description" xml:space="preserve">
+    <value>If enabled (recommended), the telemetry server is allowed to transmit exception (error) details.</value>
+  </data>
+  <data name="SendExceptionTelemetrySetting_Title" xml:space="preserve">
+    <value>Send 'Exception' telemetry</value>
+  </data>
+  <data name="SendMetricTelemetrySetting_Description" xml:space="preserve">
+    <value>Allows the telemetry server to transmit various aggregated metrics.</value>
+  </data>
+  <data name="SendMetricTelemetrySetting_Title" xml:space="preserve">
+    <value>Send 'Metric' telemetry</value>
+  </data>
+  <data name="SendTraceTelemetrySetting_Description" xml:space="preserve">
+    <value>If enabled, the telemetry server is allowed to transmit trace logs.</value>
+  </data>
+  <data name="SendTraceTelemetrySetting_Title" xml:space="preserve">
+    <value>Send 'Trace' telemetry</value>
+  </data>
+  <data name="ServerExecutablePathSetting_Description" xml:space="preserve">
+    <value>The location of the server executable.</value>
+  </data>
+  <data name="ServerExecutablePathSetting_Title" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="ServerMessageModeSetting_Description" xml:space="preserve">
+    <value>Determines the type of messages transmitted between the client and a server.</value>
+  </data>
+  <data name="ServerMessageModeSetting_Title" xml:space="preserve">
+    <value>Message Mode</value>
+  </data>
+  <data name="ServerPipeNameSetting_Description" xml:space="preserve">
+    <value>When using named pipes for transport, determines the name of that pipe.</value>
+  </data>
+  <data name="ServerPipeNameSetting_Title" xml:space="preserve">
+    <value>Pipe Name</value>
+  </data>
+  <data name="ServerTraceSettings_Description" xml:space="preserve">
+    <value>Settings used by the Language Server Trace tooltab.</value>
+  </data>
+  <data name="ServerTraceSettings_Title" xml:space="preserve">
+    <value>Server Trace</value>
+  </data>
+  <data name="ServerTransportTypeSetting_Description" xml:space="preserve">
+    <value>Determines the type of transport for the LSP/JsonRPC messages.</value>
+  </data>
+  <data name="ServerTransportTypeSetting_Title" xml:space="preserve">
+    <value>Transport Type</value>
+  </data>
+  <data name="SettingsSaved_Message" xml:space="preserve">
+    <value>Settings were updated successfully.</value>
+  </data>
+  <data name="SettingsSaved_Title" xml:space="preserve">
+    <value>Settings Saved</value>
+  </data>
+  <data name="ShowSplashSetting_Description" xml:space="preserve">
+    <value>Determines whether the Rubberduck Editor application should display a title "splash" screen on startup, during the split-second it initializes.</value>
+  </data>
+  <data name="ShowSplashSetting_Title" xml:space="preserve">
+    <value>Show Splash</value>
+  </data>
+  <data name="ShowToolWindowOnStartupSetting_Description" xml:space="preserve">
+    <value>Enable this option to open this tooltab on startup.</value>
+  </data>
+  <data name="ShowToolWindowOnStartupSetting_Title" xml:space="preserve">
+    <value>Show on startup</value>
+  </data>
+  <data name="ShowWelcomeTabSetting_Description" xml:space="preserve">
+    <value>If enabled, the editor will automatically load and open a "welcome" document on startup. This document contains release notes and other information about the current version.</value>
+  </data>
+  <data name="ShowWelcomeTabSetting_Title" xml:space="preserve">
+    <value>Show 'Welcome' Tab</value>
+  </data>
+  <data name="ShowWorkspaceExplorerOnProjectOpenSetting_Description" xml:space="preserve">
+    <value>Whether opening a workspace/project should automatically open the Workspace Explorer, regardless of whether it is visible at startup or not.</value>
+  </data>
+  <data name="ShowWorkspaceExplorerOnProjectOpenSetting_Title" xml:space="preserve">
+    <value>Show Workspace Explorer on Project Open</value>
+  </data>
+  <data name="StreamTransmissionSetting_Description" xml:space="preserve">
+    <value>Determines whether telemetry data is transmitted automatically in periodic batches. If disabled, telemetry data must be manually transmitted.</value>
+  </data>
+  <data name="StreamTransmissionSetting_Title" xml:space="preserve">
+    <value>Stream transmission</value>
+  </data>
+  <data name="TelemetryEventQueueSizeSetting_Description" xml:space="preserve">
+    <value>The maximum number of telemetry events transmitted in a payload.</value>
+  </data>
+  <data name="TelemetryEventQueueSizeSetting_Title" xml:space="preserve">
+    <value>Event queue size</value>
+  </data>
+  <data name="TelemetryServerSettings_Description" xml:space="preserve">
+    <value>Regroups telemetry settings and configuration specific to the telemetry server application.</value>
+  </data>
+  <data name="TelemetryServerSettings_Title" xml:space="preserve">
+    <value>Telemetry Server Settings</value>
+  </data>
+  <data name="TelemetryServerStartupSettings_Description" xml:space="preserve">
+    <value>For a normal install these should never need to be changed. Proceed carefully!</value>
+  </data>
+  <data name="TelemetryServerStartupSettings_Title" xml:space="preserve">
+    <value>Startup Settings</value>
+  </data>
+  <data name="TemplatesLocationSetting_Description" xml:space="preserve">
+    <value>The folder location where the Rubberduck Editor expects to find project templates. This would normally be a 'Templates' folder under the Rubberduck installation directory.</value>
+  </data>
+  <data name="TemplatesLocationSetting_Title" xml:space="preserve">
+    <value>Templates Location</value>
+  </data>
+  <data name="ToolsSettings_Description" xml:space="preserve">
+    <value>Settings specific to each tooltab</value>
+  </data>
+  <data name="ToolsSettings_Title" xml:space="preserve">
+    <value>Tools</value>
+  </data>
+  <data name="TraceLevelSetting_Description" xml:space="preserve">
+    <value>The log level to use for startup activities.</value>
+  </data>
+  <data name="TraceLevelSetting_Title" xml:space="preserve">
+    <value>Trace Level</value>
+  </data>
+  <data name="TraceTelemetrySettings_Description" xml:space="preserve">
+    <value>Trace telemetry collects trace logs that can be used for troubleshooting.</value>
+  </data>
+  <data name="TraceTelemetrySettings_Title" xml:space="preserve">
+    <value>Trace Telemetry Settings</value>
+  </data>
+  <data name="UpdateServerSettings_Description" xml:space="preserve">
+    <value>The configuration for the update server / Rubberduck Installer app.</value>
+  </data>
+  <data name="UpdateServerSettings_Title" xml:space="preserve">
+    <value>Update Server Settings</value>
+  </data>
+  <data name="UpdateServerStartupSettings_Description" xml:space="preserve">
+    <value>For a normal install these should never need to be changed. Proceed carefully!</value>
+  </data>
+  <data name="UpdateServerStartupSettings_Title" xml:space="preserve">
+    <value>Startup Settings</value>
+  </data>
+  <data name="WebApiBaseUrlSetting_Description" xml:space="preserve">
+    <value>URL pointing to the Rubberduck3 web API. Probably doesn't need to change... unless you're trying to hit a dev or test version of the API.</value>
+  </data>
+  <data name="WebApiBaseUrlSetting_Title" xml:space="preserve">
+    <value>WebApi URL</value>
+  </data>
+  <data name="WorkspaceExplorerSettings_Description" xml:space="preserve">
+    <value>Settings used by the Workspace Explorer tooltab.</value>
+  </data>
+  <data name="WorkspaceExplorerSettings_Title" xml:space="preserve">
+    <value>Workspace Explorer</value>
+  </data>
+  <data name="WorkspaceSettings_Description" xml:space="preserve">
+    <value>Settings relative to workspaces/projects.</value>
+  </data>
+  <data name="WorkspaceSettings_Title" xml:space="preserve">
+    <value>Workspace Settings</value>
+  </data>
+</root>

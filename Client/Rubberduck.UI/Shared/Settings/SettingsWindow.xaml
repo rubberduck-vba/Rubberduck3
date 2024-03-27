@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
         xmlns:templates="clr-namespace:Rubberduck.UI.Shared.Settings.Templates" 
-        xmlns:local="clr-namespace:Rubberduck.UI.Shared.Settings" 
+        xmlns:local="clr-namespace:Rubberduck.UI.Shared.Settings" xmlns:settings="clr-namespace:Rubberduck.UI.Services.Settings" xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        d:DataContext="{d:DesignInstance Type=settings:SettingsWindowViewModel}"
         mc:Ignorable="d"
         Title="Settings" 
         WindowStyle="None"
@@ -26,22 +27,65 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <shell:ThunderFrame Grid.RowSpan="2" Title="{Binding Title}" ShowTitle="True"
-                            ShowAcceptButton="True"
-                            AcceptCommand="{Binding Actions[0]}">
+                            ShowAcceptButton="True" ShowCancelButton="True"
+                            AcceptCommand="{Binding Actions[0]}"
+                            CancelCommand="{Binding Actions[1]}">
             <Grid ClipToBounds="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <Border Background="{DynamicResource ThemeWhiteLightColorBrush50}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5">
+                    <shell:FlatButton Command="{x:Static NavigationCommands.BrowseBack}" 
+                                      ToolTip="{Binding PreviousNavKey}" Height="16" Width="16"
+                                      Icon="{DynamicResource NavPreviousIcon}" />
+                    
+                    <shell:FlatButton Command="{x:Static NavigationCommands.BrowseForward}" 
+                                      ToolTip="{Binding NextNavKey}" Height="16" Width="16" 
+                                      Icon="{DynamicResource NavNextIcon}" />
+                    
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Margin="5" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Grid>
+                        <TextBox MinWidth="180" Height="22" Padding="22,2"
+                                 HorizontalContentAlignment="Center"
+                                 Text="{Binding Selection.SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Foreground="{DynamicResource ThemeTextColorBrush}">
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Esc" Command="{Binding ClearSearchTextCommand}" />
+                            </TextBox.InputBindings>
+                        </TextBox>
+                        <shell:FlatButton HorizontalAlignment="Right" Icon="{DynamicResource XMarkIcon}" 
+                                          Visibility="{Binding Selection.SearchString, Converter={StaticResource HasItemsVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"
+                                          Command="{Binding ClearSearchTextCommand}" />
+                    </Grid>
+                    <shell:FlatButton Icon="{DynamicResource SearchIcon}" 
+                                      Command="{x:Static NavigationCommands.Search}"
+                                      CommandParameter="{Binding Selection.SearchString, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <shell:FlatButton Grid.Column="1" HorizontalAlignment="Right"
+                                  Margin="5,0"
+                                  Command="{Binding ResetSettingsCommand}" 
+                                  ToolTip="Reset" Height="16" Width="16" 
+                                  Icon="{DynamicResource ResetDefaultsIcon}" />
+
+                <Border Grid.RowSpan="2">
                     <ListView MinWidth="160" Margin="4"
-                              Background="Transparent" 
-                              BorderThickness="0"
+                              Background="{DynamicResource ThemeBackgroundColorBrush}" 
+                              BorderThickness="1"
+                              BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}"
                               VerticalAlignment="Stretch"
                               ScrollViewer.VerticalScrollBarVisibility="Auto"
                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                              ItemsSource="{Binding Settings.Items}" 
+                              ItemsSource="{Binding SettingGroups}" 
                               SelectedItem="{Binding Selection}" d:ItemsSource="{d:SampleData ItemCount=5}">
                         <ListView.Resources>
                         </ListView.Resources>
@@ -62,7 +106,12 @@
                     </ListView>
                 </Border>
 
-                <templates:SettingGroupControl Grid.Column="1" DataContext="{Binding Selection}" />
+                <Border Grid.Row="1" Grid.Column="1" 
+                        BorderThickness="1" BorderBrush="{DynamicResource ThemeWhiteDarkColorBrush}" 
+                        Background="{DynamicResource ThemeWhiteLightColorBrush65}"
+                        CornerRadius="4" Margin="5" Padding="10">
+                    <templates:SettingGroupControl DataContext="{Binding Selection}" />
+                </Border>
             </Grid>
         </shell:ThunderFrame>
         <Thumb Grid.Row="1" HorizontalAlignment="Right" IsEnabled="True" IsHitTestVisible="True" WindowChrome.IsHitTestVisibleInChrome="True"

@@ -9,10 +9,6 @@ public record class ProjectFile
     /// The file name of a <em>Rubberduck project file</em>.
     /// </summary>
     public const string FileName = ".rdproj";
-    /// <summary>
-    /// The name of the <em>source root</em> folder in workspaces.
-    /// </summary>
-    public const string SourceRoot = ".src";
         
     // TODO find a better home for this
     public static readonly string RubberduckVersion = "3.0";

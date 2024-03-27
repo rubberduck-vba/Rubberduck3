@@ -5,7 +5,11 @@
     <BitmapImage x:Key="BackgroundDuckyImage" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/Custom/vector-ducky-shadow-1480.png" />
 
     <!-- FontAwesome "flat" icons -->
-    
+
+    <BitmapImage x:Key="NavPreviousIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/arrow-left-solid.png" />
+    <BitmapImage x:Key="NavNextIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/arrow-right-solid.png" />
+    <BitmapImage x:Key="ResetDefaultsIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/rotate-left-solid.png" />
+
     <BitmapImage x:Key="WindowCloseIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/square-xmark-solid-red.png" />
     <BitmapImage x:Key="WindowMaximizeIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/window-maximize-regular.png" />
     <BitmapImage x:Key="WindowRestoreIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/window-restore-regular.png" />
@@ -19,6 +23,14 @@
     <BitmapImage x:Key="CircleCheckIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/circle-check-solid.png" />
     <BitmapImage x:Key="CircleWarnIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/circle-exclamation-solid.png" />
 
+    <BitmapImage x:Key="CollapseSectionIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/down-left-and-up-right-to-center-solid.png" />
+    <BitmapImage x:Key="ExpandSectionIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/up-right-and-down-left-from-center-solid.png" />
+    <BitmapImage x:Key="ToggleOffIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/toggle-off-solid.png" />
+    <BitmapImage x:Key="ToggleOnIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/toggle-on-solid.png" />
+
+    <BitmapImage x:Key="CollapseAllIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/square-minus-regular.png" />
+    <BitmapImage x:Key="ExpandAllIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/square-plus-regular.png" />
+
     <BitmapImage x:Key="LockedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/lock-solid.png" />
     <BitmapImage x:Key="UnlockedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/lock-open-solid.png" />
 
@@ -28,6 +40,10 @@
     <BitmapImage x:Key="ShowIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/eye-solid.png" />
     <BitmapImage x:Key="HideIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/eye-slash-solid.png" />
 
+    <BitmapImage x:Key="StopwatchIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/stopwatch-solid.png" />
+    <BitmapImage x:Key="WaitIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/hourglass-half-solid.png" />
+
+    <BitmapImage x:Key="SearchIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/binoculars-solid.png" />
     <BitmapImage x:Key="CancelIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/ban-solid.png" />
 
     <BitmapImage x:Key="SynchronizeIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/arrows-spin-solid.png" />
@@ -65,6 +81,8 @@
     <BitmapImage x:Key="ShieldFileIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/file-shield-solid.png" />
 
     <!-- RD2.* 16x16 Fugue icons -->
+    <BitmapImage x:Key="InspectionIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/light-bulb.png" />
+
     <BitmapImage x:Key="ErrorLogIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/cross-circle.png" />
     <BitmapImage x:Key="WarnLogIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/exclamation-diamond.png" />
     <BitmapImage x:Key="InfoLogIcon16" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FugueIcons/information.png" />

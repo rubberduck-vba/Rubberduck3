@@ -1,7 +1,11 @@
 ﻿using Rubberduck.UI.Command.SharedHandlers;
+using Rubberduck.UI.Shared.Settings.Abstract;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace Rubberduck.UI.Shared.Settings
 {
@@ -19,6 +23,7 @@ namespace Rubberduck.UI.Shared.Settings
         {
             InitializeComponent();
             DataContextChanged += OnDataContextChanged;
+
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -26,8 +31,15 @@ namespace Rubberduck.UI.Shared.Settings
             if (e.NewValue is ICommandBindingProvider provider)
             {
                 var systemHandlers = new SystemCommandHandlers(this);
+
                 CommandBindings.Clear();
                 CommandBindings.AddRange(systemHandlers.CreateCommandBindings().Concat(provider.CommandBindings).ToArray());
+            }
+
+            var viewSource = Resources["SettingsViewSource"] as CollectionViewSource;
+            if (viewSource != null)
+            {
+                viewSource.Source = ((ISettingsWindowViewModel)e.NewValue).Selection?.Items ?? [];
             }
         }
 

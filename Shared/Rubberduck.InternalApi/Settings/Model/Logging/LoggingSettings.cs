@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.InternalApi.Settings;
 using Rubberduck.InternalApi.Settings.Model.ServerStartup;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +9,7 @@ namespace Rubberduck.InternalApi.Settings.Model.Logging;
 public record class LoggingSettings : TypedSettingGroup, IDefaultSettingsProvider<LoggingSettings>
 {
     private static readonly RubberduckSetting[] DefaultSettings =
-        new RubberduckSetting[]
-        {
+        [
             new DisableInitialLogLevelResetSetting { Value = DisableInitialLogLevelResetSetting.DefaultSettingValue },
             new LogLevelSetting { Value = LogLevelSetting.DefaultSettingValue },
             new TraceLevelSetting { Value = TraceLevelSetting.DefaultSettingValue },
@@ -21,16 +19,12 @@ public record class LoggingSettings : TypedSettingGroup, IDefaultSettingsProvide
             new MaxAggregateSampleSizeSetting { Value = MaxAggregateSampleSizeSetting.DefaultSettingValue },
             new LowVolumeEventsPerMinuteSetting { Value = LowVolumeEventsPerMinuteSetting.DefaultSettingValue },
             new HighVolumeEventsPerMinuteSetting { Value = HighVolumeEventsPerMinuteSetting.DefaultSettingValue },
-        };
+        ];
 
-    public LoggingSettings() { }
-
-    public LoggingSettings(IDictionary<string, RubberduckSetting> settings) : this()
+    public LoggingSettings() 
     {
-        var defaultKeys = DefaultSettings.Select(e => e.Key).ToHashSet();
-        Value = settings.Where(e => defaultKeys.Contains(e.Key));
+        DefaultValue = DefaultSettings;
     }
-
 
     [JsonIgnore]
     public bool DisableInitialLogLevelReset => GetSetting<DisableInitialLogLevelResetSetting>()?.TypedValue ?? DisableInitialLogLevelResetSetting.DefaultSettingValue;

@@ -5,9 +5,9 @@ using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 
 namespace Rubberduck.Parsing._v3.Pipeline;
 
-public record class DocumentParserState : DocumentState
+public record class DocumentParserState : CodeDocumentState
 {
-    public DocumentParserState(DocumentState original)
+    public DocumentParserState(CodeDocumentState original)
         : base(original)
     {
     }
@@ -18,13 +18,12 @@ public record class DocumentParserState : DocumentState
         SyntaxTree = original.SyntaxTree;
     }
 
-    public DocumentParserState(WorkspaceFileUri uri, string text, int version = 1, bool isOpened = false) 
-        : base(uri, text, version, isOpened)
+    public DocumentParserState(WorkspaceFileUri uri, SupportedLanguage language, string text, int version = 1, bool isOpened = false) 
+        : base(uri, language, text, version, isOpened)
     {
     }
 
     public IParseTree? SyntaxTree { get; init; }
 
-    public DocumentParserState WithSyntaxTree(IParseTree tree) => this with { SyntaxTree = tree };
     public new DocumentParserState WithSymbol(Symbol module) => this with { Symbol = module };
 }

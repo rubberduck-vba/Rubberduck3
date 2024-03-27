@@ -1,17 +1,20 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
-using Rubberduck.Parsing.Model;
+using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 
 namespace Rubberduck.Parsing.Abstract;
 
 public class ParseResult
 {
-    public IParseTree Tree { get; init; } = null!;
+    public IParseTree SyntaxTree { get; init; } = null!;
     public ITokenStream TokenStream { get; init; } = null!;
     public LogicalLineStore? LogicalLines { get; init; } = null;
     public IEnumerable<IParseTreeListener> Listeners { get; init; } = [];
-    public IEnumerable<SyntaxErrorInfo> SyntaxErrors { get; init; } = [];
+
+    public IEnumerable<SyntaxErrorException> SyntaxErrors { get; init; } = [];
+    public IEnumerable<Diagnostic> Diagnostics { get; init; } = [];
 }
 
 public interface IParser<TContent>

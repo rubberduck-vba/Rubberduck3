@@ -3,9 +3,12 @@ using System.ComponentModel;
 
 namespace Rubberduck.UI.Shared.Settings.Abstract
 {
-    public interface ISettingViewModel : INotifyPropertyChanged
+    public interface ISettingViewModel : INotifyPropertyChanged, ISearchable
     {
+        bool IsSettingGroup { get; }
         string Key { get; }
+        string SettingGroupKey { get; set; }
+        bool ShowSettingGroup { get; set; }
         SettingDataType SettingDataType { get; }
         string Name { get; }
         string Description { get; }

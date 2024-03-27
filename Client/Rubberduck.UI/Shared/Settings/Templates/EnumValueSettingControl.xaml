@@ -5,8 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.UI.Shared.Settings.Templates"
              xmlns:viewmodels="clr-namespace:Rubberduck.UI.Shared.Settings" 
-             xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
-             Background="{DynamicResource ThemeBackgroundColorBrush}"
+             xmlns:shell="clr-namespace:Rubberduck.UI.Shell" xmlns:abstract="clr-namespace:Rubberduck.UI.Shared.Settings.Abstract" d:DataContext="{d:DesignInstance Type=abstract:EnumValueSettingViewModel}"
              Padding="4" MinHeight="96" 
              mc:Ignorable="d" 
              d:DesignHeight="96" d:DesignWidth="255">
@@ -20,6 +19,11 @@
     </UserControl.Resources>
     <Border Style="{DynamicResource SectionBorderStyle}">
         <DockPanel LastChildFill="True">
+            <Label DockPanel.Dock="Bottom" Style="{DynamicResource FormFieldNameLabelStyle}" Margin="0,0" IsEnabled="{Binding IsEnabled}"
+                       HorizontalAlignment="Right"
+                       Visibility="{Binding ShowSettingGroup, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Margin="0,0,0,4" Text="{Binding SettingGroupName}" TextWrapping="Wrap" />
+            </Label>
             <DockPanel DockPanel.Dock="Top">
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
                                         Height="16" Width="20" OffsetX="2"
@@ -34,9 +38,10 @@
             <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldDescriptionLabelStyle}" Margin="4,0,4,4">
                 <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
             </Label>
+            
             <ComboBox Template="{DynamicResource ComboBoxTemplate}" 
-                      Margin="5,5,20,5"
-                      DockPanel.Dock="Top" HorizontalAlignment="Stretch"
+                      Width="180" Height="24" Margin="10"
+                      DockPanel.Dock="Top" HorizontalAlignment="Left"
                       HorizontalContentAlignment="Left"
                       Style="{DynamicResource FormFieldComboBoxStyle}" 
                       IsEnabled="{Binding IsEnabled}" 

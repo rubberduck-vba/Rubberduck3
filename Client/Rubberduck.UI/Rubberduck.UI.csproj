@@ -158,13 +158,19 @@
     <None Remove="Resources\Custom\vector-ducky-blur-1480.png" />
     <None Remove="Resources\Custom\vector-ducky-color.png" />
     <None Remove="Resources\Custom\vector-ducky-shadow-1480.png" />
+    <None Remove="Resources\FontAwesome\arrow-left-solid.png" />
+    <None Remove="Resources\FontAwesome\arrow-right-solid.png" />
+    <None Remove="Resources\FontAwesome\arrows-left-right-to-line-solid.png" />
     <None Remove="Resources\FontAwesome\arrows-spin-solid.png" />
     <None Remove="Resources\FontAwesome\ban-solid.png" />
+    <None Remove="Resources\FontAwesome\binoculars-solid.png" />
     <None Remove="Resources\FontAwesome\bomb-solid.png" />
+    <None Remove="Resources\FontAwesome\circle-arrow-right-solid.png" />
     <None Remove="Resources\FontAwesome\circle-check-solid.png" />
     <None Remove="Resources\FontAwesome\circle-exclamation-solid.png" />
     <None Remove="Resources\FontAwesome\copy-solid.png" />
     <None Remove="Resources\FontAwesome\cubes-solid.png" />
+    <None Remove="Resources\FontAwesome\down-left-and-up-right-to-center-solid.png" />
     <None Remove="Resources\FontAwesome\eraser-solid.png" />
     <None Remove="Resources\FontAwesome\eye-slash-solid.png" />
     <None Remove="Resources\FontAwesome\eye-solid.png" />
@@ -201,9 +207,17 @@
     <None Remove="Resources\FontAwesome\pause-solid.png" />
     <None Remove="Resources\FontAwesome\power-off-solid.png" />
     <None Remove="Resources\FontAwesome\rectangle-xmark-solid.png" />
+    <None Remove="Resources\FontAwesome\rotate-left-solid.png" />
+    <None Remove="Resources\FontAwesome\square-minus-regular.png" />
+    <None Remove="Resources\FontAwesome\square-minus-solid.png" />
+    <None Remove="Resources\FontAwesome\square-plus-regular.png" />
+    <None Remove="Resources\FontAwesome\square-plus-solid.png" />
     <None Remove="Resources\FontAwesome\square-xmark-solid-red.png" />
     <None Remove="Resources\FontAwesome\square-xmark-solid.png" />
     <None Remove="Resources\FontAwesome\thumbtack-solid.png" />
+    <None Remove="Resources\FontAwesome\toggle-off-solid.png" />
+    <None Remove="Resources\FontAwesome\toggle-on-solid.png" />
+    <None Remove="Resources\FontAwesome\up-right-and-down-left-from-center-solid.png" />
     <None Remove="Resources\FontAwesome\window-maximize-regular.png" />
     <None Remove="Resources\FontAwesome\window-minimize-regular.png" />
     <None Remove="Resources\FontAwesome\window-restore-regular.png" />
@@ -242,8 +256,10 @@
     <None Remove="Resources\FugueIcons\folder-smiley.png" />
     <None Remove="Resources\FugueIcons\information-white.png" />
     <None Remove="Resources\FugueIcons\information.png" />
+    <None Remove="Resources\FugueIcons\light-bulb.png" />
     <None Remove="Resources\FugueIcons\magnifier-medium.png" />
     <None Remove="Resources\FugueIcons\selection-input.png" />
+    <None Remove="Resources\FugueIcons\stopwatch-solid.png" />
     <None Remove="Resources\FugueIcons\tick-circle.png" />
     <None Remove="Resources\splash.png" />
     <None Remove="Resources\vector-ducky-blur-1480.png" />
@@ -252,6 +268,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AsyncAwaitBestPractices" Version="7.0.0" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
     <PackageReference Include="Dragablz" Version="0.0.3.234" />
     <PackageReference Include="MdXaml" Version="1.21.0" />
@@ -412,13 +429,19 @@
     <Resource Include="Resources\Custom\vector-ducky-blur-1480.png" />
     <Resource Include="Resources\Custom\vector-ducky-color.png" />
     <Resource Include="Resources\Custom\vector-ducky-shadow-1480.png" />
+    <Resource Include="Resources\FontAwesome\arrow-left-solid.png" />
+    <Resource Include="Resources\FontAwesome\arrow-right-solid.png" />
+    <Resource Include="Resources\FontAwesome\arrows-left-right-to-line-solid.png" />
     <Resource Include="Resources\FontAwesome\arrows-spin-solid.png" />
     <Resource Include="Resources\FontAwesome\ban-solid.png" />
+    <Resource Include="Resources\FontAwesome\binoculars-solid.png" />
     <Resource Include="Resources\FontAwesome\bomb-solid.png" />
+    <Resource Include="Resources\FontAwesome\circle-arrow-right-solid.png" />
     <Resource Include="Resources\FontAwesome\circle-check-solid.png" />
     <Resource Include="Resources\FontAwesome\circle-exclamation-solid.png" />
     <Resource Include="Resources\FontAwesome\copy-solid.png" />
     <Resource Include="Resources\FontAwesome\cubes-solid.png" />
+    <Resource Include="Resources\FontAwesome\down-left-and-up-right-to-center-solid.png" />
     <Resource Include="Resources\FontAwesome\eraser-solid.png" />
     <Resource Include="Resources\FontAwesome\eye-slash-solid.png" />
     <Resource Include="Resources\FontAwesome\eye-solid.png" />
@@ -455,9 +478,17 @@
     <Resource Include="Resources\FontAwesome\pause-solid.png" />
     <Resource Include="Resources\FontAwesome\power-off-solid.png" />
     <Resource Include="Resources\FontAwesome\rectangle-xmark-solid.png" />
+    <Resource Include="Resources\FontAwesome\rotate-left-solid.png" />
+    <Resource Include="Resources\FontAwesome\square-minus-regular.png" />
+    <Resource Include="Resources\FontAwesome\square-minus-solid.png" />
+    <Resource Include="Resources\FontAwesome\square-plus-regular.png" />
+    <Resource Include="Resources\FontAwesome\square-plus-solid.png" />
     <Resource Include="Resources\FontAwesome\square-xmark-solid-red.png" />
     <Resource Include="Resources\FontAwesome\square-xmark-solid.png" />
     <Resource Include="Resources\FontAwesome\thumbtack-solid.png" />
+    <Resource Include="Resources\FontAwesome\toggle-off-solid.png" />
+    <Resource Include="Resources\FontAwesome\toggle-on-solid.png" />
+    <Resource Include="Resources\FontAwesome\up-right-and-down-left-from-center-solid.png" />
     <Resource Include="Resources\FontAwesome\window-maximize-regular.png" />
     <Resource Include="Resources\FontAwesome\window-minimize-regular.png" />
     <Resource Include="Resources\FontAwesome\window-restore-regular.png" />
@@ -496,8 +527,10 @@
     <Resource Include="Resources\FugueIcons\folder-smiley.png" />
     <Resource Include="Resources\FugueIcons\information-white.png" />
     <Resource Include="Resources\FugueIcons\information.png" />
+    <Resource Include="Resources\FugueIcons\light-bulb.png" />
     <Resource Include="Resources\FugueIcons\magnifier-medium.png" />
     <Resource Include="Resources\FugueIcons\selection-input.png" />
+    <Resource Include="Resources\FontAwesome\stopwatch-solid.png" />
     <Resource Include="Resources\FugueIcons\tick-circle.png" />
     <Resource Include="Resources\splash.png" />
     <Resource Include="Resources\vector-ducky-blur-1480.png" />

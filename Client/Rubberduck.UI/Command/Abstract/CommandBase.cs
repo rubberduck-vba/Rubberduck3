@@ -20,7 +20,10 @@ namespace Rubberduck.UI.Command.Abstract
             OnExecuteCondition = parameter => true;
 
             ShortcutText = string.Empty;
+            Name = GetType().Name;
         }
+
+        public string Name { get; init; }
 
         protected UIServiceHelper Service => _service;
         protected abstract Task OnExecuteAsync(object? parameter);
@@ -64,17 +67,18 @@ namespace Rubberduck.UI.Command.Abstract
             _service.TryRunAction(() =>
             {
                 allowExecute = CanExecuteCondition(parameter);
-            }, $"{GetType().Name}.CanExecute");
+            }, $"{Name}.CanExecute");
 
             return allowExecute;
         }
 
         public void Execute(object? parameter)
         {
-            _service.TryRunAction(async () =>
+            _service.LogDebug($"Executing command: {Name}");
+            _service.TryRunAction(() =>
             {
-                await OnExecuteAsync(parameter);
-            }, $"{GetType().Name}.Execute");
+                _ = OnExecuteAsync(parameter);
+            }, $"{Name}.Execute");
         }
 
         public string ShortcutText { get; set; }

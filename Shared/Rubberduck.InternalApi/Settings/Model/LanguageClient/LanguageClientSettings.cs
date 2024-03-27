@@ -10,14 +10,13 @@ namespace Rubberduck.InternalApi.Settings.Model.LanguageClient;
 public record class LanguageClientSettings : TypedSettingGroup, IDefaultSettingsProvider<LanguageClientSettings>
 {
     private static readonly RubberduckSetting[] DefaultSettings =
-        new RubberduckSetting[]
-        {
+        [
             new RequireAddInHostSetting { Value = RequireAddInHostSetting.DefaultSettingValue },
             new RequireSavedHostSetting { Value = RequireSavedHostSetting.DefaultSettingValue },
             new LanguageClientStartupSettings { Value = LanguageClientStartupSettings.DefaultSettings },
             new ExitNotificationDelaySetting { Value = ExitNotificationDelaySetting.DefaultSettingValue },
             WorkspaceSettings.Default,
-        };
+        ];
 
     public LanguageClientSettings()
     {

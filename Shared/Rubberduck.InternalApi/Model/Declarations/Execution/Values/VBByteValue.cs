@@ -22,7 +22,7 @@ public record class VBByteValue : VBNumericTypedValue,
     public override int Size { get; } = 1;
     public override double NumericValue { get; init; }
 
-    public VBByteValue WithValue(double value)
+    public new VBByteValue WithValue(double value)
     {
         if (value > MaxValue.Value || value < MinValue.Value)
         {
@@ -31,5 +31,5 @@ public record class VBByteValue : VBNumericTypedValue,
         return this with { NumericValue = (byte)value };
     }
 
-    public new VBByteValue WithValue(int value) => WithValue((double)value);
+    public VBByteValue WithValue(int value) => WithValue((double)value);
 }

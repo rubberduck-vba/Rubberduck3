@@ -9,11 +9,11 @@ namespace Rubberduck.Editor.Commands
 {
     public class SaveAsProjectTemplateCommand : CommandBase
     {
-        private readonly IWorkspaceService _workspace;
+        private readonly IAppWorkspacesService _workspace;
         private readonly ITemplatesService _templates;
 
         public SaveAsProjectTemplateCommand(UIServiceHelper service,
-            IWorkspaceService workspace, ITemplatesService templates)
+            IAppWorkspacesService workspace, ITemplatesService templates)
             : base(service)
         {
             _workspace = workspace;

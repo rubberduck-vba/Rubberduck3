@@ -1,4 +1,4 @@
-﻿using Rubberduck.Editor.Shell.StatusBar;
+﻿using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
@@ -12,29 +12,41 @@ namespace Rubberduck.Editor.Shell.Document
     /// </summary>
     public abstract class DocumentTabViewModel : WindowViewModel, IDocumentTabViewModel
     {
-        public DocumentTabViewModel(Uri documentUri, string language, string title, string content, bool isReadOnly,
+        public DocumentTabViewModel(DocumentState state, bool isReadOnly,
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindowCommand,
             IDocumentStatusViewModel activeDocumentStatus)
             : base(showSettingsCommand, closeToolWindowCommand)
         {
-            _uri = documentUri;
-            _language = language;
-            _header = title;
+            _uri = state.Uri;
+            _header = state.Name;
             _isReadOnly = isReadOnly;
 
-            Title = title;
-            TextContent = content;
+            DocumentState = state;
+            TextContent = state.Text;
+            Title = state.Name;
 
             Status = activeDocumentStatus;
         }
+
+        private DocumentState _state;
+        public virtual DocumentState DocumentState
+        {
+            get => _state;
+            set
+            {
+                _state = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public abstract SupportedDocumentType DocumentType { get; }
 
         public IDocumentStatusViewModel Status { get; }
 
         private Uri _uri;
-        public Uri DocumentUri
+        public virtual Uri DocumentUri
         {
             get => _uri;
             set
@@ -47,33 +59,26 @@ namespace Rubberduck.Editor.Shell.Document
             }
         }
 
-        private string _language;
-        public string Language
-        {
-            get => _language;
-            set
-            {
-                if (_language != value)
-                {
-                    _language = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
         private string _textContent;
         public string TextContent
         {
             get => _textContent;
             set
             {
+                var wasNull = _textContent is null;
                 if (_textContent != value)
                 {
                     _textContent = value;
-                    OnPropertyChanged();
+                    if (!wasNull)
+                    {
+                        OnPropertyChanged();
+                        OnTextChanged();
+                    }
                 }
             }
         }
+
+        protected virtual void OnTextChanged() { }
 
         private bool _isReadOnly;
         public bool IsReadOnly
@@ -132,15 +137,15 @@ namespace Rubberduck.Editor.Shell.Document
             }
         }
 
-        private object _content;
+        private object? _contentControl;
         public object ContentControl
         {
-            get => _content;
+            get => _contentControl ?? throw new InvalidOperationException("Content control is not set");
             set
             {
-                if (_content != value)
+                if (_contentControl != value)
                 {
-                    _content = value;
+                    _contentControl = value ?? throw new ArgumentNullException(nameof(value));
                     OnPropertyChanged();
                 }
             }

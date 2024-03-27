@@ -1,4 +1,5 @@
 ﻿using Rubberduck.InternalApi.Settings.Model;
+using Rubberduck.Resources.v3;
 using System;
 using System.Collections.Generic;
 
@@ -15,9 +16,13 @@ namespace Rubberduck.UI.Shared.Settings.Abstract
         }
 
         public SettingDataType SettingDataType => _setting.SettingDataType;
+        public bool IsSettingGroup => false;
         public string Key => _setting.Key;
-        public string Name => _setting.Key; // TODO fetch from resources
-        public string Description => _setting.Key; // TODO fetch from resources
+        public bool ShowSettingGroup { get; set; }
+        public string SettingGroupKey { get; set; }
+        public string SettingGroupName => SettingsUI.ResourceManager.GetString($"{SettingGroupKey}_Title") ?? $"[missing key:{SettingGroupKey}_Title]";
+        public string Name => SettingsUI.ResourceManager.GetString($"{_setting.Key}_Title") ?? $"[missing key:{_setting.Key}_Title]";
+        public string Description => SettingsUI.ResourceManager.GetString($"{_setting.Key}_Description") ?? $"[missing key:{_setting.Key}_Description]";
         public SettingTags Tags => _setting.Tags;
 
         private bool _isEnabled;
@@ -33,6 +38,10 @@ namespace Rubberduck.UI.Shared.Settings.Abstract
                 }
             }
         }
+
+        public bool IsSearchResult(string search) =>
+            Name.Contains(search, System.StringComparison.InvariantCultureIgnoreCase)
+            || Description.Contains(search, System.StringComparison.InvariantCultureIgnoreCase);
 
         public abstract RubberduckSetting ToSetting();
 

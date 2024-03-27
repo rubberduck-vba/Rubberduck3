@@ -1,7 +1,7 @@
-﻿using Rubberduck.UI.Command.SharedHandlers;
+﻿using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
+using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
-using System;
 
 namespace Rubberduck.Editor.Shell.Document
 {
@@ -10,11 +10,11 @@ namespace Rubberduck.Editor.Shell.Document
     /// </summary>
     public class TextDocumentTabViewModel : DocumentTabViewModel
     {
-        public TextDocumentTabViewModel(Uri documentUri, string title, string content, bool isReadOnly,
+        public TextDocumentTabViewModel(DocumentState state, bool isReadOnly,
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindowCommand,
             IDocumentStatusViewModel activeDocumentStatus)
-            : base(documentUri, "text/plain", title, content, isReadOnly, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus)
+            : base(state, isReadOnly, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus)
         {
         }
 

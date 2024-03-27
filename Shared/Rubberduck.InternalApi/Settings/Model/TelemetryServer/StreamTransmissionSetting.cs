@@ -9,6 +9,6 @@ public record class StreamTransmissionSetting : BooleanRubberduckSetting
 
     public StreamTransmissionSetting()
     {
-        DefaultValue = DefaultSettingValue;
+        Value = DefaultValue = DefaultSettingValue;
     }
 }

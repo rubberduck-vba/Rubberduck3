@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CommandLine;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server.WorkDone;
 using OmniSharp.Extensions.LanguageServer.Server;
@@ -12,6 +15,7 @@ using Rubberduck.InternalApi.Settings;
 using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.InternalApi.Settings.Model.LanguageClient;
 using Rubberduck.InternalApi.Settings.Model.LanguageServer;
+using Rubberduck.LanguageServer.Handlers.Document;
 using Rubberduck.LanguageServer.Handlers.Language;
 using Rubberduck.LanguageServer.Handlers.Lifecycle;
 using Rubberduck.LanguageServer.Handlers.Workspace;
@@ -50,7 +54,7 @@ namespace Rubberduck.LanguageServer
 
             var provider = services.BuildServiceProvider();
             var logger = provider.GetRequiredService<ILogger<ServerApp>>();
-            var app = provider.GetRequiredService<IWorkspaceService>();
+            var app = provider.GetRequiredService<IAppWorkspacesService>();
 
             if (!string.IsNullOrWhiteSpace(StartupOptions.WorkspaceRoot))
             {
@@ -59,12 +63,12 @@ namespace Rubberduck.LanguageServer
                 logger.LogInformation("Workspace was loaded successfully.");
 
                 var service = provider.GetRequiredService<WorkspacePipeline>();
-                var task = service.StartAsync(uri, TokenSource);
+                var task = service.StartAsync(null, uri, TokenSource);
 
                 await task;
                 logger.LogInformation($"Workspace was processed: {task.Status}");
 
-                var workspace = app.State.ActiveWorkspace!;
+                var workspace = app.Workspaces.ActiveWorkspace!;
                 logger.LogInformation($"{workspace.ExecutionContext.UnresolvedSymbols.Count} unresolved symbols.");
             }
 
@@ -76,6 +80,7 @@ namespace Rubberduck.LanguageServer
 
         protected override void ConfigureServices(ServerStartupOptions options, IServiceCollection services)
         {
+            services.AddSingleton<Func<ILanguageServer>>(provider => () => Server);
             services.AddSingleton<ServerStartupOptions>(provider => options);
 
             if (options.ClientProcessId > 0)
@@ -85,25 +90,29 @@ namespace Rubberduck.LanguageServer
             }
 
             services.AddSingleton<SupportedLanguage>(provider => SupportedLanguage.VBA);
+            services.AddSingleton<TextDocumentSelector>(provider => provider.GetRequiredService<SupportedLanguage>().ToTextDocumentSelector());
 
             services.AddSingleton<IFileSystem, FileSystem>();
             services.AddSingleton<PerformanceRecordAggregator>();
 
             services.AddSingleton<IProjectFileService, ProjectFileService>();
 
-            services.AddSingleton<IWorkspaceService, WorkspaceService>();
-            services.AddSingleton<IWorkspaceStateManager, WorkspaceStateManager>();
+            services.AddSingleton<IAppWorkspacesService, AppWorkspacesService>();
+            services.AddSingleton<IAppWorkspacesStateManager, WorkspaceStateManager>();
             services.AddSingleton<ISyntaxErrorMessageService, SyntaxErrorMessageService>();
+            
             services.AddSingleton<WorkspacePipeline>();
+            services.AddSingleton<DocumentPipeline>();
+
             services.AddSingleton<LibrarySymbolsService>();
             services.AddSingleton<IComLibraryProvider, ComLibraryProvider>();
             services.AddSingleton<ParserPipelineSectionProvider>();
-            services.AddTransient<WorkspaceDocumentParserOrchestrator>();
             services.AddTransient<DocumentParserSection>();
             services.AddTransient<DocumentMemberSymbolsSection>();
             services.AddTransient<DocumentHierarchicalSymbolsSection>();
 
             services.AddSingleton<PipelineParseTreeSymbolsService>();
+            services.AddSingleton<FoldingRangesParseTreeService>();
             services.AddSingleton<IResolverService, ResolverService>();
             services.AddSingleton<PipelineParserService>();
             services.AddSingleton<IParser<string>, TokenStreamParserAdapterWithPreprocessing<string>>();
@@ -127,6 +136,9 @@ namespace Rubberduck.LanguageServer
             services.AddSingleton<DocumentContentStore>();
 
             services.AddSingleton<IExitHandler, ExitHandler>();
+            services.AddSingleton<DidOpenTextDocumentHandler>();
+            services.AddSingleton<DidCloseTextDocumentHandler>();
+            services.AddSingleton<DidChangeTextDocumentHandler>();
 
             services.AddSingleton<IWorkDoneProgressStateService, WorkDoneProgressStateService>();
             services.AddSingleton<ISettingsChangedHandler<RubberduckSettings>>(provider => provider.GetRequiredService<RubberduckSettingsProvider>());
@@ -139,40 +151,41 @@ namespace Rubberduck.LanguageServer
                 .WithHandler<ShutdownHandler>()
                 .WithHandler<ExitHandler>()
 
-                //.OnDidOpenTextDocument(HandleDidOpenTextDocument, GetTextDocumentOpenRegistrationOptions)
+                /*/ Workspace
+                    .WithHandler<DidChangeConfigurationHandler>()
+                    .WithHandler<DidChangeWatchedFileHandler>()
+                    .WithHandler<DidChangeWorkspaceFoldersHandler>()
+                    .WithHandler<DidCreateFileHandler>()
+                    .WithHandler<DidDeleteFileHandler>()
+                    .WithHandler<DidRenameFileHandler>()
+                    .WithHandler<ExecuteCommandHandler>()
+                    .WithHandler<SymbolInformationHandler>()
+                    .WithHandler<WorkspaceDiagnosticHandler>()
+                    .WithHandler<WorkspaceSymbolResolveHandler>()
+                    .WithHandler<WorkspaceSymbolsHandler>()
+                */
 
-            /*/ Workspace
-                .WithHandler<DidChangeConfigurationHandler>()
-                .WithHandler<DidChangeWatchedFileHandler>()
-                .WithHandler<DidChangeWorkspaceFoldersHandler>()
-                .WithHandler<DidCreateFileHandler>()
-                .WithHandler<DidDeleteFileHandler>()
-                .WithHandler<DidRenameFileHandler>()
-                .WithHandler<ExecuteCommandHandler>()
-                .WithHandler<SymbolInformationHandler>()
-                .WithHandler<WorkspaceDiagnosticHandler>()
-                .WithHandler<WorkspaceSymbolResolveHandler>()
-                .WithHandler<WorkspaceSymbolsHandler>()
-            */
-
-            /*/ TextDocument
-                .WithHandler<CallHierarchyHandler>()
-                .WithHandler<CodeActionHandler>()
-                .WithHandler<CodeActionResolveHandler>()
-                .WithHandler<CodeLensHandler>()
-                .WithHandler<ColorPresentationHandler>()
-                .WithHandler<CompletionHandler>()
-                .WithHandler<DeclarationHandler>()
-                .WithHandler<DefinitionHandler>()
-                .WithHandler<DocumentColorHandler>()
+                /*/ TextDocument
+                    .WithHandler<CallHierarchyHandler>()
+                    .WithHandler<CodeActionHandler>()
+                    .WithHandler<CodeActionResolveHandler>()
+                    .WithHandler<CodeLensHandler>()
+                    .WithHandler<ColorPresentationHandler>()
+                    .WithHandler<CompletionHandler>()
+                    .WithHandler<DeclarationHandler>()
+                    .WithHandler<DefinitionHandler>()
+                    .WithHandler<DocumentColorHandler>()
+                    .WithHandler<DocumentFormattingHandler>()
+                    .WithHandler<DocumentHighlightHandler>()
+                    .WithHandler<DocumentOnTypeFormattingHandler>()
+                    .WithHandler<DocumentRangeFormattingHandler>()
+                */
                 .WithHandler<DocumentDiagnosticHandler>()
-                .WithHandler<DocumentFormattingHandler>()
-                .WithHandler<DocumentHighlightHandler>()
-                .WithHandler<DocumentOnTypeFormattingHandler>()
-                .WithHandler<DocumentRangeFormattingHandler>()
-            */
                 .WithHandler<DocumentSymbolHandler>()
                 .WithHandler<FoldingRangeHandler>()
+                .WithHandler<DidOpenTextDocumentHandler>()
+                .WithHandler<DidCloseTextDocumentHandler>()
+                .WithHandler<DidChangeTextDocumentHandler>()
             /*
                 .WithHandler<HoverHandler>()
                 .WithHandler<ImplementationHandler>()
@@ -183,7 +196,6 @@ namespace Rubberduck.LanguageServer
                 .WithHandler<SemanticTokensHandler>()
                 .WithHandler<SemanticTokensFullHandler>()
                 .WithHandler<SignatureHelpHandler>()
-                .WithHandler<TextDocumentSyncHandler>()
                 .WithHandler<TypeDefinitionHandler>()
                 .WithHandler<TypeHierarchyHandler>()
             */
@@ -192,17 +204,19 @@ namespace Rubberduck.LanguageServer
 
         protected async override Task OnServerStartedAsync(ILanguageServer server, CancellationToken token, IWorkDoneObserver? progress, ServerPlatformServiceHelper service)
         {
-            var workspaces = server.GetRequiredService<IWorkspaceService>();
+            var workspaces = server.GetRequiredService<IAppWorkspacesService>();
 
             var state = (ILanguageServerState)ServerState;
             var rootUriString = state.RootUri!.GetFileSystemPath();
+
             service.LogTrace($"ServerState RootUri: {rootUriString}");
             var rootUri = new Uri(rootUriString);
 
             if (await workspaces.OpenProjectWorkspaceAsync(rootUri))
             {
-                var pipeline = server.GetRequiredService<WorkspaceDocumentParserOrchestrator>();
-                await pipeline.StartAsync(new WorkspaceFileUri(null!, state.RootUri.ToUri()), new CancellationTokenSource())
+                var pipeline = server.GetRequiredService<WorkspacePipeline>();
+                
+                await pipeline.StartAsync(server, new WorkspaceFileUri(null!, state.RootUri.ToUri()), new CancellationTokenSource())
                     .ContinueWith(t =>
                     {
                         progress?.OnCompleted();
@@ -212,7 +226,10 @@ namespace Rubberduck.LanguageServer
                         }
                     }, token, TaskContinuationOptions.None, TaskScheduler.Default);
 
-                service.LogInformation($"Project {pipeline.State.ProjectName} ({pipeline.State.WorkspaceFiles.Count()} files) is good to go!");
+                if (pipeline.State != null)
+                {
+                    service.LogInformation($"Project {pipeline.State.ProjectName} ({pipeline.State.WorkspaceFiles.Count()} files) is good to go!");
+                }
             }
             else
             {

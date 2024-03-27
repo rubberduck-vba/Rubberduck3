@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using Dragablz;
-using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
 using Rubberduck.UI.Chrome;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
@@ -34,24 +33,5 @@ namespace Rubberduck.UI.Shell
         ItemActionCallback ClosingTabItemHandler { get; }
 
         IDocumentTabViewModel ActiveDocumentTab { get; set; }
-    }
-
-    public interface IToolPanelViewModel
-    {
-        /// <summary>
-        /// The location of the tool panel.
-        /// </summary>
-        DockingLocation PanelLocation { get; }
-
-        /// <summary>
-        /// Whether the tool panel is currently expanded.
-        /// </summary>
-        bool IsExpanded { get; set; }
-
-        /// <summary>
-        /// Whether the tool panel remains expanded on mouse leave.
-        /// </summary>
-        bool IsPinned { get; set; }
-        bool IsDocked => PanelLocation != DockingLocation.None;
     }
 }

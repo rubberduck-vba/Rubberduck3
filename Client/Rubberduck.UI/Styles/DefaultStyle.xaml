@@ -19,13 +19,14 @@
     <Color x:Key="ThemeWhiteDarkColor">#FFA9A9A9</Color>
     <Color x:Key="ThemeWhiteMediumColor">#FFD3D3D3</Color>
     <Color x:Key="ThemeWhiteLightColor">#FFFFFFFF</Color>
-    <Color x:Key="ThemeWhiteDarkColor50">#0FA9A9A9</Color>
-    <Color x:Key="ThemeWhiteMediumColor50">#0FD3D3D3</Color>
-    <Color x:Key="ThemeWhiteLightColor75">#A0FFFFFF</Color>
-    <Color x:Key="ThemeWhiteLightColor50">#0FFFFFFF</Color>
-    <Color x:Key="ThemeWhiteDarkColor25">#08A9A9A9</Color>
-    <Color x:Key="ThemeWhiteMediumColor25">#08D3D3D3</Color>
-    <Color x:Key="ThemeWhiteLightColor25">#08FFFFFF</Color>
+    <Color x:Key="ThemeWhiteDarkColor50">#80A9A9A9</Color>
+    <Color x:Key="ThemeWhiteMediumColor50">#80D3D3D3</Color>
+    <Color x:Key="ThemeWhiteLightColor75">#C0FFFFFF</Color>
+    <Color x:Key="ThemeWhiteLightColor65">#A5FFFFFF</Color>
+    <Color x:Key="ThemeWhiteLightColor50">#80FFFFFF</Color>
+    <Color x:Key="ThemeWhiteDarkColor25">#40A9A9A9</Color>
+    <Color x:Key="ThemeWhiteMediumColor25">#40D3D3D3</Color>
+    <Color x:Key="ThemeWhiteLightColor25">#40FFFFFF</Color>
 
     <SolidColorBrush x:Key="ThemeWhiteDarkColorBrush" Color="{DynamicResource ThemeWhiteDarkColor}" />
     <SolidColorBrush x:Key="ThemeWhiteMediumColorBrush" Color="{DynamicResource ThemeWhiteMediumColor}" />
@@ -41,13 +42,13 @@
     <Color x:Key="ThemeBlackDarkColor">#FF1E1E1E</Color>
     <Color x:Key="ThemeBlackMediumColor">#FF2E2E2E</Color>
     <Color x:Key="ThemeBlackLightColor">#FF333333</Color>
-    <Color x:Key="ThemeBlackDarkColor75">#A01E1E1E</Color>
-    <Color x:Key="ThemeBlackDarkColor50">#C01E1E1E</Color>
-    <Color x:Key="ThemeBlackMediumColor50">#0F2E2E2E</Color>
-    <Color x:Key="ThemeBlackLightColor50">#C0333333</Color>
-    <Color x:Key="ThemeBlackDarkColor25">#0F1E1E1E</Color>
-    <Color x:Key="ThemeBlackMediumColor25">#0F2E2E2E</Color>
-    <Color x:Key="ThemeBlackLightColor25">#0F333333</Color>
+    <Color x:Key="ThemeBlackDarkColor75">#C01E1E1E</Color>
+    <Color x:Key="ThemeBlackDarkColor50">#801E1E1E</Color>
+    <Color x:Key="ThemeBlackMediumColor50">#802E2E2E</Color>
+    <Color x:Key="ThemeBlackLightColor50">#80333333</Color>
+    <Color x:Key="ThemeBlackDarkColor25">#401E1E1E</Color>
+    <Color x:Key="ThemeBlackMediumColor25">#402E2E2E</Color>
+    <Color x:Key="ThemeBlackLightColor25">#40333333</Color>
 
     <SolidColorBrush x:Key="ThemeBlackDarkColorBrush" Color="{DynamicResource ThemeBlackDarkColor}" />
     <SolidColorBrush x:Key="ThemeBlackMediumColorBrush" Color="{DynamicResource ThemeBlackMediumColor}" />
@@ -60,7 +61,7 @@
     <SolidColorBrush x:Key="ThemeBlackMediumColorBrush25" Color="{DynamicResource ThemeBlackMediumColor25}" />
     <SolidColorBrush x:Key="ThemeBlackLightColorBrush25" Color="{DynamicResource ThemeBlackLightColor25}" />
 
-    <converters:WrapPanelItemWidthConverter x:Key="WrapPanelItemWidthConverter" />
+    <converters:WrapPanelItemWidthMultiConverter x:Key="WrapPanelItemWidthMultiConverter" />
     <converters:BoolToVisibleVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
     <converters:InvertBoolValueConverter x:Key="InverseBoolConverter" />
@@ -373,35 +374,35 @@
 
     <Style x:Key="WindowTitleLabelStyle" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
         <Style.Setters>
-            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontSize" Value="18" />
         </Style.Setters>
     </Style>
 
     <Style x:Key="FormTitleLabelStyle" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
         <Style.Setters>
-            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontSize" Value="18" />
         </Style.Setters>
     </Style>
 
     
     <Style x:Key="FormLabelStyleMedium" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
         <Style.Setters>
-            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontSize" Value="16" />
         </Style.Setters>
     </Style>
 
     <Style x:Key="FormLabelStyleSmall" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
         <Style.Setters>
-            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontSize" Value="14" />
         </Style.Setters>
     </Style>
 
     <Style x:Key="FormFieldValueLabelStyle" TargetType="Label">
         <Style.Setters>
             <Setter Property="BorderBrush" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
-            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontSize" Value="14" />
             <Setter Property="Height" Value="24" />
-            <Setter Property="Foreground" Value="{DynamicResource ThemeTextInactiveColorBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
         </Style.Setters>
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
@@ -413,7 +414,7 @@
     <Style x:Key="TraceLogRecordLabelStyle" TargetType="Label">
         <Style.Setters>
             <Setter Property="BorderBrush" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
-            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontSize" Value="12" />
             <Setter Property="FontWeight" Value="Light" />
             <Setter Property="FontFamily" Value="Cascadia Mono" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
@@ -427,19 +428,19 @@
 
     <Style x:Key="FormFieldDescriptionLabelStyle" TargetType="Label">
         <Style.Setters>
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="Foreground" Value="{DynamicResource ThemeTextInactiveColorBrush}" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
         </Style.Setters>
     </Style>
     
     <Style x:Key="FormFieldTextBoxStyle" TargetType="TextBox">
         <Style.Setters>
             <Setter Property="Padding" Value="4,0" />
-            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontSize" Value="14" />
             <Setter Property="Height" Value="24" />
             <Setter Property="MaxLines" Value="1" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
         </Style.Setters>
         <Style.Triggers>
@@ -457,13 +458,16 @@
     <Style x:Key="FormFieldReadOnlyTextBoxStyle" TargetType="TextBox">
         <Style.Setters>
             <Setter Property="Padding" Value="4,0" />
-            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontSize" Value="14" />
             <Setter Property="Height" Value="24" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
         </Style.Setters>
         <Style.Triggers>
+            <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="False">
+                <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
+            </DataTrigger>
             <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
                 <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
             </DataTrigger>
@@ -478,6 +482,7 @@
             <Setter Property="Height" Value="24" />
             <Setter Property="Background" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
+            <Setter Property="FontSize" Value="14" />
         </Style.Setters>
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}">
@@ -495,23 +500,23 @@
     
     <Style x:Key="SectionTitleLabelStyle" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
         <Style.Setters>
-            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontSize" Value="18" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style.Setters>
     </Style>
 
     <Style x:Key="SectionBorderStyle" TargetType="Border">
         <Style.Setters>
-            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundMediumColorBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBackgroundDarkColorBrush}" />
-            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="8" />
             <Setter Property="Padding" Value="10,10,10,10" />
         </Style.Setters>
     </Style>
 
     <Style x:Key="SectionExpanderHeaderStyle" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Regular" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
     </Style>
@@ -613,4 +618,140 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="FlatToggleButtonStyle" TargetType="shell:FlatToggleButton">
+        <Style.Setters>
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Margin" Value="1,0" />
+            <Setter Property="MinHeight" Value="16" />
+            <Setter Property="MinWidth" Value="20" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}"/>
+        </Style.Setters>
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Background" Value="{DynamicResource ThemeWhiteMediumColorBrush}" />
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+                    <Setter Property="Cursor" Value="Hand" />
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+            <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <DataTrigger.Setters>
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1MediumColorBrush}" />
+                </DataTrigger.Setters>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <DataTrigger.Setters>
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1MediumColorBrush}" />
+                </DataTrigger.Setters>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="False">
+                <DataTrigger.Setters>
+                    <Setter Property="Background" Value="{DynamicResource ThemeWhiteMediumColorBrush}" />
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeTextInactiveColorBrush}" />
+                </DataTrigger.Setters>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+
+    <ControlTemplate x:Key="FlatButtonTemplate" TargetType="Button">
+        <ControlTemplate.Resources>
+            <Style TargetType="Button">
+                <Setter Property="Foreground" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+                <Setter Property="shell:FlatButton.HighlightBrush" Value="{DynamicResource ThemeAccent1MediumColorBrush}" />
+                <Setter Property="shell:FlatButton.HoverBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+            </Style>
+        </ControlTemplate.Resources>
+        <DockPanel>
+            <Canvas Background="Transparent" DockPanel.Dock="Left">
+                <Image x:Name="CanvasIcon" 
+                           Source="{Binding Icon, RelativeSource={RelativeSource AncestorType=shell:FlatButton, Mode=FindAncestor}}"
+                           Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Stretch="Uniform" 
+                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                <Rectangle Fill="{TemplateBinding Foreground}"
+                               Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Stretch="Uniform"
+                               HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Rectangle.Style>
+                        <Style TargetType="Rectangle">
+                            <Style.Setters>
+                                <Setter Property="Fill" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=shell:FlatButton, Mode=FindAncestor}}" />
+                            </Style.Setters>
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=shell:FlatButton, Mode=FindAncestor}}" Value="True" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Fill" Value="{Binding HoverBrush, RelativeSource={RelativeSource AncestorType=shell:FlatButton, Mode=FindAncestor}}" />
+                                        <Setter Property="Cursor" Value="Hand" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType=shell:FlatButton, Mode=FindAncestor}}" Value="True" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Fill" Value="{Binding HighlightBrush, RelativeSource={RelativeSource AncestorType=shell:FlatButton, Mode=FindAncestor}}" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                    <Rectangle.OpacityMask>
+                        <ImageBrush Stretch="Uniform" ImageSource="{TemplateBinding shell:FlatButton.Icon}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Canvas>
+            <ContentControl Content="{TemplateBinding Content}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
+        </DockPanel>
+        <ControlTemplate.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Background" Value="{DynamicResource ThemeWhiteMediumColorBrush}" />
+                    <Setter Property="Foreground" Value="{Binding HoverBrush, RelativeSource={RelativeSource Mode=Self}}" />
+                    <Setter Property="Cursor" Value="Hand" />
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Foreground" Value="{Binding HighlightBrush, RelativeSource={RelativeSource Mode=Self}}" />
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="False" />
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Background" Value="{DynamicResource ThemeBackgroundInactiveColorBrush}" />
+                    <Setter Property="Foreground" Value="{DynamicResource ThemeTextInactiveColorBrush}" />
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+    <Style x:Key="FlatButtonStyle" TargetType="Button">
+        <Style.Setters>
+            <Setter Property="Template" Value="{DynamicResource FlatButtonTemplate}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBlackLightColorBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundColorBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeWhiteDarkColorBrush}" />
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Width" Value="16" />
+            <Setter Property="shell:FlatButton.HighlightBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
+            <Setter Property="shell:FlatButton.HoverBrush" Value="{DynamicResource ThemeAccent1LightColorBrush}" />
+        </Style.Setters>
+    </Style>
 </ResourceDictionary>

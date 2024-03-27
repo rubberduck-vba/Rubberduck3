@@ -1,8 +1,8 @@
-﻿using Rubberduck.InternalApi.Settings.Model.Editor;
+﻿using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
+using Rubberduck.InternalApi.Settings.Model.Editor;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
-using System;
 
 namespace Rubberduck.Editor.Shell.Document
 {
@@ -11,13 +11,13 @@ namespace Rubberduck.Editor.Shell.Document
     /// </summary>
     public class MarkdownDocumentTabViewModel : DocumentTabViewModel
     {
-        public MarkdownDocumentTabViewModel(Uri documentUri, string title, string content, bool isReadOnly,
+        public MarkdownDocumentTabViewModel(DocumentState state, bool isReadOnly,
             ShowRubberduckSettingsCommand showSettingsCommand,
             CloseToolWindowCommand closeToolWindowCommand,
             IDocumentStatusViewModel activeDocumentStatus)
-            : base(documentUri, "md/html", title, content, isReadOnly, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus)
+            : base(state, isReadOnly, showSettingsCommand, closeToolWindowCommand, activeDocumentStatus)
         {
-            SettingKey = nameof(EditorSettings);
+            SettingKey = nameof(ShowWelcomeTabSetting);
         }
 
         public override SupportedDocumentType DocumentType => SupportedDocumentType.MarkdownDocument;

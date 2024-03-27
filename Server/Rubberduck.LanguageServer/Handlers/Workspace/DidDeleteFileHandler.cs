@@ -26,6 +26,7 @@ namespace Rubberduck.LanguageServer.Handlers.Workspace
 
         public async override Task<Unit> Handle(DidDeleteFileParams request, CancellationToken cancellationToken)
         {
+            /*
             cancellationToken.ThrowIfCancellationRequested();
 
             var tasks = request.Files.Select(file =>
@@ -38,6 +39,7 @@ namespace Rubberduck.LanguageServer.Handlers.Workspace
             });
 
             await Task.WhenAll(tasks);
+            */
             return Unit.Value;
         }
 

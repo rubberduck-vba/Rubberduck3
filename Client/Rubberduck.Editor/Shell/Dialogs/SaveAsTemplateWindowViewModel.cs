@@ -1,4 +1,5 @@
-﻿using Rubberduck.UI.Command.SharedHandlers;
+﻿using Rubberduck.UI.Chrome;
+using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Shell.Tools.WorkspaceExplorer;
 using Rubberduck.UI.Windows;
@@ -14,8 +15,9 @@ namespace Rubberduck.Editor.Shell.Dialogs
 
         public SaveAsTemplateWindowViewModel(UIServiceHelper service, MessageActionCommand[] actions,
             IEnumerable<IWorkspaceFileViewModel> files,
-            IFileSystem fileSystem)
-            : base(service, "Export Project Template", actions)
+            IFileSystem fileSystem,
+            IWindowChromeViewModel chrome)
+            : base(service, "Export Project Template", actions, chrome)
         {
             _fileSystem = fileSystem;
             TemplateFiles = files;

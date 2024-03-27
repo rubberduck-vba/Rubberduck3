@@ -8,9 +8,9 @@ namespace Rubberduck.Editor.Commands
 {
     public class ExitCommand : CommandBase
     {
-        private readonly IWorkspaceService _workspace;
+        private readonly IAppWorkspacesService _workspace;
 
-        public ExitCommand(UIServiceHelper service, IWorkspaceService workspace)
+        public ExitCommand(UIServiceHelper service, IAppWorkspacesService workspace)
             : base(service)
         {
             _workspace = workspace;

@@ -37,20 +37,7 @@ namespace Rubberduck.Editor.RPC.LanguageServerClient.Handlers
             {
                 _service.TryRunAction(() =>
                 {
-                    var model = MessageModel.FromShowMessageParams(request.Message, level);
-                    var result = _messages.ShowMessage(model);
-                    if (result != MessageActionResult.Disabled)
-                    {
-                        var generalSettings = _service.Settings.GeneralSettings;
-                        if (result.MessageAction.IsDefaultAction)
-                        {
-                            DisabledMessageKeysSetting.DisableMessageKey(model.Key, _service.SettingsProvider);
-                        }
-                    }
-                    else
-                    {
-                        _service.LogTrace("Key is disabled, message was not shown.", $"Key: '{model.Key}'");
-                    }
+                    _messages.ShowMessage(MessageModel.FromShowMessageParams(request.Message, level));
                 }, nameof(ShowMessageHandler));
             }
             else

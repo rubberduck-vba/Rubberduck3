@@ -21,6 +21,7 @@ namespace Rubberduck.UI.Shared.Settings.Templates
         {
             [SettingDataType.BooleanSetting] = BooleanSettingTemplate,
             [SettingDataType.EnumValueSetting] = EnumValueSettingTemplate,
+            [SettingDataType.EnumSettingGroup] = SettingSubGroupTemplate,
             [SettingDataType.ListSetting] = ListSettingTemplate,
             [SettingDataType.NumericSetting] = NumericSettingTemplate,
             [SettingDataType.SettingGroup] = SettingSubGroupTemplate,

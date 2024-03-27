@@ -9,9 +9,9 @@ namespace Rubberduck.Parsing._v3.Pipeline;
 
 public class ResolverService : ServiceBase, IResolverService
 {
-    private readonly IWorkspaceStateManager _workspaces;
+    private readonly IAppWorkspacesStateManager _workspaces;
 
-    public ResolverService(IWorkspaceStateManager workspaces,
+    public ResolverService(IAppWorkspacesStateManager workspaces,
         ILogger<ResolverService> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
         : base(logger, settingsProvider, performance)
     {

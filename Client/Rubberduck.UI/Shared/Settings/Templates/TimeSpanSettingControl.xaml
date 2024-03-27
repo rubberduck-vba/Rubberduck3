@@ -7,7 +7,6 @@
              xmlns:viewmodels="clr-namespace:Rubberduck.UI.Shared.Settings" 
              xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
              xmlns:b="clr-namespace:Rubberduck.UI.Behaviors"
-             Background="{DynamicResource ThemeBackgroundColorBrush}"
              Padding="4" MinHeight="96" 
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -20,6 +19,11 @@
     </UserControl.Resources>
     <Border Style="{DynamicResource SectionBorderStyle}">
         <DockPanel LastChildFill="True">
+            <Label DockPanel.Dock="Bottom" Style="{DynamicResource FormFieldNameLabelStyle}" Margin="0,0" IsEnabled="{Binding IsEnabled}"
+                       HorizontalAlignment="Right"
+                       Visibility="{Binding ShowSettingGroup, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Margin="0,0,0,4" Text="{Binding SettingGroupName}" TextWrapping="Wrap" />
+            </Label>
             <DockPanel DockPanel.Dock="Top">
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
                                         Height="16" Width="20" OffsetX="2"
@@ -37,6 +41,7 @@
                 </Label>
             </ScrollViewer>
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="4">
+                <Image Source="{DynamicResource StopwatchIcon}" Height="16" Width="24" />
                 <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Hours}" HorizontalContentAlignment="Center" ToolTip="Hours" IsEnabled="{Binding IsEnabled}" />
                 <TextBlock Text=":" VerticalAlignment="Center" Margin="2" />
                 <TextBox b:Masking.Mask="\d" MaxLength="2" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="32" Height="24" Text="{Binding Minutes}" HorizontalContentAlignment="Center" ToolTip="Minutes" IsEnabled="{Binding IsEnabled}" />

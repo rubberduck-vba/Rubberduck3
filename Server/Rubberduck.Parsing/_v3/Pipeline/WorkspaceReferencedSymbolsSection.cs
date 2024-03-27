@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
 using Rubberduck.InternalApi.Model.Workspace;
@@ -12,15 +13,17 @@ namespace Rubberduck.Parsing._v3.Pipeline;
 
 public class WorkspaceReferencedSymbolsSection : DataflowPipelineSection<WorkspaceUri, IWorkspaceState>
 {
-    private IWorkspaceStateManager _workspaces;
+    private IAppWorkspacesStateManager _workspaces;
     private readonly LibrarySymbolsService _librarySymbolsService;
+    private readonly ILanguageServer _server;
 
-    public WorkspaceReferencedSymbolsSection(DataflowPipeline parent, IWorkspaceStateManager workspaces, LibrarySymbolsService librarySymbolsService,
-        ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
+    public WorkspaceReferencedSymbolsSection(DataflowPipeline parent, IAppWorkspacesStateManager workspaces, LibrarySymbolsService librarySymbolsService,
+        ILanguageServer server, ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance) 
         : base(parent, logger, settingsProvider, performance)
     {
         _workspaces = workspaces;
         _librarySymbolsService = librarySymbolsService;
+        _server = server;
     }
 
     private TransformBlock<WorkspaceUri, IWorkspaceState> AcquireWorkspaceStateBlock { get; set; } = default!;

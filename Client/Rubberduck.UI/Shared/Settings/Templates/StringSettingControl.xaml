@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:Rubberduck.UI.Shared.Settings.Templates" 
              xmlns:viewmodels="clr-namespace:Rubberduck.UI.Shared.Settings"
              xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
-             Background="{DynamicResource ThemeBackgroundColorBrush}"
              Padding="4" MinHeight="96"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -19,6 +18,11 @@
     </UserControl.Resources>
     <Border Style="{DynamicResource SectionBorderStyle}">
         <DockPanel LastChildFill="True">
+            <Label DockPanel.Dock="Bottom" Style="{DynamicResource FormFieldNameLabelStyle}" Margin="0,0" IsEnabled="{Binding IsEnabled}"
+                       HorizontalAlignment="Right"
+                       Visibility="{Binding ShowSettingGroup, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Margin="0,0,0,4" Text="{Binding SettingGroupName}" TextWrapping="Wrap" />
+            </Label>
             <DockPanel DockPanel.Dock="Top">
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
                                         Height="16" Width="20" OffsetX="2"
@@ -33,9 +37,10 @@
             <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldDescriptionLabelStyle}" Margin="4,0,4,4">
                 <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
             </Label>
-            <TextBox DockPanel.Dock="Left" HorizontalContentAlignment="Center"
+            <TextBox DockPanel.Dock="Left" HorizontalAlignment="Left" HorizontalContentAlignment="Center"
                      Style="{DynamicResource FormFieldTextBoxStyle}"
-                     Text="{Binding Value}" Margin="5,5,24,5" IsEnabled="{Binding IsEnabled}" />
+                     MinWidth="180" Width="Auto" Margin="10"
+                     Text="{Binding Value}" IsEnabled="{Binding IsEnabled}" />
         </DockPanel>
     </Border>
 </UserControl>

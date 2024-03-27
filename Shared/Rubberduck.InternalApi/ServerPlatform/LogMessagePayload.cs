@@ -12,11 +12,11 @@ public record class LogMessagePayload
         var message = e.FormattedMessage;
         string? verbose = null;
 
-        var i = message.IndexOf(LoggerExtensions.VerboseMessageSeparator);
+        var i = e.FormattedMessage.IndexOf(LoggerExtensions.VerboseMessageSeparator);
         if (i > 0)
         {
-            message = e.Message[..i].TrimEnd();
-            verbose = e.Message[(i + 1)..].TrimStart();
+            message = e.FormattedMessage.Substring(0, i).TrimEnd();
+            verbose = e.FormattedMessage.Substring(i + 1).TrimStart();
         }
 
         string? exception = null;

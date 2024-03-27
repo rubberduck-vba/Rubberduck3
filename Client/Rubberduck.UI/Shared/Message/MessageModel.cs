@@ -18,6 +18,20 @@ namespace Rubberduck.UI.Shared.Message
 
     public class MessageRequestModel : MessageModel
     {
+        public static MessageRequestModel For(LogLevel level, string key, string verbose, MessageAction[] actions)
+        {
+            return new()
+            {
+                Key = key,
+                Title = RubberduckUI.Rubberduck,
+                Message = Resources.v3.RubberduckMessages.ResourceManager.GetString(key) ?? $"[missing key:{key}]",
+                Verbose = verbose,
+                Level = level,
+
+                MessageActions = actions,
+            };
+        }
+
         public static MessageRequestModel For(LogLevel level, string message, MessageAction[] actions)
         {
             var model = FromShowMessageParams(message, level);
@@ -25,9 +39,8 @@ namespace Rubberduck.UI.Shared.Message
             {
                 Key = model.Key,
                 Title = model.Title,
-                Message = model.Message,
-                Verbose = model.Verbose,
-                Level = model.Level,
+                Message = message,
+                Level = level,
 
                 MessageActions = actions,
             };

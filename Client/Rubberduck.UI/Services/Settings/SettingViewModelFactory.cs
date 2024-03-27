@@ -1,7 +1,9 @@
 ﻿using Rubberduck.InternalApi.Settings.Model;
+using Rubberduck.InternalApi.Settings.Model.Editor.CodeFolding;
 using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
 using Rubberduck.InternalApi.Settings.Model.Logging;
 using Rubberduck.InternalApi.Settings.Model.ServerStartup;
+using Rubberduck.InternalApi.Settings.Model.TelemetryServer;
 using Rubberduck.UI.Shared.Settings;
 using Rubberduck.UI.Shared.Settings.Abstract;
 using System;
@@ -45,11 +47,17 @@ namespace Rubberduck.UI.Services.Settings
             return new SettingGroupViewModel(settingGroup, items);
         }
 
+        public ISettingGroupViewModel CreateViewModel(TypedRubberduckSetting<RubberduckSetting[]> settingGroup)
+        {
+            var items = settingGroup.TypedValue?.Cast<BooleanRubberduckSetting>().Select(e => CreateViewModel(e)).ToList() ?? Enumerable.Empty<ISettingViewModel>().ToList();
+            return new SettingGroupViewModel(settingGroup, items);
+        }
+
         public ISettingGroupViewModel CreateViewModel(TypedSettingGroup settingGroup)
         {
             if (settingGroup is RubberduckSettings root)
             {
-                var items = root.TypedValue.OfType<TypedSettingGroup>().Select(e => CreateViewModel(e)).ToList();
+                var items = root.TypedValue.OfType<TypedSettingGroup>().Select(CreateViewModel).ToList();
                 return new SettingGroupViewModel(root, items);
             }
             else
@@ -93,11 +101,11 @@ namespace Rubberduck.UI.Services.Settings
                 case TypedRubberduckSetting<TimeSpan> timeSpanSetting:
                     return CreateViewModel(timeSpanSetting);
                 case TypedRubberduckSetting<string[]> listSetting:
-                    return new ListSettingViewModel(_service, listSetting);
+                    return new StringListSettingViewModel(_service, listSetting);
                 case TypedSettingGroup subGroup:
                     return CreateViewModel(subGroup);
-                case TypedRubberduckSetting<BooleanRubberduckSetting[]> telemetrySettingGroup:
-                    return CreateViewModel(telemetrySettingGroup);
+                case MappedBoolSettingGroup mappedGroup:
+                    return CreateViewModel(mappedGroup);
                 default:
                     Debug.WriteLine($"**BUG** Missing case for '{setting.Key}' (data type: {setting.SettingDataType}) in SettingViewModelFactory.");
                     throw new NotSupportedException();

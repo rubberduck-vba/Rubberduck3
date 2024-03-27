@@ -1,11 +1,38 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
-using Rubberduck.Parsing.Model;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
 namespace Rubberduck.InternalApi.ServerPlatform.LanguageServer;
+
+public record class CodeDocumentState : DocumentState
+{
+    public CodeDocumentState(CodeDocumentState original) 
+        : base(original)
+    {
+        Language = original.Language;
+        Foldings = original.Foldings;
+        Diagnostics = original.Diagnostics;
+        Symbol = original.Symbol;
+    }
+
+    public CodeDocumentState(WorkspaceFileUri uri, SupportedLanguage language, string text, int version = 1, bool isOpened = false) 
+        : base(uri, text, version, isOpened)
+    {
+        Language = language;
+    }
+
+    public SupportedLanguage Language { get; init; }
+    public IReadOnlyCollection<FoldingRange> Foldings { get; init; } = [];
+    public IReadOnlyCollection<Diagnostic> Diagnostics { get; init; } = [];
+    public Symbol? Symbol { get; init; }
+
+    public CodeDocumentState WithLanguage(SupportedLanguage language) => this with { Language = language };
+    public CodeDocumentState WithFoldings(IEnumerable<FoldingRange> foldings) => this with { Foldings = foldings.ToImmutableHashSet() };
+    public CodeDocumentState WithDiagnostics(IEnumerable<Diagnostic> diagnostics) => this with { Diagnostics = diagnostics.ToImmutableHashSet() };
+    public CodeDocumentState WithSymbol(Symbol symbol) => this with { Symbol = symbol };
+}
 
 public record class DocumentState
 {
@@ -16,16 +43,11 @@ public record class DocumentState
 
     public DocumentState(DocumentState original)
     {
+        Id = original.Id;
         Uri = original.Uri;
         Text = original.Text;
         Version = original.Version;
         IsOpened = original.IsOpened;
-
-        Language = original.Language;
-        SyntaxErrors = original.SyntaxErrors;
-        Foldings = original.Foldings;
-        Diagnostics = original.Diagnostics;
-        Symbol = original.Symbol;
     }
 
     public DocumentState(WorkspaceFileUri uri, string text, int version = 1, bool isOpened = false)
@@ -35,7 +57,7 @@ public record class DocumentState
         Version = version;
         IsOpened = isOpened;
 
-        Language = SupportedLanguage.VBA;
+        Id = new TextDocumentIdentifier(uri.AbsoluteLocation);
     }
 
     public void Deconstruct(out WorkspaceFileUri uri, out string text)
@@ -44,6 +66,7 @@ public record class DocumentState
         text = Text;
     }
 
+    public TextDocumentIdentifier Id { get; }
     public WorkspaceFileUri Uri { get; init; }
     public string FileExtension => System.IO.Path.GetExtension(Uri.FileName);
     public string Name => Uri.FileNameWithoutExtension;
@@ -56,24 +79,18 @@ public record class DocumentState
 
     public bool IsModified => Version != 1;
 
-
-    public SupportedLanguage Language { get; init; }
-    public IImmutableSet<SyntaxErrorInfo> SyntaxErrors { get; init; } = [];
-    public IImmutableSet<FoldingRange> Foldings { get; init; } = [];
-    public IImmutableSet<Diagnostic> Diagnostics { get; init; } = [];
-    public Symbol? Symbol { get; init; }
-
-
+    /// <summary>
+    /// Gets a copy of this record with the specified <c>Uri</c>.
+    /// </summary>
     public DocumentState WithUri(WorkspaceFileUri uri) => this with { Uri = uri };
+    /// <summary>
+    /// Gets a copy of this record with the specified <c>Text</c> and an incremented <c>Version</c> number.
+    /// </summary>
     public DocumentState WithText(string text) => this with { Text = text, Version = Version + 1 };
+    /// <summary>
+    /// Gets a copy of this record with the <c>IsOpened</c> property as specified.
+    /// </summary>
     public DocumentState WithOpened(bool opened = true) => this with { IsOpened = opened };
-
-
-    public DocumentState WithLanguage(SupportedLanguage language) => this with { Language = language };
-    public DocumentState WithSyntaxErrors(IEnumerable<SyntaxErrorInfo> errors) => this with { SyntaxErrors = errors.ToImmutableHashSet() };
-    public DocumentState WithFoldings(IEnumerable<FoldingRange> foldings) => this with { Foldings = foldings.ToImmutableHashSet() };
-    public DocumentState WithDiagnostics(IEnumerable<Diagnostic> diagnostics) => this with { Diagnostics = diagnostics.ToImmutableHashSet() };
-    public DocumentState WithSymbol(Symbol module) => this with { Symbol = module };
 
 
     /// <summary>

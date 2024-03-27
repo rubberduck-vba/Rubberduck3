@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model.Declarations.Execution;
 using Rubberduck.InternalApi.Model.Declarations.Symbols;
@@ -11,20 +13,35 @@ using System.Linq;
 
 namespace Rubberduck.InternalApi.Services;
 
-public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
+public class WorkspaceStateManager : ServiceBase, IAppWorkspacesStateManager
 {
+    public event EventHandler<WorkspaceFileUriEventArgs> WorkspaceFileStateChanged = delegate { };
+
     private class ProjectStateManager : ServiceBase, IWorkspaceState
     {
         private readonly HashSet<Reference> _references = [];
         private readonly HashSet<Folder> _folders = [];
         private readonly DocumentContentStore _store;
 
+        public event EventHandler<WorkspaceFileUriEventArgs> WorkspaceFileStateChanged = delegate { };
+
         public ProjectStateManager(ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance,
             DocumentContentStore store)
             : base(logger, settingsProvider, performance)
         {
             _store = store;
+            _store.DocumentStateChanged += WorkspaceFileStateChanged.Invoke;
             ExecutionContext = new VBExecutionContext(logger, settingsProvider, performance);
+        }
+
+        public void PublishDiagnostics(int? version, DocumentUri documentUri, IEnumerable<Diagnostic> diagnostics)
+        {
+            var root = WorkspaceRoot ?? throw new InvalidOperationException("Workspace root is not set");            
+            var uri = documentUri.AsWorkspaceUri(root);
+            if (_store.TryGetDocument(uri, out var document) && document is CodeDocumentState state /*&& document.Version >= (version ?? document.Version)*/)
+            {
+                _store.AddOrUpdate(uri, state.WithDiagnostics(diagnostics));
+            }
         }
 
         public VBExecutionContext ExecutionContext { get; }
@@ -80,7 +97,24 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
             }
         }
 
-        public bool LoadWorkspaceFile(DocumentState file)
+        public IEnumerable<CodeDocumentState> SourceFiles
+        {
+            get
+            {
+                foreach (var file in _store.Enumerate().OfType<CodeDocumentState>())
+                {
+                    yield return file;
+                }
+            }
+        }
+
+        public bool LoadDocumentState(DocumentState file)
+        {
+            _store.AddOrUpdate(file.Uri, file);
+            return true;
+        }
+
+        public bool LoadDocumentState(CodeDocumentState file)
         {
             _store.AddOrUpdate(file.Uri, file);
             if (file.Symbol is TypedSymbol typedSymbol)
@@ -100,6 +134,21 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
         }
 
         public bool TryGetWorkspaceFile(WorkspaceFileUri uri, out DocumentState? state) => _store.TryGetDocument(uri, out state);
+        public bool TryGetSourceFile(WorkspaceFileUri uri, out CodeDocumentState? state)
+        {
+            var result = false;
+            state = null;
+
+            if (_store.TryGetDocument(uri, out var file))
+            {
+                if (file is CodeDocumentState sourceFile)
+                {
+                    state = sourceFile;
+                    result = true;
+                }
+            }
+            return result;
+        }
 
         public bool CloseWorkspaceFile(WorkspaceFileUri uri, out DocumentState? state)
         {
@@ -107,7 +156,7 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
             {
                 if (state!.IsOpened)
                 {
-                    state = state.WithOpened(false);
+                    state = state with { IsOpened = false };
                     _store.AddOrUpdate(uri, state);
                     return true;
                 }
@@ -145,9 +194,9 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
 
         public bool SaveWorkspaceFile(WorkspaceFileUri uri)
         {
-            if (_store.TryGetDocument(uri, out var file))
+            if (_store.TryGetDocument(uri, out var file) && file != null)
             {
-                _store.AddOrUpdate(uri, file!.WithResetVersion());
+                _store.AddOrUpdate(uri, file with { Version = 1 });
                 return true;
             }
             return false;
@@ -161,12 +210,18 @@ public class WorkspaceStateManager : ServiceBase, IWorkspaceStateManager
         : base(logger, settings, performance)
     {
         _store = store;
+        _store.DocumentStateChanged += WorkspaceFileStateChanged.Invoke;
     }
 
-    private Dictionary<Uri, IWorkspaceState> _workspaces = [];
+    private void OnWorkspaceDocumentStateChanged(object? sender, WorkspaceFileUriEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
+
+    private readonly Dictionary<Uri, IWorkspaceState> _workspaces = [];
     public IWorkspaceState GetWorkspace(Uri workspaceRoot)
     {
-        if (!_workspaces.Any())
+        if (_workspaces.Count == 0)
         {
             throw new InvalidOperationException("Workspace data is empty.");
         }

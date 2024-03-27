@@ -17,14 +17,14 @@ namespace Rubberduck.InternalApi.Services
         public Uri Uri { get; }
     }
 
-    public interface IWorkspaceService : IDisposable
+    public interface IAppWorkspacesService : IDisposable
     {
         event EventHandler<WorkspaceServiceEventArgs> WorkspaceOpened;
         event EventHandler<WorkspaceServiceEventArgs> WorkspaceClosed;
 
         IFileSystem FileSystem { get; }
 
-        IWorkspaceStateManager State { get; }
+        IAppWorkspacesStateManager Workspaces { get; }
         /// <summary>
         /// Gets the project file for all loaded workspaces.
         /// </summary>

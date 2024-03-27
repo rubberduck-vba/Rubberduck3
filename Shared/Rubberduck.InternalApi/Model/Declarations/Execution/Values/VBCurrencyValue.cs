@@ -23,5 +23,5 @@ public record class VBCurrencyValue : VBNumericTypedValue,
     public override int Size { get; } = sizeof(long);
     public override double NumericValue { get; init; }
 
-    public VBCurrencyValue WithValue(double value) => this with { NumericValue = (double)value };
+    public new VBCurrencyValue WithValue(double value) => this with { NumericValue = (double)value };
 }

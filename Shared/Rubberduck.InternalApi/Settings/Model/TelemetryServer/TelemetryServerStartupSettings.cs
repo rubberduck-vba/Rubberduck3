@@ -14,8 +14,8 @@ public record class TelemetryServerStartupSettings : ServerStartupSettings
     public TelemetryServerStartupSettings()
     {
         SettingDataType = SettingDataType.SettingGroup;
-        DefaultValue = DefaultSettings;
+        Value = DefaultValue = DefaultSettings;
     }
 
-    public static TelemetryServerStartupSettings Default { get; } = new() { DefaultValue = DefaultSettings, Value = DefaultSettings };
+    public static TelemetryServerStartupSettings Default { get; } = new();
 }

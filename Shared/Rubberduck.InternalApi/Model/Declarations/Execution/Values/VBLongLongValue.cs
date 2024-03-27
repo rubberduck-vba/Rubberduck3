@@ -22,6 +22,6 @@ public record class VBLongLongValue : VBNumericTypedValue,
     public override int Size => sizeof(long);
     public override double NumericValue { get; init; }
 
-    public VBLongLongValue WithValue(double value) => this with { NumericValue = (long)value };
-    public new VBLongLongValue WithValue(int value) => this with { NumericValue = (long)value };
+    public new VBLongLongValue WithValue(double value) => this with { NumericValue = (long)value };
+    public VBLongLongValue WithValue(int value) => this with { NumericValue = (long)value };
 }

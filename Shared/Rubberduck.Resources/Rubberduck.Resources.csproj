@@ -315,6 +315,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>RubberduckUI.resx</DependentUpon>
     </Compile>
+    <Compile Update="v3\Icons.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Icons.resx</DependentUpon>
+    </Compile>
     <Compile Update="v3\LogLevelIcons.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -330,6 +335,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>RubberduckUICommands.resx</DependentUpon>
     </Compile>
+    <Compile Update="v3\SettingsUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingsUI.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Icons\RubberduckIcons.resx">
@@ -339,6 +349,11 @@
     <EmbeddedResource Update="RubberduckUI.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="v3\Icons.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Icons.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>Rubberduck.Resources.v3</CustomToolNamespace>
     </EmbeddedResource>
     <EmbeddedResource Update="v3\LogLevelIcons.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -354,6 +369,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUICommands.Designer.cs</LastGenOutput>
       <CustomToolNamespace>Rubberduck.Resources.v3</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Update="v3\SettingsUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>SettingsUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

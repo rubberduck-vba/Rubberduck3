@@ -1,68 +1,56 @@
-﻿using OmniSharp.Extensions.LanguageServer.Protocol;
-using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
+using Rubberduck.InternalApi.Services;
+using Rubberduck.ServerPlatform;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Rubberduck.LanguageServer.Handlers.Language
+namespace Rubberduck.LanguageServer.Handlers.Language;
+
+public class DocumentDiagnosticHandler : DocumentDiagnosticHandlerBase
 {
-    public class DocumentDiagnosticHandler : DocumentDiagnosticHandlerBase
+    private readonly ServerPlatformServiceHelper _service;
+    private readonly IAppWorkspacesService _workspaces;
+    private readonly TextDocumentSelector _selector;
+
+    public DocumentDiagnosticHandler(ServerPlatformServiceHelper service, IAppWorkspacesService workspaces, SupportedLanguage language)
     {
-        private readonly ILanguageServerFacade _server;
-        private readonly SupportedLanguage _language;
-        private readonly DocumentContentStore _contentStore;
+        _service = service;
+        _workspaces = workspaces;
+        _selector = language.ToTextDocumentSelector();
+    }
 
-        private readonly TextDocumentSelector _selector;
+    public async override Task<RelatedDocumentDiagnosticReport> Handle(DocumentDiagnosticParams request, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
 
-        public DocumentDiagnosticHandler(ILanguageServerFacade server, SupportedLanguage language, DocumentContentStore contentStore)
+        var workspace = _workspaces.Workspaces.ActiveWorkspace ?? throw new InvalidOperationException("No workspace is currently active.");
+        var uri = workspace.WorkspaceRoot!.FileUriFromAbsolute(request.TextDocument.Uri.ToUri().LocalPath);
+
+        if (workspace.TryGetWorkspaceFile(uri, out var state) && state is CodeDocumentState document)
         {
-            _language = language;
-            _server = server;
-            _contentStore = contentStore;
-
-            var filter = new TextDocumentFilter
+            _service.LogInformation($"Found {document.Diagnostics.Count} diagnostics for document at uri '{uri}'.");
+            return new RelatedFullDocumentDiagnosticReport
             {
-                Language = language.Id,
-                Pattern = string.Join(";", language.FileTypes.Select(fileType => $"**/{fileType}").ToArray())
-            };
-            _selector = new TextDocumentSelector(filter);
-        }
-
-        public async override Task<RelatedDocumentDiagnosticReport> Handle(DocumentDiagnosticParams request, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            //TODO
-            var items = new List<Diagnostic>();
-
-            var result = new RelatedFullDocumentDiagnosticReport
-            {
-                ResultId = "TODO",
-                RelatedDocuments = new Dictionary<DocumentUri, DocumentDiagnosticReport>
-                {
-                    // TODO
-                }.ToImmutableDictionary(),
-                Items = new Container<Diagnostic>(items)
-            };
-            return await Task.FromResult(result);
-        }
-
-        protected override DiagnosticsRegistrationOptions CreateRegistrationOptions(DiagnosticClientCapabilities capability, ClientCapabilities clientCapabilities)
-        {
-            return new DiagnosticsRegistrationOptions
-            {
-                DocumentSelector = _selector,
-                Identifier = "TODO",
-                InterFileDependencies = true,
-                WorkDoneProgress = true,
-                WorkspaceDiagnostics = true
+                Items = new Container<Diagnostic>(document.Diagnostics)
             };
         }
+
+        throw new InvalidOperationException($"Could not find workspace document at uri '{uri}'.");
+    }
+
+    protected override DiagnosticsRegistrationOptions CreateRegistrationOptions(DiagnosticClientCapabilities capability, ClientCapabilities clientCapabilities)
+    {
+        return new DiagnosticsRegistrationOptions
+        {
+            DocumentSelector = _selector,
+            Identifier = "RDE",
+            InterFileDependencies = true,
+            WorkDoneProgress = false,
+            WorkspaceDiagnostics = false
+        };
     }
 }

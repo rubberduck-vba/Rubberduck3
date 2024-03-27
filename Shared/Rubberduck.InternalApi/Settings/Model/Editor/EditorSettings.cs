@@ -1,6 +1,6 @@
-﻿using Rubberduck.InternalApi.Settings;
-using Rubberduck.InternalApi.Settings.Model.Editor.CodeFolding;
+﻿using Rubberduck.InternalApi.Settings.Model.Editor.CodeFolding;
 using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
+using System;
 using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.Settings.Model.Editor;
@@ -15,6 +15,7 @@ public record class EditorSettings : TypedSettingGroup, IDefaultSettingsProvider
         [
             new ExtendWindowChromeSetting(),
             new ShowWelcomeTabSetting(),
+            new IdleTimerDurationSetting(),
             ToolsSettings.Default,
             CodeFoldingSettings.Default,
             /*TODO
@@ -37,6 +38,8 @@ public record class EditorSettings : TypedSettingGroup, IDefaultSettingsProvider
     public bool ExtendWindowChrome => GetSetting<ExtendWindowChromeSetting>()?.TypedValue ?? ExtendWindowChromeSetting.DefaultSettingValue;
     [JsonIgnore]
     public bool ShowWelcomeTab => GetSetting<ShowWelcomeTabSetting>()?.TypedValue ?? ShowWelcomeTabSetting.DefaultSettingValue;
+    [JsonIgnore]
+    public TimeSpan IdleTimerDuration => GetSetting<IdleTimerDurationSetting>()?.TypedValue ?? IdleTimerDurationSetting.DefaultSettingValue;
     [JsonIgnore]
     public ToolsSettings ToolsSettings => GetSetting<ToolsSettings>() ?? ToolsSettings.Default;
     [JsonIgnore]

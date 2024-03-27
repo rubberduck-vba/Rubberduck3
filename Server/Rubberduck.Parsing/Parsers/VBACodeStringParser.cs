@@ -34,12 +34,12 @@ public static class VBACodeStringParser
         {
             return ParseInternal(ParserMode.SllOnly, parser, tokenStream, startRule);
         }
-        catch (SyntaxErrorException exception)
+        catch (SllPredictionFailException exception)
         {
             var actualMode = parser.Interpreter.PredictionMode.ToString()!.ToUpperInvariant();
             System.Diagnostics.Debug.Assert(actualMode == "SLL");
 
-            var message = $"{actualMode} mode failed while parsing the code at symbol {exception.OffendingSymbol.Text} at L{exception.LineNumber}C{exception.Position}. Retrying using LL.";
+            var message = $"{actualMode} mode failed while parsing the code at symbol {exception.OffendingSymbol.Name} at L{exception.OffendingSymbol.Range.Start.Line}C{exception.OffendingSymbol.Range.Start.Character}. Retrying using LL.";
             LogAndReset(message, exception, parser, tokenStream);
 
             if (parser.Interpreter.PredictionMode == PredictionMode.Sll)

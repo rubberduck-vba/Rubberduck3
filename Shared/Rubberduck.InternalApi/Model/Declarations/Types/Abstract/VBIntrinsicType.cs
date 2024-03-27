@@ -20,6 +20,7 @@ public abstract record class VBIntrinsicType : VBType
             VBDateType.TypeInfo,
             VBStringType.TypeInfo,
             VBVariantType.TypeInfo,
+            VBObjectType.TypeInfo,
             VBEmptyType.TypeInfo,
             VBNullType.TypeInfo,
             VBErrorType.TypeInfo,

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rubberduck.InternalApi.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -12,7 +13,7 @@ namespace Rubberduck.UI.Shell.Tools.WorkspaceExplorer
 
     public interface IWorkspaceTreeNode : INotifyPropertyChanged
     {
-        Uri Uri { get; }
+        WorkspaceUri Uri { get; }
         string FileName { get; }
         string Name { get; }
         ObservableCollection<IWorkspaceTreeNode> Children { get; }

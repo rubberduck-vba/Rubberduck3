@@ -15,18 +15,18 @@ public class DocumentHierarchicalSymbolsSection : WorkspaceDocumentSection
 {
     private readonly PipelineParseTreeSymbolsService _symbolsService;
 
-    public DocumentHierarchicalSymbolsSection(DataflowPipeline parent, IWorkspaceService workspaces, PipelineParseTreeSymbolsService symbolsService,
+    public DocumentHierarchicalSymbolsSection(DataflowPipeline parent, IAppWorkspacesService workspaces, PipelineParseTreeSymbolsService symbolsService,
         ILogger<WorkspaceDocumentParserOrchestrator> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
         : base(parent, workspaces, logger, settingsProvider, performance)
     {
         _symbolsService = symbolsService;
     }
 
-    private TransformBlock<DocumentParserState, Symbol> AcquireDocumentStateSymbolsBlock { get; set; } = null!;
-    private Symbol AcquireDocumentStateSymbols(DocumentParserState state) =>
-        RunTransformBlock(AcquireDocumentStateSymbolsBlock, state, 
+    private TransformBlock<DocumentParserState, Symbol> AcquireCodeDocumentStateSymbolsBlock { get; set; } = null!;
+    private Symbol AcquireCodeDocumentStateSymbols(DocumentParserState state) =>
+        RunTransformBlock(AcquireCodeDocumentStateSymbolsBlock, state, 
             e => e.Symbol ?? throw new InvalidOperationException("Document.Symbol is unexpectedly null."),
-            nameof(AcquireDocumentStateSymbolsBlock), logPerformance: false);
+            nameof(AcquireCodeDocumentStateSymbolsBlock), logPerformance: false);
 
     private TransformBlock<Symbol, Symbol> DiscoverHierarchicalSymbolsBlock { get; set; } = null!;
     private Symbol DiscoverHierarchicalSymbols(Symbol symbol) =>
@@ -34,43 +34,45 @@ public class DocumentHierarchicalSymbolsSection : WorkspaceDocumentSection
             e => _symbolsService.DiscoverHierarchicalSymbols(State.SyntaxTree!, State.Uri),
             nameof(DiscoverHierarchicalSymbolsBlock), logPerformance: true);
 
-    private ActionBlock<Symbol> SetDocumentStateMemberSymbolsBlock { get; set; } = null!;
-    private void SetDocumentStateMemberSymbols(Symbol symbol) =>
-        RunActionBlock(SetDocumentStateMemberSymbolsBlock, symbol, 
+    private ActionBlock<Symbol> SetCodeDocumentStateMemberSymbolsBlock { get; set; } = null!;
+    private void SetCodeDocumentStateMemberSymbols(Symbol symbol) =>
+        RunActionBlock(SetCodeDocumentStateMemberSymbolsBlock, symbol, 
             e => State = (DocumentParserState)State.WithSymbol(e), 
-            nameof(SetDocumentStateMemberSymbolsBlock), logPerformance: false);
+            nameof(SetCodeDocumentStateMemberSymbolsBlock), logPerformance: false);
 
     protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(ISourceBlock<DocumentParserState> source)
     {
-        AcquireDocumentStateSymbolsBlock = new(AcquireDocumentStateSymbols, ConcurrentExecutionOptions(Token));
-        _ = TraceBlockCompletionAsync(nameof(AcquireDocumentStateSymbolsBlock), AcquireDocumentStateSymbolsBlock);
+        _ = source ?? throw new ArgumentNullException(nameof(source));
+
+        AcquireCodeDocumentStateSymbolsBlock = new(AcquireCodeDocumentStateSymbols, ConcurrentExecutionOptions(Token));
+        _ = TraceBlockCompletionAsync(nameof(AcquireCodeDocumentStateSymbolsBlock), AcquireCodeDocumentStateSymbolsBlock);
 
         DiscoverHierarchicalSymbolsBlock = new(DiscoverHierarchicalSymbols, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(DiscoverHierarchicalSymbolsBlock), DiscoverHierarchicalSymbolsBlock);
 
         var symbolsBuffer = new BufferBlock<Symbol>(new DataflowBlockOptions { CancellationToken = Token });
 
-        SetDocumentStateMemberSymbolsBlock = new(SetDocumentStateMemberSymbols, ConcurrentExecutionOptions(Token));
-        _ = TraceBlockCompletionAsync(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
+        SetCodeDocumentStateMemberSymbolsBlock = new(SetCodeDocumentStateMemberSymbols, ConcurrentExecutionOptions(Token));
+        _ = TraceBlockCompletionAsync(nameof(SetCodeDocumentStateMemberSymbolsBlock), SetCodeDocumentStateMemberSymbolsBlock);
 
-        Link(source, AcquireDocumentStateSymbolsBlock);
-        Link(AcquireDocumentStateSymbolsBlock, DiscoverHierarchicalSymbolsBlock);
+        Link(source, AcquireCodeDocumentStateSymbolsBlock);
+        Link(AcquireCodeDocumentStateSymbolsBlock, DiscoverHierarchicalSymbolsBlock);
         Link(DiscoverHierarchicalSymbolsBlock, symbolsBuffer);
-        Link(symbolsBuffer, SetDocumentStateMemberSymbolsBlock);
+        Link(symbolsBuffer, SetCodeDocumentStateMemberSymbolsBlock);
 
         return (new IDataflowBlock[] 
         {
-            AcquireDocumentStateSymbolsBlock, 
+            AcquireCodeDocumentStateSymbolsBlock, 
             DiscoverHierarchicalSymbolsBlock,
-            SetDocumentStateMemberSymbolsBlock
+            SetCodeDocumentStateMemberSymbolsBlock
         }, Completion);
     }
 
     protected override Dictionary<string, IDataflowBlock> DataflowBlocks => new()
     {
-        [nameof(AcquireDocumentStateSymbolsBlock)] = AcquireDocumentStateSymbolsBlock,
+        [nameof(AcquireCodeDocumentStateSymbolsBlock)] = AcquireCodeDocumentStateSymbolsBlock,
         [nameof(DiscoverHierarchicalSymbolsBlock)] = DiscoverHierarchicalSymbolsBlock,
-        [nameof(SetDocumentStateMemberSymbolsBlock)] = SetDocumentStateMemberSymbolsBlock,
+        [nameof(SetCodeDocumentStateMemberSymbolsBlock)] = SetCodeDocumentStateMemberSymbolsBlock,
     };
 
     protected override void LogAdditionalPipelineSectionCompletionInfo(StringBuilder builder, string name)
@@ -78,7 +80,7 @@ public class DocumentHierarchicalSymbolsSection : WorkspaceDocumentSection
         var uri = State?.Uri?.ToString();
         if (State != null && !string.IsNullOrWhiteSpace(uri))
         {
-            builder.AppendLine($"\t📂 Uri: {uri} (⛔{State.SyntaxErrors.Count} errors; ⚠️{State.Diagnostics.Count} diagnostics; 🧩{State.Symbol?.Children?.Count() ?? 0} child symbols)");
+            builder.AppendLine($"\t📂 Uri: {uri} (⚠️{State.Diagnostics.Count} diagnostics; 🧩{State.Symbol?.Children?.Count() ?? 0} child symbols, {State.Foldings.Count} foldings)");
         }
     }
 }

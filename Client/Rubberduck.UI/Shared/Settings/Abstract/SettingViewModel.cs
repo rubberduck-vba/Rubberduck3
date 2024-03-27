@@ -1,9 +1,10 @@
 ﻿using Rubberduck.InternalApi.Settings.Model;
+using Rubberduck.Resources.v3;
 using System;
 
 namespace Rubberduck.UI.Shared.Settings.Abstract
 {
-    public abstract class SettingViewModel<TValue> : ViewModelBase, ISettingViewModel<TValue>
+    public abstract class SettingViewModel<TValue> : ViewModelBase, ISettingViewModel<TValue>, IEquatable<ISettingViewModel<TValue>>
     {
         private readonly TypedRubberduckSetting<TValue> _setting;
 
@@ -17,13 +18,33 @@ namespace Rubberduck.UI.Shared.Settings.Abstract
 
         public SettingDataType SettingDataType => _setting.SettingDataType;
         public string Key => _setting.Key;
-        public string Name => _setting.Key; // TODO fetch from resources
-        public string Description => _setting.Key; // TODO fetch from resources
+        public string SettingGroupKey { get; set; }
+
+        private bool _showSettingGroup;
+        public bool ShowSettingGroup 
+        {
+            get => _showSettingGroup;
+            set
+            {
+                if (_showSettingGroup != value)
+                {
+                    _showSettingGroup = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string SettingGroupName => SettingsUI.ResourceManager.GetString($"{SettingGroupKey}_Title") ?? $"[missing key:{SettingGroupKey}_Title]";
+        public string Name => SettingsUI.ResourceManager.GetString($"{_setting.Key}_Title") ?? $"[missing key:{_setting.Key}_Title]";
+        public string Description => SettingsUI.ResourceManager.GetString($"{_setting.Key}_Description") ?? $"[missing key:{_setting.Key}_Description]";
 
         public SettingTags Tags => _setting.Tags;
+        public bool IsSettingGroup => false;
         public bool IsReadOnlyRecommended => Tags.HasFlag(SettingTags.ReadOnlyRecommended);
         public bool IsAdvancedSetting => Tags.HasFlag(SettingTags.Advanced);
         public bool IsExperimental => Tags.HasFlag(SettingTags.Experimental);
+        public bool IsSearchResult(string search) =>
+            Name.Contains(search, System.StringComparison.InvariantCultureIgnoreCase)
+            || Description.Contains(search, System.StringComparison.InvariantCultureIgnoreCase);
 
         public bool IsHidden => Tags.HasFlag(SettingTags.Hidden);
 
@@ -57,5 +78,35 @@ namespace Rubberduck.UI.Shared.Settings.Abstract
         }
 
         public RubberduckSetting ToSetting() => _setting with { Value = Value ?? throw new InvalidOperationException("Value is unexpectedly null.") };
+
+        public override int GetHashCode() => HashCode.Combine(SettingGroupKey, Key);
+        public override bool Equals(object? obj)
+        {
+            if (obj is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != this.GetType())
+            {
+                return false;
+            }
+
+            return base.Equals(obj as ISettingViewModel<TValue>);
+        }
+
+        public bool Equals(ISettingViewModel<TValue>? other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+            return other.SettingGroupKey == SettingGroupKey && other.Key == Key;
+        }
     }
 }

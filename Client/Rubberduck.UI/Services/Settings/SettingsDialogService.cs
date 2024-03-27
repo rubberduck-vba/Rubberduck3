@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
-using Rubberduck.UI.Shared.Settings;
-using Rubberduck.UI.Shared.Message;
-using Rubberduck.UI.Windows;
-using System;
-using System.Linq;
+using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.InternalApi.Settings.Model;
-using Rubberduck.InternalApi.Services;
+using Rubberduck.UI.Chrome;
+using Rubberduck.UI.Shared.Message;
+using Rubberduck.UI.Shared.Settings;
+using Rubberduck.UI.Shared.Settings.Abstract;
+using Rubberduck.UI.Windows;
+using System.Linq;
 
 namespace Rubberduck.UI.Services.Settings
 {
@@ -18,6 +19,7 @@ namespace Rubberduck.UI.Services.Settings
     public class SettingsDialogService : DialogService<SettingsWindow, SettingsWindowViewModel>, ISettingsDialogService
     {
         private readonly UIServiceHelper _service;
+        private readonly IWindowChromeViewModel _chrome;
         private readonly IMessageService _messageService;
         private readonly ISettingViewModelFactory _vmFactory;
         private readonly MessageActionsProvider _actionsProvider;
@@ -28,49 +30,81 @@ namespace Rubberduck.UI.Services.Settings
             UIServiceHelper service,
             IWindowFactory<SettingsWindow, SettingsWindowViewModel> factory,
             IMessageService messageService,
+            IWindowChromeViewModel chrome,
             ISettingViewModelFactory vmFactory,
             MessageActionsProvider actionsProvider,
             PerformanceRecordAggregator performance)
             : base(logger, factory, settings, actionsProvider, performance)
         {
             _service = service;
+            _chrome = chrome;
             _messageService = messageService;
             _vmFactory = vmFactory;
             _actionsProvider = actionsProvider;
             _factory = factory;
         }
 
-        protected override SettingsWindowViewModel CreateViewModel(RubberduckSettings settings, MessageActionsProvider actions)
+        protected override SettingsWindowViewModel CreateViewModel(RubberduckSettings settings, MessageActionsProvider actions) =>
+            new(_service, actions.OkCancel(), _chrome, _messageService, _vmFactory);
+
+        private SettingsWindowViewModel SetViewModelState(SettingsWindowViewModel vm, string key)
         {
-            var vm = new SettingsWindowViewModel(_service, actions.Close(), _messageService, _vmFactory);
+            var keyItem = vm.FlattenedSettings?.FirstOrDefault(e => e.Key == key);
+
+            if (keyItem is ISettingGroupViewModel keySettingGroup)
+            {
+                var parent = vm.FlattenedSettings?.OfType<ISettingGroupViewModel>()
+                    .SingleOrDefault(e => e.Key == keyItem.SettingGroupKey);
+                vm.Selection = parent!;
+
+                keySettingGroup.IsExpanded = true;
+                vm.Selection = keySettingGroup;
+            }
+            else
+            {
+                var settingGroup = vm.FlattenedSettings?
+                        .OfType<ISettingGroupViewModel>()
+                        .FirstOrDefault(e => e.Key == keyItem?.SettingGroupKey);
+                vm.Selection = settingGroup ?? vm.Settings;
+            }
+
             return vm;
         }
 
         public SettingsWindowViewModel ShowDialog(string key)
         {
-            SettingsWindowViewModel viewModel = default!;
-            SettingsWindow view = default!;
+            var viewModel = CreateViewModel(Settings, _actionsProvider);
+            SetViewModelState(viewModel, key);
 
-            var actions = _actionsProvider;
-            var verbosity = TraceLevel;
+            var view = CreateDialog(viewModel);
+            return ShowDialog(view, viewModel);
+        }
 
-            if (TryRunAction(() =>
+        private SettingsWindow CreateDialog(SettingsWindowViewModel viewModel) => _factory.Create(viewModel);
+
+        private SettingsWindowViewModel ShowDialog(SettingsWindow view, SettingsWindowViewModel viewModel)
+        {
+            if (!TryRunAction(() => view.ShowDialog(), out var exception) && exception != null)
             {
-                viewModel = CreateViewModel(Settings, actions)
-                    ?? throw new InvalidOperationException($"CreateViewModel returned null.");
-
-                var settingGroup = viewModel.Settings.Items.Select(e => (VM: e, e.Key)).SingleOrDefault(e => e.Key == key).VM;
-                viewModel.Selection = settingGroup;
-
-                view = _factory.Create(viewModel)
-                    ?? throw new InvalidOperationException($"ViewFactory.Create returned null.");
-            }))
+                _messageService.ShowError($"{GetType().Name}.{nameof(ShowDialog)}", exception);
+            }
+            else
             {
-                TryRunAction(() => view.ShowDialog());
-                return viewModel;
+                LogDebug($"Dialog was closed. Selected action: {viewModel.SelectedAction?.ResourceKey ?? "(none)"}");
             }
 
-            throw new InvalidOperationException();
+            return viewModel;
+        }
+
+        protected override void OnDialogAccept(SettingsWindowViewModel model)
+        {
+            LogInformation($"{GetType().Name}: User accepts dialog action.");
+        }
+
+        protected override void OnDialogCancel(SettingsWindowViewModel model)
+        {
+            LogInformation($"{GetType().Name}: User cancels dialog action.");
+            model.SelectedAction = MessageAction.CancelAction;
         }
     }
 }

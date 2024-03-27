@@ -1,11 +1,13 @@
 ﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using System;
 using System.Collections.Generic;
 
 namespace Rubberduck.InternalApi.Services;
 
-public interface IWorkspaceStateManager
+public interface IAppWorkspacesStateManager
 {
+    event EventHandler<WorkspaceFileUriEventArgs> WorkspaceFileStateChanged;
     IWorkspaceState GetWorkspace(Uri workspaceRoot);
     IEnumerable<IWorkspaceState> Workspaces { get; }
     /// <summary>

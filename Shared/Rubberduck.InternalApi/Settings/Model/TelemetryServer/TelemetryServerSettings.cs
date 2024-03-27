@@ -14,9 +14,7 @@ namespace Rubberduck.InternalApi.Settings.Model.TelemetryServer;
 public record class TelemetryServerSettings : TypedSettingGroup, IDefaultSettingsProvider<TelemetryServerSettings>
 {
     private static readonly RubberduckSetting[] DefaultSettings =
-        new RubberduckSetting[]
-        {
-            new TelemetryServerStartupSettings { Value = TelemetryServerStartupSettings.DefaultSettings },
+        [
             new TraceLevelSetting { Value = TraceLevelSetting.DefaultSettingValue },
             new IsTelemetryEnabledSetting { Value = IsTelemetryEnabledSetting.DefaultSettingValue },
             new StreamTransmissionSetting { Value = StreamTransmissionSetting.DefaultSettingValue },
@@ -25,15 +23,17 @@ public record class TelemetryServerSettings : TypedSettingGroup, IDefaultSetting
             new SendExceptionTelemetrySetting { Value = SendExceptionTelemetrySetting.DefaultSettingValue },
             new SendMetricTelemetrySetting { Value = SendMetricTelemetrySetting.DefaultSettingValue },
             new SendTraceTelemetrySetting { Value = SendTraceTelemetrySetting.DefaultSettingValue },
+
+            new TelemetryServerStartupSettings { Value = TelemetryServerStartupSettings.DefaultSettings },
             new ExceptionTelemetrySettings { Value = ExceptionTelemetrySettings.DefaultSettings },
             new TraceTelemetrySettings { Value = TraceTelemetrySettings.DefaultSettings },
             new EventTelemetrySettings { Value = EventTelemetrySettings.DefaultSettings },
             new MetricTelemetrySettings { Value = MetricTelemetrySettings.DefaultSettings },
-        };
+        ];
 
     public TelemetryServerSettings()
     {
-        DefaultValue = DefaultSettings;
+        Value = DefaultValue = DefaultSettings;
     }
 
     [JsonIgnore]
@@ -63,7 +63,8 @@ public record class TelemetryServerSettings : TypedSettingGroup, IDefaultSetting
     [JsonIgnore]
     public TraceTelemetrySettings TraceTelemetrySettings => GetSetting<TraceTelemetrySettings>() ?? TraceTelemetrySettings.Default;
 
-    public static TelemetryServerSettings Default { get; } = new TelemetryServerSettings { Value = DefaultSettings };
+
+    public static TelemetryServerSettings Default { get; } = new() { Value = DefaultSettings, DefaultValue = DefaultSettings };
     TelemetryServerSettings IDefaultSettingsProvider<TelemetryServerSettings>.Default => Default;
 }
 
@@ -75,58 +76,59 @@ public abstract record class TelemetrySettingGroup<TKey> : EnumSettingGroup<TKey
 
 public record class EventTelemetrySettings : TelemetrySettingGroup<EventTelemetryName>
 {
-    public static TelemetrySetting[] DefaultSettings { get; } =
+    public static TelemetrySetting[] DefaultSettings =>
         Enum.GetValues<EventTelemetryName>().Select(e => new TelemetrySetting { Key = $"{nameof(EventTelemetrySettings)}.{e}", Value = false, DefaultValue = false }).ToArray();
 
     public EventTelemetrySettings()
     {
         SettingDataType = SettingDataType.EnumSettingGroup;
-        DefaultValue = DefaultSettings;
+        Value = DefaultValue = DefaultSettings;
     }
 
-    public static EventTelemetrySettings Default { get; } = new() { DefaultValue = DefaultSettings, Value = DefaultSettings };
+    public static EventTelemetrySettings Default => new() { DefaultValue = DefaultSettings, Value = DefaultSettings };
 }
 
 public record class ExceptionTelemetrySettings : TelemetrySettingGroup<LogLevel>
 {
-    public static TelemetrySetting[] DefaultSettings { get; } =
+    public static TelemetrySetting[] DefaultSettings =>
         Enum.GetValues<LogLevel>().Select(e => new TelemetrySetting { Key = $"{nameof(ExceptionTelemetrySettings)}.{e}", Value = true, DefaultValue = true }).ToArray();
 
     public ExceptionTelemetrySettings()
     {
         SettingDataType = SettingDataType.EnumSettingGroup;
-        DefaultValue = DefaultSettings;
+        Value = DefaultValue = DefaultSettings;
     }
 
-    public static ExceptionTelemetrySettings Default { get; } = new() { DefaultValue = DefaultSettings, Value = DefaultSettings };
+    public static ExceptionTelemetrySettings Default => new();
 }
 
 public record class MetricTelemetrySettings : TelemetrySettingGroup<MetricTelemetryName>
 {
-    public static TelemetrySetting[] DefaultSettings { get; } =
+    public static TelemetrySetting[] DefaultSettings =>
         Enum.GetValues<MetricTelemetryName>().Select(e => new TelemetrySetting { Key = $"{nameof(MetricTelemetrySettings)}.{e}", Value = false, DefaultValue = false }).ToArray();
 
     public MetricTelemetrySettings()
     {
         SettingDataType = SettingDataType.EnumSettingGroup;
-        DefaultValue = DefaultSettings;
+        Value = DefaultValue = DefaultSettings;
     }
 
-    public static MetricTelemetrySettings Default { get; } = new() { DefaultValue = DefaultSettings, Value = DefaultSettings };
+    public static MetricTelemetrySettings Default => new();
 }
 
 public record class TraceTelemetrySettings : TelemetrySettingGroup<LogLevel>
 {
-    public static TelemetrySetting[] DefaultSettings { get; } =
-        Enum.GetValues<LogLevel>().Select(e => new TelemetrySetting { Key = $"{nameof(TraceTelemetrySettings)}.{e}", Value = e >= LogLevel.Warning, DefaultValue = e >= LogLevel.Warning }).ToArray();
+    public static TelemetrySetting[] DefaultSettings =>
+        Enum.GetValues<LogLevel>().Select(e => new TelemetrySetting { Key = $"{nameof(TraceTelemetrySettings)}.{e}", Value = false, DefaultValue = false }).ToArray();
 
     public TraceTelemetrySettings()
     {
         SettingDataType = SettingDataType.EnumSettingGroup;
         DefaultValue = DefaultSettings;
+        Value = DefaultValue;
     }
 
-    public static TraceTelemetrySettings Default { get; } = new() { DefaultValue = DefaultSettings, Value = DefaultSettings };
+    public static TraceTelemetrySettings Default => new();
 }
 
 /// <summary>

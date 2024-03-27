@@ -7,5 +7,5 @@ namespace Rubberduck.Parsing._v3.Pipeline.Abstract;
 public record class ParserPipelineState
 {
     public WorkspaceUri WorkspaceRootUri { get; init; } = null!;
-    public ConcurrentDictionary<WorkspaceFileUri, DocumentState> Documents { get; init; } = new();
+    public ConcurrentDictionary<WorkspaceFileUri, CodeDocumentState> Documents { get; init; } = new();
 }

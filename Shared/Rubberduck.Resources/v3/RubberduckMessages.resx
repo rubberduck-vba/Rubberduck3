@@ -142,4 +142,22 @@
     <value>The specified workspace folder is not empty.  
 Are you sure you want to **overwrite an existing project**?</value>
   </data>
+  <data name="UnsavedChanges_Discard" xml:space="preserve">
+    <value>Discard changes</value>
+  </data>
+  <data name="UnsavedChanges_LeaveOpen" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="UnsavedChanges_SaveAndClose" xml:space="preserve">
+    <value>Save first</value>
+  </data>
+  <data name="DoNotShowAgain" xml:space="preserve">
+    <value>Do not show this message again</value>
+  </data>
+  <data name="OnDocumentTabClosed" xml:space="preserve">
+    <value>This document has unsaved changes! What should we do?</value>
+  </data>
+  <data name="ConfirmResetSettings" xml:space="preserve">
+    <value>This will reset all settings to their default values. Proceed?</value>
+  </data>
 </root>

@@ -20,10 +20,10 @@ namespace Rubberduck.Editor.Shell.Tools.WorkspaceExplorer
 {
     public class WorkspaceExplorerViewModel : ToolWindowViewModelBase, IWorkspaceExplorerViewModel, ICommandBindingProvider
     {
-        private readonly IWorkspaceService _service;
+        private readonly IAppWorkspacesService _service;
 
         public WorkspaceExplorerViewModel(RubberduckSettingsProvider settingsProvider,
-            IWorkspaceService service, 
+            IAppWorkspacesService service, 
             ShowRubberduckSettingsCommand showSettingsCommand, 
             CloseToolWindowCommand closeToolwindowCommand,
             OpenDocumentCommand openDocumentCommand)

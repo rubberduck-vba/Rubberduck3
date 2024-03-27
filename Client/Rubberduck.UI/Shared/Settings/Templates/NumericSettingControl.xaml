@@ -7,7 +7,6 @@
              xmlns:viewmodels="clr-namespace:Rubberduck.UI.Shared.Settings"
              xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
              xmlns:b="clr-namespace:Rubberduck.UI.Behaviors"
-             Background="{DynamicResource ThemeBackgroundColorBrush}"
              Padding="4" MinHeight="96" 
              mc:Ignorable="d" 
              d:DesignHeight="96" d:DesignWidth="255">
@@ -21,6 +20,11 @@
     </UserControl.Resources>
     <Border Style="{DynamicResource SectionBorderStyle}">
         <DockPanel LastChildFill="True">
+            <Label DockPanel.Dock="Bottom" Style="{DynamicResource FormFieldNameLabelStyle}" Margin="0,0" IsEnabled="{Binding IsEnabled}"
+                       HorizontalAlignment="Right"
+                       Visibility="{Binding ShowSettingGroup, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Margin="0,0,0,4" Text="{Binding SettingGroupName}" TextWrapping="Wrap" />
+            </Label>
             <DockPanel DockPanel.Dock="Top">
                 <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
                                         Height="16" Width="20" OffsetX="2"
@@ -33,11 +37,15 @@
                 </Label>
             </DockPanel>
             <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
-                <Label Style="{DynamicResource FormLabelStyle}" Margin="4,0">
+                <Label Style="{DynamicResource FormFieldDescriptionLabelStyle}" Margin="4,0">
                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
                 </Label>
             </ScrollViewer>
-            <TextBox b:Masking.Mask="\d" MaxLength="5" DockPanel.Dock="Top" Style="{DynamicResource FormFieldTextBoxStyle}" Width="72" Height="24" Text="327678" HorizontalContentAlignment="Center" />
+            <TextBox b:Masking.Mask="\d" MaxLength="5" DockPanel.Dock="Left" 
+                     Width="180" Margin="10" Height="24" HorizontalContentAlignment="Center" HorizontalAlignment="Left"
+                     Style="{DynamicResource FormFieldTextBoxStyle}" 
+                     Text="{Binding Value}" 
+                     IsEnabled="{Binding IsEnabled}" />
         </DockPanel>
     </Border>
 </UserControl>

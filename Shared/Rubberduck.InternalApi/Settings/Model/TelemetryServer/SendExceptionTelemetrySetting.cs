@@ -9,6 +9,6 @@ public record class SendExceptionTelemetrySetting : BooleanRubberduckSetting
 
     public SendExceptionTelemetrySetting()
     {
-        DefaultValue = DefaultSettingValue;
+        Value = DefaultValue = DefaultSettingValue;
     }
 }

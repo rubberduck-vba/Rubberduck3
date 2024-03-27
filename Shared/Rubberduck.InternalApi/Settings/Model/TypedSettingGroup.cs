@@ -20,53 +20,63 @@ public abstract record class TypedSettingGroup : TypedRubberduckSetting<Rubberdu
         SettingDataType = SettingDataType.SettingGroup;
     }
 
-    public TypedSettingGroup WithSetting(RubberduckSetting setting)
+    public TypedSettingGroup WithSetting(RubberduckSetting? setting)
     {
+        ArgumentNullException.ThrowIfNull(setting, nameof(setting));
+
         var values = Values ?? throw new InvalidOperationException();
         values[setting.GetType()] = setting;
-        return this with { Value = values.Values };
+        return this with { Value = values.Values.ToArray() };
     }
     public TypedSettingGroup WithSetting<TSetting>(TSetting setting) where TSetting : RubberduckSetting
     {
         var values = Values ?? throw new InvalidOperationException();
         values[typeof(TSetting)] = setting;
-        return this with { Value = values.Values };
+        return this with { Value = values.Values.ToArray() };
     }
 
-    public IEnumerable<RubberduckSetting> Flatten(TypedSettingGroup? root = default)
+    public IEnumerable<RubberduckSettingNode> Flatten(TypedSettingGroup? root = default)
     {
+        var result = new HashSet<RubberduckSettingNode>();
         foreach (var setting in root?.TypedValue ?? TypedValue)
         {
-            foreach (var item in Flatten(setting))
+            var baseKey = root?.Key;
+            foreach (var item in Flatten(setting, baseKey))
             {
-                yield return item;
+                result.Add(new(item, $"{baseKey}.{setting.Key}"));
             }
         }
+        return result;
     }
 
-    private IEnumerable<RubberduckSetting> Flatten(RubberduckSetting setting)
+    private IEnumerable<RubberduckSettingNode> Flatten(RubberduckSetting setting, string? root = default)
     {
+        var result = new HashSet<RubberduckSettingNode>();
         if (setting is TypedSettingGroup group)
         {
             foreach (var item in Flatten(group))
             {
-                yield return item;
+                result.Add(item);
             }
         }
         else
         {
-            yield return setting;
+            result.Add(new(setting, root!));
         }
+        return result;
     }
 }
 
-public abstract record class EnumSettingGroup<TEnum> : TypedRubberduckSetting<BooleanRubberduckSetting[]>
-    where TEnum : struct, Enum
+public abstract record class MappedBoolSettingGroup : TypedRubberduckSetting<BooleanRubberduckSetting[]>
 {
-    public BooleanRubberduckSetting GetSetting(TEnum key) => ((BooleanRubberduckSetting[])Value).Single(e => e.Key == key.ToString());
-
-    protected EnumSettingGroup()
+    protected MappedBoolSettingGroup()
     {
         SettingDataType = SettingDataType.SettingGroup;
     }
+}
+
+public abstract record class EnumSettingGroup<TEnum> : MappedBoolSettingGroup
+    where TEnum : struct, Enum
+{
+    public BooleanRubberduckSetting GetSetting(TEnum key) => ((BooleanRubberduckSetting[])Value).Single(e => e.Key == key.ToString());
 }

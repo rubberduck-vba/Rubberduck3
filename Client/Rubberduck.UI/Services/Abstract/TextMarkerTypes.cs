@@ -17,7 +17,7 @@
 // DEALINGS IN THE SOFTWARE.using System;
 using System;
 
-namespace Rubberduck.Editor.Document.TextTransform
+namespace Rubberduck.UI.Services.Abstract
 {
     [Flags]
     public enum TextMarkerTypes

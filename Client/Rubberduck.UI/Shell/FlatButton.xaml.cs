@@ -23,6 +23,15 @@ namespace Rubberduck.UI.Shell
             set => SetValue(HighlightBrushProperty, value);
         }
 
+        public static readonly DependencyProperty HoverBrushProperty =
+            DependencyProperty.Register(nameof(HoverBrush), typeof(Brush), typeof(FlatButton));
+
+        public Brush HoverBrush
+        {
+            get => (Brush)GetValue(HoverBrushProperty);
+            set => SetValue(HoverBrushProperty, value);
+        }
+
         public static readonly DependencyProperty IconProperty =
             DependencyProperty.Register(nameof(Icon), typeof(ImageSource), typeof(FlatButton));
 

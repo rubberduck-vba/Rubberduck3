@@ -1,38 +1,79 @@
-﻿using System;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol;
+using Rubberduck.InternalApi.Extensions;
+using System;
 using System.Collections.Concurrent;
 
 namespace Rubberduck.InternalApi.ServerPlatform.LanguageServer;
+
+public class WorkspaceFileUriEventArgs : EventArgs
+{
+    public WorkspaceFileUriEventArgs(WorkspaceFileUri uri)
+    {
+        Uri = uri;
+    }
+
+    public WorkspaceFileUri Uri { get; }
+}
 
 /// <summary>
 /// A service that is responsible for knowing everything about the current/latest version of all documents.
 /// </summary>
 public class ConcurrentContentStore<TContent>
 {
-    protected ConcurrentDictionary<Uri, TContent> Store = new();
+    protected ConcurrentDictionary<WorkspaceUri, TContent> Store = new();
+    public event EventHandler<WorkspaceFileUriEventArgs> DocumentStateChanged = delegate { };
 
-    public bool Exists(Uri documentUri) => Store.ContainsKey(documentUri);
-
-    public void AddOrUpdate(Uri documentUri, TContent content)
+    public void AddOrUpdate(WorkspaceFileUri uri, TContent content)
     {
-        Store.AddOrUpdate(documentUri, content, (key, value) => content);
+        Store.AddOrUpdate(uri, content, (key, value) => content);
+        DocumentStateChanged.Invoke(this, new(uri));
     }
 
-    public bool TryRemove(Uri documentUri)
+    public void AddOrUpdate(WorkspaceUri documentUri, TContent content)
     {
-        return Store.TryRemove(documentUri, out _);
+        var uri = new WorkspaceFileUri(documentUri.AbsoluteLocation.AbsolutePath, documentUri.WorkspaceRoot);
+        Store.AddOrUpdate(uri, content, (key, value) => content);
+
+        DocumentStateChanged.Invoke(this, new(uri));
+    }
+
+    public bool TryRemove(WorkspaceFileUri uri)
+    {
+        var removed = Store.TryRemove(uri, out _);
+
+        DocumentStateChanged.Invoke(this, new(uri));
+        return removed;
+    }
+    public bool TryRemove(WorkspaceUri documentUri)
+    {
+        var uri = new WorkspaceFileUri(documentUri.AbsoluteLocation.AbsolutePath, documentUri.WorkspaceRoot);
+        var removed = Store.TryRemove(uri, out _);
+
+        DocumentStateChanged.Invoke(this, new(uri));
+        return removed;
     }
 
     /// <exception cref="UnknownUriException"></exception>
-    public TContent GetDocument(Uri uri)
+    public TContent GetDocument(WorkspaceFileUri uri)
     {
         return Store.TryGetValue(uri, out var content)
-            ? content
-            : throw new UnknownUriException(uri);
+            ? content : throw new UnknownUriException(uri);
     }
 
-    public bool TryGetDocument(Uri uri, out TContent? content)
+    /// <exception cref="UnknownUriException"></exception>
+    public TContent GetDocument(WorkspaceUri documentUri)
     {
-        return Store.TryGetValue(uri, out content);
+        var uri = new WorkspaceFileUri(documentUri.AbsoluteLocation.AbsolutePath, documentUri.WorkspaceRoot);
+        return Store.TryGetValue(uri, out var content)
+            ? content : throw new UnknownUriException(uri);
+    }
+
+    public bool TryGetDocument(WorkspaceUri documentUri, out TContent? content)
+    {
+        var uri = new WorkspaceFileUri(documentUri.AbsoluteLocation.AbsolutePath, documentUri.WorkspaceRoot);
+        var result = Store.TryGetValue(uri, out content);
+
+        return result;
     }
 }
 

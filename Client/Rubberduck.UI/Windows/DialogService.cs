@@ -23,38 +23,39 @@ namespace Rubberduck.UI.Windows
 
         protected abstract TViewModel CreateViewModel(RubberduckSettings settings, MessageActionsProvider actions);
 
-        public virtual bool ShowDialog(out TViewModel model)
+        public virtual bool ShowDialog(out TViewModel viewModel)
         {
-            TViewModel viewModel = model = default!;
-            TView view = default!;
-
             var actions = _actionsProvider;
             var verbosity = TraceLevel;
 
             var result = false;
 
-            if (TryRunAction(() =>
-            {
-                viewModel = CreateViewModel(Settings, actions)
-                    ?? throw new ArgumentNullException(nameof(viewModel), $"CreateViewModel returned null.");
+            viewModel = CreateViewModel(Settings, actions)
+                ?? throw new ArgumentNullException(nameof(viewModel), $"CreateViewModel returned null.");
 
-                view = _factory.Create(viewModel)
-                    ?? throw new ArgumentNullException(nameof(view), $"ViewFactory.Create returned null.");
-            }))
+            var view = _factory.Create(viewModel);
+            var vm = viewModel;
+            
+            TryRunAction(() =>
             {
-                TryRunAction(() =>
+                if (view.ShowDialog() == true)
                 {
-                    if (view.ShowDialog() == true)
+                    if (vm.SelectedAction?.IsDefaultAction == true)
                     {
-                        OnDialogAccept(viewModel);
+                        OnDialogAccept(vm);
                         result = true;
                     }
                     else
                     {
-                        OnDialogCancel();
+                        OnDialogCancel(vm);
                     }
-                });
-            }
+                }
+                else
+                {
+                    LogDebug($"{typeof(TView).Name}.ShowDialog() did not return true.");
+                    OnDialogCancel(vm);
+                }
+            });
 
             return result;
         }
@@ -64,7 +65,7 @@ namespace Rubberduck.UI.Windows
 
         }
 
-        protected virtual void OnDialogCancel()
+        protected virtual void OnDialogCancel(TViewModel model)
         {
 
         }

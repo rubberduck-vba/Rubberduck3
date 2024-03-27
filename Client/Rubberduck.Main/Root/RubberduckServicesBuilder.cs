@@ -179,7 +179,7 @@ namespace Rubberduck.Main.Root
             _services.AddSingleton<IDialogService<NewProjectWindowViewModel>, NewProjectDialogService>();
             _services.AddSingleton<IWindowFactory<NewProjectWindow, NewProjectWindowViewModel>, NewProjectWindowFactory>();
             _services.AddSingleton<IVBProjectInfoProvider, ProjectInfoProvider>();
-            _services.AddSingleton<IWorkspaceService>(provider => null!); // add-in doesn't open workspaces
+            _services.AddSingleton<IAppWorkspacesService>(provider => null!); // add-in doesn't open workspaces
 
             _services.AddSingleton<ShowRubberduckSettingsCommand>();
             _services.AddSingleton<ISettingsCommand, SettingsCommand>();
@@ -319,7 +319,7 @@ namespace Rubberduck.Main.Root
                 Key = "Workspace_ConfirmCreateWorkspace",
                 Title = "Create Workspace",
                 Message = $"This will create a new Rubberduck workspace under folder `{path}`.",
-                Verbose = $"The folder will contain a `{ProjectFile.FileName}` Rubberduck project file and a `{ProjectFile.SourceRoot}` folder where the source files will be exported. Consider using the same local root folder for all Rubberduck projects/workspaces.",
+                Verbose = $"The folder will contain a `{ProjectFile.FileName}` Rubberduck project file and a `{WorkspaceUri.SourceRootName}` folder where the source files will be exported. Consider using the same local root folder for all Rubberduck projects/workspaces.",
                 Level = LogLevel.Information,
                 MessageActions = [acceptAction, MessageAction.CancelAction],
             };

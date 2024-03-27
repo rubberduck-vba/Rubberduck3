@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -34,13 +35,20 @@ public record class TypedRubberduckSetting<TValue> : RubberduckSetting
                 }
                 else
                 {
-                    _typedValue = (TValue)value;
+                    _typedValue = (TValue)value; //(TValue)((IEnumerable<RubberduckSetting>)value).ToArray();
                 }
             }
             else if (SettingDataType == SettingDataType.EnumSettingGroup)
             {
                 // FIXME
-
+                if (typeof(TValue) == typeof(BooleanRubberduckSetting[]) && value is RubberduckSetting[])
+                {
+                    _typedValue = (TValue)Convert.ChangeType(((RubberduckSetting[])value).Cast<BooleanRubberduckSetting>().ToArray(), typeof(TValue));
+                }
+                else if (value is not JsonElement)
+                {
+                    _typedValue = (TValue)value;
+                }
                 //if (value is JsonElement json && json.ValueKind == JsonValueKind.Array)
                 //{
 

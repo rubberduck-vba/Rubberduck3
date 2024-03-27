@@ -5,9 +5,6 @@ using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.InternalApi.Services;
 using Rubberduck.InternalApi.Settings;
 using Rubberduck.Parsing._v3.Pipeline.Abstract;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Immutable;
 using System.Text;
 using System.Threading.Tasks.Dataflow;
 
@@ -17,23 +14,23 @@ public class DocumentMemberSymbolsSection : WorkspaceDocumentSection
 {
     private readonly PipelineParseTreeSymbolsService _symbolsService;
 
-    public DocumentMemberSymbolsSection(DataflowPipeline parent, IWorkspaceService workspaces, PipelineParseTreeSymbolsService symbolsService,
+    public DocumentMemberSymbolsSection(DataflowPipeline parent, IAppWorkspacesService workspaces, PipelineParseTreeSymbolsService symbolsService,
         ILogger<WorkspaceDocumentParserOrchestrator> logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance)
         : base(parent, workspaces, logger, settingsProvider, performance)
     {
         _symbolsService = symbolsService;
     }
 
-    private TransformBlock<DocumentState, Symbol> AcquireDocumentStateSymbolsBlock { get; set; } = null!;
-    private Symbol AcquireDocumentStateSymbols(DocumentState state) =>
-        RunTransformBlock(AcquireDocumentStateSymbolsBlock, state, 
+    private TransformBlock<CodeDocumentState, Symbol> AcquireCodeDocumentStateSymbolsBlock { get; set; } = null!;
+    private Symbol AcquireCodeDocumentStateSymbols(CodeDocumentState state) =>
+        RunTransformBlock(AcquireCodeDocumentStateSymbolsBlock, state, 
             e => e.Symbol ?? throw new InvalidOperationException("Document.Symbol is unexpectedly null."), 
-            nameof(AcquireDocumentStateSymbolsBlock), logPerformance: false);
+            nameof(AcquireCodeDocumentStateSymbolsBlock), logPerformance: false);
 
     private TransformBlock<Symbol, Symbol> ResolveMemberSymbolsBlock { get; set; } = null!;
     private Symbol ResolveMemberSymbols(Symbol symbol) =>
         RunTransformBlock(ResolveMemberSymbolsBlock, symbol, 
-            e => _symbolsService.RecursivelyResolveSymbols(e), 
+            _symbolsService.RecursivelyResolveSymbols, 
             nameof(ResolveMemberSymbolsBlock), logPerformance: true);
 
     private ActionBlock<Symbol> SetDocumentStateMemberSymbolsBlock { get; set; } = null!;
@@ -44,9 +41,10 @@ public class DocumentMemberSymbolsSection : WorkspaceDocumentSection
 
     protected override (IEnumerable<IDataflowBlock>, Task) DefineSectionBlocks(ISourceBlock<DocumentParserState> source)
     {
+        _ = source ?? throw new ArgumentNullException(nameof(source));
 
-        AcquireDocumentStateSymbolsBlock = new(AcquireDocumentStateSymbols, ConcurrentExecutionOptions(Token));
-        _ = TraceBlockCompletionAsync(nameof(AcquireDocumentStateSymbolsBlock), AcquireDocumentStateSymbolsBlock);
+        AcquireCodeDocumentStateSymbolsBlock = new(AcquireCodeDocumentStateSymbols, ConcurrentExecutionOptions(Token));
+        _ = TraceBlockCompletionAsync(nameof(AcquireCodeDocumentStateSymbolsBlock), AcquireCodeDocumentStateSymbolsBlock);
 
         ResolveMemberSymbolsBlock = new(ResolveMemberSymbols, ConcurrentExecutionOptions(Token));
         _ = TraceBlockCompletionAsync(nameof(ResolveMemberSymbols), ResolveMemberSymbolsBlock);
@@ -56,15 +54,13 @@ public class DocumentMemberSymbolsSection : WorkspaceDocumentSection
         SetDocumentStateMemberSymbolsBlock = new(SetDocumentStateMemberSymbols, SingleMessageExecutionOptions(Token)); // NOTE: not thread-safe, keep single-threaded
         Completion = TraceBlockCompletionAsync(nameof(SetDocumentStateMemberSymbolsBlock), SetDocumentStateMemberSymbolsBlock);
 
-        //Completion = SetDocumentStateMemberSymbolsBlock.Completion;
-
-        Link(source, AcquireDocumentStateSymbolsBlock);
-        Link(AcquireDocumentStateSymbolsBlock, ResolveMemberSymbolsBlock);
+        Link(source, AcquireCodeDocumentStateSymbolsBlock);
+        Link(AcquireCodeDocumentStateSymbolsBlock, ResolveMemberSymbolsBlock);
         Link(ResolveMemberSymbolsBlock, symbolBuffer);
         Link(symbolBuffer, SetDocumentStateMemberSymbolsBlock);
 
         return (new IDataflowBlock[] {
-                AcquireDocumentStateSymbolsBlock,
+                AcquireCodeDocumentStateSymbolsBlock,
                 ResolveMemberSymbolsBlock,
                 SetDocumentStateMemberSymbolsBlock
             }, Completion);
@@ -72,7 +68,7 @@ public class DocumentMemberSymbolsSection : WorkspaceDocumentSection
 
     protected override Dictionary<string, IDataflowBlock> DataflowBlocks => new()
     {
-        [nameof(AcquireDocumentStateSymbolsBlock)] = AcquireDocumentStateSymbolsBlock,
+        [nameof(AcquireCodeDocumentStateSymbolsBlock)] = AcquireCodeDocumentStateSymbolsBlock,
         [nameof(ResolveMemberSymbolsBlock)] = ResolveMemberSymbolsBlock,
         [nameof(SetDocumentStateMemberSymbolsBlock)] = SetDocumentStateMemberSymbolsBlock,
     };
@@ -82,7 +78,7 @@ public class DocumentMemberSymbolsSection : WorkspaceDocumentSection
         var uri = State?.Uri?.ToString();
         if (State != null && !string.IsNullOrWhiteSpace(uri))
         {
-            builder.AppendLine($"\t📂 Uri: {uri} (⛔{State.SyntaxErrors.Count} errors; ⚠️{State.Diagnostics.Count} diagnostics; 🧩{State.Symbol?.Children?.Count() ?? 0} child symbols)");
+            builder.AppendLine($"\t📂 Uri: {uri} (⚠️{State.Diagnostics.Count} diagnostics; 🧩{State.Symbol?.Children?.Count() ?? 0} child symbols, {State.Foldings.Count} foldings)");
         }
     }
 }

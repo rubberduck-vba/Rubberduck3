@@ -1,6 +1,8 @@
-﻿using Rubberduck.InternalApi.Model.Workspace;
+﻿using Rubberduck.InternalApi.Extensions;
+using Rubberduck.InternalApi.Model.Workspace;
 using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.InternalApi.Settings.Model.LanguageClient;
+using Rubberduck.UI.Chrome;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Shared.Message;
@@ -32,12 +34,12 @@ namespace Rubberduck.UI.Services.NewProject
             return !vm.HasErrors;
         }
 
-        public NewProjectWindowViewModel(UIServiceHelper service,
+        public NewProjectWindowViewModel(UIServiceHelper service, IWindowChromeViewModel chrome,
             IEnumerable<VBProjectInfo?> projects,
             IEnumerable<ProjectTemplate> projectTemplates,
             MessageActionsProvider actions,
             ICommand showSettingsCommand)
-            : base(service, "New Project", actions.OkCancel(Validate), showSettingsCommand, typeof(LanguageClientSettings).Name)
+            : base(service, "New Project", actions.OkCancel(Validate), chrome, showSettingsCommand, typeof(LanguageClientSettings).Name)
         {
             _settings = service.Settings;
             _rootUri = _settings.LanguageClientSettings.WorkspaceSettings.DefaultWorkspaceRoot;
@@ -121,7 +123,7 @@ namespace Rubberduck.UI.Services.NewProject
         }
 
         private void OnSourcePathChanged() => OnPropertyChanged(nameof(SourcePath));
-        public string SourcePath => Path.Combine(WorkspaceLocation, ProjectName, ProjectFile.SourceRoot);
+        public string SourcePath => Path.Combine(WorkspaceLocation, ProjectName, WorkspaceUri.SourceRootName);
 
         public bool HasVBProjects { get; init; }
 

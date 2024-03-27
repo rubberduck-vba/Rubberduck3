@@ -10,29 +10,49 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Rubberduck.UI.Services.Abstract
+namespace Rubberduck.UI.Services
 {
-    public class WorkspaceClientService : WorkspaceService
+    public class DocumentClientService : ServiceBase
     {
         private readonly LanguageClientApp _lspClientApp;
-        private readonly Dictionary<Uri, IFileSystemWatcher> _watchers = [];
 
-        public WorkspaceClientService(ILogger<WorkspaceService> logger, RubberduckSettingsProvider settingsProvider, IWorkspaceStateManager state, IFileSystem fileSystem, PerformanceRecordAggregator performance, IProjectFileService projectFile, LanguageClientApp lspClientApp) 
-            : base(logger, settingsProvider, state, fileSystem, performance, projectFile)
+        public DocumentClientService(ILogger logger, RubberduckSettingsProvider settingsProvider, PerformanceRecordAggregator performance, 
+            LanguageClientApp lspClientApp) 
+            : base(logger, settingsProvider, performance)
         {
             _lspClientApp = lspClientApp;
         }
 
+
+    }
+
+    public class WorkspaceClientService : AppWorkspacesService
+    {
+        private readonly LanguageClientApp _app;
+        private readonly Dictionary<Uri, IFileSystemWatcher> _watchers = [];
+
+        public WorkspaceClientService(ILogger<AppWorkspacesService> logger, RubberduckSettingsProvider settingsProvider, IAppWorkspacesStateManager state, IFileSystem fileSystem, PerformanceRecordAggregator performance, IProjectFileService projectFile, LanguageClientApp app) 
+            : base(logger, settingsProvider, state, fileSystem, performance, projectFile)
+        {
+            _app = app;
+        }
+
         public async override Task OnWorkspaceOpenedAsync(Uri uri)
         {
-            if (_lspClientApp.LanguageClient is null)
+            if (_app.LanguageClient is null)
             {
-                await _lspClientApp.StartupAsync(Settings.LanguageServerSettings.StartupSettings, uri);
+                await Task.Run(() => _app
+                    .StartupAsync(Settings.LanguageServerSettings.StartupSettings, uri)
+                    .ContinueWith(t => OnWorkspaceOpened(uri), CancellationToken.None, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default)
+                , CancellationToken.None);
             }
-
-            await base.OnWorkspaceOpenedAsync(uri);
+            else
+            {
+                OnWorkspaceOpened(uri);
+            }
         }
 
         public bool IsFileSystemWatcherEnabled(Uri root)
@@ -90,13 +110,13 @@ namespace Rubberduck.UI.Services.Abstract
 
         private void OnWatcherRenamed(object sender, RenamedEventArgs e)
         {
-            var state = State.ActiveWorkspace;
+            var state = Workspaces.ActiveWorkspace;
             if (state != null && state.WorkspaceRoot != null)
             {
                 TryRunAction(() =>
                 {
-                    var oldUri = new WorkspaceFileUri(e.OldFullPath[(state.WorkspaceRoot.LocalPath + $"\\{ProjectFile.SourceRoot}").Length..], state.WorkspaceRoot);
-                    var newUri = new WorkspaceFileUri(e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{ProjectFile.SourceRoot}").Length..], state.WorkspaceRoot);
+                    var oldUri = new WorkspaceFileUri(e.OldFullPath[(state.WorkspaceRoot.LocalPath + $"\\{WorkspaceUri.SourceRootName}").Length..], state.WorkspaceRoot);
+                    var newUri = new WorkspaceFileUri(e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{WorkspaceUri.SourceRootName}").Length..], state.WorkspaceRoot);
 
                     if (state != null && state.TryGetWorkspaceFile(oldUri, out var workspaceFile) && workspaceFile is not null)
                     {
@@ -124,17 +144,17 @@ namespace Rubberduck.UI.Services.Abstract
 
                     // NOTE: this is different than the DidRenameFiles mechanism.
                     LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Renamed: {oldUri.AbsoluteLocation} -> {newUri.AbsoluteLocation}");
-                    _lspClientApp.LanguageClient?.Workspace.DidChangeWatchedFiles(request);
+                    _app.LanguageClient?.Workspace.DidChangeWatchedFiles(request);
                 });
             }
         }
 
         private void OnWatcherDeleted(object sender, FileSystemEventArgs e)
         {
-            var state = State.ActiveWorkspace;
+            var state = Workspaces.ActiveWorkspace;
             if (state != null && state.WorkspaceRoot != null)
             {
-                var uri = new WorkspaceFileUri(e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{ProjectFile.SourceRoot}").Length..], state.WorkspaceRoot);
+                var uri = new WorkspaceFileUri(e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{WorkspaceUri.SourceRootName}").Length..], state.WorkspaceRoot);
                 state.UnloadWorkspaceFile(uri);
 
                 var request = new DidChangeWatchedFilesParams
@@ -149,16 +169,16 @@ namespace Rubberduck.UI.Services.Abstract
 
                 // NOTE: this is different than the DidDeleteFiles mechanism.
                 LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Deleted: {uri.AbsoluteLocation}");
-                _lspClientApp.LanguageClient?.Workspace.DidChangeWatchedFiles(request);
+                _app.LanguageClient?.Workspace.DidChangeWatchedFiles(request);
             }
         }
 
         private void OnWatcherChanged(object sender, FileSystemEventArgs e)
         {
-            var state = State.ActiveWorkspace;
+            var state = Workspaces.ActiveWorkspace;
             if (state != null && state.WorkspaceRoot != null)
             {
-                var uri = new WorkspaceFileUri(e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{ProjectFile.SourceRoot}").Length..], state.WorkspaceRoot);
+                var uri = new WorkspaceFileUri(e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{WorkspaceUri.SourceRootName}").Length..], state.WorkspaceRoot);
                 state.UnloadWorkspaceFile(uri);
 
                 var request = new DidChangeWatchedFilesParams
@@ -173,16 +193,16 @@ namespace Rubberduck.UI.Services.Abstract
 
                 // NOTE: this is different than the document-level syncing mechanism.
                 LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Changed: {uri}");
-                _lspClientApp.LanguageClient?.Workspace.DidChangeWatchedFiles(request);
+                _app.LanguageClient?.Workspace.DidChangeWatchedFiles(request);
             }
         }
 
         private void OnWatcherCreated(object sender, FileSystemEventArgs e)
         {
-            var state = State.ActiveWorkspace;
+            var state = Workspaces.ActiveWorkspace;
             if (state != null && state.WorkspaceRoot != null)
             {
-                var relativePath = e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{ProjectFile.SourceRoot}").Length..];
+                var relativePath = e.FullPath[(state.WorkspaceRoot.LocalPath + $"\\{WorkspaceUri.SourceRootName}").Length..];
                 var uri = new Uri(relativePath);
 
                 var request = new DidChangeWatchedFilesParams
@@ -197,7 +217,7 @@ namespace Rubberduck.UI.Services.Abstract
 
                 // NOTE: this is different than the document-level syncing mechanism.
                 LogTrace("Sending DidChangeWatchedFiles LSP notification...", $"Created: {uri}");
-                _lspClientApp.LanguageClient?.Workspace.DidChangeWatchedFiles(request);
+                _app.LanguageClient?.Workspace.DidChangeWatchedFiles(request);
             }
         }
 

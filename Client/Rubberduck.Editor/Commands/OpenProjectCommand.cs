@@ -13,10 +13,10 @@ namespace Rubberduck.Editor.Commands
     public class OpenProjectCommand : CommandBase
     {
         private readonly IFileSystem _fileSystem;
-        private readonly IWorkspaceService _workspaceService;
+        private readonly IAppWorkspacesService _workspaceService;
 
         public OpenProjectCommand(UIServiceHelper service,
-            IFileSystem fileSystem, IWorkspaceService workspace)
+            IFileSystem fileSystem, IAppWorkspacesService workspace)
             : base(service)
         {
             _fileSystem = fileSystem;
