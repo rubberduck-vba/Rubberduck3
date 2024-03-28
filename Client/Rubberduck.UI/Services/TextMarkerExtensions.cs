@@ -5,6 +5,7 @@ using Rubberduck.UI.Shell;
 using Rubberduck.UI.Shell.Document;
 using System;
 using System.Linq;
+using System.Text;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -58,19 +59,19 @@ public static class TextMarkerExtensions
         return tooltip;
     }
 
-    private static object GetToolTipViewModel(Diagnostic diagnostic)
+    private static ITextMarkerToolTip GetToolTipViewModel(Diagnostic diagnostic)
     {
-        var isError = diagnostic.Code?.String == RubberduckDiagnosticId.SyntaxError.Code();
-        
-        // FIXME assumes XYZ000123 format for diagnostic codes
-        var id = (RubberduckDiagnosticId)Convert.ToInt32(diagnostic.Code?.String?.Substring(3) ?? "-1");
+        var code = diagnostic.Code!.Value.String!;
+        var id = (RubberduckDiagnosticId)Convert.ToInt32(new string(code.SkipWhile(e => !char.IsAsciiDigit(e)).ToArray()));
 
-        return new
+        return new TextMarkerToolTipViewModel
         {
-            TipTitle = $"{diagnostic.Code!.Value.String} {id}",
-            TipText = diagnostic.Message,
-            IsError = isError,
-            IsDiagnostic = !isError
+            Code = code,
+            Title = $"{code}",
+            Text = diagnostic.Message,
+            Severity = diagnostic.Severity ?? 0,
+            SettingKey = code,
+            HelpUri = diagnostic.CodeDescription?.Href
         };
     }
 }

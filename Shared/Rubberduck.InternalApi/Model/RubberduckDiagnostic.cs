@@ -10,24 +10,55 @@ public enum RubberduckDiagnosticId
 {
     // TODO sort and categorize, then carve in stone.
 
-    PreferConcatOperatorForStringConcatenation = 10,
-    PreferErrRaiseOverErrorStatement,
+    InvalidAnnotation = 20,
 
     SllFailure = 98,
     SyntaxError = 99,
 
-    ImplicitStringCoercion = 101,
+    ImplicitDeclarationsEnabled = 101, // [RD2:OptionExplicitInspection]
+    ImplicitNonDefaultArrayBase, // [RD2: OptionBaseInspection]
+    ImplicitTypeDeclarationsEnabled, // [Type]Def
+    ImplicitByRefModifier,
+    ImplicitPublicMember,
+    ImplicitVariantDeclaration,
+    ImplicitVariantReturnType,
+
+    ImplicitStringCoercion,
     ImplicitNumericCoercion,
     ImplicitLetCoercion,
     ImplicitDateSerialConversion,
     ImplicitNarrowingConversion,
     ImplicitWideningConversion,
 
+    IntegerDataTypeDeclaration = 201,
+    ModuleScopeDimDeclaration,
+    MultilineParameterDeclaration,
+    MultipleDeclarations,
+    //NotAllPathsReturnValue, // [RD2:NonReturningFunctionInspection]
+    MisleadingByRefParameter, // property let/set value parameter is always passed ByVal
+
+    ObsoleteCallingConvention = 301,
+    ObsoleteCallStatement,
+    ObsoleteCommentSyntax,
+    //ObsoleteErrorSyntax,
+    ObsoleteGlobalModifier,
+    ObsoleteLetStatement,
+    ObsoleteTypeHint,
+    ObsoleteWhileWend,
+    ObsoleteOnLocalErrorStatement,
+    
+    ObsoleteMemberUsage = 401, // members with an @Obsolete annotation
+    
+    ImplementationsShouldBePrivate,
+    PublicDeclarationInWorksheetModule, // [RD2:PublicEnumerationDeclaredInWorksheetInspection]
+
+    // execution pass diagnostics
     UnintendedConstantExpression = 1001,
     SuspiciousValueAssignment,
     TypeCastConversion,
     BitwiseOperator,
-
+    PreferConcatOperatorForStringConcatenation,
+    PreferErrRaiseOverErrorStatement,
 }
 
 public static class RubberduckDiagnosticIdExtensions

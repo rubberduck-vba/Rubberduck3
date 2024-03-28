@@ -73,6 +73,7 @@
     <converters:SupportedDocumentTypeToIconConverter x:Key="DocumentTypeToIconConverter" />
     <converters:ServerConnectionStateToIconConverter x:Key="ServerConnectionStateToIconConverter" />
     <converters:LogLevelToIconConverter x:Key="LogLevelIconConverter" />
+    <converters:DiagnosticSeverityToIconConverter x:Key="DiagnosticSeverityIconConverter" />
 
     <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="{DynamicResource ThemeAccent1MediumColor}"/>
     <SolidColorBrush x:Key="TextBox.Focus.Border" Color="{DynamicResource ThemeAccent1DarkColor}"/>
