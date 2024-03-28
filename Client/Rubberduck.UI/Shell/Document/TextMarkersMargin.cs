@@ -15,7 +15,7 @@ using System.Windows.Media.TextFormatting;
 namespace Rubberduck.UI.Shell.Document
 {
     /// <summary>
-    /// TODO see https://github.com/AvaloniaUI/AvaloniaEdit/blob/master/src/AvaloniaEdit/Editing/LineNumberMargin.cs for how-to
+    /// See https://github.com/AvaloniaUI/AvaloniaEdit/blob/master/src/AvaloniaEdit/Editing/LineNumberMargin.cs for how-to
     /// </summary>
     public class TextMarkersMargin : AbstractMargin
     {
@@ -42,8 +42,12 @@ namespace Rubberduck.UI.Shell.Document
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            return new Size(24, 0);
+            return new Size(MarginWidth, 0);
         }
+
+        private static readonly int MarginWidth = 24;
+        private static readonly int IconWidth = 16;
+        private static readonly int IconPositionX = (MarginWidth - IconWidth) / 2;
 
         protected override void OnRender(DrawingContext drawingContext)
         {
@@ -69,9 +73,9 @@ namespace Rubberduck.UI.Shell.Document
                     var visualYPosition = visualLine.GetTextLineVisualYPosition(visualLine.TextLines[0], VisualYPosition.TextTop);
                     var rect = new Rect
                     {
-                        Width = 16,
-                        Height = 16,
-                        X = 2,
+                        Width = IconWidth,
+                        Height = IconWidth, // not a typo, it's 16x16
+                        X = IconPositionX,
                         Y = visualYPosition - textView.VerticalOffset
                     };
 

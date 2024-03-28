@@ -9,6 +9,7 @@ using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
 using System;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -184,7 +185,15 @@ public partial class SourceCodeEditorControl : UserControl
                 firstErrorOffset = Editor.Document.GetOffset(firstErrorRange.Start.Line, 1);
             }
 
-            _foldings.UpdateFoldings(newFoldings, firstErrorOffset);
+            try
+            {
+                _foldings.UpdateFoldings(newFoldings, firstErrorOffset);
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception.ToString());
+                _foldings.Clear();
+            }
         });
     }
 

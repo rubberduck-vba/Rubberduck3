@@ -1,5 +1,4 @@
-﻿using AsyncAwaitBestPractices;
-using OmniSharp.Extensions.LanguageServer.Protocol.Client;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Extensions;
@@ -10,7 +9,6 @@ using Rubberduck.UI.Services;
 using Rubberduck.UI.Shell.Document;
 using Rubberduck.UI.Shell.StatusBar;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -50,29 +48,25 @@ namespace Rubberduck.Editor.Shell.Document
         /// </summary>
         private Timer IdleTimer { get; }
         private TimeSpan IdleDelay => UIServiceHelper.Instance!.Settings.EditorSettings.IdleTimerDuration;
-        private void IdleTimerCallback(object? _)
+        private async void IdleTimerCallback(object? _)
         {
             Status.IsWriting = false;
             DisableIdleTimer();
-            NotifyDocumentChangedAsync()
-                .ContinueWith(t => Task.Delay(IdleDelay))
-                .ContinueWith(t =>
-                {
-                    RequestDiagnosticsAsync().SafeFireAndForget();
-                    RequestFoldingsAsync().SafeFireAndForget();
-                }).SafeFireAndForget();
+
+            NotifyDocumentChanged();
+            await Task.Delay(IdleDelay / 2); // arbitrary - we likely need a few dozen milliseconds, tops.
+
+            await RequestDiagnosticsAsync();
+            await RequestFoldingsAsync();
         }
 
         /// <summary>
-        /// Resets the idle timer to fire a callback in <c>IdleDelay</c> milliseconds.
+        /// Resets the idle timer to fire a callback in <c>IdleDelay</c> milliseconds (unless it's reset again by then).
         /// </summary>
         /// <remarks>
         /// Invoked at every keypress.
         /// </remarks>
-        private void ResetIdleTimer()
-        {
-            IdleTimer.Change(Convert.ToInt32(IdleDelay.TotalMilliseconds), Timeout.Infinite);
-        }
+        private void ResetIdleTimer() => IdleTimer.Change(Convert.ToInt32(IdleDelay.TotalMilliseconds), Timeout.Infinite);
 
         private void DisableIdleTimer() => IdleTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
@@ -127,9 +121,9 @@ namespace Rubberduck.Editor.Shell.Document
 
         public override SupportedDocumentType DocumentType => SupportedDocumentType.SourceFile;
 
-        private async Task NotifyDocumentChangedAsync() => await NotifyDocumentChangedAsync(null!, null!);
+        private void NotifyDocumentChanged() => NotifyDocumentChanged(null, null);
 
-        private async Task NotifyDocumentChangedAsync(OmniSharp.Extensions.LanguageServer.Protocol.Models.Range? range, string? text)
+        private void NotifyDocumentChanged(OmniSharp.Extensions.LanguageServer.Protocol.Models.Range? range, string? text)
         {
             Status.ProgressMessage = "Processing changes...";
             // increment local version first...
@@ -153,10 +147,6 @@ namespace Rubberduck.Editor.Shell.Document
 
             _service.LogDebug($"Notifying server of document changes.", $"DocumentId: {DocumentState.Id} Version: {DocumentState.Version}");
             LanguageClient.DidChangeTextDocument(request);
-
-            await RequestFoldingsAsync();
-            await RequestDiagnosticsAsync();
-            Status.ProgressMessage = null;
         }
 
         private async Task RequestDiagnosticsAsync()
