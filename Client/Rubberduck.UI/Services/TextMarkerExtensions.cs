@@ -1,5 +1,6 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Model;
+using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Shell;
 using Rubberduck.UI.Shell.Document;
@@ -7,6 +8,8 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Rubberduck.UI.Services;
@@ -20,7 +23,7 @@ public static class TextMarkerExtensions
     public static readonly Color ErrorMarkerColor = Color.FromRgb(168, 18, 18);
     public static readonly Color UndefinedMarkerColor = Color.FromRgb(0, 0, 0);
 
-    public static void WithTextMarker(this Diagnostic diagnostic, BindableTextEditor editor, TextMarkerService service)
+    public static void WithTextMarker(this Diagnostic diagnostic, BindableTextEditor editor, TextMarkerService service, ICommand showSettingsCommand)
     {
         var document = editor.Document;
         var start = document.GetOffset(diagnostic.Range.Start.Line, diagnostic.Range.Start.Character + 1);
@@ -44,13 +47,13 @@ public static class TextMarkerExtensions
                 _ => (TextMarkerTypes.NormalUnderline, UndefinedMarkerColor),
             };
 
-            marker.ToolTip = CreateToolTip(editor, diagnostic);
+            marker.ToolTip = CreateToolTip(editor, diagnostic, showSettingsCommand);
         }
     }
 
-    private static ToolTip CreateToolTip(BindableTextEditor editor, Diagnostic diagnostic)
+    private static Popup CreateToolTip(BindableTextEditor editor, Diagnostic diagnostic, ICommand showSettingsCommand)
     {
-        var vm = GetToolTipViewModel(diagnostic);
+        var vm = GetToolTipViewModel(diagnostic, showSettingsCommand);
         var tooltip = new TextMarkerToolTip
         {
             DataContext = vm,
@@ -59,19 +62,30 @@ public static class TextMarkerExtensions
         return tooltip;
     }
 
-    private static ITextMarkerToolTip GetToolTipViewModel(Diagnostic diagnostic)
+    private static ITextMarkerToolTip GetToolTipViewModel(Diagnostic diagnostic, ICommand showSettingsCommand)
     {
         var code = diagnostic.Code!.Value.String!;
-        var id = (RubberduckDiagnosticId)Convert.ToInt32(new string(code.SkipWhile(e => !char.IsAsciiDigit(e)).ToArray()));
+        var id = (RubberduckDiagnosticId)Convert.ToInt32(code.Substring(3));
 
+        var title = id.ToString(); // TODO get from resources
+        var tla = code.Substring(0, 3);
+        var type = tla switch
+        {
+            "VBC" => "VB Compile Error",
+            "VBR" => "VB Runtime Error",
+            "RD3" => "Rubberduck Diagnostic",
+            _ => null,
+        };
         return new TextMarkerToolTipViewModel
         {
             Code = code,
-            Title = $"{code}",
+            Title = title is null ? code : $"[{code}] {title}",
             Text = diagnostic.Message,
+            Type = type ?? "unknown",
             Severity = diagnostic.Severity ?? 0,
             SettingKey = code,
-            HelpUri = diagnostic.CodeDescription?.Href
+            HelpUri = diagnostic.CodeDescription?.Href,
+            ShowSettingsCommand = showSettingsCommand,
         };
     }
 }

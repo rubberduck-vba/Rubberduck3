@@ -1,39 +1,54 @@
-﻿<ToolTip x:Class="Rubberduck.UI.Shell.Document.TextMarkerToolTip"
+﻿<Popup x:Class="Rubberduck.UI.Shell.Document.TextMarkerToolTip"
          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
          xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
          xmlns:local="clr-namespace:Rubberduck.UI.Shell.Document" xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
          mc:Ignorable="d" 
-         Padding="0" 
+       MaxWidth="500"
          d:DataContext="{d:DesignInstance Type=local:TextMarkerToolTipViewModel, IsDesignTimeCreatable=True}"
-         d:DesignHeight="24" d:DesignWidth="800">
-    <ToolTip.Resources>
+         d:DesignHeight="80" d:DesignWidth="200">
+    <Popup.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </ToolTip.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <Border Grid.Row="0" Background="{DynamicResource ThemeBackgroundColorBrush}" />
-        <StackPanel Orientation="Horizontal" Margin="5,2">
-            <Image Height="16" Width="16" Source="{Binding Severity, Converter={StaticResource DiagnosticSeverityIconConverter}}" />
-            <TextBlock Margin="5,2" Padding="1,1,1,0" FontSize="12" FontWeight="Bold" Text="{Binding Title}" />
+    </Popup.Resources>
+    <Border BorderThickness="1"
+            BorderBrush="{DynamicResource ThemeAccent1DarkColorBrush}" 
+            Background="{DynamicResource ThemeBackgroundColorBrush}">
+        <StackPanel>
+            <DockPanel Background="{DynamicResource ThemeBackgroundDarkColorBrush}">
+
+                <shell:FlatButton DockPanel.Dock="Right" VerticalAlignment="Top" HorizontalAlignment="Right"
+                              Icon="{StaticResource GearIcon}" 
+                              Margin="4,6"
+                              Command="{Binding ShowSettingsCommand}"
+                              CommandParameter="{Binding SettingKey}" />
+
+                <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="5,0">
+                    <Image DockPanel.Dock="Left" Height="16" Width="16" VerticalAlignment="Center" Source="{Binding Severity, Converter={StaticResource DiagnosticSeverityIconConverter}}" />
+                    <Label DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,2" Style="{DynamicResource TextMarkerToolTipTitleStyle}">
+                        <TextBlock VerticalAlignment="Center" Text="{Binding Title}" />
+                    </Label>
+                </DockPanel>
+
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Top" Margin="0" Style="{DynamicResource TextMarkerToolTipSubtitleStyle}">
+                    <TextBlock Margin="5,0" Text="{Binding Type}" TextWrapping="Wrap" />
+                </Label>
+                <Label DockPanel.Dock="Top" Margin="0" Style="{DynamicResource TextMarkerToolTipTextStyle}">
+                    <TextBlock Margin="5,0" Text="{Binding Text}" TextWrapping="Wrap" />
+                </Label>
+
+                <Label DockPanel.Dock="Top" Style="{DynamicResource HyperlinkLabelStyle}" Margin="5,0" 
+                       Visibility="{Binding HelpUri, Converter={StaticResource HasItemsVisibilityConverter}}">
+                    <TextBlock Text="{Binding HelpUri}" TextWrapping="NoWrap"/>
+                </Label>
+            </DockPanel>
         </StackPanel>
-
-        <shell:FlatButton Icon="{StaticResource GearIcon}" HorizontalAlignment="Right" />
-
-        <TextBlock Grid.Row="1" Margin="5" Padding="1,0,1,1" FontSize="11" FontWeight="SemiBold" Text="{Binding Text}" TextWrapping="Wrap" />
-
-        <TextBlock Grid.Row="2" Margin="5" Padding="1,0,1,1" FontSize="11" FontWeight="SemiBold" Text="{Binding HelpUri}" 
-                   TextWrapping="NoWrap" Visibility="{Binding HelpUri, Converter={StaticResource HasItemsVisibilityConverter}}" />
-        
-    </Grid>
-</ToolTip>
+    </Border>
+</Popup>

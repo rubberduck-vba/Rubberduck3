@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 namespace Rubberduck.UI.Shell.Document;
@@ -95,7 +96,7 @@ public partial class SourceCodeEditorControl : UserControl
             .OfType<TextMarker>()
             .FirstOrDefault();
 
-        if (marker?.ToolTip is ToolTip tooltip)
+        if (marker?.ToolTip is Popup tooltip)
         {
             var markerRect = BackgroundGeometryBuilder.GetRectsForSegment(Editor.TextArea.TextView, marker).First();
             markerRect.Offset(2d, 1d);
@@ -113,7 +114,7 @@ public partial class SourceCodeEditorControl : UserControl
 
     private void HideMarkerToolTip()
     {
-        if (Editor.ToolTip is ToolTip toolTip)
+        if (Editor.ToolTip is Popup toolTip)
         {
             toolTip.IsOpen = false;
             Editor.ToolTip = null;
@@ -204,7 +205,7 @@ public partial class SourceCodeEditorControl : UserControl
             _markers.RemoveAll(e => true);
             foreach (var diagnostic in ViewModel.CodeDocumentState.Diagnostics)
             {
-                diagnostic.WithTextMarker(Editor, _markers);
+                diagnostic.WithTextMarker(Editor, _markers, ViewModel.ShowSettingsCommand);
             }
             _margin.InvalidateVisual();
         });

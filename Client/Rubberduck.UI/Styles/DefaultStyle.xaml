@@ -357,10 +357,10 @@
 
     <Style x:Key="FormFieldNameLabelStyle" TargetType="Label">
         <Style.Setters>
+            <Setter Property="FontFamily" Value="Segoe UI" />
             <Setter Property="FontSize" Value="14" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
-            <Setter Property="Margin" Value="0,5,0,0" />
             <Setter Property="MinHeight" Value="24" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style.Setters>
@@ -372,6 +372,26 @@
             <Setter Property="FontWeight" Value="Regular" />
         </Style.Setters>
     </Style>
+
+    <Style x:Key="TextMarkerToolTipTitleStyle" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
+        <Style.Setters>
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="Regular" />
+        </Style.Setters>
+    </Style>
+    <Style x:Key="TextMarkerToolTipSubtitleStyle" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
+        <Style.Setters>
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="Medium" />
+        </Style.Setters>
+    </Style>
+    <Style x:Key="TextMarkerToolTipTextStyle" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
+        <Style.Setters>
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="Regular" />
+        </Style.Setters>
+    </Style>
+
 
     <Style x:Key="WindowTitleLabelStyle" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
         <Style.Setters>
@@ -433,7 +453,16 @@
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
         </Style.Setters>
     </Style>
-    
+
+    <Style x:Key="HyperlinkLabelStyle" TargetType="Label">
+        <Style.Setters>
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="TextBlock.TextDecorations" Value="Underline" />
+            <Setter Property="Foreground" Value="Blue" />
+        </Style.Setters>
+    </Style>
+
     <Style x:Key="FormFieldTextBoxStyle" TargetType="TextBox">
         <Style.Setters>
             <Setter Property="Padding" Value="4,0" />
