@@ -1,8 +1,6 @@
 ﻿using AsyncAwaitBestPractices;
 using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Rendering;
-using Microsoft.Xaml.Behaviors.Core;
-using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;

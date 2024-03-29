@@ -4,6 +4,24 @@ using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.Settings.Model.LanguageServer;
 
+public record class DiagnosticsSettings : TypedSettingGroup, IDefaultSettingsProvider<DiagnosticsSettings>
+{
+    private static readonly RubberduckSetting[] DefaultSettings =
+        [
+
+        ];
+
+    public DiagnosticsSettings()
+    {
+        DefaultValue = DefaultSettings;
+    }
+
+
+
+    public static DiagnosticsSettings Default { get; } = new() { Value = DefaultSettings, DefaultValue = DefaultSettings };
+    DiagnosticsSettings IDefaultSettingsProvider<DiagnosticsSettings>.Default => Default;
+}
+
 /// <summary>
 /// Configures LSP (Language Server Protocol) server options.
 /// </summary>

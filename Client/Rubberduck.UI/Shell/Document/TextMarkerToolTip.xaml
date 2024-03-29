@@ -16,6 +16,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Popup.Resources>
+    <Grid x:Name="ContentCanvas">
     <Border BorderThickness="1"
             BorderBrush="{DynamicResource ThemeAccent1DarkColorBrush}" 
             Background="{DynamicResource ThemeBackgroundColorBrush}">
@@ -55,4 +56,5 @@
             </DockPanel>
         </StackPanel>
     </Border>
+    </Grid>
 </Popup>
