@@ -73,6 +73,7 @@ public enum RubberduckDiagnosticId
 public static class RubberduckDiagnosticIdExtensions
 {
     public static string Code(this RubberduckDiagnosticId id) => $"RD3{(int)id:00000}";
+    public static string Code(this VBCompileErrorId id) => $"VBC{(int)id:00000}";
 }
 
 public record class RubberduckDiagnostic : Diagnostic

@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 
 namespace Rubberduck.InternalApi.Settings.Model.LanguageServer.Diagnostics;
 
-public record class DiagnosticsSettings : TypedSettingGroup //<RubberduckDiagnosticId>
+public record class DiagnosticsSettings : TypedSettingGroup
 {
     public static DiagnosticSetting[] DefaultSettings =>
         Enum.GetValues<RubberduckDiagnosticId>().Except(Overrides.Keys)
@@ -54,6 +54,13 @@ public record class DiagnosticSeveritySetting : TypedRubberduckSetting<Diagnosti
     {
         SettingDataType = SettingDataType.EnumValueSetting;
         Value = DefaultValue = DefaultSettingValue;
+    }
+
+    public DiagnosticSeveritySetting(DiagnosticSeverity severity)
+    {
+        SettingDataType = SettingDataType.EnumValueSetting;
+        DefaultValue = DefaultSettingValue;
+        Value = severity;
     }
 }
 
