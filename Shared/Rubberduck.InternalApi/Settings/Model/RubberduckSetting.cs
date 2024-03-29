@@ -4,6 +4,7 @@ using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
 using Rubberduck.InternalApi.Settings.Model.General;
 using Rubberduck.InternalApi.Settings.Model.LanguageClient;
 using Rubberduck.InternalApi.Settings.Model.LanguageServer;
+using Rubberduck.InternalApi.Settings.Model.LanguageServer.Diagnostics;
 using Rubberduck.InternalApi.Settings.Model.Logging;
 using Rubberduck.InternalApi.Settings.Model.ServerStartup;
 using Rubberduck.InternalApi.Settings.Model.TelemetryServer;
@@ -32,6 +33,11 @@ namespace Rubberduck.InternalApi.Settings.Model;
 [JsonDerivedType(typeof(LanguageClientSettings), nameof(LanguageClientSettings))] // ~ Language client
 [JsonDerivedType(typeof(RequireAddInHostSetting), nameof(RequireAddInHostSetting))]
 [JsonDerivedType(typeof(RequireSavedHostSetting), nameof(RequireSavedHostSetting))]
+
+[JsonDerivedType(typeof(DiagnosticsSettings), nameof(DiagnosticsSettings))] // ~ diagnostics
+[JsonDerivedType(typeof(DiagnosticSetting), nameof(DiagnosticSetting))]
+[JsonDerivedType(typeof(UseMeaningfulNamesDiagnosticSettings), nameof(UseMeaningfulNamesDiagnosticSettings))]
+[JsonDerivedType(typeof(IgnoredIdentifierPrefixesSetting), nameof(IgnoredIdentifierPrefixesSetting))]
 
 [JsonDerivedType(typeof(WorkspaceSettings), nameof(WorkspaceSettings))] // ~ workspace settings (language client)
 [JsonDerivedType(typeof(DefaultWorkspaceRootSetting), nameof(DefaultWorkspaceRootSetting))]

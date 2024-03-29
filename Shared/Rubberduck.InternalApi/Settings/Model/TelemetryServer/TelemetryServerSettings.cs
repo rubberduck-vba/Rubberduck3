@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.ServerPlatform.TelemetryServer;
-using Rubberduck.InternalApi.Settings;
 using Rubberduck.InternalApi.Settings.Model.ServerStartup;
 using System;
 using System.Linq;

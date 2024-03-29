@@ -9,6 +9,12 @@ namespace Rubberduck.InternalApi.Model;
 public enum RubberduckDiagnosticId
 {
     // TODO sort and categorize, then carve in stone.
+    /*
+     * [00]: Tokenization & parsing pass
+     * [000]: IParseTree traversals
+     * [0000]: Symbol traversals
+     * [00000]: Execution pass
+    */
 
     InvalidAnnotation = 20,
 
@@ -52,8 +58,11 @@ public enum RubberduckDiagnosticId
     ImplementationsShouldBePrivate,
     PublicDeclarationInWorksheetModule, // [RD2:PublicEnumerationDeclaredInWorksheetInspection]
 
-    // execution pass diagnostics
-    UnintendedConstantExpression = 1001,
+    // symbol traversals [0000]
+    UseMeaningfulIdentifierNames = 1001,
+
+    // execution pass diagnostics [00000]
+    UnintendedConstantExpression = 11001,
     SuspiciousValueAssignment,
     TypeCastConversion,
     BitwiseOperator,
