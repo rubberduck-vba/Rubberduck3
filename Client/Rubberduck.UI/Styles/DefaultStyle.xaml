@@ -458,9 +458,14 @@
         <Style.Setters>
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="FontSize" Value="11" />
-            <Setter Property="TextBlock.TextDecorations" Value="Underline" />
             <Setter Property="Foreground" Value="Blue" />
+            <Setter Property="TextBlock.TextWrapping" Value="NoWrap" />
         </Style.Setters>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <Setter Property="TextBlock.TextDecorations" Value="Underline" />
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="FormFieldTextBoxStyle" TargetType="TextBox">

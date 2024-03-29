@@ -23,7 +23,7 @@ public static class TextMarkerExtensions
     public static readonly Color ErrorMarkerColor = Color.FromRgb(168, 18, 18);
     public static readonly Color UndefinedMarkerColor = Color.FromRgb(0, 0, 0);
 
-    public static void WithTextMarker(this Diagnostic diagnostic, BindableTextEditor editor, TextMarkerService service, ICommand showSettingsCommand)
+    public static void WithTextMarker(this Diagnostic diagnostic, BindableTextEditor editor, TextMarkerService service, ICommand showSettingsCommand, ICommand gotoHelpUrlCommand)
     {
         var document = editor.Document;
         var start = document.GetOffset(diagnostic.Range.Start.Line, diagnostic.Range.Start.Character + 1);
@@ -47,22 +47,22 @@ public static class TextMarkerExtensions
                 _ => (TextMarkerTypes.NormalUnderline, UndefinedMarkerColor),
             };
 
-            marker.ToolTip = CreateToolTip(editor, diagnostic, showSettingsCommand);
+            marker.ToolTip = CreateToolTip(editor, diagnostic, showSettingsCommand, gotoHelpUrlCommand);
         }
     }
 
-    private static Popup CreateToolTip(BindableTextEditor editor, Diagnostic diagnostic, ICommand showSettingsCommand)
+    private static Popup CreateToolTip(BindableTextEditor editor, Diagnostic diagnostic, ICommand showSettingsCommand, ICommand gotoHelpUrlCommand)
     {
-        var vm = GetToolTipViewModel(diagnostic, showSettingsCommand);
+        var vm = GetToolTipViewModel(diagnostic, showSettingsCommand, gotoHelpUrlCommand);
         var tooltip = new TextMarkerToolTip
         {
             DataContext = vm,
-            PlacementTarget = editor
+            PlacementTarget = editor,
         };
         return tooltip;
     }
 
-    private static ITextMarkerToolTip GetToolTipViewModel(Diagnostic diagnostic, ICommand showSettingsCommand)
+    private static ITextMarkerToolTip GetToolTipViewModel(Diagnostic diagnostic, ICommand showSettingsCommand, ICommand gotoHelpUrlCommand)
     {
         var code = diagnostic.Code!.Value.String!;
         var id = (RubberduckDiagnosticId)Convert.ToInt32(code.Substring(3));
@@ -85,6 +85,7 @@ public static class TextMarkerExtensions
             Severity = diagnostic.Severity ?? 0,
             SettingKey = code,
             HelpUri = diagnostic.CodeDescription?.Href,
+            GoToHelpUrlCommand = gotoHelpUrlCommand,
             ShowSettingsCommand = showSettingsCommand,
         };
     }

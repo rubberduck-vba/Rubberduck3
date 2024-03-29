@@ -46,6 +46,7 @@ public partial class SourceCodeEditorControl : UserControl
         var service = UIServiceHelper.Instance ?? throw new InvalidOperationException();
         ExpandAllCommand = new DelegateCommand(service, parameter => ExpandAllFoldings(), parameter => _foldings.AllFoldings.Any(folding => folding.IsFolded)) { Name = nameof(ExpandAllCommand) };
         CollapseAllCommand = new DelegateCommand(service, parameter => CollapseAllFoldings(), parameter => _foldings.AllFoldings.Any(folding => !folding.IsFolded)) { Name = nameof(CollapseAllCommand) };
+        GoToHelpUrlCommand = new DelegateCommand(service, ExecuteGoToPageCommand);
     }
 
     private void Initialize(TextMarkerService service)
@@ -72,6 +73,12 @@ public partial class SourceCodeEditorControl : UserControl
     {
         HideMarkerToolTip();
         _margin.UpdateLayout();
+    }
+
+    private void ExecuteGoToPageCommand(object? parameter)
+    {
+        var uri = (Uri)parameter;
+        new WebNavigator().Navigate(uri);
     }
 
     private void OnMouseHover(object sender, MouseEventArgs e)
@@ -121,7 +128,7 @@ public partial class SourceCodeEditorControl : UserControl
         }
     }
 
-
+    public ICommand GoToHelpUrlCommand { get; }
     public ICommand ExpandAllCommand { get; }
     public ICommand CollapseAllCommand { get; }
 
@@ -205,7 +212,7 @@ public partial class SourceCodeEditorControl : UserControl
             _markers.RemoveAll(e => true);
             foreach (var diagnostic in ViewModel.CodeDocumentState.Diagnostics)
             {
-                diagnostic.WithTextMarker(Editor, _markers, ViewModel.ShowSettingsCommand);
+                diagnostic.WithTextMarker(Editor, _markers, ViewModel.ShowSettingsCommand!, GoToHelpUrlCommand);
             }
             _margin.InvalidateVisual();
         });

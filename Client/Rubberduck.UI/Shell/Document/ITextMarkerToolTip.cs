@@ -16,6 +16,7 @@ public interface ITextMarkerToolTip
     DiagnosticSeverity Severity { get; }
 
     ICommand ShowSettingsCommand { get; }
+    ICommand GoToHelpUrlCommand { get; }
 }
 
 internal class TextMarkerToolTipViewModel : ITextMarkerToolTip
@@ -29,4 +30,5 @@ internal class TextMarkerToolTipViewModel : ITextMarkerToolTip
     public Uri? HelpUri { get; init; }
 
     public ICommand ShowSettingsCommand { get; init; }
+    public ICommand GoToHelpUrlCommand { get; init; }
 }

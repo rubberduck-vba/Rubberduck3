@@ -25,6 +25,7 @@
                 <shell:FlatButton DockPanel.Dock="Right" VerticalAlignment="Top" HorizontalAlignment="Right"
                               Icon="{StaticResource GearIcon}" 
                               Margin="4,6"
+                              Click="OnDismiss"
                               Command="{Binding ShowSettingsCommand}"
                               CommandParameter="{Binding SettingKey}" />
 
@@ -44,9 +45,12 @@
                     <TextBlock Margin="5,0" Text="{Binding Text}" TextWrapping="Wrap" />
                 </Label>
 
-                <Label DockPanel.Dock="Top" Style="{DynamicResource HyperlinkLabelStyle}" Margin="5,0" 
-                       Visibility="{Binding HelpUri, Converter={StaticResource HasItemsVisibilityConverter}}">
-                    <TextBlock Text="{Binding HelpUri}" TextWrapping="NoWrap"/>
+                <Label DockPanel.Dock="Left" Margin="5,0" Visibility="{Binding HelpUri, Converter={StaticResource HasItemsVisibilityConverter}}">
+                    <Hyperlink Command="{Binding GoToHelpUrlCommand}"
+                               CommandParameter="{Binding HelpUri}"
+                               Click="OnDismiss">
+                        <TextBlock Text="{Binding HelpUri}" />
+                    </Hyperlink>
                 </Label>
             </DockPanel>
         </StackPanel>

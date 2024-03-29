@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls.Primitives;
+﻿using Rubberduck.UI.Services.Abstract;
+using System.Windows.Controls.Primitives;
 
 namespace Rubberduck.UI.Shell.Document
 {
@@ -10,6 +11,11 @@ namespace Rubberduck.UI.Shell.Document
         public TextMarkerToolTip()
         {
             InitializeComponent();
+        }
+
+        private void OnDismiss(object sender, System.Windows.RoutedEventArgs e)
+        {
+            IsOpen = false;
         }
     }
 }
