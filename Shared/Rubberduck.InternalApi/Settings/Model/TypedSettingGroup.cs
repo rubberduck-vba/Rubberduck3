@@ -13,7 +13,7 @@ public abstract record class TypedSettingGroup : TypedRubberduckSetting<Rubberdu
 
     public RubberduckSetting GetSetting(Type type) => ((RubberduckSetting[])Value).Single(e => e.GetType() == type);
 
-    private Dictionary<Type, RubberduckSetting>? Values => TypedValue?.ToDictionary(e => e.GetType());
+    private Dictionary<string, RubberduckSetting>? Values => TypedValue?.ToDictionary(e => e.Key);
 
     protected TypedSettingGroup()
     {
@@ -25,13 +25,13 @@ public abstract record class TypedSettingGroup : TypedRubberduckSetting<Rubberdu
         ArgumentNullException.ThrowIfNull(setting, nameof(setting));
 
         var values = Values ?? throw new InvalidOperationException();
-        values[setting.GetType()] = setting;
+        values[setting.Key] = setting;
         return this with { Value = values.Values.ToArray() };
     }
     public TypedSettingGroup WithSetting<TSetting>(TSetting setting) where TSetting : RubberduckSetting
     {
         var values = Values ?? throw new InvalidOperationException();
-        values[typeof(TSetting)] = setting;
+        values[setting.Key] = setting;
         return this with { Value = values.Values.ToArray() };
     }
 
@@ -67,16 +67,13 @@ public abstract record class TypedSettingGroup : TypedRubberduckSetting<Rubberdu
     }
 }
 
-public abstract record class MappedBoolSettingGroup : TypedRubberduckSetting<BooleanRubberduckSetting[]>
-{
-    protected MappedBoolSettingGroup()
-    {
-        SettingDataType = SettingDataType.SettingGroup;
-    }
-}
-
-public abstract record class EnumSettingGroup<TEnum> : MappedBoolSettingGroup
+public abstract record class EnumSettingGroup<TEnum, TSetting> : TypedSettingGroup
     where TEnum : struct, Enum
+    where TSetting : RubberduckSetting
 {
-    public BooleanRubberduckSetting GetSetting(TEnum key) => ((BooleanRubberduckSetting[])Value).Single(e => e.Key == key.ToString());
+    public EnumSettingGroup()
+    {
+    }
+
+    public TSetting GetSetting(TEnum key) => ((TSetting[])Value).Single(e => e.Key == key.ToString());
 }

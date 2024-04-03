@@ -2,7 +2,7 @@
 using System.Windows;
 using Resx = Rubberduck.Resources.v3.RubberduckUICommands;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.StaticRouted
 {
     public static class FileCommands
     {

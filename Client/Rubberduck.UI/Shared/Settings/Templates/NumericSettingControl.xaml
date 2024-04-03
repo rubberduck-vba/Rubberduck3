@@ -6,10 +6,11 @@
              xmlns:local="clr-namespace:Rubberduck.UI.Shared.Settings.Templates"
              xmlns:viewmodels="clr-namespace:Rubberduck.UI.Shared.Settings"
              xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
-             xmlns:b="clr-namespace:Rubberduck.UI.Behaviors"
-             Padding="4" MinHeight="96" 
+             xmlns:b="clr-namespace:Rubberduck.UI.Behaviors" 
+             d:DataContext="{d:DesignInstance Type=viewmodels:NumericSettingViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="96" d:DesignWidth="255">
+             d:DesignWidth="500"
+             d:Background="{DynamicResource ThemeBackgroundColorBrush}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,34 +19,30 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Style="{DynamicResource SectionBorderStyle}">
-        <DockPanel LastChildFill="True">
-            <Label DockPanel.Dock="Bottom" Style="{DynamicResource FormFieldNameLabelStyle}" Margin="0,0" IsEnabled="{Binding IsEnabled}"
+    <Grid>
+        <Border Margin="0">
+            <DockPanel LastChildFill="True">
+                <Label DockPanel.Dock="Bottom" Style="{DynamicResource FormFieldNameLabelStyle}" IsEnabled="{Binding IsEnabled}"
                        HorizontalAlignment="Right"
+                       d:Visibility="Collapsed"
                        Visibility="{Binding ShowSettingGroup, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock Margin="0,0,0,4" Text="{Binding SettingGroupName}" TextWrapping="Wrap" />
-            </Label>
-            <DockPanel DockPanel.Dock="Top">
-                <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
-                                        Height="16" Width="20" OffsetX="2"
-                                    Icon="{DynamicResource LockedIcon}" 
-                                    CheckedIcon="{DynamicResource UnlockedIcon}"
-                                    IsChecked="{Binding IsEnabled}"
-                                    Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
-                <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0">
-                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding SettingGroupName}" TextWrapping="Wrap" />
                 </Label>
+
+                <DockPanel DockPanel.Dock="Top">
+                    <Label DockPanel.Dock="Left" Margin="0" HorizontalAlignment="Left"
+                       Style="{DynamicResource FormFieldNameLabelStyle}" FontWeight="SemiBold">
+                        <TextBlock d:Text="Name" Text="{Binding Name}" TextWrapping="Wrap" />
+                    </Label>
+
+                    <TextBox DockPanel.Dock="Right" b:Masking.Mask="\d" MaxLength="5" 
+                             MinWidth="72" Margin="5"
+                             HorizontalContentAlignment="Right" HorizontalAlignment="Right"
+                             Style="{DynamicResource FormFieldTextBoxStyle}" 
+                             Text="{Binding Value}" d:Text="32768"
+                             IsEnabled="{Binding IsEnabled}" />
+                </DockPanel>
             </DockPanel>
-            <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
-                <Label Style="{DynamicResource FormFieldDescriptionLabelStyle}" Margin="4,0">
-                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
-                </Label>
-            </ScrollViewer>
-            <TextBox b:Masking.Mask="\d" MaxLength="5" DockPanel.Dock="Left" 
-                     Width="180" Margin="10" Height="24" HorizontalContentAlignment="Center" HorizontalAlignment="Left"
-                     Style="{DynamicResource FormFieldTextBoxStyle}" 
-                     Text="{Binding Value}" 
-                     IsEnabled="{Binding IsEnabled}" />
-        </DockPanel>
-    </Border>
+        </Border>
+    </Grid>
 </UserControl>

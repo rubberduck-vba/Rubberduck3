@@ -8,20 +8,6 @@ public enum SettingDataType
     /// </summary>
     SettingGroup,
     /// <summary>
-    /// A configuration setting that represents a string value.
-    /// </summary>
-    /// <remarks>
-    /// Templated as a <c>TextBox</c> input field in the settings UI.
-    /// </remarks>
-    TextSetting,
-    /// <summary>
-    /// A configuration setting that represents a valid URI value.
-    /// </summary>
-    /// <remarks>
-    /// Templated as a <c>PathBox</c> input field in the settings UI.
-    /// </remarks>
-    UriSetting,
-    /// <summary>
     /// A configuration setting that represents a Boolean value.
     /// </summary>
     /// <remarks>
@@ -50,6 +36,20 @@ public enum SettingDataType
     /// Templated as an input-masked <c>TextBox</c> field in the settings UI.
     /// </remarks>
     TimeSpanSetting,
+    /// <summary>
+    /// A configuration setting that represents a string value.
+    /// </summary>
+    /// <remarks>
+    /// Templated as a <c>TextBox</c> input field in the settings UI.
+    /// </remarks>
+    TextSetting,
+    /// <summary>
+    /// A configuration setting that represents a valid URI value.
+    /// </summary>
+    /// <remarks>
+    /// Templated as a <c>PathBox</c> input field in the settings UI.
+    /// </remarks>
+    UriSetting,
     /// <summary>
     /// A configuration setting that represents a list of (string) values.
     /// </summary>

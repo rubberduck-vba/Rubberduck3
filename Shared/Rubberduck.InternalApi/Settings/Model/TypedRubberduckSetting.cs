@@ -34,6 +34,10 @@ public record class TypedRubberduckSetting<TValue> : RubberduckSetting
                     object values = json.EnumerateArray().Select(item => item.Deserialize<RubberduckSetting>()).ToArray();
                     _typedValue = (TValue)values;
                 }
+                else if (value is DiagnosticSetting diagnosticSetting)
+                {
+                    _typedValue = (TValue)diagnosticSetting.Value; //(TValue)((IEnumerable<RubberduckSetting>)value).ToArray();
+                }
                 else
                 {
                     _typedValue = (TValue)value; //(TValue)((IEnumerable<RubberduckSetting>)value).ToArray();

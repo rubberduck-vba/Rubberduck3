@@ -1,5 +1,6 @@
 ﻿using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.UI.Shared.Settings.Abstract;
+using Rubberduck.UI.Shell.StatusBar;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +17,7 @@ namespace Rubberduck.UI.Shared.Settings.Templates
         public DataTemplate? StringSettingTemplate { get; set; }
         public DataTemplate? TimeSpanSettingTemplate { get; set; }
         public DataTemplate? UriSettingTemplate { get; set; }
+        public DataTemplate? DiagnosticSettingTemplate { get; set; }
 
         private Dictionary<SettingDataType, DataTemplate?> TemplateMap => new()
         {
@@ -32,7 +34,11 @@ namespace Rubberduck.UI.Shared.Settings.Templates
 
         public override DataTemplate? SelectTemplate(object item, DependencyObject container)
         {
-            if (item is ISettingViewModel setting)
+            if (item is DiagnosticSettingsViewModel)
+            {
+                return DiagnosticSettingTemplate;
+            }
+            else if (item is ISettingViewModel setting)
             {
                 if (TemplateMap.TryGetValue(setting.SettingDataType, out var template))
                 {

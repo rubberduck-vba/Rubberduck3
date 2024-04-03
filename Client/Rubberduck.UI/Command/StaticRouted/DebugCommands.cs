@@ -1,7 +1,7 @@
 ﻿using System.Windows.Input;
 using System.Windows;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.StaticRouted
 {
     public static class DebugCommands
     {

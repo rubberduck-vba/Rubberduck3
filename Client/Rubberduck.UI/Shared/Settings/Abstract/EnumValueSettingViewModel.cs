@@ -66,6 +66,7 @@ namespace Rubberduck.UI.Shared.Settings.Abstract
         }
 
         public override IEnumerable<string> Values { get; } = Members;
+        public IEnumerable<TEnum> EnumValues { get; } = Enum.GetValues<TEnum>();
 
         private string _selection;
         public string Selection

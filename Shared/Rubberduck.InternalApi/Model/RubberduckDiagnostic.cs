@@ -10,16 +10,15 @@ public enum RubberduckDiagnosticId
 {
     // TODO sort and categorize, then carve in stone.
     /*
-     * [00]: Tokenization & parsing pass
+     * [0]: Tokenization & parsing pass
      * [000]: IParseTree traversals
      * [0000]: Symbol traversals
      * [00000]: Execution pass
     */
 
-    InvalidAnnotation = 20,
 
-    SllFailure = 98,
-    SyntaxError = 99,
+    SyntaxError = 1,
+    SllFailure = 3,
 
     ImplicitDeclarationsEnabled = 101, // [RD2:OptionExplicitInspection]
     ImplicitNonDefaultArrayBase, // [RD2: OptionBaseInspection]
@@ -54,12 +53,14 @@ public enum RubberduckDiagnosticId
     ObsoleteOnLocalErrorStatement,
     
     ObsoleteMemberUsage = 401, // members with an @Obsolete annotation
-    
+    InvalidAnnotation = 404, // @NotAnAnnotationButParsedLikeOne
+
     ImplementationsShouldBePrivate,
     PublicDeclarationInWorksheetModule, // [RD2:PublicEnumerationDeclaredInWorksheetInspection]
 
     // symbol traversals [0000]
     UseMeaningfulIdentifierNames = 1001,
+    HungarianNotation,
 
     // execution pass diagnostics [00000]
     UnintendedConstantExpression = 11001,

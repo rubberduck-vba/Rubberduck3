@@ -4,11 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.UI.Shared.Settings.Templates"
-             xmlns:cmd="clr-namespace:Rubberduck.UI.Command"
+             xmlns:cmd="clr-namespace:Rubberduck.UI.Command.StaticRouted"
              xmlns:vm="clr-namespace:Rubberduck.UI.Shared.Settings"
              xmlns:shell="clr-namespace:Rubberduck.UI.Shell" d:DataContext="{d:DesignInstance Type=vm:UriSettingViewModel}"
-             Padding="4" MinHeight="96" MinWidth="128"
-             mc:Ignorable="d">
+             mc:Ignorable="d" 
+             d:DesignWidth="500"
+             d:Background="{DynamicResource ThemeBackgroundColorBrush}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -17,54 +18,55 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Style="{DynamicResource SectionBorderStyle}">
-        <DockPanel LastChildFill="True">
-            <Label DockPanel.Dock="Bottom" Style="{DynamicResource FormFieldNameLabelStyle}" Margin="0,0" IsEnabled="{Binding IsEnabled}"
+    <Grid>
+        <Border Margin="0">
+            <DockPanel LastChildFill="True">
+                <Label DockPanel.Dock="Bottom" Style="{DynamicResource FormFieldNameLabelStyle}" IsEnabled="{Binding IsEnabled}"
                        HorizontalAlignment="Right"
+                       d:Visibility="Collapsed"
                        Visibility="{Binding ShowSettingGroup, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock Margin="0,0,0,4" Text="{Binding SettingGroupName}" TextWrapping="Wrap" />
-            </Label>
-            <DockPanel DockPanel.Dock="Top">
-                <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
-                                        Height="16" Width="20" OffsetX="2"
-                                        Icon="{DynamicResource LockedIcon}" 
-                                        CheckedIcon="{DynamicResource UnlockedIcon}"
-                                        IsChecked="{Binding IsEnabled}"
-                                        Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
-                <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0" IsEnabled="{Binding IsEnabled}">
-                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding SettingGroupName}" TextWrapping="Wrap" />
                 </Label>
-            </DockPanel>
-            <Label DockPanel.Dock="Top" Margin="4,0,4,4" 
-                   Style="{DynamicResource FormFieldDescriptionLabelStyle}">
-                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
-            </Label>
-            <DockPanel DockPanel.Dock="Top" LastChildFill="False">
-                <shell:FlatToggleButton IsChecked="{Binding Exists, Mode=OneWay}" IsHitTestVisible="False"
-                                        CheckedIcon="{DynamicResource CircleCheckIcon}"
-                                        Icon="{DynamicResource CircleWarnIcon}" Height="16" Width="16"
-                                        Visibility="{Binding IsBusy, Converter={StaticResource BoolToHiddenVisibility}}"
-                                        Margin="10,0,5,0">
-                </shell:FlatToggleButton>
-                <Image Source="{DynamicResource WaitIcon}" Height="16" Width="16" Margin="10,0,5,0"
-                       Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                <TextBox DockPanel.Dock="Left" Style="{DynamicResource FormFieldReadOnlyTextBoxStyle}"
-                         Width="Auto" MaxWidth="250" MinWidth="180"
-                         Text="{Binding Selection}" Margin="5,5,-1,5" IsReadOnly="False" IsEnabled="{Binding IsEnabled}" />
-                <shell:FlatButton  DockPanel.Dock="Left"
-                        Command="{x:Static cmd:DialogCommands.BrowseLocationCommand}"
-                        CommandParameter="{Binding}"
-                        Visibility="{Binding RootUri.IsFile, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Style="{DynamicResource FlatButtonStyle}" 
-                        IsEnabled="{Binding IsEnabled}"
-                        Width="28" Height="24" 
-                        Foreground="{DynamicResource ThemeTextColorBrush}"
-                        HorizontalContentAlignment="Center"
-                        IsTabStop="True">
-                    <TextBlock Text="…" HorizontalAlignment="Center" />
-                </shell:FlatButton>
-            </DockPanel>
 
-        </DockPanel>
-    </Border>
+                <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+                    <Label DockPanel.Dock="Left" Margin="0" HorizontalAlignment="Left"
+                       Style="{DynamicResource FormFieldNameLabelStyle}" 
+                       FontWeight="SemiBold" IsEnabled="{Binding IsEnabled}">
+                        <TextBlock d:Text="Name" Text="{Binding Name}" TextWrapping="Wrap" />
+                    </Label>
+
+                    <DockPanel DockPanel.Dock="Right">
+                        <shell:FlatToggleButton IsChecked="{Binding Exists, Mode=OneWay}" IsHitTestVisible="False"
+                                            CheckedIcon="{DynamicResource CircleCheckIcon}"
+                                                d:IconSource="{DynamicResource CircleCheckIcon}"
+                                            Icon="{DynamicResource CircleWarnIcon}" Height="16" Width="16"
+                                            Visibility="{Binding IsBusy, Converter={StaticResource BoolToHiddenVisibility}}"
+                                            Margin="10,0,5,0">
+                        </shell:FlatToggleButton>
+                        <Image Source="{DynamicResource WaitIcon}" Height="16" Width="16" Margin="10,0,5,0"
+                               d:Visibility="Collapsed"
+                           Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <TextBox DockPanel.Dock="Left" Style="{DynamicResource FormFieldReadOnlyTextBoxStyle}"
+                             Width="Auto" MaxWidth="250" MinWidth="180"
+                             Text="{Binding Selection}" Margin="5,5,-1,5" IsReadOnly="False" IsEnabled="{Binding IsEnabled}" />
+                        <shell:FlatButton  DockPanel.Dock="Left"
+                            Command="{x:Static cmd:DialogCommands.BrowseLocationCommand}"
+                            CommandParameter="{Binding}"
+                            Visibility="{Binding RootUri.IsFile, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Style="{DynamicResource FlatButtonStyle}" 
+                            IsEnabled="{Binding IsEnabled}"
+                            Width="28" Height="24" Margin="0,0,5,0"
+                            Foreground="{DynamicResource ThemeTextColorBrush}"
+                                       BorderThickness="1"
+                                       BorderBrush="{StaticResource Button.Static.Border}"
+                            HorizontalContentAlignment="Center"
+                            IsTabStop="True">
+                            <TextBlock Text="…" HorizontalAlignment="Center" />
+                        </shell:FlatButton>
+                    </DockPanel>
+                </DockPanel>
+
+            </DockPanel>
+        </Border>
+    </Grid>
 </UserControl>

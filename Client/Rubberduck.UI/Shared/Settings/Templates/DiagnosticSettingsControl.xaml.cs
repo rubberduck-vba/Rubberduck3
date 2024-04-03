@@ -1,5 +1,4 @@
-﻿using Ookii.Dialogs.Wpf;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,18 +16,13 @@ using System.Windows.Shapes;
 namespace Rubberduck.UI.Shared.Settings.Templates
 {
     /// <summary>
-    /// Interaction logic for ListSettingControl.xaml
+    /// Interaction logic for DiagnosticSettingsControl.xaml
     /// </summary>
-    public partial class ListSettingControl : UserControl
+    public partial class DiagnosticSettingsControl : UserControl
     {
-        public ListSettingControl()
+        public DiagnosticSettingsControl()
         {
             InitializeComponent();
-        }
-
-        private void OnAddListItemCommandExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            // TODO
         }
     }
 }

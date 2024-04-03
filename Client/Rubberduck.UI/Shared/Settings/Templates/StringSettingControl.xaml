@@ -6,8 +6,9 @@
              xmlns:local="clr-namespace:Rubberduck.UI.Shared.Settings.Templates" 
              xmlns:viewmodels="clr-namespace:Rubberduck.UI.Shared.Settings"
              xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
-             Padding="4" MinHeight="96"
-             mc:Ignorable="d">
+             mc:Ignorable="d" 
+             d:DesignWidth="500"
+             d:Background="{DynamicResource ThemeBackgroundColorBrush}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -16,31 +17,32 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Style="{DynamicResource SectionBorderStyle}">
-        <DockPanel LastChildFill="True">
-            <Label DockPanel.Dock="Bottom" Style="{DynamicResource FormFieldNameLabelStyle}" Margin="0,0" IsEnabled="{Binding IsEnabled}"
+    <Grid>
+        <Border Margin="0">
+            <DockPanel LastChildFill="True">
+                <Label DockPanel.Dock="Bottom" Style="{DynamicResource FormFieldNameLabelStyle}" IsEnabled="{Binding IsEnabled}"
                        HorizontalAlignment="Right"
+                       d:Visibility="Collapsed"
                        Visibility="{Binding ShowSettingGroup, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock Margin="0,0,0,4" Text="{Binding SettingGroupName}" TextWrapping="Wrap" />
-            </Label>
-            <DockPanel DockPanel.Dock="Top">
-                <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
-                                        Height="16" Width="20" OffsetX="2"
-                                    Icon="{DynamicResource LockedIcon}" 
-                                    CheckedIcon="{DynamicResource UnlockedIcon}"
-                                    IsChecked="{Binding IsEnabled}"
-                                    Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
-                <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0">
-                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding SettingGroupName}" TextWrapping="Wrap" />
                 </Label>
+
+                <DockPanel DockPanel.Dock="Top">
+                    <Label DockPanel.Dock="Left" Margin="0" HorizontalAlignment="Left"
+                       Style="{DynamicResource FormFieldNameLabelStyle}" 
+                       FontWeight="SemiBold" IsEnabled="{Binding IsEnabled}">
+                        <TextBlock d:Text="Name" Text="{Binding Name}" TextWrapping="Wrap" />
+                    </Label>
+                    <TextBox DockPanel.Dock="Right" 
+                             HorizontalAlignment="Right" 
+                             HorizontalContentAlignment="Right"
+                             Style="{DynamicResource FormFieldTextBoxStyle}"
+                             BorderThickness="0"
+                             MinWidth="128" Width="Auto" Margin="5"
+                             d:Text="Value"
+                             Text="{Binding Value}" IsEnabled="{Binding IsEnabled}" />
+                </DockPanel>
             </DockPanel>
-            <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldDescriptionLabelStyle}" Margin="4,0,4,4">
-                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
-            </Label>
-            <TextBox DockPanel.Dock="Left" HorizontalAlignment="Left" HorizontalContentAlignment="Center"
-                     Style="{DynamicResource FormFieldTextBoxStyle}"
-                     MinWidth="180" Width="Auto" Margin="10"
-                     Text="{Binding Value}" IsEnabled="{Binding IsEnabled}" />
-        </DockPanel>
-    </Border>
+        </Border>
+    </Grid>
 </UserControl>

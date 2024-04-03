@@ -382,6 +382,9 @@
     <DataTemplate x:Key="SettingSubGroupTemplate" DataType="viewmodels:SettingGroupViewModel">
         <templates:SettingSubGroupControl />
     </DataTemplate>
+    <DataTemplate x:Key="DiagnosticsSettingTemplate" DataType="viewmodels:Diagnostic">
+        <templates:DiagnosticSettingsControl />
+    </DataTemplate>
     
     <templates:SettingTemplateSelector x:Key="SettingTemplateSelector" 
         BooleanSettingTemplate="{StaticResource BooleanSettingTemplate}"
@@ -391,6 +394,7 @@
         SettingSubGroupTemplate="{StaticResource SettingSubGroupTemplate}"
         StringSettingTemplate="{StaticResource StringSettingTemplate}"
         TimeSpanSettingTemplate="{StaticResource TimeSpanSettingTemplate}"
-        UriSettingTemplate="{StaticResource UriSettingTemplate}" />
+        UriSettingTemplate="{StaticResource UriSettingTemplate}"
+        DiagnosticSettingTemplate="{StaticResource DiagnosticsSettingTemplate}" />
 
 </ResourceDictionary>

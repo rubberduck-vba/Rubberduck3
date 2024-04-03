@@ -22,10 +22,13 @@ namespace Rubberduck.UI.Converters
                 return fullPanelWidth;
             }
             var items = (IEnumerable<ISettingViewModel>)((ListCollectionView)values[1]).SourceCollection;
-            if (values.Length > 2)
+            if (values.Length > 2 && !double.IsNaN((double)values[2]))
             {
                 return fullPanelWidth;
             }
+
+            var groupingItems = items.OfType<ISettingGroupViewModel>().ToArray();
+            var forceSmallerBoxes = groupingItems.Count(e => e.Items.Count == 1) > 20;
 
             var nonGroupingItems = items.Except(items.OfType<ISettingGroupViewModel>()).ToArray();
             var isSingleItem = nonGroupingItems.Length == 1;
@@ -35,22 +38,22 @@ namespace Rubberduck.UI.Converters
                 return fullPanelWidth;
             }
 
-            if (nonGroupingItems.Length >= 4 && fullPanelWidth >= 4 * SmallItemWidth)
-            {
-                return fullPanelWidth / 4d;
-            }
+            //if (nonGroupingItems.Length >= 4 && fullPanelWidth >= 4 * SmallItemWidth)
+            //{
+            //    return fullPanelWidth / 4d;
+            //}
 
-            if (nonGroupingItems.Length >= 3 && fullPanelWidth >= 3 * SmallItemWidth)
-            {
-                return fullPanelWidth / 3d;
-            }
+            //if (forceSmallerBoxes || nonGroupingItems.Length >= 3 && fullPanelWidth >= 3 * SmallItemWidth)
+            //{
+            //    return fullPanelWidth / 3d;
+            //}
 
-            if (nonGroupingItems.Length >= 2 && fullPanelWidth >= 2 * SmallItemWidth)
+            if (forceSmallerBoxes || nonGroupingItems.Length >= 2 && fullPanelWidth >= 2 * SmallItemWidth)
             {
                 return fullPanelWidth / 2d;
             }
 
-            if (nonGroupingItems.Length >= 3 && nonGroupingItems.Length % 3 == 0)
+            if (forceSmallerBoxes || nonGroupingItems.Length >= 3 && nonGroupingItems.Length % 3 == 0)
             {
                 var idealWidth = (int)(fullPanelWidth / 3d);
                 if (idealWidth < SmallItemWidth)
@@ -60,7 +63,7 @@ namespace Rubberduck.UI.Converters
                 return idealWidth;
             }
 
-            if (nonGroupingItems.Length >= 2 && nonGroupingItems.Length % 2 == 0)
+            if (forceSmallerBoxes || nonGroupingItems.Length >= 2 && nonGroupingItems.Length % 2 == 0)
             {
                 var idealWidth = (int)(fullPanelWidth / 2d);
                 if (idealWidth < SmallItemWidth)

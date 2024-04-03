@@ -67,7 +67,7 @@ public record class TelemetryServerSettings : TypedSettingGroup, IDefaultSetting
     TelemetryServerSettings IDefaultSettingsProvider<TelemetryServerSettings>.Default => Default;
 }
 
-public abstract record class TelemetrySettingGroup<TKey> : EnumSettingGroup<TKey>
+public abstract record class TelemetrySettingGroup<TKey> : EnumSettingGroup<TKey, BooleanRubberduckSetting>
     where TKey : struct, Enum
 {
     public bool IsEnabled(TKey key) => ((TelemetrySetting)GetSetting(key)).TypedValue;

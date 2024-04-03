@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.StaticRouted
 {
     public static class ToolsCommands
     {
@@ -11,7 +11,6 @@ namespace Rubberduck.UI.Command
 
         public static RoutedCommand ShowRegularExpressionToolCommand { get; }
             = new RoutedCommand(nameof(ShowRegularExpressionToolCommand), typeof(Window));
-        public static RoutedCommand ShowRubberduckSettingsCommand { get; }
-            = new RoutedCommand(nameof(ShowRubberduckSettingsCommand), typeof(Window));
+        public static RoutedCommand ShowRubberduckSettingsCommand => SettingCommands.ShowSettingsCommand;
     }
 }

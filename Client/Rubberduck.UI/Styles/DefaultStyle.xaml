@@ -67,6 +67,9 @@
     <converters:InvertBoolValueConverter x:Key="InverseBoolConverter" />
     <converters:SelectedItemToBooleanConverter x:Key="HasSelectedItems"/>
     <converters:HasItemsBoolConverter x:Key="HasItemsBoolConverter" />
+    <converters:HasItemsBoolConverter x:Key="HasSingleItemBoolConverter" TrueWhenExactly="1" />
+    <converters:HasItemsBoolConverter x:Key="HasSingleItemInvertedBoolConverter" TrueWhenExactly="1" InverseValue="True" />
+    <converters:HasItemsVisibilityConverter x:Key="HasSingleItemVisibilityConverter" VisibleWhenGreaterThan="1" HiddenWhenGreaterThan="True" />
     <converters:HasItemsVisibilityConverter x:Key="HasItemsVisibilityConverter" />
     <converters:WindowStateToVisibilityConverter x:Key="WindowStateToRestoreVisibility" VisibleState="Maximized" HiddenState="Normal" />
     <converters:WindowStateToVisibilityConverter x:Key="WindowStateToMaximizeVisibility" VisibleState="Normal" HiddenState="Maximized" />
@@ -788,5 +791,22 @@
             <Setter Property="shell:FlatButton.HighlightBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
             <Setter Property="shell:FlatButton.HoverBrush" Value="{DynamicResource ThemeAccent1LightColorBrush}" />
         </Style.Setters>
+    </Style>
+
+    <Style x:Key="HelpButtonStyle" TargetType="shell:FlatToggleButton" BasedOn="{StaticResource FlatToggleButtonStyle}">
+        <Style.Setters>
+            <Setter Property="Icon" Value="{StaticResource HelpIcon}" />
+            <Setter Property="CheckedIcon" Value="{StaticResource HelpPressedIcon}" />
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Width" Value="16" />
+            <Setter Property="DockPanel.Dock" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Margin" Value="4,2,2,8" />
+        </Style.Setters>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <Setter Property="IsChecked" Value="True" />
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>

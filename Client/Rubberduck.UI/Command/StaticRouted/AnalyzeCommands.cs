@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.StaticRouted
 {
     public static class AnalyzeCommands
     {

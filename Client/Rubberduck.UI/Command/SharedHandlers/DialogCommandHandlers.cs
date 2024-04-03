@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using Rubberduck.UI.Command.StaticRouted;
+using System.Windows.Input;
 
 namespace Rubberduck.UI.Command.SharedHandlers
 {

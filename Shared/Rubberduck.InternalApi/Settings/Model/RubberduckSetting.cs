@@ -36,6 +36,7 @@ namespace Rubberduck.InternalApi.Settings.Model;
 
 [JsonDerivedType(typeof(DiagnosticsSettings), nameof(DiagnosticsSettings))] // ~ diagnostics
 [JsonDerivedType(typeof(DiagnosticSetting), nameof(DiagnosticSetting))]
+[JsonDerivedType(typeof(DiagnosticSeveritySetting), nameof(DiagnosticSeveritySetting))]
 [JsonDerivedType(typeof(UseMeaningfulNamesDiagnosticSettings), nameof(UseMeaningfulNamesDiagnosticSettings))]
 [JsonDerivedType(typeof(IgnoredIdentifierPrefixesSetting), nameof(IgnoredIdentifierPrefixesSetting))]
 

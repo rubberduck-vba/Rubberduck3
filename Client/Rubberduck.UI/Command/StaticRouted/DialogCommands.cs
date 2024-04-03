@@ -3,7 +3,7 @@ using System.Windows.Input;
 using System;
 using System.Windows.Controls;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.StaticRouted
 {
     public static class DialogCommands
     {

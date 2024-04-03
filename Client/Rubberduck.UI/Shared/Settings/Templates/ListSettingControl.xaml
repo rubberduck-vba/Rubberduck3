@@ -5,10 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.UI.Shared.Settings.Templates"
              xmlns:viewmodels="clr-namespace:Rubberduck.UI.Shared.Settings" 
-             xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
-             Padding="4" MinHeight="192" 
+             xmlns:cmd="clr-namespace:Rubberduck.UI.Command.StaticRouted"
+             xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
+             d:DataContext="{d:DesignInstance Type=viewmodels:ListSettingViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="84" d:DesignWidth="255">
+             d:DesignWidth="500"
+             d:Background="{DynamicResource ThemeBackgroundColorBrush}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -17,34 +19,29 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+    <UserControl.CommandBindings>
+        <CommandBinding Command="{x:Static cmd:SettingCommands.AddListSettingItemCommand}" Executed="OnAddListItemCommandExecuted" />
+    </UserControl.CommandBindings>
     <Grid>
-        <ScrollBar Style="{DynamicResource ScrollBarStyle}" Orientation="Horizontal"></ScrollBar>
-        <Border Style="{DynamicResource SectionBorderStyle}">
+        <Border Margin="0">
             <DockPanel LastChildFill="True">
                 <Label DockPanel.Dock="Bottom" Style="{DynamicResource FormFieldNameLabelStyle}" Margin="0,0" IsEnabled="{Binding IsEnabled}"
                        HorizontalAlignment="Right"
+                       d:Visibility="Collapsed"
                        Visibility="{Binding ShowSettingGroup, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <TextBlock Margin="0,0,0,4" Text="{Binding SettingGroupName}" TextWrapping="Wrap" />
                 </Label>
-                <DockPanel DockPanel.Dock="Top">
-                    <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
-                                            Height="16" Width="20" OffsetX="2"
-                                            Foreground="{DynamicResource ThemeAccent1DarkColorBrush}"
-                                        Icon="{DynamicResource LockedIcon}" 
-                                        CheckedIcon="{DynamicResource UnlockedIcon}"
-                                        IsChecked="{Binding IsEnabled}"
-                                        Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
-                    <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0">
-                        <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
-                    </Label>
-                </DockPanel>
-                <Label DockPanel.Dock="Top" Style="{DynamicResource FormFieldDescriptionLabelStyle}" Margin="4,0,4,4">
-                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+
+                <Label DockPanel.Dock="Left" Margin="0" 
+                       HorizontalAlignment="Left" VerticalAlignment="Top"
+                       Style="{DynamicResource FormFieldNameLabelStyle}" 
+                       FontWeight="SemiBold" IsEnabled="{Binding IsEnabled}">
+                    <TextBlock d:Text="Name" Text="{Binding Name}" TextWrapping="Wrap" />
                 </Label>
 
-                <ListView DockPanel.Dock="Top" Background="{StaticResource ThemeBackgroundMediumColorBrush}" 
-                          MinHeight="72" Margin="10"
-                          HorizontalContentAlignment="Stretch"
+                <ListView DockPanel.Dock="Right" Background="{StaticResource ThemeBackgroundMediumColorBrush}" 
+                          HorizontalContentAlignment="Stretch" HorizontalAlignment="Right"
+                          MinWidth="250" MaxHeight="300" Margin="5"
                           VerticalAlignment="Stretch"
                           SelectionMode="Single"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -81,6 +78,9 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+                <shell:FlatButton DockPanel.Dock="Right" HorizontalAlignment="Right" 
+                                  Command="{x:Static cmd:SettingCommands.AddListSettingItemCommand}" CommandParameter="{Binding}"
+                                  Icon="{DynamicResource CircleAddIcon}" />
             </DockPanel>
         </Border>
     </Grid>
