@@ -282,7 +282,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Rubberduck.Unmanaged\Rubberduck.Unmanaged.csproj" />
+    <ProjectReference Include="..\..\AddIn\Rubberduck.Unmanaged\Rubberduck.Unmanaged.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj" />
   </ItemGroup>

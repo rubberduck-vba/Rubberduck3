@@ -39,6 +39,9 @@ namespace Rubberduck.InternalApi.Settings.Model;
 [JsonDerivedType(typeof(DiagnosticSeveritySetting), nameof(DiagnosticSeveritySetting))]
 [JsonDerivedType(typeof(UseMeaningfulNamesDiagnosticSettings), nameof(UseMeaningfulNamesDiagnosticSettings))]
 [JsonDerivedType(typeof(IgnoredIdentifierPrefixesSetting), nameof(IgnoredIdentifierPrefixesSetting))]
+[JsonDerivedType(typeof(MinimumNameLengthSetting), nameof(MinimumNameLengthSetting))]
+[JsonDerivedType(typeof(FlagDisemvoweledNamesSetting), nameof(FlagDisemvoweledNamesSetting))]
+[JsonDerivedType(typeof(FlagNumericSuffixesSetting), nameof(FlagNumericSuffixesSetting))]
 
 [JsonDerivedType(typeof(WorkspaceSettings), nameof(WorkspaceSettings))] // ~ workspace settings (language client)
 [JsonDerivedType(typeof(DefaultWorkspaceRootSetting), nameof(DefaultWorkspaceRootSetting))]
