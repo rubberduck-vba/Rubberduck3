@@ -1,18 +1,18 @@
 ﻿using AsyncAwaitBestPractices;
 using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Rendering;
-using Microsoft.Xaml.Behaviors.Core;
-using Rubberduck.InternalApi.Extensions;
 using Rubberduck.InternalApi.Model;
 using Rubberduck.UI.Command.Abstract;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Services.Abstract;
 using System;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 namespace Rubberduck.UI.Shell.Document;
@@ -44,6 +44,7 @@ public partial class SourceCodeEditorControl : UserControl
         var service = UIServiceHelper.Instance ?? throw new InvalidOperationException();
         ExpandAllCommand = new DelegateCommand(service, parameter => ExpandAllFoldings(), parameter => _foldings.AllFoldings.Any(folding => folding.IsFolded)) { Name = nameof(ExpandAllCommand) };
         CollapseAllCommand = new DelegateCommand(service, parameter => CollapseAllFoldings(), parameter => _foldings.AllFoldings.Any(folding => !folding.IsFolded)) { Name = nameof(CollapseAllCommand) };
+        GoToHelpUrlCommand = new DelegateCommand(service, ExecuteGoToPageCommand);
     }
 
     private void Initialize(TextMarkerService service)
@@ -72,6 +73,12 @@ public partial class SourceCodeEditorControl : UserControl
         _margin.UpdateLayout();
     }
 
+    private void ExecuteGoToPageCommand(object? parameter)
+    {
+        var uri = (Uri)parameter;
+        new WebNavigator().Navigate(uri);
+    }
+
     private void OnMouseHover(object sender, MouseEventArgs e)
     {
         var textPosition = Editor.GetPositionFromPoint(e.GetPosition(Editor));
@@ -94,7 +101,7 @@ public partial class SourceCodeEditorControl : UserControl
             .OfType<TextMarker>()
             .FirstOrDefault();
 
-        if (marker?.ToolTip is ToolTip tooltip)
+        if (marker?.ToolTip is Popup tooltip)
         {
             var markerRect = BackgroundGeometryBuilder.GetRectsForSegment(Editor.TextArea.TextView, marker).First();
             markerRect.Offset(2d, 1d);
@@ -112,14 +119,14 @@ public partial class SourceCodeEditorControl : UserControl
 
     private void HideMarkerToolTip()
     {
-        if (Editor.ToolTip is ToolTip toolTip)
+        if (Editor.ToolTip is Popup toolTip)
         {
             toolTip.IsOpen = false;
             Editor.ToolTip = null;
         }
     }
 
-
+    public ICommand GoToHelpUrlCommand { get; }
     public ICommand ExpandAllCommand { get; }
     public ICommand CollapseAllCommand { get; }
 
@@ -152,16 +159,14 @@ public partial class SourceCodeEditorControl : UserControl
         DataContextChanged -= OnDataContextChanged;
 
         Editor.Text = ViewModel.TextContent;
-        UpdateFoldingsAsync().SafeFireAndForget();
-        UpdateDiagnostics();
-        UpdateStatusInfo();
+        ViewModelDocumentStateChanged(null, EventArgs.Empty);
     }
 
     private void ViewModelDocumentStateChanged(object? sender, EventArgs e)
     {
-        UpdateStatusInfo();
-        UpdateDiagnostics();
         UpdateFoldingsAsync().SafeFireAndForget();
+        UpdateDiagnostics();
+        UpdateStatusInfo();
     }
 
     private async Task UpdateFoldingsAsync()
@@ -186,18 +191,29 @@ public partial class SourceCodeEditorControl : UserControl
                 firstErrorOffset = Editor.Document.GetOffset(firstErrorRange.Start.Line, 1);
             }
 
-            _foldings.UpdateFoldings(newFoldings, firstErrorOffset);
+            try
+            {
+                _foldings.UpdateFoldings(newFoldings, firstErrorOffset);
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception.ToString());
+                _foldings.Clear();
+            }
         });
     }
 
     private void UpdateDiagnostics()
     {
-        _markers.RemoveAll(e => true);
-        _margin.InvalidateVisual();
-        foreach (var diagnostic in ViewModel.CodeDocumentState.Diagnostics)
+        Dispatcher.Invoke(() =>
         {
-            diagnostic.WithTextMarker(Editor, _markers);
-        }
+            _markers.RemoveAll(e => true);
+            foreach (var diagnostic in ViewModel.CodeDocumentState.Diagnostics)
+            {
+                diagnostic.WithTextMarker(Editor, _markers, ViewModel.ShowSettingsCommand!, GoToHelpUrlCommand);
+            }
+            _margin.InvalidateVisual();
+        });
     }
 
     private BindableTextEditor Editor { get; }

@@ -168,6 +168,9 @@
     <None Remove="Resources\FontAwesome\circle-arrow-right-solid.png" />
     <None Remove="Resources\FontAwesome\circle-check-solid.png" />
     <None Remove="Resources\FontAwesome\circle-exclamation-solid.png" />
+    <None Remove="Resources\FontAwesome\circle-plus-solid.png" />
+    <None Remove="Resources\FontAwesome\circle-question-regular.png" />
+    <None Remove="Resources\FontAwesome\circle-question-solid.png" />
     <None Remove="Resources\FontAwesome\copy-solid.png" />
     <None Remove="Resources\FontAwesome\cubes-solid.png" />
     <None Remove="Resources\FontAwesome\down-left-and-up-right-to-center-solid.png" />
@@ -279,7 +282,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Rubberduck.Unmanaged\Rubberduck.Unmanaged.csproj" />
+    <ProjectReference Include="..\..\AddIn\Rubberduck.Unmanaged\Rubberduck.Unmanaged.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.Resources\Rubberduck.Resources.csproj" />
   </ItemGroup>
@@ -439,6 +442,9 @@
     <Resource Include="Resources\FontAwesome\circle-arrow-right-solid.png" />
     <Resource Include="Resources\FontAwesome\circle-check-solid.png" />
     <Resource Include="Resources\FontAwesome\circle-exclamation-solid.png" />
+    <Resource Include="Resources\FontAwesome\circle-plus-solid.png" />
+    <Resource Include="Resources\FontAwesome\circle-question-regular.png" />
+    <Resource Include="Resources\FontAwesome\circle-question-solid.png" />
     <Resource Include="Resources\FontAwesome\copy-solid.png" />
     <Resource Include="Resources\FontAwesome\cubes-solid.png" />
     <Resource Include="Resources\FontAwesome\down-left-and-up-right-to-center-solid.png" />

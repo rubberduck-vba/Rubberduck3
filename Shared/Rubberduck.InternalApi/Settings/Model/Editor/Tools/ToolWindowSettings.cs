@@ -15,7 +15,10 @@ public record class ToolWindowSettings : TypedSettingGroup
             new DefaultToolWindowLocationSetting(),
         };
 
-    public ToolWindowSettings() { }
+    public ToolWindowSettings() 
+    {
+        Value = DefaultValue = DefaultSettings;
+    }
 
     public ToolWindowSettings(IDictionary<string, RubberduckSetting> settings) : this()
     {

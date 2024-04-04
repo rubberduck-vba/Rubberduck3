@@ -9,30 +9,72 @@ namespace Rubberduck.InternalApi.Model;
 public enum RubberduckDiagnosticId
 {
     // TODO sort and categorize, then carve in stone.
+    /*
+     * [0]: Tokenization & parsing pass
+     * [000]: IParseTree traversals
+     * [0000]: Symbol traversals
+     * [00000]: Execution pass
+    */
 
-    PreferConcatOperatorForStringConcatenation = 10,
-    PreferErrRaiseOverErrorStatement,
 
-    SllFailure = 98,
-    SyntaxError = 99,
+    SyntaxError = 1,
+    SllFailure = 3,
 
-    ImplicitStringCoercion = 101,
+    ImplicitDeclarationsEnabled = 101, // [RD2:OptionExplicitInspection]
+    ImplicitNonDefaultArrayBase, // [RD2: OptionBaseInspection]
+    ImplicitTypeDeclarationsEnabled, // [Type]Def
+    ImplicitByRefModifier,
+    ImplicitPublicMember,
+    ImplicitVariantDeclaration,
+    ImplicitVariantReturnType,
+
+    ImplicitStringCoercion,
     ImplicitNumericCoercion,
     ImplicitLetCoercion,
     ImplicitDateSerialConversion,
     ImplicitNarrowingConversion,
     ImplicitWideningConversion,
 
-    UnintendedConstantExpression = 1001,
+    IntegerDataTypeDeclaration = 201,
+    ModuleScopeDimDeclaration,
+    MultilineParameterDeclaration,
+    MultipleDeclarations,
+    //NotAllPathsReturnValue, // [RD2:NonReturningFunctionInspection]
+    MisleadingByRefParameter, // property let/set value parameter is always passed ByVal
+
+    ObsoleteCallingConvention = 301,
+    ObsoleteCallStatement,
+    ObsoleteCommentSyntax,
+    //ObsoleteErrorSyntax,
+    ObsoleteGlobalModifier,
+    ObsoleteLetStatement,
+    ObsoleteTypeHint,
+    ObsoleteWhileWend,
+    ObsoleteOnLocalErrorStatement,
+    
+    ObsoleteMemberUsage = 401, // members with an @Obsolete annotation
+    InvalidAnnotation = 404, // @NotAnAnnotationButParsedLikeOne
+
+    ImplementationsShouldBePrivate,
+    PublicDeclarationInWorksheetModule, // [RD2:PublicEnumerationDeclaredInWorksheetInspection]
+
+    // symbol traversals [0000]
+    UseMeaningfulIdentifierNames = 1001,
+    HungarianNotation,
+
+    // execution pass diagnostics [00000]
+    UnintendedConstantExpression = 11001,
     SuspiciousValueAssignment,
     TypeCastConversion,
     BitwiseOperator,
-
+    PreferConcatOperatorForStringConcatenation,
+    PreferErrRaiseOverErrorStatement,
 }
 
 public static class RubberduckDiagnosticIdExtensions
 {
     public static string Code(this RubberduckDiagnosticId id) => $"RD3{(int)id:00000}";
+    public static string Code(this VBCompileErrorId id) => $"VBC{(int)id:00000}";
 }
 
 public record class RubberduckDiagnostic : Diagnostic
@@ -89,7 +131,7 @@ public record class RubberduckDiagnostic : Diagnostic
     public static Diagnostic SllFailure(Symbol symbol) =>
         CreateDiagnostic(symbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.SllFailure, "SLL parser prediction mode failed here; if possible, rephrasing this instruction could improve parsing performance.");
 
-    public static Diagnostic SllFailure(SyntaxErrorException error) =>
+    public static Diagnostic SllFailure(PredictionFailException error) =>
         CreateDiagnostic(error.OffendingSymbol, DiagnosticSeverity.Hint, RubberduckDiagnosticId.SllFailure, "SLL parser prediction mode failed here; if possible, rephrasing this instruction could improve parsing performance.");
     public static Diagnostic SyntaxError(SyntaxErrorException error) =>
         CreateDiagnostic(error.OffendingSymbol, DiagnosticSeverity.Error, RubberduckDiagnosticId.SyntaxError, error.Message, error.Uri.ToString());

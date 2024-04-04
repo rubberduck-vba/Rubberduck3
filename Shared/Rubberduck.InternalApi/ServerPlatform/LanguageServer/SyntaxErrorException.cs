@@ -10,21 +10,33 @@ namespace Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 /// This exception indicates either a bug in the grammar... or non-compilable VBA code.
 /// </summary>
 [Serializable]
-public class SyntaxErrorException : Exception
+public class SyntaxErrorException : PredictionFailException
 {
     public SyntaxErrorException(WorkspaceFileUri uri, SyntaxErrorOffendingSymbol symbol, string message, Exception? inner = null)
+        : base(uri, "ll", symbol, message, inner)
+    {
+    }
+
+    public override Diagnostic ToDiagnostic() => RubberduckDiagnostic.SyntaxError(this);
+}
+
+[Serializable]
+public abstract class PredictionFailException : Exception
+{
+    protected PredictionFailException(WorkspaceFileUri uri, string mode, SyntaxErrorOffendingSymbol symbol, string message, Exception? inner)
         : base(message, inner)
     {
         Uri = uri;
+        PredictionMode = mode;
         OffendingSymbol = symbol;
     }
 
+    public SyntaxErrorOffendingSymbol OffendingSymbol { get; init; }
+    public string PredictionMode { get; init; }
     public WorkspaceFileUri Uri { get; init; }
 
-    public SyntaxErrorOffendingSymbol OffendingSymbol { get; init; }
+    public virtual Diagnostic ToDiagnostic() => RubberduckDiagnostic.SllFailure(this);
 
-    public virtual Diagnostic ToDiagnostic() => RubberduckDiagnostic.SyntaxError(this);
-
-    public override string ToString() => 
+    public override string ToString() =>
         $"{base.ToString()}\nUri: {Uri} Token: {OffendingSymbol.Name} at L{OffendingSymbol.Range.Start.Line}C{OffendingSymbol.Range.Start.Character}";
 }

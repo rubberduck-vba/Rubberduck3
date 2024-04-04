@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rubberduck.InternalApi.Settings.Model.LanguageServer.Diagnostics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -32,6 +33,10 @@ public record class TypedRubberduckSetting<TValue> : RubberduckSetting
                 {
                     object values = json.EnumerateArray().Select(item => item.Deserialize<RubberduckSetting>()).ToArray();
                     _typedValue = (TValue)values;
+                }
+                else if (value is DiagnosticSetting diagnosticSetting)
+                {
+                    _typedValue = (TValue)diagnosticSetting.Value; //(TValue)((IEnumerable<RubberduckSetting>)value).ToArray();
                 }
                 else
                 {

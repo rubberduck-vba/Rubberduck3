@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ookii.Dialogs.Wpf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,11 @@ namespace Rubberduck.UI.Shared.Settings.Templates
         public ListSettingControl()
         {
             InitializeComponent();
+        }
+
+        private void OnAddListItemCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            // TODO
         }
     }
 }

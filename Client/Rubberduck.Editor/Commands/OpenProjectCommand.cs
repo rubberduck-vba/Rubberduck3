@@ -2,6 +2,7 @@
 using Rubberduck.InternalApi.Services;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Abstract;
+using Rubberduck.UI.Command.StaticRouted;
 using Rubberduck.UI.Services;
 using System;
 using System.IO.Abstractions;

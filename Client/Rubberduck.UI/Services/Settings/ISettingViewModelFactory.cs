@@ -1,5 +1,6 @@
 ﻿using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
+using Rubberduck.InternalApi.Settings.Model.LanguageServer.Diagnostics;
 using Rubberduck.InternalApi.Settings.Model.Logging;
 using Rubberduck.InternalApi.Settings.Model.ServerStartup;
 using Rubberduck.UI.Shared.Settings.Abstract;
@@ -21,6 +22,7 @@ namespace Rubberduck.UI.Services.Settings
         ISettingViewModel CreateViewModel(ServerMessageModeSetting setting);
         ISettingViewModel CreateViewModel(TypedRubberduckSetting<TimeSpan> setting);
         ISettingViewModel CreateViewModel(TypedRubberduckSetting<string[]> setting);
+        ISettingGroupViewModel CreateViewModel(DiagnosticSetting settingGroup);
 
         ISettingGroupViewModel CreateViewModel(TypedSettingGroup settingGroup);
     }

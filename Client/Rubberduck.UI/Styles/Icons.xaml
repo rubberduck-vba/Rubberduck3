@@ -19,9 +19,14 @@
     <BitmapImage x:Key="XMarkIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/xmark-solid.png"/>
     <BitmapImage x:Key="GearIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/gear-solid.png"/>
     <BitmapImage x:Key="PinIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/thumbtack-solid.png"/>
+    
+    <BitmapImage x:Key="HelpIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/circle-question-regular.png"/>
+    <BitmapImage x:Key="HelpPressedIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/circle-question-solid.png"/>
 
     <BitmapImage x:Key="CircleCheckIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/circle-check-solid.png" />
     <BitmapImage x:Key="CircleWarnIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/circle-exclamation-solid.png" />
+
+    <BitmapImage x:Key="CircleAddIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/circle-plus-solid.png" />
 
     <BitmapImage x:Key="CollapseSectionIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/down-left-and-up-right-to-center-solid.png" />
     <BitmapImage x:Key="ExpandSectionIcon" UriSource="pack://application:,,,/Rubberduck.UI;component/Resources/FontAwesome/up-right-and-down-left-from-center-solid.png" />

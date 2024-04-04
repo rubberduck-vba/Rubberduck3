@@ -13,7 +13,7 @@ namespace Rubberduck.UI.Shared.Settings.Abstract
             _setting = setting;
             _value = setting.TypedValue;
 
-            IsEnabled = !IsReadOnlyRecommended;
+            IsEnabled = true; // !IsReadOnlyRecommended;
         }
 
         public SettingDataType SettingDataType => _setting.SettingDataType;

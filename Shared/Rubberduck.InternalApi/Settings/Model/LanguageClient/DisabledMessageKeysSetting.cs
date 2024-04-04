@@ -9,7 +9,7 @@ namespace Rubberduck.InternalApi.Settings.Model.LanguageClient;
 /// </summary>
 public record class DisabledMessageKeysSetting : TypedRubberduckSetting<string[]>
 {
-    public static string[] DefaultSettingValue { get; } = Array.Empty<string>();
+    public static string[] DefaultSettingValue { get; } = [];
 
     public static void DisableMessageKey(string key, RubberduckSettingsProvider provider)
     {

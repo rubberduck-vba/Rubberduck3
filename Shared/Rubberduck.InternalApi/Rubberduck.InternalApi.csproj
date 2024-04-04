@@ -20,7 +20,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\Client\Rubberduck.Unmanaged\Rubberduck.Unmanaged.csproj" />
+    <ProjectReference Include="..\..\AddIn\Rubberduck.Unmanaged\Rubberduck.Unmanaged.csproj" />
     <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
       <Project>{ed65baad-743d-4144-aee2-8d956e6da599}</Project>
       <Name>Rubberduck.Resources</Name>

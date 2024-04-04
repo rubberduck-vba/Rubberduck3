@@ -65,11 +65,21 @@ public record class RubberduckSettings : TypedSettingGroup, IDefaultSettingsProv
 
         var addedKeys = comparable.Keys.Except(reference.Keys);
         var deletedKeys = reference.Keys.Except(comparable.Keys);
-        var modifiedSettings = reference.Where(kvp => 
-            reference[kvp.Key].SettingDataType != SettingDataType.EnumSettingGroup 
-            && reference[kvp.Key].SettingDataType != SettingDataType.SettingGroup
-            && reference[kvp.Key].SettingDataType != SettingDataType.ListSetting
-            && IsModified(reference[kvp.Key], comparable[kvp.Key]));
+
+        var skipdiffcheck = new[] { SettingDataType.EnumSettingGroup, SettingDataType.SettingGroup, SettingDataType.ListSetting };
+
+        var modifiedSettings = from kvp in reference 
+                               let type = reference[kvp.Key].SettingDataType
+                               where !skipdiffcheck.Contains(type) 
+                                && comparable.ContainsKey(kvp.Key)
+                                && IsModified(reference[kvp.Key], comparable[kvp.Key])
+                               select kvp;
+
+        //var modifiedSettings = reference.Where(kvp => comparable.ContainsKey(kvp.Key) 
+        //    && reference[kvp.Key].SettingDataType != SettingDataType.EnumSettingGroup 
+        //    && reference[kvp.Key].SettingDataType != SettingDataType.SettingGroup
+        //    && reference[kvp.Key].SettingDataType != SettingDataType.ListSetting
+        //    && IsModified(reference[kvp.Key], comparable[kvp.Key]));
 
         return addedKeys.Select(e => new RubberduckSettingDiff { ComparableValue = comparable[e] })
             .Concat(deletedKeys.Select(e => new RubberduckSettingDiff { ReferenceValue = reference[e] }))

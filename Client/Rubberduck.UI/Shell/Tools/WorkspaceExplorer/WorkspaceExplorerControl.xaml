@@ -6,7 +6,7 @@
         xmlns:b="clr-namespace:Rubberduck.UI.Behaviors"
         xmlns:xb="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:shell="clr-namespace:Rubberduck.UI.Shell" 
-        xmlns:cmd="clr-namespace:Rubberduck.UI.Command" 
+        xmlns:cmd="clr-namespace:Rubberduck.UI.Command.StaticRouted" 
         xmlns:local="clr-namespace:Rubberduck.UI.Shell.Tools.WorkspaceExplorer"
         d:DataContext="{d:DesignInstance Type=local:IWorkspaceExplorerViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d" 

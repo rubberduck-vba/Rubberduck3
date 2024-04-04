@@ -1,10 +1,8 @@
-﻿using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Folding;
+﻿using ICSharpCode.AvalonEdit.Folding;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Model;
 using Rubberduck.UI.Extensions;
 using Rubberduck.Unmanaged.Model;
-using System.Windows;
 
 namespace Rubberduck.UI.Services;
 

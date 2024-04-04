@@ -63,7 +63,7 @@ public class VBRuntimeErrorException : ApplicationException, IDiagnosticSource
     /// <summary>
     /// The Classic-VB runtime error numbers and messages - <strong>do not localize</strong>.
     /// </summary>
-    private static readonly Dictionary<int, string> VBRuntimeErrors = new()
+    public static readonly Dictionary<int, string> VBRuntimeErrors = new()
     {
         [-1] = "Application-defined or object-defined error",
         [3] = "Return without GoSub",

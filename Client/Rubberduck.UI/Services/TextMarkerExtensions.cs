@@ -1,10 +1,15 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Rubberduck.InternalApi.Model;
+using Rubberduck.UI.Command.SharedHandlers;
 using Rubberduck.UI.Services.Abstract;
 using Rubberduck.UI.Shell;
 using Rubberduck.UI.Shell.Document;
 using System;
+using System.Linq;
+using System.Text;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Rubberduck.UI.Services;
@@ -18,7 +23,7 @@ public static class TextMarkerExtensions
     public static readonly Color ErrorMarkerColor = Color.FromRgb(168, 18, 18);
     public static readonly Color UndefinedMarkerColor = Color.FromRgb(0, 0, 0);
 
-    public static void WithTextMarker(this Diagnostic diagnostic, BindableTextEditor editor, TextMarkerService service)
+    public static void WithTextMarker(this Diagnostic diagnostic, BindableTextEditor editor, TextMarkerService service, ICommand showSettingsCommand, ICommand gotoHelpUrlCommand)
     {
         var document = editor.Document;
         var start = document.GetOffset(diagnostic.Range.Start.Line, diagnostic.Range.Start.Character + 1);
@@ -42,34 +47,46 @@ public static class TextMarkerExtensions
                 _ => (TextMarkerTypes.NormalUnderline, UndefinedMarkerColor),
             };
 
-            marker.ToolTip = CreateToolTip(editor, diagnostic);
+            marker.ToolTip = CreateToolTip(editor, diagnostic, showSettingsCommand, gotoHelpUrlCommand);
         }
     }
 
-    private static ToolTip CreateToolTip(BindableTextEditor editor, Diagnostic diagnostic)
+    private static Popup CreateToolTip(BindableTextEditor editor, Diagnostic diagnostic, ICommand showSettingsCommand, ICommand gotoHelpUrlCommand)
     {
-        var vm = GetToolTipViewModel(diagnostic);
+        var vm = GetToolTipViewModel(diagnostic, showSettingsCommand, gotoHelpUrlCommand);
         var tooltip = new TextMarkerToolTip
         {
             DataContext = vm,
-            PlacementTarget = editor
+            PlacementTarget = editor,
         };
         return tooltip;
     }
 
-    private static object GetToolTipViewModel(Diagnostic diagnostic)
+    private static ITextMarkerToolTip GetToolTipViewModel(Diagnostic diagnostic, ICommand showSettingsCommand, ICommand gotoHelpUrlCommand)
     {
-        var isError = diagnostic.Code?.String == RubberduckDiagnosticId.SyntaxError.Code();
-        
-        // FIXME assumes XYZ000123 format for diagnostic codes
-        var id = (RubberduckDiagnosticId)Convert.ToInt32(diagnostic.Code?.String?.Substring(3) ?? "-1");
+        var code = diagnostic.Code!.Value.String!;
+        var id = (RubberduckDiagnosticId)Convert.ToInt32(code.Substring(3));
 
-        return new
+        var title = id.ToString(); // TODO get from resources
+        var tla = code.Substring(0, 3);
+        var type = tla switch
         {
-            TipTitle = $"{diagnostic.Code!.Value.String} {id}",
-            TipText = diagnostic.Message,
-            IsError = isError,
-            IsDiagnostic = !isError
+            "VBC" => "VB Compile Error",
+            "VBR" => "VB Runtime Error",
+            "RD3" => "Rubberduck Diagnostic",
+            _ => null,
+        };
+        return new TextMarkerToolTipViewModel
+        {
+            Code = code,
+            Title = title is null ? code : $"[{code}] {title}",
+            Text = diagnostic.Message,
+            Type = type ?? "unknown",
+            Severity = diagnostic.Severity ?? 0,
+            SettingKey = code,
+            HelpUri = diagnostic.CodeDescription?.Href,
+            GoToHelpUrlCommand = gotoHelpUrlCommand,
+            ShowSettingsCommand = showSettingsCommand,
         };
     }
 }

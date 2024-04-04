@@ -1,6 +1,7 @@
 ﻿using Rubberduck.InternalApi.Settings.Model;
 using Rubberduck.InternalApi.Settings.Model.Editor.CodeFolding;
 using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
+using Rubberduck.InternalApi.Settings.Model.LanguageServer.Diagnostics;
 using Rubberduck.InternalApi.Settings.Model.Logging;
 using Rubberduck.InternalApi.Settings.Model.ServerStartup;
 using Rubberduck.InternalApi.Settings.Model.TelemetryServer;
@@ -31,6 +32,7 @@ namespace Rubberduck.UI.Services.Settings
         public ISettingViewModel CreateViewModel(UriRubberduckSetting setting) => new UriSettingViewModel(setting);
 
         public ISettingViewModel CreateViewModel(LogLevelSetting setting) => new LogLevelSettingViewModel(setting);
+        public ISettingViewModel CreateViewModel(DiagnosticSeveritySetting setting) => new DiagnosticSeveritySettingViewModel(setting);
         public ISettingViewModel CreateViewModel(DefaultToolWindowLocationSetting setting) => new DefaultToolWindowLocationSettingViewModel(setting);
 
         public ISettingViewModel CreateViewModel(TraceLevelSetting setting) => new MessageTraceLevelSettingViewModel(setting);
@@ -49,8 +51,14 @@ namespace Rubberduck.UI.Services.Settings
 
         public ISettingGroupViewModel CreateViewModel(TypedRubberduckSetting<RubberduckSetting[]> settingGroup)
         {
-            var items = settingGroup.TypedValue?.Cast<BooleanRubberduckSetting>().Select(e => CreateViewModel(e)).ToList() ?? Enumerable.Empty<ISettingViewModel>().ToList();
+            var items = settingGroup.TypedValue?.OfType<TypedSettingGroup>().Select(e => CreateViewModel(e)).ToArray() ?? Array.Empty<ISettingViewModel>();
             return new SettingGroupViewModel(settingGroup, items);
+        }
+
+        public ISettingGroupViewModel CreateViewModel(DiagnosticSetting settingGroup)
+        {
+            var items = GetChildItems(settingGroup);
+            return new DiagnosticSettingsViewModel(settingGroup, items);
         }
 
         public ISettingGroupViewModel CreateViewModel(TypedSettingGroup settingGroup)
@@ -59,6 +67,11 @@ namespace Rubberduck.UI.Services.Settings
             {
                 var items = root.TypedValue.OfType<TypedSettingGroup>().Select(CreateViewModel).ToList();
                 return new SettingGroupViewModel(root, items);
+            }
+            else if (settingGroup is DiagnosticsSettings settings)
+            {
+                var items = settings.TypedValue.OfType<TypedSettingGroup>().Select(e => new DiagnosticSetting(e)).Select(CreateViewModel).ToList();
+                return new DiagnosticsSettingsViewModel(settingGroup, items);
             }
             else
             {
@@ -69,6 +82,14 @@ namespace Rubberduck.UI.Services.Settings
         private IEnumerable<ISettingViewModel> GetChildItems(TypedSettingGroup settingGroup)
         {
             foreach (var setting in settingGroup.TypedValue)
+            {
+                yield return GetChildItem(setting);
+            }
+        }
+
+        private IEnumerable<ISettingViewModel> GetChildItems(DiagnosticsSettings settingGroup)
+        {
+            foreach (var setting in settingGroup.TypedValue.OfType<DiagnosticSetting>())
             {
                 yield return GetChildItem(setting);
             }
@@ -88,6 +109,8 @@ namespace Rubberduck.UI.Services.Settings
                     return CreateViewModel(uriSetting);
                 case LogLevelSetting loglevelSetting:
                     return CreateViewModel(loglevelSetting);
+                case DiagnosticSeveritySetting severitySetting:
+                    return CreateViewModel(severitySetting);
                 case DefaultToolWindowLocationSetting toolwindowLocationSetting:
                     return CreateViewModel(toolwindowLocationSetting);
                 case TraceLevelSetting tracelevelSetting:
@@ -102,10 +125,10 @@ namespace Rubberduck.UI.Services.Settings
                     return CreateViewModel(timeSpanSetting);
                 case TypedRubberduckSetting<string[]> listSetting:
                     return new StringListSettingViewModel(_service, listSetting);
+                case DiagnosticSetting diagnostic:
+                    return CreateViewModel(diagnostic);
                 case TypedSettingGroup subGroup:
                     return CreateViewModel(subGroup);
-                case MappedBoolSettingGroup mappedGroup:
-                    return CreateViewModel(mappedGroup);
                 default:
                     Debug.WriteLine($"**BUG** Missing case for '{setting.Key}' (data type: {setting.SettingDataType}) in SettingViewModelFactory.");
                     throw new NotSupportedException();

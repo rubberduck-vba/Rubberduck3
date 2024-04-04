@@ -169,6 +169,42 @@ namespace Rubberduck.Resources.v3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The reported severity level of the diagnostic..
+        /// </summary>
+        public static string DiagnosticSeveritySetting_Description {
+            get {
+                return ResourceManager.GetString("DiagnosticSeveritySetting_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Severity.
+        /// </summary>
+        public static string DiagnosticSeveritySetting_Title {
+            get {
+                return ResourceManager.GetString("DiagnosticSeveritySetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure whether and how each diagnostic is issued by the language server..
+        /// </summary>
+        public static string DiagnosticsSettings_Description {
+            get {
+                return ResourceManager.GetString("DiagnosticsSettings_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Diagnostics.
+        /// </summary>
+        public static string DiagnosticsSettings_Title {
+            get {
+                return ResourceManager.GetString("DiagnosticsSettings_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Lists all the message keys that were opted to &quot;do not show this message again&quot;. Removing items from this list will re-enable the corresponding messages..
         /// </summary>
         public static string DisabledMessageKeysSetting_Description {
@@ -457,6 +493,24 @@ namespace Rubberduck.Resources.v3 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flag disemvoweled identifier names.
+        /// </summary>
+        public static string FlagDisemvoweledNamesSetting_Title {
+            get {
+                return ResourceManager.GetString("FlagDisemvoweledNamesSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flag numeric suffixes in identifier names.
+        /// </summary>
+        public static string FlagNumericSuffixesSetting_Title {
+            get {
+                return ResourceManager.GetString("FlagNumericSuffixesSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Whether folding ranges should be created for block statements, e.g. If...End If, Do...Loop, With...End With, etc..
         /// </summary>
         public static string FoldBlockStatementsSetting_Description {
@@ -597,6 +651,15 @@ namespace Rubberduck.Resources.v3 {
         public static string IdleTimerDurationSetting_Title {
             get {
                 return ResourceManager.GetString("IdleTimerDurationSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignored identifiers.
+        /// </summary>
+        public static string IgnoredIdentifiersSetting_Title {
+            get {
+                return ResourceManager.GetString("IgnoredIdentifiersSetting_Title", resourceCulture);
             }
         }
         
@@ -813,6 +876,402 @@ namespace Rubberduck.Resources.v3 {
         public static string MetricTelemetrySettings_Title {
             get {
                 return ResourceManager.GetString("MetricTelemetrySettings_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Require minimum length.
+        /// </summary>
+        public static string MinimumNameLengthSetting_Title {
+            get {
+                return ResourceManager.GetString("MinimumNameLengthSetting_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Syntax Error.
+        /// </summary>
+        public static string RD300001_Title {
+            get {
+                return ResourceManager.GetString("RD300001_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SLL Failure.
+        /// </summary>
+        public static string RD300003_Title {
+            get {
+                return ResourceManager.GetString("RD300003_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;Option Explicit&apos; is missing. Without &apos;Option Explicit&apos; specified, declarations in a module are allowed to be implicit, which defers type checks and other validations to run-time..
+        /// </summary>
+        public static string RD300101_Description {
+            get {
+                return ResourceManager.GetString("RD300101_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit Declarations Enabled.
+        /// </summary>
+        public static string RD300101_Title {
+            get {
+                return ResourceManager.GetString("RD300101_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;Option Base 1&apos; is specified. Implicitly-sized arrays are normally safely assumed to have a lower bound of 0. This module option makes the lower bound of implicitly-sized arrays start at 1, which can introduce inconsistencies that complicate index handling across arrays..
+        /// </summary>
+        public static string RD300102_Description {
+            get {
+                return ResourceManager.GetString("RD300102_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit Non Default Array Base.
+        /// </summary>
+        public static string RD300102_Title {
+            get {
+                return ResourceManager.GetString("RD300102_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;[Type]Def&apos; declarations are assigning a compile-time declared type to implicitly-typed variables, based on the first letter of their identifier name. Implicitly-typed variables are normally safely assumed to be of type &apos;Variant&apos;..
+        /// </summary>
+        public static string RD300103_Description {
+            get {
+                return ResourceManager.GetString("RD300103_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit Type Declarations Enabled.
+        /// </summary>
+        public static string RD300103_Title {
+            get {
+                return ResourceManager.GetString("RD300103_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value parameter of a &apos;Property Let&apos; or &apos;Property Set&apos; procedure is always passed by value; even an explicit &apos;ByRef&apos; modifier is ignored..
+        /// </summary>
+        public static string RD300104_Description {
+            get {
+                return ResourceManager.GetString("RD300104_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit ByRef Modifier.
+        /// </summary>
+        public static string RD300104_Title {
+            get {
+                return ResourceManager.GetString("RD300104_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit Variant Declaration.
+        /// </summary>
+        public static string RD300105_Title {
+            get {
+                return ResourceManager.GetString("RD300105_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit Return Type.
+        /// </summary>
+        public static string RD300106_Title {
+            get {
+                return ResourceManager.GetString("RD300106_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit String Coercion.
+        /// </summary>
+        public static string RD300107_Title {
+            get {
+                return ResourceManager.GetString("RD300107_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit Numeric Coercion.
+        /// </summary>
+        public static string RD300108_Title {
+            get {
+                return ResourceManager.GetString("RD300108_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit &apos;Let&apos; Coercion.
+        /// </summary>
+        public static string RD300109_Title {
+            get {
+                return ResourceManager.GetString("RD300109_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit DateSerial Conversion.
+        /// </summary>
+        public static string RD300110_Title {
+            get {
+                return ResourceManager.GetString("RD300110_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit Narrowing Conversion.
+        /// </summary>
+        public static string RD300111_Title {
+            get {
+                return ResourceManager.GetString("RD300111_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit Widening Conversion.
+        /// </summary>
+        public static string RD300112_Title {
+            get {
+                return ResourceManager.GetString("RD300112_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Integer Data Type Declaration.
+        /// </summary>
+        public static string RD300201_Title {
+            get {
+                return ResourceManager.GetString("RD300201_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Module Scoped Dim Declaration.
+        /// </summary>
+        public static string RD300202_Tilte {
+            get {
+                return ResourceManager.GetString("RD300202_Tilte", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple Parameter Declaration.
+        /// </summary>
+        public static string RD300203_Title {
+            get {
+                return ResourceManager.GetString("RD300203_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple Declarations Instruction.
+        /// </summary>
+        public static string RD300204_Title {
+            get {
+                return ResourceManager.GetString("RD300204_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Misleading ByRef Modifier.
+        /// </summary>
+        public static string RD300205_Title {
+            get {
+                return ResourceManager.GetString("RD300205_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Calling convention is not implemented.
+        /// </summary>
+        public static string RD300301_Title {
+            get {
+                return ResourceManager.GetString("RD300301_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Explicit &apos;Call&apos; statement.
+        /// </summary>
+        public static string RD300302_Title {
+            get {
+                return ResourceManager.GetString("RD300302_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Obsolete &apos;Rem&apos; comment syntax.
+        /// </summary>
+        public static string RD300303_Title {
+            get {
+                return ResourceManager.GetString("RD300303_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Obsolete &apos;Global&apos; modifier.
+        /// </summary>
+        public static string RD300304_Title {
+            get {
+                return ResourceManager.GetString("RD300304_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Obsolete explicit &apos;Let&apos; accessor.
+        /// </summary>
+        public static string RD300305_Title {
+            get {
+                return ResourceManager.GetString("RD300305_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Obsolete type hint.
+        /// </summary>
+        public static string RD300306_Title {
+            get {
+                return ResourceManager.GetString("RD300306_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Obsolete &apos;While...Wend&apos; loop.
+        /// </summary>
+        public static string RD300307_Title {
+            get {
+                return ResourceManager.GetString("RD300307_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Obsolete &apos;On Local Error&apos; statement.
+        /// </summary>
+        public static string RD300308_Title {
+            get {
+                return ResourceManager.GetString("RD300308_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to @Obsolete member usage.
+        /// </summary>
+        public static string RD300401_Title {
+            get {
+                return ResourceManager.GetString("RD300401_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid annotation.
+        /// </summary>
+        public static string RD300404_Title {
+            get {
+                return ResourceManager.GetString("RD300404_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implementation should be &apos;Private&apos;.
+        /// </summary>
+        public static string RD300405_Title {
+            get {
+                return ResourceManager.GetString("RD300405_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Public declaration in Worksheet module.
+        /// </summary>
+        public static string RD300406_Title {
+            get {
+                return ResourceManager.GetString("RD300406_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use meaningful names.
+        /// </summary>
+        public static string RD301001_Title {
+            get {
+                return ResourceManager.GetString("RD301001_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Systems Hungarian notation.
+        /// </summary>
+        public static string RD301002_Title {
+            get {
+                return ResourceManager.GetString("RD301002_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unintended constant expression.
+        /// </summary>
+        public static string RD311001_Title {
+            get {
+                return ResourceManager.GetString("RD311001_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suspicious value assignment.
+        /// </summary>
+        public static string RD311002_Title {
+            get {
+                return ResourceManager.GetString("RD311002_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TypeCast conversion.
+        /// </summary>
+        public static string RD311003_Title {
+            get {
+                return ResourceManager.GetString("RD311003_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitwise operator.
+        /// </summary>
+        public static string RD311004_Title {
+            get {
+                return ResourceManager.GetString("RD311004_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to String concatenation.
+        /// </summary>
+        public static string RD311005_Title {
+            get {
+                return ResourceManager.GetString("RD311005_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use the &apos;Err&apos; object to raise errors.
+        /// </summary>
+        public static string RD311006_Title {
+            get {
+                return ResourceManager.GetString("RD311006_Title", resourceCulture);
             }
         }
         

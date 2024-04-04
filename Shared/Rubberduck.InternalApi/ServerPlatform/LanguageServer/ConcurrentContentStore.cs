@@ -70,7 +70,7 @@ public class ConcurrentContentStore<TContent>
 
     public bool TryGetDocument(WorkspaceUri documentUri, out TContent? content)
     {
-        var uri = new WorkspaceFileUri(documentUri.AbsoluteLocation.AbsolutePath, documentUri.WorkspaceRoot);
+        var uri = new WorkspaceFileUri(Uri.UnescapeDataString(documentUri.AbsoluteLocation.AbsolutePath), documentUri.WorkspaceRoot);
         var result = Store.TryGetValue(uri, out content);
 
         return result;

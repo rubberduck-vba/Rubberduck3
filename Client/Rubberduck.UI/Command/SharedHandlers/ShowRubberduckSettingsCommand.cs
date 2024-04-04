@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -52,29 +51,33 @@ namespace Rubberduck.UI.Command.SharedHandlers
                 if (diff.Any())
                 {
                     Service.SettingsProvider.Write(newSettings);
-
-                    var details = new StringBuilder();
-                    foreach (var item in diff)
-                    {
-                        var itemTitle = SettingsUI.ResourceManager.GetString($"{item.Key}_Title");
-                        if (item.SettingDataType == SettingDataType.ListSetting)
-                        {
-                            var nbReferenceValues = item.ReferenceValue is null ? 0 : ((object[])item.ReferenceValue.Value!).Length;
-                            var nbComparableValues = item.ComparableValue is null ? 0 : ((object[])item.ComparableValue.Value!).Length;
-                            details.AppendLine($"•{itemTitle}: {nbReferenceValues} items -> {nbComparableValues} items");
-                        }
-                        else
-                        {
-                            details.AppendLine($"•{itemTitle}: {item.ReferenceValue?.Value ?? "(added)"} -> {item.ComparableValue?.Value ?? "(removed)"}");
-                        }
-                    }
-
-                    var msgKey = "SettingsSaved";
-                    var message = SettingsUI.ResourceManager.GetString($"{msgKey}_Message") ?? $"[missing key:{msgKey}_Message]";
-                    var title = SettingsUI.ResourceManager.GetString($"{msgKey}_Title") ?? $"[missing key:{msgKey}_Title]";
-                    _message.ShowMessage(new() { Key = msgKey, Level = LogLevel.Information, Title = title, Message = message, Verbose = $"Modified settings:\n{details}" });
+                    ShowSettingsSavedMessage(diff);
                 }
             }
+        }
+
+        private void ShowSettingsSavedMessage(System.Collections.Generic.IEnumerable<RubberduckSettingDiff> diff)
+        {
+            var details = new StringBuilder();
+            foreach (var item in diff)
+            {
+                var itemTitle = SettingsUI.ResourceManager.GetString($"{item.Key}_Title");
+                if (item.SettingDataType == SettingDataType.ListSetting)
+                {
+                    var nbReferenceValues = item.ReferenceValue is null ? 0 : ((object[])item.ReferenceValue.Value!).Length;
+                    var nbComparableValues = item.ComparableValue is null ? 0 : ((object[])item.ComparableValue.Value!).Length;
+                    details.AppendLine($"•{itemTitle}: {nbReferenceValues} items -> {nbComparableValues} items");
+                }
+                else
+                {
+                    details.AppendLine($"•{itemTitle}: {item.ReferenceValue?.Value ?? "(added)"} -> {item.ComparableValue?.Value ?? "(removed)"}");
+                }
+            }
+
+            var msgKey = "SettingsSaved";
+            var message = SettingsUI.ResourceManager.GetString($"{msgKey}_Message") ?? $"[missing key:{msgKey}_Message]";
+            var title = SettingsUI.ResourceManager.GetString($"{msgKey}_Title") ?? $"[missing key:{msgKey}_Title]";
+            _message.ShowMessage(new() { Key = msgKey, Level = LogLevel.Information, Title = title, Message = message, Verbose = $"Modified settings:\n{details}" });
         }
     }
 }

@@ -5,49 +5,42 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rubberduck.UI.Shared.Settings.Templates"
              xmlns:viewmodels="clr-namespace:Rubberduck.UI.Shared.Settings" 
-             xmlns:shell="clr-namespace:Rubberduck.UI.Shell"
-             Padding="4" MinHeight="96" 
+             xmlns:shell="clr-namespace:Rubberduck.UI.Shell" d:DataContext="{d:DesignInstance Type=viewmodels:SettingGroupViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="255">
+             d:DesignWidth="500"
+             d:Background="{DynamicResource ThemeBackgroundColorBrush}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/DefaultStyle.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Rubberduck.UI;component/Styles/Templates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
-    <Border Style="{DynamicResource SectionBorderStyle}">
-        <DockPanel LastChildFill="True">
-            <DockPanel DockPanel.Dock="Top">
-                <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,2,2,8" 
-                                        Height="16" Width="20" OffsetX="2"
-                                        Icon="{DynamicResource LockedIcon}" 
-                                        CheckedIcon="{DynamicResource UnlockedIcon}"
-                                        IsChecked="{Binding IsEnabled}"
-                                        Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
-                <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" 
-                                        Height="16" Width="20" OffsetX="2"
-                                        Icon="{DynamicResource ExpandSectionIcon}"
-                                        CheckedIcon="{DynamicResource CollapseSectionIcon}"
-                                        Command="{Binding DataContext.ExpandSettingGroupCommand, RelativeSource={RelativeSource AncestorType=viewmodels:SettingsWindow, Mode=FindAncestor}}"
-                                        CommandParameter="{Binding}"
-                                        IsChecked="{Binding IsExpanded}">
-                </shell:FlatToggleButton>
-                <Label DockPanel.Dock="Top" Style="{DynamicResource FormTitleLabelStyle}" Margin="0" IsEnabled="{Binding IsEnabled}">
-                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
-                </Label>
-            </DockPanel>
-            <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
-                <Label Style="{DynamicResource FormFieldDescriptionLabelStyle}" Margin="4,0">
-                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
-                </Label>
-            </ScrollViewer>
-            <Expander DockPanel.Dock="Top" Margin="4" IsEnabled="{Binding IsEnabled}">
-                <Expander.Header>
-                    <TextBlock Style="{DynamicResource SectionExpanderHeaderStyle}" Text="Settings" IsEnabled="{Binding IsEnabled}" />
-                </Expander.Header>
-                <ListBox Background="{DynamicResource ThemeBackgroundColorBrush}" 
+            <FrameworkElement x:Key="ParentWindowContext" DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}" />
+            <FrameworkElement x:Key="ControlContext" DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}" />
+            <ControlTemplate x:Key="SingleItemGroup">
+                <ListBox ItemsSource="{Binding Items}" 
+                         BorderThickness="0" BorderBrush="Transparent"
+                         Margin="5"
+                         HorizontalContentAlignment="Stretch"
+                         VirtualizingPanel.IsVirtualizing="True"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         ItemTemplateSelector="{DynamicResource SettingTemplateSelector}">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+            </ControlTemplate>
+            <ControlTemplate x:Key="MultipleItemsGroup">
+                <Expander DockPanel.Dock="Top" IsEnabled="{Binding IsEnabled}">
+                    <Expander.Header>
+                        <Label Style="{DynamicResource FormTitleLabelStyle}" Margin="0">
+                            <TextBlock d:Text="Name" Text="{Binding Name}" TextWrapping="Wrap" />
+                        </Label>
+                    </Expander.Header>
+                    <ListBox Background="Transparent"
                           ItemsSource="{Binding Items}" 
                           BorderThickness="0" BorderBrush="Transparent"
                           Margin="8"
@@ -56,13 +49,60 @@
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
                           ItemTemplateSelector="{DynamicResource SettingTemplateSelector}">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+                </Expander>
+            </ControlTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Border Margin="0">
+            <DockPanel LastChildFill="True" Background="{DynamicResource ThemeBackgroundMediumColorBrush}">
+                <DockPanel DockPanel.Dock="Top">
+                    <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="5" 
+                                            Height="16" Width="20" OffsetX="2"
+                                            Icon="{DynamicResource LockedIcon}" 
+                                            d:IconSource="{DynamicResource LockedIcon}"
+                                            CheckedIcon="{DynamicResource UnlockedIcon}"
+                                            Visibility="{Binding IsReadOnlyRecommended, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                    <shell:FlatToggleButton DockPanel.Dock="Right" VerticalAlignment="Top" 
+                                            HorizontalAlignment="Right"
+                                            Height="16" Width="20" OffsetX="2" Margin="5"
+                                            Icon="{DynamicResource ExpandSectionIcon}"
+                                            d:IconSource="{DynamicResource ExpandSectionIcon}"
+                                            CheckedIcon="{DynamicResource CollapseSectionIcon}"
+                                            Command="{Binding DataContext.ExpandSettingGroupCommand, RelativeSource={RelativeSource AncestorType=viewmodels:SettingsWindow, Mode=FindAncestor}}"
+                                            CommandParameter="{Binding}"
+                                            IsChecked="{Binding IsExpanded}">
+                        <shell:FlatToggleButton.Visibility>
+                            <MultiBinding Converter="{StaticResource BooleanAndToVisibilityConverter}">
+                                <Binding Path="Items" Converter="{StaticResource HasSingleItemInvertedBoolConverter}" />
+                                <Binding Path="IsSettingGroup" />
+                            </MultiBinding>
+                        </shell:FlatToggleButton.Visibility>
+                    </shell:FlatToggleButton>
+
+                    <shell:FlatButton Grid.Column="1" Icon="{DynamicResource ExpandSectionIcon}" Height="16" Width="20" Margin="5" HorizontalAlignment="Right" />
+
+                </DockPanel>
+                <ContentControl>
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <Setter Property="Template" Value="{StaticResource MultipleItemsGroup}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Items.Count}" Value="1">
+                                    <Setter Property="Template" Value="{StaticResource SingleItemGroup}" />
+                                </DataTrigger>
+                            </Style.Triggers>
                         </Style>
-                    </ListBox.ItemContainerStyle>
-                </ListBox>
-            </Expander>
-        </DockPanel>
-    </Border>
+                    </ContentControl.Style>
+                </ContentControl>
+            </DockPanel>
+        </Border>
+    </Grid>
 </UserControl>

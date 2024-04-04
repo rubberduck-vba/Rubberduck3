@@ -153,6 +153,18 @@
   <data name="DefaultWorkspaceRootSetting_Title" xml:space="preserve">
     <value>Default Workspace Root</value>
   </data>
+  <data name="DiagnosticSeveritySetting_Description" xml:space="preserve">
+    <value>The reported severity level of the diagnostic.</value>
+  </data>
+  <data name="DiagnosticSeveritySetting_Title" xml:space="preserve">
+    <value>Severity</value>
+  </data>
+  <data name="DiagnosticsSettings_Description" xml:space="preserve">
+    <value>Configure whether and how each diagnostic is issued by the language server.</value>
+  </data>
+  <data name="DiagnosticsSettings_Title" xml:space="preserve">
+    <value>Diagnostics</value>
+  </data>
   <data name="DisabledMessageKeysSetting_Description" xml:space="preserve">
     <value>Lists all the message keys that were opted to "do not show this message again". Removing items from this list will re-enable the corresponding messages.</value>
   </data>
@@ -249,6 +261,12 @@
   <data name="ExtendWindowChromeSetting_Title" xml:space="preserve">
     <value>Extend Window Chrome</value>
   </data>
+  <data name="FlagDisemvoweledNamesSetting_Title" xml:space="preserve">
+    <value>Flag disemvoweled identifier names</value>
+  </data>
+  <data name="FlagNumericSuffixesSetting_Title" xml:space="preserve">
+    <value>Flag numeric suffixes in identifier names</value>
+  </data>
   <data name="FoldBlockStatementsSetting_Description" xml:space="preserve">
     <value>Whether folding ranges should be created for block statements, e.g. If...End If, Do...Loop, With...End With, etc.</value>
   </data>
@@ -296,6 +314,9 @@
   </data>
   <data name="IdleTimerDurationSetting_Title" xml:space="preserve">
     <value>Idle Timer Duration</value>
+  </data>
+  <data name="IgnoredIdentifiersSetting_Title" xml:space="preserve">
+    <value>Ignored identifiers</value>
   </data>
   <data name="IncludePreReleasesSetting_Description" xml:space="preserve">
     <value>If enabled, the update server considers pre-release builds when evaluating if a newer version is available.</value>
@@ -368,6 +389,138 @@
   </data>
   <data name="MetricTelemetrySettings_Title" xml:space="preserve">
     <value>Metric Telemetry Settings</value>
+  </data>
+  <data name="MinimumNameLengthSetting_Title" xml:space="preserve">
+    <value>Require minimum length</value>
+  </data>
+  <data name="RD300001_Title" xml:space="preserve">
+    <value>Syntax Error</value>
+  </data>
+  <data name="RD300003_Title" xml:space="preserve">
+    <value>SLL Failure</value>
+  </data>
+  <data name="RD300101_Description" xml:space="preserve">
+    <value>'Option Explicit' is missing. Without 'Option Explicit' specified, declarations in a module are allowed to be implicit, which defers type checks and other validations to run-time.</value>
+  </data>
+  <data name="RD300101_Title" xml:space="preserve">
+    <value>Implicit Declarations Enabled</value>
+  </data>
+  <data name="RD300102_Description" xml:space="preserve">
+    <value>'Option Base 1' is specified. Implicitly-sized arrays are normally safely assumed to have a lower bound of 0. This module option makes the lower bound of implicitly-sized arrays start at 1, which can introduce inconsistencies that complicate index handling across arrays.</value>
+  </data>
+  <data name="RD300102_Title" xml:space="preserve">
+    <value>Implicit Non Default Array Base</value>
+  </data>
+  <data name="RD300103_Description" xml:space="preserve">
+    <value>'[Type]Def' declarations are assigning a compile-time declared type to implicitly-typed variables, based on the first letter of their identifier name. Implicitly-typed variables are normally safely assumed to be of type 'Variant'.</value>
+  </data>
+  <data name="RD300103_Title" xml:space="preserve">
+    <value>Implicit Type Declarations Enabled</value>
+  </data>
+  <data name="RD300104_Description" xml:space="preserve">
+    <value>The value parameter of a 'Property Let' or 'Property Set' procedure is always passed by value; even an explicit 'ByRef' modifier is ignored.</value>
+  </data>
+  <data name="RD300104_Title" xml:space="preserve">
+    <value>Implicit ByRef Modifier</value>
+  </data>
+  <data name="RD300105_Title" xml:space="preserve">
+    <value>Implicit Variant Declaration</value>
+  </data>
+  <data name="RD300106_Title" xml:space="preserve">
+    <value>Implicit Return Type</value>
+  </data>
+  <data name="RD300107_Title" xml:space="preserve">
+    <value>Implicit String Coercion</value>
+  </data>
+  <data name="RD300108_Title" xml:space="preserve">
+    <value>Implicit Numeric Coercion</value>
+  </data>
+  <data name="RD300109_Title" xml:space="preserve">
+    <value>Implicit 'Let' Coercion</value>
+  </data>
+  <data name="RD300110_Title" xml:space="preserve">
+    <value>Implicit DateSerial Conversion</value>
+  </data>
+  <data name="RD300111_Title" xml:space="preserve">
+    <value>Implicit Narrowing Conversion</value>
+  </data>
+  <data name="RD300112_Title" xml:space="preserve">
+    <value>Implicit Widening Conversion</value>
+  </data>
+  <data name="RD300201_Title" xml:space="preserve">
+    <value>Integer Data Type Declaration</value>
+  </data>
+  <data name="RD300202_Tilte" xml:space="preserve">
+    <value>Module Scoped Dim Declaration</value>
+  </data>
+  <data name="RD300203_Title" xml:space="preserve">
+    <value>Multiple Parameter Declaration</value>
+  </data>
+  <data name="RD300204_Title" xml:space="preserve">
+    <value>Multiple Declarations Instruction</value>
+  </data>
+  <data name="RD300205_Title" xml:space="preserve">
+    <value>Misleading ByRef Modifier</value>
+  </data>
+  <data name="RD300301_Title" xml:space="preserve">
+    <value>Calling convention is not implemented</value>
+  </data>
+  <data name="RD300302_Title" xml:space="preserve">
+    <value>Explicit 'Call' statement</value>
+  </data>
+  <data name="RD300303_Title" xml:space="preserve">
+    <value>Obsolete 'Rem' comment syntax</value>
+  </data>
+  <data name="RD300304_Title" xml:space="preserve">
+    <value>Obsolete 'Global' modifier</value>
+  </data>
+  <data name="RD300305_Title" xml:space="preserve">
+    <value>Obsolete explicit 'Let' accessor</value>
+  </data>
+  <data name="RD300306_Title" xml:space="preserve">
+    <value>Obsolete type hint</value>
+  </data>
+  <data name="RD300307_Title" xml:space="preserve">
+    <value>Obsolete 'While...Wend' loop</value>
+  </data>
+  <data name="RD300308_Title" xml:space="preserve">
+    <value>Obsolete 'On Local Error' statement</value>
+  </data>
+  <data name="RD300401_Title" xml:space="preserve">
+    <value>@Obsolete member usage</value>
+  </data>
+  <data name="RD300404_Title" xml:space="preserve">
+    <value>Invalid annotation</value>
+  </data>
+  <data name="RD300405_Title" xml:space="preserve">
+    <value>Implementation should be 'Private'</value>
+  </data>
+  <data name="RD300406_Title" xml:space="preserve">
+    <value>Public declaration in Worksheet module</value>
+  </data>
+  <data name="RD301001_Title" xml:space="preserve">
+    <value>Use meaningful names</value>
+  </data>
+  <data name="RD301002_Title" xml:space="preserve">
+    <value>Systems Hungarian notation</value>
+  </data>
+  <data name="RD311001_Title" xml:space="preserve">
+    <value>Unintended constant expression</value>
+  </data>
+  <data name="RD311002_Title" xml:space="preserve">
+    <value>Suspicious value assignment</value>
+  </data>
+  <data name="RD311003_Title" xml:space="preserve">
+    <value>TypeCast conversion</value>
+  </data>
+  <data name="RD311004_Title" xml:space="preserve">
+    <value>Bitwise operator</value>
+  </data>
+  <data name="RD311005_Title" xml:space="preserve">
+    <value>String concatenation</value>
+  </data>
+  <data name="RD311006_Title" xml:space="preserve">
+    <value>Use the 'Err' object to raise errors</value>
   </data>
   <data name="RequireAddInHostSetting_Description" xml:space="preserve">
     <value>If enabled, the Rubberduck Editor cannot be executed standalone, it must be started from within the VBIDE by the Rubberduck add-in.</value>

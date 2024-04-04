@@ -4,7 +4,7 @@ using Rubberduck.Editor.Commands;
 using Rubberduck.InternalApi.Settings.Model.Editor.Tools;
 using Rubberduck.UI;
 using Rubberduck.UI.Chrome;
-using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.StaticRouted;
 using Rubberduck.UI.Services;
 using Rubberduck.UI.Shared.Message;
 using Rubberduck.UI.Shell;

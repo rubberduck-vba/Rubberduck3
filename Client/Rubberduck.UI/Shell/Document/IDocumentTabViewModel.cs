@@ -3,6 +3,7 @@ using Rubberduck.InternalApi.ServerPlatform.LanguageServer;
 using Rubberduck.UI.Shell.StatusBar;
 using Rubberduck.UI.Windows;
 using System;
+using System.Windows.Input;
 
 namespace Rubberduck.UI.Shell.Document
 {
@@ -35,6 +36,7 @@ namespace Rubberduck.UI.Shell.Document
 
         SupportedDocumentType DocumentType { get; }
         IDocumentStatusViewModel Status { get; }
+        ICommand? ShowSettingsCommand { get; }
     }
 
     public interface ICodeDocumentTabViewModel : IDocumentTabViewModel

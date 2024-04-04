@@ -67,12 +67,16 @@
     <converters:InvertBoolValueConverter x:Key="InverseBoolConverter" />
     <converters:SelectedItemToBooleanConverter x:Key="HasSelectedItems"/>
     <converters:HasItemsBoolConverter x:Key="HasItemsBoolConverter" />
+    <converters:HasItemsBoolConverter x:Key="HasSingleItemBoolConverter" TrueWhenExactly="1" />
+    <converters:HasItemsBoolConverter x:Key="HasSingleItemInvertedBoolConverter" TrueWhenExactly="1" InverseValue="True" />
+    <converters:HasItemsVisibilityConverter x:Key="HasSingleItemVisibilityConverter" VisibleWhenGreaterThan="1" HiddenWhenGreaterThan="True" />
     <converters:HasItemsVisibilityConverter x:Key="HasItemsVisibilityConverter" />
     <converters:WindowStateToVisibilityConverter x:Key="WindowStateToRestoreVisibility" VisibleState="Maximized" HiddenState="Normal" />
     <converters:WindowStateToVisibilityConverter x:Key="WindowStateToMaximizeVisibility" VisibleState="Normal" HiddenState="Maximized" />
     <converters:SupportedDocumentTypeToIconConverter x:Key="DocumentTypeToIconConverter" />
     <converters:ServerConnectionStateToIconConverter x:Key="ServerConnectionStateToIconConverter" />
     <converters:LogLevelToIconConverter x:Key="LogLevelIconConverter" />
+    <converters:DiagnosticSeverityToIconConverter x:Key="DiagnosticSeverityIconConverter" />
 
     <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="{DynamicResource ThemeAccent1MediumColor}"/>
     <SolidColorBrush x:Key="TextBox.Focus.Border" Color="{DynamicResource ThemeAccent1DarkColor}"/>
@@ -356,10 +360,10 @@
 
     <Style x:Key="FormFieldNameLabelStyle" TargetType="Label">
         <Style.Setters>
+            <Setter Property="FontFamily" Value="Segoe UI" />
             <Setter Property="FontSize" Value="14" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextBackgroundColorBrush}"/>
-            <Setter Property="Margin" Value="0,5,0,0" />
             <Setter Property="MinHeight" Value="24" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style.Setters>
@@ -371,6 +375,26 @@
             <Setter Property="FontWeight" Value="Regular" />
         </Style.Setters>
     </Style>
+
+    <Style x:Key="TextMarkerToolTipTitleStyle" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
+        <Style.Setters>
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="Regular" />
+        </Style.Setters>
+    </Style>
+    <Style x:Key="TextMarkerToolTipSubtitleStyle" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
+        <Style.Setters>
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="Medium" />
+        </Style.Setters>
+    </Style>
+    <Style x:Key="TextMarkerToolTipTextStyle" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
+        <Style.Setters>
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="Regular" />
+        </Style.Setters>
+    </Style>
+
 
     <Style x:Key="WindowTitleLabelStyle" TargetType="Label" BasedOn="{StaticResource FormFieldNameLabelStyle}">
         <Style.Setters>
@@ -432,7 +456,21 @@
             <Setter Property="Foreground" Value="{DynamicResource ThemeTextColorBrush}" />
         </Style.Setters>
     </Style>
-    
+
+    <Style x:Key="HyperlinkLabelStyle" TargetType="Label">
+        <Style.Setters>
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Foreground" Value="Blue" />
+            <Setter Property="TextBlock.TextWrapping" Value="NoWrap" />
+        </Style.Setters>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <Setter Property="TextBlock.TextDecorations" Value="Underline" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="FormFieldTextBoxStyle" TargetType="TextBox">
         <Style.Setters>
             <Setter Property="Padding" Value="4,0" />
@@ -753,5 +791,22 @@
             <Setter Property="shell:FlatButton.HighlightBrush" Value="{DynamicResource ThemeAccent1DarkColorBrush}" />
             <Setter Property="shell:FlatButton.HoverBrush" Value="{DynamicResource ThemeAccent1LightColorBrush}" />
         </Style.Setters>
+    </Style>
+
+    <Style x:Key="HelpButtonStyle" TargetType="shell:FlatToggleButton" BasedOn="{StaticResource FlatToggleButtonStyle}">
+        <Style.Setters>
+            <Setter Property="Icon" Value="{StaticResource HelpIcon}" />
+            <Setter Property="CheckedIcon" Value="{StaticResource HelpPressedIcon}" />
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Width" Value="16" />
+            <Setter Property="DockPanel.Dock" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Margin" Value="4,2,2,8" />
+        </Style.Setters>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True">
+                <Setter Property="IsChecked" Value="True" />
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Rubberduck.InternalApi.ServerPlatform.TelemetryServer;
-using Rubberduck.InternalApi.Settings;
 using Rubberduck.InternalApi.Settings.Model.ServerStartup;
 using System;
 using System.Linq;
@@ -68,7 +67,7 @@ public record class TelemetryServerSettings : TypedSettingGroup, IDefaultSetting
     TelemetryServerSettings IDefaultSettingsProvider<TelemetryServerSettings>.Default => Default;
 }
 
-public abstract record class TelemetrySettingGroup<TKey> : EnumSettingGroup<TKey>
+public abstract record class TelemetrySettingGroup<TKey> : EnumSettingGroup<TKey, BooleanRubberduckSetting>
     where TKey : struct, Enum
 {
     public bool IsEnabled(TKey key) => ((TelemetrySetting)GetSetting(key)).TypedValue;

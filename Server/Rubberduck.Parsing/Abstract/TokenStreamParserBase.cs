@@ -54,12 +54,12 @@ public abstract class TokenStreamParserBase<TParser> : ServiceBase, ITokenStream
             _ => throw new ArgumentException($"Value '{parserMode}' is not supported.", nameof(parserMode)),
         };
 
-        var offendingSymbolErrors = errorListener.SyntaxErrors;
+        var syntaxErrors = errorListener.SyntaxErrors;
+        var sllErrors = errorListener.PredictionModeFailures;
 
-        var syntaxErrors = offendingSymbolErrors.Except(offendingSymbolErrors.OfType<SllPredictionFailException>());
-        var sllErrors = offendingSymbolErrors.OfType<SllPredictionFailException>();
-
-        diagnostics = sllErrors.Select(e => e.ToDiagnostic()).ToArray();
+        diagnostics = sllErrors.Select(e => e.ToDiagnostic())
+            .Concat(syntaxErrors.Select(e => e.ToDiagnostic()))
+            .ToArray();
         errors = syntaxErrors.ToArray();
 
         return tree;

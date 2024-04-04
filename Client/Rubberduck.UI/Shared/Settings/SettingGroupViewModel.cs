@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Shared.Settings
             // readonly-recommended padlock makes weird UX on setting groups
             _settingGroup = settingGroup with { Tags = settingGroup.Tags & ~SettingTags.ReadOnlyRecommended };
             _idleTimer = new Timer(OnIdleTimerTick, null, IdleDelay, Timeout.InfiniteTimeSpan);
-            _selection = items.First();
+            _selection = items.FirstOrDefault();
 
             foreach (var item in items)
             {
@@ -42,6 +42,7 @@ namespace Rubberduck.UI.Shared.Settings
 
             ItemsView = CollectionViewSource.GetDefaultView(Items);
             ItemsView.SortDescriptions.Add(new SortDescription(nameof(ISettingViewModel.IsSettingGroup), ListSortDirection.Ascending));
+            ItemsView.SortDescriptions.Add(new SortDescription(nameof(ISettingViewModel.SettingDataType), ListSortDirection.Ascending));
             ItemsView.SortDescriptions.Add(new SortDescription(nameof(ISettingViewModel.Name), ListSortDirection.Ascending));
             ItemsView.Filter = value => string.IsNullOrWhiteSpace(_searchString) || ((ISettingViewModel)value).IsSearchResult(_searchString);
 
@@ -68,6 +69,7 @@ namespace Rubberduck.UI.Shared.Settings
 
             ItemsView = CollectionViewSource.GetDefaultView(Items);
             ItemsView.SortDescriptions.Add(new SortDescription(nameof(ISettingViewModel.IsSettingGroup), ListSortDirection.Ascending));
+            ItemsView.SortDescriptions.Add(new SortDescription(nameof(ISettingViewModel.SettingDataType), ListSortDirection.Ascending));
             ItemsView.SortDescriptions.Add(new SortDescription(nameof(ISettingViewModel.Name), ListSortDirection.Ascending));
             ItemsView.Filter = value => string.IsNullOrWhiteSpace(_searchString) || ((ISettingViewModel)value).IsSearchResult(_searchString);
 
@@ -94,6 +96,7 @@ namespace Rubberduck.UI.Shared.Settings
 
             ItemsView = CollectionViewSource.GetDefaultView(Items);
             ItemsView.SortDescriptions.Add(new SortDescription(nameof(ISettingViewModel.IsSettingGroup), ListSortDirection.Ascending));
+            ItemsView.SortDescriptions.Add(new SortDescription(nameof(ISettingViewModel.SettingDataType), ListSortDirection.Ascending));
             ItemsView.SortDescriptions.Add(new SortDescription(nameof(ISettingViewModel.Name), ListSortDirection.Ascending));
             ItemsView.Filter = value => string.IsNullOrWhiteSpace(_searchString) || ((ISettingViewModel)value).IsSearchResult(_searchString);
 
@@ -154,7 +157,7 @@ namespace Rubberduck.UI.Shared.Settings
         public string Key => _settingGroup.Key;
         
         public string SettingGroupKey { get; set; }
-        public string Name => SettingsUI.ResourceManager.GetString($"{_settingGroup.Key}_Title") ?? $"[missing key:{_settingGroup.Key}_Title]";
+        public virtual string Name => SettingsUI.ResourceManager.GetString($"{_settingGroup.Key}_Title") ?? $"[missing key:{_settingGroup.Key}_Title]";
 
         public string Description => SettingsUI.ResourceManager.GetString($"{_settingGroup.Key}_Description") ?? $"[missing key:{_settingGroup.Key}_Description]";
         public bool AllowToggleAllBooleans => Items.All(e => e is BooleanSettingViewModel);
