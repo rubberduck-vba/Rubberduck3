@@ -32,6 +32,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.VBEditor\Rubberduck.VBEditor.csproj" />
+    <ProjectReference Include="..\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj">
+      <Project>{4ccd023c-a503-4bc7-9e9a-a509b4a16d41}</Project>
+      <Name>Rubberduck.VBEditor.VBA</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Client\Rubberduck.UI\Rubberduck.UI.csproj" />
     <ProjectReference Include="..\..\Server\Rubberduck.Parsing\Rubberduck.Parsing.csproj" />
     <ProjectReference Include="..\..\Server\Rubberduck.ServerPlatform\Rubberduck.ServerPlatform.csproj" />
     <ProjectReference Include="..\..\Shared\Rubberduck.InternalApi\Rubberduck.InternalApi.csproj">
@@ -42,16 +48,7 @@
       <Project>{ED65BAAD-743D-4144-AEE2-8D956E6DA599}</Project>
       <Name>Rubberduck.Resources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.UI\Rubberduck.UI.csproj" />
-    <ProjectReference Include="..\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj">
-      <Project>{4ccd023c-a503-4bc7-9e9a-a509b4a16d41}</Project>
-      <Name>Rubberduck.VBEditor.VBA</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.VBEditor\Rubberduck.VBEditor.csproj">
-      <Project>{030FDE59-C347-4B81-AB80-5B4B80B757A0}</Project>
-      <Name>Rubberduck.VBEditor</Name>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </ProjectReference>
+    <ProjectReference Include="..\..\Client\Rubberduck.UI\Rubberduck.UI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
